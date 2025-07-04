@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>derivate_integral – 세상의 모든 통계 이야기</title>
+<title>수학의 기초 2. 미분과 적분 – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -181,99 +216,145 @@ window.Quarto = {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">수학의 기초 2. 미분과 적분</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<p><img src="media/image1.png" style="width:4.07621in;height:2.98414in" alt="myself.png">Chapter 1. 미분</p>
-<p>vol 1. 통계수학</p>
-<p>section 2. 미적분</p>
-<p>wolfpack se kwon</p>
-<p><a href="https://sites.google.com/view/wolfpack61" class="uri">https://sites.google.com/view/wolfpack61</a></p>
-<p>권세혁교수 통계노트시리즈</p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-미분" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-미분"><span style="color:green">chapter 1. 미분</span></h3>
 <p>세상에는 움직이지 않는 것이 없다. 우리가 함께 움직이고 있어 느끼지 못할 뿐, 지구는 자전 속도로 약 시속 1,660km, 공전 속도로 약 시속 10.75만 km의 속도로 계속 움직이고 있다. 코페르니쿠스가 제안한 지동설은 천체 관측을 통해 갈릴레오에 의해 뒷받침되었으며, 갈릴레오는 망원경 관찰을 통해 목성의 위성과 금성의 위상 변화를 발견함으로써 지동설을 지지했다. 또한, 행성의 운동 궤도가 완벽한 원이 아니라 타원이라는 사실을 밝혀내어 지동설을 더욱 확고히 한 케플러가 있었다. 이들과 같은 시대를 살았던 뉴턴은 <span dir="rtl">”</span>왜 달은 하늘에 떠 있는 반면, 사과는 땅으로 떨어질까?“라는 질문을 통해 만유인력의 법칙을 정립하고 중력과 중력 가속도를 발견했다.</p>
 <p>한편, 미분은 <span dir="rtl">”</span>변화”로 정의된다. 기존 상태와 변화된 상태는 다르며, 미분은 바로 그 상태 변화에 관심을 둔다. 거리의 변화는 속도, 속도의 변화는 가속도, 그리고 비용과 효용의 변화는 한계비용과 한계효용으로 나타난다. 미분은 함수의 한 점에서 접선의 기울기를 구하는 과정이며, 이를 미분 differentiation 이라 한다. 다항함수, 로그함수, 지수함수, 삼각함수 등 대부분의 함수는 미분가능하며, 특히 통계학에서 자주 사용하는 함수들은 모두 미분가능한 함수로 이루어져 있다.</p>
 <p>미분은 주어진 점에서 접선의 기울기를 계산할 수 있도록 하며 통계학에서는 최적화 문제, 회귀분석, 확률 밀도 함수의 특성 분석 등 다양한 분야에서 활용된다.</p>
-<p>1평균변화율 average rate of change</p>
-<p>구간 <span class="math inline">\(a \leq x \leq b\)</span>에서 함수 <span class="math inline">\(f\)</span>의 평균 변화량으로<img src="media/image1.tif" style="width:2.22142in;height:2.22142in" alt="pasted-image.tiff"></p>
-<p><span class="math inline">\(\frac{rise}{run} = \frac{\Delta y}{\Delta x} = \frac{f(b) - f(b)}{b - a}\)</span>이다.</p>
-<p><span class="math inline">\(a \leq x \leq b\)</span> 구간에서 단위당 평균적으로 함수의 변화량을 측정한 것이다. 평균변화량은 고속도로 구간단속에 이용된다. 미분은 지점 과속 단속에 이용된다.<img src="media/image2.png" style="width:2.44379in;height:1.21377in" alt="pasted-image.png"></p>
+<section id="평균변화율-average-rate-of-change" class="level4">
+<h4 class="anchored" data-anchor-id="평균변화율-average-rate-of-change">1. 평균변화율 average rate of change</h4>
+<p>구간 <span class="math inline">\(a \leq x \leq b\)</span>에서 함수 <span class="math inline">\(f\)</span>의 평균 변화량으로 <span class="math inline">\(\frac{rise}{run} = \frac{\Delta y}{\Delta x} = \frac{f(b) - f(b)}{b - a}\)</span>이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/평균변화량.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p><span class="math inline">\(a \leq x \leq b\)</span> 구간에서 단위당 평균적으로 함수의 변화량을 측정한 것이다. 평균변화량은 고속도로 구간단속에 이용된다. 미분은 지점 과속 단속에 이용된다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/구간단속.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
 <p>측정 1 : 구간단속 시작, 종료 지점에서 과속여부 측정 (미분 응용)</p>
 <p>측정 2 : 예를 들어 구간 거리가 6km라 하자. 2분만에 구간을 통과했다면 평균속도는 <span class="math inline">\(\frac{6 - 0}{2 - 0} = 3km/min.\)</span>분당 3km를 달렸으므로 시간당 180km를 달렸으니 과속이 되는 것입니다. (평균변화량)</p>
-<p>2미분 정의</p>
+</section>
+<section id="미분-정의" class="level4">
+<h4 class="anchored" data-anchor-id="미분-정의">2. 미분 정의</h4>
 <p>함수 <span class="math inline">\(f(x)\)</span>의 임의의 점 <span class="math inline">\(x = a\)</span>에서의 미분값 <span class="math inline">\(f'(a)\)</span>는 다음과 같이 정의된다. <span class="math inline">\(f'(a) = \lim_{h \rightarrow 0}\frac{f(a + h) - f(a)}{h}\)</span></p>
 <p><span class="math inline">\(\frac{f(a + h) - f(a)}{h}\)</span>는 Fermat<span dir="rtl">’</span>s Difference Quotient로 불리며, 점 <span class="math inline">\(a\)</span>에서의 평균 변화율을 나타낸다.</p>
 <p>극한이 존재하면 <span class="math inline">\(f'(a)\)</span>는 <span class="math inline">\(x = a\)</span>에서의 접선의 기울기로 해석할 수 있다.</p>
-<p>미분 가능성</p>
+<section id="미분-가능성" class="level5">
+<h5 class="anchored" data-anchor-id="미분-가능성">미분 가능성</h5>
 <p><span class="math inline">\(f'(a)\)</span>가 존재하면, 점 <span class="math inline">\(x = a\)</span>에서 함수 <span class="math inline">\(f(x)\)</span>는 미분 가능하다고 한다.</p>
 <p>함수 <span class="math inline">\(f(x)\)</span>가 정의역 전체에서 미분 가능하, 함수 f(x)는 미분 가능 함수이다.</p>
-<p>미분의 기하학적 해석</p>
+</section>
+<section id="미분의-기하학적-해석" class="level5">
+<h5 class="anchored" data-anchor-id="미분의-기하학적-해석">미분의 기하학적 해석</h5>
 <p>미분값 <span class="math inline">\(f'(a)\)</span>는 곡선 <span class="math inline">\(y = f(x)\)</span>의 점 <span class="math inline">\(x = a\)</span>에서의 접선의 기울기를 의미한다.</p>
 <p><span class="math inline">\(h\)</span>가 0으로 가까워질수록 평균 변화율은 접선의 기울기에 점점 가까워진다.</p>
-<p>미분 가능성과 연속성</p>
+</section>
+<section id="미분-가능성과-연속성" class="level5">
+<h5 class="anchored" data-anchor-id="미분-가능성과-연속성">미분 가능성과 연속성</h5>
 <p>함수 <span class="math inline">\(f(x)\)</span>가 점 <span class="math inline">\(x = a\)</span>에서 미분 가능하면 <span class="math inline">\(f(x)\)</span>는 반드시 그 점에서 연속이다.</p>
-<p>하지만, 연속이라고 해서 항상 미분 가능한 것은 아니다. 예를 들어, 절대값 함수 f(x) = |x|는 x = 0에서 연속이지만 미분<img src="media/image3.png" style="width:2.98737in;height:1.89811in" alt="붙여넣은 동영상.png"> 가능하지 않다.</p>
-<p>3미분 규칙</p>
-<p>상수 함수의 미분</p>
+<p>하지만, 연속이라고 해서 항상 미분 가능한 것은 아니다. 예를 들어, 절대값 함수 가능하지 않다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/미분가능.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="미분-규칙" class="level4">
+<h4 class="anchored" data-anchor-id="미분-규칙">3. 미분 규칙</h4>
+<section id="상수-함수의-미분" class="level5">
+<h5 class="anchored" data-anchor-id="상수-함수의-미분">상수 함수의 미분</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack c\rbrack = 0\]</span></p>
-<p>거듭제곱 함수의 미분</p>
+</section>
+<section id="거듭제곱-함수의-미분" class="level5">
+<h5 class="anchored" data-anchor-id="거듭제곱-함수의-미분">거듭제곱 함수의 미분</h5>
 <p><span class="math inline">\(\frac{d}{dx}\lbrack x^{n}\rbrack = nx^{n - 1}\)</span>, <span class="math inline">\(f(x) = x^{n}(n \in \mathbb{R})\)</span></p>
 <p>【예제】 <span class="math inline">\(f(x) = 2\sqrt{x}\)</span> 을 미분하시오.</p>
 <p><span class="math display">\[f'(x) = 2(\frac{1}{2})x^{1/2 - 1} = x^{- 1/2} = \frac{1}{\sqrt{x}}\]</span></p>
-<p>상수배의 미분</p>
+</section>
+<section id="상수배의-미분" class="level5">
+<h5 class="anchored" data-anchor-id="상수배의-미분">상수배의 미분</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack c \cdot f(x)\rbrack = c \cdot \frac{d}{dx}\lbrack f(x)\rbrack\]</span></p>
-<p>합/차의 미분</p>
+</section>
+<section id="합차의-미분" class="level5">
+<h5 class="anchored" data-anchor-id="합차의-미분">합/차의 미분</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack f(x) \pm g(x)\rbrack = \frac{d}{dx}\lbrack f(x)\rbrack \pm \frac{d}{dx}\lbrack g(x)\rbrack\]</span></p>
-<p>곱의 미분</p>
+</section>
+<section id="곱의-미분" class="level5">
+<h5 class="anchored" data-anchor-id="곱의-미분">곱의 미분</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack f(x) \cdot g(x)\rbrack = f'(x) \cdot g(x) + f(x) \cdot g'(x)\]</span></p>
-<p>나눗셈의 미분</p>
+</section>
+<section id="나눗셈의-미분" class="level5">
+<h5 class="anchored" data-anchor-id="나눗셈의-미분">나눗셈의 미분</h5>
 <p><span class="math inline">\(\frac{d}{dx}\left\lbrack \frac{f(x)}{g(x)} \right\rbrack = \frac{f'(x) \cdot g(x) - f(x) \cdot g'(x)}{\lbrack g(x)\rbrack^{2}}\)</span>, <span class="math inline">\(g(x) \neq 0\)</span></p>
-<p>체인룰 chain rule 연쇄규칙</p>
+</section>
+<section id="체인룰-chain-rule-연쇄규칙" class="level5">
+<h5 class="anchored" data-anchor-id="체인룰-chain-rule-연쇄규칙">체인룰 chain rule 연쇄규칙</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack f(g(x))\rbrack = f'(g(x)) \cdot g'(x)\]</span></p>
 <p>【예제】 <span class="math inline">\(f(x) = 2\sqrt{3x^{2} - 1}\)</span>을 미분하시오.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image4.png" style="width:2.05291in;height:1.18255in" class="figure-img"></p>
-<figcaption>pasted-image.png</figcaption>
+<p><img src="../../images/미분연쇄법칙.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:30.0%"></p>
 </figure>
 </div>
 <p>바깥부분 미분하고 안쪽 부분 그대로 적는다.</p>
 <p><span class="math inline">\(2*(1/2){\sqrt{(3x^{2} - 1)}}^{- 1/2}\)</span> 그리고 안쪽부분을 미분한다.</p>
 <p><span class="math display">\[f'(x) = {\sqrt{(3x^{2} - 1)}}^{- 1/2}6x = \frac{6x}{\sqrt{3x^{2} - 1}}\]</span></p>
-<p>로그함수 미분</p>
+</section>
+<section id="로그함수-미분" class="level5">
+<h5 class="anchored" data-anchor-id="로그함수-미분">로그함수 미분</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack\log_{a}(x)\rbrack = \frac{1}{x\ln(a)},x &gt; 0\]</span></p>
 <p><span class="math display">\[\frac{d}{dx}\lbrack\ln(x)\rbrack = \frac{1}{x},x &gt; 0\]</span></p>
 <p>【예제】 <span class="math inline">\(f(x) = ln(x^{2} - 1)\)</span>을 미분하시오.</p>
 <p>연쇄법칙 적용 : <span class="math inline">\(f'(x) = \frac{1}{x^{2} - 1}2x\)</span></p>
-<p>지수함수 미분</p>
+</section>
+<section id="지수함수-미분" class="level5">
+<h5 class="anchored" data-anchor-id="지수함수-미분">지수함수 미분</h5>
 <p><span class="math display">\[\frac{d}{dx}\lbrack a^{x}\rbrack = a^{x}\ln(a)\]</span></p>
 <p><span class="math display">\[\frac{d}{dx}\lbrack e^{x}\rbrack = e^{x}\]</span></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><img src="media/image2.tif" style="width:0.84067in;height:0.2745in" alt="pasted-image.tiff"> <span class="math inline">\(f(x) = 5(x^{2} - 2x)^{2}\)</span></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><p>import sympy as sp</p>
-<p># 변수와 함수를 정의</p>
-<p>x = sp.Symbol('x')</p>
-<p>f = 5*(x**2-2*x)**2</p>
-<p># 함수 입력을 파싱하여 미분</p>
-<p>func = sp.sympify(f)</p>
-<p>derivative = sp.diff(func, x)</p>
-<p># 결과 출력</p>
-<p>print(f"미분 결과: {derivative}")</p></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">미분 결과: 5*(4*x - 4)*(x**2 - 2*x)</td>
-</tr>
-</tbody>
-</table>
-<p>4미분 응용</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sympy <span class="im">as</span> sp</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 변수와 함수를 정의</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> sp.Symbol(<span class="st">'x'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="dv">5</span><span class="op">*</span>(x<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>x)<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 함수 입력을 파싱하여 미분</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>func <span class="op">=</span> sp.sympify(f)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>derivative <span class="op">=</span> sp.diff(func, x)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>display(sp.Eq(sp.Derivative(f, x), derivative))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+</section>
+<section id="미분-응용" class="level3">
+<h3 class="anchored" data-anchor-id="미분-응용">4. 미분 응용</h3>
 <p>최대, 최소</p>
 <p>1차 미분정리</p>
 <p>함수 f(x) 가 일정 구간 (a, b) 안의 모든 점에서 미분 가능하고, 구간 내 임의의 점 c 에서 1차 미분이 0이면, f(x) 함수는 c 점에서 지역 최대값이나 최소값을 갖는다. 이는 페르마의 정리에 Fermat<span dir="rtl">’</span>s 해당하며, 극대값 또는 극소값이 존재하는 필수 조건을 설명한다.</p>
@@ -780,6 +861,7 @@ window.Quarto = {
 <p>1995-2026. 한남대학교 통계학과 교수</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
