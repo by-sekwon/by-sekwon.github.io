@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>derivate_integral – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-a14e3238c51140e99ccc48519b6ed9ce.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">홈</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">강의노트</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/index.html">
+ <span class="dropdown-text">수학 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/index.html">
+ <span class="dropdown-text">조사 방법론</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/inference/index.html">
+ <span class="dropdown-text">추론 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/index.html">
+ <span class="dropdown-text">기초 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/advance_stat/index.html">
+ <span class="dropdown-text">고급 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/ml/index.html">
+ <span class="dropdown-text">머신러닝</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/dl/index.html">
+ <span class="dropdown-text">딥러닝</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../python/analysis.html"> 
+<span class="menu-text">파이썬 분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cards/news01.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<p><img src="media/image1.png" style="width:4.07621in;height:2.98414in" alt="myself.png">Chapter 1. 미분</p>
+<p>vol 1. 통계수학</p>
+<p>section 2. 미적분</p>
+<p>wolfpack se kwon</p>
+<p><a href="https://sites.google.com/view/wolfpack61" class="uri">https://sites.google.com/view/wolfpack61</a></p>
+<p>권세혁교수 통계노트시리즈</p>
+<p>세상에는 움직이지 않는 것이 없다. 우리가 함께 움직이고 있어 느끼지 못할 뿐, 지구는 자전 속도로 약 시속 1,660km, 공전 속도로 약 시속 10.75만 km의 속도로 계속 움직이고 있다. 코페르니쿠스가 제안한 지동설은 천체 관측을 통해 갈릴레오에 의해 뒷받침되었으며, 갈릴레오는 망원경 관찰을 통해 목성의 위성과 금성의 위상 변화를 발견함으로써 지동설을 지지했다. 또한, 행성의 운동 궤도가 완벽한 원이 아니라 타원이라는 사실을 밝혀내어 지동설을 더욱 확고히 한 케플러가 있었다. 이들과 같은 시대를 살았던 뉴턴은 <span dir="rtl">”</span>왜 달은 하늘에 떠 있는 반면, 사과는 땅으로 떨어질까?“라는 질문을 통해 만유인력의 법칙을 정립하고 중력과 중력 가속도를 발견했다.</p>
+<p>한편, 미분은 <span dir="rtl">”</span>변화”로 정의된다. 기존 상태와 변화된 상태는 다르며, 미분은 바로 그 상태 변화에 관심을 둔다. 거리의 변화는 속도, 속도의 변화는 가속도, 그리고 비용과 효용의 변화는 한계비용과 한계효용으로 나타난다. 미분은 함수의 한 점에서 접선의 기울기를 구하는 과정이며, 이를 미분 differentiation 이라 한다. 다항함수, 로그함수, 지수함수, 삼각함수 등 대부분의 함수는 미분가능하며, 특히 통계학에서 자주 사용하는 함수들은 모두 미분가능한 함수로 이루어져 있다.</p>
+<p>미분은 주어진 점에서 접선의 기울기를 계산할 수 있도록 하며 통계학에서는 최적화 문제, 회귀분석, 확률 밀도 함수의 특성 분석 등 다양한 분야에서 활용된다.</p>
+<p>1평균변화율 average rate of change</p>
+<p>구간 <span class="math inline">\(a \leq x \leq b\)</span>에서 함수 <span class="math inline">\(f\)</span>의 평균 변화량으로<img src="media/image1.tif" style="width:2.22142in;height:2.22142in" alt="pasted-image.tiff"></p>
+<p><span class="math inline">\(\frac{rise}{run} = \frac{\Delta y}{\Delta x} = \frac{f(b) - f(b)}{b - a}\)</span>이다.</p>
+<p><span class="math inline">\(a \leq x \leq b\)</span> 구간에서 단위당 평균적으로 함수의 변화량을 측정한 것이다. 평균변화량은 고속도로 구간단속에 이용된다. 미분은 지점 과속 단속에 이용된다.<img src="media/image2.png" style="width:2.44379in;height:1.21377in" alt="pasted-image.png"></p>
+<p>측정 1 : 구간단속 시작, 종료 지점에서 과속여부 측정 (미분 응용)</p>
+<p>측정 2 : 예를 들어 구간 거리가 6km라 하자. 2분만에 구간을 통과했다면 평균속도는 <span class="math inline">\(\frac{6 - 0}{2 - 0} = 3km/min.\)</span>분당 3km를 달렸으므로 시간당 180km를 달렸으니 과속이 되는 것입니다. (평균변화량)</p>
+<p>2미분 정의</p>
+<p>함수 <span class="math inline">\(f(x)\)</span>의 임의의 점 <span class="math inline">\(x = a\)</span>에서의 미분값 <span class="math inline">\(f'(a)\)</span>는 다음과 같이 정의된다. <span class="math inline">\(f'(a) = \lim_{h \rightarrow 0}\frac{f(a + h) - f(a)}{h}\)</span></p>
+<p><span class="math inline">\(\frac{f(a + h) - f(a)}{h}\)</span>는 Fermat<span dir="rtl">’</span>s Difference Quotient로 불리며, 점 <span class="math inline">\(a\)</span>에서의 평균 변화율을 나타낸다.</p>
+<p>극한이 존재하면 <span class="math inline">\(f'(a)\)</span>는 <span class="math inline">\(x = a\)</span>에서의 접선의 기울기로 해석할 수 있다.</p>
+<p>미분 가능성</p>
+<p><span class="math inline">\(f'(a)\)</span>가 존재하면, 점 <span class="math inline">\(x = a\)</span>에서 함수 <span class="math inline">\(f(x)\)</span>는 미분 가능하다고 한다.</p>
+<p>함수 <span class="math inline">\(f(x)\)</span>가 정의역 전체에서 미분 가능하, 함수 f(x)는 미분 가능 함수이다.</p>
+<p>미분의 기하학적 해석</p>
+<p>미분값 <span class="math inline">\(f'(a)\)</span>는 곡선 <span class="math inline">\(y = f(x)\)</span>의 점 <span class="math inline">\(x = a\)</span>에서의 접선의 기울기를 의미한다.</p>
+<p><span class="math inline">\(h\)</span>가 0으로 가까워질수록 평균 변화율은 접선의 기울기에 점점 가까워진다.</p>
+<p>미분 가능성과 연속성</p>
+<p>함수 <span class="math inline">\(f(x)\)</span>가 점 <span class="math inline">\(x = a\)</span>에서 미분 가능하면 <span class="math inline">\(f(x)\)</span>는 반드시 그 점에서 연속이다.</p>
+<p>하지만, 연속이라고 해서 항상 미분 가능한 것은 아니다. 예를 들어, 절대값 함수 f(x) = |x|는 x = 0에서 연속이지만 미분<img src="media/image3.png" style="width:2.98737in;height:1.89811in" alt="붙여넣은 동영상.png"> 가능하지 않다.</p>
+<p>3미분 규칙</p>
+<p>상수 함수의 미분</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack c\rbrack = 0\]</span></p>
+<p>거듭제곱 함수의 미분</p>
+<p><span class="math inline">\(\frac{d}{dx}\lbrack x^{n}\rbrack = nx^{n - 1}\)</span>, <span class="math inline">\(f(x) = x^{n}(n \in \mathbb{R})\)</span></p>
+<p>【예제】 <span class="math inline">\(f(x) = 2\sqrt{x}\)</span> 을 미분하시오.</p>
+<p><span class="math display">\[f'(x) = 2(\frac{1}{2})x^{1/2 - 1} = x^{- 1/2} = \frac{1}{\sqrt{x}}\]</span></p>
+<p>상수배의 미분</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack c \cdot f(x)\rbrack = c \cdot \frac{d}{dx}\lbrack f(x)\rbrack\]</span></p>
+<p>합/차의 미분</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack f(x) \pm g(x)\rbrack = \frac{d}{dx}\lbrack f(x)\rbrack \pm \frac{d}{dx}\lbrack g(x)\rbrack\]</span></p>
+<p>곱의 미분</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack f(x) \cdot g(x)\rbrack = f'(x) \cdot g(x) + f(x) \cdot g'(x)\]</span></p>
+<p>나눗셈의 미분</p>
+<p><span class="math inline">\(\frac{d}{dx}\left\lbrack \frac{f(x)}{g(x)} \right\rbrack = \frac{f'(x) \cdot g(x) - f(x) \cdot g'(x)}{\lbrack g(x)\rbrack^{2}}\)</span>, <span class="math inline">\(g(x) \neq 0\)</span></p>
+<p>체인룰 chain rule 연쇄규칙</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack f(g(x))\rbrack = f'(g(x)) \cdot g'(x)\]</span></p>
+<p>【예제】 <span class="math inline">\(f(x) = 2\sqrt{3x^{2} - 1}\)</span>을 미분하시오.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image4.png" style="width:2.05291in;height:1.18255in" class="figure-img"></p>
+<figcaption>pasted-image.png</figcaption>
+</figure>
+</div>
+<p>바깥부분 미분하고 안쪽 부분 그대로 적는다.</p>
+<p><span class="math inline">\(2*(1/2){\sqrt{(3x^{2} - 1)}}^{- 1/2}\)</span> 그리고 안쪽부분을 미분한다.</p>
+<p><span class="math display">\[f'(x) = {\sqrt{(3x^{2} - 1)}}^{- 1/2}6x = \frac{6x}{\sqrt{3x^{2} - 1}}\]</span></p>
+<p>로그함수 미분</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack\log_{a}(x)\rbrack = \frac{1}{x\ln(a)},x &gt; 0\]</span></p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack\ln(x)\rbrack = \frac{1}{x},x &gt; 0\]</span></p>
+<p>【예제】 <span class="math inline">\(f(x) = ln(x^{2} - 1)\)</span>을 미분하시오.</p>
+<p>연쇄법칙 적용 : <span class="math inline">\(f'(x) = \frac{1}{x^{2} - 1}2x\)</span></p>
+<p>지수함수 미분</p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack a^{x}\rbrack = a^{x}\ln(a)\]</span></p>
+<p><span class="math display">\[\frac{d}{dx}\lbrack e^{x}\rbrack = e^{x}\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><img src="media/image2.tif" style="width:0.84067in;height:0.2745in" alt="pasted-image.tiff"> <span class="math inline">\(f(x) = 5(x^{2} - 2x)^{2}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p>import sympy as sp</p>
+<p># 변수와 함수를 정의</p>
+<p>x = sp.Symbol('x')</p>
+<p>f = 5*(x**2-2*x)**2</p>
+<p># 함수 입력을 파싱하여 미분</p>
+<p>func = sp.sympify(f)</p>
+<p>derivative = sp.diff(func, x)</p>
+<p># 결과 출력</p>
+<p>print(f"미분 결과: {derivative}")</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">미분 결과: 5*(4*x - 4)*(x**2 - 2*x)</td>
+</tr>
+</tbody>
+</table>
+<p>4미분 응용</p>
+<p>최대, 최소</p>
+<p>1차 미분정리</p>
+<p>함수 f(x) 가 일정 구간 (a, b) 안의 모든 점에서 미분 가능하고, 구간 내 임의의 점 c 에서 1차 미분이 0이면, f(x) 함수는 c 점에서 지역 최대값이나 최소값을 갖는다. 이는 페르마의 정리에 Fermat<span dir="rtl">’</span>s 해당하며, 극대값 또는 극소값이 존재하는 필수 조건을 설명한다.</p>
+<p>함수 f(x) 가 c 에서 미분 가능하다면,</p>
+<p>극값이 c 에서 존재하면,</p>
+<p>반드시 <span class="math inline">\(f'(c) = 0\)</span>이어야 한다.</p>
+<p>다만, <span class="math inline">\(f'(c) = 0\)</span>이라고 해서 반드시 극값이 존재하는 것은 아니며, 이는 필요조건일 뿐 충분조건은 아니다. 극값의 존재를 확실히 판단하려면 2차 도함수 테스트나 첫 도함수의 부호 변화를 추가로 고려해야 한다.</p>
+<p>증가 함수와 감소 함수</p>
+<p>함수 f(x)가 구간 <span class="math inline">\(I\)</span>에서 정의되어 있을 때,</p>
+<p><span class="math inline">\(x_{1} &lt; x_{2} \Longrightarrow f(x_{1}) \leq f(x_{2})\)</span>이면 구간 <span class="math inline">\(I\)</span>에서 증가 함수이다.</p>
+<p><span class="math inline">\(x_{1} &lt; x_{2} \Longrightarrow f(x_{1}) \geq f(x_{2})\)</span> 이면 구간 <span class="math inline">\(I\)</span>에서 감소 함수이다.</p>
+<p>1차 미분과 증가·감소 함수의 관계</p>
+<p>함수 f(x) 가 구간 <span class="math inline">\(I\)</span>에서 미분 가능하다면,</p>
+<ul>
+<li><p><span class="math inline">\(f'(x) &gt; 0\)</span>이면, f(x) 는 구간 <span class="math inline">\(I\)</span>에서 엄격히 증가한다</p></li>
+<li><p><span class="math inline">\(f'(x) &lt; 0\)</span>이면, f(x) 는 구간 <span class="math inline">\(I\)</span>에서 엄격히 감소한다.</p></li>
+</ul>
+<p>오목성 concavity 정의</p>
+<p>함수 f(x) 의 기울기가 감소하는 경우 <span class="math inline">\(f''(x) &lt; 0\)</span>,</p>
+<ul>
+<li><p>함수 f(x) 는 concave down (오목 아래)이다.</p></li>
+<li><p>그래프가 아래로 휘어진 모양을 갖는다.</p></li>
+</ul>
+<p>함수 f(x) 의 기울기가 증가하는 경우 <span class="math inline">\(f''(x) &gt; 0\)</span>,</p>
+<ul>
+<li><p>함수 f(x) 는 concave up (오목 위)이다.</p></li>
+<li><p>그래프가 위로 휘어진 모양을 갖는다.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image3.tif" style="width:3.9185in;height:2.2714in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div>
+<p>변곡점 inflexion point 정의</p>
+<p>함수 f(x) 의 오목성이 변하는 점이 있을 때, 이 점을 변곡점이라고 한다. 즉, f(x)가 <span class="math inline">\(f''(x) &gt; 0\)</span>에서 <span class="math inline">\(f''(x) &lt; 0\)</span>로 바뀌거나</p>
+<p><span class="math inline">\(f''(x) &lt; 0\)</span>에서 <span class="math inline">\(f''(x) &gt; 0\)</span>로 바뀌는 점이 변곡점이다.</p>
+<p>1차 미분과 2차 미분을 이용한 최대, 최소 판단</p>
+<p>주어진 <span class="math inline">\(f'(c) = 0\)</span>에서, <span class="math inline">\(f''(c)\)</span>를 확인한다.</p>
+<ul>
+<li><p><span class="math inline">\(f''(c) &gt; 0\)</span> 이면 <span class="math inline">\(x = c\)</span>에서 (지역) 최소값</p></li>
+<li><p><span class="math inline">\(f''(c) &lt; 0\)</span> 이면 <span class="math inline">\(x = c\)</span>에서 (지역) 최대값</p></li>
+<li><p><span class="math inline">\(f''(c) = 0\)</span> 이고 <span class="math inline">\(f''(x)\)</span> 부호가 바뀌면 <span class="math inline">\(x = c\)</span>에서 변곡점</p>
+<p>통계학 응용</p></li>
+</ul>
+<p>단순 회귀모형: <span class="math inline">\(y_{i} = \beta_{0} + \beta_{1}x_{i} + \epsilon_{i},i = 1,2,\ldots,n\)</span></p>
+<p>OLS 추정치: <span class="math inline">\(\text{Minimize:}S(\beta_{0},\beta_{1}) = \overset{n}{\sum_{i = 1}}(y_{i} - \beta_{0} - \beta_{1}x_{i})^{2}\)</span></p>
+<p>오차 제곱합 <span class="math inline">\(S(\beta_{0},\beta_{1})\)</span>을 <span class="math inline">\(\beta_{0}\)</span>와 <span class="math inline">\(\beta_{1}\)</span>에 대해 편미분한 뒤 0으로 설정하여 최소값(OLS)을 찾는다.</p>
+<p>정규방정식</p>
+<p><span class="math inline">\(\frac{\partial S}{\partial\beta_{0}} = - 2\overset{n}{\sum_{i = 1}}(y_{i} - \beta_{0} - \beta_{1}x_{i}) = 0\)</span> —(1)</p>
+<p><span class="math display">\[\overset{n}{\sum_{i = 1}}y_{i} = n\beta_{0} + \beta_{1}\overset{n}{\sum_{i = 1}}x_{i}\]</span></p>
+<p><span class="math inline">\(\frac{\partial S}{\partial\beta_{1}} = - 2\overset{n}{\sum_{i = 1}}x_{i}(y_{i} - \beta_{0} - \beta_{1}x_{i}) = 0\)</span> —(2)</p>
+<p><span class="math display">\[\overset{n}{\sum_{i = 1}}x_{i}y_{i} = \beta_{0}\overset{n}{\sum_{i = 1}}x_{i} + \beta_{1}\overset{n}{\sum_{i = 1}}x_{i}^{2}\]</span></p>
+<p>두 식을 함께 사용하여 <span class="math inline">\(\beta_{0}\)</span>와 <span class="math inline">\(\beta_{1}\)</span>를 계산한다.</p>
+<p><span class="math display">\[\beta_{1} = \frac{\sum_{i = 1}^{n}(x_{i} - \overline{x})(y_{i} - \overline{y})}{\sum_{i = 1}^{n}(x_{i} - \overline{x})^{2}} = \frac{\text{Cov}(x,y)}{\text{Var}(x)}\]</span></p>
+<p><span class="math display">\[\beta_{0} = \overline{y} - \beta_{1}\overline{x}\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image2.tif" style="width:0.84067in;height:0.2745in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p>import numpy as np</p>
+<p>import matplotlib.pyplot as plt</p>
+<p>from scipy.optimize import curve_fit</p>
+<p># 가상의 데이터 생성 n=20</p>
+<p>np.random.seed(0)</p>
+<p>x_data = np.linspace(-5, 5, 20)</p>
+<p>y_data = 2 * x_data**3 - 3 * x_data**2 + 4 * x_data + 10 + np.random.normal(0, 10, 20)</p>
+<p># 직선 적합 함수</p>
+<p>def linear(x, a, b):</p>
+<p>return a * x + b</p>
+<p># 2차 함수 적합 함수</p>
+<p>def quadratic(x, a, b, c):</p>
+<p>return a * x**2 + b * x + c</p>
+<p># 3차 함수 적합 함수</p>
+<p>def cubic(x, a, b, c, d):</p>
+<p>return a * x**3 + b * x**2 + c * x + d</p></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><p># 최소자승법을 이용한 직선, 2차, 3차 적합</p>
+<p>params_linear, _ = curve_fit(linear, x_data, y_data)</p>
+<p>params_quadratic, _ = curve_fit(quadratic, x_data, y_data)</p>
+<p>params_cubic, _ = curve_fit(cubic, x_data, y_data)</p>
+<p># 적합된 함수의 값을 계산</p>
+<p>y_fit_linear = linear(x_data, *params_linear)</p>
+<p>y_fit_quadratic = quadratic(x_data, *params_quadratic)</p>
+<p>y_fit_cubic = cubic(x_data, *params_cubic)</p>
+<p># Residual Sum of Squares 계산</p>
+<p>rss_linear = np.sum((y_data - y_fit_linear) ** 2)</p>
+<p>rss_quadratic = np.sum((y_data - y_fit_quadratic) ** 2)</p>
+<p>rss_cubic = np.sum((y_data - y_fit_cubic) ** 2)</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p># 그래프 그리기</p>
+<p>plt.figure(figsize=(10, 6))</p>
+<p>plt.scatter(x_data, y_data, label='data', color='black')</p>
+<p>plt.plot(x_data, y_fit_linear, label='Linear fit (y = {:.2f}x + {:.2f}) : RSS={:.2f}'.format(params_linear[0], params_linear[1],rss_linear), color='blue')</p>
+<p>plt.plot(x_data, y_fit_quadratic, label='Quardratic fit (y = {:.2f}x^2 + {:.2f}x + {:.2f}) : RSS={:.2f}'.format(params_quadratic[0], params_quadratic[1], params_quadratic[2],rss_quadratic), color='green')</p>
+<p>plt.plot(x_data, y_fit_cubic, label='Cubic fit (y = {:.2f}x^3 + {:.2f}x^2 + {:.2f}x + {:.2f}) : RSS={:.2f}'.format(params_cubic[0], params_cubic[1], params_cubic[2], params_cubic[3],rss_cubic), color='red')</p>
+<p>plt.axhline(0, color='grey', lw=0.5, ls='--')</p>
+<p>plt.axvline(0, color='grey', lw=0.5, ls='--')</p>
+<p>plt.title('fit by OLS')</p>
+<p>plt.xlabel('x')</p>
+<p>plt.ylabel('y')</p>
+<p>plt.legend()</p>
+<p>plt.grid()</p>
+<p>plt.show()</p></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image5.png" style="width:3.78191in;height:2.39989in" class="figure-img"></p>
+<figcaption>붙여넣은 동영상.png</figcaption>
+</figure>
+</div>
+<p>한계효용체감의 법칙</p>
+<p>한계효용 marginal utility은&nbsp;재화가 증가 혹은 감소함에 따라 주관적으로 매겨지는 경제적 효용(혹은 가치)의 관계에 대한 개념으로 합리적인 경제에서 인간 행동은 자신에게 가장 시급한 욕구를 충족하는 일을 가장 먼저 하거나 가치를 두는 특성이 있다. 따라서 어떤 사람이 재화나 용역을 이용하여 효용을<img src="media/image6.png" style="width:1.94322in;height:1.35949in" alt="pasted-image.png"> 얻고자 할 때 주관적으로 판단되는 욕망 충족의 정도인 효용의 가치가 높은 것부터 낮은 것 쪽으로 추구한다. 재화나 용역의 한계효용은 그 재화나 용역을 사용하는 것을 증가하거나 감소함에 따라 변화한 가치의 양을 상정한 것인데 이런 변화에서 추가의 1단위 즉 경계인 단위에서의 재화나 용역의 효용을 한계효용이라고 한다.[위키피디아]</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image4.tif" style="width:3.60489in;height:2.40927in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div>
+<p>총효용 total utility&nbsp;은 주어진 기간 동안 소비된 특정 상품의 모든 단위에서 얻은 총만족입니다. 한계효용 marginal utility 마지막 소비량에서 상품 소비의 1단위 변화로 인해 발생하는 총 효용의 변화이다. 더 많은 단위의 상품을 구매하면 한계 효용은 감소하기 시작하지만 총 효용은 계속해서 감소 비율이 줄어든다.&nbsp;한계효용이 0가 되는 포화점 satiety에 이르렀을 때 이 지점에서의 총효용은 최대가 된다.&nbsp;이 지점에서 소비가 더 증가하면 한계 효용은 음수가 되고 총 효용은 감소하기 시작한다.</p>
+<p>Cobb-Douglas 생산함수</p>
+<p><span class="math inline">\(Q = f(K,L) = AL^{\alpha}K^{\beta}\)</span>, <span class="math inline">\(Q\)</span>= 생산, <span class="math inline">\(K\)</span>=자본, <span class="math inline">\(L\)</span>=노동, <span class="math inline">\(A,\alpha,\beta\)</span>는 모수이다. <span class="math inline">\(K,L\)</span>에 대하여 각각 편미분 하면 다음과 같다.</p>
+<ul>
+<li><p>양변에 로그를 취한다. <span class="math inline">\(ln(Q) = lnA + \alpha lnL + \beta lnK\)</span></p></li>
+<li><p><span class="math inline">\(\frac{\partial(lnQ)}{\partial L} = \alpha\)</span> : 한계 노동 생산량</p></li>
+<li><p><span class="math inline">\(\frac{\partial(lnQ)}{\partial K} = \beta\)</span> : 한계 자본 생산량</p></li>
+</ul>
+<p>Chapter 2. 적분</p>
+<p>고대 수학자들은 직선으로 이루어진 도형의 면적을 비교적 쉽게 계산할 수 있었습니다. 사각형, 삼각형, 평행사변형, 사다리꼴과 같은 도형은 밑변과 높이를 활용한 간단한 공식을 통해 면적을 구할 수 있었기 때문입니다. 그러나 곡선이 포함된 도형의 면적을 계산하는 문제는 훨씬 더 복잡한 도전 과제였습니다.</p>
+<p>곡선이 포함된 도형의 면적을 구하기 위해 현대 수학에서는 적분이라는 개념이 도입되었습니다. 이는 고대 그리스의 수학자 아르키메데스가 처음으로 탐구한 주제 중 하나였습니다. 아르키메데스는 곡선 아래의 면적을 구하기 위해 곡선을 아주 작은 직사각형들로 나누고, 그 면적을 합산하여 근사값을 구하는 방식을 사용했습니다. 이 과정은 시간이 지나며 점점 더 체계적으로 발전하였고, 마침내 미적분학으로 이어졌습니다.</p>
+<p>아이작 뉴턴과 고트프리트 라이프니츠는 아르키메데스의 아이디어를 발전시켜 적분과 미분이라는 두 가지 핵심 개념을 정립하였고, 이를 통해 곡선 아래의 면적을 정확히 계산할 수 있는 도구를 완성했습니다. 오늘날 우리가 사용하는 적분법은 이들의 연구에 기반을 두고 있으며, 곡선의 면적뿐만 아니라 물리학, 공학, 경제학 등 다양한 분야에서 중요한 역할을 하고 있습니다.</p>
+<p>적분은 통계학에서 확률 계산, 기대값, 분산, 베이지안 추론 등 다양한 개념과 도구에 중요한 역할을 합니다. 확률을 곡선 아래 면적으로 해석하는데서부터 시작해, 통계적 추론의 기초를 형성하는 데 적분이 필수적입니다. 이러한 적분 개념은 통계학 이론뿐만 아니라 데이터 분석, 머신러닝, 신뢰구간 계산 등 실무적인 응용에서도 널리 사용됩니다.</p>
+<p>1부정 적분</p>
+<p>함수 F(x) 가 주어진 함수 f(x) 에 대해 정의역의 모든 점에서 <span class="math inline">\(F'(x) = f(x)\)</span>를 만족한다면, F(x) 를 f(x) 의 역-미분 anti-derivative 또는 원시함수 primitive function 합니다. 이는 적분이 미분의 역연산임을 의미합니다.</p>
+<p>적분이 미분의 역연산이라는 사실을 처음 체계적으로 증명하고 이를 수학적으로 정립한 사람들은 아이작 뉴턴(Isaac Newton)과 고트프리트 라이프니츠(Gottfried Wilhelm Leibniz)입니다. 이들은 독립적으로 미적분학의 기본 개념을 발전시켰으며, 이 과정에서 적분과 미분의 관계를 설명한 미적분학의 기본정리를 도출했습니다.</p>
+<p>정적분과 미분의 관계</p>
+<p>특정 구간에서의 정적분은 미분을 통해 함수의 값을 복원할 수 있습니다. 예를 들어, 함수 f(x) 에 대해 다음과 같은 정적분이 있을 때,</p>
+<p><span class="math inline">\(F(x) = \int_{a}^{x}f(t)dt\)</span>. 이를 x 에 대해 미분하면 <span class="math inline">\(\frac{d}{dx}F(x) = f(x)\)</span></p>
+<p>즉, 적분을 통해 구한 누적 변화량을 다시 미분하면, 원래의 함수로 돌아갑니다.</p>
+<p>적분과 미분은 서로 반대되는 과정처럼 보이지만, 실제로는 상호보완적입니다. 적분은 함수의 누적적인 변화(예: 곡선 아래의 면적)를 측정하며, 미분은 순간적인 변화(예: 기울기)를 측정합니다.</p>
+<p>2정적분</p>
+<p>정적분 개념</p>
+<p>정적분(면적)은 부정적분(역-미분 함수)과는 다른 접근 방식에서 출발합니다. 그러나 이 두 개념은 17세기에 뉴턴(Newton)과 라이프니츠(Leibniz)에 의해 서로 밀접하게 연결되었고, 이를 통합하여 적분(integral)이라고 명명하였습니다.</p>
+<p>우선, 정적분의 개념을 살펴보겠습니다. 구간 [a, b]에서 함수 f(x) 아래의 면적을 어떻게 구할 수 있을까요? 이를 위해 구간 [a, b]를 여러 작은 구간으로 나눈 다음, 각 구간에서 직사각형의 면적을 계산하여 합산하는 방법을 생각할 수 있습니다. 이러한 직사각형의 면적 합은 점점 더 작은 구간으로 나눌수록 실제 면적에 근사하게 됩니다.</p>
+<p><img src="media/image7.png" style="width:0.57708in;height:0.19236in"></p>
+<p><img src="media/image8.png" style="width:0.43079in;height:0.16417in"></p>
+<p><img src="media/image10.png" style="width:0.33342in;height:0.1736in"></p>
+<p>0</p>
+<p><img src="media/image11.png" style="width:0.13819in;height:0.19236in"></p>
+<p><img src="media/image12.png" style="width:0.14583in;height:0.19236in"></p>
+<p><img src="media/image13.png" style="width:0.14583in;height:0.19236in"></p>
+<p><img src="media/image14.png" style="width:0.14583in;height:0.19236in"></p>
+<p><img src="media/image15.png" style="width:0.13819in;height:0.19236in"></p>
+<p><img src="media/image16.png" style="width:0.16181in;height:0.19236in"></p>
+<p><img src="media/image17.png" style="width:0.24986in;height:0.1891in"></p>
+<p><img src="media/image18.png" style="width:0.16181in;height:0.19236in"></p>
+<p><img src="media/image19.png" style="width:0.24986in;height:0.1891in"></p>
+<p><img src="media/image20.png" style="width:0.32837in;height:0.17097in"></p>
+<p><em>k</em>번째 직사각형</p>
+<p><img src="media/image21.png" style="width:0.52621in;height:0.17088in"></p>
+<p><img src="media/image22.png" style="width:0.45049in;height:0.16393in"></p>
+<p><img src="media/image23.png" style="width:0.51204in;height:0.17068in"></p>
+<p>함수와 x-축 사이에 형성된 이 면적은 정적분이라 하며, 이는 구간 [a, b]에서 함수 f(x)와 x-축 사이의 공간에 해당합니다. 직사각형을 이용해 근사한 면적은 실제 면적보다 클 수도 있고 작을 수도 있습니다. 하지만 구간을 점점 더 세분화하면, 이 근사값은 실제 정적분 값에 수렴하게 됩니다.</p>
+<p>정적분은 함수의 곡선 아래의 면적을 계산하는 방법으로 출발했지만, 부정적분(역-미분 함수)과의 연결을 통해 더욱 강력한 수학적 도구로 발전하였습니다.</p>
+<p>정적분과 부정적분의 관계</p>
+<p>함수 f(x) 가 구간 [a, b]에서 연속일 때:</p>
+<p>부정적분(역-미분 함수): 함수 F(x) 가 f(x) 의 부정적분이라면 <span class="math inline">\(F'(x) = f(x)\)</span></p>
+<p>정적분(구간의 면적): 함수 f(x) 의 정적분은 구간 [a, b]에서 f(x) 와 x -축 사이의 면적을 나타냅니다. <span class="math inline">\(\int_{a}^{b}f(x)dx\)</span></p>
+<p>뉴턴-라이프니츠 정리: 부정적분과 정적분은 다음과 같이 연결됩니다. <span class="math inline">\(\int_{a}^{b}f(x)dx = F(b) - F(a)\)</span></p>
+<p>여기서 F(x) 는 f(x) 의 부정적분입니다.</p>
+<p>이 정리는 정적분(구간에서의 면적 계산)이 부정적분(역-미분 함수)을 사용하여 계산될 수 있음을 보여줍니다.</p>
+<p>정적분 규칙</p>
+<p>특정 점에서의 확률</p>
+<p><span class="math display">\[\int_{a}^{a}f(x)dx = 0\]</span></p>
+<p>이는 구간의 길이가 0 일 때, 정적분의 결과가 항상 0 임을 나타냅니다(통계적으로: 연속 확률변수에서 특정 점에서의 확률은 0 이다).</p>
+<p>구간 순서 반대</p>
+<p><span class="math display">\[\int_{a}^{b}f(x)dx = - \int_{b}^{a}f(x)dx\]</span></p>
+<p>구간의 순서를 바꾸면 정적분의 부호가 반대가 됩니다.</p>
+<p>상수 배율</p>
+<p><span class="math display">\[\int_{a}^{b}c \cdot f(x)dx = c\int_{a}^{b}f(x)dx(\text{c is constant})\]</span></p>
+<p>적분 내부에 상수가 곱해져 있을 경우, 상수를 적분 기호 밖으로 꺼낼 수 있습니다.</p>
+<p>합과 차</p>
+<p><span class="math display">\[\int_{a}^{b}\left( f(x) \pm g(x) \right)dx = \int_{a}^{b}f(x)dx \pm \int_{a}^{b}g(x)dx\]</span></p>
+<p>적분은 덧셈과 뺄셈 연산에 대해 분배법칙을 따릅니다.</p>
+<p>Domination Rule</p>
+<p>만약 <span class="math inline">\(f(x) \geq 0\)</span>가 구간 [a, b]에서 항상 성립하면</p>
+<p><span class="math inline">\(\int_{a}^{b}f(x)dx \geq 0\)</span> 이다. 통계적으로 확률변수의 분포 함수는 항상 0 이상 이므로, 확률값은 항상 0 이상이다.</p>
+<p>부등식 관계</p>
+<p>만약 <span class="math inline">\(f(x) \leq g(x)\)</span>가 구간 [a, b]에서 항상 성립하면</p>
+<p><span class="math inline">\(\int_{a}^{b}f(x)dx \leq \int_{a}^{b}g(x)dx\)</span> 이다.</p>
+<p>구간 쪼개기</p>
+<p><span class="math display">\[\int_{a}^{c}f(x)dx + \int_{c}^{b}f(x)dx = \int_{a}^{b}f(x)dx\]</span></p>
+<p>적분 구간을 나누어 계산할 수 있습니다.</p>
+<p>확률밀도함수 전체 구간</p>
+<p><span class="math inline">\(\int_{- \infty}^{\infty}f(x)dx = 1\)</span>. 확률밀도함수(PDF)는 전체 구간에서의 적분, 확률의 총합이 1 임을 나타냅니다.</p>
+<p>지수함수 적분</p>
+<p><span class="math display">\[\int a^{x}dx = \frac{a^{x}}{\ln a} + C(a &gt; 0,a \neq 1)\]</span></p>
+<p><span class="math display">\[\int e^{x}dx = e^{x} + C\]</span></p>
+<p>로그함수 적분</p>
+<p><span class="math display">\[\int\log_{a}(x)dx = \frac{1}{\ln(a)}\left( x\ln(x) - x \right) + C\]</span></p>
+<p><span class="math display">\[\int\ln(x)dx = x\ln(x) - x + C\]</span></p>
+<p>특수한 적분</p>
+<p><span class="math display">\[\int\frac{1}{x} = ln|x| + C\]</span></p>
+<p>치환적분</p>
+<p>함수 g(x) 가 x 에 대한 미분가능한 함수이고, f(u) 가 u = g(x) 에 대한 함수라고 가정하겠습니다.</p>
+<p><span class="math display">\[\int f(g(x)) \cdot g'(x)dx = \int f(u)du\]</span></p>
+<ul>
+<li><p><span class="math display">\[u = g(x)\]</span></p></li>
+<li><p><span class="math display">\[du = g'(x)dx\]</span></p></li>
+</ul>
+<p>【사례】<span class="math inline">\(\int x \cdot e^{x^{2}}dx = \frac{1}{2}e^{x^{2}} + C\)</span></p>
+<p><span class="math inline">\(u = x^{2}\)</span>로 치환하면, <span class="math inline">\(du = 2xdx\)</span>. 따라서 <span class="math inline">\(xdx = \frac{1}{2}du\)</span></p>
+<p><span class="math inline">\(\int x \cdot e^{x^{2}}dx = \int e^{u} \cdot \frac{1}{2}du = \frac{1}{2}\int e^{u}du\)</span>=<span class="math inline">\(\frac{1}{2}\int e^{u}du = \frac{1}{2}e^{u} + C\)</span></p>
+<p><span class="math inline">\(u = x^{2}\)</span> 이므로 <span class="math inline">\(\int x \cdot e^{x^{2}}dx = \frac{1}{2}e^{x^{2}} + C\)</span> 이다.</p>
+<p>부분적분</p>
+<p>함수 u(x) 와 v(x) 가 미분 가능할 때, 다음 공식이 성립합니다:</p>
+<p><span class="math display">\[\int udv = uv - \int vdu\]</span></p>
+<ul>
+<li><p><span class="math inline">\(u\)</span>: 미분할 함수 (<span class="math inline">\(u \rightarrow du\)</span>)</p></li>
+<li><p><span class="math inline">\(dv\)</span>: 적분할 함수 (<span class="math inline">\(dv \rightarrow v\)</span>)</p></li>
+</ul>
+<p>【사례】 <span class="math inline">\(\int xe^{x}dx\)</span></p>
+<ol type="1">
+<li><p>함수 선택: <span class="math inline">\(u = x,dv = e^{x}dx\)</span></p></li>
+<li><p>미분 및 적분: <span class="math inline">\(u \rightarrow du = dx\)</span>,<span class="math inline">\(dv \rightarrow v = e^{x}\)</span></p></li>
+<li><p>부분적분 공식 적용: <span class="math inline">\(\int xe^{x}dx = uv - \int vdu\)</span></p></li>
+</ol>
+<p><span class="math inline">\(= xe^{x} - \int e^{x}dx\)</span><span class="math inline">\(= xe^{x} - e^{x} + C\)</span>.</p>
+<p>.</p>
+<p>【사례】 <span class="math inline">\(\int_{0}^{1}x^{2} + \sqrt{x}dx\)</span> 구하시오.</p>
+<p><span class="math inline">\(f(x) = x^{2} + \sqrt{x}\)</span>이므로 <span class="math inline">\(F(x) = \frac{1}{3}x^{3} + \frac{2}{3}x^{\frac{3}{2}}\)</span></p>
+<p><span class="math inline">\(F(1) = 1\)</span>, <span class="math inline">\(F(0) = 0\)</span>이므로 1이다.</p>
+<p><span class="math display">\[\int_{0}^{1}x^{2} + \sqrt{x}dx = \frac{1}{3}x^{3} + \frac{2}{3}x^{\frac{3}{2}}\rbrack_{0}^{1} = 1 - 0 = 1\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image2.tif" style="width:1.02116in;height:0.33344in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p>#부정적분</p>
+<p>from sympy import *</p>
+<p>x=Symbol('x')</p>
+<p>integrate(x**2+x**(0.5), x)</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image24.png" style="width:2.90997in;height:0.52032in" class="figure-img"></p>
+<figcaption>pasted-image.png</figcaption>
+</figure>
+</div></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p>#정적분</p>
+<p>from scipy.integrate import quad</p>
+<p>def integrand(x):</p>
+<p>return x**2+x**(0.5)</p>
+<p>quad(integrand,0, 1)</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><p>첫번째 값은 적분값이고 두 번째는 적분 값을 얼마나 근사하게 계산하였는지 값이다. 완벽한 값이면 0이어야 하나 출력된 값은 0.0(14개)11…이다. <span class="math inline">\(|root - 1| &lt; 1.11(10)^{- 15} \approx 0\)</span> root는 실제 근이다.</p>
+<p>(1.0, 1.1102230246251565e-15)</p></td>
+</tr>
+</tbody>
+</table>
+<p>【사례】 표준 정규확률분포함수<span class="math inline">\(\int_{0}^{\infty}\frac{1}{\sqrt{2\pi}}e^{- \frac{x^{2}}{2}}dx\)</span> 구하시오.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image2.tif" style="width:1.02116in;height:0.33344in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p>#부정적분</p>
+<p>from sympy import *</p>
+<p>import numpy as np</p>
+<p>x=Symbol('x')</p>
+<p>integrate(1/(2*np.pi)**0.5*exp(-x**2/2), x)</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image25.png" style="width:3.23698in;height:0.5893in" class="figure-img"></p>
+<figcaption>pasted-image.png</figcaption>
+</figure>
+</div></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><p>#정적분</p>
+<p>from scipy.integrate import quad</p>
+<p>def integrand(x):</p>
+<p>return 1/(2*np.pi)**0.5*exp(-x**2/2)</p>
+<p>quad(integrand,0,np.inf)</p></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(0.49999999999999983, 5.08909572547112e-09)</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>표적분 tabular integral</li>
+</ol>
+<p>표 적분은 부분적분을 용이하게 한다. 미분 부분 <span class="math inline">\(f(x)\)</span>는 미분하면서 차수가 용이해야 하고, 적분함수 <span class="math inline">\(g(x)\)</span>는 용이하게 적분할 수 있어야 한다.</p>
+<p>(방법1) 미분 부분이 0이 될 때까지 미분과 적분을 반복 시행한다.</p>
+<p><span class="math display">\[\int_{a}^{b}udv = (1)*(a) - (2)*(b) + (3)(c)...\rbrack_{a}^{b}\]</span></p>
+<p>(방법2)한 번만 미분하고 <span class="math inline">\(\int_{a}^{b}udv = (1)*(a) - \int_{a}^{b}(2)*(b)dx\)</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 55%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">미분 부분</td>
+<td style="text-align: center;">적분 부분</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(u\)</span> (1)</td>
+<td style="text-align: center;"><span class="math display">\[dv\]</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(u'\)</span> (2)</td>
+<td style="text-align: center;"><span class="math inline">\(\int dv\)</span> (a)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(u^{''}\)</span> (3)</td>
+<td style="text-align: center;"><span class="math inline">\(\int\int dv\)</span> (b)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">계속 반복</td>
+<td style="text-align: center;">계속 적분 (c)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0이 될 때까지</td>
+<td style="text-align: center;"><span class="math display">\[\int...\int dv\]</span></td>
+</tr>
+</tbody>
+</table>
+<p>+</p>
+<p>-</p>
+<p>+</p>
+<p>-</p>
+<p><span class="math inline">\(\int_{0}^{\infty}xe^{- x}dx\)</span> 표 적분하시오.</p>
+<p>EXAMPLE</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 55%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">미분 부분</td>
+<td style="text-align: center;">적분 부분</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math display">\[x\]</span></td>
+<td style="text-align: center;"><span class="math display">\[e^{- x}\]</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math display">\[- e^{- x}\]</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math display">\[e^{- x}\]</span></td>
+</tr>
+</tbody>
+</table>
+<p>+</p>
+<p>-</p>
+<p>(방법1) <span class="math inline">\(x( - e^{- x}) - e^{- x}\rbrack_{0}^{\infty} = 1\)</span></p>
+<p>(방법2) <span class="math inline">\(x( - e^{- x})\rbrack_{0}^{\infty} - \int_{0}^{\infty} - e^{- x} = 1\)</span>으로 계산한다.</p>
+<p><span class="math inline">\(\int_{1}^{2}ln(x)dx\)</span> 표 적분하시오.</p>
+<p>EXAMPLE</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 55%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">미분 부분</td>
+<td style="text-align: center;">적분 부분</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math display">\[ln(x)\]</span></td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math display">\[\frac{1}{x}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[x\]</span></td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\int_{1}^{2}ln(x)dx = ln(x)x\rbrack_{1}^{2} - \int_{0}^{1}1dx = 2ln(2) - ln(1) - x\rbrack_{0}^{1} = 0.386\]</span></p>
+<p>3적분 응용</p>
+<p>연속형 확률분포의 확률밀도함수</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 49%">
+<col style="width: 49%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">연속형</th>
+<th style="text-align: center;">이산형</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">확률변수 결과 값이 유한</td>
+<td style="text-align: center;">확률변수 결과 값이 무한</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><img src="media/image26.png" style="width:2.12486in;height:0.71599in" alt="pasted-image.png"></td>
+<td style="text-align: center;"><img src="media/image27.png" style="width:2.12486in;height:1.02816in" alt="pasted-image.png"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math display">\[f(x)\]</span></td>
+<td style="text-align: center;"><span class="math display">\[P(X = x)\]</span></td>
+</tr>
+</tbody>
+</table>
+<p>연속형 확률변수 X 의 확률밀도함수 f(x) 는 특정 구간에서 확률을 계산하는 데 사용됩니다. 이때 확률은 적분을 통해 구합니다:</p>
+<p><span class="math display">\[P(a \leq X \leq b) = \int_{a}^{b}f(x)dx\]</span></p>
+<p>f(x) 는 음수가 아니며, 전체 구간에서의 적분값은 항상 1이 됩니다:</p>
+<p><span class="math display">\[\int_{- \infty}^{\infty}f(x)dx = 1\]</span></p>
+<p>【예제】 정규분포 N(0, 1) 에서 <span class="math inline">\(P( - 1 \leq Z \leq 1) = \int_{- 1}^{1}\phi(z)dz\)</span> 이다. 여기서 <span class="math inline">\(\phi(z) = \frac{1}{\sqrt{2\pi}}e^{- z^{2}/2}\)</span>는 표준정규분포의 확률밀도함수입니다.</p>
+<p>누적확률분포함수 cumulative probability density fuction</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 49%">
+<col style="width: 49%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">연속형</th>
+<th style="text-align: left;">이산형</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math display">\[F(x) = \int_{- \infty}^{x}f(x)dx\]</span></td>
+<td style="text-align: left;"><span class="math display">\[P(X \leq x) = \overset{x}{\sum_{- \infty}}p(x)\]</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><img src="media/image28.png" style="width:2.12486in;height:1.31456in" alt="pasted-image.png"></td>
+<td style="text-align: left;"><img src="media/image29.png" style="width:2.12486in;height:1.37978in" alt="pasted-image.png"></td>
+</tr>
+</tbody>
+</table>
+<p>기대값</p>
+<p>연속형 확률변수 X 의 확률밀도함수 f(x)라 하면 기대값은 <span class="math inline">\(E(X) = \int xf(x)dx\)</span> 이다.</p>
+<p>적분과 백분위값</p>
+<p>백분위값 percentile은 확률분포에서 특정 비율의 누적 확률을 기준으로 하는 값입니다. P번째 백분위값은 확률변수 X의 값 <span class="math inline">\(X_{P}\)</span>로, 확률변수가 <span class="math inline">\(X_{P}\)</span>이하일 확률이 <span class="math inline">\(\frac{P}{100}\)</span>이 되는 값입니다.</p>
+<p><span class="math display">\[F(x_{P}) = \int_{- \infty}^{x_{P}}f(x)dx = \frac{P}{100}\]</span></p>
+<p><span class="math inline">\(f(x)\)</span>: 확률밀도함수(PDF)</p>
+<p><span class="math inline">\(F(x)\)</span>: 누적분포함수(CDF)</p>
+<p><span class="math inline">\(x_{P}\)</span>: <span class="math inline">\(P\)</span>번째 백분위값</p>
+<p>저자 정보</p>
+<p>1982. 성균관대학교 통계학 학사</p>
+<p>1985. 성균관대학교 통계학 석사</p>
+<p>1992. 미국 North Carolina State University 통계학 박사</p>
+<p>1993-1995. 전자통신연구원 선임연구원</p>
+<p>1995-2026. 한남대학교 통계학과 교수</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
