@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>수학의 기초 3. 벡터 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-a14e3238c51140e99ccc48519b6ed9ce.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">홈</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">강의노트</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../../notes/math/index.html">
+ <span class="dropdown-text">수학 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../notes/survey/index.html">
+ <span class="dropdown-text">조사 방법론</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../notes/inference/index.html">
+ <span class="dropdown-text">추론 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../notes/intro_stat/index.html">
+ <span class="dropdown-text">기초 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../notes/advance_stat/index.html">
+ <span class="dropdown-text">고급 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../notes/ml/index.html">
+ <span class="dropdown-text">머신러닝</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../notes/dl/index.html">
+ <span class="dropdown-text">딥러닝</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../python/analysis.html"> 
+<span class="menu-text">파이썬 분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../cards/news01.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">수학의 기초 3. 벡터</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-선형대수-개념" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-선형대수-개념"><span style="color:green">chapter 1. 선형대수 개념</span></h3>
+<section id="선형대수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="선형대수-정의">1. 선형대수 정의</h5>
+<p>선형대수(Linear Algebra)는 벡터 공간과 벡터 간의 관계를 탐구하며, 벡터와 행렬을 활용한 수학적 표현과 계산을 다루는 수학 분야이다. 주요 구성 요소로는 벡터, 행렬, 스칼라가 있으며, 핵심 개념으로는 선형 변환, 고유값과 고유벡터, 내적(inner product), 외적(cross product), 그리고 행렬 분해 등이 포함된다.</p>
+<p>통계학에서 선형대수는 데이터를 벡터와 행렬로 표현하여 복잡한 수치 계산을 단순화하고 효율적으로 수행할 수 있게 해 준다. 특히, 고차원 데이터의 계산 및 변환을 가능하게 하며, 이는 데이터 분석의 구조 이해와 차원 축소에 핵심적인 역할을 한다. 또한, 선형대수는 머신러닝과 통계 모델링의 기초를 이루며, 회귀 분석, 주성분 분석(PCA), 군집 분석 등 다양한 기법에서 필수적으로 활용된다.</p>
+</section>
+<section id="선형대수와-선형변환" class="level5">
+<h5 class="anchored" data-anchor-id="선형대수와-선형변환">2. 선형대수와 선형변환</h5>
+<p>선형대수는 선형적인 관계를 다루는 학문으로, 모든 연산과 변환이 선형성을 만족해야 한다. 따라서 일반적인 함수는 직접적으로 주요 개념으로 다루어지지 않지만, 선형 변환이라는 개념이 함수의 특수한 형태로 다뤄진다. 선형변환은 벡터 공간의 구조를 유지하며, 행렬로 표현될 수 있어 선형대수의 핵심 요소 중 하나로 자리 잡고 있다.</p>
+</section>
+<section id="함수-yfx" class="level5">
+<h5 class="anchored" data-anchor-id="함수-yfx">함수 <span class="math inline">\(y=f(x)\)</span></h5>
+<p>두 집합 사이의 관계로, 각 입력값(정의역 domain)에 대해 <u>정확히 하나의</u> 출력값(공역 range)을 대응시키는 규칙이다. 함수는 <span class="math inline"><em>f</em> : <em>X</em> → <em>Y</em></span>로 표기되며, <span class="math inline"><em>X</em></span>는 정의역, <span class="math inline"><em>Y</em></span>는 공역입니다. 함수값이 0인 <span class="math inline"><em>f</em>(<em>x</em>) = 0</span>를 방정식이라 하고 이를 만족하는 <span class="math inline"><em>x</em></span>를 방정식의 해(root, solution)라고 한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/함수3.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="선형함수" class="level5">
+<h5 class="anchored" data-anchor-id="선형함수">선형함수</h5>
+<p>선형함수는 입력 변수와 출력 변수 사이의 관계를 직선으로 나타내는 함수입니다. 일반적으로 다음과 같은 형태로 표현되며 다음 두 성질을 갖는다. <span class="math inline"><em>f</em>(<em>x</em>) = <em>a</em> + <em>b</em><em>x</em></span>, <span class="math inline"><em>a</em>:</span> 절편, <span class="math inline"><em>b</em>:</span> 기울기</p>
+<p>&nbsp; 가법성 additivity: <span class="math inline"><em>f</em>(<em>x</em> + <em>y</em>) = <em>f</em>(<em>x</em>) + <em>f</em>(<em>y</em>)</span></p>
+<p>&nbsp; 동차성 homogeniety: <span class="math inline"><em>f</em>(<em>c</em><em>x</em>) = <em>c</em><em>f</em>(<em>x</em>)</span>, <span class="math inline"><em>c</em></span>는 상수</p>
+</section>
+<section id="선형변환" class="level5">
+<h5 class="anchored" data-anchor-id="선형변환">선형변환</h5>
+<p>선형변환은 벡터 공간에서 벡터를 다른 벡터로 변환하는 함수의 특수한 형태이다. 이 변환은 <strong>선형성(linearity)</strong>이라는 두 가지 성질을 만족해야 한다. <span class="math inline"><span class="math inline">\(\underset{¯}{u},\underset{¯}{v}\)</span></span> 동일 차원의 벡터에 대하여 함수 <span class="math inline"><em>T</em></span>가 다음 조건을 만족하면 선형변환이다.</p>
+<p>&nbsp; 덧셈에 대한 선형성: <span class="math inline"><span class="math inline">\(T(\underset{¯}{u} +
+\underset{¯}{v}) = T(\underset{¯}{u}) + T(\underset{¯}{v})\)</span></span></p>
+<p>&nbsp; 스칼라 곱에 대한 선형성: <span class="math inline"><span class="math inline">\(T(c\underset{¯}{u}) =
+cT(\underset{¯}{u})\)</span></span> , <span class="math inline">$ = (</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/선형변환.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="chapter-2.-벡터" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-벡터"><span style="color:green">chapter 2. 벡터</span></h3>
+<section id="벡터정의" class="level5">
+<h5 class="anchored" data-anchor-id="벡터정의">1. 벡터정의</h5>
+<p>벡터는 정렬된 유한한 숫자 목록으로 일반적으로 정사각형 또는 곡선 괄호로 둘러싸인 수직 형태의 배열로 작성된다. 수평 배열의 행벡터와 구별하기 위하여 열벡터라고 하기도 한다.</p>
+<p><span class="math inline"><span class="math inline">\(\left( \begin{array}{r}
+1 \\
+- 2 \\
+0
+\end{array} \right)\)</span></span>, <span class="math inline"><span class="math inline">\(\left\lbrack
+\begin{array}{r}
+1 \\
+- 2 \\
+0
+\end{array} \right\rbrack\)</span></span></p>
+<p>벡터를 행으로 사용할 때는 쉼표로 구분되고 괄호로 둘러싸인 숫자로 쓴다. <span class="math inline"><span class="math inline">\(\left(
+\begin{array}{r}
+1, - 2,0
+\end{array} \right)\)</span></span></p>
+<p>배열의 값을 벡터의 원소 element 라 하고 원소의 개수를 벡터의 크기(차원 demension)라고 한다. 위 벡터는 크기가 3 이고 세 번째 원소는 0 이다. n 크기의 벡터는 n-벡터라고 불리고 1벡터는 숫자와 같은 것으로 간주한다. 즉, 우리는 1-벡터 [ 13 ]와 숫자 13을 구별하지 않으며 숫자는 스칼라 scalar 라 한다. 벡터의 각 원소는 스칼라이고 원소가 실수인 <span class="math inline"><em>a</em><sub><em>i</em></sub> ∈ <em>R</em><sup><em>n</em></sup></span> 벡터를 실수 벡터라 한다.</p>
+</section>
+<section id="벡터-기호" class="level5">
+<h5 class="anchored" data-anchor-id="벡터-기호">2. 벡터 기호</h5>
+<p>n-벡터를 나타내기 위해 <span class="math inline"><span class="math inline">\({\underset{¯}{a}}_{n}\)</span></span>(구별이 가능한 경우 알파벳 <span class="math inline"><em>a</em></span>를 벡터로 표현) 기호를 사용한다. <span class="math inline"><em>a</em><sub><em>n</em></sub></span>벡터 의 i-번째 요소는 <span class="math inline"><em>a</em><sub><em>i</em></sub></span>로 표시되며, 여기서 첨자 i는 벡터의 크기인 1에서 <span class="math inline"><em>n</em></span>까지 정의되는 정수 인덱스이다. 두 벡터 <span class="math inline"><em>a</em><sub><em>n</em></sub>, <em>b</em><sub><em>n</em></sub></span>가 동일하다는 것은 (1)크기(차수)도 <span class="math inline"><em>n</em></span> 동일하고 (2) 각 대응 원소가 동일 <span class="math inline"><em>a</em><sub><em>i</em></sub> = <em>b</em><sub><em>i</em></sub></span>함을 의미한다.</p>
+</section>
+<section id="특수한-벡터" class="level5">
+<h5 class="anchored" data-anchor-id="특수한-벡터">3, 특수한 벡터</h5>
+</section>
+<section id="영벡터-zero-vector" class="level5">
+<h5 class="anchored" data-anchor-id="영벡터-zero-vector">(1) 영벡터 zero vector</h5>
+<p>모든 원소가 0인 벡터이며 <span class="math inline">0<sub><em>n</em></sub></span>으로 표현된다. 일반적으로 모든 0 벡터는 0으로 표시되며, 숫자 0을 나타내는데 사용되는 것과 동일한 기호이다. 다른 크기의 제로 벡터를 나타내기 위해 모두 같은 기호 0을 사용하므로 기호 0은 문맥에 따라 다른 것을 의미할 수 있기 때문에 컴퓨터에서는 이를 과부하라 한다.</p>
+</section>
+<section id="단위벡터-unit-vector" class="level5">
+<h5 class="anchored" data-anchor-id="단위벡터-unit-vector">(2) 단위벡터 unit vector</h5>
+<p>(표준) 단위 벡터는 1인 하나의 원소를 제외한 모든 요소가 0과 같은 벡터이다. i-번째 단위 벡터(n 크기)는 i-번째 원소만 1을 가진<img src="media/image5.png" style="width:1.79646in;height:1.42013in" alt="붙여넣은 동영상.png"> 단위 벡터이며, <span class="math inline"><em>e</em><sub><em>i</em></sub></span>로 표현한다. 이렇게 되면 크기를 나타내는 첨자와 1인 원소 위치를 나타내는 첨자가 구별이 되지 않는 모호성을 갖는다.</p>
+</section>
+<section id="일벡터-ones-vector" class="level5">
+<h5 class="anchored" data-anchor-id="일벡터-ones-vector">(3) 일벡터 ones vector</h5>
+<p>모든 원소가 1인 n-벡터이며 <span class="math inline">1<sub><em>n</em></sub></span>로 표현한다. 우리는 또한 벡터의 크기가 문맥에서 결정될 수 있다면 1을 쓴다.</p>
+</section>
+<section id="벡터-개념" class="level5">
+<h5 class="anchored" data-anchor-id="벡터-개념">4. 벡터 개념</h5>
+</section>
+<section id="위치-location" class="level5">
+<h5 class="anchored" data-anchor-id="위치-location">(1) 위치 location</h5>
+<p>2차원 공간, 즉 평면의 위치를 나타내는 데 사용될 수 있다. 3-벡터는 3차원(3-D) 공간에서 어떤 지점의 위치나 위치를 나타내는 데 사용된다. 벡터의 원소는 위치의 좌표를 제공한다. 벡터는 주어진 시간에 평면이나 3차원 공간에서 움직이는 지점의 속도나 가속도를 나타내는 데 사용될 수 있다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/벡터개념위치.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+</section>
+<section id="희소성" class="level5">
+<h5 class="anchored" data-anchor-id="희소성">(2) 희소성</h5>
+<p>많은 원소가 0이면 희소하다고 한다. 그것의 희소성 패턴은 0이 아닌 항목의 인덱스 집합이다. <span class="math inline"><em>n</em></span>-벡터 <span class="math inline"><em>a</em><sub><em>n</em></sub></span>의 0이 아닌 항목의 수는 <span class="math inline"><em>n</em><em>n</em><em>z</em>(<em>a</em><sub><em>n</em></sub>)</span>로 표시한다다. 단위벡터는 0이 아닌 항목이 하나만 있기 있고 0 벡터는 0이 아닌 항목이 없기 때문에 희소한 벡터이다.</p>
+</section>
+<section id="이미지" class="level5">
+<h5 class="anchored" data-anchor-id="이미지">(3) 이미지</h5>
+<p>3차원 벡터는 빨간색, 녹색 및 파란색(R-G-B) 강도 값(0에서 1 사이)을 제공하는 항목을 통해 색상을 나타낸다. 벡터(0,0,0)는 검은색을 나타내고, 벡터(0, 1, 0)는 밝은 순수한 녹색을 나타내며, 벡터(1, 0.5, 0.5)는 분홍색을 나타낸다.</p>
+</section>
+</section>
+<section id="chapter-3.-벡터-연산과-크기" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-벡터-연산과-크기"><span style="color:green">chapter 3. 벡터 연산과 크기 </span></h3>
+<section id="벡터-연산" class="level5">
+<h5 class="anchored" data-anchor-id="벡터-연산">1. 벡터 연산</h5>
+</section>
+<section id="벡터-합" class="level5">
+<h5 class="anchored" data-anchor-id="벡터-합">(1) 벡터 합</h5>
+<p>두 벡터를 합을 구한다는 것은 (1) 차수가 동일한 두 벡터의 (2) 동일 위치의 원소를 합하여 하나의 벡터를 계산한다는 것을 의미한다. 차도 동일하다.</p>
+<p><span class="math inline"><span class="math inline">\(\left\lbrack \begin{array}{r}
+1 \\
+- 2 \\
+0
+\end{array} \right\rbrack + \left\lbrack \begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = \left\lbrack \begin{array}{r}
+2 \\
+0 \\
+3
+\end{array} \right\rbrack\)</span></span>, <span class="math inline"><span class="math inline">\(\left\lbrack \begin{array}{r}
+1 \\
+- 2 \\
+0
+\end{array} \right\rbrack - \left\lbrack \begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = \left\lbrack \begin{array}{r}
+0 \\
+- 4 \\
+- 3
+\end{array} \right\rbrack\)</span></span></p>
+</section>
+<section id="성질" class="level5">
+<h5 class="anchored" data-anchor-id="성질">성질</h5>
+<ul>
+<li>차수가 동일한 벡터 <span class="math inline"><em>a</em>, <em>b</em>, <em>c</em></span>에 대하여 다음이 성립한다.</li>
+<li>교환법칙 : <span class="math inline"><em>a</em> + <em>b</em> = <em>b</em> + <em>a</em></span></li>
+<li>교환법칙 : <span class="math inline">(<em>a</em> + <em>b</em>) + <em>c</em> = <em>a</em> + (<em>b</em> + <em>c</em>)</span> 영벡터를 더하거나 빼도 영향을 받지 않는다. <span class="math inline"><em>a</em> ± 0 = <em>a</em></span> 벡터에서 자체 벡터를 빼면 영벡터가 된다. <span class="math inline"><em>a</em> − <em>a</em> = 0</span></li>
+</ul>
+</section>
+<section id="스칼라-벡터-곱" class="level5">
+<h5 class="anchored" data-anchor-id="스칼라-벡터-곱">(2) 스칼라-벡터 곱</h5>
+<p>벡터에 스칼라(즉, 숫자)를 곱하는 스칼라-벡터 곱셈은 벡터의 모든 요소에 스칼라를 곱하여 수행한다. 일반적으로 스칼라를 왼쪽, 벡터를 오른쪽에 적지만 순서를 바꾸어 사용해도 되고 계산 결과는 동일하다.</p>
+<p><span class="math inline"><span class="math inline">\(a = \left\lbrack \begin{array}{r}
+1 \\
+- 2 \\
+0
+\end{array} \right\rbrack\)</span></span>이면 <span class="math inline"><span class="math inline">\(3a = a3
+= \left\lbrack \begin{array}{r}
+3 \\
+- 6 \\
+0
+\end{array} \right\rbrack\)</span></span></p>
+</section>
+<section id="성질-1" class="level5">
+<h5 class="anchored" data-anchor-id="성질-1">성질</h5>
+<p>벡터 <span class="math inline"><em>a</em></span>, 스칼라 <span class="math inline"><em>c</em>, <em>k</em></span>에 대하여 다음이 성립한다. 교환법칙 : <span class="math inline"><em>k</em><em>a</em> = <em>a</em><em>k</em></span> 배분법칙 : <span class="math inline">(<em>c</em> + <em>k</em>)<em>a</em> = <em>c</em><em>a</em> + <em>k</em><em>a</em></span></p>
+</section>
+<section id="선형-결합-linear-combination" class="level5">
+<h5 class="anchored" data-anchor-id="선형-결합-linear-combination">(3) 선형 결합 linear combination</h5>
+<p>차수 <span class="math inline"><em>n</em></span>-벡터 <span class="math inline"><em>a</em><sub>1</sub>, <em>a</em><sub>2</sub>, …, <em>a</em><sub><em>m</em></sub></span>, 스칼라 <span class="math inline"><em>k</em><sub>1</sub>, <em>k</em><sub>2</sub>, …, <em>k</em><sub><em>m</em></sub></span>에 대하여 다음 <span class="math inline"><em>n</em></span>-벡터를 벡터 <span class="math inline"><em>a</em><sub>1</sub>, <em>a</em><sub>2</sub>, …, <em>a</em><sub><em>m</em></sub></span>의 선형결합이라 하고 스칼라 <span class="math inline"><em>k</em><sub>1</sub>, <em>k</em><sub>2</sub>, …, <em>k</em><sub><em>m</em></sub></span>는 선형결합의 계수라 한다.</p>
+<ul>
+<li><p><span class="math display"><em>k</em><sub>1</sub><em>a</em><sub>1</sub> + <em>k</em><sub>2</sub><em>a</em><sub>2</sub> + … + <em>k</em><sub><em>m</em></sub><em>a</em><sub><em>m</em></sub></span></p></li>
+<li><p><span class="math inline"><em>k</em><sub>1</sub> = <em>k</em><sub>2</sub> = … = <em>k</em><sub><em>m</em></sub> = 1</span>이면, 선형결합은 벡터 합이다. <span class="math inline"><span class="math inline">\(k_{1} = k_{2} = ... = k_{m} =
+\frac{1}{m}\)</span></span>이면, 선형결합은 벡터 평균이다.</p></li>
+<li><p><span class="math inline"><em>k</em><sub>1</sub> + <em>k</em><sub>2</sub> + … + <em>k</em><sub><em>m</em></sub> = 1</span>이면, 선형결합은 affine 결합이라 하고 모든 계수가 양수인 경우 선형결합을 가중평균이라 한다.</p></li>
+</ul>
+</section>
+<section id="내적-inner-product" class="level5">
+<h5 class="anchored" data-anchor-id="내적-inner-product">(4) 내적 inner product</h5>
+두 벡터 간의 관계를 정의하고 벡터의 길이와 각도 등의 개념을 도입하는 중요한 연산이다. 차수(<span class="math inline"><em>m</em></span>)가 동일한 두 벡터 (<span class="math inline"><em>u</em>, <em>v</em></span>)의 내적 곱은 다음과 같이 정의하고 결과는 <u>스칼라</u>이다. <span class="math display"><span class="math display">\[u^{T}v = \lbrack
+u_{1},u_{2},...,u_{m}\rbrack\left\lbrack \begin{array}{r}
+v_{1} \\
+v_{2} \\
+... \\
+v_{m}
+\end{array} \right\rbrack = u_{1}v_{1} + u_{2}v_{2} + ... + u_{m}v_{m} =
+\overset{m}{\sum_{i = 1}}u_{i}v_{i}\]</span></span> 단, <span class="math inline"><em>u</em><sup><em>T</em></sup></span>는 <span class="math inline"><em>u</em></span>의 전치 transpose라 하고 열벡터를 행벡터로 변환한 것이다. 【예제】
+<table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td>
+<span class="math display"><span class="math display">\[\lbrack 1,3,5\rbrack^{T}\left\lbrack
+\begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack = (1)(0) + (3)( - 1) + (5)(1) =
+2\]</span></span>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="내적-성질" class="level5">
+<h5 class="anchored" data-anchor-id="내적-성질">내적 성질</h5>
+<ul>
+<li><p>unit 벡터 : <span class="math inline"><em>e</em><sub><em>i</em></sub><em>v</em> = <em>v</em><sub><em>i</em></sub></span></p></li>
+<li><p>벡터 합 : <span class="math inline"><span class="math inline">\(1_{m}^{T}v = \overset{m}{\sum_{i
+= 1}}v_{i}\)</span></span></p></li>
+<li><p>벡터 평균 : <span class="math inline"><span class="math inline">\(avg(v) = (1/n)1_{m}^{T}v =
+(1/n)\overset{m}{\sum_{i = 1}}v_{i}\)</span></span></p></li>
+<li><p>벡터 제곱합 : <span class="math inline"><span class="math inline">\(v^{T}v = v_{1}^{2} +
+v_{2}^{2} + ... + v_{m}^{2} = \overset{m}{\sum_{i =
+1}}v_{i}^{2}\)</span></span></p></li>
+</ul>
+</section>
+<section id="cauchyschwarz-inequality" class="level5">
+<h5 class="anchored" data-anchor-id="cauchyschwarz-inequality">Cauchy–Schwarz inequality</h5>
+<p>차수 동일한 두 벡터의 내적 inner product에 대하여 다음이 성립한다. <span class="math display"> ∥ <em>a</em><sup><em>T</em></sup><em>b</em> ∥  ≤  ∥ <em>a</em> ∥  ∥ <em>b</em>∥</span> <span class="math display"><span class="math display">\[|\overset{n}{\sum_{i}}a_{i}b_{i}| \leq
+(\sum a_{i}^{2})^{\frac{1}{2}}(\sum
+b_{i}^{2})^{\frac{1}{2}}\]</span></span></p>
+</section>
+<section id="외적-cross-product" class="level5">
+<h5 class="anchored" data-anchor-id="외적-cross-product">(5) 외적 cross product</h5>
+<p>주로 3차원 공간에서 두 벡터로부터 새로운 벡터를 생성하는 연산입니다. 이 연산의 결과는 두 벡터에 모두 수직인 벡터이며, 크기는 두 벡터가 이루는 평행사변형의 면적에 해당합니다.</p>
+</section>
+<section id="외적-정의" class="level5">
+<h5 class="anchored" data-anchor-id="외적-정의">외적 정의</h5>
+<p>벡터 <span class="math inline"><span class="math inline">\(\underset{¯}{a} =
+(a_{1},a_{2},a_{3})\)</span></span>와 벡터 <span class="math inline"><span class="math inline">\(\underset{¯}{b} = (b_{1},b_{2},b_{3})\)</span></span>의 외적 <span class="math inline"><span class="math inline">\(\underset{¯}{a}
+\times \underset{¯}{b}\)</span></span>는 다음과 같이 계산한다.</p>
+<ul>
+<li><p><span class="math inline"><em>x</em></span> 성분: <span class="math inline"><em>a</em><sub>2</sub><em>b</em><sub>3</sub> − <em>a</em><sub>3</sub><em>b</em><sub>2</sub></span></p></li>
+<li><p><span class="math inline"><em>y</em></span> 성분: <span class="math inline"><em>a</em><sub>3</sub><em>b</em><sub>1</sub> − <em>a</em><sub>1</sub><em>b</em><sub>3</sub></span></p></li>
+<li><p><span class="math inline"><em>z</em></span> 성분: <span class="math inline"><em>a</em><sub>1</sub><em>b</em><sub>2</sub> − <em>a</em><sub>2</sub><em>b</em><sub>1</sub></span></p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/외적.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>【예제】 벡터 <span class="math inline"><span class="math inline">\(\underset{¯}{a} =
+(2,3,4)\)</span></span>와 벡터 <span class="math inline"><span class="math inline">\(\underset{¯}{b} =
+(5,6,7)\)</span></span>의 외적은 <span class="math inline"><span class="math inline">\(\underset{¯}{c} =
+\underset{¯}{a} \times \underset{¯}{b} = ( - 3,6, - 3)\)</span></span> 이다. 외적은 벡터 <span class="math inline"><span class="math inline">\(\underset{¯}{a},\underset{¯}{b}\)</span></span>와 수직(<span class="math inline"><span class="math inline">\({\underset{¯}{c}}^{T}\underset{¯}{a} =
+0\)</span></span>, <span class="math inline"><span class="math inline">\({\underset{¯}{c}}^{T}\underset{¯}{b} =
+0\)</span></span>)이며 외적의 크기(놈 norm)는 두 벡터가 이루는 평행사면형 면적이다.</p>
+</section>
+<section id="선형함수-1" class="level5">
+<h5 class="anchored" data-anchor-id="선형함수-1">2. 선형함수</h5>
+</section>
+<section id="선형함수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="선형함수-정의">선형함수 정의</h5>
+<p><span class="math inline"><em>f</em> : <em>R</em><sup><em>n</em></sup> → <em>R</em></span>는 크기 n-벡터를 실수(스칼라)로 매핑하는 함수이다. 함수 <span class="math inline"><em>f</em>(<em>x</em>)</span>의 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub></span>은 함수 <span class="math inline"><em>f</em></span>의 인수 argument라 하고 결과 값 스칼라는 함수 값이다. <span class="math inline"><em>f</em>(<em>x</em>) = <em>f</em>(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>)</span></p>
+<p>【예제】 <span class="math display">\[
+f: \mathbb{R}^4 \to \mathbb{R}, \quad f(x) = x_1 - x_2 + x_4^2
+\]</span></p>
+<p>차수 n-벡터 <span class="math inline"><em>a</em>, <em>x</em></span>에 대하여 내적 함수 <span class="math inline"><em>f</em>(<em>x</em>) = <em>a</em><sup><em>T</em></sup><em>x</em> = <em>s</em><em>c</em><em>a</em><em>l</em><em>a</em><em>r</em></span>는 선형함수일 때 다음이 성립한다. 단, <span class="math inline"><em>α</em>, <em>β</em></span>는 스칼라, <span class="math inline">(<em>x</em>, <em>y</em>)</span>는 n-벡터이다. <span class="math inline"><em>f</em>(<em>α</em><em>x</em> + <em>β</em><em>y</em>) = <em>α</em><em>f</em>(<em>x</em>) + <em>β</em><em>f</em>(<em>y</em>)</span></p>
+</section>
+<section id="선형함수-조건" class="level5">
+<h5 class="anchored" data-anchor-id="선형함수-조건">선형함수 조건</h5>
+<p>다음 조건을 만족하는 <span class="math inline"><em>f</em> : <em>R</em><sup><em>n</em></sup> → <em>R</em></span> 는 선형함수이다. 단, <span class="math inline"><em>α</em></span>는 스칼라, <span class="math inline">(<em>x</em>, <em>y</em>)</span>는 n-벡터이다.</p>
+<ul>
+<li>Homogeniety : <span class="math inline"><em>f</em>(<em>α</em><em>x</em>) = <em>α</em><em>f</em>(<em>x</em>)</span></li>
+<li>Additivity : <span class="math inline"><em>f</em>(<em>x</em> + <em>y</em>) = <em>f</em>(<em>x</em>) + <em>f</em>(<em>y</em>)</span></li>
+</ul>
+</section>
+<section id="절편-affine-함수" class="level5">
+<h5 class="anchored" data-anchor-id="절편-affine-함수">(1) 절편 Affine 함수</h5>
+<p>선형 함수에 상수 항을 추가한 형태의 함수이다. 이는 선형 변환과 평행 이동을 결합한 함수로, 다음과 같은 수식으로 표현된다. n-벡터, <span class="math inline"><em>x</em></span>에 대하여 다음 <span class="math inline"><em>f</em></span>는 절편 함수이다. 단, <span class="math inline"><em>a</em></span>는 n-벡터, <span class="math inline"><em>k</em></span>는 스칼라이다. <span class="math inline"><em>f</em>(<em>a</em><sup><em>T</em></sup><em>x</em> + <em>k</em>) = <em>a</em><sup><em>T</em></sup><em>f</em>(<em>x</em>) + <em>k</em></span></p>
+【예제】
+<table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td>
+<span class="math inline"><em>f</em>(<em>x</em>) = 7 − 2<em>x</em><sub>1</sub> + 3<em>x</em><sub>2</sub> − <em>x</em><sub>3</sub></span>, <span class="math inline"><span class="math inline">\(k = 7,a = \left\lbrack \begin{array}{r}
+- 2 \\
+3 \\
+- 1
+\end{array} \right\rbrack\)</span></span>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="선형함수의-내적-표현" class="level5">
+<h5 class="anchored" data-anchor-id="선형함수의-내적-표현">(2) 선형함수의 내적 표현</h5>
+<p><span class="math inline"><em>e</em><sub><em>i</em></sub></span> 단위벡터, <span class="math inline"><em>x</em><sub><em>n</em></sub></span> 차수 n-벡터, <span class="math inline"><em>f</em></span> 선형함수라 하면, <span class="math display"><span class="math display">\[\begin{matrix}
+f(x) = f(x_{1}e_{1} + x_{2}e_{2} + ... + x_{n}e_{n}) \\
+= x_{1}f(e_{1}) + x_{2}f(e_{2}) + ... + x_{n}f(e_{n}) \\
+= a^{T}x,wherea^{T} = \lbrack
+f(e_{1}),f(e_{2}),...,f(e_{n})\rbrack
+\end{matrix}\]</span></span></p>
+</section>
+<section id="사례-sag-처짐-단위-mm" class="level5">
+<h5 class="anchored" data-anchor-id="사례-sag-처짐-단위-mm">(3) 사례 : sag 처짐 (단위: mm)</h5>
+<p>하중벡터 <span class="math inline"><span class="math inline">\(w = \left( \begin{array}{r}
+w_{1} \\
+w_{2} \\
+w_{3}
+\end{array} \right)\)</span></span>(단위:톤), 변형 compliance 민감도 벡터 <span class="math inline"><span class="math inline">\(c = \left( \begin{array}{r}
+c_{1} \\
+c_{2} \\
+c_{3}
+\end{array} \right)\)</span></span>(단위:mm/톤)이라면 교량 처짐 sag은 <span class="math inline"><em>s</em> = <em>c</em><sup><em>T</em></sup><em>w</em></span> (하중 가중합)이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/하중.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+</section>
+<section id="테일러-근사-taylor-함수" class="level5">
+<h5 class="anchored" data-anchor-id="테일러-근사-taylor-함수">(4) 테일러 근사 Taylor 함수</h5>
+<p><span class="math inline"><em>f</em> : <em>R</em><sup><em>n</em></sup> → <em>R</em></span>이 1차 미분이 가능하다고 하면 <span class="math inline"><em>n</em></span>-벡터 함수 <span class="math inline"><em>f</em>(<em>x</em>)</span>의 근사값은 다음과 같이 구한다. 이를 1차 테일러 근사라 한다. 단, n-벡터 <span class="math inline"><em>z</em></span>는 n-벡터 <span class="math inline"><em>x</em></span>와 가까운 값이다. <span class="math display"><span class="math display">\[\widehat{f}(x) = f(z) + \frac{\partial
+f}{\partial x_{1}}(z)(x_{1} - z_{1}) + ... + \frac{\partial f}{\partial
+x_{n}}(z)(x_{n} - z_{n})\]</span></span></p>
+【예제】
+<table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td>
+함수 <span class="math inline"><em>f</em> : <em>R</em><sup>2</sup> → <em>R</em></span>을 <span class="math inline"><em>f</em>(<em>x</em>) = <em>x</em><sub>1</sub> + <em>e</em><em>x</em><em>p</em>(<em>x</em><sub>2</sub> − <em>x</em><sub>1</sub>)</span>라 하자. 이 함수는 선형함수는 아니다. 이를 선형함수로 근사하는 것을 테일러 근사라 한다. <span class="math inline"><em>z</em> = (1, 2)</span>라 하면, <span class="math display"><span class="math display">\[\triangledown f(z) = \left\lbrack
+\begin{array}{r}
+1 - exp(z_{2} - z_{1}) \\
+exp(z_{2} - z_{1})
+\end{array} \right\rbrack|_{z_{1} = 1,z_{2} = 2} = ( -
+1.72,2.72)\]</span></span> 그러므로 <span class="math inline"><em>z</em> = (1, 2)</span>에서 <span class="math inline"><em>f</em>(<em>x</em>)</span>의 테일러 근사값은 <span class="math inline"><span class="math inline">\(\widehat{f}(x) = 3.718 + \left\lbrack
+\begin{array}{r}
+- 1.72 \\
+2.72
+\end{array} \right\rbrack^{T}(\left\lbrack \begin{array}{r}
+x_{1} \\
+x_{2}
+\end{array} \right\rbrack - \left\lbrack \begin{array}{r}
+1 \\
+2
+\end{array} \right\rbrack)\)</span></span>이다.
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="회귀모형" class="level5">
+<h5 class="anchored" data-anchor-id="회귀모형">(5) 회귀모형</h5>
+<p>차원 2-예측(설명, 독립) 벡터 <span class="math inline"><span class="math inline">\(x =
+\left\lbrack \begin{array}{r}
+x_{1} \\
+x_{2}
+\end{array} \right\rbrack\)</span></span>, 회귀계수 벡터 <span class="math inline"><span class="math inline">\(b = \left\lbrack \begin{array}{r}
+b_{1} \\
+b_{2}
+\end{array} \right\rbrack\)</span></span>, 그리고 <span class="math inline"><em>a</em></span>을 절편 스칼라라 하면 회귀모형은 다음과 같다. <span class="math inline"><span class="math inline">\(\widehat{y} = \left\lbrack
+\begin{array}{r}
+1 \\
+x
+\end{array} \right\rbrack^{T}\left\lbrack \begin{array}{r}
+a \\
+b
+\end{array} \right\rbrack = {\overset{˜}{x}}^{T}\overset{˜}{b}\)</span></span> OLS 추정치 : <span class="math inline"><span class="math inline">\(\widehat{\overset{˜}{b}} =
+({\overset{˜}{x}}^{T}\overset{˜}{x})^{-
+1}{\overset{˜}{x}}^{T}y\)</span></span></p>
+</section>
+<section id="벡터놈-norm" class="level5">
+<h5 class="anchored" data-anchor-id="벡터놈-norm">3. 벡터놈 norm</h5>
+</section>
+<section id="정의" class="level5">
+<h5 class="anchored" data-anchor-id="정의">(1) 정의</h5>
+<p>벡터의 유클리디안 놈, <span class="math inline"> ∥ <em>x</em>∥</span>은 벡터의 크기에 대한 척도로 다음과 같이 구한다. 놈은 벡터의 원점에서의 거리이다. <span class="math display"><span class="math display">\[\parallel x \parallel = \sqrt{x_{1}^{2}
++ x_{2}^{2} + ... + x_{n}^{2}} = \sqrt{x^{T}x}\]</span></span></p>
+【예제】
+<table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td>
+<span class="math inline"><span class="math inline">\(\parallel \left\lbrack \begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack \parallel = \sqrt{2}\)</span></span>, <span class="math inline"><span class="math inline">\(\parallel \left\lbrack \begin{array}{r}
+- 1 \\
+2
+\end{array} \right\rbrack \parallel = \sqrt{5}\)</span></span>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="성질-2" class="level5">
+<h5 class="anchored" data-anchor-id="성질-2">성질</h5>
+<ul>
+<li><p>비음수 동차성: <span class="math inline"> ∥ <em>β</em><em>x</em> ∥  = |<em>β</em>| ∥ <em>x</em>∥</span>, where <span class="math inline"><em>β</em></span>는 스칼라</p></li>
+<li><p>삼각 부등식: <span class="math inline"> ∥ <em>x</em> + <em>y</em> ∥  ≤  ∥ <em>x</em> ∥ + ∥ <em>y</em>∥</span></p></li>
+<li><p>비음수: <span class="math inline"> ∥ <em>x</em> ∥  ≥ 0</span></p></li>
+</ul>
+</section>
+<section id="놈의-종류" class="level5">
+<h5 class="anchored" data-anchor-id="놈의-종류">(2) 놈의 종류</h5>
+<ul>
+<li>L1 norm : <span class="math inline"><span class="math inline">\(L_{1} =
+\overset{n}{\sum_{i}}|x_{i}|\)</span></span> 절대값의 합으로 맨하튼 Manhattan&nbsp;놈이라고도 한다. 지도의 거리 측정에 사용된다.</li>
+<li>L2 norm : <span class="math inline"><span class="math inline">\(L_{2} =
+(\overset{n}{\sum_{i}}x_{i}^{2})^{\frac{1}{2}}\)</span></span> 제곱합의 제곱근으로 유클리디안 놈이라 한다. 통계학에서 가장 많이 사용된다. 회귀계수 추정치를 구하는 최소제곱추정치 구할 때 사용된다.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/놈.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#행렬 정의</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>A<span class="op">=</span>np.array([[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>], [<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>],[<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>]])</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#L1 norm Mahattan</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>la.norm(A,axis<span class="op">=</span><span class="dv">1</span>,<span class="bu">ord</span><span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>【결과】 array([ 6., 16., 27.])</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#L2 norm Euclidean</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>la.norm(A,axis<span class="op">=</span><span class="dv">1</span>,<span class="bu">ord</span><span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>【결과】 array([ 3.74165739, 9.48683298, 15.65247584])</p>
+</section>
+<section id="평균-제곱근-rms-root-mean-square-value" class="level5">
+<h5 class="anchored" data-anchor-id="평균-제곱근-rms-root-mean-square-value">(3) 평균 제곱근 RMS root mean square value</h5>
+<p>데이터 크기를 정량화하는데 사용되며 데이터의 평균적인 크기를 나타낸다. <span class="math inline"><span class="math inline">\(rms(x) = \frac{\parallel x
+\parallel}{\sqrt{n}} = \sqrt{\frac{1}{n}\sum x_{i}^{2}}\)</span></span></p>
+</section>
+<section id="두-벡터의-합의-놈" class="level5">
+<h5 class="anchored" data-anchor-id="두-벡터의-합의-놈">(4) 두 벡터의 합의 놈</h5>
+<p><span class="math display"><span class="math display">\[\parallel x + y \parallel =
+\sqrt{\parallel x \parallel^{2} + 2x^{T}y + \parallel y
+\parallel^{2}}\]</span></span></p>
+</section>
+<section id="chebyshev-inequality" class="level5">
+<h5 class="anchored" data-anchor-id="chebyshev-inequality">(5) Chebyshev inequality</h5>
+<p>차수 n-벡터 <span class="math inline"><em>x</em></span>, <span class="math inline"><em>x</em><sub><em>i</em></sub><sup>2</sup> ≥ <em>a</em><sup>2</sup></span>을 만족하는 원소 개수를 <span class="math inline"><em>k</em></span>라 하면, <span class="math inline"> ∥ <em>x</em>∥<sup>2</sup> = <em>x</em><sub>1</sub><sup>2</sup> + … + <em>x</em><sub>2</sub><sup>2</sup> ≥ <em>k</em><em>a</em><sup>2</sup></span>이다. <span class="math inline"><em>k</em> ≤ <em>n</em></span>이므로 <span class="math inline"><span class="math inline">\(n \leq \frac{\parallel x
+\parallel}{a^{2}}\)</span></span>이다. 즉, 벡터의 어떠한 원소도 그 벡터의 놈보다크지 않다.</p>
+<p><span class="math inline"><span class="math inline">\(\frac{k}{n} \leq
+(\frac{rms(x)}{a})^{2}\)</span></span>. 왼쪽 항은 벡터의 성분 중 절대값이 최소한 <span class="math inline"><em>a</em></span>이상인 성분의 비율을 나타낸다. 오른쪽 항은 <span class="math inline"><em>a</em></span>와 <span class="math inline"><em>r</em><em>m</em><em>s</em>(<em>x</em>)</span>의 비율의 제곱에 대한 역수이다. 예를 들어, 벡터의 성분 중 1/25 = 4% 이상은 RMS 값의 5배를 초과할 수 없다는 것을 의미한다.</p>
+</section>
+</section>
+<section id="chapter-4.-벡터간-거리" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-4.-벡터간-거리"><span style="color:green">chapter 4. 벡터간 거리 </span></h3>
+<section id="유클리디안-거리" class="level5">
+<h5 class="anchored" data-anchor-id="유클리디안-거리">1. 유클리디안 거리</h5>
+</section>
+<section id="정의-1" class="level5">
+<h5 class="anchored" data-anchor-id="정의-1">(1) 정의</h5>
+<p>차수가 동일한 두 벡터(<span class="math inline"><em>a</em>, <em>b</em></span>)의 놈을 유클리디안 거리로 정의한다. <span class="math display"><em>d</em><em>i</em><em>s</em><em>t</em>(<em>a</em>, <em>b</em>) =  ∥ <em>a</em> − <em>b</em> ∥  =  ∥ <em>b</em> − <em>a</em>∥</span> <span class="math display"><span class="math display">\[||a - b|| = \sqrt{(a_{1} - b_{1})^{2} +
+(a_{2} - b_{2})^{2} + ... + (a_{n} - b_{n})^{2}}\]</span></span> 두 벡터의 Root Mean Square 편차 = <span class="math inline"><span class="math inline">\(\frac{\parallel x - y
+\parallel}{\sqrt{n}}\)</span></span></p>
+【예제】
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#행렬 정의</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>a<span class="op">=</span>np.array([[<span class="dv">0</span>],[<span class="op">-</span><span class="dv">1</span>],[<span class="dv">1</span>]])</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>b<span class="op">=</span>np.array([[<span class="dv">1</span>],[<span class="op">-</span><span class="dv">2</span>],[<span class="dv">1</span>]])</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>c<span class="op">=</span>np.array([[<span class="dv">1</span>],[<span class="dv">0</span>],[<span class="dv">3</span>]])</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#거리 계산</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>np.linalg.norm(a<span class="op">-</span>b),np.linalg.norm(b<span class="op">-</span>c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div><p>【결과】 (np.float64(1.4142135623730951), np.float64(2.8284271247461903))</p><section id="활용" class="level5">
+<h5 class="anchored" data-anchor-id="활용">(2) 활용</h5>
+<ul>
+<li><p>feature distance: <span class="math inline"> ∥ <em>x</em> − <em>y</em>∥</span> 차수가 동일한 두 벡터의 거리를 개체의 유사성 척도로 사용한다.</p></li>
+<li><p>Nearest neighbor: <span class="math inline"> ∥ <em>x</em> − <em>z</em><sub><em>i</em></sub>∥</span> 두 개체 간의 거리를 이용하여 유사한 개체를 군집으로 묶는다. k-means 알고리즘</p></li>
+<li><p>RMS prediction error: <span class="math inline"><em>r</em><em>m</em><em>s</em>(<em>y</em> − <em>ŷ</em>)</span> 관측치와 예측치의 거리를 예측의 정확도 척도로 사용한다.</p>
+</li>
+
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 감성분석</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 준비</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> [<span class="st">"I love this product"</span>, <span class="st">"This is terrible"</span>, <span class="st">"Absolutely fantastic"</span>, <span class="st">"Not good at all"</span>]</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>]  <span class="co"># 1: 긍정, 0: 부정</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># TF-IDF 벡터화</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>vectorizer <span class="op">=</span> TfidfVectorizer()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> vectorizer.fit_transform(texts)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># KNN 모델</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>knn <span class="op">=</span> KNeighborsClassifier(n_neighbors<span class="op">=</span><span class="dv">1</span>, metric<span class="op">=</span><span class="st">'euclidean'</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>knn.fit(X, labels)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 새로운 리뷰 분류</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>new_text <span class="op">=</span> [<span class="st">"I hate this product"</span>]</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>new_vector <span class="op">=</span> vectorizer.transform(new_text)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>prediction <span class="op">=</span> knn.predict(new_vector)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Prediction: </span><span class="sc">{</span><span class="st">'Positive'</span> <span class="cf">if</span> prediction[<span class="dv">0</span>] <span class="op">==</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">'Negative'</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>【결과】 Prediction: Positive</p>
+</section><section id="삼각-부등식" class="level5">
+<h5 class="anchored" data-anchor-id="삼각-부등식">(3) 삼각 부등식</h5>
+<p>차수가 동일한 n벡터 <span class="math inline"><em>a</em>, <em>b</em>, <em>c</em></span>에 대하여 다음이 발생한다.</p>
+</section><section id="triangle-부등식" class="level5">
+<h5 class="anchored" data-anchor-id="triangle-부등식">(4) triangle 부등식</h5>
+<p><span class="math inline"> ∥ <em>a</em> + <em>b</em>∥<sup>2</sup> ≤ ( ∥ <em>a</em> ∥ + ∥ <em>b</em> ∥ )<sup>2</sup></span></p>
+</section><section id="맨해튼-거리" class="level5">
+<h5 class="anchored" data-anchor-id="맨해튼-거리">(5) 맨해튼 거리</h5>
+<p><span class="math display"><span class="math display">\[d(\mathbf{a},\mathbf{b}) =
+\overset{n}{\sum_{i = 1}}|a_{i} - b_{i}|\]</span></span> 맨해튼 거리는 벡터 간의 축을 따라 이동한 거리의 합으로 이는 그리드 기반 공간에서 이동하는 경우에 적합하다. 맨해튼 거리라는 이름은 도로망이 격자 형태로 이루어진 맨해튼 도시 구조에서 유래되었다. 자동차나 사람이 이동할 때 대각선으로 이동하지 못하고 도로를 따라 움직이는 경우에 적합하다. 예: 두 위치 간 최단 이동 거리 계산.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/맨하튼거리.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+</section><section id="유클리디안-거리와-통계" class="level5">
+<h5 class="anchored" data-anchor-id="유클리디안-거리와-통계">2. 유클리디안 거리와 통계</h5>
+</section><section id="de-meanded-벡터" class="level5">
+<h5 class="anchored" data-anchor-id="de-meanded-벡터">(1) de-meanded 벡터</h5>
+<p>【reall】 치수 n-벡터 <span class="math inline"><em>x</em><sub><em>n</em></sub></span>, 평균은 <span class="math inline"><span class="math inline">\(avg(x) = (1_{n}^{T}x)/n = (instat) =
+\overline{x}\)</span></span></p>
+<p>【정의】 <span class="math inline"><span class="math inline">\(\overset{˜}{x} = x -
+avg(x)1_{n}\)</span></span> : 벡터의 각 원소를 평균을 뺀 벡터</p>
+<p>【성질】 <span class="math inline"><span class="math inline">\(avg(\overset{˜}{x}) = 0\)</span></span></p>
+<ul>
+<li><p>통계 분석: 데이터의 평균을 제거함으로써 분산이나 공분산과 같은 통계적 특성을 더 명확하게 분석할 수 있다.</p></li>
+<li><p>주성분 분석(PCA): 데이터의 분산을 분석하기 전에 데이터를 중심에 맞추기 위해 사용된다.</p></li>
+<li><p>회귀 분석: 회귀 분석에서 독립 변수와 종속 변수의 평균을 제거하여 상수항 없이 회귀 모델을 구축할 수 있다.</p></li>
+</ul>
+</section><section id="표준편차-standard-deviation" class="level5">
+<h5 class="anchored" data-anchor-id="표준편차-standard-deviation">(2) 표준편차 standard deviation</h5>
+<p><span class="math display"><span class="math display">\[std(x) = \sqrt{\frac{(x_{1} -
+avg(x))^{2} + (x_{2} - avg(x))^{2} + ... + (x_{n} -
+avg(x))^{2})}{n}}\]</span></span> <span class="math display"><span class="math display">\[std(x) = \frac{\parallel x - (1^{T}x/n)1
+\parallel}{\sqrt{n}}\]</span></span> 【응용】 투자에서 평균은 일정기간 평균 수익율, 표준편차는 위험 척도이다.</p>
+</section><section id="표준편차-성질" class="level5">
+<h5 class="anchored" data-anchor-id="표준편차-성질">(3) 표준편차 성질</h5>
+<ul>
+<li>상수를 더해도 표준편차는 동일하다. <span class="math inline"><em>s</em><em>t</em><em>d</em>(<em>x</em> + <em>a</em>1) = <em>s</em><em>t</em><em>d</em>(<em>x</em>)</span></li>
+<li>스칼라(상수) 곱 : <span class="math inline"><em>s</em><em>t</em><em>d</em>(<em>k</em><em>x</em>) = |<em>k</em>|<em>s</em><em>t</em><em>d</em>(<em>x</em>)</span></li>
+</ul>
+</section><section id="평균-rms-std-관계" class="level5">
+<h5 class="anchored" data-anchor-id="평균-rms-std-관계">(4) 평균, RMS, STD 관계</h5>
+<p><span class="math inline"><em>s</em><em>t</em><em>d</em>(<em>x</em>)<sup>2</sup> = <em>r</em><em>m</em><em>s</em>(<em>x</em>)<sup>2</sup> − <em>a</em><em>v</em><em>g</em>(<em>x</em>)<sup>2</sup></span> (in stat) <span class="math inline"><em>s</em><em>t</em><em>d</em>(<em>x</em>)<sup>2</sup> = <em>v</em><em>a</em><em>r</em>(<em>x</em>)</span> 분산</p>
+</section><section id="표준편차와-chebychev-부등식" class="level5">
+<h5 class="anchored" data-anchor-id="표준편차와-chebychev-부등식">(5) 표준편차와 Chebychev 부등식</h5>
+<p>만약 차원 <span class="math inline"><em>n</em></span>-벡터에서 <span class="math inline">|<em>x</em><sub><em>i</em></sub> − <em>a</em><em>v</em><em>g</em>(<em>x</em>)| ≥ <em>a</em></span>을 만족하는 원소 개수를 <span class="math inline"><em>k</em></span>라 하면 <span class="math inline"><span class="math inline">\(\frac{k}{n} \leq
+(\frac{std(x)}{a})^{2}\)</span></span>이다. 벡터 <span class="math inline"><em>x</em></span> 평균으로부터 <span class="math inline"><em>k</em></span> 표준편차 이내에 있는 성분 비율은 최소 <span class="math inline">1 − 1/<em>k</em><sup>2</sup></span>이다.</p>
+<p><span class="math display">\[
+P(|X - \mu| &gt; k\sigma) \leq 1 -\frac{1}{k^{2}}
+\]</span> 예를 들어, 일정 기간 투자 평균 수익률은 8%이고, 리스크(표준편차)는 3%입니다. 체비셰프의 부등식에 따르면, 손실을 기록한 기간의 비율(즉, 0% 이하인 기간, 16% 이상인 기간)은 최대 (3/8)^2 = 14.1%이다.</p>
+</section><section id="실증적-규칙" class="level5">
+<h5 class="anchored" data-anchor-id="실증적-규칙">(6) 실증적 규칙</h5>
+<span class="math display"><em>P</em>(|<em>X</em> − <em>μ</em>| ≤ <em>k</em><em>σ</em>)</span>
+<ul>
+<li>
+<span class="math inline"><em>k</em> = 1</span>, 데이터의 68.3%가 <span class="math inline">(<em>μ</em> − <em>σ</em>, <em>μ</em> + <em>σ</em>)</span> 내에 있음
+</li>
+<li>
+<span class="math inline"><em>k</em> = 2</span>, 데이터의 95.4%, <span class="math inline"><em>k</em> = 3</span>, 데이터의 99.9%
+</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/실증적규칙.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section><section id="거리와-개체-군집화" class="level5">
+<h5 class="anchored" data-anchor-id="거리와-개체-군집화">3. 거리와 개체 군집화</h5>
+</section><section id="개념" class="level5">
+<h5 class="anchored" data-anchor-id="개념">(1) 개념</h5>
+<p><span class="math inline"><em>N</em></span>개의 차수 <span class="math inline"><em>n</em></span>-벡터 <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>N</em></sub>)</span>에 대하여 각 벡터(개체) 쌍 사이의 거리로 측정하여 서로 가까운 클러스터 또는 클러스터로 묶는 작업을 다룬다. 클러스터링의 목표는 가능한 경우 벡터들을 <span class="math inline"><em>k</em></span>개의 클러스터 또는 클러스터로 묶거나 나누어, 각 클러스터 내의 벡터들이 서로 가깝도록 하는 것이다. 클러스터링은 벡터들이 객체의 특징을 나타낼 때 널리 사용된다. 다음은 <span class="math inline"><em>n</em> = 2</span>(군집변수 2개), <span class="math inline"><em>k</em> = 3</span>으로 클러스터링 한 사례이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/클러스터링.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section><section id="클러스터-할당" class="level5">
+<h5 class="anchored" data-anchor-id="클러스터-할당">(2) 클러스터 할당</h5>
+<p><span class="math inline"><em>N</em></span>개 개체, <span class="math inline"><em>x</em><sub><em>i</em></sub></span>를 개체(<span class="math inline"><em>i</em> = 1, 2, …, <em>N</em></span>), <span class="math inline"><em>c</em><sub><em>i</em></sub></span>는 <span class="math inline"><em>i</em></span>-개체가 할당된 클러스터이고 (<span class="math inline"><em>j</em> = 1, 2, …<em>k</em></span>), <span class="math inline"><em>G</em><sub><em>j</em></sub></span>을 <span class="math inline"><em>j</em></span>-클러스터에 속한 개체의 집합이라 하자. <span class="math display"><em>G</em><sub><em>j</em></sub> = {<em>i</em>|<em>c</em><sub><em>i</em></sub> = <em>j</em>}</span> 클러스터을 대표하는 차원 <span class="math inline"><em>n</em></span>-벡터를 <span class="math inline"><em>z</em><sub>1</sub>, <em>z</em><sub>2</sub>, …, <em>z</em><sub><em>k</em></sub></span>라 하자. <span class="math inline"><em>i</em></span>-개체가 <span class="math inline"><em>j</em> = <em>c</em><sub><em>i</em></sub></span>에 있다면 <span class="math inline"> ∥ <em>x</em><sub><em>i</em></sub> − <em>z</em><sub><em>c</em><sub><em>i</em></sub></sub>∥</span>은 모든 클러스터 중 가장 가까워야 한다.</p>
+</section><section id="클러스터-목적" class="level5">
+<h5 class="anchored" data-anchor-id="클러스터-목적">(3) 클러스터 목적</h5>
+<p><span class="math inline"><em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup> = ( ∥ <em>x</em><sub>1</sub> − <em>z</em><sub><em>c</em><sub>1</sub></sub> ∥ + ∥ <em>x</em><sub>2</sub> − <em>z</em><sub><em>c</em><sub>2</sub></sub> ∥ +…+ ∥ <em>x</em><sub><em>N</em></sub> − <em>z</em><sub><em>c</em><sub><em>N</em></sub></sub> ∥ )/<em>N</em></span> 함수를 최소화 하는 <span class="math inline"><em>z</em><sub><em>c</em><sub>1</sub></sub>, <em>z</em><sub><em>c</em><sub>2</sub></sub>, …, <em>z</em><sub><em>c</em><sub><em>N</em></sub></sub></span>을 구한다.</p>
+</section><section id="최적-클러스링" class="level5">
+<h5 class="anchored" data-anchor-id="최적-클러스링">(4) 최적 클러스링</h5>
+<p>목적함수 <span class="math inline"><em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup></span>을 최소화 하는 <span class="math inline"><em>z</em><sub><em>c</em><sub>1</sub></sub>, <em>z</em><sub><em>c</em><sub>2</sub></sub>, …, <em>z</em><sub><em>c</em><sub><em>N</em></sub></sub></span>을 찾는 것은 개체 수가 많고 차원 개수가 커지면 계산 회수가 기하 급수적으로 늘어나 불가능하다. 그러므로 최적 대신 차선 sub-optimal 방법으로 대표 벡터를 고정화 하는 k-평균 방법을 사용한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/최적클러스터링.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section><section id="k-means-알고리즘" class="level5">
+<h5 class="anchored" data-anchor-id="k-means-알고리즘">4. k-means 알고리즘</h5>
+</section><section id="개념-1" class="level5">
+<h5 class="anchored" data-anchor-id="개념-1">(1) 개념</h5>
+<p>클러스터 할당과 클러스터 대표자를 선택하여 <span class="math inline"><em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup></span>를 최소화하는 문제를 해결할 수 있을 것처럼 보이나 두 가지 선택은 순환적입니다. 즉, 각각의 선택이 다른 하나에 의존한다. 클러스터 대표자를 선택하고 클러스터 할당을 선택하는 것을 반복하는 것이 벡터 집합을 클러스터링하는 데 있어서 유명한 k-means 알고리즘이다. k-means 알고리즘은 1957년에 Stuart Lloyd와 독립적으로 Hugo Steinhaus에 의해 처음 제안되어 때때로 Lloyd 알고리즘이라고도 불린다. <span dir="rtl">’</span>k-means<span dir="rtl">’</span>라는 이름은 1960년대부터 사용되었다.</p>
+</section><section id="k-평균-알고리즘" class="level5">
+<h5 class="anchored" data-anchor-id="k-평균-알고리즘">(2) k-평균 알고리즘</h5>
+<p><span class="math inline"><em>N</em></span>개 개체를 <span class="math inline"><em>k</em></span>개 클러스터으로 분류한다고 가정하자. <span class="math inline"><em>z</em><sub>1</sub>, <em>z</em><sub>2</sub>, …, <em>z</em><sub><em>k</em></sub></span>을 각 클러스터의 대표 벡터라 하자. k-평균 알고리즘은 다음 작업을 반복 실행한다.</p>
+<p>&nbsp; 1. 대표 벡터를 결정하고 각 개체를 가장 가까운 대표 벡터의 클러스터으로 분류한다.</p>
+<p>&nbsp; 2. 클러스터에 할당된 개체의 중심점(평균 벡터)을 대표 벡터로 설정한다.</p>
+<p>&nbsp; 3. 수렴 조건 만족 때까지 위의 작업을 반복한다.</p>
+</section><section id="이슈사항" class="level5">
+<h5 class="anchored" data-anchor-id="이슈사항">(3)이슈사항</h5>
+</section><section id="타이-브레이커" class="level5">
+<h5 class="anchored" data-anchor-id="타이-브레이커">타이 브레이커</h5>
+<p>두 개 이상의 클러스터과 최소 거리인 개체는 클러스터 할당을 하지 않는다. 그러므로 이 개체는 다음 단계에서 대표 벡터 결정에는 활용되지 않는다.</p>
+</section><section id="수렴-조건" class="level5">
+<h5 class="anchored" data-anchor-id="수렴-조건">수렴 조건</h5>
+<p>개체의 클러스터 이동이 더 이상 발생하지 않으면 대표 벡터는 움직이지 않음을 의미하므로 클러스터링 결과는 동일해진다.</p>
+</section><section id="k-평균-알고리즘은-직관적이다." class="level5">
+<h5 class="anchored" data-anchor-id="k-평균-알고리즘은-직관적이다.">k-평균 알고리즘은 직관적이다.</h5>
+<p>목표함수 <span class="math inline"><em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup></span>을 최적화 하지 못하지만 반복을 통하여 줄여 나가게 된다.</p>
+</section><section id="대표벡터-해석" class="level5">
+<h5 class="anchored" data-anchor-id="대표벡터-해석">대표벡터 해석</h5>
+<p>&nbsp; 각 <span class="math inline"><em>N</em></span>개의 회사마다 총 자본화, 분기별 수익 및 위험, 거래량, 손익, 배당금 등과 같은 금융 및 사업 속성을 구성 요소로 하는 n-벡터을 이용하여 k-평균 클러스터링 결과 얻은 대표벡터를 이용하여 클러스터(군집)에 이름을 부여한다. 기업연수, 기업종류, 매출액 등 군집변수로 사용하지 않은 특성 벡터를 이용하여 개체군의 이름을 부여하고 해석한다.</p>
+</section><section id="클러스터-k-결정" class="level5">
+<h5 class="anchored" data-anchor-id="클러스터-k-결정">클러스터 <span class="math inline"><em>k</em></span> 결정</h5>
+<p>k 의 결정은 다소 주관적이고 시행착오 방법을 사용한다. <span class="math inline">(<em>k</em>, <em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup>)</span>을 이용하여 Elbow Method 팔꿈치 기법을 사용한다. 군집 개수가 증가할수록 <span class="math inline"><em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup></span>는 감소하게 되지만, 이 감소율이 꺾이는 지점을 찾아내는 방법이다.</p>
+</section><section id="고정-대표-벡터-분할하기" class="level5">
+<h5 class="anchored" data-anchor-id="고정-대표-벡터-분할하기">고정 대표 벡터 분할하기</h5>
+만약 <span class="math inline"><em>j</em></span> 클러스터을 대표하는 벡터 <span class="math inline"><em>z</em><sub>1</sub>, <em>z</em><sub>2</sub>, …, <em>z</em><sub><em>j</em></sub></span>르 고정하면 모든 개체 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>N</em></sub></span>을 최적 클러스터으로 분류 문제는 다음과 같다. <span class="math display"> ∥ <em>x</em><sub><em>i</em></sub> − <em>z</em><sub><em>c</em><sub><em>i</em></sub></sub> ∥  = <em>m</em><em>i</em><em>n</em><sub><em>j</em> = 1, 2, …, <em>k</em></sub> ∥ <em>x</em><sub><em>i</em></sub> − <em>z</em><sub><em>j</em></sub>∥</span> 고정 대표 벡터를 활용하면 최적 클러스터링 문제는 다음과 같이 sub 최적 문제로 변환된다. 각 <span class="math inline"><em>N</em></span>개 개체에 최적 <span class="math inline"><em>j</em></span>-클러스터(거리가 가장 가까운 클러스터)을 결정하는 개별적 문제와 동일하다.
+<blockquote class="blockquote">
+<span class="math display"><em>J</em><sup><em>c</em><em>l</em><em>u</em><em>s</em><em>t</em></sup> = <em>m</em><em>i</em><em>n</em><sub><em>j</em> = 1, 2, …, <em>k</em></sub> ∥ <em>x</em><sub>1</sub> − <em>z</em><sub><em>j</em></sub> ∥ +… + <em>m</em><em>i</em><em>n</em><sub><em>j</em> = 1, 2, …, <em>k</em></sub> ∥ <em>x</em><sub><em>N</em></sub> − <em>z</em><sub><em>j</em></sub> ∥ )/<em>N</em></span>
+</blockquote>
+<p>고정 벡터를 group(or cluster) centroid라 한다.</p>
+</section><section id="사례" class="level5">
+<h5 class="anchored" data-anchor-id="사례">(4) 사례</h5>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 60000(train 훈련)/10000(test 테스트), 28x28</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.datasets <span class="im">import</span> mnist</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># MNIST 데이터셋 로드 및 훈련데이터, 테스트데이터 분할 </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>(x_train, y_train), (x_test, y_test) <span class="op">=</span> mnist.load_data()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 형태 출력</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x_train shape: </span><span class="sc">{</span>x_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"y_train shape: </span><span class="sc">{</span>y_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"x_test shape: </span><span class="sc">{</span>x_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"y_test shape: </span><span class="sc">{</span>y_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 첫 10개 샘플 이미지와 레이블 시각화</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">1</span>))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_samples):</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">1</span>, num_samples, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    plt.imshow(x_train[i], cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    plt.title(y_train[i])</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/클러스터링예제.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 훈련 데이터 클러스트링, 첫 20개 군집결과</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 이미지 데이터를 2차원 배열로 변환</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>x_train2 <span class="op">=</span> x_train.reshape((x_train.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>x_test2 <span class="op">=</span> x_test.reshape((x_test.shape[<span class="dv">0</span>], <span class="op">-</span><span class="dv">1</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 정규화</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>x_train2 <span class="op">=</span> x_train2 <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>x_test2 <span class="op">=</span> x_test2 <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># k-means 모델 생성 및 학습</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">10</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>kmeans.fit(x_train2)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 클러스터 할당 결과</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>y_kmeans <span class="op">=</span> kmeans.predict(x_train2)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 첫 20개 분류결과 이미지와 레이블 시각화</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">1</span>))</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_samples):</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">1</span>, num_samples, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    plt.imshow(x_train[i], cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    plt.title(y_kmeans[i])</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/클러스터링예제2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#클러스터 3 평균벡터 출력 클러스터 대표 이미지</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">1</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.imshow((x_train[<span class="dv">0</span>]<span class="op">+</span>x_train[<span class="dv">7</span>]<span class="op">+</span>x_train[<span class="dv">17</span>])<span class="op">/</span><span class="dv">3</span>, cmap<span class="op">=</span><span class="st">'gray'</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'cluster 3'</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/클러스터링예제3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section><section id="벡터의-각도" class="level5">
+<h5 class="anchored" data-anchor-id="벡터의-각도">5. 벡터의 각도</h5>
+</section><section id="코사인-유사도" class="level5">
+<h5 class="anchored" data-anchor-id="코사인-유사도">(1) 코사인 유사도</h5>
+벡터의 코사인 유사도(Cosine Similarity)는 두 벡터 간의 방향적 유사성을 측정하는 지표로, 벡터 간의 각도 <span class="math inline"><em>θ</em></span>의 코사인 값을 이용하여 계산된다. <span class="math display"><span class="math display">\[\text{Cosine Similarity} = \cos(\theta)
+= \frac{\mathbf{A} \cdot \mathbf{B}}{\parallel \mathbf{A} \parallel
+\parallel \mathbf{B} \parallel}\]</span></span> 코사인 유사도와 유클리드 거리의 차이는 다음과 같다.
+<ul>
+<li>
+코사인 유사도는 두 벡터의 방향에 집중하며, 벡터 크기의 차이를 무시한다.
+</li>
+<li>
+유클리드 거리는 두 벡터 사이의 실제 거리(크기 차이 포함)를 측정한다.
+</li>
+<li>
+예를 들어, 텍스트 데이터에서 코사인 유사도는 문서 간의 내용적 유사성을 비교하는 데 유리하며, 추천 시스템, 정보 검색, 클러스터링 등에서 널리 사용된다.
+</li>
+</ul>
+【예제】
+</section><table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td>
+<span class="math display"><span class="math display">\[a = \left\lbrack \begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack,b = \left\lbrack \begin{array}{r}
+1 \\
+- 2 \\
+1
+\end{array} \right\rbrack,c = \left\lbrack \begin{array}{r}
+1 \\
+0 \\
+3
+\end{array} \right\rbrack\]</span></span> <span class="math display"><span class="math display">\[dist(a,b) = \sqrt{2},dist(b,c) =
+2.8284\]</span></span>
+</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tr></tbody></table><table>
+<tbody><tr>
+<td>
+<p>벡터 <span class="math inline"><strong>A</strong> = [1, 2, 3], <strong>B</strong> = [4, 5, 6]</span>이 주어졌을 때</p>
+<ol type="1">
+<li><p>벡터 내적: <span class="math display"><strong>A</strong> ⋅ <strong>B</strong> = 1 ⋅ 4 + 2 ⋅ 5 + 3 ⋅ 6 = 32</span></p></li>
+<li><p>벡터 크기: <span class="math display"><span class="math display">\[\parallel \mathbf{A} \parallel =
+\sqrt{1^{2} + 2^{2} + 3^{2}} = \sqrt{14}, \parallel \mathbf{B} \parallel
+= \sqrt{4^{2} + 5^{2} + 6^{2}} = \sqrt{77}\]</span></span></p></li>
+<li><p>코사인 유사도: <span class="math display"><span class="math display">\[\cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\parallel \mathbf{A} \parallel \parallel \mathbf{B} \parallel} = \frac{32}{\sqrt{14} \cdot \sqrt{77}} \approx
+0.975\]</span></span></p>
+</li></ol></td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section id="코사인-유사도의-특징" class="level5">
+<h5 class="anchored" data-anchor-id="코사인-유사도의-특징">(2) 코사인 유사도의 특징</h5>
+<p>코사인 유사도 값의 범위는 [-1, 1]이고 다음의 특징을 갖는다.</p>
+<ul>
+<li><span class="math inline">cos (<em>θ</em>) = 1</span>: 두 벡터가 완전히 같은 방향</li>
+<li><span class="math inline">cos (<em>θ</em>) = 0</span>: 두 벡터가 직교(Orthogonal, 90도)</li>
+<li><span class="math inline">cos (<em>θ</em>) = −1</span>: 두 벡터가 완전히 반대 방향.</li>
+</ul>
+코사인 유사도는 벡터의 크기가 아닌 방향만 고려되므로 벡터를 정규화하지 않고도 비교할 수 있다. 고차원 벡터에도 적용 가능하여 텍스트 데이터, 사용자 선호도 등 고차원 데이터에서 벡터 간 유사성 측정에 많이 사용된다. 각도 종류
+<ol type="1">
+<li>
+각도가 <span class="math inline"><em>θ</em> = 90<sup><em>o</em></sup> = <em>π</em>/2</span>이면 두 벡터는 직교 orthogonal 한다.
+</li>
+<li>
+각도가 <span class="math inline"><em>θ</em> = 0<sup><em>o</em></sup></span>이면 두 벡터는 정렬 aligned 되어 있다.
+</li>
+<li>
+각도가 <span class="math inline"><em>θ</em> = 180<sup><em>o</em></sup> = <em>π</em></span>이면 두 벡터는 역정렬 anti-aligned 되어 있다.
+</li>
+<li>
+각도가 <span class="math inline"><em>θ</em> &gt; 90<sup><em>o</em></sup> = <em>π</em>/2</span>이면 두 벡터의 각은 둔각 obtuse, <span class="math inline"><em>θ</em> &lt; 90<sup><em>o</em></sup> = <em>π</em>/2</span>이면 두 벡터의 각은 예각 acute 이다.
+</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/각도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="두-벡터-합의-놈과-각도" class="level5">
+<h5 class="anchored" data-anchor-id="두-벡터-합의-놈과-각도">두 벡터 합의 놈과 각도</h5>
+<p><span class="math display"> ∥ <em>x</em> + <em>y</em>∥<sup>2</sup> =  ∥ <em>x</em>∥<sup>2</sup> + 2 ∥ <em>x</em> ∥  ∥ <em>y</em> ∥ <em>c</em><em>o</em><em>s</em>(<em>θ</em>)+ ∥ <em>y</em>∥<sup>2</sup></span> 만약 <span class="math inline"><em>θ</em> = 90<sup><em>o</em></sup> = <em>π</em>/2</span>이면 <span class="math inline"> ∥ <em>x</em> + <em>y</em>∥<sup>2</sup> =  ∥ <em>x</em>∥<sup>2</sup>+ ∥ <em>y</em>∥<sup>2</sup></span> (피타고라스 정리)</p>
+</section>
+<section id="상관계수" class="level5">
+<h5 class="anchored" data-anchor-id="상관계수">6. 상관계수</h5>
+</section>
+<section id="상관계수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="상관계수-정의">(1) 상관계수 정의</h5>
+<p>만약 <span class="math inline"><span class="math inline">\(\overset{˜}{a} = a -
+avg(a)1,\overset{˜}{b} = b - avg(b)1\)</span></span>이면, 상관계수(correlation coefficient) <span class="math inline"><em>ρ</em></span>는 다음과 같이 정의된다. <span class="math inline"><span class="math inline">\(\rho =
+\frac{{\overset{˜}{a}}^{T}\overset{˜}{b}}{\parallel \overset{˜}{a}
+\parallel \parallel \overset{˜}{b} \parallel}\)</span></span> ⇔ <span class="math inline"><span class="math inline">\(\rho =
+(\frac{\overset{˜}{a}}{std(a)})^{T}(\frac{\overset{˜}{b}}{std(b)})/n\)</span></span></p>
+<ul>
+<li><span class="math inline"><span class="math inline">\(cov(a,b) =
+{\overset{˜}{a}}^{T}\overset{˜}{b}/n\)</span></span>: 두 벡터의 공분산</li>
+<li><span class="math inline"><em>v</em><em>a</em><em>r</em>(<em>a</em>) = <em>s</em><em>t</em><em>d</em>(<em>a</em>)<sup>2</sup></span>: 벡터의 분산 상관계수와 공분산 관계: <span class="math inline"><em>c</em><em>o</em><em>v</em>(<em>a</em>, <em>b</em>) = <em>ρ</em><em>s</em><em>t</em><em>d</em>(<em>a</em>)<em>s</em><em>t</em><em>d</em>(<em>b</em>)</span></li>
+<li><span class="math inline"><em>ρ</em> = ±1</span> (완전 상관) : 두 벡터가 (역)정렬되어 있음</li>
+<li><span class="math inline"><em>ρ</em> = 0</span> (독립) : 두 벡터가 직교되어 있음. <span class="math inline"><em>c</em><em>o</em><em>v</em>(<em>a</em>, <em>b</em>) = 0</span></li>
+</ul>
+</section>
+<section id="두-벡터-합의-분산" class="level5">
+<h5 class="anchored" data-anchor-id="두-벡터-합의-분산">(2) 두 벡터 합의 분산</h5>
+<p><span class="math display"><em>v</em><em>a</em><em>r</em>(<em>a</em> + <em>b</em>) = <em>v</em><em>a</em><em>r</em>(<em>a</em>) + 2<em>c</em><em>o</em><em>v</em>(<em>a</em>, <em>b</em>) + <em>v</em><em>a</em><em>r</em>(<em>b</em>)</span></p>
+<span class="math display"><em>v</em><em>a</em><em>r</em>(<em>a</em> + <em>b</em>) = <em>v</em><em>a</em><em>r</em>(<em>a</em>) + 2<em>ρ</em><em>s</em><em>t</em><em>d</em>(<em>a</em>)<em>s</em><em>t</em><em>d</em>(<em>b</em>) + <em>v</em><em>a</em><em>r</em>(<em>b</em>)</span>
+<ul>
+<li>
+만약 <span class="math inline"><em>ρ</em> = 0</span>이면, <span class="math inline"><em>v</em><em>a</em><em>r</em>(<em>a</em> + <em>b</em>) = <em>v</em><em>a</em><em>r</em>(<em>a</em>) + <em>v</em><em>a</em><em>r</em>(<em>b</em>)</span>
+</li>
+<li>
+만약 <span class="math inline"><em>ρ</em> = 1</span>이면, <span class="math inline"><em>v</em><em>a</em><em>r</em>(<em>a</em> + <em>b</em>) = (<em>s</em><em>t</em><em>d</em>(<em>a</em>) + <em>s</em><em>t</em><em>d</em>(<em>b</em>))<sup>2</sup></span>
+</li>
+<li>
+만약 <span class="math inline"><em>ρ</em> = −1</span>이면, <span class="math inline"><em>v</em><em>a</em><em>r</em>(<em>a</em> + <em>b</em>) = (<em>s</em><em>t</em><em>d</em>(<em>a</em>) − <em>s</em><em>t</em><em>d</em>(<em>b</em>))<sup>2</sup></span>
+</li>
+</ul>
+</section>
+<section id="헤징-hedging-투자" class="level5">
+<h5 class="anchored" data-anchor-id="헤징-hedging-투자">(3) 헤징 hedging 투자</h5>
+두 개 회사 주가 벡터 <span class="math inline">(<em>a</em>, <em>b</em>)</span>의 평균은<span class="math inline"><em>μ</em></span>, 표준편차(위험) <span class="math inline"><em>σ</em></span>이고 상관계수는 <span class="math inline"><em>ρ</em></span>이다. 각각 50% 투자, <span class="math inline"><span class="math inline">\(c = \frac{(a + b)}{2}\)</span></span>의 평균 수익율과 표준편차은 다음과 같다.
+<ul>
+<li>
+평균 : <span class="math inline"><span class="math inline">\(avg(\frac{a + b}{2}) =
+\mu\)</span></span>
+</li>
+<li>
+표준편차 : <span class="math inline"><span class="math inline">\(std(c) = \sigma\sqrt{(1 +
+\rho)/2}\)</span></span>
+</li>
+<li>
+상관계수 <span class="math inline"><em>ρ</em> = 0</span>이면 (독립) 표준편차는 <span class="math inline"><span class="math inline">\(\frac{1}{\sqrt{2}}\)</span></span>만큼 줄어든다.
+</li>
+<li>
+완벽한 상관관계가 있는 경우에만 표준편차는 동일하다.
+</li>
+</ul>
+</section>
+</section>
+<section id="chapter-5.-선형독립" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-5.-선형독립"><span style="color:green">chapter 5. 선형독립 </span></h3>
+<section id="선형독립-정의" class="level5">
+<h5 class="anchored" data-anchor-id="선형독립-정의">1. 선형독립 정의</h5>
+</section>
+<section id="선형-종속-linear-dependence" class="level5">
+<h5 class="anchored" data-anchor-id="선형-종속-linear-dependence">(1) 선형 종속 linear dependence</h5>
+<span class="math inline"><em>k</em> ≥ 2</span>개의 크기 n-벡터 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub></span>가 다음을 만족하면 선형종속이라 한다. 만약 <span class="math inline"><em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>k</em></sub><em>x</em><sub><em>k</em></sub> = 0</span>을 만족하는 <span class="math inline"><em>a</em><sub><em>i</em></sub></span>가 적어도 하나는 0이 아니다. 선형독립이면 적어도 하나의 <span class="math inline"><em>a</em><sub><em>i</em></sub></span>는 0이 아니므로 벡터 <span class="math inline"><em>x</em><sub><em>i</em></sub></span> 다음과 같이 다른 벡터의 선형함수로 표현될 수 있다. <span class="math display"><span class="math display">\[x_{k} = \frac{- a_{1}}{a_{i}}x_{1} + ...
++ \frac{- a_{i - 1}}{a_{i}}x_{i - 1} + \frac{- a_{i + 1}}{a_{i}}x_{i +
+1} + ... + \frac{- a_{k}}{a_{i}}x_{k}\]</span></span> 【예제】
+<table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td style="text-align: left;">
+<blockquote class="blockquote">
+<span class="math inline"><span class="math inline">\(x_{1} = \left\lbrack \begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack,x_{2} = \left\lbrack \begin{array}{r}
+1 \\
+- 2 \\
+1
+\end{array} \right\rbrack,x_{3} = \left\lbrack \begin{array}{r}
+1 \\
+0 \\
+- 1
+\end{array} \right\rbrack\)</span></span> ⬄<span class="math inline">−2<em>x</em><sub>1</sub> + <em>x</em><sub>2</sub> − <em>x</em><sub>3</sub> = 0</span>
+</blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="선형-독립-linear-independence" class="level5">
+<h5 class="anchored" data-anchor-id="선형-독립-linear-independence">(2) 선형 독립 linear independence</h5>
+만약 <span class="math inline"><em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>k</em></sub><em>x</em><sub><em>k</em></sub> = 0</span>이 모든 <span class="math inline"><em>a</em><sub><em>k</em></sub> = 0</span>일 때만 만족한다면, n-벡터 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub></span>을 선형독립이라 한다. 【예제】
+<table>
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr>
+<td style="text-align: left;">
+<blockquote class="blockquote">
+<span class="math display"><span class="math display">\[x_{1} = \left\lbrack \begin{array}{r}
+1 \\
+0 \\
+0
+\end{array} \right\rbrack,x_{2} = \left\lbrack \begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack,x_{3} = \left\lbrack \begin{array}{r}
+- 1 \\
+1 \\
+1
+\end{array} \right\rbrack\]</span></span>
+</blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="선형독립-벡터의-선형결합" class="level5">
+<h5 class="anchored" data-anchor-id="선형독립-벡터의-선형결합">(3) 선형독립 벡터의 선형결합</h5>
+<p>선형독립인 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub></span>의 선형결합의 모든 계수(<span class="math inline"><em>a</em><sub><em>k</em></sub></span>)는 유일하다. 선형결합 <span class="math inline"><em>x</em> = <em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>k</em></sub><em>x</em><sub><em>k</em></sub></span> 증명 다른 계수를 <span class="math inline"><em>b</em><sub><em>k</em></sub></span>라 하자. <span class="math inline"><em>x</em> = <em>b</em><sub>1</sub><em>x</em><sub>1</sub> + <em>b</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>b</em><sub><em>k</em></sub><em>x</em><sub><em>k</em></sub></span> <span class="math inline">0 = (<em>a</em><sub>1</sub> − <em>b</em><sub>1</sub>)<em>x</em><sub>1</sub> + (<em>a</em><sub>2</sub> − <em>b</em><sub>2</sub>)<em>x</em><sub>2</sub> + … + (<em>a</em><sub><em>k</em></sub> − <em>b</em><sub><em>k</em></sub>)<em>x</em><sub><em>k</em></sub></span>이다. <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub></span>가 선형독립이므로 모든 <span class="math inline">(<em>a</em><sub><em>i</em></sub> − <em>b</em><sub><em>i</em></sub>) = 0</span> 만족한다.</p>
+</section>
+<section id="기저" class="level5">
+<h5 class="anchored" data-anchor-id="기저">2. 기저</h5>
+</section>
+<section id="기저-개념" class="level5">
+<h5 class="anchored" data-anchor-id="기저-개념">(1) 기저 개념</h5>
+<p>벡터 공간은 다양한 차원의 벡터로 이루어진 공간이며, 그 공간 안의 벡터들을 다른 벡터들의 선형 조합으로 표현할 수 있다. 이때, 특정 벡터 공간의 기저 basis 는 그 공간 안의 모든 벡터들을 생성할 수 있는 최소한의 독립적인 벡터들의 집합이다. 예를 들어, 2차원 공간에서의 기저는 일반적으로 (1,0)과 (0,1)이다. 이 두 벡터는 선형 독립이며, 이들의 모든 선형 조합으로 2차원 평면 상의 어떤 점이든 표현할 수 있다. 따라서 (1,0)과 (0,1)은 2차원 공간의 기저입니다. 단, 벡터 공간의 기저는 유일하지 않다. 크기 2인 벡터의 기저 벡터는 <span class="math inline"><em>k</em> = 2</span>개이다. 위의 그림에서 <span class="math inline"><em>a</em><sub>3</sub></span>벡터는<img src="media/image20.png" style="width:3.92546in;height:3.97194in" alt="붙여넣은 동영상.png"> <span class="math inline">(<em>a</em><sub>1</sub>, <em>a</em><sub>2</sub>)</span>(기저벡터)의 선형 결합으로 만들 수 있다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../../images/벡터기저.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="기저-정의" class="level5">
+<h5 class="anchored" data-anchor-id="기저-정의">(2) 기저 정의</h5>
+<p>n개의 선형독립인 크기 n-벡터를 기저 basis 라 한다. 즉, n-벡터 <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>)</span>가 기저이면, 모든 크기 n-벡터는 <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>)</span>의 선형 결합으로 표현할 수 있다.</p>
+<p>【증명】 (n+1)개 차원 n-벡터 <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>, <em>y</em>)</span>개가 있다고 가정하자. 단,<span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>)</span> 선형독립이며 기저이다. 이들 벡터는 선형독립(차원개수 n보다 벡터 개수가 (n+1)로 크다)이므로 다음을 만족하는 모든 <span class="math inline"><em>a</em><sub><em>i</em></sub></span>가 0은 아니다. <span class="math inline"><em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>n</em></sub><em>x</em><sub><em>n</em></sub> + <em>a</em><sub><em>n</em> + 1</sub><em>y</em> = 0</span></p>
+<p>만약 <span class="math inline"><em>a</em><sub><em>n</em> + 1</sub> = 0</span>이면, <span class="math inline"><em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>n</em></sub><em>x</em><sub><em>n</em></sub> = 0</span>을 만족하는 모든 <span class="math inline"><em>a</em><sub><em>i</em></sub> = 0</span>이다. 왜냐하면 <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>)</span> 선형독립이기 때문이다.(모순)</p>
+</section>
+<section id="직교정규" class="level5">
+<h5 class="anchored" data-anchor-id="직교정규">3. 직교정규</h5>
+</section>
+<section id="정의-2" class="level5">
+<h5 class="anchored" data-anchor-id="정의-2">(1) 정의</h5>
+<p>만약 <span class="math inline"> ∥ <em>x</em><sub><em>i</em></sub> ∥  = 1</span>이고 <span class="math inline"><em>x</em><sub><em>i</em></sub><sup><em>T</em></sup><em>x</em><sub><em>j</em></sub> = 0<em>f</em><em>o</em><em>r</em><em>i</em> ≠ <em>j</em></span> (두 벡터 <span class="math inline">(<em>x</em><sub><em>i</em></sub>, <em>x</em><sub><em>j</em></sub>)</span>는 직교)이면, <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub>)</span> 벡터 집합은 직교 정규 orthonormal 벡터라고 한다. 직교정규성은 선형종속, 선형독립처럼 <u>집합의 속성</u>이지 개별 벡터의 속성은 아니다.</p>
+<section id="예제" class="level6">
+<h6 class="anchored" data-anchor-id="예제">(2) 예제</h6>
+n개의 단위벡터는 직교정규 벡터이다. 직교정규벡터 <span class="math inline"><span class="math inline">\(\left\lbrack \begin{array}{r}
+- 1 \\
+0 \\
+0
+\end{array} \right\rbrack,\frac{1}{\sqrt{2}}\left\lbrack
+\begin{array}{r}
+0 \\
+1 \\
+1
+\end{array} \right\rbrack,\frac{1}{\sqrt{2}}\left\lbrack
+\begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack\)</span></span> 직교정규 벡터는 선형독립이다.
+
+</section>
+</section>
+<section id="직교정규-성질" class="level5">
+<h5 class="anchored" data-anchor-id="직교정규-성질">(3)직교정규 성질</h5>
+<ol type="1">
+<li>
+벡터 <span class="math inline"><em>x</em></span>가 직교정규벡터 선형결합이면 <span class="math inline"><em>x</em> = <em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>k</em></sub><em>x</em><sub><em>k</em></sub></span> 내적을 이용하여 다음을 얻으므로 내적을 이용하여 계수를 얻을 수 있다.<br> <span class="math inline"><em>x</em><sub><em>i</em></sub><sup><em>T</em></sup><em>x</em> = <em>x</em><sub><em>i</em></sub><sup><em>T</em></sup>(<em>a</em><sub>1</sub><em>x</em><sub>1</sub> + <em>a</em><sub>2</sub><em>x</em><sub>2</sub> + … + <em>a</em><sub><em>k</em></sub><em>x</em><sub><em>k</em></sub>) = <em>a</em><sub><em>i</em></sub></span>
+</li>
+</ol>
+<ol start="2" type="1">
+<li>
+벡터 <span class="math inline">(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub>)</span>가 직교정규 (선형독립이고 기저임) 벡터이면 <span class="math inline"><em>x</em> = (<em>x</em><sub>1</sub><sup><em>T</em></sup><em>x</em>)<em>x</em><sub>1</sub> + (<em>x</em><sub>2</sub><sup><em>T</em></sup><em>x</em>)<em>x</em><sub>2</sub> + … + (<em>x</em><sub><em>k</em></sub><sup><em>T</em></sup><em>x</em>)<em>x</em><sub><em>k</em></sub></span>이 성립한다.
+</li>
+</ol>
+벡터 (1, 2, 3)을 직교정규 벡터의 선형결합으로 표현하자. <span class="math display"><span class="math display">\[\left\lbrack \begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = 1\left\lbrack \begin{array}{r}
+1 \\
+0 \\
+0
+\end{array} \right\rbrack + 2\left\lbrack \begin{array}{r}
+0 \\
+1 \\
+0
+\end{array} \right\rbrack + 3\left\lbrack \begin{array}{r}
+0 \\
+0 \\
+1
+\end{array} \right\rbrack\]</span></span>
+<ul>
+<li>
+<span class="math inline"><span class="math inline">\(\lbrack - 100\rbrack\left\lbrack
+\begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = - 1\)</span></span>, <span class="math inline"><span class="math inline">\(\frac{1}{\sqrt{2}}\lbrack 011\rbrack\left\lbrack
+\begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = \frac{5}{\sqrt{2}}\)</span></span>, <span class="math inline"><span class="math inline">\(\frac{1}{\sqrt{2}}\lbrack 0 - 11\rbrack\left\lbrack
+\begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = \frac{1}{\sqrt{2}}\)</span></span>
+</li>
+</ul>
+<p><span class="math display"><span class="math display">\[\left\lbrack \begin{array}{r}
+1 \\
+2 \\
+3
+\end{array} \right\rbrack = - 1\left\lbrack \begin{array}{r}
+- 1 \\
+0 \\
+0
+\end{array} \right\rbrack + \frac{5}{2}\left\lbrack \begin{array}{r}
+0 \\
+1 \\
+1
+\end{array} \right\rbrack + \frac{1}{2}\left\lbrack \begin{array}{r}
+0 \\
+- 1 \\
+1
+\end{array} \right\rbrack\]</span></span></p>
+</section>
+<section id="gram-schmidt-알고리즘" class="level5">
+<h5 class="anchored" data-anchor-id="gram-schmidt-알고리즘">4. Gram-Schmidt 알고리즘</h5>
+</section>
+<section id="개념-2" class="level5">
+<h5 class="anchored" data-anchor-id="개념-2">(1) 개념</h5>
+n-벡터 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub></span>가 선형 독립인지 여부를 결정할 수 있는 알고리즘으로 수학자 Jørgen Pedersen Gram과 Erhard Schmidt의 이름을 따서 명명되었다. 만약 벡터들이 선형 독립이라면, Gram–Schmidt 알고리즘은 다음과 같은 속성을 가진 직교정규 벡터 <span class="math inline"><em>q</em><sub>1</sub>, <em>q</em><sub>2</sub>, …, <em>q</em><sub><em>k</em></sub></span> 을 생성한다.
+<ol type="1">
+<li>
+각 <span class="math inline"><em>i</em> = 1, 2, …, <em>k</em></span>에서 <span class="math inline"><em>x</em><sub><em>i</em></sub></span>는 <span class="math inline"><em>q</em><sub>1</sub>, <em>q</em><sub>2</sub>, …, <em>q</em><sub><em>i</em></sub></span>의 선형결합이다.
+</li>
+</ol>
+<ol start="3" type="1">
+<li>
+각 <span class="math inline"><em>i</em> = 1, 2, …, <em>k</em></span>에서 <span class="math inline"><em>q</em><sub><em>i</em></sub></span>는 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>i</em></sub></span>의 선형결합이다.
+</li>
+<li>
+만약 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>i</em> − 1</sub></span> 선형독립이나 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>i</em></sub></span>는 선형종속이면 멈춘다.
+</li>
+</ol>
+<ol start="31" type="1">
+<li>
+알고리즘
+</li>
+</ol>
+주어진 n-벡터 <span class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>k</em></sub></span>, <span class="math inline"><em>i</em> = 1, 2, …, <em>k</em></span>일 때
+<ol type="1">
+<li>
+직교화 : <span class="math inline"><span class="math inline">\({\overset{˜}{q}}_{i} = x_{i}
+- (q_{1}^{T}x_{i})q_{1} - ... - (q_{i - 1}^{T}x_{i})q_{i -
+1}\)</span></span>
+</li>
+<li>
+선형종속 검증 : 만약 <span class="math inline"><span class="math inline">\({\overset{˜}{q}}_{i} = 0\)</span></span>이면, 멈춘다.
+</li>
+<li>
+정규화 : <span class="math inline"><span class="math inline">\(q_{i} =
+\frac{{\overset{˜}{q}}_{i}}{\parallel q_{i} \parallel}\)</span></span>.
+</li>
+</ol>
+<p>이렇게 얻은 <span class="math inline"><em>q</em><sub>1</sub>, <em>q</em><sub>2</sub>, …, <em>q</em><sub><em>i</em></sub></span>는 직교정규 벡터이다. 알고리즘 적용 중 중간에 중단되면 기저젝터가 아니다.</p>
+</section>
+<section id="gram-schmidt-알고리즘-예제" class="level5">
+<h5 class="anchored" data-anchor-id="gram-schmidt-알고리즘-예제">(2) Gram-Schmidt 알고리즘 예제</h5>
+<p><span class="math inline"><em>x</em><sub>1</sub> = (−1, 1, −1, 1), <em>x</em><sub>2</sub> = (−1, 3, −1, 3), <em>x</em><sub>3</sub> = (1, 3, 5, 7)</span> 에 대하여 Gram–Schmidt 알고리즘을 적용하자.</p>
+<section id="i1" class="level6">
+<h6 class="anchored" data-anchor-id="i1">i=1</h6>
+<p><span class="math inline"><span class="math inline">\(\parallel {\overset{˜}{q}}_{1} \parallel =
+2\)</span></span>이므로 <span class="math inline"><span class="math inline">\(q_{1} =
+\frac{{\overset{˜}{q}}_{1}}{\parallel {\overset{˜}{q}}_{1} \parallel} =
+\left\lbrack \begin{array}{r}
+- 1/2 \\
+1/2 \\
+- 1/2 \\
+1/2
+\end{array} \right\rbrack\)</span></span>이다.</p>
+</section>
+<section id="i2" class="level6">
+<h6 class="anchored" data-anchor-id="i2">i=2</h6>
+<p><span class="math inline"><em>q</em><sub>1</sub><sup><em>T</em></sup><em>x</em><sub>2</sub> = 4</span>이므로 <span class="math inline"><span class="math inline">\({\overset{˜}{q}}_{2} = x_{2} -
+(q_{1}^{T}x_{2})q_{1} = \left\lbrack \begin{array}{r}
+1 \\
+1 \\
+1 \\
+1
+\end{array} \right\rbrack\)</span></span>이고 <span class="math inline"><span class="math inline">\(\parallel {\overset{˜}{q}}_{2} \parallel =
+2\)</span></span>이다. 그러므로 <span class="math inline"><span class="math inline">\(q_{2} =
+\frac{{\overset{˜}{q}}_{2}}{\parallel {\overset{˜}{q}}_{2} \parallel} =
+\left\lbrack \begin{array}{r}
+1/2 \\
+1/2 \\
+1/2 \\
+1/2
+\end{array} \right\rbrack\)</span></span>.</p>
+</section>
+<section id="i3" class="level6">
+<h6 class="anchored" data-anchor-id="i3">i=3</h6>
+<p><span class="math inline"><em>q</em><sub>1</sub><sup><em>T</em></sup><em>x</em><sub>3</sub> = 2, <em>q</em><sub>2</sub><sup><em>T</em></sup><em>x</em><sub>3</sub> = 8</span>이므로 <span class="math inline"><span class="math inline">\({\overset{˜}{q}}_{3} = x_{3} -
+(q_{1}^{T}x_{3})q_{1} - (q_{2}^{T}x_{3})q_{2} = \left\lbrack
+\begin{array}{r}
+- 2 \\
+- 2 \\
+2 \\
+2
+\end{array} \right\rbrack\)</span></span>이고 <span class="math inline"><span class="math inline">\(\parallel {\overset{˜}{q}}_{3} \parallel =
+4\)</span></span>이다. 그러므로 <span class="math inline"><span class="math inline">\(q_{3} =
+\frac{{\overset{˜}{q}}_{3}}{\parallel {\overset{˜}{q}}_{3} \parallel} =
+\left\lbrack \begin{array}{r}
+- 1/2 \\
+- 1/2 \\
+1/2 \\
+1/2
+\end{array} \right\rbrack\)</span></span>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gram-Schmidt 알고리즘</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gram_schmidt(A):</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the number of rows (n) and columns (k) in A</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    n, k <span class="op">=</span> A.shape</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize matrix Q with zeros, same shape as A</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    Q <span class="op">=</span> np.zeros((n, k))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(k):</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Start with the current column vector of A</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        v <span class="op">=</span> A[:, j]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(j):</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Subtract the projection of v onto the ith orthonormal vector</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>            v <span class="op">-=</span> np.dot(Q[:, i], A[:, j]) <span class="op">*</span> Q[:, i]</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Normalize the vector</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>        Q[:, j] <span class="op">=</span> v <span class="op">/</span> np.linalg.norm(v)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Q</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Example usage</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>],</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">3</span>],</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>              [<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>,<span class="dv">5</span>],</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>              [<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">7</span>]], dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>gram_schmidt(A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>【결과】 array([[-0.5, 0.5, -0.5], [ 0.5, 0.5, -0.5], [-0.5, 0.5, 0.5], [ 0.5, 0.5, 0.5]])</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
