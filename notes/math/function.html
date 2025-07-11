@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>수학의 기초 1. 함수</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="function_files/libs/clipboard/clipboard.min.js"></script>
+<script src="function_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="function_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="function_files/libs/quarto-html/popper.min.js"></script>
+<script src="function_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="function_files/libs/quarto-html/anchor.min.js"></script>
+<link href="function_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="function_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="function_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="function_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="function_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">수학의 기초 1. 함수</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-기초" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-기초"><span style="color:green">chapter 1. 기초</span></h3>
+<section id="함수와-통계학" class="level5">
+<h5 class="anchored" data-anchor-id="함수와-통계학">1. 함수와 통계학</h5>
+<p>함수는 통계학에서 데이터를 설명하고 모델링하는 수단이며, 이론적 개념을 수학적으로 표현하는 핵심 도구이다. 데이터 간의 관계를 나타내고, 확률분포, 추정, 검정 등 다양한 통계 기법에서 필수적인 역할을 수행한다.</p>
+<p>통계함수</p>
+<p>&nbsp; 통계함수는 독립변수(<span class="math inline">\(x\)</span>)와 종속변수(<span class="math inline">\(y\)</span>) 데이터 간 관계를 설명한다. <span class="math inline">\(y = f(x) + e\)</span>로 표현되며 <span class="math inline">\(e\)</span>는 오차항이다.</p>
+<p>확률밀도함수</p>
+<p>&nbsp; 확률밀도함수 <span class="math inline">\(p(x)\)</span>는 확률변수의 확률이 함수값이다.</p>
+<p>기대값</p>
+<p>&nbsp; 확률변수의 평균적인 값이다. <span class="math inline">\(E(X) = \sum xp(x)\)</span></p>
+</section>
+<section id="함수와-시리즈" class="level5">
+<h5 class="anchored" data-anchor-id="함수와-시리즈">2. 함수와 시리즈</h5>
+<p>시리즈는 복잡한 함수를 단순한 다항식으로 근사하거나, 함수의 특성을 분석하는 데 사용된다. 시리즈는 유한하거나 무한한 항들로 이루어진 수열의 합으로 정의된다.</p>
+<p>유한 시리즈: <span class="math inline">\(S_{n} = {\sum_{i = 1}^{n}}a_{k}\)</span></p>
+<p>무한 시리즈: <span class="math inline">\(S_{\infty} = {\sum_{i = 1}^{\infty}}a_{k}\)</span></p>
+<p>이항시리즈 binomial series</p>
+<p><span class="math display">\[(a + b)^{n} = a^{n} + \binom{n}{1}a^{n - 1}b + ... + \binom{n}{n - 1}ab^{n - 1} + b^{n}\]</span></p>
+<p>특수한 경우</p>
+<p><span class="math display">\[\frac{1}{(1 + x)^{2}} = - 1 + 2x - 3x^{2} + 4x^{3} - ...\]</span></p>
+<p><span class="math display">\[\frac{1}{1 + x} = 1 - x + x^{2} - x^{3} + x^{4} - ...\]</span></p>
+<p>지수시리즈 exponential series</p>
+<p><span class="math display">\[e^{x} = 1 + x + \frac{x^{2}}{2!} + \frac{x^{3}}{3!} + ...\]</span></p>
+<p><span class="math display">\[e^{x} = lim_{n \rightarrow}^{\infty}(1 + \frac{x}{n})^{n}\]</span></p>
+<p><span class="math display">\[ln(1 + x) = x - \frac{{}^{2}}{2} + \frac{x^{3}}{3} - \frac{x^{4}}{4} + ..., - 1 &lt; x &lt; 1\]</span></p>
+<p>산술시리즈 arithmetic series</p>
+<p><span class="math display">\[S_{n} = a + (a + d) + (a + 2d) + \cdots + \lbrack a + (n - 1)d\rbrack\]</span></p>
+<p>&nbsp; &nbsp; &nbsp; - <span class="math inline">\(a\)</span>: 첫 번째 항, <span class="math inline">\(d\)</span>: 공차(항 사이의 일정한 차이), <span class="math inline">\(n\)</span>: 항의 개수</p>
+<p><span class="math display">\[S_{n} = \frac{n}{2}\lbrack 2a + (n - 1)d\rbrack\]</span></p>
+<p>기하시리즈 geometric series</p>
+<p><span class="math display">\[S_{n} = a + ar + ar^{2} + \cdots + ar^{n - 1}\]</span></p>
+<p>&nbsp; &nbsp; &nbsp;- <span class="math inline">\(a\)</span>: 첫 번째 항, <span class="math inline">\(r\)</span>: 공비(항 사이의 일정한 차이)</p>
+<p><span class="math display">\[S_{n} = \frac{a(1 - r^{n})}{1 - r},r \neq 1\]</span></p>
+<p>무한 기하시리즈: <span class="math inline">\(S_{n} = \frac{a}{1 - r}, - 1 &lt; r &lt; 1\)</span></p>
+</section>
+<section id="통계학-주요상수" class="level5">
+<h5 class="anchored" data-anchor-id="통계학-주요상수">3. 통계학 주요상수</h5>
+<p>지수 exponent <span class="math inline">\(e\)</span></p>
+<p>&nbsp; 자연로그 함수의 밑으로 정의되며, 무한 급수로 표현된다.</p>
+<p>&nbsp; <span class="math inline">\(e \approx 2.71828182845904\ldots\)</span>(무리수)</p>
+<p>&nbsp; 통계학의 주요 확률분포함수(정규분포, 포아송분포)의 항이다.</p>
+<p>자연상수 <span class="math inline">\(ln2\)</span></p>
+<p><span class="math display">\[\ln 2 \approx 0.69314718056\ldots \text{(무리수)}\]</span></p>
+<p>&nbsp; 정보 이론: 1비트의 정보. 이진수 체계와 로그 연산.</p>
+<p>황금비 <span class="math inline">\(\phi \approx 1.61803398874989\ldots\)</span></p>
+<p>&nbsp; <span class="math inline">\(a/b = (a + b)/a\)</span>를 만족하는 비율 <span class="math inline">\(\phi = \frac{1 + \sqrt{5}}{2}\)</span></p>
+<p>오일러상수</p>
+<p>&nbsp; 조화급수와 자연로그의 차이로 정의된다.</p>
+<p><span class="math display">\[\gamma = \lim_{n \rightarrow \infty}\left( \overset{n}{\sum_{k = 1}}\frac{1}{k} - \ln n \right) \approx 0.577215664901532\ldots\]</span></p>
+</section>
+<section id="기호" class="level5">
+<h5 class="anchored" data-anchor-id="기호">기호</h5>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">소문자</td>
+<td style="text-align: center;">α</td>
+<td style="text-align: center;">β</td>
+<td style="text-align: center;">γ</td>
+<td style="text-align: center;">δ</td>
+<td style="text-align: center;">ε</td>
+<td style="text-align: center;">ζ</td>
+<td style="text-align: center;">η</td>
+<td style="text-align: center;">θ</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">대문자</td>
+<td style="text-align: center;">Α</td>
+<td style="text-align: center;">Β</td>
+<td style="text-align: center;">Γ</td>
+<td style="text-align: center;">Δ</td>
+<td style="text-align: center;">Ε</td>
+<td style="text-align: center;">Ζ</td>
+<td style="text-align: center;">Η</td>
+<td style="text-align: center;">Θ</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">발음</td>
+<td style="text-align: center;">alpha</td>
+<td style="text-align: center;">beta</td>
+<td style="text-align: center;">gamma</td>
+<td style="text-align: center;">delta</td>
+<td style="text-align: center;">epsilon</td>
+<td style="text-align: center;">zeta</td>
+<td style="text-align: center;">eta</td>
+<td style="text-align: center;">theta</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">소문자</td>
+<td style="text-align: center;">ι</td>
+<td style="text-align: center;">κ</td>
+<td style="text-align: center;">χ</td>
+<td style="text-align: center;">λ</td>
+<td style="text-align: center;">μ</td>
+<td style="text-align: center;">ν</td>
+<td style="text-align: center;">ξ</td>
+<td style="text-align: center;">ο</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">대문자</td>
+<td style="text-align: center;">Ι</td>
+<td style="text-align: center;">Κ</td>
+<td style="text-align: center;">Χ</td>
+<td style="text-align: center;">Λ</td>
+<td style="text-align: center;">Μ</td>
+<td style="text-align: center;">Ν</td>
+<td style="text-align: center;">Ξ</td>
+<td style="text-align: center;">Ο</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">발음</td>
+<td style="text-align: center;">iota</td>
+<td style="text-align: center;">kappa</td>
+<td style="text-align: center;">chi</td>
+<td style="text-align: center;">lambda</td>
+<td style="text-align: center;">mu</td>
+<td style="text-align: center;">nu</td>
+<td style="text-align: center;">xi(ksi)</td>
+<td style="text-align: center;">omicron</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">소문자</td>
+<td style="text-align: center;">π</td>
+<td style="text-align: center;">ρ</td>
+<td style="text-align: center;">σ</td>
+<td style="text-align: center;">τ</td>
+<td style="text-align: center;">υ</td>
+<td style="text-align: center;">ϕ</td>
+<td style="text-align: center;">ψ</td>
+<td style="text-align: center;">ω</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">대문자</td>
+<td style="text-align: center;">Π</td>
+<td style="text-align: center;">Ρ</td>
+<td style="text-align: center;">Σ</td>
+<td style="text-align: center;">Τ</td>
+<td style="text-align: center;">Υ</td>
+<td style="text-align: center;">Φ</td>
+<td style="text-align: center;">Ψ</td>
+<td style="text-align: center;">Ω</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">발음</td>
+<td style="text-align: center;">pi</td>
+<td style="text-align: center;">rho</td>
+<td style="text-align: center;">sigma</td>
+<td style="text-align: center;">tau</td>
+<td style="text-align: center;">upsilon</td>
+<td style="text-align: center;">phi</td>
+<td style="text-align: center;">psi</td>
+<td style="text-align: center;">omega</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</section>
+</section>
+<section id="chapter-2.-좌표와-직선방정식" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-좌표와-직선방정식"><span style="color:green">chapter 2. 좌표와 직선방정식</span></h3>
+<section id="이차원평면과-데카르트-좌표" class="level5">
+<h5 class="anchored" data-anchor-id="이차원평면과-데카르트-좌표">1. 이차원평면과 데카르트 좌표</h5>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/데카르트.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>이차원 평면에서 모든 점은 숫자 좌표로 coordinate 표현할 수 있으며, 점들의 집합으로 이루어진 선이나 곡선은 좌표방정식으로 나타낼 수 있다. 이를 위해 이차원 평면에는 두 개의 직선이 설정된다.. 수평선인 <span class="math inline">\(x\)</span>-축 axis과 수직선인 <span class="math inline">\(y\)</span>-축이다. 이 두 직선은 원점에서 직각으로 교차하며, 원점은 두 축의 기준점이 된다.</p>
+<p>원점을 기준으로 <span class="math inline">\(x\)</span>-축에서 <span class="math inline">\(a\)</span>만큼, <span class="math inline">\(y\)</span>-축에서 <span class="math inline">\(b\)</span>만큼 떨어진 점의 좌표는 <span class="math inline">\((a,b)\)</span>로 표기된다. 이러한 표기 방식은 데카르트 좌표라고 한다. 여기서 <span class="math inline">\(a\)</span>와 <span class="math inline">\(b\)</span>는 각각 <span class="math inline">\(x\)</span>-좌표와 <span class="math inline">\(y\)</span>-좌표를 나타내며, 이 값들은 모두 실수 값으로 구성된다.</p>
+<p>데카르트 Cartesian 좌표계는 이차원 평면에서 점의 위치를 명확하고 직관적으로 나타내는 데 사용되며, 수학적 분석 및 응용의 기초가 된다. 이를 활용하면 점, 선, 곡선, 그리고 다양한 기하학적 형태를 방정식으로 표현하고, 이를 통해 여러 문제를 해결할 수 있다.</p>
+</section>
+<section id="직선과-증가" class="level5">
+<h5 class="anchored" data-anchor-id="직선과-증가">2. 직선과 증가</h5>
+</section>
+<section id="직선" class="level5">
+<h5 class="anchored" data-anchor-id="직선">직선</h5>
+<p>두 점을 가장 짧은 거리로 연결하는 선을 직선이라고 한다. 직선은 두 점 사이의 최단 경로로 정의되며, 그 위에는 무수히 많은 점이 존재한다. 좌표평면에서 직선은 중요한 기하학적 구조로, 점과 점 사이의 관계를 나타내는 기본 도구이다.</p>
+</section>
+<section id="증가량-increment" class="level5">
+<h5 class="anchored" data-anchor-id="증가량-increment">증가량 (Increment)</h5>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/증가량.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>좌표평면에서 두 점 <span class="math inline">\((x_{1},y_{1})\)</span>과 <span class="math inline">\((x_{2},y_{2})\)</span>의 이동을 고려할 때, x-좌표와 y-좌표의 변화량을 각각 증가량이라고 한다.</p>
+<p>x-좌표의 증가량: <span class="math inline">\(\Delta x = x_{2} - x_{1}\)</span></p>
+<p>y-좌표의 증가량: <span class="math inline">\(\Delta y = y_{2} - y_{1}\)</span></p>
+<p>증가량의 부호와 크기는 두 점의 좌표 차이에 의해 결정되며, x-좌표나 y-좌표의 변화 방향을 나타낸다.</p>
+</section>
+<section id="기울기-slope" class="level5">
+<h5 class="anchored" data-anchor-id="기울기-slope">기울기 slope</h5>
+<p>증가량은 두 점을 지나는 직선의 기울기를 계산하는 데 활용된다. 기울기 m은 두 점 사이의 x-좌표의 증가량에 대한 y-좌표의 증가량의 비율로 정의되며, 다음과 같은 식으로 표현된다:</p>
+<p><span class="math display">\[m = \frac{\Delta y}{\Delta x} = \frac{y_{2} - y_{1}}{x_{2} - x_{1}},\Delta x \neq 0\]</span></p>
+<p>&nbsp; &nbsp; - <span class="math inline">\(m &gt; 0\)</span>: 직선이 오른쪽으로 올라간다.</p>
+<p>&nbsp; &nbsp; - <span class="math inline">\(m &lt; 0\)</span>: 직선이 오른쪽으로 내려간다.</p>
+<p>&nbsp; &nbsp; - <span class="math inline">\(m = 0\)</span>: 직선이 수평이다.</p>
+<p>&nbsp; &nbsp; - <span class="math inline">\(m\)</span>이 정의되지 않음 (<span class="math inline">\(\Delta x = 0\)</span>): 직선이 수직이다.</p>
+</section>
+<section id="수평-parallel과-수직-perpendicular" class="level5">
+<h5 class="anchored" data-anchor-id="수평-parallel과-수직-perpendicular">수평 parallel과 수직 perpendicular</h5>
+<p>두 직선 <span class="math inline">\(L_{1}\)</span>과 <span class="math inline">\(L_{2}\)</span>의 기울기가 동일하면, 즉 <span class="math inline">\(m_{1} = m_{2}\)</span>이면 두 직선은 서로 평행 하다고 한다. 이 경우, 두 직선은 교차하지 않으며, 동일한 방향으로 뻗어 있다.</p>
+<p>두 직선 <span class="math inline">\(L_{1}\)</span>과 <span class="math inline">\(L_{3}\)</span>의 기울기의 곱이 -1이면, 즉 <span class="math inline">\(m_{1} \cdot m_{2} = - 1\)</span>이면 두 직선은 서로 수직하다고 한다. 이는 두 직선이 교차할 때 <span class="math inline">\(90^{\circ}\)</span>의 각을 이루는 경우이다.</p>
+</section>
+<section id="직선-방정식-linear-equation" class="level5">
+<h5 class="anchored" data-anchor-id="직선-방정식-linear-equation">3. 직선 방정식 linear equation</h5>
+<p>직선 방정식은 직선 위의 모든 점의 좌표를 만족하며, 직선 이외의 점의 좌표에서는 만족하지 않는 방정식이다. 좌표평면에서 직선은 절편 intercept과 기울기 slope를 이용해 다음과 같은 일반적인 형태로 표현된다. <span class="math inline">\(y = bx + a\)</span></p>
+<ul>
+<li><span class="math inline">\(b\)</span>: 직선의 기울기, <span class="math inline">\(a\)</span>: y-축과 교차하는 절편</li>
+</ul>
+</section>
+<section id="직선-구성요소" class="level5">
+<h5 class="anchored" data-anchor-id="직선-구성요소">직선 구성요소</h5>
+<p>기울기 <span class="math inline">\(b\)</span>는 직선이 얼마나 가파르게 증가하거나 감소하는지를 나타내며, x-좌표의 변화량에 대한 y-좌표의 변화량의 비율로 정의된다:</p>
+<p><span class="math display">\[b = \frac{\Delta y}{\Delta x}\]</span></p>
+<p>&nbsp; &nbsp; - b &gt; 0: 직선이 오른쪽으로 올라간다.</p>
+<p>&nbsp; &nbsp; - b &lt; 0: 직선이 오른쪽으로 내려간다.</p>
+<p>&nbsp; &nbsp; - b = 0: 직선이 수평이다.</p>
+<p>절편 a는 직선이 y-축과 만나는 점의 y-좌표를 나타낸다. x = 0일 때, 직선 방정식에서 y = a가 된다.</p>
+</section>
+<section id="수평선-horizontal-line" class="level5">
+<h5 class="anchored" data-anchor-id="수평선-horizontal-line">수평선 horizontal line</h5>
+<p>기울기 b = 0인 경우, 직선은 수평선이 된다. 이러한 직선의 방정식은 <span class="math inline">\(y = a\)</span>이다. 이 직선은 x-축과 평행하며, y-축 상에서 y = a를 지난다.</p>
+</section>
+<section id="수직선-vertical-line" class="level5">
+<h5 class="anchored" data-anchor-id="수직선-vertical-line">수직선 vertical line</h5>
+<p>y-축과 평행한 직선의 방정식으로 <span class="math inline">\(x = c\)</span>이다. 이 직선은 x-축과 x = c에서 교차한다. 기울기가 정의되지 않으며, 수직선은 y-축과 항상 평행하다.</p>
+<p><br></p>
+</section>
+</section>
+<section id="chapter-3.-함수란" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-함수란"><span style="color:green">chapter 3. 함수란?</span></h3>
+<section id="함수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="함수-정의">1. 함수 정의</h5>
+<p>함수는 두 집합 사이의 특정 규칙에 따라 값을 대응시키는 관계를 나타낸다. 함수는 정의역과 치역으로 구성되며, 정의역의 각 원소에 대해 치역의 단 하나의 원소만 대응된다. 이를 통해 y가 x에 의해 결정된다고 표현하며, 수학적으로 다음과 같이 나타낸다. <span class="math inline">\(y = f(x)\)</span></p>
+<p>이는 <span dir="rtl">”</span>y는 x의 함수이다”라고 읽는다.</p>
+<p><img src="../../images/함수1.png" class="img-fluid"></p>
+<p>정의역 domain</p>
+<p>정의역은 함수에서 x가 가질 수 있는 값들의 집합을 말한다. 즉, 함수 f(x)가 유효하게 정의될 수 있는 모든 입력값의 집합이다.</p>
+</section>
+<section id="치역-range" class="level5">
+<h5 class="anchored" data-anchor-id="치역-range">치역 range</h5>
+<p>치역은 함수가 출력할 수 있는 값들의 집합이다. 정의역의 원소 x가 함수 f를 통해 출력되는 값 y = f(x)의 모임이 치역이다.</p>
+</section>
+<section id="대응-규칙" class="level5">
+<h5 class="anchored" data-anchor-id="대응-규칙">대응 규칙</h5>
+<p>함수는 정의역의 각 원소를 치역의 한 원소에 대응시키는 규칙을 가지고 있다. 각 정의역의 값 x는 치역에서 정확히 하나의 값 y에 대응해야 한다. (2)번은 동일 x-값에 대하여 2개 y-값이 대응되므로 함수가 아니고 다른 모든 것은 함수이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../images/함수2.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</section>
+<section id="우함수와-기함수" class="level5">
+<h5 class="anchored" data-anchor-id="우함수와-기함수">2. 우함수와 기함수</h5>
+<p>우함수 even function</p>
+<p>&nbsp; 함수 <span class="math inline">\(f(x)\)</span>가 다음 조건을 만족하면 우함수라 한다:</p>
+<p><span class="math display">\[f( - x) = f(x)\text{모든}x \in \text{정의역(domain)}\]</span></p>
+<p>우함수는 y-축을 기준으로 대칭적이다. 즉, 그래프의 왼쪽 부분을 y-축을 따라 접으면 오른쪽 부분과 정확히 일치한다.</p>
+<p>기함수 odd function</p>
+<p>&nbsp; 함수 <span class="math inline">\(f(x)\)</span>가 다음 조건을 만족하면 기함수라 정의한다:</p>
+<p><span class="math display">\[f( - x) = - f(x)\text{모든}x \in \text{정의역(domain)}\]</span></p>
+<p>기함수는 원점을 기준으로 대칭적이다. 즉, 그래프를 원점을 중심으로 180° 회전시키면 동일한 모양이 된다.</p>
+</section>
+<section id="함수-종류" class="level5">
+<h5 class="anchored" data-anchor-id="함수-종류">3. 함수 종류</h5>
+</section>
+<section id="함성함수-composite-function" class="level5">
+<h5 class="anchored" data-anchor-id="함성함수-composite-function">(1) 함성함수 Composite Function</h5>
+<p>합성함수는 두 함수 f(x)와 g(x)가 주어졌을 때, 함수 g(x)의 출력값이 함수 f(x)의 입력값으로 사용되는 새로운 함수이다. 이를 다음과 같이 나타낸다. <span class="math inline">\((f \circ g)(x) = f(g(x))\)</span></p>
+<p>&nbsp; &nbsp; - g(x): 먼저 적용되는 함수.</p>
+<p>&nbsp; &nbsp; - f(x): g(x)의 출력값을 입력값으로 사용하는 함수.</p>
+<p>&nbsp; &nbsp; - <span class="math inline">\((f \circ g)(x)\)</span>: f(x)와 g(x)의 합성함수.</p>
+<p>합성함수 <span class="math inline">\((f \circ g)(x)\)</span>의 정의역은 g(x)와 f(x)가 동시에 유효하게 정의되는 입력값으로 구성된다. 즉, x는 g(x)의 정의역에 속하고, g(x)의 출력값은 f(x)의 정의역에 속해야 한다.</p>
+<p><span class="math inline">\((f \circ g)(x)\)</span>는 다음 두 단계를 거친다:</p>
+<p>&nbsp; &nbsp; - 먼저 x에 대해 g(x)를 계산하고 그런 다음, f(x)에 g(x)를 대입하여 f(g(x))를 계산한다.</p>
+<p><span class="math display">\[f(x) = 2x + 1,g(x) = x^{2}\]</span></p>
+<p><span class="math display">\[f(g(x)) = f(x^{2}) = 2x^{2} + 1\]</span></p>
+<p><span class="math display">\[g(f(x)) = g(2x + 1) = (2x + 1)^{2}\]</span></p>
+</section>
+<section id="절대값-함수" class="level5">
+<h5 class="anchored" data-anchor-id="절대값-함수">(2) 절대값 함수</h5>
+<p>숫자 x의 절대값(absolute value)은 x의 크기(거리를 나타냄)를 의미하며, 항상 0 이상의 값을 가진다. 절대값은 다음과 같이 정의된다.</p>
+<p><span class="math display">\[|x| = \{\begin{matrix}
+x, &amp; \text{if}x \geq 0 \\
+- x, &amp; \text{if}x &lt; 0
+\end{matrix}\]</span></p>
+<p>절대값은 숫자 x와 0 사이의 거리로 해석된다. 절대값의 결과는 항상 양수이거나 0이다.</p>
+</section>
+<section id="정수함수-integer-function" class="level5">
+<h5 class="anchored" data-anchor-id="정수함수-integer-function">(3) 정수함수 integer function</h5>
+<p>정수 함수는 숫자 x를 넘지 않는 최대 정수를 반환하는 함수이다. 이를 바닥함수 floor function라고도 하며, 다음과 같이 정의된다.</p>
+<p><span class="math display">\[\lfloor x\rfloor = \text{최대 정수}n\text{such that}n \leq x\]</span></p>
+<p>&nbsp; &nbsp; - <span class="math inline">\(\lfloor x\rfloor\)</span>: x를 넘지 않는 가장 큰 정수.</p>
+<p>&nbsp; &nbsp; - <span class="math inline">\(\lfloor x\rfloor\)</span>는 항상 <span class="math inline">\(n \leq x &lt; n + 1\)</span>을 만족한다.</p>
+</section>
+<section id="함수의-사칙연산" class="level5">
+<h5 class="anchored" data-anchor-id="함수의-사칙연산">4. 함수의 사칙연산</h5>
+<p>두 함수 f(x)와 g(x)가 주어졌을 때, 이들 함수에 대해 덧셈, 뺄셈, 곱셈, 나눗셈과 같은 사칙연산을 정의할 수 있다. 각 연산은 정의역에서 두 함수의 값에 기반하여 계산된다.</p>
+</section>
+<section id="함수의-덧셈뺄셈" class="level5">
+<h5 class="anchored" data-anchor-id="함수의-덧셈뺄셈">함수의 덧셈/뺄셈</h5>
+<p><span class="math display">\[(f \pm g)(x) = f(x) \pm g(x)\]</span></p>
+<p>정의역: f(x)와 g(x)가 동시에 정의된 구간.</p>
+<p>결과: f(x)의 값과 g(x)의 값을 더한(뺀) 결과.</p>
+</section>
+<section id="함수의-곱셈" class="level5">
+<h5 class="anchored" data-anchor-id="함수의-곱셈">함수의 곱셈</h5>
+<p><span class="math display">\[(f \cdot g)(x) = f(x) \cdot g(x)\]</span></p>
+<ul>
+<li><p>정의역: f(x)와 g(x)가 동시에 정의된 구간.</p></li>
+<li><p>결과: f(x)와 g(x)의 값을 곱한 결과.</p></li>
+</ul>
+</section>
+<section id="함수의-나눗셈" class="level5">
+<h5 class="anchored" data-anchor-id="함수의-나눗셈">함수의 나눗셈</h5>
+<p><span class="math display">\[\left( \frac{f}{g} \right)(x) = \frac{f(x)}{g(x)},g(x) \neq 0\]</span></p>
+<ul>
+<li><p>정의역: f(x)와 g(x)가 동시에 정의되고, <span class="math inline">\(g(x) \neq 0\)</span>인 구간.</p></li>
+<li><p>결과: f(x)의 값을 g(x)의 값으로 나눈 결과. <br></p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-4.-함수의-응용-및-극한" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-4.-함수의-응용-및-극한"><span style="color:green">chapter 4. 함수의 응용 및 극한</span></h3>
+<section id="함수의-통계-응용" class="level5">
+<h5 class="anchored" data-anchor-id="함수의-통계-응용">1. 함수의 통계 응용</h5>
+</section>
+<section id="확률밀도함수-fx" class="level5">
+<h5 class="anchored" data-anchor-id="확률밀도함수-fx">(1) 확률밀도함수 <span class="math inline">\(f(x)\)</span></h5>
+<p>연속형확률변수의 분포를 나타내는 함수로, 특정 구간 내에서 값이 나타날 확률의 상대적인 가능성을 표현한다.</p>
+<p>&nbsp; &nbsp; - 확률밀도함수 정의: <span class="math inline">\(f(x) \geq 0,\int_{- \infty}^{\infty}f(x)dx = 1\)</span></p>
+<p>&nbsp; &nbsp; - 정규분포의 확률밀도함수: <span class="math inline">\(f(x) = \frac{1}{\sqrt{2\pi\sigma^{2}}}e^{- \frac{(x - \mu)^{2}}{2\sigma^{2}}}\)</span></p>
+<p>&nbsp; &nbsp; - 데이터의 분포, 확률 계산 <span class="math inline">\(P(a \leq X \leq b) = \int_{a}^{b}f(x)dx\)</span></p>
+</section>
+<section id="누적확률밀도함수" class="level5">
+<h5 class="anchored" data-anchor-id="누적확률밀도함수">(2) 누적확률밀도함수</h5>
+<p>확률변수가 특정 값 이하일 확률을 나타내는 함수이다.</p>
+<ul>
+<li><p>누적확률밀도함수 정의: <span class="math inline">\(F(x) = P(X \leq x) = \int_{- \infty}^{x}f(t)dt\)</span></p></li>
+<li><p>정규분포 CDF: <span class="math inline">\(F(x) = \frac{1}{2}\left\lbrack 1 + \text{erf}\left( \frac{x - \mu}{\sqrt{2}\sigma} \right) \right\rbrack\)</span></p></li>
+<li><p>분위수 결정: <span class="math inline">\(P(X \leq x_{p}) = p\)</span> 만족하는 <span class="math inline">\(X_{p}\)</span>를 찾음.</p></li>
+</ul>
+</section>
+<section id="회귀모형" class="level5">
+<h5 class="anchored" data-anchor-id="회귀모형">(3) 회귀모형</h5>
+<p>함수는 독립변수와 종속변수 간의 관계를 모델링하는 데 사용된다. 회귀모형은 함수 형태로 데이터의 추세를 설명한다.</p>
+<p>&nbsp; &nbsp; - 선형회귀: <span class="math inline">\(y = \beta_{0} + \beta_{1}x + \epsilon\)</span></p>
+<p>&nbsp; &nbsp; - 비선형 회귀: <span class="math inline">\(y = ae^{bx} + \epsilon\)</span></p>
+<p>&nbsp; &nbsp; - 변수 간 관계 분석, 예측 모델 구축</p>
+</section>
+<section id="생존분석" class="level5">
+<h5 class="anchored" data-anchor-id="생존분석">(4) 생존분석</h5>
+<p>생존분석에서는 생존시간 분포를 분석하는 데 함수가 사용된다.</p>
+<ul>
+<li><p>생존survival 함수: <span class="math inline">\(S(t) = P(T &gt; t) = 1 - F(t)\)</span></p></li>
+<li><p>위험hazard 함수: <span class="math inline">\(h(t) = \frac{f(t)}{S(t)}\)</span></p></li>
+<li><p>제품 수명 분석, 의료 데이터에서 생존 확률 평가</p></li>
+</ul>
+</section>
+<section id="시계열분석" class="level5">
+<h5 class="anchored" data-anchor-id="시계열분석">(5) 시계열분석</h5>
+<p>함수는 시간에 따른 데이터의 변화를 모델링하고 분석하는 데 사용된다.</p>
+<ul>
+<li><p>자기회귀 모델: <span class="math inline">\(X_{t} = \phi_{1}X_{t - 1} + \phi_{2}X_{t - 2} + \cdots + \epsilon_{t}\)</span></p></li>
+<li><p>주식 시장 예측, 온도 변화 모델링.</p></li>
+</ul>
+</section>
+<section id="함수와-몬테카를로-시뮬레이션" class="level5">
+<h5 class="anchored" data-anchor-id="함수와-몬테카를로-시뮬레이션">(6) 함수와 몬테카를로 시뮬레이션</h5>
+<p>함수는 확률 분포로부터 난수를 생성하여 복잡한 통계 문제를 해결하는 데 사용된다.</p>
+<ul>
+<li><span class="math inline">\(\pi\)</span> 값 추정: <span class="math inline">\(f(x) = \sqrt{1 - x^{2}},\text{for}x \in \lbrack 0,1\rbrack\)</span></li>
+</ul>
+</section>
+<section id="함수의-극한" class="level5">
+<h5 class="anchored" data-anchor-id="함수의-극한">2. 함수의 극한</h5>
+</section>
+<section id="극한-정의" class="level5">
+<h5 class="anchored" data-anchor-id="극한-정의">(1) 극한 정의</h5>
+<p>임의의 <span class="math inline">\(\varepsilon &gt; 0\)</span>가 주어졌을 때, 모든 <span class="math inline">\(x\)</span>가 특정 값 <span class="math inline">\(a\)</span>에 충분히 가까워질 때 <span class="math inline">\((0 &lt; |x - a| &lt; \delta),f(x)\)</span>가 특정 값 <span class="math inline">\(L\)</span>에 가까워진다면, 함수 <span class="math inline">\(f(x)\)</span>의 극한은 존재하며 그 극한값은 <span class="math inline">\(L\)</span>이라고 정의한다. 이를 수학적으로 표현하면 <span class="math inline">\(\lim_{x \rightarrow a}f(x) = L\)</span> 이다.</p>
+<ul>
+<li><p><span class="math inline">\(\varepsilon\)</span>: <span class="math inline">\(f(x)\)</span>와 <span class="math inline">\(L\)</span>사이의 허용 오차.</p></li>
+<li><p><span class="math inline">\(\delta\)</span>: <span class="math inline">\(x\)</span>와 <span class="math inline">\(a\)</span> 사이의 거리 제한.</p></li>
+</ul>
+<p>엄밀한 정의 (<span class="math inline">\(\varepsilon - \delta\)</span>정의)<span class="math inline">\(\forall\varepsilon &gt; 0,\exists\delta &gt; 0\text{such that}0 &lt; |x - a| &lt; \delta \Longrightarrow |f(x) - L| &lt; \varepsilon\)</span>이 의미는 <span class="math inline">\(x\)</span>와 <span class="math inline">\(a\)</span>에 충분히 가까워지면 <span class="math inline">\((|x - a| &lt; \delta)\)</span> 함수 <span class="math inline">\(f(x)\)</span>의 값이 <span class="math inline">\(L\)</span>에 충분히 가까워짐 <span class="math inline">\((|f(x) - L| &lt; \varepsilon)\)</span>을 보장한다.</p>
+</section>
+<section id="함수값과-극한값" class="level5">
+<h5 class="anchored" data-anchor-id="함수값과-극한값">(2) 함수값과 극한값</h5>
+<p>함수값 <span class="math inline">\(f(a)\)</span>는 함수가 특정 점 <span class="math inline">\(x = a\)</span>에서 실제로 가지는 값이다. 반면, 극한값 <span class="math inline">\(\lim_{x \rightarrow a}f(x)\)</span>는 <span class="math inline">\(x\)</span>가 <span class="math inline">\(a\)</span>에 가까워질 때 <span class="math inline">\(f(x)\)</span>가 수렴하는 값을 나타낸다. 함수값과 극한값은 다를 수 있으며, 함수가 <span class="math inline">\(x = a\)</span>에서 정의되지 않아도 극한값은 존재할 수 있다.</p>
+<p>함수값 <span class="math inline">\(f(a) = k\)</span></p>
+<p>&nbsp; 함수가 <span class="math inline">\(x = a\)</span>에서 정의되어 있다면 <span class="math inline">\(f(a)\)</span>는 <span class="math inline">\(k\)</span>, 특정 값을 가진다.</p>
+<p>극한값</p>
+<p>&nbsp; 극한값은 좌극한(left-hand limit)과 우극한(right-hand limit)에 따라 달라질 수 있다:</p>
+<p>&nbsp; &nbsp; - 좌극한 <span class="math inline">\(L_{2}\)</span>: <span class="math inline">\(\lim_{x \rightarrow a^{-}}f(x) = L_{2}\)</span></p>
+<p>&nbsp; &nbsp; - 우극한 <span class="math inline">\(L_{1}\)</span>: <span class="math inline">\(\lim_{x \rightarrow a^{+}}f(x) = L_{1}\)</span></p>
+<p>&nbsp; &nbsp; - 전체 극한은 좌극한과 우극한이 동일할 때 존재한다,</p>
+</section>
+<section id="연속함수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="연속함수-정의">(3) 연속함수 정의</h5>
+<p>함수 <span class="math inline">\(f(x)\)</span>가 <span class="math inline">\(x = a\)</span>에서 연속하려면 다음 세 가지 조건을 모두 만족해야 한다:</p>
+<p>&nbsp; 1. <span class="math inline">\(f(a)\)</span>가 정의되어 있어야 한다.</p>
+<p>&nbsp; 2. <span class="math inline">\(\lim_{x \rightarrow a}f(x)\)</span>가 존재해야 한다.</p>
+<p>&nbsp; 3. 함수값과 극한값이 일치해야 한다. <span class="math inline">\(\lim_{x \rightarrow a}f(x) = f(a)\)</span></p>
+</section>
+<section id="극한-계산-규칙" class="level5">
+<h5 class="anchored" data-anchor-id="극한-계산-규칙">(4) 극한 계산 규칙</h5>
+<p>상수함수의 극한</p>
+<p>&nbsp; <span class="math inline">\(\lim_{x \rightarrow a}c = c\)</span>, 상수 함수의 극한은 상수 자신이다.</p>
+<p>항등함수의 극한</p>
+<p>&nbsp; <span class="math display">\[\lim_{x \rightarrow a}x = a\]</span></p>
+<p>선형성</p>
+<p>&nbsp; 극한 연산은 선형성을 가진다:</p>
+<p><span class="math display">\[\lim_{x \rightarrow a}\lbrack f(x) \pm g(x)\rbrack = \lim_{x \rightarrow a}f(x) \pm \lim_{x \rightarrow a}g(x)\]</span></p>
+<p>곱셈</p>
+<p>&nbsp; 두 함수의 곱의 극한은 각 함수의 극한의 곱과 같다.</p>
+<p><span class="math display">\[\lim_{x \rightarrow a}\lbrack f(x) \cdot g(x)\rbrack = \left( \lim_{x \rightarrow a}f(x) \right) \cdot \left( \lim_{x \rightarrow a}g(x) \right)\]</span></p>
+<p>나눗셈</p>
+<p>&nbsp; 두 함수의 나눗셈의 극한은 각 함수의 극한의 나눗셈과 같다 (분모가 0이 아닌 경우)</p>
+<p><span class="math display">\[\lim_{x \rightarrow a}\frac{f(x)}{g(x)} = \frac{\lim_{x \rightarrow a}f(x)}{\lim_{x \rightarrow a}g(x)},\lim_{x \rightarrow a}g(x) \neq 0\]</span></p>
+<p>거듭제곱</p>
+<p>&nbsp; <span class="math inline">\(\lim_{x \rightarrow a}\lbrack f(x)\rbrack^{n} = \left( \lim_{x \rightarrow a}f(x) \right)^{n}\)</span>, 여기서 <span class="math inline">\(n\)</span>은 정수이다.</p>
+<p>루트</p>
+<p>&nbsp; <span class="math display">\[\lim_{x \rightarrow a}\sqrt[n]{f(x)} = \sqrt[n]{\lim_{x \rightarrow a}f(x)},\text{if}\lim_{x \rightarrow a}f(x) \geq 0\]</span></p>
+<p>합성함수의 극한 (연쇄법칙)</p>
+<p>&nbsp; 만약 <span class="math inline">\(g(x)\)</span>의 극한이 <span class="math inline">\(a\)</span>로 접근할 때 <span class="math inline">\(b\)</span>이고, <span class="math inline">\(f(x)\)</span>가 <span class="math inline">\(b\)</span>에서 연속이면</p>
+<p><span class="math inline">\(\lim_{x \rightarrow a}f(g(x)) = f\left( \lim_{x \rightarrow a}g(x) \right)\)</span> 이다.</p>
+<p>L<span dir="rtl">’</span>Hôpital<span dir="rtl">’</span>s Rule의 정의</p>
+<p>&nbsp; 함수 f(x)와 g(x)가 x \to a에서 각각 0/0 형태 또는 \infty/\infty 형태를 가지는 경우, 두 함수의 극한은 다음과 같이 계산할 수 있다:</p>
+<p><span class="math display">\[\lim_{x \rightarrow a}\frac{f(x)}{g(x)} = \lim_{x \rightarrow a}\frac{f'(x)}{g'(x)},\text{if}\lim_{x \rightarrow a}\frac{f'(x)}{g'(x)}\text{exists.}\]</span></p>
+<ul>
+<li><p>형태: <span class="math inline">\(\frac{0}{0}\)</span> 또는 <span class="math inline">\(\frac{\infty}{\infty}\)</span>와 같은 불정형 형태를 가져야 한다.</p></li>
+<li><p>미분 가능성: <span class="math inline">\(f(x)\)</span>와 <span class="math inline">\(g(x)\)</span>는 <span class="math inline">\(x \rightarrow a\)</span>에서 미분 가능해야 한다.</p></li>
+<li><p>분모의 도함수가 0이 아님: <span class="math inline">\(g'(x) \neq 0\)</span>인 구간에서 적용 가능</p></li>
+<li><p><span class="math inline">\(\frac{0}{0}\)</span> 형태: <span class="math inline">\(\lim_{x \rightarrow 0}\frac{\sin(x)}{x} = \lim_{x \rightarrow 0}\frac{\cos(x)}{1} = \cos(0) = 1\)</span></p></li>
+<li><p><span class="math inline">\(\frac{\infty}{\infty}\)</span> 형태: <span class="math inline">\(\lim_{x \rightarrow \infty}\frac{x}{e^{x}} = \lim_{x \rightarrow \infty}\frac{1}{e^{x}} = 0\)</span></p></li>
+</ul>
+<p>무한대 있는 극한</p>
+<p>&nbsp; <span class="math inline">\(x\)</span>가 무한대 <span class="math inline">\(\infty\)</span>혹은 <span class="math inline">\(- \infty\)</span>로 접근할 때 함수 <span class="math inline">\(f(x)\)</span>의 극한을 구하는 규칙이다.</p>
+<p><span class="math display">\[lim_{x \rightarrow \pm \infty}\frac{1}{x} = 0\]</span></p>
+<p><span class="math inline">\(lim_{x \rightarrow \pm \infty}c = c\)</span>, <span class="math inline">\(c\)</span>는 상수</p>
+<p>함수가 분수의 형태를 가지면 분모의 가장 큰 <span class="math inline">\(x\)</span>차수로 나누고 위의 규칙을 이용하라.</p>
+<p>특정 함수의 극한</p>
+<p>&nbsp; - 지수 함수: <span class="math inline">\(\lim_{x \rightarrow \infty}e^{- x} = 0\)</span></p>
+<p>&nbsp; - 삼각 함수: <span class="math inline">\(\lim_{x \rightarrow 0}\frac{\sin(x)}{x} = 1\)</span>, <span class="math inline">\(\lim_{x \rightarrow 0}\frac{1 - \cos(x)}{x^{2}} = \frac{1}{2}\)</span></p>
+<p>&nbsp; - 로그 함수: <span class="math inline">\(\lim_{x \rightarrow \infty}\ln(x) = \infty\)</span></p>
+</section>
+<section id="수렴-convergence" class="level5">
+<h5 class="anchored" data-anchor-id="수렴-convergence">3. 수렴 convergence</h5>
+<p>수렴의 정의</p>
+<p>&nbsp; 함수 <span class="math inline">\(f(x)\)</span> 또는 수열 <span class="math inline">\(\{ a_{n}\}\)</span>가 특정 값에 수렴한다는 것은 극한값이 존재하며, 일정 값에 점점 가까워진다는 것을 의미한다.</p>
+<p>수열의 수렴</p>
+<p>&nbsp; 수열 <span class="math inline">\(\{ a_{n}\}\)</span>이 <span class="math inline">\(L\)</span>로 수렴한다면, 임의의 <span class="math inline">\(\varepsilon &gt; 0\)</span>에 대해 <span class="math inline">\(n \geq N\)</span>일 때 다음 조건을 만족하는 <span class="math inline">\(N\)</span>이 존재한다.</p>
+<p><span class="math inline">\(|a_{n} - L| &lt; \varepsilon\)</span>, 여기서 <span class="math inline">\(L\)</span>은 수열의 극한값이다.</p>
+<p>함수의 수렴</p>
+<p>&nbsp; 함수 <span class="math inline">\(f(x)\)</span>가 <span class="math inline">\(L\)</span>로 수렴하면, <span class="math inline">\(x \rightarrow a\)</span>에서 <span class="math inline">\(\lim_{x \rightarrow a}f(x) = L\)</span></p>
+<p>수렴의 성질</p>
+<p>&nbsp; 수열이나 함수가 수렴하면 극한값은 유일하다.</p>
+<p>&nbsp; 수렴하는 함수나 수열은 경계값을 가지며, 점점 극한값에 가까워진다.</p>
+<p>극한과 수렴의 차이</p>
+<p>&nbsp; 극한은 특정 값에 접근하는 경향을 나타내며, 함수나 수열이 특정 점에서 어떻게 동작 하는지 설명한다.</p>
+<p>&nbsp; 수렴은 극한값이 존재하고 일정 값에 점점 가까워지는 성질을 나타낸다.</p>
+</section>
+<section id="확률수렴과-분포수렴" class="level5">
+<h5 class="anchored" data-anchor-id="확률수렴과-분포수렴">4. 확률수렴과 분포수렴</h5>
+</section>
+<section id="확률수렴-convergence-in-probability" class="level5">
+<h5 class="anchored" data-anchor-id="확률수렴-convergence-in-probability">(1) 확률수렴 (Convergence in Probability)</h5>
+<p>확률변수의 열 <span class="math inline">\(\{ X_{n}\}\)</span>이 확률변수 <span class="math inline">\(X\)</span>에 확률수렴한다는 것은, 임의의 <span class="math inline">\(\varepsilon &gt; 0\)</span>에 대해 다음 조건을 만족하는 <span class="math inline">\(n \rightarrow \infty\)</span>가 존재함을 의미한다. <span class="math inline">\(\lim_{n \rightarrow \infty}P(|X_{n} - X| \geq \varepsilon) = 0\)</span></p>
+<p>&nbsp; - 표기: <span class="math inline">\(X_{n}\overset{P}{\rightarrow}X\)</span></p>
+<p>해석</p>
+<p>&nbsp; 확률적으로 <span class="math inline">\(|X_{n} - X|\)</span>가 작아질 가능성이 1에 가까워짐을 나타낸다. 즉, <span class="math inline">\(X_{n}\)</span>과 <span class="math inline">\(X\)</span>가 점점 <span dir="rtl">”</span>가까워진다”고 해석할 수 있다.</p>
+<p>성질</p>
+<p>&nbsp; 확률수렴의 유일성: 극한값 <span class="math inline">\(X\)</span>는 유일하다.</p>
+<p>&nbsp; 확률수렴과 함수: <span class="math inline">\(X_{n}\overset{P}{\rightarrow}X\)</span>이고 <span class="math inline">\(g(x)\)</span>가 연속 함수라면 <span class="math inline">\(g(X_{n})\overset{P}{\rightarrow}g(X)\)</span></p>
+<p>통계학 응용</p>
+<p>&nbsp; 추정량의 일치성: 추정량 <span class="math inline">\({\widehat{\theta}}_{n}\)</span>이 모수 <span class="math inline">\(\theta\)</span>에 확률수렴하면 <span class="math inline">\({\widehat{\theta}}_{n}\)</span>은 일치추정량이다. 법칙의 수렴: 큰 수의 약법칙은 확률수렴으로 표현된다:</p>
+<p><span class="math display">\[{\overline{X}}_{n}\overset{P}{\rightarrow}\mu\]</span></p>
+</section>
+<section id="분포수렴-convergence-in-distribution" class="level5">
+<h5 class="anchored" data-anchor-id="분포수렴-convergence-in-distribution">(2) 분포수렴 (Convergence in Distribution)</h5>
+<p>확률변수의 수열 <span class="math inline">\(\{ X_{n}\}\)</span>이 확률변수 <span class="math inline">\(X\)</span>에 분포수렴한다는 것은, 모든 연속점 <span class="math inline">\(x\)</span>에서 누적분포함수(FDF) <span class="math inline">\(F_{X_{n}}(x)\)</span>가 <span class="math inline">\(F(x)\)</span>로 수렴함을 의미한다. <span class="math inline">\(\lim_{n \rightarrow \infty}F_{X_{n}}(x) = F_{X}(x),\forall x\)</span> <span class="math inline">\(F_{X}(x)\)</span>에서 연속함수.</p>
+<p>&nbsp; 표기: <span class="math inline">\(X_{n}\overset{\mathcal{D}}{\rightarrow}X\)</span></p>
+<p>해석</p>
+<p>&nbsp; 분포수렴은 <span class="math inline">\(X_{n}\)</span>의 분포가 <span class="math inline">\(X\)</span>의 분포로 점점 가까워지는 것을 의미한다. 개별적인 실현값이 아니라 분포 전체의 형태를 고려한다.</p>
+<p>성질</p>
+<p>&nbsp; (1) 연속성: 분포수렴은 누적분포함수의 연속점에서 정의된다.</p>
+<p>&nbsp; (2) 함수와 분포수렴: <span class="math inline">\(X_{n}\overset{\mathcal{D}}{\rightarrow}X\)</span>이고 <span class="math inline">\(g(x)\)</span>가 연속 함수라면</p>
+<p><span class="math inline">\(g(X_{n})\overset{\mathcal{D}}{\rightarrow}g(X)\)</span> 이다.</p>
+<p>응용</p>
+<p>&nbsp; 중심 극한 정리: 표본 평균이 정규분포로 수렴하는 현상은 분포수렴으로 나타낸다. <span class="math inline">\(\sqrt{n}({\overline{X}}_{n} - \mu)\overset{\mathcal{D}}{\rightarrow}N(0,\sigma^{2})\)</span></p>
+</section>
+<section id="확률수렴과-분포수렴의-관계" class="level5">
+<h5 class="anchored" data-anchor-id="확률수렴과-분포수렴의-관계">(3) 확률수렴과 분포수렴의 관계</h5>
+<p>확률수렴 → 분포수렴</p>
+<p><span class="math display">\[X_{n}\overset{P}{\rightarrow}X \Longrightarrow X_{n}\overset{\mathcal{D}}{\rightarrow}X\]</span></p>
+<p>분포수렴 ≠ 확률수렴</p>
+<p>&nbsp; 분포수렴이 확률수렴을 보장하지 않는다. 예를 들어, <span class="math inline">\(X_{n} \sim U( - n,n)\)</span>은 <span class="math inline">\(X = 0\)</span>에 분포수렴하나 확률수렴하지 않는다.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
