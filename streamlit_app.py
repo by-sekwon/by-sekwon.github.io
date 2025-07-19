@@ -16,7 +16,7 @@ selected_name = st.selectbox("종목 선택", df_krx["Name"])
 selected_code = df_krx[df_krx["Name"] == selected_name]["Symbol"].values[0]
 
 # 주가 데이터
-start = datetime.today() - timedelta(days=90)
+start = datetime.today() - timedelta(days=30)
 df_price = fdr.DataReader(selected_code, start)
 
 st.subheader(f"{selected_name}의 최근 30일 종가")
