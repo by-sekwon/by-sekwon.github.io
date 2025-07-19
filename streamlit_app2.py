@@ -13,6 +13,10 @@ now = datetime.now(kst)
 today = now.strftime("%Y%m%d")
 current_time = now.strftime("%H%M")
 
+# ✅ 격자 좌표 (대전 유성구 전민동 기준)
+nx, ny = 67, 100  # ✅ <== 순서를 URL 생성 전에 위치시켜야 함
+
+
 # ✅ 초단기실황 API
 url = (
     "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst"
