@@ -70,9 +70,3 @@ for k, v in data.items():
     st.write(f"**{k}**: `{v}`")
 
 st.markdown("---")
-
-# ✅ 기온 시각화 (옵션)
-if "🌡️ 기온(°C)" in data:
-    temp = float(data["🌡️ 기온(°C)"])
-    temp_df = pd.DataFrame({"기온(°C)": [temp]}, index=[now.strftime("%H:%M")])
-    st.line_chart(temp_df)
