@@ -2,17 +2,19 @@ import streamlit as st
 import requests
 import pandas as pd
 from datetime import datetime
+from zoneinfo import ZoneInfo  # Python 3.9+ 전용
 
 # 1. API 키
 API_KEY = st.secrets["weather"]["api_key"]
 
-# 2. 시간 정보
-now = datetime.now()
+# 2. 한국 시각 기준 시간 설정
+kst = ZoneInfo("Asia/Seoul")
+now = datetime.now(tz=kst)
 today = now.strftime("%Y%m%d")
 current_time = now.strftime("%H:%M")
-base_time = "0500"
+base_time = "0500"  # 안정적인 시간 선택 (2,5,8,11,14...)
 
-# 3. 유성구 전민동 좌표
+# 3. 유성구 전민동 격자 좌표
 nx, ny = 67, 100
 
 # 4. API 요청
@@ -29,7 +31,7 @@ except Exception as e:
     st.error(f"⛔ API 호출 실패: {e}")
     st.stop()
 
-# 5. 데이터프레임 생성
+# 5. 데이터프레임 구성
 df = pd.DataFrame(items)
 df = df[df['fcstDate'] == today]
 df = df[df['category'].isin(['T3H', 'REH', 'POP', 'SKY'])][['fcstTime', 'category', 'fcstValue']]
@@ -42,7 +44,7 @@ df_pivot = df_pivot.rename(columns={
     'POP': '강수확률(%)', 'SKY': '하늘상태'
 })
 
-# 7. 수치형 변환
+# 7. 수치형 컬럼 처리
 numeric_cols = ['기온(°C)', '습도(%)', '강수확률(%)']
 existing_cols = [col for col in numeric_cols if col in df_pivot.columns]
 df_pivot[existing_cols] = df_pivot[existing_cols].apply(pd.to_numeric, errors='coerce')
@@ -52,12 +54,12 @@ sky_map = {'1': '☀ 맑음', '3': '⛅ 구름많음', '4': '☁ 흐림'}
 if '하늘상태' in df_pivot.columns:
     df_pivot['하늘상태'] = df_pivot['하늘상태'].map(sky_map)
 
-# 9. 시간 포맷 및 보조 열 생성
+# 9. 시간 가공
 df_pivot['예보시각'] = df_pivot['예보시각'].str[:2] + ":00"
 df_pivot['예보_시'] = df_pivot['예보시각'].str[:2].astype(int)
 df_pivot['시간차'] = abs(df_pivot['예보_시'] - now.hour)
 
-# ✅ 10. 현재 시각과 가장 가까운 예보 추출 (기온 포함 시 우선, 아니면 전체에서)
+# 10. 현재 시각과 가장 가까운 예보 찾기
 if '기온(°C)' in df_pivot.columns:
     df_temp = df_pivot[df_pivot['기온(°C)'].notna()]
     if not df_temp.empty:
@@ -67,7 +69,7 @@ if '기온(°C)' in df_pivot.columns:
 else:
     closest_row = df_pivot.loc[df_pivot['시간차'].idxmin()]
 
-# 11. 출력
+# 11. 대시보드 출력
 st.title("🌤️ 대전 유성구 전민동 기상청 예보")
 st.write(f"📅 예보 기준일: `{today}`, ⏰ 현재 시각: `{current_time}`")
 
@@ -79,12 +81,12 @@ st.markdown(f"""
 - 🌥️ **하늘상태:** `{closest_row.get('하늘상태', 'N/A')}`
 """)
 
-# 12. 전체 표 출력
+# 12. 전체 예보 표 출력
 st.subheader("📅 시간대별 예보 표")
 표컬럼 = ['예보시각'] + existing_cols + (['하늘상태'] if '하늘상태' in df_pivot.columns else [])
 st.dataframe(df_pivot[표컬럼], use_container_width=True)
 
-# 13. 차트
+# 13. 예보 차트
 if existing_cols:
     st.subheader("📈 예보 차트 (온도/습도/강수확률)")
     st.line_chart(df_pivot.set_index('예보시각')[existing_cols])
