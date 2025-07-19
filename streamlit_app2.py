@@ -6,15 +6,14 @@ from datetime import datetime
 # 1. API 키
 API_KEY = "ruuUkmag89d29McI%2BctxcVAsnsv%2BfAPzunUfmNjVf5R9StYJJes8edUq1wRm48DMu0rBodNw9Mit0EEX01p6EA%3D%3D"
 
-# 2. 기준 날짜와 시간 설정
+# 2. 날짜/시간
 today = datetime.today().strftime("%Y%m%d")
-base_time = "0500"  # 새벽 예보 기준
+base_time = "0500"
 
-# 3. 격자 좌표 설정 (서울 종로구 예시)
-nx = 60
-ny = 127
+# 3. 서울 종로구 기준 격자좌표
+nx, ny = 60, 127
 
-# 4. API URL 구성
+# 4. 요청 URL
 url = (
     "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"
     f"?serviceKey={API_KEY}"
@@ -23,17 +22,32 @@ url = (
     f"&nx={nx}&ny={ny}"
 )
 
-# 5. 요청 및 데이터 처리
+# 5. API 호출
 response = requests.get(url)
 items = response.json().get("response", {}).get("body", {}).get("items", {}).get("item", [])
 
-# 6. 데이터프레임 변환
+# 6. 데이터 정리
 df = pd.DataFrame(items)
-df = df[df['category'].isin(['T3H', 'REH', 'SKY'])]  # 3시간 기온, 습도, 하늘상태
+df = df[df['category'].isin(['T3H', 'REH', 'SKY', 'POP'])]  # 🔹강수확률 추가
 df = df[['fcstTime', 'category', 'fcstValue']]
 
-# 7. 피벗: 시간별 항목 보기 좋게
+# 7. 피벗
 df_pivot = df.pivot_table(index='fcstTime', columns='category', values='fcstValue', aggfunc='first')
-# 8. Streamlit 대시보드
+df_pivot = df_pivot.rename(columns={
+    'T3H': '기온(°C)',
+    'REH': '습도(%)',
+    'POP': '강수확률(%)',
+    'SKY': '하늘상태'
+})
+
+# 8. 하늘상태 해석
+sky_map = {
+    '1': '맑음',
+    '3': '구름많음',
+    '4': '흐림'
+}
+df_pivot['하늘상태'] = df_pivot['하늘상태'].map(sky_map)
+
+# 9. 시각화
 st.title("🌤️ 실시간 기상청 단기예보")
 st.dataframe(df_pivot)
