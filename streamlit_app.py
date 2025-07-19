@@ -19,5 +19,5 @@ selected_code = df_krx[df_krx["Name"] == selected_name]["Symbol"].values[0]
 start = datetime.today() - timedelta(days=30)
 df_price = fdr.DataReader(selected_code, start)
 
-st.subheader(f"{selected_name}의 최근 30일 종가")
+st.subheader(f"{selected_name}의 최근 90일 종가")
 st.line_chart(df_price['Close'])
