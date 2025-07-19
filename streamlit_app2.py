@@ -61,7 +61,7 @@ if '하늘상태' in df_pivot.columns:
 df_pivot.index = df_pivot.index.str.slice(0, 2) + ":" + df_pivot.index.str.slice(2, 4)
 
 # 11. 대시보드 출력
-st.title("🌤️ 대전 유성구 전민동 실시간 기상청 단기예보")
+st.title("🌤️ 대전 유성구 전민동 기상청 예보")
 st.write(f"📅 예보 기준일: `{today}`, ⏰ 현재 시각: `{current_time}`")
 
 # 12. 표 출력
