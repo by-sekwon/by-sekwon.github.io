@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 # 1. API 키
-API_KEY = "ruuUkmag89d29McI%2BctxcVAsnsv%2BfAPzunUfmNjVf5R9StYJJes8edUq1wRm48DMu0rBodNw9Mit0EEX01p6EA%3D%3D"
+API_KEY = st.secrets["weather"]["api_key"]
 
 # 2. 날짜와 현재 시각
 now = datetime.now()
