@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>random_variable – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">|기초수학|</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">|수리통계|</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/inference.html">
+ <span class="dropdown-text">추정과검정</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">|조사방법|</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이 AHP 컨조인트</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">| 카드뉴스 |</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">| 통계상담 |</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡 스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<p><img src="media/image1.png" style="width:4.07621in;height:2.98414in" alt="myself.png">Chapter 1. 확률변수와 확률분포함수</p>
+<p>vol 2. 추론통계</p>
+<p>section 2. 확률변수와 확률분포함수</p>
+<p>wolfpack se kwon</p>
+<p><a href="https://sites.google.com/view/wolfpack61" class="uri">https://sites.google.com/view/wolfpack61</a></p>
+<p>권세혁교수 통계노트시리즈</p>
+<p>많은 실험에서 원래의 복잡한 확률 구조보다 요약된 변수를 다루는 것이 더 쉬울 수 있다. 예를 들어, 한 주사위를 10번 던진다고 가정해보자. 이 경우 표본 공간은 <span class="math inline">\(6^{10}\)</span>개의 요소를 포함하며, 각각은 길이 10의 1부터 6까지의 숫자로 이루어진 순열이다. 이러한 방대한 표본 공간을 직접 다루는 것은 현실적으로 매우 어렵다. 그러나 관심 있는 양이 단순히 <span dir="rtl">”</span>6이 나온 횟수”라고 하면, 주사위 던지기 결과를 요약하는 변수를 정의할 수 있다. 예를 들어, 확률변수 X를 <span dir="rtl">”</span>6이 나온 횟수”로 정의한다고 하면, X의 표본 공간은 정수 <span class="math inline">\(\{ 0,1,2,\ldots,10\}\)</span>의 집합이 된다. 이는 원래의 표본 공간보다 훨씬 단순하며 다루기 쉽다.</p>
+<p>이와 같이 확률변수 X를 정의함으로써, 원래 표본공간에서 새로운 표본공간(일반적으로 실수의 집합)으로의 매핑을 생성한 것이다. 이를 통해 복잡한 문제를 보다 단순화하여 분석할 수 있다.</p>
+<p>1확률변수</p>
+<p>정의<img src="media/image2.png" style="width:2.25in;height:1.60714in" alt="붙여넣은 이미지.pdf"></p>
+<p>확률변수 는 표본공간 S에서 실수로의 함수이다.</p>
+<p>확률변수정의</p>
+<p>확률실험 결과로 나타나는 원소(표본공간)와 실수를 매칭힌 함수이다. 확률실험의 각 결과에 실수 값을 할당하는 규칙을 (함수) 확률변수라 한다. (기호) 알파벳 <span class="math inline">\(X,Y,Z\)</span></p>
+<p>표본공간 <span class="math inline">\(S = \{ s_{1},\ldots,s_{n}\}\)</span>이 있고, 확률함수 <span class="math inline">\(P\)</span>가 정의되어 있다고 가정하고 확률변수 X가 범위 <span class="math inline">\(\mathcal{X} = \{ x_{1},\ldots,x_{m}\}\)</span>를 가지도록 정의합니다. 이 경우, 다음과 같이 <span class="math inline">\(\mathcal{X}\)</span>에 대한 확률 함수 <span class="math inline">\(P_{X}\)</span>를 정의할 수 있습니다. 실험의 결과가 S에서 <span class="math inline">\(s_{j}\)</span>이고 <span class="math inline">\(X(s_{j}) = x_{i}\)</span>일 때, <span class="math inline">\(X = x_{i}\)</span>를 관찰하게 됩니다. <span class="math inline">\(P_{X}(X = x_{i}) = P(\{ s_{j} \in S:X(s_{j}) = x_{i}\})\)</span>.</p>
+<p>【예제】 공정한 동전을 세 번 던질 때 얻는 앞면의 수를 나타내는 확률 변수 <span class="math inline">\(X\)</span>의 값(범위)을 구해 봅시다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">확률실험</td>
+<td style="text-align: center;">HHH</td>
+<td style="text-align: center;">HHT</td>
+<td style="text-align: center;">HTH</td>
+<td style="text-align: center;">HTT</td>
+<td style="text-align: center;">THH</td>
+<td style="text-align: center;">THT</td>
+<td style="text-align: center;">TTH</td>
+<td style="text-align: center;">TTT</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">확률변수 X</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>확률변수 <span class="math inline">\(X\)</span>의 범위는 <span class="math inline">\(\mathcal{X} = \{ 0,1,2,3\}\)</span>이다. 표본공간 <span class="math inline">\(S\)</span>의 모든 8개의 점이 확률 <span class="math inline">\(\frac{1}{8}\)</span>을 가진다고 가정하면,</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">확률변수</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math display">\[P_{X}(X = x)\]</span></td>
+<td style="text-align: center;">1/8</td>
+<td style="text-align: center;">3/8</td>
+<td style="text-align: center;">3/8</td>
+<td style="text-align: center;">1/8</td>
+</tr>
+</tbody>
+</table>
+<p>종류</p>
+<p>확률변수는 실험 결과를 수치로 표현하는 변수로, 수리 통계적 관점에서는 이산형 확률변수와 연속형 확률변수로 나뉜다. 반면, 데이터 분석 관점에서는 정량적 변수와 정성적 변수로 구분할 수 있다. 수리 통계적으로 모든 연속형 변수와 숫자 값을 갖는 이산형 확률변수는 연속형 확률변수에 속하고, 문자 값(범주형)을 갖는 확률변수는 이산형 확률변수에 속한다.</p>
+<p>1. 이산형 확률변수 (Discrete Random Variable)</p>
+<p>이산형 확률변수는 가능한 값들의 집합이 유한하거나 셀 수 있는 경우를 의미한다. 즉, 이산형 변수는 특정한 고유한 값들만을 가질 수 있으며, 연속적인 값 사이의 중간 값은 존재하지 않는다.</p>
+<p>셀 수 있는 값만 가능 → 개별적인 값들의 집합을 가짐</p>
+<p>유한하거나 무한하지만 가산적 → 이론적으로 무한하더라도 하나씩 셀 수 있는 경우 포함</p>
+<p>확률질량함수(Probability Mass Function, PMF): 베르누이(Bernoulli), 이항(Binomial), 포아송(Poisson) 분포 등</p>
+<p>유한한 이산형 확률변수: 두 개의 주사위를 던졌을 때 눈금의 합<span class="math inline">\(\{ 2,3,4,\ldots,12\}\)</span>}, 한 반 학생들의 성별(남성=1, 여성=0), 한 회사의 월별 결함 발생 횟수</p>
+<p>무한한 이산형 확률변수: 특정 지역의 하루 교통사고 발생 건수 <span class="math inline">\(\{ 0,1,2,3,\ldots\}\)</span>, 대기행렬에서 고객이 도착하는 횟수</p>
+<p>2. 연속형 확률변수 (Continuous Random Variable)</p>
+<p>연속형 확률변수는 가능한 값의 범위가 무한히 많은 값을 포함하며, 정의된 임의의 구간 내에서 모든 값을 가질 수 있는 확률변수이다.즉, 특정한 두 값 사이에 무한히 많은 값들이 존재할 수 있으며, 측정 단위의 정밀도를 높이면 무한히 세밀한 값을 얻을 수 있다.</p>
+<p>임의의 구간 내에서 무한히 많은 값을 가질 수 있음</p>
+<p>확률밀도함수(Probability Density Function, PDF): 정규(Normal), 지수(Exponential), 감마(Gamma) 분포 등</p>
+<p>누적분포함수(CDF, Cumulative Distribution Function)로 확률 계산 가능</p>
+<p>사례: 대전시 기업 종사자의 연봉 → 연속적인 금액 단위로 측정 가능, 대전의 하루 강수량 → 특정한 값이 아닌 연속적인 값으로 존재, 자동차 연비(<span class="math inline">\(km/L\)</span>) → 특정한 값이 아닌 실수 범위에서 측정 가능, 수능 시험 점수(0~100점 사이 실수값) → 정규분포를 따르는 연속형 데이터, 항공기의 비행 시간 → 이론적으로 모든 실수값을 가질 수 있음</p>
+<p>3. 데이터 분석에서의 확률변수 구분</p>
+<p>데이터 분석 관점에서는 확률변수를 정량적 변수와 정성적 변수로 나누며 모든 범주형 확률변수는 이산형 확률변수로 분류된다.</p>
+<p>(1) 정량적(Quantitative) 변수</p>
+<p>수치적인 값을 가지며 산술 연산이 가능한 변수</p>
+<p>이산형과 연속형 확률변수 포함</p>
+<p>예제: 연봉, 키, 몸무게, 점수, 소득, 생산량 등</p>
+<p>(2) 정성적(Qualitative) 변수 (범주형 데이터)</p>
+<p>수치적인 의미가 없는 범주로 표현되는 변수</p>
+<p>명목형과 순서형으로 구분 가능</p>
+<p>예제: 성별(남/여), 혈액형(A/B/O/AB), 선호도(매우 좋음/보통/나쁨), 고객 만족도(1~5점 척도)</p>
+<p>2확률분포함수</p>
+<p>정의</p>
+<p>무작위 확률변수 X 의 누적분포함수 cumulative distribution function 또는 cdf는 <span class="math inline">\(F_{X}(x)\)</span>로 나타내며, 다음과 같이 정의된다.</p>
+<p>분포함수 정의</p>
+<p>확률변수가 연속형 확률변수라고 불리려면 누적분포함수는 연속 함수이여야 한다. 반면, 확률변수가 이산형 확률변수라고 불리려면 누적분포함수는 계단 함수이어야 한다.</p>
+<p>정의</p>
+<p>확률변수 X와 Y가 동일한 분포(identically distributed) 를 갖는다고 하려면 임의의 집합 <span class="math inline">\(A \in \mathcal{B}^{1}\)</span>에 대해 다음이 성립해야 한다. <span class="math inline">\(P(X \in A) = P(Y \in A)\)</span>. 즉, 모든 사건 A에 대해 확률변수 X와 Y가 동일한 확률을 가질 때, 확률변수 X와 Y는 동일한 분포를 따른다고 정의한다.</p>
+<p>정의</p>
+<p>다음 두 명제는 동치(equivalent) 이다.</p>
+<p>정리</p>
+<p>확률변수 X와 Y는 동일한 분포 를 갖는다.</p>
+<p>모든 <span class="math inline">\(x\)</span>에 대해 <span class="math inline">\(F_{X}(x) = F_{Y}(x),\text{for every x}\)</span> 성립한다.</p>
+<p>즉, 확률변수 X 와 Y 가 동일한 분포를 갖는다는 것은, 모든 x 에 대해 누적분포함수가 동일하다는 것과 동치이다.</p>
+<p>CDF 성질</p>
+<ol type="i">
+<li><p><span class="math inline">\(F(x)\)</span>는 비감소 non-deceasing 함수이다. <span class="math inline">\(x_{1} &lt; x_{2} \leftrightarrow F\left( x_{1} \right) \leq F(x_{2})\)</span></p></li>
+<li><p><span class="math display">\[F( - \infty) = 0,F(\infty) = 1\]</span></p></li>
+<li><p>이산형 확률변수의 누적확률분포는 계단 함수이다.<span class="math inline">\(P(X = x) = F(x) - F(x - )\)</span></p></li>
+<li><p>연속형 확률변수에서는 누적확률밀도함수의 미분함수가 확률밀도함수이다. <span class="math inline">\(F'(x) = f(x)\)</span></p></li>
+</ol>
+<p>3확률밀도함수</p>
+<p>확률변수 <span class="math inline">\(X\)</span>와 그 누적분포함수 <span class="math inline">\(F_{X}\)</span>에 연관된 또 다른 함수가 존재하는데, 이는 확률밀도함수(probability density function, pdf) 또는 확률질량함수(probability mass function, pmf) 라고 불린다. 여기서 pdf 와 pmf 라는 용어는 각각 연속형 및 이산형 확률변수에 적용된다.</p>
+<p>확률질량함수</p>
+<p>이산형 확률변수 <span class="math inline">\(X\)</span>의 확률질량함수는 다음과 같이 정의된다. <span class="math inline">\(p_{X}(x) = P(X = x),\text{for all}x.\)</span></p>
+<p>PMF 정의</p>
+<p>즉, <span class="math inline">\(p_{X}(x)\)</span>는 특정 값 <span class="math inline">\(x\)</span>에서 확률변수 <span class="math inline">\(X\)</span>가 그 값을 가질 확률이다.</p>
+<p>【예제】 이산형 확률밀도함수</p>
+<p>4면(1, 2, 3, 4) 주사위 2개를 동시에 던져 큰 수를 확률변수 <span class="math inline">\(X\)</span>라 하자. 확률밀도함수는 다음과 같다.</p>
+<p><span class="math inline">\(p(x) = P(X = x) = \frac{2x - 1}{16},x = 1,2,3,4\)</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math display">\[x\]</span></th>
+<th style="text-align: center;">1</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math display">\[p(x)\]</span></td>
+<td style="text-align: center;">1/16</td>
+<td style="text-align: center;">3/16</td>
+<td style="text-align: center;">5/16</td>
+<td style="text-align: center;">7/16</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math display">\[F(x)\]</span></td>
+<td style="text-align: center;">1/16</td>
+<td style="text-align: center;">4/16</td>
+<td style="text-align: center;">9/16</td>
+<td style="text-align: center;">16/16</td>
+</tr>
+</tbody>
+</table>
+<p>이산형 확률밀도함수 예제2</p>
+<p>앞면이 나올 확률이 <span class="math inline">\(p\)</span>인 동전을 던지는 실험을 생각해 보자. <span dir="rtl">”</span>앞면이 처음 나올 때까지 동전을 몇 번 던졌는지” 를 확률변수 <span class="math inline">\(X\)</span>로 정의하면 확률질량함수는 <span class="math inline">\(P(X = x) = (1 - p)^{x - 1}p,x = 1,2,...\)</span></p>
+<p>누적확률밀도함수: <span class="math inline">\(F_{X}(x) = P(X \leq x) = \overset{x}{\sum_{i = 1}}(1 - p)^{x - 1}p\)</span>이므로 <span class="math inline">\(F_{X}(x) = 1 - (1 - p)^{x},x = 1,2,3,...\)</span></p>
+<p>확률밀도함수</p>
+<p>연속형 확률변수 <span class="math inline">\(X\)</span>의 확률밀도함수 <span class="math inline">\(f_{X}(x)\)</span>는 다음 조건을 만족하는 함수이다. <span class="math inline">\(F_{X}(x) = \int_{- \infty}^{x}f_{X}(t)dt\text{for all}x\)</span></p>
+<p>PDF 정의</p>
+<p>즉, 누적분포함수 <span class="math inline">\(F_{X}(x)\)</span>는 확률밀도함수 <span class="math inline">\(f_{X}(x)\)</span>의 적분으로 정의된다.. <span class="math inline">\(\frac{d}{dx}F_{X}(x) = f_{X}(x)\)</span>이다.</p>
+<p>확률계산</p>
+<p>이산형: <span class="math inline">\(P(X = x) = f_{X}(x) = F_{X}(x) - F_{X}(x^{-})\)</span>, 여기서 <span class="math inline">\(F_{X}(x^{-})\)</span>는 <span class="math inline">\(x\)</span>직전의 누적확률 값이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image3.png" style="width:2.78645in;height:1.39762in" class="figure-img"></p>
+<figcaption>붙여넣은 동영상.png</figcaption>
+</figure>
+</div>
+<p>연속형: <span class="math inline">\(P(a &lt; X &lt; b) = F_{X}(b) - F_{X}(a),\text{a&lt;x&lt;b}\)</span>..</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image4.png" style="width:3.54419in;height:1.46236in" class="figure-img"></p>
+<figcaption>붙여넣은 동영상.png</figcaption>
+</figure>
+</div>
+<p>확률밀도함수 관련 정리</p>
+<p>함수 <span class="math inline">\(f_{X}(x),p_{X}(x)\)</span>가 확률변수 <span class="math inline">\(X\)</span>의 확률밀도함수 또는 확률질량함수가 되기 위한 필요충분조건은 다음과 같다.</p>
+<p>정리</p>
+<ol type="1">
+<li><p><span class="math inline">\(f_{X}(x) \geq 0\text{for all x}\)</span> / <span class="math inline">\(p_{X}(x) \geq 0\text{for all x}\)</span></p></li>
+<li><p><span class="math inline">\(\int_{- \infty}^{\infty}f_{X}(x)dx = 1\)</span> / <span class="math inline">\(\sum_{x}f_{X}(x) = 1\)</span></p></li>
+</ol>
+<p>Chapter 2. 데이터 확률밀도함수</p>
+<p>데이터로부터 확률밀도함수를 구하는데 활용되는 방법은 히스토그램 histogram 과 커널 분포 추정 kernel density estimator이다.</p>
+<p>1확률모형</p>
+<p>확률모형은 확률변수의 확률밀도함수를 의미한다. 이산형 확률 밀도 함수와 연속형 확률 분포(밀도) 함수의 예이다. 이산형 경우에는 막대의 높이가 (히스토그램에서는 바의 높이) 연속형인 경우에는 면적이 확률이다. 그러므로 연속형 확률 분포 함수에서는 x의 단일 값에서 확률은 0이다.</p>
+<p>모집단 확률분포함수 <span class="math inline">\(f(x)\)</span> 가정<img src="media/image5.png" style="width:2.54447in;height:0.71156in" alt="1__#$!@%!#__pastedGraphic.pdf"></p>
+<p>모집단 전수 조사한 경우 자료로부터 히스토그램을 그리면 확률분포함수이다. 그러나 연속형 데이터의 경우 정확한 함수식을 알 수 없기 때문에 모집단 확률분포함수를 가정하고 통계량의 확률분포함수, 샘플링분포를 구하게 된다.</p>
+<p>모집단과 동일한 분석 자료를 시뮬레이션 simulation 생성할 때 사용한다.</p>
+<p>회귀분석이나 분산 분석에서 오차항의 확률분포함수에 대한 가정이 필요하다. 오차항에 대한 정규분포 가정 하에 회귀계수에 대한 검정통계량은 t-분포를 따르고 예측모형의 유의성 검정은 F-분포를 이용하게 된다.</p>
+<p>소표본(표본의 크기 n&lt;20~30)일 경우 모평균에 대한 가설 검정 시 모집단 확률분포를 정규분포임을 가정하면 표본평균은 t-분포를 따른다. 이 사실을 이용하여 모평균 가설을 검정한다.</p>
+<p>모집단 확률분포함수 가정이 불가능한 경우</p>
+<p>모집단의 분포를 가정하지 않으면 어떻게 확률 분포를 알 수 있나? 확률표본의 표본 확률분포함수를 도출하여 모집단 확률분포를 추정하게 된다. 이는 모집단의 확률분포는 표본 확률분포와 동일하다는 사실을 이용하는 것이다.</p>
+<p>(Goodness-of-fits: 적합성 검정) : 교차표 활용 <img src="media/image6.png" style="width:0.23333in;height:0.275in" alt="2__#$!@%!#__pastedGraphic.pdf">-검정</p>
+<p>그래프 이용 방법: P-P plot 방법, 시각적 방법, rule of thumb</p>
+<p>2히스토그램 histogram</p>
+<p>이산형 데이터</p>
+<p>이산형 데이터의 히스토그램은 <span class="math inline">\(X\)</span>-축은 확률변수가 가질 수 있는 값, <span class="math inline">\(Y\)</span>-축은 확률변수 값에 대응하는 확률을 막대 높이로 표현한 것으로 이를 확률분포함수라 한다. 다음은 어느 도시 가구의 가구원 수를 조사하여 요약한 빈도표이다. 상대빈도를 이용하여 히스토그램을 그리면 이를 확률분포함수라 한다. 히스토그램을 바차트라고도 한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image7.png" style="width:4.16296in;height:0.53637in" class="figure-img"></p>
+<figcaption>pasted-image.png</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image8.png" style="width:2.56876in;height:1.53923in" class="figure-img"></p>
+<figcaption>pasted-image.png</figcaption>
+</figure>
+</div>
+<p>연속형 데이터</p>
+<p>연속형 데이터는 데이터의 범위를 동일 폭의 구간으로 나누어 (상대) 빈도표를 구하고 이를 이용하여 히스토그램을 그리고 빈의 중앙값들을 연결하면 확률분포함수가 된다. 아래와 같이 폴리곤 형태이므로 데이터를 이용하여 확률분포함수 식을 구하는 것은 불가능하다. 그러므로 이론적 분포를 가정하고 데이터, 확률표본 확률분포함수가 가정된 분포를 따르는지 검정하게 되는데 이를 적합성 검정이라 한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image1.tif" style="width:4.49986in;height:2.39208in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div>
+<p>연속형 데이터에 대한 히스토그램은 다음 과정을 거친다.</p>
+<ol type="1">
+<li>데이터를 크기 순으로 정렬한 후 최대값과 최소값을 구하고 범위 range을 구한다.</li>
+</ol>
+<!-- -->
+<ol start="3" type="1">
+<li><p>빈(bin 계급 class) 개수를 결정하고 범위를 빈 개수로 나누어 계급 구간 넓이(폭) interval width 을 결정한다. 빈의 크기는 8~12개가 적절하다. Sturge’s 규칙 : 데이터의 크기를 <span class="math inline">\(N\)</span>이라 하면 최적 빈 크기는 <span class="math inline">\(K = 1 + 3.322log(N)\)</span>이다.</p></li>
+<li><p>구간의 폭이 의미를 갖도록 가능하면 정수 단위로 조정한다. 데이터 범위를 범위를 일정 폭을 가진 구간으로 나눈다.</p></li>
+<li><p>각 구간의 범위에 속한 데이터 빈도를 구하고 상대 빈도 크기를 막대로 표현하고, 빈의 중앙 값을 연결하면 확률분포함수이다.</p></li>
+</ol>
+<p>3Kernel 추정</p>
+<p>유한개의 데이터 표본을 이용하여 모집단 확률분포함수를 평활법에 의해 구한다. 신호처리에서는 Parzen–Rosenblatt window 방법이라고 한다. KDE kernel density estimator는 커널 함수를 이용하여 히스토그램 폴리곤 방법을 보다 스무드한 곡선으로 연결하여 추정하는 방법이다.</p>
+<p>커널함수 <span class="math inline">\(\int_{- \infty}^{\infty}K(x)dx = 1\)</span>는 양의실수 적분가능한 좌우 대칭인 함수이며 Gaussian, Epanechnikov 등이 유명한 커널 함수이다.</p>
+<p>커널함수 정의</p>
+<p>가우스 커널&nbsp;=&nbsp;’gaussian' : <span class="math inline">\(K(x;h) \propto e^{\frac{x^{2}}{2h^{2}}}\)</span></p>
+<p>Epanechnikov 커널&nbsp;=&nbsp;’epanechnikov' : <span class="math inline">\(K(x;h) \propto 1 - \frac{x^{2}}{h^{2}}\)</span></p>
+<p>선형 커널&nbsp;=&nbsp;’linear' : <span class="math inline">\(K(x;h) \propto 1 - \frac{x}{h},x &lt; h\)</span></p>
+<p>확률분포함수 <span class="math inline">\(f(x)\)</span>로 부터 확률표본 데이터 <span class="math inline">\(x_{1},x_{2},\cdots,x_{n}\)</span>가 주어진 경우 커널추정량은 <span class="math inline">\({\widehat{f}}_{h}(x) = \frac{1}{n}\overset{n}{\sum_{i = 1}}K_{h}(x - x_{i}) = \frac{1}{nh}\sum K(\frac{x - x_{i}}{h})\)</span>이다. <span class="math inline">\(K()\)</span>는 커널함수이고 <span class="math inline">\(h\)</span>는 bandwith 모수이다. <span class="math inline">\(h\)</span>가 크면 완만한 형태가 되고 작으면 뾰족한 형태이다.</p>
+<p>최적 <span class="math inline">\(h = (\frac{4{\widehat{\sigma}}^{5}}{3n})^{\frac{1}{5}} \approx 1.06\widehat{\sigma}n^{- 0.2}\)</span> 이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image2.tif" style="width:4.13459in;height:2.68893in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div>
+<p>4봉우리<img src="media/image9.png" style="width:2.72385in;height:2.06924in" alt="pasted-image.png"></p>
+<p>확률분포함수의 경우 발생 확률이 높은 곳을 봉우리라 하고 가장 높은 봉우리가 발생하는 확률변수 값을 최빈값 mode이라 한다. 일반적으로 확률분포함수는 봉우리를 중심으로 좌우로 확률이 작아지는 형태를 갖는다.</p>
+<p>봉우리가 하나인 확률분포함수를 단봉 unimodal, 2개 봉우리는 쌍봉 bimodal, 그리고 3개 이상인 경우 multimodal이라 한다. 봉우리 2개 이상인 경우는 일반적으로 서로 상이한 집단이 혼재되어 있는 경우 발생한다. 예시 히스토그램은 공부한 집단과 그렇지 않은 집단의 중간고사 점수를 조사하여 히스토그램을 그린 것이다. 공부한 집단과 그렇지 않은 집단이 함께 조사되어 봉우리가 2개 발생하였다. 이런 형태는 남녀 몸무게를 조사하여 히스토그램을 그렸을 때도 나타난다.</p>
+<p>봉우리가 2개인 경우에서 평균을 추론하는 것은 다음과 같은 문제점을 가질 수 있습니다.</p>
+<p>대표성 부족: 평균이 데이터의 중심 경향을 적절히 대표하지 못할 수 있음. 두 개의 봉우리가 존재하는 경우, 평균이 실제 존재하지 않는 값일 가능성이 크다.</p>
+<p>왜곡된 해석: 데이터가 두 개의 다른 모집단에서 온 경우, 단일 평균을 구하면 두 모집단의 특성을 반영하지 못하고 왜곡된 결과를 초래할 수 있다.</p>
+<p>분산 증가: 두 개의 봉우리를 포함한 데이터에서는 분산이 커지며, 이는 신뢰구간이 넓어지는 등의 문제로 이어져 평균에 대한 추론의 신뢰성이 낮아진다.</p>
+<p>단일 정규분포 가정 위반: 많은 통계적 평균 비교 검정(예: t-검정, ANOVA)은 정규성을 가정하지만, 이봉 분포에서는 정규성이 성립하지 않을 가능성이 높아 통계적 검정이 부적절할 수 있다.</p>
+<p>혼합 모집단의 가능성: 두 개의 다른 모집단이 섞인 경우, 개별 모집단의 평균을 따로 추정하는 것이 적절하며, 단일 평균을 구하면 중요한 정보가 손실될 수 있다.</p>
+<p>따라서, 이봉 데이터를 분석할 때는 단순한 평균 추론보다는 군집 분석, 혼합 분포 모델(GMM), 또는 중앙값(Median)과 같은 대체 측도를 고려하는 것이 바람직하다.</p>
+<p>5치우침</p>
+<p>정의</p>
+<p>확률분포함수는 일반적으로 봉우리를 중심으로 멀어질수록 확률이 작아지는 형태를 띠며, 이는 자연에서 관측되는 많은 변수들이 중심값 근처에서 높은 빈도를 보이고 극단적인 값에서는 낮은 빈도를 가지는 경향을 반영한다.</p>
+<p>특히, 종 모양(bell-shaped)이며 좌우 대칭인 분포는 봉우리를 중심으로 좌우가 마치 데칼코마니처럼 완전히 대칭을 이루는 형태를 의미한다. 이러한 분포에서는 평균, 중앙값, 최빈값이 모두 동일한 위치에 존재하며, 데이터가 특정 방향으로 치우침 없이 균형을 이루고 있다.</p>
+<p>반면, 분포가 우측으로 치우친(positive skewed, right-skewed) 경우에는 오른쪽 꼬리가 길게 늘어지는 특성을 보인다. 이는 상대적으로 크기가 큰 몇 개의 관측값이 존재함을 의미하며, 이러한 값들은 순서상으로는 일부에 불과하지만 크기가 크기 때문에 평균을 끌어올려 평균이 중앙값보다 커지게 된다.</p>
+<p>반대로, 좌측으로 치우친(negative skewed, left-skewed) 분포에서는 왼쪽 꼬리가 길게 늘어나며, 이는 상대적으로 작은 값들이 분포의 왼쪽 극단에 위치함을 나타낸다. 이러한 경우 평균은 작은 값들의 영향을 받아 중앙값보다 작아지게 된다.</p>
+<p>따라서 확률분포함수의 형태와 치우침 정도는 데이터의 특성을 설명하는 중요한 요소이며, 이를 통해 중심 경향과 데이터의 분포 패턴을 효과적으로 이해할 수 있다.</p>
+<p>치우침과 중앙 위치 통계량 관계</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image10.png" style="width:4.49986in;height:1.69995in" class="figure-img"></p>
+<figcaption>pasted-image.png</figcaption>
+</figure>
+</div>
+<p>평균(mean)은 데이터의 크기를 반영하는 중앙 척도로, 모든 관측값의 합을 데이터의 개수로 나눈 값으로 정의되며, 데이터의 절대 크기 수준을 대표하는 역할을 한다. 반면, 중앙값(median)은 데이터 관측값을 크기 순으로 정렬했을 때 정확히 가운데 위치하는 값으로, 순서의 중앙 척도로 이상치(outliers)의 영향을 덜 받으며, 데이터가 비대칭적인 경우에도 중간 값을 안정적으로 대표할 수 있다. 한편, 최빈값(mode)은 데이터에서 가장 자주 등장하는 값으로, 확률이 가장 높은 관측값이자 분포에서 봉우리를 형성하는 값으로, 데이터에서 가장 빈번하게 발생하는 패턴을 파악하는 데 유용하다.</p>
+<p>이 세 가지 척도는 데이터의 중심 경향을 파악하는 데 사용되며, 정규분포처럼 대칭적인 분포에서는 평균, 중앙값, 최빈값이 동일한 위치에 존재하지만, 우측 치우침이나 좌측 치우침이 존재하는 경우 평균이 극단값의 영향을 받아 중앙값과 차이를 보이게 된다. 따라서 데이터의 분포 형태를 고려하여 적절한 척도를 선택하는 것이 중요하며, 평균은 크기 중심의 대표값으로, 중앙값은 순서 기반의 대표값으로, 최빈값은 가장 빈번한 데이터 패턴을 반영하는 값으로 활용된다.</p>
+<p>치우침 척도</p>
+<p>평균 기반 <span class="math inline">\(\mu_{3} = E\left\lbrack \left( \frac{X - \mu}{\sigma} \right)^{3} \right\rbrack = \frac{\mu_{3}}{\sigma^{3}}\)</span></p>
+<p>좌우 대칭인 정규분포의 왜도는 0이고 지수분포의 왜도 2로, 이는 강한 우측 치우침을 나타냄을 의미한다.</p>
+<p>중앙값 기반 척도</p>
+<p>Pearson<span dir="rtl">’</span>s First Skewness : <span class="math inline">\(skew = \frac{\text{mean} - \text{mode}}{\text{std}}\)</span></p>
+<p>Pearson<span dir="rtl">’</span>s Second Skewness : <span class="math inline">\(skew = \frac{3(\text{mean} - \text{median})}{\text{std}}\)</span></p>
+<p>사분위 기반 Bowley<span dir="rtl">’</span>s Skewness <span class="math inline">\(skew = \frac{(Q_{3} + Q_{1} - 2Q_{2})}{\text{IQR}}\)</span></p>
+<p>중앙값을 중심으로 사분위수 간의 차이를 활용한 왜도 측정 방식. 이상치의 영향을 덜 받는다.</p>
+<p>Groeneveld &amp; Meeden<span dir="rtl">’</span>s Coefficient</p>
+<p><span class="math display">\[skew = \frac{\text{mean} - \text{median}}{E(|X - \text{median}|)}\]</span></p>
+<p>평균과 중앙값의 차이를 절대 편차로 정규화한 값으로, 비대칭성을 측정하는 지표이다.</p>
+<p>치우침 판단 기준</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 24%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Pearson 2차</td>
+<td style="text-align: center;">분포 형태</td>
+<td style="text-align: center;">Bowley’s</td>
+<td style="text-align: center;">Groeneveld &amp; Meeden’s</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">skew=0</td>
+<td style="text-align: center;">대칭 분포</td>
+<td style="text-align: center;">skew=0</td>
+<td style="text-align: center;">skew=0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0 &lt; skew &lt; 0.5</td>
+<td style="text-align: center;">거의 대칭</td>
+<td style="text-align: center;">0 &lt; skew &lt; 0.25</td>
+<td style="text-align: center;">0 &lt; skew &lt; 0.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.5 ≤ skew &lt; 1.0</td>
+<td style="text-align: center;">약한 우측 치우침</td>
+<td style="text-align: center;">0.25 ≤ skew &lt; 0.5</td>
+<td style="text-align: center;">0.1 ≤ skew &lt; 0.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">skew ≥ 1.0</td>
+<td style="text-align: center;">강한 우측 치우침</td>
+<td style="text-align: center;">skew ≥ 0.5</td>
+<td style="text-align: center;">skew ≥ 0.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">-0.5 &lt; skew &lt; 0</td>
+<td style="text-align: center;">약한 좌측 치우침</td>
+<td style="text-align: center;">-0.25 &lt; skew &lt; 0</td>
+<td style="text-align: center;">-0.1 &lt; skew &lt; 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">-1.0 &lt; skew ≤ -0.5</td>
+<td style="text-align: center;">중간 정도의 좌측 치우침</td>
+<td style="text-align: center;">-0.5 &lt; skew ≤ -0.25</td>
+<td style="text-align: center;">-0.3 &lt; skew ≤ -0.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">skew ≤ -1.0</td>
+<td style="text-align: center;">강한 좌측 치우침</td>
+<td style="text-align: center;">skew ≤ -0.5</td>
+<td style="text-align: center;">skew ≤ -0.3</td>
+</tr>
+</tbody>
+</table>
+<p>6확률밀도함수 관련 법칙</p>
+<p>실증적 법칙 empirical rule</p>
+<p>확률변수 <span class="math inline">\(X\)</span>의 확률밀도함수 형태가 벨모양의 좌우 대칭이고 평균 <span class="math inline">\(\mu\)</span>, 표준편차 <span class="math inline">\(\sigma\)</span>를 갖는다고 하면 다음이 성립한다.</p>
+<p><span class="math inline">\(P(|X - \mu| &lt; k\sigma) \geq \alpha\)</span></p>
+<p><span class="math inline">\(k = 1\)</span> : 데이터는 평균을 중심으로 <span class="math inline">\(\pm \sigma\)</span> 구간, <span class="math inline">\((\mu - \sigma,\mu + \sigma)\)</span>에 적어도 68%(<span class="math inline">\(\alpha\)</span>)가 포함된다.</p>
+<p><span class="math inline">\(k = 2\)</span> : 데이터는 평균을 중심으로 <span class="math inline">\(\pm 2\sigma\)</span> 구간, <span class="math inline">\((\mu - 2\sigma,\mu + 2\sigma)\)</span>에 적어도 95%(<span class="math inline">\(\alpha\)</span>)가 포함된다.</p>
+<p><span class="math inline">\(k = 3\)</span> : 데이터는 평균을 중심으로 <span class="math inline">\(\pm 3\sigma\)</span> 구간, <span class="math inline">\((\mu - 3\sigma,\mu + 3\sigma)\)</span>에 적어도 99.8%(<span class="math inline">\(\alpha\)</span>)가 포함된다.</p>
+<p>만약 <span class="math inline">\(k = 6\)</span> : 100만개 데이터 중 2개만 이 구간을 벗어남. <span class="math inline">\(6\sigma\)</span> 품질 운동이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image11.png" style="width:2.96502in;height:1.65995in" class="figure-img"></p>
+<figcaption>Empirical Rule - Algae Education Services</figcaption>
+</figure>
+</div>
+<p>chebyshev 부등식</p>
+<p>평균 <span class="math inline">\(\mu\)</span>, 표준편차 <span class="math inline">\(\sigma\)</span>을 갖는 확률변수 <span class="math inline">\(X\)</span>의 확률밀도함수 형태를 알 수 없는 경우 다음이 성립한다.</p>
+<p><span class="math display">\[P(|X - \mu| &lt; k\sigma) \geq 1 - \frac{1}{k^{2}}\]</span></p>
+<p><span class="math inline">\(k = 2\)</span> : 데이터는 평균을 중심으로 <span class="math inline">\(\pm 2\sigma\)</span> 구간, <span class="math inline">\((\mu - 2\sigma,\mu + 2\sigma)\)</span>에 적어도 75%가 포함된다.</p>
+<p><span class="math inline">\(k = 3\)</span> : 데이터는 평균을 중심으로 <span class="math inline">\(\pm 3\sigma\)</span> 구간, <span class="math inline">\((\mu - 3\sigma,\mu + 3\sigma)\)</span>에 적어도 89%가 포함된다.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image3.tif" style="width:0.86116in;height:0.2812in" class="figure-img"></p>
+<figcaption>pasted-image.tiff</figcaption>
+</figure>
+</div></td>
+</tr>
+<tr class="even">
+<td><p>#데이터 읽기 (연속형 데이터)</p>
+<p>import pandas as pd</p>
+<p>data=pd.read_csv('<a href="https://vincentarelbundock.github.io/Rdatasets/csv/fpp2/ausair.csv"><u>https://vincentarelbundock.github.io/Rdatasets/csv/fpp2/ausair.csv</u></a>')</p>
+<p><a href="http://data.info"><u>data.info</u></a>()</p></td>
+</tr>
+<tr class="odd">
+<td><p>#상대빈도표</p>
+<p>import numpy as np</p>
+<p>pd.cut(data['value'],np.arange(0,80,10)).value_counts()/len(data)</p></td>
+</tr>
+<tr class="even">
+<td><p>(10, 20] 0.361702</p>
+<p>(30, 40] 0.148936</p>
+<p>(60, 70] 0.127660</p>
+<p>(20, 30] 0.106383</p>
+<p>(40, 50] 0.106383</p>
+<p>(0, 10] 0.085106</p>
+<p>(50, 60] 0.042553</p></td>
+</tr>
+<tr class="odd">
+<td><p>#확률밀도함수, KDE</p>
+<p>import matplotlib.pyplot as plt</p>
+<p>df = pd.DataFrame(data,columns=['value'])</p>
+<p>ax = df.plot.hist(bins=10)</p>
+<p>df.plot.kde(ax=ax,secondary_y=True,bw_method=0.3)</p>
+<p>plt.show()</p></td>
+</tr>
+<tr class="even">
+<td><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image12.png" style="width:3.0783in;height:2.07735in" class="figure-img"></p>
+<figcaption>붙여넣은 동영상.png</figcaption>
+</figure>
+</div></td>
+</tr>
+<tr class="odd">
+<td><p>#CDF, PDF 그리기</p>
+<p>import matplotlib.pyplot as plt</p>
+<p>fig, ax = plt.subplots()</p>
+<p>ax2 = ax.twinx()</p>
+<p>n, bins, patches = ax.hist(data['value'], bins=10)</p>
+<p>n, bins, patches = ax2.hist(data['value'], cumulative=1, histtype='step', bins=10, color='tab:orange')</p>
+<p>plt.show()</p></td>
+</tr>
+<tr class="even">
+<td><div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image13.png" style="width:3.14376in;height:2.27785in" class="figure-img"></p>
+<figcaption>붙여넣은 동영상.png</figcaption>
+</figure>
+</div></td>
+</tr>
+</tbody>
+</table>
+<p>Chapter 3. 변수변환</p>
+<p>모집단 관심 현상을 누적분포함수를 가진 확률변수 <span class="math inline">\(X\)</span>의 형태로 모델링할 수 있다면 또한 <span class="math inline">\(g(X)\)</span> 함수들의 정보에 대해서도 관심을 가지게 된다. 여기서는 확률변수 <span class="math inline">\(X\)</span>의 함수들에 대한 정보를 얻을 수 있는 기법들을 연구한다.</p>
+<p>1개념</p>
+<p>만약 확률변수 <span class="math inline">\(X\)</span> 의 임의의 함수 <span class="math inline">\(g(X)\)</span> 또한 확률변수가 된다. 종종 <span class="math inline">\(g(X)\)</span> 자체도 관심의 대상이 되며 이를 새로운 확률변수 <span class="math inline">\(Y = g(X)\)</span>로 표기하며, 임의의 집합 <span class="math inline">\(A\)</span>에 대하여 <span class="math inline">\(P(Y \in A) = P(g(X) \in A)\)</span>로 나타낼 수 있으며, 이는 <span class="math inline">\(Y\)</span>의 분포가 함수 <span class="math inline">\(F_{X}\)</span>와 <span class="math inline">\(g\)</span>에 의해 결정됨을 의미한다.</p>
+<p><span class="math inline">\(y = g(x)\)</span>라고 쓸 때 함수 <span class="math inline">\(g(x)\)</span>는 원래 확률변수 <span class="math inline">\(X\)</span>의 표본공간 <span class="math inline">\(\mathcal{X}\)</span> 에서 새로운 표본공간 <span class="math inline">\(\mathcal{Y}\)</span>, 즉 확률변수 <span class="math inline">\(Y\)</span>의 표본공간으로 가는 매핑을 정의한다. 이를 수식으로 표현하면, <span class="math inline">\(g(x):\mathcal{X} \rightarrow \mathcal{Y}\)</span>. <span class="math inline">\(g\)</span>에 대해 역함수 매핑 <span class="math inline">\(g^{- 1}\)</span>을 정의하는데, 이는 <span class="math inline">\(\mathcal{Y}\)</span>의 부분집합을 <span class="math inline">\(\mathcal{X}\)</span>의 부분집합으로 변환하는 함수이다. <span class="math inline">\(g^{- 1}(A) = \{ x \in \mathcal{X}:g(x) \in A\}\)</span>.</p>
+<p>즉, 사상 <span class="math inline">\(g^{- 1}\)</span>은 집합을 집합으로 변환하는데, <span class="math inline">\(g^{- 1}(A)\)</span>는 <span class="math inline">\(g(x)\)</span>가 집합 <span class="math inline">\(A\)</span>로 보내는 <span class="math inline">\(\mathcal{X}\)</span>의 점들의 집합을 의미한다. 집합 <span class="math inline">\(A\)</span>가 단일 원소 집합, 즉 <span class="math inline">\(A = \{ y\}\)</span>인 경우도 가능하다. 이때는, <span class="math inline">\(g^{- 1}(\{ y\}) = \{ x \in \mathcal{X}:g(x) = y\}\)</span> 로 표현된다. 이 경우, 우리는 종종 <span class="math inline">\(g^{- 1}(y)\)</span>를 <span class="math inline">\(g^{- 1}(\{ y\})\)</span> 대신 사용하여 표기한다.</p>
+<p><span class="math inline">\(g^{- 1}(y)\)</span>는 여전히 집합이 될 수 있는데, 이는 <span class="math inline">\(g(x) = y\)</span>를 만족하는 <span class="math inline">\(x\)</span>가 하나 이상 존재할 수 있기 때문이다. 만약 <span class="math inline">\(g(x) = y\)</span>를 만족하는 <span class="math inline">\(x\)</span>가 오직 하나뿐이라면, <span class="math inline">\(g^{- 1}(y)\)</span>는 단일 원소 집합 <span class="math inline">\(\{ x\}\)</span>가 되고, 이때는 단순히 <span class="math inline">\(g^{- 1}(y) = x\)</span>라고 표기할 수도 있다.</p>
+<p>확률변수 <span class="math inline">\(Y = g(X)\)</span>, 임의의 집합 <span class="math inline">\(A \subset \mathcal{Y}\)</span>에 대해 다음과 같이 표현할 수 있다.</p>
+<p><span class="math inline">\(\begin{matrix}
+P(Y \in A) &amp; = P(g(X) \in A) \\
+&amp; = P(\{ x \in \mathcal{X}:g(x) \in A\}) \\
+&amp; = P(X \in g^{- 1}(A))
+\end{matrix}\)</span>.</p>
+<p>2이산형 확률변수 변수변환</p>
+<p>확률변수 <span class="math inline">\(X\)</span>가 이산 확률변수라면 표본공간 <span class="math inline">\(\mathcal{X}\)</span>는 가산 집합이다. 그러므로 확률변수 <span class="math inline">\(Y = g(X)\)</span>의 표본공간은 <span class="math inline">\(\mathcal{Y} = \{ y:y = g(x),x \in \mathcal{X}\}\)</span>이며, 이 또한 가산 집합이므로 <span class="math inline">\(Y = g(X)\)</span> 역시 이산 확률변수가 된다. <span class="math inline">\(Y = g(X)\)</span>의 확률질량함수는 다음과 같이 주어진다.</p>
+<p><span class="math inline">\(f_{Y}(y) = P(Y = y) = \sum_{x \in g^{- 1}(y)}P(X = x) = \sum_{x \in g^{- 1}(y)}f_{X}(x),\text{for}y \in \mathcal{Y}\)</span>그리고, <span class="math inline">\(y \notin \mathcal{Y}\)</span>인 경우 <span class="math inline">\(f_{Y}(y) = 0\)</span>이다. 즉, <span class="math inline">\(Y = g(X)\)</span>의 pmf를 구하는 과정은 각 <span class="math inline">\(y \in \mathcal{Y}\)</span>에 대해 <span class="math inline">\(g^{- 1}(y)\)</span>를 찾아서 해당 확률들을 모두 합산하는 것으로 간단하게 해결된다.</p>
+<p>【예제】 (동전 던지기 실험회수)</p>
+<p>확률변수 <span class="math inline">\(X\)</span>를 첫 번째 앞면이 나온 동전 던지기의 횟수라 정의하면 <span class="math inline">\(P(X = x) = (1/2)^{x},x = 1,2,...\)</span>이다. 첫 번째 앞면이 나오기 전까지의 동전 던진 횟수를 나타내는 확률변수 <span class="math inline">\(Y\)</span>를 정의하자. 즉, <span class="math inline">\(Y = g(x) = X - 1\)</span>이다.</p>
+<ol type="1">
+<li>역함수 구하기: <span class="math inline">\(g^{- 1}(y) = y + 1\)</span></li>
+</ol>
+<!-- -->
+<ol start="6" type="1">
+<li><p>확률변수 <span class="math inline">\(Y\)</span>의 표본공간: <span class="math inline">\(\mathcal{Y} = \{ y:y = g(x),x \in \mathcal{X}\} = \{ 0,1,2,\ldots\}\)</span></p></li>
+<li><p>확률변수 <span class="math inline">\(Y = X - 1\)</span>의 확률질량함수:</p></li>
+</ol>
+<p><span class="math display">\[p_{Y}(y) = p_{X}(y + 1) = \left( \frac{1}{2} \right)^{y + 1},\text{for}y = 0,1,2,\ldots\]</span></p>
+<p>예제(이항분포)</p>
+<p>이산 확률변수 <span class="math inline">\(X\)</span>(성공확률이 <span class="math inline">\(p\)</span>인 <span class="math inline">\(n\)</span>번의 베르누이 시행 결과 성공회수)가 이항 분포를 가지면, 그 확률질량함수는 다음과 같은 형태를 가진다(<span class="math inline">\(n\)</span>은 양의 정수, <span class="math inline">\(0 &lt; p &lt; 1\)</span>).</p>
+<p><span class="math display">\[f_{X}(x) = P(X = x) = \binom{n}{x}p^{x}(1 - p)^{n - x},x = 0,1,\ldots,n\]</span></p>
+<p>새로운 확률변수 <span class="math inline">\(g(x) = n - x\)</span>(실패회수)의 확률질량함수를 구하자.</p>
+<ol type="1">
+<li>역함수 구하기: <span class="math inline">\(g^{- 1}(y) = n - y\)</span></li>
+</ol>
+<!-- -->
+<ol start="8" type="1">
+<li>확률변수 <span class="math inline">\(Y\)</span>의 표본공간: <span class="math inline">\(\mathcal{Y} = \{ y:y = g(x),x \in \mathcal{X}\} = \{ 0,1,\ldots,n\}\)</span></li>
+</ol>
+<p><span class="math display">\[\begin{matrix}
+p_{Y}(y) &amp; = \sum_{x \in g^{- 1}(y)}p_{X}(x) = p_{X}(n - y) \\
+&amp; = \binom{n}{n - y}p^{n - y}(1 - p)^{n - (n - y)} \\
+&amp; = \binom{n}{y}(1 - p)^{y}p^{n - y}
+\end{matrix}\]</span></p>
+<p>3연속형 확률변수 변수변환</p>
+<p>만약 <span class="math inline">\(X\)</span>가 연속 확률변수라면, 일부 경우에는 <span class="math inline">\(Y = g(X)\)</span>의 누적분포함수와 확률밀도함수를 <span class="math inline">\(X\)</span>의 cdf와 pdf 및 함수 <span class="math inline">\(g(X)\)</span>를 이용하여 간단한 형태로 표현하는 것이 가능하다.</p>
+<p>분포함수 이용하기</p>
+<p>확률변수 <span class="math inline">\(Y = g(X)\)</span>의 누적분포함수는 다음과 같이 주어진다.</p>
+<p><span class="math display">\[\begin{matrix}
+F_{Y}(y) &amp; = P(Y \leq y) = P(g(X) \leq y) \\
+&amp; = P(\{ x \in \mathcal{X}:g(x) \leq y\}) \\
+&amp; = \int_{\{ x \in \mathcal{X}:g(x) \leq y\}}f_{X}(x)dx
+\end{matrix}\]</span></p>
+<p>【예제】 <span class="math inline">\(g(X) = X^{2}\)</span> 변환</p>
+<p>확률변수 <span class="math inline">\(X\)</span>의 확률밀도함수 <span class="math inline">\(f_{X}(x) = \frac{1}{2}, - 1 &lt; x &lt; 1\)</span>라 하자. 새로운 확률변수 <span class="math inline">\(Y = X^{2}\)</span>의 확률밀도함수를 구하고자 한다.</p>
+<ol type="1">
+<li>확률변수 <span class="math inline">\(Y\)</span>의 표본공간: <span class="math inline">\(\mathcal{Y} = \{ y:y = g(x),x \in \mathcal{X}\} = \{ y:0 \leq y &lt; 1\}\)</span></li>
+</ol>
+<!-- -->
+<ol start="9" type="1">
+<li>확률변수 <span class="math inline">\(Y = X^{2}\)</span>의 확률분포함수:</li>
+</ol>
+<p><span class="math inline">\(P(X^{2} \leq y) = P( - \sqrt{y} \leq X \leq \sqrt{y})\)</span>이므로 <span class="math inline">\(F_{Y}(y)\)</span>다음과 같이 주어진다.</p>
+<p><span class="math display">\[F_{Y}(y) = \{\begin{matrix}
+0, &amp; y &lt; 0 \\
+\int_{- \sqrt{y}}^{\sqrt{y}}\frac{1}{2}dx = \sqrt{y}, &amp; 0 \leq y &lt; 1 \\
+1, &amp; 1 \leq y.
+\end{matrix}\]</span></p>
+<p>따라서, Y 의 확률밀도함수(pdf)는 다음과 같다.</p>
+<p><span class="math display">\[f_{Y}(y) = \{\begin{matrix}
+\frac{1}{2\sqrt{y}}, &amp; 0 &lt; y &lt; 1 \\
+0, &amp; \text{그 외의 경우}.
+\end{matrix}\]</span></p>
+<p>Jacobian 이용하기</p>
+<p>확률변수 <span class="math inline">\(X\)</span>가 확률밀도함수 <span class="math inline">\(f_{X}(x)\)</span>와 영역 <span class="math inline">\(S_{X}\)</span>를 가지는 연속 확률변수라고 하자. 그리고 새로운 확률변수 <span class="math inline">\(Y = g(X)\)</span> 로 정의하자. 여기서, 함수 <span class="math inline">\(g(x)\)</span>는 일대일 미분 가능 함수이며, <span class="math inline">\(X\)</span>의 영역 <span class="math inline">\(S_{X}\)</span>에서 정의된다.</p>
+<p>정리</p>
+<p><span class="math inline">\(g(X)\)</span>의 역함수를 <span class="math inline">\(x = g^{- 1}(y)\)</span>라고 나타내고, <span class="math inline">\(\frac{dx}{dy} = \frac{d\lbrack g^{- 1}(y)\rbrack}{dy}\)</span>로 정의하자. 그러면, <span class="math inline">\(Y = g(X)\)</span>의 확률밀도함수는 다음과 같이 주어진다.</p>
+<p><span class="math inline">\(f_{Y}(y) = f_{X}(g^{- 1}(y))\left| \frac{dx}{dy} \right|,\text{for}y \in S_{Y}\)</span>.</p>
+<p>여기서, <span class="math inline">\(Y\)</span>의 영역은 <span class="math inline">\(S_{Y} = \{ y = g(x):x \in S_{X}\}\)</span>이다.</p>
+<ul>
+<li><p><span class="math inline">\(f_{Y}(y) = f_{X}(x)|\frac{dx}{dy}|\)</span> (비감소 함수</p></li>
+<li><p><span class="math inline">\(f_{Y}(y) = {- f}_{X}(x)|\frac{dx}{dy}|\)</span> (비증가 함수)</p></li>
+</ul>
+<p>확률변수 <span class="math inline">\(X\)</span>가 누적분포함수 <span class="math inline">\(F_{X}(x)\)</span>를 가진다고 하자. 또한, <span class="math inline">\(Y = g(X)\)</span> 로 정의하고, 표본공간 <span class="math inline">\(\mathcal{X}\)</span>와 <span class="math inline">\(\mathcal{Y}\)</span>는 <span class="math inline">\(\mathcal{Y} = \{ y:y = g(x),x \in \mathcal{X}\}\)</span> 정의된다고 하자.</p>
+<p>정리</p>
+<ol type="1">
+<li><p>만약 <span class="math inline">\(g(X)\)</span>가 증가 함수이면, <span class="math inline">\(F_{Y}(y) = F_{X}(g^{- 1}(y)),\text{for}y \in \mathcal{Y}\)</span></p></li>
+<li><p>만약 <span class="math inline">\(g(X)\)</span>가 감소 함수이면, <span class="math inline">\(F_{Y}(y) = 1 - F_{X}(g^{- 1}(y)),\text{for}y \in \mathcal{Y}\)</span>.</p></li>
+</ol>
+<p>【예제】 균일분포 지수분포 변환</p>
+<p>만약 <span class="math inline">\(X \sim f(x) = 1,0 &lt; x &lt; 1\)</span>이면 확률변수 <span class="math inline">\(Y = - ln(1 - X)\)</span> 확률밀도함수를 구하라.</p>
+<ol type="1">
+<li>확률변수 <span class="math inline">\(Y = - ln(1 - X)\)</span> 은 <span class="math inline">\(X\)</span>의 증가 함수이고 <span class="math inline">\(X = 1 - e^{- y}\)</span>이다. 그러므로 <span class="math inline">\(\frac{dx}{dy} = e^{- y}\)</span>이다.</li>
+</ol>
+<!-- -->
+<ol start="10" type="1">
+<li><p><span class="math inline">\(Y\)</span>의 영역 : <span class="math inline">\(0 \leq x \leq 1\)</span> ⇨ <span class="math inline">\(0 &lt; y &lt; \infty\)</span>.</p></li>
+<li><p><span class="math inline">\(f_{Y}(y) = f_{X}(x)|\frac{dx}{dy}| = e^{- y},0 &lt; y\)</span>.</p></li>
+</ol>
+<p>【예제】 정규분포와 카이제곱분포</p>
+<p>확률변수 <span class="math inline">\(X\)</span>가 표준정규분포를 따른다고 가정하자.</p>
+<p><span class="math inline">\(f_{X}(x) = \frac{1}{\sqrt{2\pi}}e^{- x^{2}/2}, - \infty &lt; x &lt; \infty\)</span>.</p>
+<p>함수 <span class="math inline">\(y = g(x) = X^{2}\)</span>는 구간 <span class="math inline">\(( - \infty,0),(0,\infty)\)</span>에서 단조함수이고, <span class="math inline">\(Y\)</span>의 표본공간은 <span class="math inline">\(\mathcal{Y} = (0,\infty)\)</span>이다.</p>
+<p><span class="math inline">\(A_{1} = ( - \infty,0),g_{1}(x) = x^{2},g_{1}^{- 1}(y) = - \sqrt{y}\)</span>;</p>
+<p><span class="math inline">\(A_{2} = (0,\infty),g_{2}(x) = x^{2},g_{2}^{- 1}(y) = \sqrt{y}\)</span>.</p>
+<p><span class="math inline">\(Y\)</span>의 확률밀도함수는 다음과 같이 구해지며, 자유도 1의 카이제곱 분포와 동일하다</p>
+<p><span class="math display">\[f_{Y}(y) = \frac{1}{\sqrt{2\pi}}e^{- ( - \sqrt{y})^{2}/2}\left| \frac{1}{2\sqrt{y}} \right| + \frac{1}{\sqrt{2\pi}}e^{- (\sqrt{y})^{2}/2}\left| \frac{1}{2\sqrt{y}} \right|\]</span></p>
+<p><span class="math inline">\(= \frac{1}{\sqrt{2\pi}}\frac{1}{\sqrt{y}}e^{- y/2},0 &lt; y &lt; \infty\)</span>.</p>
+<p>Chapter 4. 기대값</p>
+<p>확률밀도함수는 데이터의 분포(형태, 흩어진 정도)에 대한 정보는 주지만 요약 값에 대한 정보를 제공하지는 않는다. 확률밀도함수의 숫자적 요약을 기술 요약값 이라 한다. 기대값(expected value)은 확률변수의 평균값을 의미하며, 여기서 평균(average) 값이란 확률분포에 따라 가중이 적용된 값이다. 확률분포의 기대값은 중심 척도로 생각할 수 있으며, 일반적으로 평균을 중앙위치 척도로 간주하는 것과 같은 개념이다.</p>
+<p>1기대값 정의</p>
+<p>확률변수 <span class="math inline">\(g(X)\)</span>의 기대값은 <span class="math inline">\(E\lbrack g(X)\rbrack\)</span>로 표기되며, 다음과 같이 정의된다.</p>
+<p>기대값 정의</p>
+<p><span class="math display">\[E\lbrack g(X)\rbrack = \{\begin{matrix}
+\int_{- \infty}^{\infty}g(x)f_{X}(x)dx, &amp; \text{if}X\text{is continuous} \\
+\sum_{x \in \mathcal{X}}g(x)f_{X}(x) = \sum_{x \in \mathcal{X}}g(x)P(X = x), &amp; \text{if}X\text{is discrete}.
+\end{matrix}\]</span></p>
+<p>단, 위의 적분 또는 합이 존재해야 한다. 만약 <span class="math inline">\(E|g(X)| = \infty\)</span>이면, 기대값이 존재하지 않는다고 말한다.</p>
+<p>【예제】 지수분포 평균</p>
+<p>확률변수 <span class="math inline">\(X\)</span>가 모수가 <span class="math inline">\(\lambda &gt; 0\)</span>인 지수분포를 따른다고 가정하자.</p>
+<p><span class="math inline">\(f_{X}(x) = \frac{1}{\lambda}e^{- x/\lambda},0 \leq x &lt; \infty\)</span>.</p>
+<p><span class="math display">\[E\lbrack X\rbrack = \int_{0}^{\infty}\frac{1}{\lambda}xe^{- x/\lambda}dx = - xe^{- x/\lambda}|_{0}^{\infty} + \int_{0}^{\infty}e^{- x/\lambda}dx\]</span></p>
+<p><span class="math inline">\(= \int_{0}^{\infty}e^{- x/\lambda}dx = \lambda\)</span>.</p>
+<p>【예제】 이항분포 평균</p>
+<p>확률변수 <span class="math inline">\(X\)</span>가 모수가 <span class="math inline">\((n,p)\)</span>인 이항분포를 따른다고 가정하자(단, <span class="math inline">\(n\)</span>은 양의 정수이며, <span class="math inline">\(0 \leq p \leq 1\)</span>이다).</p>
+<p><span class="math inline">\(P_{X}(x) = \binom{n}{x}p^{x}(1 - p)^{n - x},dx = 0,1,\ldots,n\)</span>.</p>
+<p><span class="math display">\[E\lbrack X\rbrack = \overset{n}{\sum_{x = 0}}x\binom{n}{x}p^{x}(1 - p)^{n - x} = \overset{n}{\sum_{x = 1}}x\binom{n}{x}p^{x}(1 - p)^{n - x}\]</span></p>
+<p>(<span class="math inline">\(x = 0\)</span>항은 0이므로 제외하였고) <span class="math inline">\(x\binom{n}{x} = n\binom{n - 1}{x - 1}\)</span>을 이용하여 <span class="math inline">\(E\lbrack X\rbrack = \overset{n}{\sum_{x = 1}}n\binom{n - 1}{x - 1}p^{x}(1 - p)^{n - x}\)</span>.</p>
+<p>변수 치환 <span class="math inline">\(y = x - 1\)</span>을 적용하면 <span class="math inline">\(E\lbrack X\rbrack = \overset{n - 1}{\sum_{y = 0}}n\binom{n - 1}{y}p^{y + 1}(1 - p)^{n - (y + 1)}\)</span>이므로</p>
+<p><span class="math inline">\(E\lbrack X\rbrack = np\overset{n - 1}{\sum_{y = 0}}\binom{n - 1}{y}p^{y}(1 - p)^{n - 1 - y}\)</span>.</p>
+<p>위의 식에서 마지막 합은 이항 분포 <span class="math inline">\(\text{Binomial}(n - 1,p)\)</span>의 확률 질량 함수의 전체 합이므로 1이 되어 <span class="math inline">\(E(X) = np\)</span>가 된다.</p>
+<p>2주요 기대값</p>
+<p>평균</p>
+<p><span class="math inline">\(X\)</span>를 기대값이 존재하는 확률 변수라고 하자. <span class="math inline">\(X\)</span>의 평균 값을 <span class="math inline">\(\mu\)</span>는 <span class="math inline">\(\mu = E(X)\)</span>로 정의된다.</p>
+<p>평균 정의</p>
+<p>분산</p>
+<p><span class="math inline">\(X\)</span>를 유한한 평균 <span class="math inline">\(\mu\)</span>를 가지며, <span class="math inline">\(E\lbrack(X - \mu)^{2}\rbrack\)</span>가 유한한 확률 변수라고 하자. 그러면 <span class="math inline">\(X\)</span>의 분산은 <span class="math inline">\(E\lbrack(X - \mu)^{2}\rbrack\)</span>로 정의된다. 보통 <span class="math inline">\(\sigma^{2}\)</span> 또는 <span class="math inline">\(\text{Var}(X)\)</span>로 표기된다.</p>
+<p>분산 정의</p>
+<p>분산은 확률변수의 값이 평균으로부터 얼마나 퍼져 있는지를 나타내는 지표로, 값들의 변동 정도를 측정한다. 확률변수의 분산은 각 값과 평균의 차이를 제곱한 값들의 기댓값으로 정의되며, 이는 데이터가 평균을 기준으로 얼마나 흩어져 있는지의 정도를 수치적으로 나타낸다. 분산이 크다는 것은 값들이 평균을 중심으로 넓게 퍼져 있음을 의미하며, 반대로 분산이 작으면 값들이 평균에 가까운 곳에 모여 있다는 뜻이다.</p>
+<p>분산 간편식: <span class="math inline">\(\sigma^{2} = E\lbrack(X - \mu)^{2}\rbrack = E(X^{2}) - \mu^{2}\)</span></p>
+<p>표준편차: 분산의 양의 제곱근 <span class="math inline">\(\sigma = \sqrt{E\lbrack(X - \mu)^{2}\rbrack}\)</span></p>
+<p>만약 확률변수 <span class="math inline">\(X\)</span>가 유한한 분산을 가지면, 임의의 상수 <span class="math inline">\(a\)</span>와 <span class="math inline">\(b\)</span>에 대해 다음이 성립한다. <span class="math inline">\(\text{Var}(aX + b) = a^{2}\text{Var}(X)\)</span>.</p>
+<p>정리</p>
+<p>왜도</p>
+<p>확률변수 <span class="math inline">\(X\)</span>의 왜도(Skewness)는 확률분포의 비대칭성을 측정하는 지표로, 평균 <span class="math inline">\(\mu\)</span>를 기준으로 데이터가 어느 방향으로 치우쳐 있는지를 나타내며 다음과 같이 정의된다.</p>
+<p>왜도 정의</p>
+<p><span class="math display">\[\text{Skewness} = E\left\lbrack \left( \frac{X - \mu}{\sigma} \right)^{3} \right\rbrack\]</span></p>
+<p>왜도는 확률분포가 좌우 대칭인지, 또는 특정 방향으로 치우쳐 있는지를 나타내는 척도이다. 왜도가 0이면 분포가 완전히 대칭임을 의미하며, 양수이면 분포의 오른쪽 꼬리가 길고(우측으로 치우침), 음수이면 왼쪽 꼬리가 길어짐(좌측으로 치우침)을 의미한다. 즉, 양의 왜도는 상대적으로 작은 값들이 많고 큰 값들이 드물게 존재하는 분포를 나타내며, 음의 왜도는 상대적으로 큰 값들이 많고 작은 값들이 드물게 존재하는 분포를 의미한다. 왜도는 확률분포의 형태를 분석하고 데이터의 분포 특성을 이해하는 데 중요한 역할을 한다.</p>
+<p>첨도</p>
+<p>확률변수 <span class="math inline">\(X\)</span>의 첨도(Kurtosis)는 분포의 꼬리의 두터움 정도를 측정하는 지표로, 일반적으로 정규분포의 첨도 값인 3을 기준으로 비교되며, 보정된 첨도는 다음과 같이 정의된다.</p>
+<p>첨도 정의</p>
+<p><span class="math display">\[\text{Kurtosis} = E\left\lbrack \left( \frac{X - \mu}{\sigma} \right)^{4} \right\rbrack - 3\]</span></p>
+<p>첨도는 확률분포의 꼬리가 두껍거나 얇은 정도를 나타내는 척도이다. 즉, 분포의 극단적인 값(이상치, outliers)의 빈도를 반영하는 지표로 활용된다. 첨도가 0이면 정규분포와 동일한 첨도를 가지며, 양의 첨도(leptokurtic)는 정규분포보다 꼬리가 두껍고 중심부가 뾰족한 형태를 의미한다. 반면, 음의 첨도(platykurtic)는 정규분포보다 꼬리가 얇고 중심부가 평평한 형태를 나타낸다. 첨도는 데이터가 평균 주변에 집중되어 있는지, 극단값이 자주 발생하는지를 분석하는 데 중요한 역할을 한다.</p>
+<p>적률생성함수</p>
+<p>각 정수 <span class="math inline">\(n\)</span>에 대해, 확률변수 <span class="math inline">\(X\)</span>의 <span class="math inline">\(n\)</span>차 적률(moment)은 다음과 같이 정의된다. <span class="math inline">\(\mu_{n}' = E\lbrack X^{n}\rbrack\)</span></p>
+<p>적률 정의</p>
+<p><span class="math inline">\(n\)</span>차 중심적률: <span class="math inline">\(\mu_{n} = E\lbrack(X - \mu)^{n}\rbrack\)</span></p>
+<p>확률변수 <span class="math inline">\(X\)</span>의 누적분포함수가 주어졌을 때, <span class="math inline">\(X\)</span>의 적률생성함수(moment generating function)는 다음과 같이 정의된다. <span class="math inline">\(M_{X}(t) = E\lbrack e^{tX}\rbrack\)</span>, 적률생성함수는 <span class="math inline">\(t\)</span>의 함수이다.</p>
+<p>적률생성함수 정의</p>
+<p>이는 <span class="math inline">\(t\)</span>가 0의 근방에서 정의될 때 유효하다. 즉, 어떤 <span class="math inline">\(h &gt; 0\)</span>가 존재하여 <span class="math inline">\(- h &lt; t &lt; h\)</span>인 모든 <span class="math inline">\(t\)</span>에 대해 <span class="math inline">\(E\lbrack e^{tX}\rbrack\)</span>가 존재하면 적률생성함수가 존재한다고 한다.</p>
+<p>확률변수 <span class="math inline">\(X\)</span>가 적률생성함수를 가진다면, 다음이 성립한다. <span class="math inline">\(E\lbrack X^{n}\rbrack = M_{X}^{(n)}(0)\)</span>, 여기서 <span class="math inline">\(M_{X}^{(n)}(0) = {\frac{d^{n}}{dt^{n}}M_{X}(t)|}_{t = 0}\)</span>이다. 즉, n차 적률은 적률생성함수 <span class="math inline">\(M_{X}(t)\)</span>의 n차 도함수를 t=0 에서 계산한 값과 같다.</p>
+<p>정리</p>
+<p>확률변수 <span class="math inline">\(X\)</span>와 <span class="math inline">\(Y\)</span>가 각각 적률생성함수 <span class="math inline">\(M_{X}\)</span>와 <span class="math inline">\(M_{Y}\)</span>를 가지며, 이 함수들이 0을 포함하는 개구간에서 존재한다고 하자.</p>
+<p>정리</p>
+<p><span class="math inline">\(F_{X}(z) = F_{Y}(z)\text{for all}z \in \mathbb{R}\)</span> 필요 충분조건은</p>
+<p><span class="math inline">\(M_{X}(t) = M_{Y}(t)\text{for all}t \in ( - h,h)\text{for some}h &gt; 0\)</span>이다.</p>
+<p>이 정리는 적률생성함수를 이용하여 확률분포의 동일성을 보장하는 중요한 결과이다. 즉, 두 확률변수의 적률생성함수가 열린 구간에서 서로 일치하면, 그 확률변수들의 분포는 동일하다. 이는 적률생성함수가 존재하는 경우, 분포를 완전히 특징짓는다는 것을 의미한다.</p>
+<p>【예제】 감마분포 적률생성함수</p>
+<p>모수 <span class="math inline">\((\alpha,\beta)\)</span>인 감마분포의 확률밀도함수는 다음과 같다.</p>
+<p><span class="math inline">\(f(x) = \frac{1}{\Gamma(\alpha)\beta^{\alpha}}x^{\alpha - 1}e^{- x/\beta}, &lt; x &lt; \infty,\alpha &gt; 0,\beta &gt; 0\)</span>.</p>
+<p>적률생성함수: <span class="math inline">\(M_{X}(t) = \frac{1}{\Gamma(\alpha)\beta^{\alpha}}\int_{0}^{\infty}e^{tx}x^{\alpha - 1}e^{- x/\beta}dx\)</span></p>
+<p><span class="math display">\[= \frac{1}{\Gamma(\alpha)\beta^{\alpha}}\int_{0}^{\infty}x^{\alpha - 1}e^{- (\frac{1}{\beta} - t)x}dx = \frac{1}{\Gamma(\alpha)\beta^{\alpha}}\int_{0}^{\infty}x^{\alpha - 1}e^{- x/(\frac{\beta}{1 - \beta t})}dx\]</span></p>
+<p>확률밀도함수의 적분값 <span class="math inline">\(\int_{0}^{\infty}\frac{1}{\Gamma(a)b^{a}}x^{a - 1}e^{- x/b}dx = 1\)</span>이므로</p>
+<p><span class="math inline">\(\int_{0}^{\infty}x^{a - 1}e^{- x/b}dx = \Gamma(a)b^{a}\)</span>이다. 이를 이용하면</p>
+<p><span class="math display">\[M_{X}(t) = \frac{1}{\Gamma(\alpha)\beta^{\alpha}}\Gamma(\alpha)\left( \frac{\beta}{1 - \beta t} \right)^{\alpha} = \left( \frac{1}{1 - \beta t} \right)^{\alpha},\text{단,}t &lt; \frac{1}{\beta}\]</span></p>
+<p>평균: <span class="math inline">\(E\lbrack X\rbrack = {\frac{d}{dt}M_{X}(t)|}_{t = 0} = {\frac{\alpha\beta}{(1 - \beta t)^{\alpha + 1}}|}_{t = 0} = \alpha\beta\)</span></p>
+<p>【예제】 이항분포 적률생성함수</p>
+<p>모수 <span class="math inline">\((n,p)\)</span>인 이항분포의 적률생성함수는 다음과 같다.</p>
+<p><span class="math display">\[M_{X}(t) = \overset{n}{\sum_{x = 0}}e^{tx}\binom{n}{x}p^{x}(1 - p)^{n - x} = \overset{n}{\sum_{x = 0}}\binom{n}{x}(pe^{t})^{x}(1 - p)^{n - x}\]</span></p>
+<p>이항 정리에 의해 <span class="math inline">\(\overset{n}{\sum_{x = 0}}\binom{n}{x}u^{x}v^{n - x} = (u + v)^{n}\)</span> 성립하므로 <span class="math inline">\(u = pe^{t},v = 1 - p\)</span>로 설정하면 <span class="math inline">\(M_{X}(t) = \lbrack pe^{t} + (1 - p)\rbrack^{n}\)</span>.</p>
+<p><span class="math display">\[E\lbrack X\rbrack = {\frac{d}{dt}M_{X}(t)|}_{t = 0} = {npe^{t}\lbrack pe^{t} + (1 - p)\rbrack^{n - 1}|}_{t = 0} = np\]</span></p>
+<p>3기대값 관련 정리 및 부등식</p>
+<p><span class="math inline">\(X\)</span>를 확률변수, <span class="math inline">\(a,b,c\)</span>를 상수라고 하자. 또한, 기댓값이 존재하는 임의의 함수 <span class="math inline">\(g_{1}(x)\)</span>와 <span class="math inline">\(g_{2}(x)\)</span>에 대해 다음이 성립한다.</p>
+<p>정리</p>
+<p><span class="math inline">\(1)E(ag_{1}(X) + bg_{2}(X) + c) = aE\lbrack g_{1}(X)\rbrack + bE\lbrack g_{2}(X)\rbrack + c\)</span><span class="math inline">\(2)\)</span> 만약 <span class="math inline">\(g_{1}(x) \geq 0\)</span>이 모든 <span class="math inline">\(x\)</span>에 대해 성립하면, <span class="math inline">\(E\lbrack g_{1}(X)\rbrack \geq 0\)</span>.</p>
+<p><span class="math inline">\(3)\)</span> 만약 <span class="math inline">\(g_{1}(x) \geq g_{2}(x)\)</span>가 성립하면, <span class="math inline">\(E\lbrack g_{1}(X)\rbrack \geq E\lbrack g_{2}(X)\rbrack\)</span>.</p>
+<p><span class="math inline">\(4)\)</span> 만약 <span class="math inline">\(a \leq g_{1}(x) \leq b\)</span>가 성립하면, <span class="math inline">\(a \leq E\lbrack g_{1}(X)\rbrack \leq b\)</span>.</p>
+<p><span class="math inline">\(X\)</span>를 확률변수라고 하고, <span class="math inline">\(m\)</span>을 양의 정수라고 하자. 만약 <span class="math inline">\(E\lbrack X^{m}\rbrack\)</span>이 존재한다고 가정하면, <span class="math inline">\(k\)</span>가 양의 정수이고 <span class="math inline">\(k \leq m\)</span>일 때, <span class="math inline">\(E\lbrack X^{k}\rbrack\)</span> 도 존재한다.</p>
+<p>정리</p>
+<p>(Markov’s Inequality) <span class="math inline">\(u(X)\)</span>를 확률변수 <span class="math inline">\(X\)</span>의 비음수 함수라고 하자. 만약 <span class="math inline">\(E\lbrack u(X)\rbrack\)</span>가 존재하면, 모든 양의 상수 <span class="math inline">\(c\)</span>에 대해 다음이 성립한다. <span class="math inline">\(P\lbrack u(X) \geq c\rbrack \leq \frac{E\lbrack u(X)\rbrack}{c}\)</span>.</p>
+<p>정리</p>
+<p>(Chebyshev’s Inequality) 확률변수 <span class="math inline">\(X\)</span>가 유한한 분산 <span class="math inline">\(\sigma^{2}\)</span>를 가지는 확률분포를 따른다고 가정하자. 그러면, 모든 <span class="math inline">\(k &gt; 0\)</span>에 대해 다음이 성립한다. <span class="math inline">\(P(|X - \mu| &lt; k\sigma) \geq 1 - \frac{1}{k^{2}}\)</span>.</p>
+<p>정리</p>
+<p>저자 정보</p>
+<p>1982. 성균관대학교 통계학 학사</p>
+<p>1985. 성균관대학교 통계학 석사</p>
+<p>1992. 미국 North Carolina State University 통계학 박사</p>
+<p>1993-1995. 전자통신연구원 선임연구원</p>
+<p>1995-2026. 한남대학교 통계학과 교수</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
