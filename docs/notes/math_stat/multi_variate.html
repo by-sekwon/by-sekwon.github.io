@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>multi_variate – 세상의 모든 통계 이야기</title>
+<title>수리 통계 4. 이변량 확률변수 – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -243,66 +243,79 @@ window.Quarto = {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">수리 통계 4. 이변량 확률변수</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<p><img src="media/image1.png" style="width:4.07621in;height:2.98414in" alt="myself.png">Chapter 1. 결합, 주변, 조건부 확률밀도함수</p>
-<p>vol 3. 추론통계</p>
-<p>section 4. 다변량 확률변수</p>
-<p>wolfpack se kwon</p>
-<p><a href="https://sites.google.com/view/wolfpack61" class="uri">https://sites.google.com/view/wolfpack61</a></p>
-<p>권세혁교수 통계노트시리즈</p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-확률변수와-확률분포함수" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-확률변수와-확률분포함수"><span style="color:green">chapter 1. 확률변수와 확률분포함수</span></h3>
 <p>두 개 이상의 확률변수를 포함하는 확률 모형을 다루는데, 이는 자연스럽게 다변량 모형이라고 불린다.</p>
 <p>실험적 상황에서 단 하나의 확률변수 값만을 관측하는 것은 매우 이례적일 것이다. 즉, 모든 수집된 데이터가 단 하나의 숫자로 이루어진 실험은 매우 드문 경우이다. 은행 고객이 창구에서 기다리는 시간과 실제로 서비스를 받는 시간은 서로 연관될 수 있다. 대기 시간이 길어지면 서비스 시간이 짧아질 수도 있고, 반대로 복잡한 업무로 인해 서비스 시간이 길어질 경우 대기 시간이 더욱 증가할 수도 있다. 이러한 두 확률변수를 함께 분석하면 은행의 서비스 효율성을 평가하는 데 유용하다.</p>
 <p>특정 시간에 바이러스에 감염된 환자 수와 24시간이 지난 후 치료된 환자 수는 상관관계를 가질 수 있다. 예를 들어, 감염 환자가 많을수록 치료된 환자 수도 많을 가능성이 크지만, 치료 속도나 의료 시스템의 효율성에 따라 그 관계는 다르게 나타날 수 있다.</p>
 <p>동일한 개체에서 여러 물리적 특성을 측정함으로써 다변량 데이터가 생성될 수도 있다. 예를 들어, 체중뿐만 아니라 체온, 키, 혈압 등의 다양한 건강 지표가 함께 측정될 수 있다. 이와 같이 서로 다른 특성에 대한 측정값들은 각각 개별적인 확률변수로 모델링될 수 있다. 따라서 우리는 두 개 이상의 확률변수를 동시에 다루는 확률 모형을 기술하고 활용하는 방법을 알아야 한다.</p>
 <p>이변량 확률변수는 <span class="math inline">\((X,Y)\)</span>등 알파벳 대문자를 사용하며 다변량 확률변수는 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span> 알파벳 대문자와 아래 첨자를 사용하여 표현한다.</p>
-<p>1결합 확률밀도함수</p>
+<section id="결합-확률밀도함수" class="level4">
+<h4 class="anchored" data-anchor-id="결합-확률밀도함수"><span style="color:blue">1. 결합 확률밀도함수</span></h4>
 <p><span class="math inline">\(n\)</span>차원 확률벡터는 표본공간 <span class="math inline">\(S\)</span>에서 <span class="math inline">\(\mathbb{R}^{n}\)</span>(즉, <span class="math inline">\(n\)</span>차원 유클리드 공간)으로 가는 함수이다.</p>
-<p>정의</p>
-<p>이차원 확률벡터는 <span class="math inline">\((x,y) \in \mathbb{R}^{2}\)</span>(이차원 평면) 된다. 두 개의 주사위를 던지는 실험을 고려하자. 이 실험의 표본공간은 36개의 동일한 확률을 가지는 결과들로 이루어진다.</p>
-<p>【예제 ①】 확률변수 <span class="math inline">\(X\)</span>을 <u>두 주사위 눈금의 합</u>, 확률변수 <span class="math inline">\(Y\)</span>을 <u>두 주사위 눈금의 차이의 절대값</u>으로 정의하자.</p>
+<p><strong>【정의】</strong> 이차원 확률벡터는 <span class="math inline">\((x,y) \in \mathbb{R}^{2}\)</span>(이차원 평면) 된다. 두 개의 주사위를 던지는 실험을 고려하자. 이 실험의 표본공간은 36개의 동일한 확률을 가지는 결과들로 이루어진다.</p>
+<p><strong>【예제 ①】</strong> 확률변수 <span class="math inline">\(X\)</span>을 <u>두 주사위 눈금의 합</u>, 확률변수 <span class="math inline">\(Y\)</span>을 <u>두 주사위 눈금의 차이의 절대값</u>으로 정의하자.</p>
 <p>표본점 (4,1)과 (1,4)는 주사위 두 개의 눈이 각각 (4,1) 또는 (1,4)로 나오는 경우이므로 <span class="math inline">\(P(\{(4,1)\}) = P(\{(1,4)\}) = 1/36\)</span>이다.</p>
 <p><span class="math display">\[P(X = 5,Y = 3) = P(\{ 1,4\},\{ 4,1\}) = 1/18\]</span></p>
 <p>위에서 정의된 확률벡터 <span class="math inline">\((X,Y)\)</span>는 이산확률벡터라고 불린다. 이는 가능한 값들의 개수가 셀 수 있으며(이 경우 유한한 개수) 존재하기 때문이다. 이산확률벡터의 경우 확률밀도함수는 다음과 같다.</p>
 <p><span class="math inline">\(f(x,y) = P(X = x,Y = y)\)</span>.</p>
 <p><span class="math inline">\((X,Y)\)</span>를 이산형 이변량 확률벡터라고 하자. 이때, 함수 <span class="math inline">\(f(x,y)\)</span>는 <span class="math inline">\(\mathbb{R}^{2}\)</span>에서 <span class="math inline">\(\mathbb{R}\)</span>로 정의되며, 다음과 같이 표현된다.</p>
-<p>정의(이산형)</p>
-<p><span class="math inline">\(f_{X,Y}(x,y) = P(X = x,Y = y)\)</span> . 이 함수는 이산형 결합확률질량함수(joint probability mass function)라고 불린다.</p>
+<p><strong>【정의 이산형】</strong> <span class="math inline">\(f_{X,Y}(x,y) = P(X = x,Y = y)\)</span> . 이 함수는 이산형 결합확률질량함수(joint probability mass function)라고 불린다.</p>
 <p>함수 <span class="math inline">\(f(x,y)\)</span>가 <span class="math inline">\(\mathbb{R}^{2}\)</span>에서 <span class="math inline">\(\mathbb{R}\)</span>로 가는 함수일 때,</p>
-<p>정의(연속형)</p>
-<p>이 함수가 연속 이변량 확률벡터 <span class="math inline">\((X,Y)\)</span>의 연속형 결합확률밀도함수라고 불리려면, 모든 <span class="math inline">\(A \subset \mathbb{R}^{2}\)</span>에 대해 다음 조건을 만족해야 한다.</p>
+<p><strong>【정의 연속형】</strong> 이 함수가 연속 이변량 확률벡터 <span class="math inline">\((X,Y)\)</span>의 연속형 결합확률밀도함수라고 불리려면, 모든 <span class="math inline">\(A \subset \mathbb{R}^{2}\)</span>에 대해 다음 조건을 만족해야 한다.</p>
 <p><span class="math display">\[P((X,Y) \in A) = \int_{A}\int f(x,y)dxdy\]</span></p>
-<p>【예제 ① 계속】 위의 주사위 두 개를 굴리는 경우로 정의된 <span class="math inline">\((X,Y)\)</span>가 가질 수 있는 21가지 가능한 값이 있다. 이 21가지 가능한 값에 대한 확률, <span class="math inline">\(f(x,y)\)</span> 값을 정의하는 함수가 결합확률밀도함수이다.</p>
+<p><strong>【예제 ① 계속】</strong> 위의 주사위 두 개를 굴리는 경우로 정의된 <span class="math inline">\((X,Y)\)</span>가 가질 수 있는 21가지 가능한 값이 있다. 이 21가지 가능한 값에 대한 확률, <span class="math inline">\(f(x,y)\)</span> 값을 정의하는 함수가 결합확률밀도함수이다.</p>
 <p>결합확률밀도함수를 이용하면 <span class="math inline">\((X,Y)\)</span>에 대한 임의의 사건 <span class="math inline">\(A \subseteq \mathbb{R}^{2}\)</span>에 대한 확률은 <span class="math inline">\(P((X,Y) \in A) = \sum_{(x,y) \in A}f(x,y)\)</span>이다. 예를 들어, <span class="math inline">\(A = \{(x,y):x = 7\text{and}y \leq 4\}\)</span>애 대한 확률을 계산해 보자.</p>
 <p><span class="math display">\[P(X = 7,Y \leq 4) = P((X,Y) \in A) = f(7,1) + f(7,3) = \frac{1}{18} + \frac{1}{18} = \frac{1}{9}\]</span></p>
-<p>【예제 ① 계속】 <span class="math inline">\(E(XY)\)</span>을 구하시오.</p>
+<p><strong>【예제 ① 계속】</strong> <span class="math inline">\(E(XY)\)</span>을 구하시오.</p>
 <p><span class="math inline">\(E\lbrack XY\rbrack = (2)(0) \cdot \frac{1}{36} + (4)(0) \cdot \frac{1}{36} + \cdots + (8)(4) \cdot \frac{1}{18} + (7)(5) \cdot \frac{1}{18} = 13\frac{11}{18}\)</span></p>
 <p><span class="math inline">\(g_{1}(x,y)\)</span>와 <span class="math inline">\(g_{2}(x,y)\)</span>가 두 확률밀도함수이고, <span class="math inline">\(a,b,c\)</span>가 상수일 때 다음의 기대값 합의 연산자가 성립한다.</p>
 <p><span class="math display">\[\mathbb{E}\left\lbrack ag_{1}(X,Y) + bg_{2}(X,Y) + c \right\rbrack = a\mathbb{E}\lbrack g_{1}(X,Y)\rbrack + b\mathbb{E}\lbrack g_{2}(X,Y)\rbrack + c\]</span></p>
-<p>【예제 ②】 다음은 두 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합확률밀도함수, <span class="math inline">\(f(x,y)\)</span> 이다. <span class="math inline">\(f(0,0) = f(0,1) = \frac{1}{6},f(1,0) = f(1,1) = \frac{1}{3}.\)</span></p>
+<p><strong>【예제 ②】</strong> 다음은 두 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합확률밀도함수, <span class="math inline">\(f(x,y)\)</span> 이다. <span class="math inline">\(f(0,0) = f(0,1) = \frac{1}{6},f(1,0) = f(1,1) = \frac{1}{3}.\)</span></p>
 <p>확률계산은 <span class="math inline">\(P(X = Y) = f(0,0) + f(1,1) = \frac{1}{2}\)</span> 바로 가능하다.</p>
-<p>【연속형】 <span class="math inline">\(\mathbb{E}\lbrack g(X,Y)\rbrack = \int_{- \infty}^{\infty}\int_{- \infty}^{\infty}g(x,y)f(x,y)dxdy\)</span>.</p>
-<p>2주변 확률밀도함수</p>
-<p>이산형</p>
-<p>이산 이변량 확률벡터 <span class="math inline">\((X,Y)\)</span>가 결합 확률질량함수 <span class="math inline">\(f_{X,Y}(x,y)\)</span>를 가진다고 하자. 그러면, <span class="math inline">\(X\)</span>와 <span class="math inline">\(Y\)</span>의 주변 확률질량함수(marginal pmf)는 각각 다음과 같이 주어진다.</p>
-<p>정리</p>
+<p><strong>【연속형】</strong> <span class="math inline">\(\mathbb{E}\lbrack g(X,Y)\rbrack = \int_{- \infty}^{\infty}\int_{- \infty}^{\infty}g(x,y)f(x,y)dxdy\)</span>.</p>
+</section>
+<section id="주변-확률밀도함수" class="level4">
+<h4 class="anchored" data-anchor-id="주변-확률밀도함수"><span style="color:blue">2. 주변 확률밀도함수</span></h4>
+<section id="이산형" class="level5">
+<h5 class="anchored" data-anchor-id="이산형">(1) 이산형</h5>
+<p><strong>【정리】</strong> 이산 이변량 확률벡터 <span class="math inline">\((X,Y)\)</span>가 결합 확률질량함수 <span class="math inline">\(f_{X,Y}(x,y)\)</span>를 가진다고 하자. 그러면, <span class="math inline">\(X\)</span>와 <span class="math inline">\(Y\)</span>의 주변 확률질량함수(marginal pmf)는 각각 다음과 같이 주어진다.</p>
 <p><span class="math display">\[f_{X}(x) = \sum_{y \in \mathbb{R}}f_{X,Y}(x,y),f_{Y}(y) = \sum_{x \in \mathbb{R}}f_{X,Y}(x,y)\]</span></p>
-<p>【예제 ① 계속】 확률변수 <span class="math inline">\(Y\)</span>의 주변 확률밀도함수는 다음과 같다.</p>
+<p><strong>【예제 ① 계속】</strong> 확률변수 <span class="math inline">\(Y\)</span>의 주변 확률밀도함수는 다음과 같다.</p>
 <p><span class="math display">\[f_{Y}(0) = f_{X,Y}(2,0) + f_{X,Y}(4,0) + f_{X,Y}(6,0) + f_{X,Y}(8,0) + f_{X,Y}(10,0) + f_{X,Y}(12,0) = \frac{1}{6}\]</span></p>
 <p><span class="math display">\[f_{Y}(1) = \frac{5}{18},f_{Y}(2) = \frac{2}{9},f_{Y}(3) = \frac{1}{6},f_{Y}(4) = \frac{1}{9},f_{Y}(5) = \frac{1}{18}\]</span></p>
-<p>【예제 ① 계속】 <span class="math inline">\(P(Y &lt; 3)\)</span>과 <span class="math inline">\(E(Y^{3})\)</span>을 구하시오.</p>
+<p><strong>【예제 ① 계속】</strong> <span class="math inline">\(P(Y &lt; 3)\)</span>과 <span class="math inline">\(E(Y^{3})\)</span>을 구하시오.</p>
 <p><span class="math display">\[P(Y &lt; 3) = f_{Y}(0) + f_{Y}(1) + f_{Y}(2) = \frac{1}{6} + \frac{5}{18} + \frac{2}{9} = \frac{2}{3}\]</span></p>
 <p><span class="math display">\[\mathbb{E}\lbrack Y^{3}\rbrack = 0^{3}f_{Y}(0) + \cdots + 5^{3}f_{Y}(5) = 20 \cdot \frac{11}{18}\]</span></p>
-<ol type="1">
-<li>연속형</li>
-</ol>
+</section>
+<section id="연속형" class="level5">
+<h5 class="anchored" data-anchor-id="연속형">(2) 연속형</h5>
 <p><span class="math inline">\(X\)</span>와 <span class="math inline">\(Y\)</span>의 주변 확률밀도함수는 다음과 같이 주어진다.</p>
 <p><span class="math display">\[f_{X}(x) = \int_{- \infty}^{\infty}f(x,y)dy, - \infty &lt; x &lt; \infty,\]</span></p>
 <p><span class="math display">\[f_{Y}(y) = \int_{- \infty}^{\infty}f(x,y)dx, - \infty &lt; y &lt; \infty.\]</span></p>
-<p>【예제 ③】 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 연속형 이변량 확률밀도함수는</p>
+<p><strong>【예제 ③】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 연속형 이변량 확률밀도함수는</p>
 <p><span class="math inline">\(f(x,y) = \{\begin{matrix}
 6xy^{2} &amp; \text{if}0 &lt; x &lt; 1\text{and}0 &lt; y &lt; 1 \\
 0 &amp; \text{otherwise}
@@ -321,14 +334,16 @@ P(X + Y \geq 1) &amp; = 1 - P(X + Y &lt; 1) \\
 &amp; = 1 - \int_{0}^{\frac{1}{2}}\left( e^{- x} - e^{- (1 - x)} \right)dx \\
 &amp; = 2e^{- 1/2} - e^{- 1}
 \end{matrix}\]</span></p>
-<p>3조건부 확률밀도함수와 독립</p>
+</section>
+</section>
+<section id="조건부-확률밀도함수와-독립" class="level4">
+<h4 class="anchored" data-anchor-id="조건부-확률밀도함수와-독립"><span style="color:blue">3. 조건부 확률밀도함수와 독립</span></h4>
 <p>GPA와 SAT 점수가 어느 정도 관련이 있다고 생각할 수 있다. 예를 들어, 어떤 학생이 GPA가 3.9라고 하면, 그의 SAT 점수가 1400 이상일 확률이 높다고 예상할 수 있다. 반면 GPA가 2.0인 학생이라면, SAT 점수가 1400 이상일 가능성은 상대적으로 낮을 수 있다.</p>
 <p>즉, GPA(X)를 알고 나면 SAT 점수(Y)의 분포에 대한 정보를 얻을 수 있다는 것인데 이는 조건부 확률 <span class="math inline">\(P(Y = y \mid X = x)\)</span>으로 표현된다.</p>
-<p><span class="math inline">\((X,Y)\)</span>가 이산 이변량 확률벡터이고, 결합 확률질량함수가 <span class="math inline">\(p(x,y)\)</span>, <span class="math inline">\(X\)</span> 주변 확률질량함수가 각각 <span class="math inline">\(p_{X}(x)\)</span>라고 하자.</p>
-<p>정의(이산형)</p>
+<p><strong>【정의 이산형】</strong> <span class="math inline">\((X,Y)\)</span>가 이산 이변량 확률벡터이고, 결합 확률질량함수가 <span class="math inline">\(p(x,y)\)</span>, <span class="math inline">\(X\)</span> 주변 확률질량함수가 각각 <span class="math inline">\(p_{X}(x)\)</span>라고 하자.</p>
 <p><span class="math inline">\(P(X = x) = p_{X}(x) &gt; 0\)</span>인 임의의 <span class="math inline">\(x\)</span>에 대해, <span class="math inline">\(X = x\)</span>라는 정보가 주어졌을 때의 <span class="math inline">\(Y\)</span>의 조건부 확률질량함수는 다음과 같이 정의된다:</p>
 <p><span class="math display">\[p(y|x) = P(Y = y \mid X = x) = \frac{p(x,y)}{p_{X}(x)}\]</span></p>
-<p>【예제 ①】 <span class="math inline">\((X,Y)\)</span>가 이산 이변량 확률벡터이고, 결합 확률질량함수가 <span class="math inline">\(p(x,y)\)</span>는 다음과 같다.</p>
+<p><strong>【예제 ①】</strong> <span class="math inline">\((X,Y)\)</span>가 이산 이변량 확률벡터이고, 결합 확률질량함수가 <span class="math inline">\(p(x,y)\)</span>는 다음과 같다.</p>
 <p><span class="math display">\[\begin{matrix}
 p(0,10) &amp; = p(0,20) = \frac{2}{18},p(1,10) = p(1,30) = \frac{3}{18}, \\
 p(1,20) &amp; = \frac{4}{18},p(2,30) = \frac{4}{18}.
@@ -337,51 +352,43 @@ p(1,20) &amp; = \frac{4}{18},p(2,30) = \frac{4}{18}.
 <p><span class="math inline">\(p(10 \mid 0) = \frac{p(0,10)}{p_{X}(0)} = \frac{\frac{2}{18}}{\frac{4}{18}} = \frac{1}{2}\)</span><span class="math inline">\(p(20 \mid 0) = \frac{p(0,20)}{p_{X}(0)} = \frac{\frac{2}{18}}{\frac{4}{18}} = \frac{1}{2}\)</span>이다.</p>
 <p><span class="math display">\[p(10 \mid 1) = p(20 \mid 1) = 3/10,p(30 \mid 1) = 3/10\]</span></p>
 <p><span class="math display">\[p(30|2) = 1\]</span></p>
-<p>【예제 ②】 이산형 결합 확률밀도함수는 <span class="math inline">\(p(x,y) = \frac{x + y}{21},x = 1,2,3,y = 1,2\)</span> 이다. <span class="math inline">\(Y = y\)</span>가 주어졌을 때 확률변수 <span class="math inline">\(X\)</span> 조건부 확률밀도함수를 구하고 <span class="math inline">\(P(X = 2|Y = 1)\)</span> 확률을 구하라.</p>
+<p><strong>【예제 ②】</strong> 이산형 결합 확률밀도함수는 <span class="math inline">\(p(x,y) = \frac{x + y}{21},x = 1,2,3,y = 1,2\)</span> 이다. <span class="math inline">\(Y = y\)</span>가 주어졌을 때 확률변수 <span class="math inline">\(X\)</span> 조건부 확률밀도함수를 구하고 <span class="math inline">\(P(X = 2|Y = 1)\)</span> 확률을 구하라.</p>
 <p><span class="math inline">\(Y\)</span> 주변 확률밀도함수 : <span class="math inline">\(p_{Y}(y) = \sum_{x}^{}{\frac{x + y}{21} = \frac{3y + 6}{21}},y = 1,2\)</span>.</p>
 <p><span class="math inline">\(Y = y\)</span>가 주어졌을 때 확률변수 <span class="math inline">\(X\)</span> 조건부 확률밀도함수 : <span class="math inline">\(p\left( x \middle| y \right) = \frac{x + y}{3y + 6},x = 1,2,3wheny = 1,2\)</span>.</p>
 <p><span class="math inline">\(P\left( X = 2 \middle| Y = 1 \right) = \frac{3}{9} = \frac{1}{3}\)</span>.</p>
-<p><span class="math inline">\((X,Y)\)</span>가 연속 이변량 확률벡터이고, 결합 확률질량함수가 <span class="math inline">\(f(x,y)\)</span>, <span class="math inline">\(X\)</span> 주변 확률질량함수가 각각 <span class="math inline">\(f_{X}(x)\)</span>라고 하자.</p>
-<p>정의(연속형)</p>
+<p><strong>【정의 연속형】</strong> <span class="math inline">\((X,Y)\)</span>가 연속 이변량 확률벡터이고, 결합 확률질량함수가 <span class="math inline">\(f(x,y)\)</span>, <span class="math inline">\(X\)</span> 주변 확률질량함수가 각각 <span class="math inline">\(f_{X}(x)\)</span>라고 하자.</p>
 <p><span class="math inline">\(f_{X}(x) &gt; 0\)</span>인 임의의 <span class="math inline">\(x\)</span>에 대해, <span class="math inline">\(X = x\)</span>라는 정보가 주어졌을 때의 <span class="math inline">\(Y\)</span>의 조건부 확률질량함수는 다음과 같이 정의된다:</p>
 <p><span class="math display">\[f(y|x) = = \frac{f(x,y)}{f_{X}(x)}\]</span></p>
-<p>【예제 ③】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = \frac{1}{2},0 \leq x \leq y \leq 2\)</span>이다. <span class="math inline">\(P(X \leq 1|Y = 2)\)</span> 확률을 구하라.</p>
+<p><strong>【예제 ③】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = \frac{1}{2},0 \leq x \leq y \leq 2\)</span>이다. <span class="math inline">\(P(X \leq 1|Y = 2)\)</span> 확률을 구하라.</p>
 <p>확률변수 <span class="math inline">\(Y\)</span> 주변 확률밀도함수 : <span class="math inline">\(f(y) = \int_{0}^{y}{\frac{1}{2}dx = \frac{x}{2}}\left. \  \right|_{0}^{y} = \frac{y}{2},0 \leq y \leq 2\)</span>.</p>
 <p>조건부 확률밀도함수 : <span class="math inline">\(f\left( x \middle| y \right) = \frac{f(x,y)}{f(y)} = \frac{1}{y},,0 \leq x \leq y \leq 2\)</span>.</p>
 <p><span class="math display">\[P\left( X \leq 1 \middle| Y = 2 \right) = \int_{0}^{1}{f\left( x \middle| y \right)dx =}\int_{0}^{1}{\frac{1}{2}dx = \frac{x}{2}\left. \  \right|_{0}^{1} = \frac{1}{2}}\]</span></p>
-<ol type="1">
-<li>조건부 기대값 및 분산</li>
-</ol>
-<p>만약 <span class="math inline">\(g(Y)\)</span>가 Y에 대한 함수라면, <span class="math inline">\(X = x\)</span>라는 조건 하에서의 <span class="math inline">\(g(Y)\)</span>의 조건부 기대값은 다음과 같이 정의된다.</p>
-<p>정의(조건부 기대값)</p>
+<section id="조건부-기대값-및-분산" class="level5">
+<h5 class="anchored" data-anchor-id="조건부-기대값-및-분산">(1) 조건부 기대값 및 분산</h5>
+<p><strong>【정의 조건부 기대값】</strong> 만약 <span class="math inline">\(g(Y)\)</span>가 Y에 대한 함수라면, <span class="math inline">\(X = x\)</span>라는 조건 하에서의 <span class="math inline">\(g(Y)\)</span>의 조건부 기대값은 다음과 같이 정의된다.</p>
 <p><span class="math display">\[\mathbb{E}(g(Y) \mid x) = \sum_{y}g(y)f(y \mid x)\text{(이산형 경우)}\]</span></p>
 <p><span class="math display">\[\mathbb{E}(g(Y) \mid x) = \int_{- \infty}^{\infty}g(y)f(y \mid x)dy\text{(연속형 경우)}\]</span></p>
 <p>조건부 분산: <span class="math inline">\(Var(g(Y) \mid x) = \mathbb{E}((g(Y))^{2} \mid x) - \left( \mathbb{E}(g(Y) \mid x) \right)^{2}\)</span></p>
-<p>【예제 ④】 결합밀도함수: <span class="math inline">\(f(x,y) = e^{- y},0 &lt; x &lt; y &lt; \infty\)</span></p>
+<p><strong>【예제 ④】</strong> 결합밀도함수: <span class="math inline">\(f(x,y) = e^{- y},0 &lt; x &lt; y &lt; \infty\)</span></p>
 <p><span class="math inline">\(X\)</span>의 주변 확률밀도함수: <span class="math inline">\(f_{X}(x) = \int_{- \infty}^{\infty}f(x,y)dy = \int_{x}^{\infty}e^{- y}dy = e^{- x}\)</span></p>
 <p><span class="math inline">\(Y\)</span>의 조건부 확률밀도함수 : <span class="math inline">\(f(y \mid x) = \frac{f(x,y)}{f_{X}(x)} = \frac{e^{- y}}{e^{- x}} = e^{- (y - x)},y &gt; x\)</span></p>
 <p>조건부 확률밀도함수는 위치모수 <span class="math inline">\(\alpha = x\)</span>, 척도모수 <span class="math inline">\(\beta = 1\)</span>인 감마분포이므로 <span class="math inline">\(\mathbb{E}(g(Y) \mid x) = x\)</span>이다.</p>
-<ol start="2" type="1">
-<li>독립</li>
-</ol>
-<p><span class="math inline">\((X,Y)\)</span>를 결합 확률밀도함수 <span class="math inline">\(f(x,y)\)</span>와 주변 확률함수 <span class="math inline">\(f_{X}(x),f_{Y}(y)\)</span>를 가지는 이변량 확률벡터라고 하자. 다음을 만족하는 <span class="math inline">\(X\)</span>와 <span class="math inline">\(Y\)</span>는 독립 확률변수라고 정의한다.</p>
-<p>정의(독립)</p>
+</section>
+<section id="독립" class="level5">
+<h5 class="anchored" data-anchor-id="독립">(2) 독립</h5>
+<p><strong>【정의 독립】</strong> <span class="math inline">\((X,Y)\)</span>를 결합 확률밀도함수 <span class="math inline">\(f(x,y)\)</span>와 주변 확률함수 <span class="math inline">\(f_{X}(x),f_{Y}(y)\)</span>를 가지는 이변량 확률벡터라고 하자. 다음을 만족하는 <span class="math inline">\(X\)</span>와 <span class="math inline">\(Y\)</span>는 독립 확률변수라고 정의한다.</p>
 <p>모든 <span class="math inline">\(x \in \mathbb{R},y \in \mathbb{R}\)</span>에 대해 <span class="math inline">\(f(x,y) = f_{X}(x)f_{Y}(y)\)</span>이다.</p>
 <p>즉, 결합 확률함수가 두 변수의 주변 확률함수의 곱으로 표현될 수 있으면, 두 변수는 서로 독립이다.</p>
-<p><span class="math inline">\(F_{X,Y}(x,y) = F_{X}\left( x)F_{Y}(y \right)\)</span>이면 두 확률변수 <span class="math inline">\((X,Y)\)</span>는 서로 독립이고 역도 성립한다.</p>
-<p>정리</p>
-<p><span class="math inline">\((X,Y)\)</span> 독립이면 조건부 확률밀도함수는 주변 확률밀도함수와 동일하다. <span class="math inline">\(p_{X|Y}\left( x|y \right) = p_{X}(x)\)</span>, <span class="math inline">\(f_{X|Y}\left( x \middle| y \right) = f_{X}(x)\)</span>.</p>
-<p>정리</p>
-<p>확률변수 <span class="math inline">\(X\)</span>의 확률 밀도함수는 <span class="math inline">\(f(x)\)</span>, 확률변수 <span class="math inline">\(Y\)</span>의 확률밀도함수는 <span class="math inline">\(f(y),y \in S_{Y}\)</span> 이다. 결합 확률밀도함수 <span class="math inline">\(f(x,y))\)</span>가 두 확률변수의 함수의 곱(<span class="math inline">\(g(x)h(y)\)</span>)으로 표현되고 <span class="math inline">\(x \in S_{X}\)</span>이고 <span class="math inline">\(y \in S_{Y}\)</span> (영역이 서로 의존하지 않으면) 두 확률변수 <span class="math inline">\((X,Y)\)</span>는 서로 독립이고 역도 성립한다. 【필요 충분 조건】</p>
-<p>정리</p>
-<p><span class="math inline">\(P(a &lt; X \leq b,c &lt; Y \leq d) = P(a &lt; X \leq b)P(c &lt; X \leq d)\)</span>이면 두 확률변수 <span class="math inline">\((X,Y)\)</span>는 서로 독립이고 역도 성립한다.</p>
-<p>정리</p>
-<p>【예제 ①】 결합 확률밀도함수: <span class="math inline">\(p(x,y) = \frac{x + y}{21},x = 1,2,3,y = 1,2\)</span>두 확률변수는 서로 독립인가?<br>
+<p><strong>【정리】</strong> <span class="math inline">\(F_{X,Y}(x,y) = F_{X}\left( x)F_{Y}(y \right)\)</span>이면 두 확률변수 <span class="math inline">\((X,Y)\)</span>는 서로 독립이고 역도 성립한다.</p>
+<p><strong>【정리】</strong> <span class="math inline">\((X,Y)\)</span> 독립이면 조건부 확률밀도함수는 주변 확률밀도함수와 동일하다. <span class="math inline">\(p_{X|Y}\left( x|y \right) = p_{X}(x)\)</span>, <span class="math inline">\(f_{X|Y}\left( x \middle| y \right) = f_{X}(x)\)</span>.</p>
+<p><strong>【정리】</strong> 확률변수 <span class="math inline">\(X\)</span>의 확률 밀도함수는 <span class="math inline">\(f(x)\)</span>, 확률변수 <span class="math inline">\(Y\)</span>의 확률밀도함수는 <span class="math inline">\(f(y),y \in S_{Y}\)</span> 이다. 결합 확률밀도함수 <span class="math inline">\(f(x,y))\)</span>가 두 확률변수의 함수의 곱(<span class="math inline">\(g(x)h(y)\)</span>)으로 표현되고 <span class="math inline">\(x \in S_{X}\)</span>이고 <span class="math inline">\(y \in S_{Y}\)</span> (영역이 서로 의존하지 않으면) 두 확률변수 <span class="math inline">\((X,Y)\)</span>는 서로 독립이고 역도 성립한다. 【필요 충분 조건】</p>
+<p><strong>【정리】</strong> <span class="math inline">\(P(a &lt; X \leq b,c &lt; Y \leq d) = P(a &lt; X \leq b)P(c &lt; X \leq d)\)</span>이면 두 확률변수 <span class="math inline">\((X,Y)\)</span>는 서로 독립이고 역도 성립한다.</p>
+<p><strong>【예제 ①】</strong> 결합 확률밀도함수: <span class="math inline">\(p(x,y) = \frac{x + y}{21},x = 1,2,3,y = 1,2\)</span>두 확률변수는 서로 독립인가?<br>
 <span class="math inline">\(P(X = 1,Y = 1) = \frac{2}{21} \neq P(X = 1)P(Y = 1) = \frac{5}{21}\frac{9}{21} = \frac{45}{21^{2}}\)</span> 독립 아니다.</p>
 <p><span class="math inline">\(X\)</span> 주변 확률밀도함수 : <span class="math inline">\(p_{X}(x) = \sum_{y}^{}{\frac{x + y}{21} = \frac{x + 1}{21} + \frac{x + 2}{21}} = \frac{2x + 3}{21},x = 1,2,3\)</span></p>
 <p><span class="math inline">\(Y\)</span> 주변 확률밀도함수 : <span class="math inline">\(p_{Y}(y) = \sum_{x}^{}{\frac{x + y}{21} = \frac{3y + 6}{21}},y = 1,2\)</span></p>
 <p><span class="math inline">\(p(x,y) \neq p_{X}(x)p_{Y}(y)\)</span>이므로 독립이 아니다.</p>
-<p>【예제 ②】 이변량 결합 확률밀도함수 <span class="math inline">\(f(x,y) = e^{- (x + y)},0 &lt; x,y\)</span>을 갖는 (<span class="math inline">\(X,Y\)</span>)는 서로 독립인가?</p>
+<p><strong>【예제 ②】</strong> 이변량 결합 확률밀도함수 <span class="math inline">\(f(x,y) = e^{- (x + y)},0 &lt; x,y\)</span>을 갖는 (<span class="math inline">\(X,Y\)</span>)는 서로 독립인가?</p>
 <p>결합 확률밀도함수가 <span class="math inline">\(g(x) = e^{- x}\)</span>, <span class="math inline">\(h(y) = e^{- y}\)</span>의 곱으로 표현되고 각 영역도 <span class="math inline">\(S_{X} = \{ x;0 &lt; x\}\)</span>와 <span class="math inline">\(S_{Y} = \{ y;0 &lt; y\}\)</span> 독립이므로 (<span class="math inline">\(X,Y\)</span>)는 서로 독립이다.</p>
 <p><span class="math inline">\(X\)</span> 주변 확률밀도함수 : <span class="math inline">\(f(x) = \int_{0}^{\infty}{e^{- (x + y)}dy} = e^{- x},0 &lt; x\)</span>.</p>
 <p><span class="math inline">\(Y\)</span> 주변 확률밀도함수 : <span class="math inline">\(f(y) = \int_{0}^{\infty}{e^{- (x + y)}dx} = e^{- y},0 &lt; y\)</span>.</p>
@@ -391,83 +398,68 @@ p(1,20) &amp; = \frac{4}{18},p(2,30) = \frac{4}{18}.
 <p><span class="math inline">\(f(x) = \int_{0}^{1}{x + y}dy = x + \frac{1}{2},0 &lt; x &lt; 1\)</span>.</p>
 <p><span class="math inline">\(f(y) = \int_{0}^{1}{x + y}dx = y + \frac{1}{2},0 &lt; y &lt; 1\)</span>.</p>
 <p><span class="math inline">\(f(x,y) \neq f(x)f(y)\)</span>이므로 (<span class="math inline">\(X,Y\)</span>)는 서로 독립이 아니다.</p>
-<p>Chapter 2. 변수변환</p>
+</section>
+</section>
+</section>
+<section id="chapter-2.-변수변환" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-변수변환"><span style="color:green">chapter 2. 변수변환</span></h3>
 <p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 함수, <span class="math inline">\(U = g(X,Y),V = h(X,Y)\)</span>의 확률밀도함수를 구하는 방법에 대하여 살펴보기로 하자.</p>
-<p>1이산형 이변량 변수변환</p>
+<section id="이산형-이변량-변수변환" class="level4">
+<h4 class="anchored" data-anchor-id="이산형-이변량-변수변환"><span style="color:blue">1. 이산형 이변량 변수변환</span></h4>
 <p>이변량 이산형 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(p_{X,Y}(x,y),(x,y) \in \mathcal{S}\)</span>라 하자. <span class="math inline">\(u = g(x,y),v = h(x,y)\)</span> 일대일 변환(<span class="math inline">\(\mathcal{S} \rightarrow \mathcal{T}\)</span>)이라 정의하면 이변량 확률변수 <span class="math inline">\((U,V)\)</span>의 결합밀도함수는 다음과 같다.</p>
 <p><span class="math display">\[p_{U,V}(u,v) = p_{X,Y}\left( x = w(u,v),y = z(u,v) \right),(u,v) \in \mathcal{T}where\]</span></p>
 <p><span class="math inline">\(x = w(u,v),y = z(u,v)\)</span>은 <span class="math inline">\(u = g(x,y),v = h(x,y)\)</span>의 일대일 변환 함수이다.</p>
-<p>【예제 ①】 이산형 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합밀도함수는 <span class="math inline">\(p(x,y) = \frac{\lambda_{1}^{x}\lambda_{2}^{y}e^{- x}e^{- y}}{x!y!},x,y = 0,1,2,\ldots\)</span>이다. <span class="math inline">\(U = X + Y\)</span>의 확률밀도함수를 구하라.</p>
+<p><strong>【예제 ①】</strong> 이산형 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합밀도함수는 <span class="math inline">\(p(x,y) = \frac{\lambda_{1}^{x}\lambda_{2}^{y}e^{- x}e^{- y}}{x!y!},x,y = 0,1,2,\ldots\)</span>이다. <span class="math inline">\(U = X + Y\)</span>의 확률밀도함수를 구하라.</p>
 <ol type="1">
 <li><p>이변량 확률변수의 변수 변환이므로 <span class="math inline">\(U\)</span>변환 이외 관심 변환은 아니지만 간단한 변환변환을 고려하여 <span class="math inline">\((X,Y) \rightarrow (U,V)\)</span> 이변량 변수 변환을 실시한다.</p></li>
 <li><p><span class="math inline">\(U = X + Y,V = Y\)</span>변환을 고려하면 <span class="math inline">\(X = U - V,Y = V\)</span>이다.</p></li>
-</ol>
-<!-- -->
-<ol type="1">
-<li><span class="math inline">\(\mathcal{S} = \left\{ (x,y);x = 0,1,2,\ldots,y = 0,1,2,\ldots \right\}\)</span> ▷ <span class="math inline">\(\mathcal{T} = \left\{ (u,v);v = 0,1,\ldots,u,v = 0,1,2,\ldots \right\}\)</span>이다.</li>
-</ol>
-<!-- -->
-<ol start="3" type="1">
+<li><p><span class="math inline">\(\mathcal{S} = \left\{ (x,y);x = 0,1,2,\ldots,y = 0,1,2,\ldots \right\}\)</span> ▷ <span class="math inline">\(\mathcal{T} = \left\{ (u,v);v = 0,1,\ldots,u,v = 0,1,2,\ldots \right\}\)</span>이다.</p></li>
 <li><p><span class="math inline">\((U,V)\)</span>의 결합 확률밀도함수는 <span class="math inline">\(p_{U,V}(u,v) = \frac{\lambda_{1}^{(u - v)}\lambda_{2}^{v}e^{- (\lambda_{1} + \lambda_{2})}}{v!(u - v)!},(u,v) \in \mathcal{T}\)</span>이다.</p></li>
 <li><p>확률변수 <span class="math inline">\(U\)</span>에 대한 주변 확률밀도함수를 구하면 된다.<span class="math inline">\(p_{U}(u) = \sum_{v = 0}^{u}\frac{\lambda_{1}^{(u - v)}\lambda_{2}^{v}e^{- \left( \lambda_{1} + \lambda_{2} \right)}}{v!(u - v)!} = \frac{e^{- \left( \lambda_{1} + \lambda_{2} \right)}}{u!}\sum_{v = 0}^{u}{\frac{u!}{v!(u - v)!}\lambda_{1}^{u - v}\lambda_{2}^{v}}\)</span> <span class="math inline">\(= \frac{e^{- \left( \lambda_{1} + \lambda_{2} \right)}}{u!}\left( \lambda_{1} + \lambda_{2} \right)^{u} \sim Poisson(\lambda_{1} + \lambda_{2})\)</span>.</p></li>
 </ol>
-<p>2연속형 이변량 변수변환</p>
-<ol type="1">
-<li>연속형 이변량 확률변수 <span class="math inline">\(F(x)\)</span>이용하기<img src="media/image2.png" style="width:2.26129in;height:1.96269in" alt="그림 1"></li>
-</ol>
-<p>【예제 ②】 이변량 연속형 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(f(x,y) = 1,0 &lt; x,y &lt; 1\)</span>라 하자. <span class="math inline">\(U = X + Y\)</span>의 확률밀도함수를 구하라.</p>
+</section>
+<section id="연속형-이변량-변수변환" class="level4">
+<h4 class="anchored" data-anchor-id="연속형-이변량-변수변환"><span style="color:blue">2. 연속형 이변량 변수변환</span></h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/이변량 변수변환.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p><strong>【예제 ②】</strong> 이변량 연속형 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(f(x,y) = 1,0 &lt; x,y &lt; 1\)</span>라 하자. <span class="math inline">\(U = X + Y\)</span>의 확률밀도함수를 구하라.</p>
 <ol type="1">
 <li><p>확률변수 영역 : <span class="math inline">\(0 &lt; x,y &lt; 1\)</span>으로부터 <span class="math inline">\(0 &lt; u &lt; 2\)</span>이다.</p></li>
 <li><p>만약 <span class="math inline">\(0 &lt; u \leq 1\)</span>, <span class="math inline">\(F_{U}(u) = P(U \leq u) = P(X + Y \leq u)\)</span><span class="math inline">\(= \int_{0}^{u}{\int_{0}^{u - x}{1dydx = \int_{0}^{u}{y\left. \  \right|_{0}^{u - x}dx =}\int_{0}^{u}{(u - x)dx = \frac{u^{2}}{2}}}}\)</span>.</p></li>
 <li><p>만약 <span class="math inline">\(1 &lt; u &lt; 2\)</span>, <span class="math inline">\(F_{U}(u) = P(U \leq u) = P(X + Y \leq u)\)</span> <span class="math inline">\(= 1 - \int_{u - 1}^{1}{\int_{u - x}^{1}{1dydx = 1 - \frac{(2 - u)^{2}}{2}}}\)</span>.</p></li>
-<li><p>확률변수 <span class="math inline">\(U\)</span>의 확률밀도함수는 다음과 같다.<span class="math inline">\(f_{U}(u) = \left\{ \begin{array}{r}
+<li><p>확률변수 <span class="math inline">\(U\)</span>의 확률밀도함수는 다음과 같다. <span class="math inline">\(f_{U}(u) = \left\{ \begin{array}{r}
 u,0 &lt; u \leq 1 \\
 (2 - u),1 &lt; u &lt; 2
 \end{array} \right.\ \)</span></p></li>
 </ol>
-<!-- -->
-<ol start="2" type="1">
-<li>연속형 이변량 확률변수 Jacobian 방법 이용하기</li>
-</ol>
+<section id="연속형-이변량-확률변수-jacobian-방법-이용하기" class="level5">
+<h5 class="anchored" data-anchor-id="연속형-이변량-확률변수-jacobian-방법-이용하기">(2) 연속형 이변량 확률변수 Jacobian 방법 이용하기</h5>
 <p>이변량 연속형 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(f(x,y),(x,y) \in \mathcal{S}\)</span>라 하자. 이변량 변환 확률변수 <span class="math inline">\(U = g(X,Y),V = h(X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(f(u,v),(u,v) \in \mathcal{T}\)</span>라 정의하고 <span class="math inline">\(A \in \mathcal{S}\)</span>에 대하여 <span class="math inline">\(u = g(x,y),v = h(x,y)\)</span> 일대일 변환 함수에 의해 <span class="math inline">\(B \in \mathcal{T}\)</span>에 대응된다고 하자.</p>
 <ol type="1">
-<li>일대일 변환 함수 : <span class="math inline">\(u = g(x,y),v = h(x,y) \Longleftrightarrow x = w(u,v),y = z(u,v)\)</span></li>
-</ol>
-<!-- -->
-<ol start="5" type="1">
-<li><span class="math inline">\(J = \left| \begin{matrix}
+<li><p>일대일 변환 함수 : <span class="math inline">\(u = g(x,y),v = h(x,y) \Longleftrightarrow x = w(u,v),y = z(u,v)\)</span></p></li>
+<li><p><span class="math inline">\(J = \left| \begin{matrix}
 \frac{\partial x}{\partial u} &amp; \frac{\partial x}{\partial v} \\
 \frac{\partial y}{\partial u} &amp; \frac{\partial y}{\partial v}
-\end{matrix} \right|\)</span>.</li>
+\end{matrix} \right|\)</span>.</p></li>
+<li><p><span class="math inline">\(P\left\lbrack (U,V) \in B \right\rbrack = P\left\lbrack (X,Y) \in A \right\rbrack = \int\int f_{X,Y}(x,y)dxdy\)</span>.</p></li>
+<li><p><span class="math inline">\(f_{U,V}(u,v) = f_{X,Y}\left( w(x,y),z(x,y) \right),(u,v) \in \mathcal{T}\)</span>.</p></li>
 </ol>
-<!-- -->
+<p><strong>【예제 ③】</strong> 이변량 연속형 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(f(x,y) = 1,0 &lt; x,y &lt; 1\)</span>라 하자. <span class="math inline">\(U = X + Y,V = X - Y\)</span>의 이변량 결합 확률밀도함수를 구하라.</p>
 <ol type="1">
-<li><span class="math inline">\(P\left\lbrack (U,V) \in B \right\rbrack = P\left\lbrack (X,Y) \in A \right\rbrack = \int\int f_{X,Y}(x,y)dxdy\)</span>.</li>
-</ol>
-<!-- -->
-<ol start="6" type="1">
-<li><span class="math inline">\(f_{U,V}(u,v) = f_{X,Y}\left( w(x,y),z(x,y) \right),(u,v) \in \mathcal{T}\)</span>.</li>
-</ol>
-<p>【예제 ③】 이변량 연속형 확률변수 <span class="math inline">\((X,Y)\)</span>의 결합 확률밀도함수를 <span class="math inline">\(f(x,y) = 1,0 &lt; x,y &lt; 1\)</span>라 하자. <span class="math inline">\(U = X + Y,V = X - Y\)</span>의 이변량 결합 확률밀도함수를 구하라.</p>
-<ol type="1">
-<li>확률변수 <span class="math inline">\((X,Y)\)</span>의 영역 : <span class="math inline">\(\mathcal{S} = \{(x,y);0 &lt; x &lt; 1,0 &lt; y &lt; 1\}\)</span></li>
-</ol>
-<!-- -->
-<ol type="1">
-<li><span class="math inline">\(U = X + Y,V = X - Y\)</span> 변환 : <span class="math inline">\(X = \frac{1}{2}(U + V),Y = \frac{1}{2}(U - V)\)</span></li>
-</ol>
-<!-- -->
-<ol start="2" type="1">
-<li><span class="math inline">\(\mathcal{S} = \{(x,y);0 &lt; x &lt; 1,0 &lt; y &lt; 1\}\)</span> 의 경계 값 확률변수 <span class="math inline">\((U,V)\)</span>의 영역 <span class="math inline">\(\mathcal{T} = \{(u,v)\}\)</span> 매핑<br>
-<span class="math inline">\(x = 0into0 = \frac{1}{2}(u + v)\)</span> <span class="math inline">\(x = 1into1 = \frac{1}{2}(u + v)\)</span> <span class="math inline">\(y = 0into0 = \frac{1}{2}(u - v)\)</span> <span class="math inline">\(y = 1into0 = \frac{1}{2}(u - v)\)</span></li>
+<li><p>확률변수 <span class="math inline">\((X,Y)\)</span>의 영역 : <span class="math inline">\(\mathcal{S} = \{(x,y);0 &lt; x &lt; 1,0 &lt; y &lt; 1\}\)</span></p></li>
+<li><p><span class="math inline">\(U = X + Y,V = X - Y\)</span> 변환 : <span class="math inline">\(X = \frac{1}{2}(U + V),Y = \frac{1}{2}(U - V)\)</span></p></li>
+<li><p><span class="math inline">\(\mathcal{S} = \{(x,y);0 &lt; x &lt; 1,0 &lt; y &lt; 1\}\)</span> 의 경계 값 확률변수 <span class="math inline">\((U,V)\)</span>의 영역 <span class="math inline">\(\mathcal{T} = \{(u,v)\}\)</span> 매핑<br>
+<span class="math inline">\(x = 0into0 = \frac{1}{2}(u + v)\)</span> <span class="math inline">\(x = 1into1 = \frac{1}{2}(u + v)\)</span> <span class="math inline">\(y = 0into0 = \frac{1}{2}(u - v)\)</span> <span class="math inline">\(y = 1into0 = \frac{1}{2}(u - v)\)</span></p></li>
 </ol>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image3.png" style="width:3.18321in;height:1.76527in" class="figure-img"></p>
-<figcaption>도표, 라인, 그래프, 종이접기이(가) 표시된 사진 자동 생성된 설명</figcaption>
+<p><img src="images/이변량 변수변환02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<ol start="3" type="1">
+<ol start="4" type="1">
 <li><p>Jacobian 구하기 : <span class="math inline">\(J = \left| \begin{matrix}
 \frac{\partial x}{\partial u} &amp; \frac{\partial x}{\partial v} \\
 \frac{\partial y}{\partial u} &amp; \frac{\partial y}{\partial v}
@@ -476,50 +468,47 @@ u,0 &lt; u \leq 1 \\
 \frac{1}{2} &amp; - \frac{1}{2}
 \end{matrix} \right| = \left( \frac{1}{2} \right)\left( - \frac{1}{2} \right) - \left( \frac{1}{2} \right)\left( \frac{1}{2} \right) = - \frac{1}{2}\)</span></p></li>
 <li><p><span class="math inline">\(0 &lt; x &lt; 1,0 &lt; y &lt; 1 \leftrightarrow 0 &lt; \frac{1}{2}(u + v) &lt; 1,0 &lt; \frac{1}{2}(u - v) &lt; 1 \leftrightarrow - u &lt; v,v &lt; 2 - u,v &lt; u,u - 2 &lt; v\)</span>. 그러므로 <span class="math inline">\(\mathcal{T} = \{(u,v);u &lt; v,v &lt; 2 - u,v &lt; u,u - 2 &lt; v\}\)</span></p></li>
+<li><p><span class="math display">\[f_{U,V}(u,v) = f_{X,Y}\left( \frac{1}{2}(u + v),\frac{1}{2}(u - v) \right)|J| = \frac{1}{2},(u,v) \in \mathcal{T}\]</span></p></li>
 </ol>
-<!-- -->
-<ol type="1">
-<li><span class="math display">\[f_{U,V}(u,v) = f_{X,Y}\left( \frac{1}{2}(u + v),\frac{1}{2}(u - v) \right)|J| = \frac{1}{2},(u,v) \in \mathcal{T}\]</span></li>
-</ol>
-<!-- -->
-<ol start="3" type="1">
-<li>convolution 방법</li>
-</ol>
+</section>
+<section id="convolution-방법" class="level5">
+<h5 class="anchored" data-anchor-id="convolution-방법">(3) convolution 방법</h5>
 <p>이변량 결합 확률밀도함수 <span class="math inline">\(f_{X,Y}(x,y),\mathcal{S} = \{(x,y); - \infty &lt; x,y &lt; \infty\}\)</span>이고 <span class="math inline">\(U = X + Y,V = Y\)</span> 변환에서 <span class="math inline">\(U = X + Y\)</span>의 확률밀도함수는 다음과 같다.</p>
 <p><span class="math inline">\(f_{U}(u) = \int_{- \infty}^{\infty}{f_{X,Y}(u - v,v)dv}\)</span>.</p>
-<p>【예제 ④】 이변량 결합 확률밀도함수 <span class="math inline">\(f(x,y) = 2,0 &lt; x &lt; y &lt; 1\)</span>인 경우 <span class="math inline">\(U = \frac{X}{Y},V = Y\)</span> 이변량 결합 확률밀도함수를 구하시오.</p>
+<p><strong>【예제 ④】</strong> 이변량 결합 확률밀도함수 <span class="math inline">\(f(x,y) = 2,0 &lt; x &lt; y &lt; 1\)</span>인 경우 <span class="math inline">\(U = \frac{X}{Y},V = Y\)</span> 이변량 결합 확률밀도함수를 구하시오.</p>
 <ol type="1">
-<li><span class="math inline">\(U = \frac{X}{Y},V = Y\)</span> 변환 : <span class="math inline">\(X = UV,Y = V\)</span></li>
-</ol>
-<!-- -->
-<ol start="7" type="1">
-<li><span class="math display">\[\mathcal{S} = \left\{ (x,y);0 &lt; x,y \right\}\mathcal{} \rightarrow \mathcal{T} = \{(u,v);0 &lt; v &lt; 1,0 &lt; v &lt; 1\}\]</span></li>
-</ol>
-<!-- -->
-<ol type="1">
-<li><span class="math display">\[J = \left| \begin{matrix}
+<li><p><span class="math inline">\(U = \frac{X}{Y},V = Y\)</span> 변환 : <span class="math inline">\(X = UV,Y = V\)</span></p></li>
+<li><p><span class="math display">\[\mathcal{S} = \left\{ (x,y);0 &lt; x,y \right\}\mathcal{} \rightarrow \mathcal{T} = \{(u,v);0 &lt; v &lt; 1,0 &lt; v &lt; 1\}\]</span></p></li>
+<li><p><span class="math inline">\(J = \left| \begin{matrix}
 V &amp; U \\
 0 &amp; 1
-\end{matrix} \right| = UV\]</span></li>
+\end{matrix} \right| = UV\)</span></p></li>
+<li><p><span class="math inline">\(f_{U,V}(u,v) = f_{X,Y}(uv,v)|J| = 2v,(u,v) \in \mathcal{T}\)</span></p></li>
 </ol>
-<!-- -->
-<ol start="8" type="1">
-<li><span class="math inline">\(f_{U,V}(u,v) = f_{X,Y}(uv,v)|J| = 2v,(u,v) \in \mathcal{T}\)</span><img src="media/image4.png" style="width:3.90183in;height:1.9239in" alt="텍스트, 도표, 라인, 폰트이(가) 표시된 사진 자동 생성된 설명"></li>
-</ol>
-<p>3변수변환에 의한 분포함수의 관계</p>
-<p>코쉬 분포</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/이변량 변수변환03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="변수변환에-의한-분포함수의-관계" class="level4">
+<h4 class="anchored" data-anchor-id="변수변환에-의한-분포함수의-관계"><span style="color:blue">3. 변수변환에 의한 분포함수의 관계</span></h4>
+<p><strong>코쉬 분포</strong></p>
 <p>서로 독립인 표준정규분포의 비는 표준 코쉬분포를 따른다.</p>
-<p>카이제곱 분포</p>
+<p><strong>카이제곱 분포</strong></p>
 <p>서로 독립인 정규분포 <span class="math inline">\(Z_{i} \sim \mathcal{N}(0,1)\)</span>에 대해 <span class="math inline">\(X = \overset{k}{\sum_{i = 1}}Z_{i}^{2} \sim \chi_{k}^{2}\)</span>.</p>
-<p>감마 분포</p>
+<p><strong>감마 분포</strong></p>
 <p>지수분포 <span class="math inline">\(X_{i} \sim \text{Exp}(\lambda)\)</span>인 n개의 독립 변수 합 <span class="math inline">\(Y = \overset{n}{\sum_{i = 1}}X_{i} \sim \text{Gamma}(n,\lambda)\)</span>.</p>
-<p>베타분포</p>
+<p><strong>베타분포</strong></p>
 <p>독립인 두 감마분포 변수 <span class="math inline">\(X \sim \text{Gamma}(\alpha,1),Y \sim \text{Gamma}(\beta,1)\)</span>일 때, <span class="math inline">\(\frac{X}{X + Y} \sim \text{Beta}(\alpha,\beta)\)</span>.</p>
-<p>F 분포</p>
+<p><strong>F 분포</strong></p>
 <p>독립인 두 카이제곱 변수 <span class="math inline">\(U \sim \chi_{m}^{2},V \sim \chi_{n}^{2}\)</span>에 대해 <span class="math inline">\(F = \frac{\frac{U}{m}}{\frac{V}{n}} \sim F_{m,n}\)</span>.</p>
-<p>t-분포</p>
+<p><strong>t-분포</strong></p>
 <p>정규분포 <span class="math inline">\(Z \sim \mathcal{N}(0,1)\)</span>와 독립된 카이제곱 분포 <span class="math inline">\(V \sim \chi_{n}^{2}\)</span>를 이용하여 <span class="math inline">\(T = \frac{Z}{\sqrt{V/n}} \sim t_{n}\)</span>.</p>
-<p>4계층적 모형</p>
+</section>
+<section id="계층적-모형" class="level4">
+<h4 class="anchored" data-anchor-id="계층적-모형"><span style="color:blue">4. 계층적 모형</span></h4>
 <p>어떤 확률변수는 하나의 분포를 갖고 있으며, 그 분포는 어떤 모수에 의존할 수 있다. 일반적으로, 확률변수는 하나의 분포만을 가진다고 보지만, 상황을 계층적으로 바라보는 것이 오히려 더 쉽게 모델링을 가능하게 하는 경우가 많다.</p>
 <p>가장 고전적인 계층모형(hierarchical model) 중 하나는 다음과 같다. 한 곤충이 매우 많은 수의 알을 낳고, 각 알은 확률 <span class="math inline">\(p\)</span>로 생존한다고 하자. 그렇다면 평균적으로 몇 개의 알이 생존하는가? 이때 <span dir="rtl">”</span>많은 수”의 알은 실제로는 확률변수이며, 흔히 포아송 분포 <span class="math inline">\(\text{Poisson}(\lambda)\)</span>로 모델링한다. 또한, 각 알의 생존 여부가 독립적이라고 가정하면, 이는 베르누이 시행의 반복이고, 이항분포를 따른다.</p>
 <p>낳은 알의 수를 <span class="math inline">\(Y\)</span>, 생존한 알의 수를 <span class="math inline">\(X\)</span> 라고 하면,</p>
@@ -530,21 +519,21 @@ V &amp; U \\
 <p><span class="math inline">\(P(X = x) = \frac{(\lambda p)^{x}e^{- \lambda}}{x!}\overset{\infty}{\sum_{y = x}}\frac{((1 - p)\lambda)^{y - x}}{(y - x)!}\)</span>.</p>
 <p><span class="math inline">\(t = y - x\)</span> 적용하면, <span class="math inline">\(P(X = x) = \frac{(\lambda p)^{x}}{x!}e^{- \lambda p} \sim \text{Poisson}(\lambda p)\)</span>.</p>
 <p>그러므로 <span class="math inline">\(E(X) = \lambda p\)</span> 생존하는 알의 수이다.</p>
-<p>정리 <span class="math inline">\(\mathbb{E}\lbrack X\rbrack = \mathbb{E}\left( \mathbb{E}\lbrack X \mid Y\rbrack \right)\)</span></p>
+<p><strong>【정리】</strong></p>
+<p><span class="math inline">\(\mathbb{E}\lbrack X\rbrack = \mathbb{E}\left( \mathbb{E}\lbrack X \mid Y\rbrack \right)\)</span></p>
 <p><span class="math inline">\(\mathbb{E}\left( \mathbb{E}\lbrack X \mid Y\rbrack \right) = \mathbb{E}(pY)\)</span> (왜냐하면 <span class="math inline">\(X|Y \sim B(Y,p)\)</span>)</p>
 <p><span class="math inline">\(\mathbb{E}\left( \mathbb{E}\lbrack X \mid Y\rbrack \right) = \lambda p = \mathbb{E}(X)\)</span> (왜냐하면 <span class="math inline">\(Y \sim Poisson(\lambda)\)</span>)</p>
-<p>Chapter 4. 기대값</p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 함수 <span class="math inline">\(g(X,Y)\)</span> 기대값은</p>
-<p>정의</p>
-<p><span class="math inline">\(E\left( g(X,Y) \right) = \sum_{x}^{}{\sum_{y}^{}{g(X,Y)p(x,y)}}\)</span>.<span class="math inline">\(E\left( g(X,Y) \right) = \int_{x}^{}{\int_{y}^{}{g(X,Y)f(x,y)dydx}}\)</span>.</p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>가 독립이면<span class="math inline">\(E(XY) = E(X)E(Y)\)</span>이다.</p>
-<p>정리</p>
+</section>
+</section>
+<section id="chapter-3.-기대값" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-기대값"><span style="color:green">chapter 3. 기대값</span></h3>
+<p><strong>【정의】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 함수 <span class="math inline">\(g(X,Y)\)</span> 기대값은 <span class="math inline">\(E\left( g(X,Y) \right) = \sum_{x}^{}{\sum_{y}^{}{g(X,Y)p(x,y)}}\)</span>.<span class="math inline">\(E\left( g(X,Y) \right) = \int_{x}^{}{\int_{y}^{}{g(X,Y)f(x,y)dydx}}\)</span>.</p>
+<p><strong>【정리】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>가 독립이면<span class="math inline">\(E(XY) = E(X)E(Y)\)</span>이다.</p>
 <p><span class="math inline">\(E(XY) = \int\int xyf(x,y)dxdy = (independence)\int\int xyf\left( x)f(y \right)dxdy\)</span></p>
 <p><span class="math inline">\(= \int xf(x)dx\int yf(y)dy\)</span> <span class="math inline">\(= E(X)E(Y)\)</span></p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>가 독립이면 각각의 함수 <span class="math inline">\(g(X),h(Y)\)</span>에 대해서도 다음이 성립한다.</p>
-<p>정리</p>
+<p><strong>【정리】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>가 독립이면 각각의 함수 <span class="math inline">\(g(X),h(Y)\)</span>에 대해서도 다음이 성립한다.</p>
 <p><span class="math inline">\(E\left( g(X)h(Y) \right) = E(g(X))E(h(Y))\)</span>이다.</p>
-<p>【예제 ①】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 2x,0 \leq x,y \leq 1\)</span> 일 경우 <span class="math inline">\(E(XY),E(X),V(X)\)</span>을 구하시오.</p>
+<p><strong>【예제 ①】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 2x,0 \leq x,y \leq 1\)</span> 일 경우 <span class="math inline">\(E(XY),E(X),V(X)\)</span>을 구하시오.</p>
 <p><span class="math display">\[E(XY) = \int\int xyf(x,y)dxdy = \int_{0}^{1}{\int_{0}^{1}{xy(2x)dydx =}}2\int_{0}^{1}{x^{2}\int_{0}^{1}{ydydx =}}2\int_{0}^{1}{x^{2}(\frac{1}{2})dx = \frac{1}{3}}x^{3}\left. \  \right|_{0}^{1} = \frac{1}{3}\]</span></p>
 <p><span class="math display">\[E(X) = \int_{0}^{1}{\int_{0}^{1}{x(2x)dydx =}}2\int_{0}^{1}{x^{2}\int_{0}^{1}{1dydx =}}2\int_{0}^{1}{x^{2}dx = \frac{2}{3}}x^{3}\left. \  \right|_{0}^{1} = \frac{2}{3}\]</span></p>
 <p><span class="math display">\[E(Y) = \int_{0}^{1}{\int_{0}^{1}{y(2x)dydx =}}2\int_{0}^{1}{x\int_{0}^{1}{ydydx =}}2\int_{0}^{1}{x(\frac{1}{2})dx =}\frac{1}{2}x^{2}\left. \  \right|_{0}^{1} = \frac{1}{2}\]</span></p>
@@ -556,17 +545,15 @@ V &amp; U \\
 <p><span class="math inline">\(E(Y) = \int_{0}^{1}{\int_{0}^{y}{y(8xy)dxdy =}}\int_{0}^{1}{y\left( 4y^{3} \right)dy =}\frac{4}{5}\)</span>.</p>
 <p><span class="math inline">\(U = \frac{X}{Y}\)</span>라 놓자. <span class="math inline">\(U\)</span>의 확률분포함수 <span class="math inline">\(F_{U}(u) = P(U \leq u) = P(X \leq uY) = \int_{0}^{1}{\int_{0}^{uy}{8xydxdy = \int_{0}^{1}{4u^{2}y^{3}dy = u^{2},0 &lt; u &lt; 1}}}\)</span>이다. 그러므로 <span class="math inline">\(f(u) = F_{U}'(u) = 2u,0 &lt; u &lt; 1\)</span>이다.</p>
 <p><span class="math inline">\(E\left( U = \frac{X}{Y} \right) = \int_{0}^{1}udu = \frac{2}{3}\)</span>.</p>
-<p>【예제 ③】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 3x,0 \leq y \leq x \leq 1\)</span> 일 경우 <span class="math inline">\(E(X - Y)\)</span>을 구하시오.</p>
+<p><strong>【예제 ③】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 3x,0 \leq y \leq x \leq 1\)</span> 일 경우 <span class="math inline">\(E(X - Y)\)</span>을 구하시오.</p>
 <p><span class="math inline">\(E(X) = \int_{0}^{1}{\int_{0}^{x}{x(3x)dydx = \int_{0}^{1}{3x^{2}(x)dx = \frac{3}{4}x^{4}\left. \  \right|_{0}^{1} = \frac{3}{4}}}}\)</span>.</p>
 <p><span class="math display">\[E(Y) = \int_{0}^{1}{\int_{0}^{x}{y(3x)dydx = \int_{0}^{1}{3x\left( \frac{1}{2}x^{2} \right)dx = \frac{3}{2}(\frac{1}{4}x^{4})\left. \  \right|_{0}^{1} = \frac{3}{8}}}}\]</span></p>
 <p><span class="math inline">\(E(X - Y) = E(X) - E(Y) = \frac{3}{4} - \frac{3}{8} = \frac{3}{8}\)</span>.</p>
 <p><span class="math display">\[E(X - Y) = \int_{0}^{1}{\int_{0}^{x}{(x - y)3xdydx =}}\int_{0}^{1}{\int_{0}^{x}{(x - y)3xdydx =}}\int_{0}^{1}{\int_{0}^{x}{x3xdydx - \int_{0}^{1}{\int_{0}^{x}{yxdydx =}\frac{3}{4} - \frac{3}{8} = \frac{3}{8}}}}\]</span></p>
-<p>이변량 확률변수 벡터 <span class="math inline">\(\overline{X} = (X,Y)'\)</span>의 기대값 벡터는 <span class="math inline">\(E\left( \overline{X} \right) = \lbrack\begin{array}{r}
-E(X) \\
-E(Y)
+<p><strong>【정의】</strong> 이변량 확률변수 벡터 <span class="math inline">\(\overline{X} = (X,Y)'\)</span>의 기대값 벡터는 <span class="math inline">\(E\left( \overline{X} \right) = \lbrack\begin{array}{r}
+E(X) \\ E(Y)
 \end{array}\rbrack\)</span>이다.</p>
-<p>정의</p>
-<p>【예제 ④】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 3x,0 \leq y \leq x \leq 1\)</span> 일 경우 <span class="math inline">\(E\)</span>(<span class="math inline">\(\lbrack\begin{array}{r}
+<p><strong>【예제 ④】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 3x,0 \leq y \leq x \leq 1\)</span> 일 경우 <span class="math inline">\(E\)</span>(<span class="math inline">\(\lbrack\begin{array}{r}
 X \\
 Y
 \end{array}\rbrack\)</span>)을 구하라.</p>
@@ -579,20 +566,17 @@ Y
 3/4 \\
 3/8
 \end{array}\rbrack\)</span> (차수가 2인 열 벡터임)</p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>에서 <span class="math inline">\(X = x\)</span>가 주어졌을 때 <span class="math inline">\(Y\)</span>의 조건부 기대값</p>
-<p>정의</p>
-<p><span class="math inline">\(E\left( Y \middle| x \right) = \int yf_{Y|X}\left( y \middle| x \right)dy = \frac{\int yf(x,y)dy}{f_{X}(x)},y \in \mathcal{S}_{Y}\)</span></p>
-<p>【예제 ⑥】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 2,0 &lt; x &lt; y &lt; 1\)</span>이다. <span class="math inline">\(E\left( Y \middle| x \right),V(Y|x)\)</span>을 구하라.</p>
+<p><strong>【정의】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>에서 <span class="math inline">\(X = x\)</span>가 주어졌을 때 <span class="math inline">\(Y\)</span>의 조건부 기대값 <span class="math inline">\(E\left( Y \middle| x \right) = \int yf_{Y|X}\left( y \middle| x \right)dy = \frac{\int yf(x,y)dy}{f_{X}(x)},y \in \mathcal{S}_{Y}\)</span></p>
+<p><strong>【예제 ⑤】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 2,0 &lt; x &lt; y &lt; 1\)</span>이다. <span class="math inline">\(E\left( Y \middle| x \right),V(Y|x)\)</span>을 구하라.</p>
 <p><span class="math inline">\(f(x) = \int_{y}^{1}{2dy} = 2(1 - x),0 &lt; x &lt; 1\)</span></p>
 <p><span class="math display">\[f\left( y \middle| x \right) = \frac{f(x,y)}{f(x)} = \frac{2}{2(1 - x)} = \frac{1}{1 - x},0 &lt; x &lt; y &lt; 1\]</span></p>
 <p><span class="math display">\[E\left( Y \middle| x \right) = \int_{x}^{1}{\frac{1}{1 - x}ydy = \frac{1}{2(1 - x)}}y^{2}\left. \  \right|_{x}^{1} = \frac{1 + x}{2},0 &lt; x &lt; 1\]</span></p>
 <p><span class="math display">\[E\left( Y^{2} \middle| x \right) = \int_{x}^{1}{\frac{1}{1 - x}y^{2}dy = \frac{1}{3(1 - x)}}y^{3}\left. \  \right|_{x}^{1} = \frac{x^{2} + x + 1}{3},0 &lt; x &lt; 1\]</span></p>
 <p><span class="math inline">\(V\left( Y^{} \middle| x \right) = \frac{x^{2} + x + 1}{3} - \left( \frac{1 + x}{2} \right)^{2}\)</span></p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>에 대하여 다음이 성립한다.</p>
-<p>정리</p>
+<p><strong>【정리】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>에 대하여 다음이 성립한다.</p>
 <p><span class="math inline">\((a)E(E(Y|X)) = E(Y)\)</span></p>
 <p><span class="math inline">\((b)V(E(Y|X)) = V(Y)\)</span></p>
-<p>【예제 ⑥】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 6y,0 &lt; y &lt; x &lt; 1\)</span>이다. 위의 정리를 보여라.</p>
+<p><strong>【예제 ⑥】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 6y,0 &lt; y &lt; x &lt; 1\)</span>이다. 위의 정리를 보여라.</p>
 <p>확률변수 <span class="math inline">\(Y\)</span>주변 확률밀도함수 : <span class="math inline">\(f(y) = \int_{y}^{1}{6ydx} = (6y)x\left. \  \right|_{y}^{1} = 6y(1 - y),0 &lt; y &lt; 1\)</span></p>
 <p><span class="math display">\[E(Y) = \int y(6y(1 - y))dy = 6\left( \frac{1}{3}y^{3} - \frac{1}{4}y^{4} \right)\left. \  \right|_{0}^{1} = \frac{1}{2}\]</span></p>
 <p>확률변수 <span class="math inline">\(X\)</span>주변 확률밀도함수 : <span class="math inline">\(f(x) = \int_{0}^{x}{6ydx} = 3x^{2},0 &lt; y &lt; 1\)</span></p>
@@ -601,50 +585,45 @@ Y
 <p><span class="math inline">\(E\left( Y \middle| x \right) = \frac{2}{3}X\)</span>는 확률변수이므로 <span class="math inline">\(U = g(X) = \frac{2}{3}X\)</span>의 확률밀도함수를 구해야 <span class="math inline">\(E(E\left( Y|x \right))\)</span> 기대값을 구할 수 있다. <span class="math inline">\(0 &lt; x &lt; 1 \rightarrow 0 &lt; u &lt; \frac{2}{3}\)</span> 이고<span class="math inline">\(X = \frac{3}{2}U\)</span>이다.</p>
 <p><span class="math inline">\(\frac{2}{3}X\)</span>는 증가 함수이므로 <span class="math inline">\(f_{X}(u) = f\left( x = \frac{3}{2}u \right)|J| = 3\left( \frac{3}{2}u \right)^{2}\left| \frac{3}{2} \right| = \frac{81}{8}u^{2},0 &lt; u &lt; \frac{2}{3}\)</span></p>
 <p>그러므로 <span class="math inline">\(E\left( E\left( Y \middle| x \right) \right) = \int_{0}^{\frac{2}{3}}{u\left( \frac{81}{8}u^{2} \right)du = \frac{81}{8*4}u^{4}\left. \  \right|_{0}^{\frac{2}{3}} = \frac{1}{2}}\)</span>.</p>
-<p>Chapter 5. 상관계수</p>
-<p>두 변수간의 직선(선형) 관계 정도를 측정하는 기대값을 공분산이라 한다. 공분산은 확률변수 값의 크기 (단위)에 의존하므로 변수의 표준화와 동일한 개념으로 표준편차로 나누어준 값을 상관계수라 한다.</p>
-<p>선형 관계</p>
-<p>상관계수는 두 변수 사이의 선형 관계를 측정하는데 두 변수가 일정한 비율로 증가 또는 감소하는 관계를 가질 때 상관계수가 높아진다. 비선형적인 관계가 있는 경우 상관계수는 적절히 반영하지 못할 수 있다.</p>
-<p>범위</p>
-<p>상관계수의 값은 -1과 1 사이에 있고 -1은 완전한 음의 상관관계를, 1은 완전한 양의 상관관계를 나타내며 0은 두 변수 간에 상관관계가 없음을 의미 한다.</p>
-<p>부호</p>
-<p>상관계수의 부호는 두 변수 간의 관계 방향을 나타내는데 양의 상관계수는 한 변수가 증가하면 다른 변수도 증가하는 양의 관계를 나타내며 음의 상관계수는 한 변수가 증가하면 다른 변수는 감소하는 음의 관계를 나타낸다.</p>
-<p>무작위성</p>
-<p>상관계수는 두 변수 간의 순수한 상관관계만을 측정하며 인과관계를 증명하지 않으므로 두 변수 간의 상관관계가 있을 수 있지만 그것이 직접적인 인과관계인지는 다른 접근 방법을 사용하여 검증해야 한다.</p>
-<p>확률변수 <span class="math inline">\(X\)</span>의 기대값과 분산을 <span class="math inline">\(E(X),V(X)\)</span>, 확률변수 <span class="math inline">\(Y\)</span>의 기대값과 분산을 <span class="math inline">\(E(Y),V(Y)\)</span>라 하자. 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 공변량 covariance는 다음과 같이 정의한다. <span class="math inline">\(COV(X,Y) = E\left( \left( X - E(X) \right)\left( Y - E(Y) \right) \right)\)</span>.</p>
-<p>정의</p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 상관계수correlation coefficient는 다음과 같이 정의한다.</p>
-<p>정의</p>
+</section>
+<section id="chapter-4.-상관계수" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-4.-상관계수"><span style="color:green">chapter 4. 상관계수</span></h3>
+<p>두 확률변수 간의 직선적(선형) 관계의 정도를 측정하는 지표로 공분산(covariance) 이 사용된다. 하지만 공분산은 각 변수의 단위(scale)에 영향을 받기 때문에, 이를 비교 가능하도록 변수의 표준편차로 나눈 값을 상관계수(correlation coefficient) 라 한다.</p>
+<p>상관계수는 단위에 무관하며, 두 변수 사이의 선형 관계의 강도와 방향을 -1에서 1 사이의 값으로 나타낸다.</p>
+<p><strong>선형(직선) 관계</strong></p>
+<p>상관계수는 두 변수 사이의 선형 관계를 측정하는 지표로, 두 변수가 일정한 비율로 함께 증가하거나 감소할 때 높은 값을 갖는다. 그러나 두 변수 간에 비선형적인 관계가 존재하는 경우, 상관계수는 이러한 관계를 적절히 반영하지 못할 수 있다. 따라서 상관계수는 선형성 가정 하에서만 해석하는 것이 적절하며, 비선형 관계를 탐색할 때는 다른 분석 도구가 필요하다.</p>
+<p><strong>범위</strong></p>
+<p>상관계수의 값은 -1에서 1 사이의 범위를 가지며, 이 값은 두 변수 사이의 선형 관계의 방향과 강도를 나타낸다. 상관계수가 1에 가까울수록 두 변수는 같은 방향으로 강하게 함께 움직이며, 이는 완전한 양의 선형 관계를 의미한다. 반대로 상관계수가 -1에 가까울수록 두 변수는 서로 반대 방향으로 강하게 움직이며, 이는 완전한 음의 선형 관계를 뜻한다. 상관계수가 0이면 두 변수 사이에 선형적인 관련성은 없다고 해석할 수 있다. 다만, 상관계수가 0이라 하더라도 비선형적인 형태의 관계가 존재할 수 있으므로, 상관계수만으로 변수 간 관계를 전부 설명할 수 있는 것은 아니다.</p>
+<p><strong>부호</strong></p>
+<p>상관계수의 부호는 두 변수 간 관계의 방향을 나타낸다. 상관계수가 양수일 경우, 한 변수가 증가할 때 다른 변수도 함께 증가하는 양의 관계가 존재함을 의미한다. 반대로 상관계수가 음수이면, 한 변수가 증가할 때 다른 변수는 감소하는 음의 관계가 있음을 뜻한다. 이처럼 상관계수의 부호는 변수 간의 변화 방향이 서로 같은지 혹은 반대인지를 판단하는 데 중요한 정보를 제공한다.</p>
+<p><strong>무작위성</strong></p>
+<p>상관계수는 두 변수 간의 선형적인 관련성만을 측정할 뿐, 인과관계를 입증하는 지표는 아니다. 즉, 두 변수 사이에 높은 상관관계가 나타난다고 해서 한 변수가 다른 변수에 영향을 준다고 단정할 수는 없다. 상관관계는 단지 두 변수 간에 일정한 방향성과 강도로 변화가 함께 나타나는 경향을 보여줄 뿐이며, 이러한 관계가 우연인지, 제3의 변수에 의한 것인지, 혹은 실제 인과관계인지는 별도의 분석과 검증을 통해 확인해야 한다.</p>
+<p><strong>【정의】</strong> 확률변수 <span class="math inline">\(X\)</span>의 기대값과 분산을 <span class="math inline">\(E(X),V(X)\)</span>, 확률변수 <span class="math inline">\(Y\)</span>의 기대값과 분산을 <span class="math inline">\(E(Y),V(Y)\)</span>라 하자. 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 공변량 covariance는 다음과 같이 정의한다. <span class="math inline">\(COV(X,Y) = E\left( \left( X - E(X) \right)\left( Y - E(Y) \right) \right)\)</span>.</p>
+<p><strong>【정의】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 상관계수correlation coefficient는 다음과 같이 정의한다.</p>
 <p><span class="math inline">\(\rho = \frac{COV(X,Y)}{\sqrt{V(X)}\sqrt{V(Y)}}\)</span>.</p>
-<p>상관계수 해석</p>
-<p>상관계수는 직선 관계 정도 측정</p>
-<blockquote class="blockquote">
-<p>동일한 상관계수 크기<br>
-부호 반대</p>
-</blockquote>
+<p><strong>상관계수 해석</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image5.png" style="width:3.52298in;height:3.76921in" class="figure-img"></p>
-<figcaption>도표이(가) 표시된 사진 자동 생성된 설명</figcaption>
+<p><img src="images/상관계수 산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<p>공분산 간편식</p>
+<p><strong>공분산 간편식</strong></p>
 <p><span class="math inline">\(COV(X,Y) = E\left( \left( X - E(X) \right)\left( Y - E(Y) \right) \right) = E(XY) - E(X)E(Y)\)</span>만약 두 확률변수가 서로 독립이면 공분산은 0이다. 그러나 역은 성립하지 않는다. 즉, 공분산이 0이어도 서로 독립이 아닐 수 있다.</p>
 <p><span class="math inline">\(E(XY) = \int\int xyf(x,y)dxdy = \left( \because indepentf(x,y) = f(x)f(y) \right)\)</span></p>
 <p><span class="math inline">\(= \int xf(x)dx\int yf(y)dy = E(X)E(Y)\)</span> 이므로 <span class="math inline">\(COV(X,Y) = 0\)</span>.</p>
-<p>【예제 ①】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 3x,0 \leq y \leq x \leq 1\)</span> 일 경우 공분산 <span class="math inline">\(COV(X,Y)\)</span>을 구하라.</p>
+<p><strong>【예제 ①】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 3x,0 \leq y \leq x \leq 1\)</span> 일 경우 공분산 <span class="math inline">\(COV(X,Y)\)</span>을 구하라.</p>
 <p><span class="math display">\[E(XY) = \int_{0}^{1}{\int_{0}^{x}{xy(3x)dydx = \int_{0}^{1}{3x^{2}\left( \frac{1}{2}x^{2} \right)dx = \frac{3}{10}5\left. \  \right|_{0}^{1} = \frac{3}{10}}}}\]</span></p>
 <p><span class="math display">\[E(X) = \int_{0}^{1}{\int_{0}^{x}{x(3x)dydx = \int_{0}^{1}{3x^{2}(x)dx = \frac{3}{4}x^{4}\left. \  \right|_{0}^{1} = \frac{3}{4}}}}\]</span></p>
 <p><span class="math display">\[E(Y) = \int_{0}^{1}{\int_{0}^{x}{y(3x)dydx = \int_{0}^{1}{3x\left( \frac{1}{2}x^{2} \right)dx = \frac{3}{2}(\frac{1}{4}x^{4})\left. \  \right|_{0}^{1} = \frac{3}{8}}}}\]</span></p>
 <p><span class="math inline">\(COV(X,Y) = \frac{3}{10} - \left( \frac{3}{4} \right)\left( \frac{3}{8} \right) = \frac{3}{160}\)</span>.</p>
-<p>【예제 ②】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = x + y,0 \leq x,y \leq 1\)</span> 일 경우 상관계수 <span class="math inline">\(corr(X,Y)\)</span>을 구하라.</p>
+<p><strong>【예제 ②】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = x + y,0 \leq x,y \leq 1\)</span> 일 경우 상관계수 <span class="math inline">\(corr(X,Y)\)</span>을 구하라.</p>
 <p><span class="math display">\[E(XY) = \int_{0}^{1}{\int_{0}^{1}{xy(x + y)dxdy = \int_{0}^{1}{\frac{1}{3}y + \frac{1}{2}y^{2}dy = \frac{1}{6}y^{2} + \frac{1}{6}y^{3}\left. \  \right|_{0}^{1} = \frac{1}{3}}}}\]</span></p>
 <p><span class="math display">\[E(X) = \int_{0}^{1}{\int_{0}^{1}{x(x + y)dxdy = \int_{0}^{1}{\frac{1}{3} + \frac{1}{2}ydy = \frac{1}{3}y + \frac{1}{4}y^{2}\left. \  \right|_{0}^{1} = \frac{7}{12}}}}\]</span></p>
 <p><span class="math display">\[E\left( X^{2} \right) = \int_{0}^{1}{\int_{0}^{1}{x^{2}(x + y)dxdy = \int_{0}^{1}{\frac{1}{4} + \frac{1}{3}ydy = \frac{1}{4}y + \frac{1}{6}y\left. \  \right|_{0}^{1} = \frac{5}{12}}}}\]</span></p>
 <p><span class="math display">\[V(X) = E\left( X^{2} \right) - E(X)^{2} = \frac{5}{12} - \left( \frac{7}{12} \right)^{2} = \frac{11}{144}\]</span></p>
 <p>동일하게 <span class="math inline">\(E(Y) = \frac{7}{12}\)</span>, <span class="math inline">\(V(Y) = \frac{11}{144}\)</span></p>
 <p><span class="math display">\[COV(X,Y) = \frac{7}{12}\frac{7}{12} - \frac{48}{144} = \frac{1}{144}\]</span><span class="math display">\[corr(X,Y) = \rho = \frac{COV(X,Y)}{\sqrt{}V(X)\sqrt{}V(Y)} = \frac{\frac{1}{144}}{\frac{11}{144}} = 1/11\]</span></p>
-<p>【예제 ③】 다음은 공분산은 0이지만 서로 독립은 아니다.</p>
+<p><strong>【예제 ③】</strong> 다음은 공분산은 0이지만 서로 독립은 아니다.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 22%">
@@ -694,37 +673,36 @@ Y
 <p><span class="math inline">\(E(X) = 0*\frac{5}{16} + 1*\frac{6}{16} + 2*2*\frac{5}{16} = 1\)</span>, <span class="math inline">\(E(Y) = 1\)</span></p>
 <p><span class="math inline">\(E(XY) = (0)(0)\frac{1}{16} + (0)(1)\frac{1}{16} + \ldots + (1)(2)\frac{1}{16} = 1\)</span>.</p>
 <p>그러므로 <span class="math inline">\(COV(X,Y) = E(XY) - E(X)E(Y) = 1 - 1 = 0\)</span><span class="math inline">\(P(X = 0,Y = 0) = \frac{1}{16} \neq P(X = 0)P(Y = 0) = \frac{5}{16}\frac{5}{16}\)</span> 독립이 아니다.</p>
-<p>이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 평균과 분산을 각각 <span class="math inline">\(\left( \mu_{X},\mu_{Y} \right),(\sigma_{X}^{2},\sigma_{Y}^{2})\)</span>라 하고 상관계수를 <span class="math inline">\(\rho\)</span>라 하자. <span class="math inline">\(E\left( Y \middle| x \right)\)</span>는 확률변수 <span class="math inline">\(X\)</span>의 선형함수이다. <span class="math inline">\(E\left( Y \middle| X \right) = \mu_{Y} + \rho\frac{\sigma_{Y}}{\sigma_{X}}(X - \mu_{X})\)</span>.</p>
-<p>정리</p>
+<p><strong>【정리】</strong> 이변량 확률변수 <span class="math inline">\((X,Y)\)</span>의 평균과 분산을 각각 <span class="math inline">\(\left( \mu_{X},\mu_{Y} \right),(\sigma_{X}^{2},\sigma_{Y}^{2})\)</span>라 하고 상관계수를 <span class="math inline">\(\rho\)</span>라 하자. <span class="math inline">\(E\left( Y \middle| x \right)\)</span>는 확률변수 <span class="math inline">\(X\)</span>의 선형함수이다. <span class="math inline">\(E\left( Y \middle| X \right) = \mu_{Y} + \rho\frac{\sigma_{Y}}{\sigma_{X}}(X - \mu_{X})\)</span>.</p>
 <p>그리고 <span class="math inline">\(E\left( V(Y) \middle| X \right) = \sigma_{Y}^{2}(1 - \rho^{2})\)</span>.</p>
-<p>【예제 ④】 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 2,0 \leq x \leq y \leq 1\)</span>이다. <span class="math inline">\(E(Y|x)\)</span>을 구하라.</p>
+<p><strong>【예제 ④】</strong> 결합 확률밀도함수는 <span class="math inline">\(f(x,y) = 2,0 \leq x \leq y \leq 1\)</span>이다. <span class="math inline">\(E(Y|x)\)</span>을 구하라.</p>
 <p><span class="math inline">\(\int_{x}^{1}{y(2)dy = y^{2}\left. \  \right|_{x}^{1} = 1 - x^{2} = (1 - x)(1 + x)}\)</span>.</p>
 <p>확률변수 <span class="math inline">\(X\)</span> 주변 확률밀도함수 : <span class="math inline">\(f(x) = \int_{x}^{1}{2dy = 2y}\left. \  \right|_{x}^{1} = 2(1 - x),0 \leq x \leq 1\)</span>.</p>
 <p><span class="math inline">\(E\left( Y \middle| x \right) = \frac{(1 - x)(1 + x)}{2(1 - x)} = \frac{1 + x}{2}\)</span>.</p>
-<p>Chapter 6. 다변량 확률변수</p>
-<p>1개념</p>
-<p>확률실험의 표본공간을 <span class="math inline">\(\mathcal{S}\)</span>에서 정의된 <span class="math inline">\(n\)</span>개의 확률변수 <span class="math inline">\(X_{i}(w) = x_{i},i = 1,2,\ldots,n,w \in \mathcal{S}\)</span>에 대하여 다음을 n-차 랜덤 벡터라 정의한다.</p>
-<p>정의</p>
+</section>
+<section id="chapter-5.-다변량-확률변수" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-5.-다변량-확률변수"><span style="color:green">chapter 5. 다변량 확률변수</span></h3>
+<section id="개념" class="level4">
+<h4 class="anchored" data-anchor-id="개념"><span style="color:blue">1. 개념</span></h4>
+<p><strong>【정의】</strong> 확률실험의 표본공간을 <span class="math inline">\(\mathcal{S}\)</span>에서 정의된 <span class="math inline">\(n\)</span>개의 확률변수 <span class="math inline">\(X_{i}(w) = x_{i},i = 1,2,\ldots,n,w \in \mathcal{S}\)</span>에 대하여 다음을 n-차 랜덤 벡터라 정의한다.</p>
 <p>랜덤 벡터: <span class="math inline">\(\overline{X} = (X_{1},X_{2},\ldots,X_{n})'\)</span></p>
 <p>영역:<span class="math inline">\(\mathcal{D} = \{\left( x_{1},x_{2},\ldots,x_{n} \right);x_{1} = X_{1}(w),X_{2}(w),\ldots,x_{n} = X_{n}(w),w \in \mathcal{S}\}\)</span></p>
 <p>다변량 확률 분포함수 <span class="math inline">\(F_{\overline{X}}\left( \overline{x} \right) = P(X_{1} \leq x_{1},X_{2} \leq x_{2},\ldots,X_{n} \leq x_{n})\)</span></p>
 <p>다변량 결합 확률밀도함수</p>
 <p>(연속형) <span class="math inline">\(f_{\overline{x}}\left( \overline{x} \right) = \frac{\partial^{n}}{\partial x_{1}\partial x_{2}\ldots\partial x_{n}}F_{\overline{x}}\left( \overline{x} \right) = f(x_{1},x_{2},\ldots,x_{n})\)</span></p>
 <p>(이산형) <span class="math inline">\(p_{\overline{x}}\left( \overline{x} \right) = p(x_{1},x_{2},\ldots,x_{n})\)</span></p>
-<p>확률변수 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 함수 <span class="math inline">\(U = g(X_{1},X_{2},\ldots,X_{n})\)</span>(확률변수) 기대값은 다음과 같이 정의된다.</p>
-<p>정의</p>
+<p><strong>【정의】</strong> 확률변수 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 함수 <span class="math inline">\(U = g(X_{1},X_{2},\ldots,X_{n})\)</span>(확률변수) 기대값은 다음과 같이 정의된다.</p>
 <p>(연속형) <span class="math inline">\(E(U) = \int\int\cdots\int uf\left( x_{1},x_{2},\ldots,x_{n} \right)dx_{1}dx_{2}\ldots dx_{n}\)</span></p>
 <p>(이산형) <span class="math inline">\(E(U) = \sum_{x_{1}}^{}{\sum_{x_{2}\cdots}^{}{\sum_{x_{n}}^{}{p(x_{1},x_{2},\ldots,x_{n})}}}\)</span></p>
-<p>동일한 모집단 분포 <span class="math inline">\(f(x)\)</span>으로부터 서로 독립적으로 추출한 크기 <span class="math inline">\(n\)</span>인 표본 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>을 확률표본이라 한다.</p>
-<p>정의</p>
+<p><strong>【정의】</strong> 동일한 모집단 분포 <span class="math inline">\(f(x)\)</span>으로부터 서로 독립적으로 추출한 크기 <span class="math inline">\(n\)</span>인 표본 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>을 확률표본이라 한다.</p>
 <p>확률변수 <span class="math inline">\(X_{i}\)</span>의 확률 밀도함수 :<span class="math inline">\(f\left( x_{i} \right) = f(x)\)</span> (동일한 모집단 분포)</p>
 <p><span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span> 결합 확률밀도함수 :</p>
 <p><span class="math inline">\(f\left( x_{1},x_{2},\ldots,x_{n} \right) = (iid)f\left( x_{1} \right)f\left( x_{2} \right)\ldots f\left( x_{n} \right) = f(x)^{n}\)</span></p>
-<p>확률표본 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 평균은 <span class="math inline">\((\mu_{1},\mu_{2},\ldots,\mu_{n})\)</span>, 분산은 <span class="math inline">\((\sigma_{1}^{2},\sigma_{2}^{2},\ldots,\sigma_{n}^{2})\)</span>인 경우 확률표본의 선형함수 <span class="math inline">\(U = \sum_{i}^{n}{a_{i}X}_{i}\)</span>의 평균은 <span class="math inline">\(\sum_{i}^{n}{a_{i}\mu_{i}}\)</span>이고 분산은 <span class="math inline">\(\sum_{i}^{n}{a_{i}^{2}\sigma_{i}^{2}}\)</span>이다. 단, <span class="math inline">\(a_{i}\)</span>는 상수이다.</p>
-<p>정의</p>
-<p>확률표본 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 선형함수 <span class="math inline">\(U = \sum_{i}^{n}{a_{i}X}_{i}\)</span>의 적률생성함수는 다음과 같다. <span class="math inline">\(M_{\sum_{i}^{}{a_{i}X_{i}}}(t) = \prod_{i}^{n}{M_{X_{i}}(a_{i}t)}\)</span>.</p>
-<p>정리</p>
-<p>2공분산 행렬</p>
+<p><strong>【정의】</strong> 확률표본 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 평균은 <span class="math inline">\((\mu_{1},\mu_{2},\ldots,\mu_{n})\)</span>, 분산은 <span class="math inline">\((\sigma_{1}^{2},\sigma_{2}^{2},\ldots,\sigma_{n}^{2})\)</span>인 경우 확률표본의 선형함수 <span class="math inline">\(U = \sum_{i}^{n}{a_{i}X}_{i}\)</span>의 평균은 <span class="math inline">\(\sum_{i}^{n}{a_{i}\mu_{i}}\)</span>이고 분산은 <span class="math inline">\(\sum_{i}^{n}{a_{i}^{2}\sigma_{i}^{2}}\)</span>이다. 단, <span class="math inline">\(a_{i}\)</span>는 상수이다.</p>
+<p><strong>【정리】</strong> 확률표본 <span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 선형함수 <span class="math inline">\(U = \sum_{i}^{n}{a_{i}X}_{i}\)</span>의 적률생성함수는 다음과 같다. <span class="math inline">\(M_{\sum_{i}^{}{a_{i}X_{i}}}(t) = \prod_{i}^{n}{M_{X_{i}}(a_{i}t)}\)</span>.</p>
+</section>
+<section id="공분산-행렬" class="level4">
+<h4 class="anchored" data-anchor-id="공분산-행렬"><span style="color:blue">2. 공분산 행렬</span></h4>
 <p>랜덤 확률 벡터 <span class="math inline">\(\overline{X} = (X_{1},X_{2},\ldots,X_{n})'\)</span>의 평균 벡터와 공분산 행렬은 다음과 같이 정의된다.</p>
 <p>기호 : <span class="math inline">\(E\left( X_{i} \right) = \mu_{i},\)</span></p>
 <p><span class="math inline">\(COV\left( X_{i},Y_{j} \right) = \sigma_{ij} = E\left( X_{i} - \mu_{i} \right)\left( X_{j} - \mu_{j} \right) = \sigma_{ji}fori \neq j,\sigma_{ii} = \sigma_{i}^{2}fori = j\)</span></p>
@@ -745,39 +723,29 @@ X_{n}
 \vdots &amp; \ddots &amp; \vdots \\
 \sigma_{ni} &amp; \cdots &amp; \sigma_{nn}
 \end{pmatrix}\)</span></p>
-<p>만약 <span class="math inline">\(X_{i}\)</span>가 서로 독립이면 공분산이 0이므로 공분산 행렬은 대각원소가 분산인 대각 행렬이다.</p>
-<p>정리</p>
+<p><strong>【정리】</strong> 만약 <span class="math inline">\(X_{i}\)</span>가 서로 독립이면 공분산이 0이므로 공분산 행렬은 대각원소가 분산인 대각 행렬이다.</p>
 <p><span class="math inline">\(COV(\overline{X}) = \begin{pmatrix}
 \sigma_{ii} &amp; \cdots &amp; 0 \\
 \vdots &amp; \ddots &amp; \vdots \\
 0 &amp; \cdots &amp; \sigma_{nn}
 \end{pmatrix}\)</span></p>
-<p><span class="math inline">\(\overline{X} \sim (E\left( \overline{X} \right) = \overline{\mu},COV\left( \overline{X} \right) = \Sigma)\)</span>이고 <span class="math inline">\(\overline{a} = (a_{1}a_{2}\ldots a_{n})'\)</span>이 상수 벡터인 경우 다음이 성립하다.</p>
-<p>정의</p>
+<p><strong>【정의】</strong> <span class="math inline">\(\overline{X} \sim (E\left( \overline{X} \right) = \overline{\mu},COV\left( \overline{X} \right) = \Sigma)\)</span>이고 <span class="math inline">\(\overline{a} = (a_{1}a_{2}\ldots a_{n})'\)</span>이 상수 벡터인 경우 다음이 성립하다.</p>
 <p><span class="math inline">\(E\left( {\overline{a}}'\overline{X} \right) = {\overline{a}}'\overline{\mu} = \sum_{i}^{n}{a_{i}\mu_{i}}\)</span>.</p>
 <p><span class="math inline">\(COV\left( {\overline{a}}'\overline{X} \right) = {\overline{a}}'COV(\overline{X})\overline{a} = {\overline{a}}'\Sigma\overline{a}\)</span>.</p>
-<p><span class="math inline">\(X_{i} \sim iidN(\mu_{i},\sigma_{i}^{2})\)</span>이면<span class="math inline">\(\sum_{i}^{n}{a_{i}X_{i} \sim N(\sum_{i}^{n}{a_{i}\mu_{i}},\sum_{i}^{n}{a_{i}^{2}\sigma_{i}^{2}})}\)</span></p>
-<p>정리</p>
+<p><strong>【정리】</strong> <span class="math inline">\(X_{i} \sim iidN(\mu_{i},\sigma_{i}^{2})\)</span>이면<span class="math inline">\(\sum_{i}^{n}{a_{i}X_{i} \sim N(\sum_{i}^{n}{a_{i}\mu_{i}},\sum_{i}^{n}{a_{i}^{2}\sigma_{i}^{2}})}\)</span></p>
 <p><span class="math inline">\(X_{i} \sim N(\mu_{i},\sigma_{i}^{2})\)</span> 적률생성함수 : <span class="math inline">\(M_{X_{i}}(t) = exp(\mu_{i}t + \frac{\sigma_{i}^{2}t^{2}}{2})\)</span></p>
 <p><span class="math display">\[{M_{\sum_{i}^{n}a_{i}X}}_{i}(t) = \prod_{i}^{n}{M_{X_{i}}(a_{i}t)} = \prod_{n}^{n}{\exp\left( \mu_{i}(a_{i}t) + \frac{\sigma_{i}^{2}{(a_{i}t)}^{2}}{2} \right)} = \exp\left( \sum_{i}^{n}{{(\mu}_{i}a_{i}})t + \frac{\sum_{i}^{n}{{(\sigma}_{i}^{2}{a_{i})t}^{2}}}{2} \right)\]</span></p>
 <p>그러므로 <span class="math inline">\(\sum_{i}^{n}{a_{i}X_{i} \sim N(\sum_{i}^{n}{a_{i}\mu_{i}},\sum_{i}^{n}{a_{i}^{2}\sigma_{i}^{2}})}\)</span></p>
-<p><span class="math inline">\(X \sim iidN(\mu,\sigma^{2})\)</span>의 확률표본<span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 평균 <span class="math inline">\(\frac{\sum_{i}^{n}X_{i}}{n} \sim N(\mu,\frac{\sigma^{2}}{n})\)</span>이다.</p>
-<p>정리</p>
-<p><span class="math inline">\(X \sim iidN(\mu,\sigma^{2})\)</span>의 확률표본<span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 분산 <span class="math inline">\(S^{2} = \frac{\sum_{i}^{n}\left( X_{i} - \overline{X} \right)^{2}}{n - 1}\)</span>이면 <span class="math inline">\(\frac{(n - 1)S^{2}}{\sigma^{2}} \sim \chi^{2}(n - 1)\)</span>.</p>
-<p>정리</p>
-<p>위의 2 정리를 통합하면 다음과 같다. <span class="math inline">\(X \sim iidN(\mu,\sigma^{2})\)</span>의 확률표본<span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 평균 <span class="math inline">\(\overset{¯}{X} = \frac{\sum_{i}^{n}X_{i}}{n}\)</span>, 분산 <span class="math inline">\(S^{2} = \frac{\sum_{i}^{n}\left( X_{i} - \overline{X} \right)^{2}}{n - 1}\)</span>에 대하여 다음이 성립한다.</p>
-<p>정리</p>
+<p><strong>【정리】</strong> <span class="math inline">\(X \sim iidN(\mu,\sigma^{2})\)</span>의 확률표본<span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 평균 <span class="math inline">\(\frac{\sum_{i}^{n}X_{i}}{n} \sim N(\mu,\frac{\sigma^{2}}{n})\)</span>이다.</p>
+<p><strong>【정리】</strong> <span class="math inline">\(X \sim iidN(\mu,\sigma^{2})\)</span>의 확률표본<span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 분산 <span class="math inline">\(S^{2} = \frac{\sum_{i}^{n}\left( X_{i} - \overline{X} \right)^{2}}{n - 1}\)</span>이면 <span class="math inline">\(\frac{(n - 1)S^{2}}{\sigma^{2}} \sim \chi^{2}(n - 1)\)</span>.</p>
+<p><strong>【정리】</strong> 위의 2 정리를 통합하면 다음과 같다. <span class="math inline">\(X \sim iidN(\mu,\sigma^{2})\)</span>의 확률표본<span class="math inline">\((X_{1},X_{2},\ldots,X_{n})\)</span>의 평균 <span class="math inline">\(\overset{¯}{X} = \frac{\sum_{i}^{n}X_{i}}{n}\)</span>, 분산 <span class="math inline">\(S^{2} = \frac{\sum_{i}^{n}\left( X_{i} - \overline{X} \right)^{2}}{n - 1}\)</span>에 대하여 다음이 성립한다.</p>
 <p>표본평균 <span class="math inline">\(\overline{X}\)</span>, 표본분산 <span class="math inline">\(S^{2}\)</span> 서로 독립이다.</p>
 <p><span class="math inline">\(\overset{¯}{X} \sim N(\mu,\frac{\sigma^{2}}{n})\)</span>.</p>
 <p><span class="math inline">\(\frac{(n - 1)S^{2}}{\sigma^{2}} \sim \chi^{2}(n - 1)\)</span>.</p>
-<p>저자 정보</p>
-<p>1982. 성균관대학교 통계학 학사</p>
-<p>1985. 성균관대학교 통계학 석사</p>
-<p>1992. 미국 North Carolina State University 통계학 박사</p>
-<p>1993-1995. 전자통신연구원 선임연구원</p>
-<p>1995-2026. 한남대학교 통계학과 교수</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
