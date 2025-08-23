@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>기초통계 4. 교차표 검정 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">기초수학</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">수리통계</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본_난수생성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/estimation.html">
+ <span class="dropdown-text">추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/hypothesis_testing.html">
+ <span class="dropdown-text">가설검정_신뢰구간</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">조사방법론</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이_AHP_컨조인트</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/psm.html">
+ <span class="dropdown-text">PSM 성향점수매칭</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">일변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/concept_of_stat.html">
+ <span class="dropdown-text">일변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/data.html">
+ <span class="dropdown-text">데이터와 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/univariate.html">
+ <span class="dropdown-text">일변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/crosstab.html">
+ <span class="dropdown-text">교차표분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/goodness_of_fits.html">
+ <span class="dropdown-text">적합성검정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/normality.html">
+ <span class="dropdown-text">정규변환</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/correlation.html">
+ <span class="dropdown-text">상관분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/anova.html">
+ <span class="dropdown-text">실험설계 분산분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/time_series.html">
+ <span class="dropdown-text">시계열분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">|카드뉴스|</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">|통계상담|</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--4" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--4">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-교차표-개념" id="toc-chapter-1.-교차표-개념" class="nav-link active" data-scroll-target="#chapter-1.-교차표-개념"><span style="color:green">chapter 1. 교차표 개념</span></a>
+  <ul>
+  <li><a href="#교차표란" id="toc-교차표란" class="nav-link" data-scroll-target="#교차표란"><span style="color:blue">1. 교차표란?</span></a></li>
+  <li><a href="#x2-분할표" id="toc-x2-분할표" class="nav-link" data-scroll-target="#x2-분할표"><span style="color:blue">2. 2x2 분할표</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-교차표-검정" id="toc-chapter-2.-교차표-검정" class="nav-link" data-scroll-target="#chapter-2.-교차표-검정"><span style="color:green">chapter 2. 교차표 검정</span></a>
+  <ul>
+  <li><a href="#개념-1" id="toc-개념-1" class="nav-link" data-scroll-target="#개념-1"><span style="color:blue">1. 개념</span></a></li>
+  <li><a href="#독립성-검정" id="toc-독립성-검정" class="nav-link" data-scroll-target="#독립성-검정"><span style="color:blue">2. 독립성 검정</span></a></li>
+  <li><a href="#동질성-검정" id="toc-동질성-검정" class="nav-link" data-scroll-target="#동질성-검정"><span style="color:blue">3. 동질성 검정</span></a></li>
+  <li><a href="#fishers-정확검정-exact-test" id="toc-fishers-정확검정-exact-test" class="nav-link" data-scroll-target="#fishers-정확검정-exact-test"><span style="color:blue">4. Fisher’s 정확검정 exact test</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">기초통계 4. 교차표 검정</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-교차표-개념" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-교차표-개념"><span style="color:green">chapter 1. 교차표 개념</span></h3>
+<section id="교차표란" class="level4">
+<h4 class="anchored" data-anchor-id="교차표란"><span style="color:blue">1. 교차표란?</span></h4>
+<section id="개념" class="level5">
+<h5 class="anchored" data-anchor-id="개념">(1) 개념</h5>
+<p>변수 간의 관계를 분석할 때는 먼저 예측변수(X)와 목표변수(Y)가 어떤 속성을 가지는지 확인해야 한다. 변수 속성은 크게 범주형(categorical)과 측정형(numerical)으로 나눌 수 있으며, 두 변수의 조합에 따라 적절한 분석 방법이 달라진다.</p>
+<p><strong>X와 Y가 모두 범주형 변수</strong></p>
+<p>각 범주 조합별로 관측 빈도를 정리한 교차표를 작성한 뒤 카이제곱 검정과 같은 방법으로 두 변수 간의 관련성을 검토한다. 교차분석은 명목척도 변수 간의 관계를 파악하는 대표적인 접근이다. 다만 기대빈도가 지나치게 작은 셀이 많으면 피셔의 정확 검정과 같은 보정된 방법이 필요하다.</p>
+<p><strong>X가 범주형이고 Y가 측정형인 경우</strong></p>
+<p>각 범주 수준별로 Y의 평균을 비교하는 방식이 사용된다. 이는 분산분석(ANOVA)이나 t-검정을 통해 수행되며, 집단 간 평균 차이가 통계적으로 유의한지를 판단하는 데 적합하다. 예를 들어 교육 수준별 월평균 소득 차이를 분석하는 경우가 이에 해당한다. 분석 과정에서는 집단 간 분산이 동질하다는 가정을 점검해야 하며, 이를 위배할 경우 Welch ANOVA와 같은 대안 기법을 적용할 수 있다.</p>
+<p><strong>반대로 X가 측정형이고 Y가 범주형</strong></p>
+<p>선형회귀와 같은 전통적 연속형 분석은 적합하지 않다. 대신 범주형 반응변수를 예측할 수 있는 로지스틱 회귀분석이나 판별분석을 활용한다. 이러한 기법은 이항 또는 다항 범주 문제에서 널리 쓰이며, 예를 들어 시험 점수로 합격 여부를 예측하는 경우가 이에 해당한다.</p>
+<p><strong>X와 Y가 모두 측정형 변수</strong></p>
+<p>두 변수 간의 연속적인 변화 관계를 파악하는 상관분석이나 회귀분석을 사용한다. 상관분석은 두 변수의 선형 관계의 강도와 방향을 수치로 제시하고, 회귀분석은 한 변수를 다른 변수로부터 예측할 수 있는 수학적 모형을 제공한다. 다만 상관이 높더라도 반드시 인과관계를 의미하지 않으며, 회귀분석에서는 잔차의 정규성, 등분산성, 독립성 등을 반드시 검토해야 한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 37%">
+<col style="width: 33%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><p>Y</p>
+<p>X</p></td>
+<td style="text-align: center;">범주형</td>
+<td style="text-align: center;">측정형</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">범주형</td>
+<td style="text-align: center;">교차분석</td>
+<td style="text-align: center;">분산분석</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">측정형</td>
+<td style="text-align: center;">로지스틱 회귀분석</td>
+<td style="text-align: center;">상관분석/회귀분석</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="이차원-교차표-맛보기" class="level5">
+<h5 class="anchored" data-anchor-id="이차원-교차표-맛보기">(2) 이차원 교차표 맛보기</h5>
+<p>하나의 범주형 자료에 정리 방법으로 사용되는 것이 빈도표(혹은 다양한 차트)를 작성하는 것이다. 예를 들어 대학생 120에 대한 정치성향에 대한 조사 결과 다음 표를 얻었다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">지지정당</td>
+<td style="text-align: center;">보수</td>
+<td style="text-align: center;">진보</td>
+<td style="text-align: center;">중도</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">빈도(비율)</td>
+<td style="text-align: center;">40(33.3%)</td>
+<td style="text-align: center;">30(25%)</td>
+<td style="text-align: center;">50(41.7%)</td>
+</tr>
+</tbody>
+</table>
+<p>동일 학생 120명들에 대해 “AI 규제 법안” 지지여부를 물어 아래 결과를 얻었다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 32%">
+<col style="width: 32%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">AI 규제 법안</td>
+<td style="text-align: center;">지지</td>
+<td style="text-align: center;">반대</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">빈도(비율)</td>
+<td style="text-align: center;">80(66.7%)</td>
+<td style="text-align: center;">40(33.3%)</td>
+</tr>
+</tbody>
+</table>
+<p>두 범주형 변수간의 연관성을 알아보기 위해 한 범주형 변수에 대한 빈도표는 열로, 다른 범주형 변수에 대한 빈도표는 행으로 하여 교차표를 작성하게 되는데 이를 이차원 분할표이라 한다. 일반적으로 영향을 미친다고 생각되는 변수(~따라서, 예측변수 <span class="math inline">\(X\)</span>)를 행으로, 영향을 받는다고 생각되는 것을 변수(~차이가 있다, 목표변수 <span class="math inline">\(Y\)</span>)를 열로 하여 교차표를 작성하면 된다.</p>
+<p>위의 예제에서 정치성향에 따른 AI 규제 법안 지지 여부 차이가 있는지 알아보기 위하여 분할표를 작성하여 보자. 위의 두 표만으로는 분할표를 작성할 수 없다. 조사할 때 학생들의 (정치성향, K-방역 지지여부)를 조사하여 분할표를 작성해야 한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 23%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><p>AI 규제 법안</p>
+<p>정치성향</p></td>
+<td style="text-align: center;">지지</td>
+<td style="text-align: center;">반대</td>
+<td style="text-align: center;">합계</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">보수</td>
+<td style="text-align: center;">30(75%)</td>
+<td style="text-align: center;">10(25%)</td>
+<td style="text-align: center;">40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">진보</td>
+<td style="text-align: center;">10(33.3%)</td>
+<td style="text-align: center;">20(66.7%)</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">중도</td>
+<td style="text-align: center;">40(80%)</td>
+<td style="text-align: center;">10(20%)</td>
+<td style="text-align: center;">50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">합계</td>
+<td style="text-align: center;">80</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">120</td>
+</tr>
+</tbody>
+</table>
+<p>괄호 안에 표시된 비율은 행 비율로 정치성향별 AI 규제 법안 지지여부의 차이를 알 수 있다. 보수와 진보는 AI 규제 법안지지도가 높고 진보는 반대 비율이 높음을 알 수 있다.</p>
+</section>
+</section>
+<section id="x2-분할표" class="level4">
+<h4 class="anchored" data-anchor-id="x2-분할표"><span style="color:blue">2. 2x2 분할표</span></h4>
+<section id="모비율-차이-검정" class="level5">
+<h5 class="anchored" data-anchor-id="모비율-차이-검정">(1) 모비율 차이 검정</h5>
+<p>두 개의 범주형 변수가 각각 2개의 범주만을 가지는 경우, 이들의 관계는 2×2 교차표를 통해 요약할 수 있다. 이러한 형태의 자료에서는 전통적인 분할표 검정(카이제곱 독립성 검정)뿐만 아니라, 두 집단 간 비율 차이에 대한 검정으로도 분석을 대체할 수 있다.</p>
+<p>특히 변수의 수준이 각각 성공과 실패로 이분되는 경우, 이를 확률적으로 모델링할 수 있다. 어떤 사건이 발생할 확률을 <span class="math inline">\(p\)</span>라고 하면, 그 사건이 발생하지 않을 확률은 <span class="math inline">\(1 - p\)</span>이다. 이를 바탕으로 다음과 같이 2×2 교차표를 표현할 수 있다.</p>
+<ul>
+<li><p><span class="math inline">\(X = \text{집단 1}\)</span>: 성공 확률 =<span class="math inline">\(\pi_{1}\)</span>, 실패 확률 =<span class="math inline">\(1 - \pi_{1}\)</span></p></li>
+<li><p><span class="math inline">\(Y = \text{집단 2}\)</span>: 성공 확률 =<span class="math inline">\(\pi_{2}\)</span>, 실패 확률 =<span class="math inline">\(1 - \pi_{2}\)</span></p></li>
+</ul>
+<p>이러한 구조를 통해 두 집단 간 성공 확률의 차이 검정을 수행할 수 있다. 이 검정은 2×2 교차표의 독립성 검정과 본질적으로 유사한 통계적 근거를 가지며, 데이터의 해석을 보다 직관적으로 도와준다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 31%">
+<col style="width: 31%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><p>Y</p>
+<p>X</p></td>
+<td style="text-align: center;">범주1</td>
+<td style="text-align: center;">범주2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">범주1</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{1}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[1 - \pi_{1}\]</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">범주2</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{2}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[1 - \pi_{2}\]</span></td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(2 \times 2\)</span> 분할표에서는 “두 범주형 변수가 서로 독립이다” &lt;=&gt; <span class="math inline">\(\pi_{1} = \pi_{2}\)</span>와 동일하다. 방사능 물질에 노출여부에 따른 건강의 차이가 있는지 알아보기 위하여 주민 1,000명을 임의추출하여 방사능 물질에 노출된 400, 그렇지 않은 600명을 대상으로 건강 여부를 조사한 자료이다. [위키피디아 예제]</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 29%">
+<col style="width: 31%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><p>질병여부</p>
+<p>노출여부</p></td>
+<td style="text-align: center;">질병</td>
+<td style="text-align: center;">건강</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">노출</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">380</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">미노출</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">594</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>방사능 노출 집단 질병 발생률 추정치: <span class="math inline">\({\widehat{\pi}}_{1} = p_{1} = \frac{20}{400} = 0.05\)</span></p></li>
+<li><p>방사능 미노출 집단 질병 발생률 추정치: <span class="math inline">\({\widehat{\pi}}_{2} = p_{2} = \frac{6}{600} = 0.01\)</span></p></li>
+</ul>
+</section>
+<section id="비율-차이-검정-순서" class="level5">
+<h5 class="anchored" data-anchor-id="비율-차이-검정-순서">(2) 비율 차이 검정 순서</h5>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(\pi_{1} = \pi_{2}\)</span> 방사능 노출집단과 미노출 집단 질병 발생율은 동일하다.</p></li>
+<li><p>대립가설: <span class="math inline">\(\pi_{1} \neq \pi_{2}\)</span> 방사능 노출집단과 미노출 집단 질병 발생율은 다르다.</p></li>
+<li><p>검정통계량 : <span class="math inline">\(TS = \frac{{\widehat{p}}_{1} - {\widehat{p}}_{2} - 0}{s({\widehat{p}}_{1} - {\widehat{p}}_{2})} \sim z\)</span>,</p></li>
+</ul>
+<p><span class="math display">\[s({\widehat{p}}_{1} - {\widehat{p}}_{2}) = \sqrt{\frac{p_{0}(1 - p_{0})}{n_{1}} + \frac{p_{0}(1 - p_{0})}{n_{2}}}\]</span></p>
+<ul>
+<li>통합 비율(pooled proportion) : <span class="math inline">\(p_{0} = \frac{x + y}{n_{1} + n_{2}} = 26/1000 = 0.026\)</span></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#독립인 두 모집단 비율 차이 검정</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.proportion <span class="im">import</span> proportions_ztest</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>count<span class="op">=</span>[<span class="dv">20</span>,<span class="dv">6</span>]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>nobs<span class="op">=</span>[<span class="dv">400</span>,<span class="dv">600</span>]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>np.array(count)<span class="op">/</span>np.array(nobs),proportions_ztest(count,nobs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(array([0.05, 0.01]), (3.894, 9.85912e-05))</p>
+<p>검정통계량은 3.89이며, 이에 대응하는 유의확률(p-value)은 0.001 미만으로 나타났다. 따라서 유의수준 0.05에서 귀무가설은 기각된다. 분석 결과, 방사능 노출 집단의 질병 발생률은 5%로, 미노출 집단의 발생률인 1%에 비해 통계적으로 유의미하게 높았다. 이는 방사능에 노출된 경우 질병에 걸릴 위험이 유의하게 증가함을 시사한다.</p>
+</section>
+<section id="상대위험도-relative-risk와-승산비-odds-ratio" class="level5">
+<h5 class="anchored" data-anchor-id="상대위험도-relative-risk와-승산비-odds-ratio">(3) 상대위험도 relative risk와 승산비 odds ratio</h5>
+<p>역학 연구에서 질병의 발생과 특정 위험요인 간의 관련성을 평가하기 위해 사용되는 지표로는 상대위험도와 승산비가 있다. 이 중 상대위험도는 코호트 연구와 같이 연구자가 시간의 흐름에 따라 질병의 발생을 추적할 수 있는 전향적 연구에서 사용되는 지표이다. 이는 위험요인에 노출된 집단과 그렇지 않은 집단 각각에 대해 질병이 발생한 비율을 비교할 수 있을 때 정의되며, 실제로 발생률을 비교하는 구조가 요구된다.</p>
+<p>반면, 사례-대조군 연구는 일반적으로 후향적 연구로 분류되며, 이미 질병이 발생한 사례군과 질병이 발생하지 않은 대조군을 사후적으로 모집한 후, 과거의 위험요인 노출 여부를 조사하는 방식이다. 이 연구 설계에서는 실험군과 대조군의 비율이 연구자가 임의로 설정한 표본 구성에 따라 정해지기 때문에, 각 집단의 실제 발생률을 직접 추정할 수 없다. 따라서 상대위험도는 정의될 수 없으며, 대신 승산비를 통해 위험요인과 질병 간의 연관성을 추정한다.</p>
+<p>예를 들어, 암 발생과 흡연 간의 관련성을 사례-대조군 연구를 통해 분석하고자 할 때, 이미 암이 발생한 집단과 암이 발생하지 않은 집단을 모집하여 이들의 과거 흡연 여부를 조사하게 된다. 그러나 이러한 연구에서는 흡연자와 비흡연자의 전체 집단 규모를 명확히 알 수 없으므로, 질병 발생률의 직접 비교가 불가능하다. 이와 같은 상황에서 유일하게 적용 가능한 측도는 흡연자의 질병 발생 승산 대비 비흡연자의 질병 발생 승산, 즉 승산비이다.</p>
+<p><strong>상대위험도 정의</strong></p>
+<p>두 집단 간 비율의 차이가 동일하더라도, 그 해석은 비율의 절대적 크기에 따라 달라질 수 있다. 일반적으로 비율이 0.5에 가까운 경우보다는 0 또는 1에 가까운 극단적인 경우에서 작은 차이도 더 큰 의미를 갖는다. 예를 들어, 두 집단 간 비율 차이가 0.0077이라고 할 때, (0.0171, 0.0094)라는 조합은 매우 낮은 발생률 간의 차이이며, 상대적으로 의미 있는 차이일 수 있다. 반면, (0.5000, 0.5077)은 전체 발생률이 높아 두 비율 간 차이의 상대적 중요성이 크지 않다.</p>
+<p>이처럼 비율의 절대 차이가 아닌, 비율 간의 상대적 크기를 비교하는 개념이 바로 상대위험도이다.</p>
+<p><span class="math inline">\(\text{Relative Risk (RR)} = \frac{P_{1}}{P_{2}}\)</span>, 여기서</p>
+<ul>
+<li><p><span class="math inline">\(P_{1}\)</span>은 위험요인에 노출된 집단에서의 사건 발생률,</p></li>
+<li><p><span class="math inline">\(P_{2}\)</span>는 위험요인에 노출되지 않은 집단에서의 사건 발생률이다.</p></li>
+</ul>
+<p>상대위험도는 다음과 같이 해석할 수 있다:</p>
+<ul>
+<li><p><span class="math inline">\(RR = 1\)</span>: 두 집단 간 사건 발생률이 동일함을 의미한다.</p></li>
+<li><p><span class="math inline">\(RR &gt; 1\)</span>: 노출 집단에서 사건 발생 위험이 더 큼.</p></li>
+<li><p><span class="math inline">\(RR &lt; 1\)</span>: 노출 집단에서 사건 발생 위험이 더 낮음(보호 효과 가능).</p></li>
+</ul>
+<p><strong>방사능 노출여부와 질병 발병 여부 실험</strong></p>
+<p>상대 위험도 추정치 : <span class="math inline">\(\frac{{\widehat{\pi}}_{1}}{{\widehat{\pi}}_{2}} = \frac{0.05}{0.01} = 5\)</span>, 방사능 노출집단의 질병 발생율은 미노출 집단보다 5배 높다.</p>
+<p><strong>오즈</strong></p>
+<p>오즈란 어떤 사건이 성공할 확률을 실패할 확률로 나눈 비율로 정의된다. 즉, 성공 확률을 <span class="math inline">\(\pi\)</span>라고 할 때, 오즈는 다음과 같이 정의된다.</p>
+<p><span class="math display">\[\text{Odds} = \frac{\pi}{1 - \pi}\]</span></p>
+<p>이 개념은 스포츠 경기(예: 축구, 농구 등)에서의 배당률 산정 등에서 자주 활용되며, 성공과 실패 간의 상대적 가능성을 정량적으로 비교하는 지표로 사용된다. 예를 들어, 한국이 폴란드와의 축구 경기에서 이길 확률이 <span class="math inline">\(\pi = 0.1\)</span>이라면, 한국의 오즈는 <span class="math inline">\(\frac{0.1}{1 - 0.1} = \frac{0.1}{0.9} = \frac{1}{9}\)</span>이다. 한국이 한 번 이기기 위해서는 평균적으로 9번 질 것이라는 의미로 해석할 수 있다. 반면, 폴란드가 이길 확률은 0.9이므로, 그 오즈는 <span class="math inline">\(\frac{0.1}{1 - 0.1} = \frac{0.1}{0.9} \approx \frac{1}{9}\)</span>이다. 즉, 폴란드는 한국보다 9배 더 자주 이길 것으로 기대된다.</p>
+<p>한편, 스포츠 베팅에서 말하는 배당률은 도박사가 설정하는 금전적 보상 비율이며, 보통 오즈를 기반으로 하지만 여기에 도박사 마진이 포함된다. 만약 오즈 그대로 1:9를 배당률로 설정한다면, 한국에 1달러를 걸면 9달러를 돌려받게 된다. 그러나 실제로는 도박사의 이윤을 위해 더 낮은 배당률이 제공된다. 예를 들어, 한국 승리 시 배당을 7.5배로 책정하는 방식이다.</p>
+<p><strong>오즈비의 정의와 해석</strong></p>
+<p>오즈비는 두 집단 간 사건 발생의 상대적인 가능성을 비교하는 지표로, 각 집단의 오즈를 비율로 나타낸 값이다. 특정 집단의 사건 발생 확률을 <span class="math inline">\(\pi_{1}\)</span>, 비교 집단의 사건 발생 확률을 <span class="math inline">\(\pi_{2}\)</span>라고 할 때, 오즈비는 다음과 같이 정의된다.</p>
+<ul>
+<li><p><span class="math inline">\(\text{OR} = \frac{\frac{\pi_{1}}{1 - \pi_{1}}}{\frac{\pi_{2}}{1 - \pi_{2}}} = \frac{\pi_{1}(1 - \pi_{2})}{\pi_{2}(1 - \pi_{1})}\)</span></p></li>
+<li><p><span class="math inline">\(\text{OR} = 1\)</span>: 두 집단의 오즈가 동일함을 의미하며, 두 변수 간 독립성을 시사한다.</p></li>
+<li><p><span class="math inline">\(\text{OR} &gt; 1\)</span>: 분자 집단(비교 대상 집단)에 비해 분모 집단보다 사건 발생의 가능성이 높다. 즉, 해당 노출이 사건(또는 질병) 발생 위험을 증가시키는 경향이 있다.</p></li>
+<li><p><span class="math inline">\(\text{OR} &lt; 1\)</span>: 분자 집단의 사건 발생 가능성이 더 낮으며, 해당 노출이 사건 발생을 줄이는 보호 효과(protective effect)를 가질 수 있음을 의미한다.</p></li>
+</ul>
+<p>오즈비는 두 범주형 변수 간 연관성을 수치화하는 데 널리 사용되며, 특히 사례–대조군 연구(case-control study)나 후향적 연구(retrospective study)에서 유용하다. 한 가지 중요한 성질은, 2×2 분할표에서 행과 열을 서로 바꾸더라도 오즈비 값은 변하지 않는다는 점이다. 이는 오즈비가 변수 간의 비대칭적 관계를 측정하는 것이 아니라, 쌍방향적인 연관성의 정도를 나타내는 지표임을 보여준다..</p>
+<p><strong>건강집단과 질병집단 오즈비</strong></p>
+<p><span class="math inline">\(oddsratio = \frac{(20/6)}{(380/594)} = 5.2\)</span>, 분석 결과, 방사능 노출은 질병 발생과 유의한 양의 연관성을 보였으며, 노출군의 질병 오즈는 비노출군에 비해 약 5.2배 높았다. 여기서 오즈(odds)란, 특정 집단에서 질병이 발생할 가능성을 해당 집단에서 질병이 발생하지 않을 가능성과 비교한 비율을 의미한다.</p>
+<p>따라서 오즈비 5.2는, 방사능에 노출된 사람의 경우 질병에 걸릴 가능성이 걸리지 않을 가능성 대비 비노출군보다 약 5.2배 더 크다는 것을 뜻한다. 다시 말해, 방사능 노출은 질병 위험을 크게 증가시키는 요인임을 시사한다.</p>
+<p><strong>오즈비 추론</strong></p>
+<p>두 반응 변수가 서로 독립인지 (연관성 검정) 어떻게 검정할 수 있을까? 오즈비(<span class="math inline">\(OR\)</span>)의 값은 0과 <span class="math inline">\(\infty\)</span>을 가지고 독립인 경우는 1이다. 그러므로 좌우 비대칭 형태의 분포를 가지므로 <span class="math inline">\(ln(OR)\)</span>생각해보자. 두 변수가 독립이면 <span class="math inline">\(ln(1) = 0\)</span>이고 (한 개념에서) 좌우 대칭의 형태를 갖는다. (예: <span class="math inline">\(ln(4) = 1.39,ln(1/4) = - 1.39\)</span>)</p>
+<p>표본의 크기가 커지면 <span class="math inline">\(\widehat{ln(OR)} \sim N(ln(OR),\frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}})\)</span>이므로 신뢰구간은 <span class="math inline">\(\widehat{ln(OR)} \pm z_{1 - \alpha/2}\sqrt{\frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}}\)</span>이다.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#오즈비 신뢰구간</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> st</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>hat_or<span class="op">=</span>(<span class="dv">20</span><span class="op">/</span><span class="dv">6</span>)<span class="op">/</span>(<span class="dv">380</span><span class="op">/</span><span class="dv">594</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>se_or<span class="op">=</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">20</span><span class="op">+</span><span class="dv">1</span><span class="op">/</span><span class="dv">6</span><span class="op">+</span><span class="dv">1</span><span class="op">/</span><span class="dv">380</span><span class="op">+</span><span class="dv">1</span><span class="op">/</span><span class="dv">594</span>)<span class="op">**</span><span class="fl">0.5</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>z<span class="op">=</span>st.norm.ppf(<span class="fl">0.975</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>hat_or<span class="op">-</span>z<span class="op">*</span>se_or,hat_or<span class="op">+</span>z<span class="op">*</span>se_or</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(4.289172810142199, 6.131879821436749)</p>
+<p>방사능 노출은 질병 발생과 유의한 양의 연관성이 있으며, 노출군의 질병 오즈는 비노출군에 비해 약 5.2배 유의적으로 높다.</p>
+</section>
+</section>
+</section>
+<section id="chapter-2.-교차표-검정" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-교차표-검정"><span style="color:green">chapter 2. 교차표 검정</span></h3>
+<section id="개념-1" class="level4">
+<h4 class="anchored" data-anchor-id="개념-1"><span style="color:blue">1. 개념</span></h4>
+<p>두 개의 범주형 변수를 각각 X와 Y로 표시하고 각각 R, C 수준을 갖고 있다고 하자. X를 행으로 Y를 열로 하여 분할표를 만들면 <span class="math inline">\(R \times C\)</span>개의 결합 조건이 존재한다. 이를 <span class="math inline">\(R \times C\)</span> 교차표라 한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 10%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><p>Y</p>
+<p>X</p></td>
+<td style="text-align: center;">범주1</td>
+<td style="text-align: center;">범주2</td>
+<td style="text-align: center;">…</td>
+<td style="text-align: center;">범주C</td>
+<td style="text-align: center;">합계</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">범주1</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{11}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{12}\]</span></td>
+<td style="text-align: center;">…</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{1C}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{1 +}\]</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">범주2</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{21}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{22}\]</span></td>
+<td style="text-align: center;">…</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{2C}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{2 +}\]</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">…</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">…</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">범주R</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{R1}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{R2}\]</span></td>
+<td style="text-align: center;">…</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{RC}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{R +}\]</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">합계</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{+ 1}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{+ 2}\]</span></td>
+<td style="text-align: center;">…</td>
+<td style="text-align: center;"><span class="math display">\[\pi_{+ C}\]</span></td>
+<td style="text-align: center;"><span class="math display">\[\pi_{+ +}\]</span></td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(\pi_{ij}\)</span> : <span class="math inline">\(P(X = i,Y = j)\)</span> X는 범주 <span class="math inline">\(i\)</span>, Y는 범주 <span class="math inline">\(j\)</span>에 속할 확률변수 <span class="math inline">\((X,Y)\)</span> 결합확률분포함수</p>
+<p><span class="math inline">\(\pi_{i +}\)</span> : <span class="math inline">\(P(X = i)\)</span> 확률변수 <span class="math inline">\(X\)</span>의 주변확률분포함수</p>
+<p><span class="math inline">\(\pi_{+ j}\)</span> : <span class="math inline">\(P(Y = ij)\)</span> 확률변수 <span class="math inline">\(Y\)</span>의 주변확률분포함수</p>
+<p><span class="math display">\[\pi_{+ +} = 1\]</span></p>
+<p><span class="math inline">\(O_{ij}\)</span>: 셀 <span class="math inline">\((i,j)\)</span> 관측빈도</p>
+<p><span class="math inline">\(O_{i +}\)</span>: 행 <span class="math inline">\(i\)</span> 주변 합 관측빈도, <span class="math inline">\(O_{j +}\)</span>: 열 <span class="math inline">\(j\)</span> 주변 합 관측빈도</p>
+</section>
+<section id="독립성-검정" class="level4">
+<h4 class="anchored" data-anchor-id="독립성-검정"><span style="color:blue">2. 독립성 검정</span></h4>
+<p>범주형 자료의 관계를 분석할 때, 두 범주형 변수 간의 연관성이 존재하는지를 평가하기 위한 대표적인 방법이 독립성 검정이다. 독립성 검정의 목적은, 두 범주형 변수 간의 분포가 서로 독립적인지를 검토하는 데 있다. 즉, 한 변수의 수준이 다른 변수의 분포에 영향을 주는지를 판단한다.</p>
+<p><strong>통계적 가설</strong></p>
+<ul>
+<li><p>귀무가설: 두 변수는 서로독립이다. <span class="math inline">\(\pi_{ij} = \pi_{i +}\pi_{+ j}forall(i,j)\)</span></p></li>
+<li><p>대랍가설: 두 변수는 서로 독립이 아니다 (즉, 관련이 있다).</p></li>
+</ul>
+<p>독립이라는 것은, 한 변수의 특정 범주에 속하는 비율이 다른 변수의 범주에 관계없이 일정하다는 의미다. 이를 검정하기 위해, 각 셀의 관측도수와 귀무가설 하에서 기대되는 도수를 비교한다. 기대도수는 귀무가설이 옳다는 가정 하에서 계산되는 셀의 빈도이다.</p>
+<p><strong>검정통계량</strong></p>
+<p><span class="math inline">\(ts = \sum_{i,j}\frac{(O_{ij} - E_{ij})^{2}}{E_{ij}} \sim \chi^{2}((R - 1) \times (C - 1))\)</span>, 여기서 <span class="math inline">\(E_{ij} = \frac{O_{i +}O_{+ j}}{O_{+ +}}\)</span>이다.</p>
+<p>사례분석</p>
+<p>성별(남, 여)에 따른 선호하는 커피 종류(아메리카노, 라떼, 에스프레소) 간의 관계를 분석하고자 한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+<td style="text-align: center;">아메리카노</td>
+<td style="text-align: center;">라떼</td>
+<td style="text-align: center;">에스프레소</td>
+<td style="text-align: center;">합계</td>
+</tr>
+<tr class="even">
+<td>남성</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">70</td>
+</tr>
+<tr class="odd">
+<td>여성</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">80</td>
+</tr>
+<tr class="even">
+<td>합계</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">55</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">150</td>
+</tr>
+</tbody>
+</table>
+<p>귀무가설: 성별과 커피 선호는 독립이다 (즉, 성별에 따라 커피 선호가 달라지지 않는다)</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> chi2_contingency</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 교차표 데이터</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [[<span class="dv">30</span>, <span class="dv">25</span>, <span class="dv">15</span>],   <span class="co"># 남성</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        [<span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">30</span>]]   <span class="co"># 여성</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>columns <span class="op">=</span> [<span class="st">'Americano'</span>, <span class="st">'Latte'</span>, <span class="st">'Espresso'</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>index <span class="op">=</span> [<span class="st">'Male'</span>, <span class="st">'Female'</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data, index<span class="op">=</span>index, columns<span class="op">=</span>columns)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 카이제곱 독립성 검정</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>chi2, p, dof, expected <span class="op">=</span> chi2_contingency(df)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ 카이제곱 통계량:"</span>, <span class="bu">round</span>(chi2, <span class="dv">3</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ p-value:"</span>, <span class="bu">round</span>(p, <span class="dv">4</span>))</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 행 퍼센트 계산</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>row_percent <span class="op">=</span> df.div(df.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>row_percent_rounded <span class="op">=</span> row_percent.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">📊 행 퍼센트 (%):"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(row_percent_rounded)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>✅ 카이제곱 통계량: 6.818 <br> ✅ p-value: 0.0331 <br> 📊 행 퍼센트 (%): <br> Americano Latte Espresso <br> Male 42.86 35.71 21.43 <br> Female 25.00 37.50 37.50</p>
+<p>유의확률(0.0247)이 0.05보다 작으므로 귀무가설은 기각되어 성별과 커피 선호 간에 통계적으로 유의한 연관성이 존재함을 의미한다. 남성은 아메리카노(42.86%)를 가장 많이 선호하는 반면, 여성은 에스프레소(37.5%)와 라떼(37.5%)에 대한 선호가 상대적으로 높다.</p>
+</section>
+<section id="동질성-검정" class="level4">
+<h4 class="anchored" data-anchor-id="동질성-검정"><span style="color:blue">3. 동질성 검정</span></h4>
+<p>동질성 검정은 두 개 이상의 모집단으로부터 각각 표본을 추출하였을 때, 이 모집단들이 하나의 공통된 분포(또는 비율 구조)를 가지고 있는지를 검정하는 절차이다. 즉, 여러 집단이 같은 비율 분포를 공유하고 있는지, 다시 말해 질적 특성의 분포가 동일한지를 평가하는 검정이다.</p>
+<p>1900 Karl Pearson에 제안한 방법으로 multinomial(다항) distribution의 확률이 귀무가설에서 설정한 값과 동일한지를 검정한다. 즉 확률변수 <span class="math inline">\(X\)</span>의 주변확률분포함수가 모두 동일한지 검정한다.</p>
+<ul>
+<li><p>귀무가설 : <span class="math inline">\(\pi_{ij} = \pi_{kj}\)</span>, 모든 <span class="math inline">\(j = 1,2,...,C\)</span> 그리고 <span class="math inline">\(i \neq k\)</span></p></li>
+<li><p>대립가설 : 귀무가설은 사실이 아니다.</p></li>
+</ul>
+<p><strong>Pearson Chi-square Statistic <span class="math inline">\(\chi ^2\)</span> -검정 통계량</strong></p>
+<p><span class="math display">\[ts = \sum_{i,j}\frac{(O_{ij} - E_{ij})^{2}}{E_{ij}} \sim \chi^{2}((R - 1) \times (C - 1))\]</span></p>
+<p><strong>사례분석</strong></p>
+<p>한 음료회사가 지역별(서울, 부산) 소비자들을 대상으로, 선호하는 음료 종류(탄산음료, 주스, 생수)에 대한 조사를 실시하였다. 각 지역에서 100명씩 표본을 추출하여 선호도를 조사한 결과는 다음과 같다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">지역</td>
+<td style="text-align: center;">탄산음료</td>
+<td style="text-align: center;">주스</td>
+<td style="text-align: center;">생수</td>
+<td style="text-align: center;">합계</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">서울</td>
+<td style="text-align: center;">40</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">부산</td>
+<td style="text-align: center;">30</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">합계</td>
+<td style="text-align: center;">70</td>
+<td style="text-align: center;">60</td>
+<td style="text-align: center;">70</td>
+<td style="text-align: center;">200</td>
+</tr>
+</tbody>
+</table>
+<p>귀무가설: 두 지역(서울, 부산)의 음료 선호 분포는 동일하다 (즉, 모집단의 분포가 동질적이다)</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 독립성 검정 코드와 동일함</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>✅ 카이제곱 통계량: 8.81 <br> ✅ p-value: 0.0122 <br> 📊 행 퍼센트 (%): <br> Soda Juice Water <br> Seoul 40.0 35.0 25.0 <br> Busan 30.0 25.0 45.0</p>
+<p>유의확률이 0.012이므로, 귀무가설은 기각되어 서울과 부산의 음료 선호 분포는 동일하지 않으며, 지역 간 분포의 차이가 통계적으로 유의미하다고 볼 수 있다. 서울은 탄산음료와 주스 선호도가 높고, 부산은 생수 선호 비율이 상대적으로 높다.</p>
+</section>
+<section id="fishers-정확검정-exact-test" class="level4">
+<h4 class="anchored" data-anchor-id="fishers-정확검정-exact-test"><span style="color:blue">4. Fisher’s 정확검정 exact test</span></h4>
+<p>Fisher<span dir="rtl">’</span>s exact test는 1934년, 피셔가 유전자 분리비 연구 및 실험설계의 정교화를 위해 고안한 검정이다. 이 검정은 당시의 계산 자원 한계에도 불구하고, <span dir="rtl">”</span>작은 표본에서의 정확한 결론”을 도출할 수 있는 기법으로 주목받았다. 특히, 정확한 확률을 기반으로 한 논리적 검정 방식을 도입한 점에서 이후의 이항 검정이나 로지스틱 회귀 등의 기반이 되었다. 일반적인 <span class="math inline">\(R \times C\)</span>교차표에서도 이론적으로 수행 가능합니다. 하지만 실무에서는 계산량이 급격히 증가하므로 2×2 표 이외에는 거의 사용되지 않습니다</p>
+<p>Fisher가 이 검정을 소개하면서 사용한 일화로 유명한 것이 바로 <span dir="rtl">”</span>홍차 마시는 여인” 실험이다. 한 여성이 <span dir="rtl">”</span>우유를 먼저 넣은 차”와 <span dir="rtl">”</span>차를 먼저 넣은 우유”를 맛만 보고 구분할 수 있다고 주장하자, Fisher는 8잔 중 4잔씩 두 조건을 섞어 무작위로 제공하고, 이 여성이 구분할 확률을 순열 조합으로 계산하여 검정했다. 이 실험이 바로 Fisher의 정확 검정의 실제 적용 예로 인용된다.</p>
+<p><strong>2X2 교차표</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td></td>
+<td style="text-align: center;">성공</td>
+<td style="text-align: center;">실패</td>
+<td style="text-align: center;">합계</td>
+</tr>
+<tr class="even">
+<td>A 그룹</td>
+<td style="text-align: center;">a</td>
+<td style="text-align: center;">b</td>
+<td style="text-align: center;">a+b</td>
+</tr>
+<tr class="odd">
+<td>B 그룹</td>
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">d</td>
+<td style="text-align: center;">c+d</td>
+</tr>
+<tr class="even">
+<td>합계</td>
+<td style="text-align: center;">a+c</td>
+<td style="text-align: center;">b+d</td>
+<td style="text-align: center;">n</td>
+</tr>
+</tbody>
+</table>
+<p><strong>검정통계량</strong></p>
+<p>주어진 행과 열의 합이 고정된 상황에서 셀 a에 특정한 값이 나올 확률은 다음과 같이 초기하분포를 따른다. 이러한 확률은 각 가능한 <span class="math inline">\(a\)</span> 값에 대해 계산되며, 관측값과 같거나 더 극단적인 경우의 확률을 모두 합산하여 유의확률을 산출한다.</p>
+<p><span class="math display">\[P(a) = \frac{\binom{a + b}{a} \cdot \binom{c + d}{c}}{\binom{n}{a + c}}\]</span></p>
+<p><strong>피셔 사례분석</strong></p>
+<ul>
+<li><p>귀무가설: 여성의 선택은 무작위이며, 실제 구분 능력이 없다</p></li>
+<li><p>대립가설: 여성은 차/우유 순서를 식별할 수 있다</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 21%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Fisher 사례</td>
+<td style="text-align: center;">성공</td>
+<td style="text-align: center;">실패</td>
+<td style="text-align: center;">합계</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">차를 먼저라 판단</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">우유를 먼저라 판단</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">합계</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>유의확률, <span class="math inline">\(P(a \geq 3|a \sim HG(N = 8,K = 4,n = 4))\)</span><!-- -->0.2429이므로 귀무가설을 기각할 수 없으므로 이 결과만으로는 여성이 정확하게 구분한다고 보기는 어렵다.하지만 만약 4잔 모두 정답(4 vs.&nbsp;0)이었다면, p-value는 약 0.014로, 유의미한 능력이 있다고 결론내릴 수 있습니다.</p></li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> fisher_exact</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 2x2 교차표 (차례대로: 정답, 오답)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>table <span class="op">=</span> [[<span class="dv">3</span>, <span class="dv">1</span>],  <span class="co"># 여성 선택 = 차 먼저 (맞춤 3, 틀림 1)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>         [<span class="dv">1</span>, <span class="dv">3</span>]]  <span class="co"># 여성 선택 = 우유 먼저 (틀림 1, 맞춤 3)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 양측 검정</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>oddsratio, p_value <span class="op">=</span> fisher_exact(table, alternative<span class="op">=</span><span class="st">'two-sided'</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"오즈비:"</span>, <span class="bu">round</span>(oddsratio, <span class="dv">2</span>))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p-value:"</span>, <span class="bu">round</span>(p_value, <span class="dv">4</span>)<span class="op">/</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>오즈비: 9.0 <br> p-value: 0.2429</p>
+<p>여성은 차와 우유 중 어느 것을 먼저 넣었는지 구별할 능력은 없지만(귀무가설 채택), 오즈비가 9라는 것은 이는 그녀가 실제로 차와 우유의 순서를 일정 부분 구분할 수 있었을 가능성을 시사하는 정량적 지표이다. 여성이 차를 먼저 넣었다고 판단한 잔에서 실제로 차를 먼저 넣었을 오즈가, 우유를 먼저 넣었다고 판단한 잔에서 실제로 우유를 먼저 넣었을 오즈보다 9배 더 높다는 것을 의미한다.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

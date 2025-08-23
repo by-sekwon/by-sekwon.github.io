@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>기초통계 9. 시계열분석 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">기초수학</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">수리통계</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본_난수생성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/estimation.html">
+ <span class="dropdown-text">추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/hypothesis_testing.html">
+ <span class="dropdown-text">가설검정_신뢰구간</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">조사방법론</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이_AHP_컨조인트</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/psm.html">
+ <span class="dropdown-text">PSM 성향점수매칭</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">일변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/concept_of_stat.html">
+ <span class="dropdown-text">일변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/data.html">
+ <span class="dropdown-text">데이터와 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/univariate.html">
+ <span class="dropdown-text">일변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/crosstab.html">
+ <span class="dropdown-text">교차표분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/goodness_of_fits.html">
+ <span class="dropdown-text">적합성검정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/normality.html">
+ <span class="dropdown-text">정규변환</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/correlation.html">
+ <span class="dropdown-text">상관분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/anova.html">
+ <span class="dropdown-text">실험설계 분산분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/time_series.html">
+ <span class="dropdown-text">시계열분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">|카드뉴스|</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">|통계상담|</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--4" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--4">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-시계열-자료" id="toc-chapter-1.-시계열-자료" class="nav-link active" data-scroll-target="#chapter-1.-시계열-자료"><span style="color:green">chapter 1. 시계열 자료</span></a>
+  <ul>
+  <li><a href="#시계열데이터-정의" id="toc-시계열데이터-정의" class="nav-link" data-scroll-target="#시계열데이터-정의"><span style="color:blue">1. 시계열데이터 정의</span></a></li>
+  <li><a href="#시계열데이터-분석-목적" id="toc-시계열데이터-분석-목적" class="nav-link" data-scroll-target="#시계열데이터-분석-목적"><span style="color:blue">2. 시계열데이터 분석 목적</span></a></li>
+  <li><a href="#시계열분석-역사" id="toc-시계열분석-역사" class="nav-link" data-scroll-target="#시계열분석-역사"><span style="color:blue">3. 시계열분석 역사</span></a></li>
+  <li><a href="#시간도표" id="toc-시간도표" class="nav-link" data-scroll-target="#시간도표"><span style="color:blue">4. 시간도표</span></a></li>
+  <li><a href="#시계열데이터-성분" id="toc-시계열데이터-성분" class="nav-link" data-scroll-target="#시계열데이터-성분"><span style="color:blue">5. 시계열데이터 성분</span></a></li>
+  <li><a href="#시계열데이터-분석방법" id="toc-시계열데이터-분석방법" class="nav-link" data-scroll-target="#시계열데이터-분석방법"><span style="color:blue">3. 시계열데이터 분석방법</span></a></li>
+  <li><a href="#최적-모형-선택-통계량" id="toc-최적-모형-선택-통계량" class="nav-link" data-scroll-target="#최적-모형-선택-통계량"><span style="color:blue">6. 최적 모형 선택 통계량</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-1.-시계열-모형" id="toc-chapter-1.-시계열-모형" class="nav-link" data-scroll-target="#chapter-1.-시계열-모형"><span style="color:green">chapter 1. 시계열 모형</span></a>
+  <ul>
+  <li><a href="#시계열-모형-개념" id="toc-시계열-모형-개념" class="nav-link" data-scroll-target="#시계열-모형-개념"><span style="color:blue">1. 시계열 모형 개념</span></a></li>
+  <li><a href="#시계열-기본-모형" id="toc-시계열-기본-모형" class="nav-link" data-scroll-target="#시계열-기본-모형"><span style="color:blue">2. 시계열 기본 모형</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-평활법" id="toc-chapter-3.-평활법" class="nav-link" data-scroll-target="#chapter-3.-평활법"><span style="color:green">chapter 3. 평활법</span></a>
+  <ul>
+  <li><a href="#이동평균법" id="toc-이동평균법" class="nav-link" data-scroll-target="#이동평균법"><span style="color:blue">1. 이동평균법</span></a></li>
+  <li><a href="#지수-평활법-exponential-smoothing" id="toc-지수-평활법-exponential-smoothing" class="nav-link" data-scroll-target="#지수-평활법-exponential-smoothing"><span style="color:blue">2. 지수 평활법 exponential smoothing</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-4.-arma-모형" id="toc-chapter-4.-arma-모형" class="nav-link" data-scroll-target="#chapter-4.-arma-모형"><span style="color:green">chapter 4. ARMA 모형</span></a>
+  <ul>
+  <li><a href="#arma-p-q-processes" id="toc-arma-p-q-processes" class="nav-link" data-scroll-target="#arma-p-q-processes"><span style="color:blue">1. ARMA( p, q) Processes</span></a></li>
+  <li><a href="#정상성-stationarity과-인과성" id="toc-정상성-stationarity과-인과성" class="nav-link" data-scroll-target="#정상성-stationarity과-인과성"><span style="color:blue">2. 정상성 stationarity과 인과성</span></a></li>
+  <li><a href="#arma-모델-추정-과정" id="toc-arma-모델-추정-과정" class="nav-link" data-scroll-target="#arma-모델-추정-과정"><span style="color:blue">3. ARMA 모델 추정 과정</span></a></li>
+  <li><a href="#acf와-pacf" id="toc-acf와-pacf" class="nav-link" data-scroll-target="#acf와-pacf"><span style="color:blue">4. ACF와 PACF</span></a></li>
+  <li><a href="#사례분석" id="toc-사례분석" class="nav-link" data-scroll-target="#사례분석"><span style="color:blue">5. 사례분석</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">기초통계 9. 시계열분석</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-시계열-자료" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-시계열-자료"><span style="color:green">chapter 1. 시계열 자료</span></h3>
+<section id="시계열데이터-정의" class="level4">
+<h4 class="anchored" data-anchor-id="시계열데이터-정의"><span style="color:blue">1. 시계열데이터 정의</span></h4>
+<p>시계열(time series) 자료란 관측치가 시간의 흐름에 따라 일정한 순서로 기록된 데이터를 말한다. 반면, 특정 시점에서 여러 개체를 동시에 조사한 자료는 횡단(cross-sectional) 자료라고 한다.</p>
+<p>(표현) <span class="math inline">\(\{ Y_{t};t = 1,2,...,T\}\)</span></p>
+<p>횡단 자료에서는 개체 구분을 위해 보통 아래첨자 i를 사용하고, 시계열 자료에서는 시간을 나타내기 위해 아래첨자 t를 사용한다. 여기서 t는 연, 월, 일, 분, 초 등 다양한 시간 단위를 가질 수 있다. 대표적인 시계열 자료의 예로는 KOSPI 주가, 삼성전자 월별 매출액, 소매물가지수, 실업률, 환율 등이 있다.</p>
+</section>
+<section id="시계열데이터-분석-목적" class="level4">
+<h4 class="anchored" data-anchor-id="시계열데이터-분석-목적"><span style="color:blue">2. 시계열데이터 분석 목적</span></h4>
+<p>시계열 데이터 분석의 가장 중요한 목적은 미래 값을 예측하는 것이다. 본 강의 역시 이 예측에 중점을 둔다. 그러나 시계열 분석의 목적은 단순한 예측에만 머물지 않는다. 먼저, 시계열 데이터를 가설적 확률모형으로 표현함으로써 데이터의 생성 메커니즘을 이해하고, 추세·계절성·불규칙 요인 등으로 분해하여 간결하게 요약할 수 있다. 경제통계에서 계절 성분을 식별하고 제거하는 계절조정(seasonal adjustment) 과정은 장기 추세 분석에서 필수적이다. 또한, 잡음을 제거하거나 신호를 추출하는 등 데이터의 특성을 파악하고 조정하는 과정도 중요한 분석 목적이다.</p>
+<p>이와 함께, 시계열 분석은 미래 예측에 널리 활용된다. 상품 매출, 실업률, 환율, 인구 변화 등 다양한 현상의 미래 값을 추정하기 위해 추세 분석, 평활법, 시계열 분해, ARMA 모형 등이 사용된다. 더 나아가, 시스템의 동작 원리를 이해하고 제어하는 데에도 시계열 분석이 이용된다. 예를 들어, 한 시계열을 다른 시계열로부터 예측하거나(전달함수 분석), 광고비 데이터를 활용해 판매량을 예측하는 경우가 있다. 저수지 운영과 같이 유입량 변동을 모형화하여 특정 기간 내 고갈될 확률을 추정하는 시뮬레이션 분석도 시계열 분석의 한 예다.</p>
+<p>마지막으로, 시계열 데이터는 가설 검정에도 사용된다. 예를 들어, 장기간의 기온 데이터를 분석하여 지구 온난화 추세를 검증하거나, 경제 지표의 장기 변화 패턴을 검정하는 방식이다. 이처럼 시계열 분석은 과거의 패턴과 구조를 규명하고, 이를 기반으로 미래를 예측하며, 나아가 의사결정과 정책 수립을 지원하는 핵심 도구라 할 수 있다.</p>
+</section>
+<section id="시계열분석-역사" class="level4">
+<h4 class="anchored" data-anchor-id="시계열분석-역사"><span style="color:blue">3. 시계열분석 역사</span></h4>
+<p>시계열 분석의 기원은 17세기로 거슬러 올라간다. 당시 태양 흑점 관측 자료와 밀 가격 지수 변동을 설명하기 위해 사인과 코사인 함수가 사용되었다. 1926년 Yule은 자기회귀이동평균(ARMA) 개념을 제시하였고, 1937년 Walker가 ARMA 모형을 구체적으로 제안하였다. 이 시기에는 주기적 변동을 제거하기 위해 이동평균법(moving average)이 널리 사용되었다.</p>
+<p>ARMA 모형의 추정 기법은 1960년 Durbin에 의해, 그리고 1970년 Box와 Jenkins에 의해 체계적으로 정립되었다. Box와 Jenkins는 『Time Series Analysis』라는 고전적 저서를 출간하여 시계열 분석을 현대 통계학의 중요한 한 분야로 자리매김하게 하였다. 한편, 1957년 Holt는 지수 평활법을, 1960년 Winter는 계절성을 고려한 지수 평활법을 제안하였다.</p>
+<p>계절 변동 제거를 위한 공식적 방법도 발전하였다. 1967년 미국 인구조사국은 경기 지수 등 경제 시계열에 대해 X-11 계절변동 분해법을 제안하였다. 그러나 X-11은 이동평균 개념을 사용하므로 시계열의 양 끝 관측치를 활용하지 못하는 한계가 있었다. 이를 보완하기 위해 1975년 캐나다 통계청은 X11-ARMA 방법을 개발하였으며, 현재 우리나라에서도 이 방법이 사용되고 있다.</p>
+<p>Box–Jenkins 모형에서 파생된 시계열 분석의 또 다른 흐름은 비선형 모형의 발전이다. Engle이 제안한 ARCH(Autoregressive Conditional Heteroscedasticity) 모형과, 이를 일반화한 GARCH(Generalized ARCH) 모형은 시계열의 분산이 시간에 따라 변하는 경우를 다룰 수 있도록 하였다. 이러한 모형들은 금융 시계열처럼 변동성이 시간에 따라 크게 달라지는 자료를 분석하는 데 특히 유용하다.</p>
+</section>
+<section id="시간도표" class="level4">
+<h4 class="anchored" data-anchor-id="시간도표"><span style="color:blue">4. 시간도표</span></h4>
+<p>시계열 분석의 출발점은 데이터를 시간 순서에 따라 시각화하는 것이다. 시간도표(Time plot)은 관측된 데이터 포인트를 시간 순서대로 배열하여 나타낸 그래프로, 시계열 데이터 분석의 첫 단계에서 매우 유용하다. 이를 통해 데이터의 전반적인 경향, 계절성, 변동성) 등을 직관적으로 파악할 수 있다.</p>
+<p>시간도표에서는 보통 x축에 시간을, y축에 해당 시점에서 관측된 값을 표시한다. 시간 축은 연도, 월, 일, 시각 등 데이터 수집 주기에 따라 다양하게 설정될 수 있으며, 값 축에는 주가, 온도, 매출액 등 분석 대상 변수의 값이 표시된다. 데이터 포인트는 점이나 선으로 표현되며, 연속적으로 연결함으로써 시간에 따른 변화를 한눈에 볼 수 있다.</p>
+<p>이 그래프를 통해 시계열 데이터의 여러 특성을 시각적으로 식별할 수 있다. 장기적인 상승 또는 하락 경향을 나타내는 추세, 일정 주기로 반복되는 패턴을 의미하는 계절성, 계절성보다 더 긴 주기의 변동을 보이는 순환, 데이터의 변동 폭과 불안정성을 나타내는 변동성, 그리고 전반적인 패턴에서 크게 벗어난 이상치(outlier) 등을 확인할 수 있다.</p>
+<p><strong>예제 데이터</strong></p>
+<p>seaborn 내장 데이터 : 1949년 1월~1960년 12월 호주 월별 항공 승객(백만명)</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#예제 데이터 가져오기</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'date'</span>]<span class="op">=</span>df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">'%Y-%b'</span>).date(), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#시간 도표</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df.plot(x<span class="op">=</span><span class="st">'date'</span>,y<span class="op">=</span><span class="st">'passengers'</span>,title<span class="op">=</span><span class="st">'Airline passengers over time'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_시간도표.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</section>
+<section id="시계열데이터-성분" class="level4">
+<h4 class="anchored" data-anchor-id="시계열데이터-성분"><span style="color:blue">5. 시계열데이터 성분</span></h4>
+<p>시계열 데이터 <span class="math inline">\(\{ Y_{t};t = 1,2,...,T\}\)</span>는 크게 네 가지 성분으로 이루어진다. 첫째, 장기간에 걸쳐 지속적인 상승이나 하락과 같은 변화를 보이는 경향(Trend) 성분이 있다. 둘째, 1년 이내와 같이 일정한 주기로 반복되는 변동 패턴을 나타내는 계절성(Seasonality) 성분이 존재한다. 셋째, 계절성보다 긴 주기의 변동을 의미하는 순환(Cycle) 성분이 있으며, 주로 경기 변동이나 경제 순환과 같은 장기 요인을 반영한다. 마지막으로, 특정한 주기나 규칙이 없이 불규칙하게 나타나는 불규칙(Irregular) 성분이 있다.</p>
+<p>이 가운데 경향, 계절성, 순환은 비교적 규칙적인 패턴을 가지는 성분이며, 불규칙 성분은 예측이 불가능한 잡음 형태로 나타난다. 계절성과 주기 변동은 차분(differencing) 과정을 통해 제거할 수 있으며, 특히 순환 성분은 시계열 패턴을 대표하는 중요한 변동 요인으로 간주된다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/시간도표_성분.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p><strong>경향(Trend) <span class="math inline">\(T_{t}\)</span></strong></p>
+<p>경향은 시계열 데이터에서 장기간에 걸쳐 나타나는 지속적인 변화 패턴을 의미한다. 데이터가 시간이 지남에 따라 꾸준히 증가하거나 감소하는지, 혹은 상대적으로 일정한 수준을 유지하는지를 파악할 수 있다. 경향 패턴은 일반적으로 장기적 요인—예를 들어 인구 증가, 기술 발전, 경제 성장 또는 장기 경기침체—에 의해 발생한다.</p>
+<p>형태에 따라 경향은 직선 경향(linear trend)과 이차 경향(quadratic trend) 등으로 구분된다. 직선 경향은 일정한 속도로 변화하는 패턴을, 이차 경향은 변화 속도 자체가 시간이 지남에 따라 증가하거나 감소하는 패턴을 나타낸다.</p>
+<p><strong>순환(cycle) <span class="math inline">\(C_{t}\)</span></strong></p>
+<p>순환은 시계열 데이터에서 일정한 주기와 진폭을 가지고 반복되는 변동 패턴을 의미한다. 이는 계절성보다 더 긴 기간에 걸쳐 나타나며, 경제 경기 변동이나 기후 변화와 같이 장기 요인에 의해 발생하는 경우가 많다. 순환 패턴은 사인 곡선(sine curve)과 같이 일정한 간격으로 고점과 저점이 반복되는 형태로 나타나며, 이러한 주기적 변동은 장기 예측이나 시스템 동작 분석에서 중요한 단서를 제공한다.</p>
+<p><strong>계절성(seasonality) <span class="math inline">\(S_{t}\)</span></strong></p>
+<p>계절성은 시계열 데이터에서 일정한 주기를 가지고 반복되는 변동 패턴을 말한다. 순환과 달리 주기의 길이가 고정되어 있다는 특징이 있으며, 주별, 월별, 분기별, 연도별 등 일정 간격마다 유사한 형태의 변동이 반복된다. 예를 들어, 여름철 음료 매출 증가, 연말 소비 지출 증가, 특정 계절의 농산물 가격 변동 등이 계절성 패턴에 해당한다. 계절성은 주기성이 뚜렷하기 때문에 차분(differencing)이나 계절 조정기법을 통해 비교적 쉽게 제거하거나 분석에 반영할 수 있다.</p>
+<p><strong>불규칙성(irregular) <span class="math inline">\(I_{t}\)</span></strong></p>
+<p>불규칙성은 시계열 데이터에서 경향, 순환, 계절성과 같은 규칙적인 패턴이 전혀 존재하지 않는 변동 성분을 의미한다. 이는 예측할 수 없는 우연한 요인이나 측정상의 오차 등에 의해 발생하며, 통계 모형에서 오차항에 해당한다. 불규칙 성분은 일반적으로 평균이 0이고 분산이 일정하며, 서로 독립적인 백색잡음(white noise)으로 가정된다. 이러한 성분은 데이터 분석에서 제거하거나 모형화하기 어렵기 때문에, 주로 다른 패턴 성분을 추출한 후 남은 잔차로 해석된다.</p>
+</section>
+<section id="시계열데이터-분석방법" class="level4">
+<h4 class="anchored" data-anchor-id="시계열데이터-분석방법"><span style="color:blue">3. 시계열데이터 분석방법</span></h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/시계열분석_방법.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>회귀분석(계량경제) 방법, BOX-JENKINS 방법, 지수 평활법, 시계열 분해 방법이 있다. 회귀분석 방법과 BOX-JENKINS 방법(ARMA)은 수학적 이론 모형에 의존하고 시간에 따라 변동이 많은(빠른) 시계열 자료에 적용된다. 지수 평활법이나 시계열 분해 방법은 다소 직관적인 방법이며 시간에 따른 변동이 느린 데이터를 분석하는데 사용된다.</p>
+<p>과거의 데이터 패턴을 활용하여 미래 값을 예측, 설명변수가 있는 시계열 모형은 econometric 계량경제모형</p>
+<p>frequency domain : Fourier 분석에 기초, spectrum density function</p>
+<p>time domain : 자기상관함수 이용, 관측값들의 시간적 변화 탐색</p>
+<p><strong>평활법 : 과거 값의 평균으로 미래 값을 예측하는 방법</strong></p>
+<ul>
+<li><p>이동 평균법(moving average): 최근 데이터의 평균을 (혹은 중앙치) 예측치로 사용하는 방법이다. 각 과거치에는 동일한 가중치가 주어지면 과거 패턴 인식이 주목적이다.</p></li>
+<li><p>지수 평활법(exponential smoothing): 현재 가까운 시점에 가장 많은 가중치 주고 멀어질수록 낮은 가중치를 주는 방법이다. 경향이나 계절성 존재여부에 따라 단순지수, 이중지수, 삼중지수, 계절지수 평활법 등이 있다.</p></li>
+</ul>
+<p><strong>ARMA 모형</strong></p>
+<p><span class="math inline">\(Y_{t} = \mu + \alpha_{1}Y_{t - 1} + ... + \alpha_{p}Y_{t - p} + \beta_{1}e_{t - 1} + ... + \beta_{q}e_{t - q} + e_{t - 1}\)</span></p>
+<p>시계열 데이터 <span class="math inline">\(\{ Y_{t};t = 1,2,...,T\}\)</span>에 대한 모형화를 통하여 미래 값을 예측하는 방법이다. 설명변수가 종속변수 자신의 과거 값인 AR(Auto Regressive) 모형 , 설명변수가 오차항의 과거 값인 MA(Moving Average) 모형, 그리고 AR과 MA 모형의 결합인 ARMA 모형이 있다.</p>
+<p><strong>계량경제 Econometrics Model</strong></p>
+<p><span class="math inline">\(Y_{t} = \mu + \alpha_{1}X_{1t} + \alpha_{2}X_{2t} + ... + \alpha_{p}X_{pt} + e_{t - 1}\)</span></p>
+<p>시계열 데이터 <span class="math inline">\(\{ Y_{t};t = 1,2,...,T\}\)</span> 종속변수로 하고 p개의 (X1, X2, ..., Xp)를 설명하는 회귀분석 모형, 유의한 (영향을 미치는) 설명변수를 찾을 수 있으나 예측에 어려움이 있다. 왜냐하면 설명변수의 예측치도 있어야 하기 때문이다. 그러므로 설명변수의 경우에는 <span class="math inline">\(t\)</span>시점 대신 이전 시점<span class="math inline">\(t - 1,t - 2,...\)</span>을 사용한다.</p>
+<p><strong>성분 관련 분석</strong></p>
+<ul>
+<li><p>추세분석 : 추세(일차식, 이차식, 로그형태 등) 성분을 파악한다.</p></li>
+<li><p>변동 분해 : 3개 주요 성분 (주기, 계절성, 경향)을 분해하는 방법</p></li>
+<li><p>X-11 방법 : 정부통계에서 가장 많이 쓰이는 계절 조정 방법</p></li>
+</ul>
+</section>
+<section id="최적-모형-선택-통계량" class="level4">
+<h4 class="anchored" data-anchor-id="최적-모형-선택-통계량"><span style="color:blue">6. 최적 모형 선택 통계량</span></h4>
+<ul>
+<li><p>예측오차: <span class="math inline">\(e_{t} = Y_{t} - {\widehat{Y}}_{t}\)</span></p></li>
+<li><p>Mean Absolute Error (MAE) 평균절대오차: <span class="math inline">\(MAE = \frac{1}{T}\overset{T}{\sum_{i = 1}}|e_{t}|\)</span></p></li>
+<li><p>Mean Absolute Percentage Error (MAPE) 평균절대오차비율: <span class="math inline">\(MAPE = \frac{1}{T}\overset{T}{\sum_{i = 1}}|\frac{e_{t}}{Y_{t}}| \times 100(\%)\)</span></p></li>
+<li><p>Mean Squared Error (MSE) 평균오차자승합: <span class="math inline">\(MSE = \frac{1}{T}\overset{T}{\sum_{i = 1}}e_{t}^{2}\)</span></p></li>
+<li><p>Root-Mean Squared Error (MSE) 제곱근MSE: <span class="math inline">\(RMSE = \sqrt{\frac{1}{T}\overset{T}{\sum_{i = 1}}e_{t}^{2}}\)</span></p></li>
+</ul>
+</section>
+</section>
+<section id="chapter-1.-시계열-모형" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-시계열-모형"><span style="color:green">chapter 1. 시계열 모형</span></h3>
+<section id="시계열-모형-개념" class="level4">
+<h4 class="anchored" data-anchor-id="시계열-모형-개념"><span style="color:blue">1. 시계열 모형 개념</span></h4>
+<p><strong>정의</strong></p>
+<p>시계열 분석에서 중요한 출발점은 관측 자료를 설명할 수 있는 적절한 확률모형 또는 모형 계열을 선택하는 것이다. 미래 관측값은 본질적으로 불확실하므로, 각 시점의 관측값 <span class="math inline">\(\{ x_{t}\}\)</span>는 확률변수 <span class="math inline">\(\{ X_{t}\}\)</span>의 실현값이라고 가정한다.</p>
+<p>시계열 모형이란, 관측된 자료 <span class="math inline">\(\{ x_{t}\}\)</span>가 실현값이라고 가정되는 확률변수열 <span class="math inline">\(\{ X_{t}\}\)</span>의 결합분포를 구체적으로 명세한 것이다. 경우에 따라서는 모든 결합분포를 명시하는 대신 평균과 공분산만을 제시하는 경우도 있다.</p>
+<p>이론적으로 완전한 확률 시계열 모형은 <span class="math inline">\(\{ X_{1},X_{2},\ldots\}\)</span>의 모든 결합분포를 명시한다. 예를 들어,</p>
+<p><span class="math display">\[P(X_{1} \leq x_{1},\ldots,X_{n} \leq x_{n}), - \infty &lt; x_{1},\ldots,x_{n} &lt; \infty,n = 1,2,\ldots\]</span></p>
+<p>와 같이 모든 시점 n에 대한 확률을 규정해야 한다. 그러나 실제 분석에서 이렇게 완전한 명세는 매우 드물다. 대부분의 시계열은 너무 많은 모수를 포함하기 때문에, 분석 가능성과 효율성을 위해 1차 및 2차 모멘트(평균과 공분산)와 같이 보다 제한적인 정보만을 사용하는 경우가 많다.</p>
+<p>이러한 평균과 공분산 같은 2차 특성만으로 시계열을 묘사하는 방식을 2차 특성 접근이라 한다. 특히 결합분포가 다변량 정규분포인 경우, 이러한 2차 특성만으로도 결합분포 전체를 완전히 결정할 수 있다. 비록 2차 특성 접근법은 정보의 일부를 포기하는 결과를 낳지만, 최소평균제곱오차 예측이론과 결합하면 실용적이고 효율적인 시계열 분석이 가능하다.</p>
+<p>실제 분석에서는 하나의 시계열 자료만 관측 가능한 경우가 많다. 예를 들어, 1900~1996년 동안 국내 연간 강수량 자료는 오직 한 가지 실현값일 뿐이며, 이는 가능한 많은 경우 중 하나일 뿐이다. 이러한 상황에서 우리는 가용한 자료를 설명하고 예측할 수 있는 간단한 시계열 모형을 설정하고, 더 나아가 다양한 응용 목적에 맞는 모형군을 확장해 나가게 된다.</p>
+<p><strong>시계열 모형화의 일반적 접근 방법</strong></p>
+<p>시계열 분석을 시작할 때는 먼저 데이터를 시각화하여 주요 특징을 파악한다. 이를 통해 추세나 계절성이 있는지, 뚜렷한 구조 변화가 있는지, 혹은 이상치가 존재하는지를 확인한다.</p>
+<p>다음 단계는 추세와 계절 성분을 제거하여 정상성(stationarity)을 가진 잔차를 만드는 것이다. 데이터의 변동 폭이 시계열 수준과 비례하는 경우, 로그 변환(log transformation)과 같이 분산 안정화를 위한 사전 변환을 적용할 수 있다. 예를 들어, 모든 값이 양수이도록 상수를 더한 뒤 로그를 취하면 변동성이 일정한 데이터로 변환할 수 있다. 추세와 계절성 제거 방법으로는 모형을 적합하여 해당 성분을 추정 후 제거하거나, 차분(differencing)을 이용해 <span class="math inline">\(Y_{t} = X_{t} - X_{t - d}\)</span>와 같이 원 시계열을 일정 시차 d만큼 차감하는 방식이 있다. 목표는 정상성을 만족하는 잔차를 만드는 것이다.</p>
+<p>정상화된 잔차에 대해서는 표본 자기상관함수 등 여러 통계량을 활용하여 적절한 모형을 선택하고 적합한다. 이후에는 잔차를 예측하고, 앞서 적용했던 변환을 역변환하여 원래 시계열의 예측값을 얻는다.</p>
+<p>또 다른 접근 방법으로는 시계열을 주파수 영역에서 해석하는 푸리에 변환을 이용하여, 서로 다른 주파수를 가진 사인파와 코사인파 성분으로 표현하는 방식이 있다. 이 방법은 신호 처리나 구조물 공학과 같은 공학적 응용에서 특히 중요하며, 구조물의 공진 주파수가 외부 하중의 주파수와 일치하지 않도록 설계하는 데 활용될 수 있다.</p>
+</section>
+<section id="시계열-기본-모형" class="level4">
+<h4 class="anchored" data-anchor-id="시계열-기본-모형"><span style="color:blue">2. 시계열 기본 모형</span></h4>
+<section id="평균-0인-모형" class="level5">
+<h5 class="anchored" data-anchor-id="평균-0인-모형">(1) 평균 0인 모형</h5>
+<p>시계열 모형 중 가장 단순한 형태는 추세나 계절 성분이 전혀 없고, 관측값들이 서로 독립이며 동일한 분포를 따르는 경우이다. 특히 평균이 0인 확률변수열 <span class="math inline">\(\{ X_{1},X_{2},\ldots\}\)</span>로 구성된 경우로 iid 잡음 모형이라고도 한다. 각 확률변수는 동일한 누적분포함수 <span class="math inline">\(F( \cdot )\)</span>를 가지며, 결합분포는 다음과 같이 곱으로 분리된다.</p>
+<p><span class="math display">\[P(X_{1} \leq x_{1},\ldots,X_{n} \leq x_{n}) = P(X_{1} \leq x_{1})\cdots P(X_{n} \leq x_{n}) = F(x_{1})\cdots F(x_{n})\]</span></p>
+<p>이는 시계열의 모든 시점이 서로 독립임을 의미한다. 따라서 어떤 시점의 값이 주어져도 다른 시점의 값을 예측하는 데 전혀 도움이 되지 않는다. 수식으로 표현하면 다음과 같다.</p>
+<p><span class="math display">\[P(X_{n + h} \leq x \mid X_{1} = x_{1},\ldots,X_{n} = x_{n}) = P(X_{n + h} \leq x)\]</span></p>
+<p>예측의 관점에서, 관측값 <span class="math inline">\((X_{1},\ldots,X_{n})\)</span>을 바탕으로 미래값 <span class="math inline">\(X_{n + h}\)</span>를 최소평균제곱오차(MSE) 기준으로 예측하는 함수 f를 찾을 경우, 이 모형에서는 항상 0이 최적 예측값이 된다. 즉, iid 잡음 모형은 예측에는 아무런 실질적 정보를 제공하지 않는다.</p>
+<p>그럼에도 불구하고 iid 잡음 모형은 시계열 분석에서 중요한 의미를 가진다. 이는 보다 복잡한 시계열 모형을 구축할 때 기초 구성요소로 사용될 수 있으며, 실제 시계열이 iid 잡음으로부터 얼마나 벗어나는지를 측정하는 기준이 되기 때문이다.</p>
+<p><strong>Binary Process</strong></p>
+<p>iid 잡음 모형의 한 예로, 각 시점 <span class="math inline">\(t = 1,2,\ldots\)</span>에서 확률 <span class="math inline">\(p\)</span>로 <span class="math inline">\(X_{t} = 1\)</span>, 확률 <span class="math inline">\((1 - p)\)</span>로 <span class="math inline">\(X_{t} = 0\)</span>이 나오는 확률변수열 <span class="math inline">\(\{ X_{t}\}\)</span>를 생각할 수 있다. 동전을 던져 앞면이 나오면 +1, 뒷면이 나오면 0을 부여하는 실험이 여기에 해당한다.</p>
+<p><strong>Random Walk</strong></p>
+<p>랜덤 워크는 iid 잡음을 누적합하여 생성되는 시계열이다. 초기값을 <span class="math inline">\(S_{0} = 0\)</span>으로 두고, <span class="math inline">\(S_{t} = X_{1} + X_{2} + \cdots + X_{t},t = 1,2,\ldots\)</span>로 정의하면, <span class="math inline">\(\{ X_{t}\}\)</span>가 평균 0인 iid 잡음일 때 <span class="math inline">\(\{ S_{t}\}\)</span>는 평균이 0인 랜덤 워크가 된다.</p>
+</section>
+<section id="추세와-계절성을-포함한-모형" class="level5">
+<h5 class="anchored" data-anchor-id="추세와-계절성을-포함한-모형">(2) 추세와 계절성을 포함한 모형</h5>
+<p>많은 시계열 자료에는 뚜렷한 추세가 존재한다. 예를 들어, 호주 월별 탑승객수 자료에는 장기적인 증가 경향이 분명히 나타난다. 이러한 경우, 평균이 0인 모형은 적합하지 않으며, 추세를 포함한 모형이 필요하다.</p>
+<p><span class="math inline">\(X_{t} = m_{t} + Y_{t}\)</span>, 여기서 <span class="math inline">\(m_{t}\)</span>는 시간이 지남에 따라 서서히 변하는 함수로 추세 성분이라 하며, <span class="math inline">\(Y_{t}\)</span>는 평균이 0인 확률 과정이다. 추세 성분를 추정하는 대표적인 방법 중 하나가 최소제곱법이다. 최소제곱법에서는 <span class="math inline">\(m_{t}\)</span>를 매개변수화된 함수로 가정하고, 관측자료 <span class="math inline">\(\{ x_{1},\ldots,x_{n}\}\)</span>에 대해 <span class="math inline">\(\overset{n}{\sum_{t = 1}}(x_{t} - m_{t})^{2}\)</span>을 최소화하도록 모수 값을 추정한다. 예를 들어, 2차 다항식 추세를 가정하면 <span class="math inline">\(m_{t} = a_{0} + a_{1}t + a_{2}t^{2}\)</span>와 같이 표현할 수 있으며, <span class="math inline">\(a_{0},a_{1},a_{2}\)</span>는 최소제곱법을 통해 추정된다.</p>
+<p>이러한 추세 모형은 장기 변화 패턴을 파악하는 데 유용하며, 필요할 경우 계절성이나 순환 성분을 추가로 포함시켜 더 복잡한 시계열 모형을 구성할 수 있다.</p>
+<p><strong>Harmonic Regression(조화회귀)</strong></p>
+<p>많은 시계열 데이터는 날씨와 같이 계절적으로 변하는 요인의 영향을 받는다. 이러한 효과는 주기가 고정되어 알려진 주기적 성분으로 모형화할 수 있다. 예를 들어, <span dir="rtl">’</span>교통사고 사망자 수<span dir="rtl">’</span> 자료는 매년 7월에 최고점, 2월에 최저점을 보이며, 주기 12의 계절 요인을 강하게 시사한다.</p>
+<p>계절 요인은 추세가 없고 잡음은 허용하는 단순한 모형으로 다음과 같이 표현할 수 있다. <span class="math inline">\(X_{t} = s_{t} + Y_{t}\)</span>, 여기서 <span class="math inline">\(s_{t}\)</span>는 주기 <span class="math inline">\(d\)</span>를 가지는 주기 함수이며(<span class="math inline">\(s_{t - d} = s_{t}\)</span>), 편리한 선택으로 사인과 코사인 파형의 합인 조화(harmonics)를 사용할 수 있다. 즉,</p>
+<p><span class="math inline">\(s_{t} = a_{0} + \overset{k}{\sum_{j = 1}}\left\lbrack a_{j}\cos(\lambda_{j}t) + b_{j}\sin(\lambda_{j}t) \right\rbrack\)</span>로 표현되며, <span class="math inline">\(a_{0},a_{1},\ldots,a_{k},b_{1},\ldots,b_{k}\)</span>는 미지의 모수이고, <span class="math inline">\(\lambda_{1},\ldots,\lambda_{k}\)</span>는 고정된 주파수로 <span class="math inline">\(2\pi/d\)</span>의 정수배에 해당한다.</p>
+<p>이 모형은 푸리에 급수와 동일한 구조를 가지며, <span class="math inline">\(k\)</span>는 사용되는 조화의 개수를 의미한다. 예를 들어, 주기 <span class="math inline">\(d = 365\)</span>의 일별 데이터에서 기본 파형 하나만 적합하려면 <span class="math inline">\(k = 1,f_{1} = 1\)</span>을 선택한다. 반면, 주기 365를 1, 2, 3, 4로 나눈 파형의 조합을 사용하려면 <span class="math inline">\(k = 4\)</span>로 설정하고 각 <span class="math inline">\(f_{j} = j\)</span>로 지정한다. 조화회귀는 계절성이 뚜렷하고 주기가 일정한 시계열에서 매우 효과적이며, 특히 추세 없이 주기 성분과 잡음만 있는 경우 계절 변동을 설명하는 데 유용하다.</p>
+<p><strong>정상성 모형 stationary model</strong></p>
+<p>시계열 <span class="math inline">\(\{ X_{t},t = 0, \pm 1,\ldots\}\)</span>가 정상적(stationary)이라고 말하려면, 시계열의 통계적 특성이 시간에 따라 변하지 않아야 한다. 보다 구체적으로, 평균과 분산이 일정하고, 공분산이 두 시점의 절대적 시간 위치가 아니라 시차(lag)에만 의존해야 한다.</p>
+<p>【정의】 <span class="math inline">\(E(X_{t}^{2}) &lt; \infty\)</span>인 시계열 <span class="math inline">\(\{ X_{t}\}\)</span>에 대해, 평균 함수는 <span class="math inline">\(\mu_{X}(t) = E(X_{t})\)</span>, 공분산 함수는 <span class="math inline">\(\gamma_{X}(r,s) = Cov(X_{r},X_{s}) = E\lbrack(X_{r} - \mu_{X}(r))(X_{s} - \mu_{X}(s))\rbrack\)</span></p>
+<p>로 정의된다.</p>
+<p><strong>【정의】</strong> <span class="math inline">\(E(X_{t}^{2}) &lt; \infty\)</span>인 시계열 <span class="math inline">\(\{ X_{t}\}\)</span>가 약한 정상성을 가지려면</p>
+<p>1. 평균 <span class="math inline">\(\mu_{X}(t)\)</span>가 시간 t에 무관해야 하며,</p>
+<p>2. 공분산 <span class="math inline">\(\gamma_{X}(t + h,t)\)</span>가 t에 무관하고 시차 h에만 의존해야 한다.</p>
+<p>엄밀한 정상성(strict stationarity)은 모든 h와 <span class="math inline">\(n &gt; 0\)</span>에 대해, <span class="math inline">\((X_{1},\ldots,X_{n}),(X_{1 + h},\ldots,X_{n + h})\)</span>가 동일한 결합분포를 가지는 경우를 말한다.</p>
+<p>약한 정상성 조건 (2)에 따라, 정상 시계열의 공분산 함수는 시차 h에 대한 함수로 정의된다. <span class="math inline">\(\gamma_{X}(h): = \gamma_{X}(h,0) = \gamma_{X}(t + h,t)\)</span></p>
+<p><strong>【자기상관함수 정의】</strong> 정상 시계열 <span class="math inline">\(\{ X_{t}\}\)</span>의 <span class="math inline">\(lagh\)</span>에서의 자기공분산함수(Autocovariance Function, ACF)는 <span class="math inline">\(\gamma_{X}(h) = Cov(X_{t + h},X_{t})\)</span>로 정의된다. 이때 <span class="math inline">\(lagh\)</span>에서의 자기상관함수는 <span class="math inline">\(\rho_{X}(h) = \frac{\gamma_{X}(h)}{\gamma_{X}(0)} = Cor(X_{t + h},X_{t})\)</span>로 정의되며, 이는 시계열이 시간 간격 <span class="math inline">\(h\)</span>만큼 떨어진 두 시점에서 얼마나 선형적으로 관련되어 있는지를 나타낸다.</p>
+<p><strong>【예제 iid 잡음】</strong> <span class="math inline">\(\{ X_{t}\}\)</span>가 평균 0, 분산 <span class="math inline">\(\sigma^{2}\)</span>를 가지는 독립 동일분포(iid) 확률변수열이라고 하자. (1) <span class="math inline">\(E(X_{t}) = 0\)</span> (2) <span class="math inline">\(\gamma_{X}(t + h,t) = \{\begin{matrix}
+\sigma^{2}, &amp; \text{if}h = 0 \\
+0, &amp; \text{if}h \neq 0
+\end{matrix}\)</span> 모두 t에 의존하지 않으므로 정상성 모델이다. 같은 이유로 백색잡음도 정상성 모델이다.</p>
+<p>【예제 랜덤 워크】 <span class="math inline">\(\{ S_{t}\}\)</span>가 iid 잡음 <span class="math inline">\(\{ X_{t}\}\)</span>를 누적합하여 만든 랜덤워크라 하면 공분산 <span class="math inline">\(\gamma_{S}(t + h,t) = Cov(S_{t + h},S_{t}) = t\sigma^{2}\)</span>는 시차 t에 의존하므로 비정상성 모델이다.</p>
+</section>
+</section>
+</section>
+<section id="chapter-3.-평활법" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-평활법"><span style="color:green">chapter 3. 평활법</span></h3>
+<section id="이동평균법" class="level4">
+<h4 class="anchored" data-anchor-id="이동평균법"><span style="color:blue">1. 이동평균법</span></h4>
+<p>계열 데이터는 주기성이나 불규칙성을 포함하는 경우가 많으므로, 이러한 단기 변동을 완화하고 전반적인 추세를 파악하기 위해 과거 관측값을 평균하는 방법이 사용된다. 이와 같이 과거의 일정 개수 관측값을 평균하여 예측값을 구하는 방법을 이동평균법(Moving Average)이라 한다.</p>
+<p>이동평균법은 예측 시점 이전의 일정 기간(예: 최근 3개월, 5일 등)에 해당하는 과거 자료의 평균을 사용하여 다음 시점의 값을 추정한다. 모든 과거치에 동일한 가중치를 부여한다는 점에서, 과거치에 서로 다른 가중치를 부여하는 지수평활법(Exponential Smoothing)과 구별된다.</p>
+<p>이 방법은 단기 변동을 제거하고 장기 경향을 파악하는 데 효과적이며, 특히 계절 변동이나 잡음을 제거한 추세 분석과 단기 예측에 자주 활용된다.</p>
+<p><strong>이동평균(Moving Average, MA) 계산과 예측</strong></p>
+<p>이동평균법은 과거 m개의 관측값의 평균을 이용하여 다음 시점의 값을 예측하는 방법이다. 시점 t에서의 단순 이동평균(Simple Moving Average)은 다음과 같이 계산된다.</p>
+<p><span class="math display">\[{\widehat{X}}_{t + 1} = \frac{X_{t} + X_{t - 1} + \cdots + X_{t - m + 1}}{m}\]</span></p>
+<p>이동평균에는 일반 이동평균과 중심 이동평균(Centered Moving Average, CMA)가 있다.</p>
+<p>일반 이동평균은 예측 시점 직전의 m개 자료를 단순 평균하여 사용한다.</p>
+<p>중심 이동평균은 m개의 자료 가운데 중앙 시점을 대표값으로 사용하며, 특히 계절성을 제거하는 과정에서 유용하다.</p>
+<p>예를 들어, m = 3인 경우,</p>
+<ul>
+<li><p>일반 이동평균: <span class="math inline">\(MA_{t} = \frac{X_{t} + X_{t - 1} + X_{t - 2}}{3}\)</span></p>
+<p>중심 이동평균: 중앙시점이 t이면 <span class="math inline">\(CMA_{t} = \frac{X_{t - 1} + X_{t} + X_{t + 1}}{3}\)</span>이 된다.</p></li>
+</ul>
+<p>중심 이동평균은 시계열을 부드럽게 하면서도 시점의 중심에 해당하는 값을 대표값으로 하므로, 특히 계절 조정 과정에서 계절성을 제거하는 데 자주 사용된다.</p>
+<p><strong>이동평균 주기 m의 결정</strong></p>
+<p>이동평균법에서 주기 m은 데이터의 특성과 분석 목적에 따라 설정한다. 일반적으로 m은 데이터 주기의 배수를 활용하여 결정하며, 이는 변동의 주요 주기를 부드럽게 제거하고 장기 경향을 파악하기 위함이다. 예를 들어,</p>
+<ul>
+<li><p>주가 데이터(일별): m = 5 (1주), m = 20 (1개월), m = 60 (분기), m = 120 (반년)</p></li>
+<li><p>월별 데이터: m = 12 (1년), m = 24 (2년), m = 36 (3년)</p></li>
+</ul>
+<p><strong>이동평균법의 특징</strong></p>
+<p>이동평균법은 시계열 데이터에서 계절성과 불규칙 변동을 제거함으로써 전반적인 추세를 직관적으로 파악할 수 있는 장점을 가진다. 주기 m의 길이에 따라 분석 초점이 달라지는데, m이 길면 장기 패턴을, m이 짧으면 단기 패턴을 진단하는 데 유용하다. 특히 주기가 길어질수록 시계열에서 주기적 변동이 사라지고 직선에 가까운 장기 추세선이 나타난다.</p>
+<p>이 방법은 각 시점에서 자신을 포함한 m개의 관측치를 동일한 가중치로 평균하여, 시계열 자료 <span class="math inline">\(\{ Y_{t}\}\)</span>의 전반적인 패턴을 인식한다. 이러한 단순한 계산 방식 덕분에 이해와 구현이 용이하며, 시각적으로도 직관적인 정보를 제공한다.</p>
+<p><strong>이동평균법의 한계와 문제점</strong></p>
+<p>이동평균법은 계산이 단순하고 직관적인 장점이 있지만, 몇 가지 한계가 존재한다. 첫째, 과거 관측치에 동일한 가중치를 부여한다는 점이다. 이는 시간적으로 가까운 자료와 먼 과거 자료를 동일하게 취급하므로, 최근 정보의 중요성이 반영되지 못하고 경우에 따라 추세 판단이 왜곡될 가능성이 있다.</p>
+<p>둘째, 이동평균법은 구조적으로 차기 1기만 예측이 가능하다. 따라서 장기 예측보다는 과거 자료를 부드럽게 하여 전반적인 추세를 파악하거나 단기 패턴을 분석하는 데 적합하다. 이러한 이유로, 이동평균법은 독립적인 예측 도구라기보다 시계열 모형화 이전의 탐색적 분석이나 데이터 전처리 단계에서 주로 활용된다.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#예제 데이터 가져오기</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'date'</span>]<span class="op">=</span>df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">'%Y-%b'</span>).date(), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#이동평균 주기=12, 일년</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'rolling_avg'</span>] <span class="op">=</span> df[<span class="st">'passengers'</span>].rolling(window<span class="op">=</span><span class="dv">12</span>).mean()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.plot(df[<span class="st">'date'</span>],df[<span class="st">'passengers'</span>], <span class="st">'b'</span>)  </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.plot(df[<span class="st">'date'</span>],df[<span class="st">'rolling_avg'</span>], <span class="st">'r'</span>) </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_이동평균법.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="지수-평활법-exponential-smoothing" class="level4">
+<h4 class="anchored" data-anchor-id="지수-평활법-exponential-smoothing"><span style="color:blue">2. 지수 평활법 exponential smoothing</span></h4>
+<p>이동평균법은 모든 관측치에 동일한 가중치를 부여하므로, 최근 자료와 오래된 자료가 동일하게 반영된다는 한계가 있다. 이로 인해 최신 정보의 중요성이 충분히 반영되지 못하고, 과거의 추세 패턴이 과도하게 포함되는 경향이 있다.</p>
+<p>이러한 단점을 보완한 방법이 지수평활법이다. 지수평활법은 최근 관측치에 더 높은 가중치를 부여하고, 시점이 멀어질수록 가중치를 지수적으로 감소시키는 방식으로 과거 자료를 반영한다. 가중치는 일반적으로 평활 상수(smoothing constant) <span class="math inline">\(\alpha(0 &lt; \alpha \leq 1)\)</span>로 조절하며, <span class="math inline">\(\alpha\)</span>값이 클수록 최근 자료의 비중이 커지고, 작을수록 장기 패턴을 더 많이 반영하게 된다.</p>
+<p>이 방법은 단순한 계산 구조에도 불구하고 예측 능력이 뛰어나며, 단기 미래 예측에 널리 활용된다. 특히 시계열 데이터에서 경향이 크지 않은 경우, 지수평활법은 과거 패턴을 부드럽게 반영하면서도 변화에 신속하게 대응할 수 있다.</p>
+<p>1. 단순 지수평활법(Simple Exponential Smoothing): 추세나 계절성이 없는 시계열에 사용되는 가장 기본적인 형태이다. 미래 예측값은 이전 예측값과 새로운 관측값의 가중 평균으로 계산되며, 평활 상수 <span class="math inline">\(\alpha\)</span>로 최근 자료의 반영 비율을 조절한다.</p>
+<p>2. 이중 지수평활법(Double Exponential Smoothing, Holt<span dir="rtl">’</span>s Method): 시계열에 추세가 존재하는 경우 사용한다. 레벨(level)과 추세(trend)를 각각 추정하여, 단순 지수평활법에 추세 항을 추가한 형태이다. 이를 통해 변화하는 추세를 반영한 예측이 가능하다.</p>
+<p>3. 삼중 지수평활법(Triple Exponential Smoothing, Holt–Winters Method): 시계열에 추세와 계절성이 모두 존재하는 경우 사용한다. 레벨, 추세, 계절성(seasonal component)을 동시에 추정하며, 계절성이 고정폭(additive)인지 비례형(multiplicative)인지에 따라 두 가지 형태가 있다.</p>
+<p>4. 적응형 지수평활법(Adaptive Exponential Smoothing): 데이터의 변화 속도에 따라 평활 상수 <span class="math inline">\(\alpha\)</span>를 자동으로 조정하는 방법이다. 급격한 변동 시에는 <span class="math inline">\(\alpha\)</span>를 크게, 안정적인 시기에는 작게 설정하여 예측 정확도를 높인다.</p>
+<section id="단순지수평활법-simple-es" class="level5">
+<h5 class="anchored" data-anchor-id="단순지수평활법-simple-es">(1) 단순지수평활법 Simple ES</h5>
+<p>단순 지수평활법은 주기(순환)만 존재하고 추세나 계절성이 없는 시계열 자료에 적합한 예측 방법이다. 이 방법은 과거의 모든 관측값을 활용하되, 최근 관측치에 더 큰 가중치를 부여하고 시점이 멀어질수록 가중치를 지수적으로 감소시키는 특징을 가진다. 이를 통해 최근 데이터의 변화가 예측에 빠르게 반영되면서도 과거 자료가 완전히 무시되지 않는다.</p>
+<p><strong>모형 구조</strong></p>
+<p>단순 지수평활법의 평활값(예측값)은 다음과 같이 정의된다.</p>
+<p><span class="math inline">\(\widehat{Y}t = \alpha Y_{t} + (1 - \alpha)\widehat{Y}t - 1\)</span>. 여기서 <span class="math inline">\(Y_{t}\)</span>는 시점 t에서의 실제 관측값, <span class="math inline">\({\widehat{Y}}_{t}\)</span>는 시점 t에서의 평활값, 그리고 <span class="math inline">\(\alpha\)</span>는 평활 상수(smoothing constant)이다(<span class="math inline">\(0 &lt; \alpha \leq 1\)</span>).</p>
+<p>이 식은 최근 관측값 <span class="math inline">\(Y_{t}\)</span>와 직전 평활값 <span class="math inline">\({\widehat{Y}}_{t - 1}\)</span>의 가중 평균이며, 과거 관측값에 대한 가중치는 <span class="math inline">\((1 - \alpha)^{k}\)</span>로 지수적으로 감소한다.</p>
+<p><strong>가중치 해석</strong></p>
+<p>가중치 <span class="math inline">\(\alpha\)</span>가 클수록 최근 자료의 비중이 커지고, 과거 자료의 영향은 급격히 줄어든다. 반대로 <span class="math inline">\(\alpha\)</span>가 작으면 과거 자료의 영향이 오래 지속되며, 변화에 대한 반응 속도는 느려진다. Brown은 경험적으로 <span class="math inline">\(\alpha\)</span>를 0.05~0.3 범위에서 선택할 것을 권장하였다.</p>
+<p>다음 그림은 레벨이 t=40에서 점프하도록 만든 예시 데이터로 α=0.7은 변화에 빠르게 반응하고 α=0.2는 느리게 따라간다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/단순지수평활법_예제.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>주기와 평활 상수의 관계</strong></p>
+<p>Montgomery &amp; Johnson(1976)은 데이터 주기 <span class="math inline">\(P\)</span>와 평활 상수 <span class="math inline">\(\alpha\)</span>의 관계를 다음과 같이 제안하였다. <span class="math inline">\(\alpha \approx 1 - {0.8}^{(1/P)}\)</span>. 예를 들어, 주기가 12개월인 월별 데이터의 경우 <span class="math inline">\(\alpha \approx 0.18\)</span> 정도가 적절하다.</p>
+<p><strong>초기값 설정</strong></p>
+<p>초기 평활값 <span class="math inline">\({\widehat{Y}}_{1}\)</span>은 예측의 안정성을 위해 중요하다. 일반적으로 첫 번째 관측값 <span class="math inline">\({\widehat{Y}}_{1}\)</span> 또는 초기 몇 개 자료의 평균을 사용하며, 경우에 따라 최소제곱법을 통해 추정하기도 한다.</p>
+<p><strong>예측 범위</strong></p>
+<p>단순 지수평활법은 구조적으로 1기 예측(one-step-ahead)에 최적화되어 있다. 장기 예측의 경우, 2기 이후의 예측치는 모두 동일하게 <span class="math inline">\({\widehat{Y}}_{t + 1}\)</span>로 수렴한다. 따라서 장기 예측에는 적합하지 않고, 단기 예측이나 단기 추세 분석에 주로 활용된다.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 예제 데이터 가져오기</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.api <span class="im">import</span> SimpleExpSmoothing</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># flights 데이터 로드</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'date'</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">'%Y-%b'</span>), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>df.set_index(<span class="st">'date'</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 단순 지수평활 모델 생성 및 적합</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SimpleExpSmoothing(df[<span class="st">'passengers'</span>], initialization_method<span class="op">=</span><span class="st">"heuristic"</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>fit_model <span class="op">=</span> model.fit(optimized<span class="op">=</span><span class="va">True</span>)  <span class="co"># alpha 자동 추정</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Optimal alpha:"</span>, fit_model.params[<span class="st">'smoothing_level'</span>])</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SSE:"</span>, fit_model.sse)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 12개월 예측</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>forecast_steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>forecast <span class="op">=</span> fit_model.forecast(steps<span class="op">=</span>forecast_steps)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">5</span>))</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>plt.plot(df.index, df[<span class="st">'passengers'</span>], label<span class="op">=</span><span class="st">'Observed'</span>, color<span class="op">=</span><span class="st">'black'</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>plt.plot(fit_model.fittedvalues.index, fit_model.fittedvalues, label<span class="op">=</span><span class="st">'Fitted (SES)'</span>, color<span class="op">=</span><span class="st">'blue'</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>plt.plot(pd.date_range(df.index[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> pd.DateOffset(months<span class="op">=</span><span class="dv">1</span>), periods<span class="op">=</span>forecast_steps, freq<span class="op">=</span><span class="st">'M'</span>),</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>         forecast, label<span class="op">=</span><span class="st">'Forecast'</span>, color<span class="op">=</span><span class="st">'red'</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Simple Exponential Smoothing - Observed vs Fitted &amp; Forecast"</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Date"</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Passengers"</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Optimal alpha: 0.9999999850988388</p>
+<p>SSE: 162545.8192551743</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/단순지수평활법_예제02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><span class="math inline">\(\alpha\)</span>가 1에 가까운 이유</p>
+<p>데이터에 강한 추세나 계절성이 있는 경우</p>
+<ul>
+<li><p>SES는 추세나 계절성을 모형화하지 못한다.</p></li>
+<li><p>그러다 보니 추세나 계절성 변화에 맞추려고 <span class="math inline">\(\alpha\)</span>를 크게 잡아서 최근 데이터만 따라가는 방식으로 SSE를 최소화하려고 한다.</p></li>
+</ul>
+<p>데이터 변동이 커서 과거 평균이 예측력을 떨어뜨리는 경우</p>
+<ul>
+<li><p>예측 오차를 줄이려면 과거치보다 최근값을 더 신뢰하는 게 유리하다고 판단한다.</p></li>
+<li><p>최적화 알고리즘이 <span class="math inline">\(\alpha\)</span>를 1 근처로 끌어올린다.</p></li>
+</ul>
+</section>
+<section id="holts-method-이중지수평활법" class="level5">
+<h5 class="anchored" data-anchor-id="holts-method-이중지수평활법">(2) Holt<span dir="rtl">’</span>s Method 이중지수평활법</h5>
+<p>추세가 있는 시계열 데이터를 다룰 때, 단순 지수평활법을 확장한 방법이다. 수준(Level)과 기울기(Trend)를 동시에 추정하여 예측한다.</p>
+<p>관측값 <span class="math inline">\(Y_{1},Y_{2},\ldots,Y_{n}\)</span>이 주어졌을 때, 수준 <span class="math inline">\({\widehat{a}}_{n}\)</span>, 추세 <span class="math inline">\(\widehat{b}n\)</span>을 추정하고, 미래 <span class="math inline">\(h\)</span>시점 예측치는 다음과 같이 구한다.</p>
+<p><span class="math display">\[\widehat{Yn + h} = {\widehat{a}}_{n} + h{\widehat{b}}_{n},h = 1,2,\ldots\]</span></p>
+<p><strong>재귀식</strong></p>
+<p>수준 갱신: <span class="math inline">\(\widehat{a}n + 1 = \alpha Yn + 1 + (1 - \alpha)({\widehat{a}}_{n} + {\widehat{b}}_{n})\)</span></p>
+<p>추세 갱신: <span class="math inline">\(\widehat{b}n + 1 = \beta(\widehat{a}n + 1 - {\widehat{a}}_{n}) + (1 - \beta){\widehat{b}}_{n}\)</span>, 여기서 <span class="math inline">\(\alpha,\beta \in (0,1)\)</span>는 평활 상수입니다.</p>
+<p>예측값: <span class="math inline">\({\widehat{Y}}_{n + 1} = {\widehat{a}}_{n} + {\widehat{b}}_{n}\)</span></p>
+<p><strong>초기값 설정</strong></p>
+<p>가장 단순 설정법 (Holt, 1957): <span class="math inline">\({\widehat{a}}_{2} = Y_{2}\)</span>, <span class="math inline">\({\widehat{b}}_{2} = Y_{2} - Y_{1}\)</span></p>
+<p>평균 기반 초기치: <span class="math inline">\(\widehat{a}1 = \frac{1}{m}\sum{t = 1}^{m}Y_{t}\)</span>, <span class="math inline">\({\widehat{b}}_{1} = \frac{Y_{m} - Y_{1}}{m - 1}\)</span></p>
+<p>지수평활 기반 사전 추정: R forecast 패키지, Python statsmodels의 ExponentialSmoothing</p>
+<p><strong>특징</strong></p>
+<p><span class="math inline">\(\alpha\)</span>는 수준의 변화에 대한 반응 속도, \beta는 추세 변화에 대한 반응 속도를 조절.</p>
+<p><span class="math inline">\(\alpha\)</span>와 <span class="math inline">\(\beta\)</span> 모두 0~1 사이에서 설정하며, 보통 MSE 최소화를 기준으로 추정</p>
+<p>추세가 있는 시계열에서 단기 예측에 강점.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/홀트지수평활법_예제.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><span class="math inline">\(\alpha = 0.2,\beta = 0.1\)</span> → 추세 반영이 느리고, 예측선이 부드러우며 변동에 둔감하다.</p>
+<p><span class="math inline">\(\alpha = 0.8,\beta = 0.1\)</span> → 최근 데이터에 민감하게 반응하여 빠르게 변화를 따라가지만, 변동이 클 수 있다.</p>
+<p><span class="math inline">\(\alpha = 0.5,\beta = 0.5\)</span> → 수준과 추세 모두를 비교적 빠르게 반영하여 적절한 타협형 곡선을 제공한다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.api <span class="im">import</span> Holt</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># flights 데이터</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"date"</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">"%Y-%b"</span>), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.set_index(<span class="st">"date"</span>).asfreq(<span class="st">"MS"</span>)   <span class="co"># 월초 빈도 지정</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Holt: 수준+추세, 초기치도 추정</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>holt <span class="op">=</span> Holt(df[<span class="st">"passengers"</span>], initialization_method<span class="op">=</span><span class="st">"estimated"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>fit  <span class="op">=</span> holt.fit(optimized<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 어떤 키들이 있는지 확인</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"params keys:"</span>, <span class="bu">list</span>(fit.params.keys()))</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> fit.params[<span class="st">"smoothing_level"</span>]</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 버전 호환: trend 키 이름이 다를 수 있어 get 체인으로 안전하게 꺼내기</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>beta  <span class="op">=</span> fit.params.get(<span class="st">"smoothing_trend"</span>, fit.params.get(<span class="st">"smoothing_slope"</span>))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Optimal alpha:"</span>, alpha)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Optimal beta :"</span>, beta)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SSE:"</span>, fit.sse)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 12개월 예측</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>fcst <span class="op">=</span> fit.forecast(<span class="dv">12</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">5</span>))</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>plt.plot(df.index, df[<span class="st">"passengers"</span>], label<span class="op">=</span><span class="st">"Observed"</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>plt.plot(fit.fittedvalues.index, fit.fittedvalues, label<span class="op">=</span><span class="st">"Fitted (Holt)"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>plt.plot(pd.date_range(df.index[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> pd.DateOffset(months<span class="op">=</span><span class="dv">1</span>), periods<span class="op">=</span><span class="dv">12</span>, freq<span class="op">=</span><span class="st">"MS"</span>),</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>         fcst, label<span class="op">=</span><span class="st">"Forecast (12M)"</span>, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Holt’s Linear Trend – Observed vs Fitted &amp; 12M Forecast"</span>)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Date"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Passengers"</span>)<span class="op">;</span> plt.grid(<span class="va">True</span>)<span class="op">;</span> plt.legend()<span class="op">;</span> plt.tight_layout()</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Optimal alpha: 0.9999999850988388</p>
+<p>Optimal beta : 0.0</p>
+<p>SSE: 161787.91754445358</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/홀트지수평활법_예제02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>요약하면 β=0는 <span dir="rtl">”</span>추세 업데이트를 하지 않는 게 SSE가 가장 낮았다”는 뜻입니다. 왜 그럴까요?</p>
+<p>1. 계절성을 못 잡은 Holt: flights 데이터는 추세 + 강한 계절성. Holt(수준+추세)만 쓰면 계절 파형을 설명 못 해서, <span dir="rtl">’</span>추세까지 억지로 추정<span dir="rtl">’</span>하는 것보다 최근값을 거의 그대로 따라가는(α≈1) 편이 SSE가 더 낫다. 그 결과 추세항은 쓸모가 없으니 β→0으로 붙는다.</p>
+<p>2. 식 구조상 중복성: α가 1에 가까우면 <span class="math inline">\(a_{t} \approx Y_{t}\)</span>. 이때 <span class="math inline">\(a_{t} - a_{t - 1}\)</span>가 이미 최근 변화(추세 비슷한 것)를 반영해서, 별도의 추세 평활을 해도 이득이 거의 없습니다. 최적화는 자연히 경계값 β=0으로 밀린다.</p>
+<p>3. 초기/경계 최적화 효과: initialization_method=“estimated"로 초기추세가 작게 잡히거나 노이즈·계절파형 때문에 추세항이 오히려 오차를 키우면, 알고리즘은 β를 0으로 둬서 SES와 거의 동일한 모형으로 수렴합니다.</p>
+<p><strong>Damped trend 방법</strong></p>
+<p>Holt의 선형 방법에 의한 예측값은 <span class="math inline">\(hb_{t}\)</span>를 지니고 있어 미래로 갈수록 지속적인 추세 (증가 또는 감소)를 모함하게 된다.&nbsp;이로 인하여 특히 더 긴 예측 기간에 대해 과도하게 예측되는 경향이 있음을 나타낸다.&nbsp;하여, Gardner &amp; McKenzie(&nbsp;<a href="https://otexts.com/fpp2/holt.html#ref-GarMacK1985">1985</a>&nbsp;)&nbsp;는 향후 언젠가 추세를 평평한 선으로 "감쇠"시키는 매개 변수를 도입했다.&nbsp;감쇠된 추세를 포함하는 방법은 매우 성공적인 것으로 입증되었다.</p>
+<p><span class="math inline">\({\widehat{y}}_{t + h} = a_{t} + h \cdot b_{t}\)</span> (Holt 방법)</p>
+<p>감쇄 적용: <span class="math inline">\({\widehat{y}}_{t + h} = a_{t} + \left( \frac{1 - \phi^{h}}{1 - \phi} \right)b_{t}\)</span>, 여기서 <span class="math inline">\(\phi\)</span>는 0~1 사이의 감쇠계수이다.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.api <span class="im">import</span> Holt</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 데이터 준비</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'date'</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">"%Y-%b"</span>), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.set_index(<span class="st">"date"</span>)[<span class="st">"passengers"</span>].asfreq(<span class="st">"MS"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Holt 모형 + 감쇠 추세</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>holt_damped <span class="op">=</span> Holt(y, damped_trend<span class="op">=</span><span class="va">True</span>, initialization_method<span class="op">=</span><span class="st">"estimated"</span>).fit(optimized<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. SSE와 파라미터 출력</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"SSE :"</span>, holt_damped.sse)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"alpha:"</span>, holt_damped.params[<span class="st">'smoothing_level'</span>])</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"beta :"</span>, holt_damped.params[<span class="st">'smoothing_trend'</span>])</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"phi  :"</span>, holt_damped.params[<span class="st">'damping_trend'</span>])  <span class="co"># 감쇠계수</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 예측</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>fcst <span class="op">=</span> holt_damped.forecast(steps)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 시각화</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">5</span>))</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>plt.plot(y, label<span class="op">=</span><span class="st">"Observed"</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>plt.plot(holt_damped.fittedvalues, label<span class="op">=</span><span class="st">"Fitted (Holt+Damped)"</span>, color<span class="op">=</span><span class="st">"blue"</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>plt.plot(fcst, label<span class="op">=</span><span class="st">"Forecast (12M)"</span>, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>SSE : 161801.78439102264</p>
+<p>alpha: 0.9999999850988388</p>
+<p>beta : 0.0</p>
+<p>phi : 0.995</p>
+<p><strong>왜 감쇄모형을 적용했는데 SSE는 증가했나?</strong></p>
+<p>1. 지금 모형은 사실상 SES에 가깝습니다</p>
+<ul>
+<li><p>추정 결과: α ≈ 1, β = 0, φ = 0.995.</p></li>
+<li><p>β=0이면 추세 업데이트를 안 합니다. φ(감쇠계수)가 있어도 추세 항이 움직이지 않으니 감쇠 효과가 거의 작동하지 않음 → Holt+damped가 SES와 거의 동일한 행동을 하다.</p></li>
+<li><p>이런 상황에선 파라미터 하나(φ)만 늘어난 셈이라, 훈련 SSE가 좋아질 이유가 없습니다(오히려 최적화의 미세한 차이로 약간 커질 수 있음).</p></li>
+</ul>
+<p>2. flights 데이터의 본질: 강한 추세 + 계절성</p>
+<ul>
+<li><p>Holt(추세만) 또는 Holt+damped(추세+감쇠)로는 계절 패턴을 잡지 못한다.</p></li>
+<li><p>그 결과 SSE를 줄이려면 최근값을 강하게 따라가는 게 최선 → <span class="math inline">\(\alpha\)</span>는 1에, <span class="math inline">\(\beta\)</span>는는 0으로 가게 된다.</p></li>
+<li><p>그러므로 Holt와 Holt+damped의 SSE 차이는 미미하거나, 가끔 damped 쪽이 더 나빠 보이게 된다.</p></li>
+</ul>
+</section>
+<section id="holtwinters-method-삼중지수평활법" class="level5">
+<h5 class="anchored" data-anchor-id="holtwinters-method-삼중지수평활법">(3) Holt–Winters Method 삼중지수평활법</h5>
+<p>이전 설명한 지수평활법은 계절성분이 없는 경우 사용된다. 그러므로 계절성이 있는 시계열 데이터에는 적합하지 않다. 강우량, 월별 수출량, 여행 승객 수 등은 계절성을 가지고 있다.</p>
+<p><strong>Holt–Winters<span dir="rtl">’</span> Additive Method</strong></p>
+<p>계절효과의 크기가 시계열 전체 수준(Level)**에 관계없이 거의 일정할 때 사용한다. 즉, 계절성이 절대적인 차이로 반복된다.</p>
+<p><span class="math inline">\(\begin{matrix}
+\widehat{y}t + h &amp; = a_{t} + b_{t}h + st + h - m \\
+a_{t} &amp; = \alpha(y_{t} - s_{t - m}) + (1 - \alpha)(a_{t - 1} + b_{t - 1}) \\
+b_{t} &amp; = \beta(a_{t} - a_{t - 1}) + (1 - \beta)b_{t - 1} \\
+s_{t} &amp; = \gamma(y_{t} - a_{t}) + (1 - \gamma)s_{t - m}
+\end{matrix}\)</span>, 여기서 <span class="math inline">\(a_{t}\)</span>는 수준, <span class="math inline">\(b_{t}\)</span>는 추세, <span class="math inline">\(s_{t}\)</span>는 계절성, 그리고 <span class="math inline">\(m\)</span>은 주기이다.</p>
+<p><strong>Holt–Winters<span dir="rtl">’</span> Multiplicative Method</strong></p>
+<p>계절효과의 크기가 수준에 비례하여 변할 때 사용하게 되는데 계절성이 비율적 차이로 반복된다. 예를 들면, 매년 12월에는 항상 약 20% 증가, 여름에는 15% 감소하는 시계열 데이터에 적용된다.<span class="math inline">\(\begin{matrix}
+\widehat{y}t + h &amp; = (a_{t} + b_{t}h) \cdot st + h - m \\
+a_{t} &amp; = \alpha\frac{y_{t}}{s_{t - m}} + (1 - \alpha)(a_{t - 1} + b_{t - 1}) \\
+b_{t} &amp; = \beta(a_{t} - a_{t - 1}) + (1 - \beta)b_{t - 1} \\
+s_{t} &amp; = \gamma\frac{y_{t}}{a_{t}} + (1 - \gamma)s_{t - m}
+\end{matrix}\)</span>, 여기서 <span class="math inline">\(\gamma\)</span>는 계절성분 갱신 시 적용되는 평활 상수로 절 패턴의 변화 속도를 얼마나 빠르게 반영할지를 결정한다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.holtwinters <span class="im">import</span> ExponentialSmoothing</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 데이터 로드 &amp; 시계열 인덱스 설정</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"date"</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">"%Y-%b"</span>), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.set_index(<span class="st">"date"</span>)[<span class="st">"passengers"</span>].asfreq(<span class="st">"MS"</span>)  <span class="co"># 월초 빈도</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Holt–Winters Additive (trend='add', seasonal='add')</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>hw_add <span class="op">=</span> ExponentialSmoothing(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    y, trend<span class="op">=</span><span class="st">"add"</span>, seasonal<span class="op">=</span><span class="st">"add"</span>, seasonal_periods<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    initialization_method<span class="op">=</span><span class="st">"estimated"</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>).fit(optimized<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Holt–Winters Multiplicative (trend='add', seasonal='mul')</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>hw_mul <span class="op">=</span> ExponentialSmoothing(</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    y, trend<span class="op">=</span><span class="st">"add"</span>, seasonal<span class="op">=</span><span class="st">"mul"</span>, seasonal_periods<span class="op">=</span><span class="dv">12</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    initialization_method<span class="op">=</span><span class="st">"estimated"</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>).fit(optimized<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 12개월 예측</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>steps <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>fcst_add <span class="op">=</span> hw_add.forecast(steps)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>fcst_mul <span class="op">=</span> hw_mul.forecast(steps)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 파라미터 &amp; SSE 출력</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Additive]"</span>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" alpha:"</span>, hw_add.params.get(<span class="st">"smoothing_level"</span>))</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" beta :"</span>, hw_add.params.get(<span class="st">"smoothing_trend"</span>))</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" gamma:"</span>, hw_add.params.get(<span class="st">"smoothing_seasonal"</span>))</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" SSE  :"</span>, hw_add.sse, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Multiplicative]"</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" alpha:"</span>, hw_mul.params.get(<span class="st">"smoothing_level"</span>))</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" beta :"</span>, hw_mul.params.get(<span class="st">"smoothing_trend"</span>))</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" gamma:"</span>, hw_mul.params.get(<span class="st">"smoothing_seasonal"</span>))</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">" SSE  :"</span>, hw_mul.sse)</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) 시각화</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">11</span>,<span class="dv">5</span>))</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>plt.plot(y.index, y, label<span class="op">=</span><span class="st">"Observed"</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>plt.plot(hw_add.fittedvalues.index, hw_add.fittedvalues, label<span class="op">=</span><span class="st">"Fitted (Additive)"</span>)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>plt.plot(hw_mul.fittedvalues.index, hw_mul.fittedvalues, label<span class="op">=</span><span class="st">"Fitted (Multiplicative)"</span>)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>plt.plot(pd.date_range(y.index[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> pd.DateOffset(months<span class="op">=</span><span class="dv">1</span>), periods<span class="op">=</span>steps, freq<span class="op">=</span><span class="st">"MS"</span>),</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>         fcst_add, label<span class="op">=</span><span class="st">"Forecast Add"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>plt.plot(pd.date_range(y.index[<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> pd.DateOffset(months<span class="op">=</span><span class="dv">1</span>), periods<span class="op">=</span>steps, freq<span class="op">=</span><span class="st">"MS"</span>),</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>         fcst_mul, label<span class="op">=</span><span class="st">"Forecast Mul"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Holt–Winters: Additive vs Multiplicative"</span>)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Date"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Passengers"</span>)<span class="op">;</span> plt.grid(<span class="va">True</span>)<span class="op">;</span> plt.legend()<span class="op">;</span> plt.tight_layout()</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[Additive]</p>
+<p>alpha: 0.2525303255513238</p>
+<p>beta : 0.0</p>
+<p>gamma: 0.7474696744486762</p>
+<p>SSE : 21564.432209838982</p>
+<p>[Multiplicative]</p>
+<p>alpha: 0.31858664757791894</p>
+<p>beta : 0.0</p>
+<p>gamma: 0.6013533719848393</p>
+<p>SSE : 15952.880434994611</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/홀트윈터스지수평활법_예제.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="chapter-4.-arma-모형" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-4.-arma-모형"><span style="color:green">chapter 4. ARMA 모형</span></h3>
+<p>ARIMA(Auto-Regressive Integrated Moving Average) 모형은 George Box와 Gwilym Jenkins가 제안한 시계열 모형으로, 자기회귀(AR), 차분(Integrated), 이동평균(MA) 요소를 결합하여 시계열 데이터를 설명하고 예측한다.</p>
+<p>시계열 자료 <span class="math inline">\(\{ Y_{t}\}\)</span>의 과거 값 <span class="math inline">\(\{ Y_{t - 1},Y_{t - 2},\ldots\}\)</span>이 설명변수가 되는 경우를 자기회귀 모형(AR)이라 한다. 이전 관측치들의 가중치가 동일하면 이동평균법, 가중치가 최근 관측치에서 크고 과거로 갈수록 지수적으로 감소하면 지수평활법이라 한다.</p>
+<p>과거 관측치로 설명되지 않는 부분, 즉 잔차(오차항) <span class="math inline">\(\{\varepsilon_{t - 1},\varepsilon_{t - 2},\ldots\}\)</span>를 설명변수로 사용하는 모형이 이동평균 모형(MA)이다. 여기에 비정상 시계열을 정상 시계열로 변환하기 위한 차분(differencing) 과정을 나타내는 Integrated를 결합한 것이 ARIMA 모형이다.</p>
+<section id="arma-p-q-processes" class="level4">
+<h4 class="anchored" data-anchor-id="arma-p-q-processes"><span style="color:blue">1. ARMA( p, q) Processes</span></h4>
+<p>【정의】 <span class="math inline">\(\{ X_{t}\}\)</span>가 정상성을 가지며, 모든 t에 대해 다음을 만족하면 <span class="math inline">\(ARMA(p,q)\)</span>과정이라고 한다.</p>
+<p><span class="math display">\[X_{t} - \phi_{1}X_{t - 1} - \cdots - \phi_{p}X_{t - p} = Z_{t} + \theta_{1}Z_{t - 1} + \cdots + \theta_{q}Z_{t - q}\]</span></p>
+<p>여기서 <span class="math inline">\(\{ Z_{t}\} \sim WN(0,\sigma^{2})\)</span>이고, 다항식 <span class="math inline">\((1 - \phi_{1}z - \cdots - \phi_{p}z^{p}),(1 + \theta_{1}z + \cdots + \theta_{q}z^{q})\)</span>는 공통 인자를 갖지 않는다.</p>
+<p>【 간편식】 <span class="math inline">\(\phi(B)X_{t} = \theta(B)Z_{t}\)</span>, 여기서 <span class="math inline">\(\phi( \cdot )\)</span>와 <span class="math inline">\(\theta( \cdot )\)</span>는 각각 p차와 q차의 다항식이고, B는 후진 이동 연산자(backward shift operator)이다.</p>
+<p><span class="math display">\[\phi(z) = 1 - \phi_{1}z - \cdots - \phi_{p}z^{p}\]</span></p>
+<p><span class="math display">\[\theta(z) = 1 + \theta_{1}z + \cdots + \theta_{q}z^{q}\]</span></p>
+<p><span class="math display">\[B^{j}X_{t} = X_{t - j},B^{j}Z_{t} = Z_{t - j},j = 0, \pm 1,\ldots\]</span></p>
+<p>시계열 <span class="math inline">\(\{ X_{t}\}\)</span>는 <span class="math inline">\(\phi(z) \equiv 1\)</span>이면 p차 자기회귀 과정(<span class="math inline">\(AR(p)\)</span>)이라 하고, <span class="math inline">\(\theta(z) \equiv 1\)</span>이면 q차 이동평균 과정(<span class="math inline">\(MA(q)\)</span>)이라 한다.</p>
+</section>
+<section id="정상성-stationarity과-인과성" class="level4">
+<h4 class="anchored" data-anchor-id="정상성-stationarity과-인과성"><span style="color:blue">2. 정상성 stationarity과 인과성</span></h4>
+<section id="정상성" class="level5">
+<h5 class="anchored" data-anchor-id="정상성">(1) 정상성</h5>
+<p>ARMA 모형에서 정상성이 중요한 이유는, 이 모형이 과거 값과 오차항의 일정한 관계를 바탕으로 미래를 예측하는 구조이기 때문이다. 정상성은 평균과 분산이 시간에 따라 변하지 않고, 자기상관 구조가 시점과 무관하게 일정하게 유지된다는 특성을 의미한다. 이러한 특성이 보장되어야 과거 패턴이 미래에도 그대로 적용될 수 있고, 모형의 계수도 시점에 따라 변하지 않아 안정적으로 해석할 수 있다.</p>
+<p>첫째, 모수의 안정성 측면에서 정상성은 매우 중요하다. ARMA 모형은 과거 관측치와 오차항의 선형 결합으로 표현되는데, 데이터가 비정상적이면 평균과 분산이 시간에 따라 변하여 계수 추정치도 시점에 따라 달라질 수 있다. 이는 모형을 불안정하게 만들고, 동일한 계수를 유지해야 한다는 전제를 무너뜨린다. 반면 정상성 조건이 충족되면 계수는 시점에 관계없이 일정하게 유지될 수 있다.</p>
+<p>둘째, 예측 가능성을 위해서도 정상성이 필요하다. 정상성 시계열은 시간에 관계없이 일정한 패턴을 유지하므로, 과거의 패턴을 기반으로 미래를 예측할 수 있다. 그러나 비정상 시계열은 평균, 분산, 자기상관 구조가 변하기 때문에 과거 관계식이 미래에 그대로 적용되지 않는다. 예를 들어, 단순한 추세형 주가 시계열은 비정상적이어서 과거 패턴이 반복되지 않는 경우가 많다.</p>
+<p>셋째, 자기상관(ACF)와 부분자기상관(PACF) 분석이 가능하려면 정상성이 필요하다. ARMA 모형의 차수(p, q)를 결정하고 모수를 추정하는 과정은 ACF와 PACF 패턴을 해석하는 데 기반한다. 데이터가 비정상이면 ACF/PACF가 일정하게 수렴하지 않고, 이론적으로 기대되는 절단(cut-off) 또는 지수적 감소 형태가 나타나지 않는다. 따라서 정상성이 없으면 AR과 MA 차수를 논리적으로 결정하기 어렵다.</p>
+<p>넷째, 수리적 해석 가능성에서도 정상성은 필수적이다. 정상성 조건이 충족되면 ARMA 방정식의 해를 무한 MA 표현(ψ-가중치)으로 전개할 수 있으며, 이를 통해 모형의 안정성과 예측 오차 구조를 분석할 수 있다. 그러나 비정상 과정에서는 이러한 전개가 발산하여 수리적 해석이 불가능해진다.</p>
+<p><strong>이론적 정상성 조건 (모형 계수 기반)</strong></p>
+<p>ARMA 모형이 주어졌을 때, AR 부분의 특성방정식(characteristic equation)의 모든 근이 단위원 밖에 있으면 정상성이다.</p>
+<p>AR(p) 모형: <span class="math inline">\(Y_{t} = \phi_{1}Y_{t - 1} + \phi_{2}Y_{t - 2} + \cdots + \phi_{p}Y_{t - p} + e_{t}\)</span></p>
+<p>특성방정식: <span class="math inline">\(1 - \phi_{1}z - \phi_{2}z^{2} - \cdots - \phi_{p}z^{p} = 0\)</span>, 모든 해 z가 <span class="math inline">\(|z| &gt; 1\)</span>이면 정상성이다. 계수 추정 후 정상성 검정이 가능하다.</p>
+<p><strong>데이터 기반 정상성 검정 (Unit Root Test)</strong></p>
+<p>(1) ADF 검정 (Augmented Dickey–Fuller test)</p>
+<ul>
+<li><p>귀무가설 H_0: 단위근 존재 → 비정상(Non-stationary)</p></li>
+<li><p>대립가설 H_1: 정상성</p></li>
+</ul>
+<p>(2) KPSS 검정 (Kwiatkowski–Phillips–Schmidt–Shin test)</p>
+<ul>
+<li><p>귀무가설 H_0: 정상성</p></li>
+<li><p>대립가설 H_1: 비정상</p></li>
+</ul>
+<p>ADF와 반대 논리 → 두 검정을 함께 쓰면 더 확실.</p>
+<p>(3) Phillips–Perron (PP) 검정</p>
+<p>ADF와 유사하지만 자기상관과 이분산성을 보정한 버전이다.</p>
+<p><strong>비정상성 해결방안</strong></p>
+<p>첫째, 차분(differencing)</p>
+<ul>
+<li><p>일반 차분: <span class="math inline">\(Y_{t} - Y_{t - 1}\)</span> 형태로 한 시점 전 값을 빼서 추세를 제거한다.</p></li>
+<li><p>계절 차분: <span class="math inline">\(Y_{t} - Y_{t - s}\)</span> 형태로 s주기 전 값을 빼서 계절성을 제거한다. 예를 들어 월별 데이터에서 s=12면 연간 계절 패턴을 없앨 수 있다.</p></li>
+</ul>
+<p>차분 횟수 d는 최소한으로 하는 것이 좋으며, 과도한 차분은 오히려 잡음을 증가시킨다.</p>
+<p>둘째, 변환(transformation)</p>
+<p>데이터의 분산이 시간에 따라 변하는 경우, 로그 변환이나 제곱근 변환을 적용해 분산을 안정화시킬 수 있다.</p>
+<ul>
+<li><p>로그 변환: 급격히 증가하는 값의 분산을 줄이는 데 효과적</p></li>
+<li><p>Box–Cox 변환: 로그 변환을 포함하는 더 일반적인 형태로, 최적 변환 파라미터를 추정해 적용 가능</p></li>
+</ul>
+<p>셋째, 추세 제거(detrending)</p>
+<p>추세가 뚜렷한 경우, 회귀분석으로 추세 성분을 추정한 뒤 이를 제거해 잔차(residual)만 분석한다. 예를 들어, 시간 변수를 독립변수로 하는 선형 회귀를 통해 추세를 제거할 수 있다.</p>
+<p>넷째, 계절성 조정(seasonal adjustment)</p>
+<p>계절성이 있는 경우, 계절성 분해(예: STL decomposition, X-13ARIMA-SEATS)를 통해 계절 성분을 제거한다. 이렇게 하면 남은 비계절 부분이 정상성을 가질 가능성이 높아진다.</p>
+<p>다섯째, 통계적 단위근 검정 후 보정</p>
+<p>ADF(augmented Dickey–Fuller), KPSS, Phillips–Perron 등의 단위근 검정을 통해 비정상성을 확인한 뒤, 적절한 차분이나 변환을 적용한다.</p>
+</section>
+<section id="인과성과-가역성" class="level5">
+<h5 class="anchored" data-anchor-id="인과성과-가역성">(2) 인과성과 가역성</h5>
+<p>【정의】 시계열 <span class="math inline">\(\{ X_{t}\}\)</span>가 ARMA(p, q) 모형을 따른다고 하자. 이 시계열이 인과적(causal)이라는 것은, 현재 값 <span class="math inline">\(\{ X_{t}\}\)</span>가 과거의 백색잡음 <span class="math inline">\(\{ Z_{t - j}\}\)</span>들의 가중합으로 표현될 수 있음을 의미한다.즉, 다음을 만족하는 상수 <span class="math inline">\(\{\psi_{j}\}\)</span>가 존재해야 한다.</p>
+<p><span class="math display">\[X_{t} = \overset{\infty}{\sum_{j = 0}}\psi_{j}Z_{t - j},\overset{\infty}{\sum_{j = 0}}|\psi_{j}| &lt; \infty\]</span></p>
+<p>이 조건은 현재 값이 오직 과거 값들로부터만 영향을 받음을 뜻한다.</p>
+<p>인과성의 수학적 조건</p>
+<p>인과성은 AR 다항식 <span class="math inline">\(\phi(z) = 1 - \phi_{1}z - \cdots - \phi_{p}z^{p}\)</span>가 <span class="math inline">\(|z| \leq 1\)</span>인 모든 z에 대해 0이 아닌 경우와 동치이다. 이는 AR 방정식의 근이 단위원 바깥에 있어야 한다는 의미다.</p>
+<p>이 조건을 만족하면, ARMA 모형을 무한 MA(무한 이동평균) 형태로 전개할 수 있다. 인과성이 보장되지 않으면, 현재 값이 미래의 충격(오차)에 의존하게 되므로, 실제 예측 불가능한 모형이 된다.</p>
+<p><strong>가역성 invertibility</strong></p>
+<p>【정의】 ARMA(p, q) 과정 <span class="math inline">\(\{ X_{t}\}\)</span>가 가역적이라고 하려면, <span class="math inline">\(\overset{\infty}{\sum_{j = 0}}|\pi_{j}| &lt; \infty\)</span>인 상수들 <span class="math inline">\(\{\pi_{j}\}\)</span>가 존재하고 <span class="math inline">\(Z_{t} = \overset{\infty}{\sum_{j = 0}}\pi_{j}X_{t - j}\)</span>가 모든 t에 대해 성립해야 한다. 가역성은 다음 조건과 동치이다:</p>
+<p><span class="math display">\[\theta(z) = 1 + \theta_{1}z + \cdots + \theta_{q}z^{q} \neq 0\text{for all}|z| \leq 1\]</span></p>
+<p>가역성은 MA(이동평균) 과정이 동일한 자기회귀(AR) 과정으로 유일하게 표현될 수 있는 성질을 말한다. 쉽게 말해, MA 모형은 원래 과거의 오차항(<span class="math inline">\(Z_{t}\)</span>)들을 설명변수로 쓰지만, 실제 분석에서는 오차항을 직접 알 수 없다. 가역성이 있으면 이 오차항들을 과거 관측값의 무한 선형결합으로 표현할 수 있기 때문에, 오차항 없이도 모형을 재작성하고 추정할 수 있다.</p>
+<p>이 성질이 없으면, 동일한 관측값 시계열을 설명하는 MA 모형이 여러 개 존재하게 되어 모형이 비식별(non-identifiable) 문제가 발생한다. 그래서 추정 안정성과 해석 가능성을 위해 MA 모형에는 반드시 가역성 조건을 부여한다.</p>
+</section>
+</section>
+<section id="arma-모델-추정-과정" class="level4">
+<h4 class="anchored" data-anchor-id="arma-모델-추정-과정"><span style="color:blue">3. ARMA 모델 추정 과정</span></h4>
+<p>① 데이터 사전 진단</p>
+<p>ARMA 모형을 적용하기 전, 데이터의 특성을 파악하여 정상성 여부와 모형 적합 가능성을 평가한다.</p>
+<ul>
+<li><p>시간도표) 분석: 시계열을 시간축에 따라 시각화하여 추세, 계절성, 변동성의 존재 여부를 직관적으로 확인한다. 정상성 데이터라면 평균과 분산이 일정해야 한다.</p></li>
+<li><p>백색잡음 검정: 시계열이 완전 무작위인지 여부를 확인한다. 데이터가 백색잡음이면 예측 가능성이 없으므로 ARMA 모형을 적용할 필요가 없다.</p></li>
+<li><p>정상성 검정: ADF(augmented Dickey–Fuller)나 KPSS 검정을 통해 정상성 여부를 통계적으로 판정한다.</p></li>
+<li><p>등분산성 검정: 시간에 따라 분산이 변하지 않는지 확인한다. 필요하면 변환(log, Box–Cox 등)을 통해 분산을 안정화시킨다.</p></li>
+</ul>
+<p>② 모형 식별 (Model Identification)</p>
+<p>정상성 확보 후, ACF와 PACF 분석을 통해 AR(p), MA(q) 차수를 결정한다.</p>
+<ul>
+<li><p>ACF(Autocorrelation Function): 시차(lag)별 상관관계를 측정하여 MA 차수 식별에 활용한다.</p></li>
+<li><p>PACF(Partial Autocorrelation Function): 시차별 순수 자기상관을 계산하여 AR 차수 식별에 사용한다.</p></li>
+<li><p>계절성 진단: 계절성이 있으면 계절 차분(Seasonal Differencing)을 고려하고, 계절 AR/MA 항을 포함한 SARIMA 모형으로 확장한다.</p></li>
+</ul>
+<p>③ 모형 추정 (Parameter Estimation)</p>
+<p>식별된 차수(p, q)에 맞춰 ARMA 모형을 설정하고, 회귀계수를 추정한다.</p>
+<ul>
+<li><p>추정 방법: 최대우도추정(MLE, Maximum Likelihood Estimation) 또는 최소제곱법(OLS, Ordinary Least Squares) 사용.</p></li>
+<li><p>계절성 데이터 처리: 계절성이 있으면 주기(s)만큼 차분한 시계열을 이용해 계수를 추정한다.</p></li>
+</ul>
+<p>④ 모형 진단 (Model Diagnostics)</p>
+<p>추정된 모형이 적절한지 평가한다.</p>
+<ul>
+<li><p>계수 유의성 검정: 각 계수의 t-통계량과 p값을 확인해 통계적으로 유의한지 판단한다.</p></li>
+<li><p>잔차 분석: 모형의 잔차가 백색잡음(평균 0, 분산 일정, 자기상관 없음)인지 검정한다. 잔차에 패턴이 남아 있으면 모형이 데이터를 충분히 설명하지 못한 것이다.</p></li>
+<li><p>Ljung–Box Q 검정: 잔차의 자기상관이 유의한지 평가한다.</p></li>
+</ul>
+<p>⑤ 예측 모형 적용 (Forecasting)</p>
+<p>모형 진단을 통과한 최종 ARMA 모형을 사용하여 미래 값을 예측한다.</p>
+<ul>
+<li><p>단기/중기 예측: 정상성 시계열에서는 장기 예측보다 단기 예측에서 오차가 적다.</p></li>
+<li><p>예측 결과와 신뢰구간(Confidence Interval)을 함께 제시하여 불확실성을 평가한다.</p></li>
+</ul>
+</section>
+<section id="acf와-pacf" class="level4">
+<h4 class="anchored" data-anchor-id="acf와-pacf"><span style="color:blue">4. ACF와 PACF</span></h4>
+<section id="자기공분산함수acf" class="level5">
+<h5 class="anchored" data-anchor-id="자기공분산함수acf">(1) 자기공분산함수(ACF)</h5>
+<p><strong>정의</strong></p>
+<p>자기상관계수(Autocorrelation Coefficient)는 시계열 데이터가 서로 다른 시점에서 얼마나 유사한지를 나타내는 척도로 시차 j에서의 자기상관계수 <span class="math inline">\(\rho(j)\)</span>는 다음과 같이 정의한다.</p>
+<p><span class="math inline">\(\rho(h) = \frac{\text{COV}(X_{t},X_{t - h})}{V(X_{t})}\)</span>. 즉, 시점 <span class="math inline">\(t\)</span>와 <span class="math inline">\(t - h\)</span>의 값이 얼마나 비슷한지를 분산으로 표준화한 값이다.</p>
+<p><strong>성질</strong></p>
+<ul>
+<li><p><span class="math inline">\(\rho(h)\)</span>는 상관계수이므로 항상 <span class="math inline">\(- 1 \leq \rho(h) \leq 1\)</span>범위에 존재한다.</p></li>
+<li><p><span class="math inline">\(h = 0\)</span> : <span class="math inline">\(Y_{t}\)</span>와 <span class="math inline">\(Y_{t}\)</span>의 상관계수이므로 항상 1이다.</p></li>
+<li><p><span class="math inline">\(\rho(h) = \rho( - h)\)</span></p></li>
+<li><p>정상 백색잡음 과정에서는 <span class="math inline">\(\rho(h) = 0\)</span> (단, <span class="math inline">\(h \neq 0\)</span>)</p></li>
+<li><p>정상 시계열에서는 <span class="math inline">\(\rho(h)\)</span>가 시차 <span class="math inline">\(h\)</span>에만 의존하고 시간 <span class="math inline">\(t\)</span>에는 의존하지 않는다.</p></li>
+<li><p>AR(p) 모형의 경우 PACF가 p시차에서 절단되고, ACF는 지수적으로 감소한다.</p></li>
+<li><p>MA(q) 모형의 경우 ACF가 q시차에서 절단되고, PACF는 지수적으로 감소한다.</p></li>
+</ul>
+</section>
+<section id="모형-식별" class="level5">
+<h5 class="anchored" data-anchor-id="모형-식별">(2) 모형 식별</h5>
+<p>시계열 데이터의 특성을 분석하여 적합한 모형의 형태와 차수를 결정하는 단계이다. 부분자기상관함수(PACF)와 함께 이용하여 AR, MA, ARMA 모형의 차수를 추정한다.</p>
+<p>계절성이 존재하는 경우 주기별 패턴을 추가로 분석하여 계절 차수를 식별한다. 예를 들어 ACF가 일정 시점에서 절단되는 경우 MA 모형의 후보이며, PACF가 일정 시점에서 절단되는 경우 AR 모형의 후보이다. ACF와 PACF가 모두 서서히 감소하는 경우 ARMA 모형의 후보이다.</p>
+<ul>
+<li><span class="math inline">\(X_{t} = Z_{t} \sim WN\)</span> ACF</li>
+</ul>
+<p><span class="math display">\[\rho(h) = 0,forh &gt; 0\]</span></p>
+<ul>
+<li><span class="math inline">\(X_{t} = Z_{t} + \theta_{1}Z_{t - 1} + \cdots + \theta_{q}Z_{t - q} \sim MA(q)\)</span> ACF</li>
+</ul>
+<p><span class="math inline">\(\gamma(h) = \{\begin{matrix}
+\sigma^{2}\overset{q - |h|}{\sum_{j = 0}}\theta_{j}\theta_{j + |h|}, &amp; \text{if}|h| \leq q, \\
+0, &amp; \text{if}|h| &gt; q.
+\end{matrix}\)</span><!-- -->4</p>
+<ul>
+<li><span class="math inline">\(X_{t} - \phi_{1}X_{t - 1} = Z_{t} \sim AR(1)\)</span> ACF</li>
+</ul>
+<p><span class="math display">\[\rho(h) = \phi_{1}^{|h|},h = 0,1,2,\ldots\]</span></p>
+<ul>
+<li><span class="math inline">\(X_{t} - \phi_{1}X_{t - 1} - \phi_{2}X_{t - 2} = Z_{t} \sim AR(2)\)</span> ACF</li>
+</ul>
+<p><span class="math display">\[\rho(h) = \phi_{1}\rho(h - 1) + \phi_{2}\rho(h - 2),h \geq 2\]</span></p>
+<p><span class="math display">\[$\rho(0) = 1$, $\rho(1) = \frac{\phi_{1}}{1 - \phi_{2}}\]</span></p>
+<p>AR(2) ACF는 지수적 감소(실수 근 2개), 감쇠 진동(복소수 근 전재), 또는 이들의 혼합 패턴을 보인다.</p>
+<ul>
+<li><span class="math inline">\(X_{t} - \phi_{1}X_{t - 1} = Z_{t} + \theta_{1}Z_{t - 1} \sim ARMA(1,1)\)</span> ACF</li>
+</ul>
+<p><span class="math display">\[\rho(0) = 1\]</span></p>
+<p><span class="math display">\[\rho(1) = \frac{(1 + \theta_{1}\phi_{1})(\theta_{1} + \phi_{1})}{1 + 2\theta_{1}\phi_{1} + \theta_{1}^{2}}\]</span></p>
+<p><span class="math display">\[\rho(h) = \phi_{1}^{h - 1}\rho(1),h \geq 2\]</span></p>
+<p><span class="math inline">\(AR(1)\)</span>모형처럼 지수적 감소 형태를 보인다. 단, <span class="math inline">\(\rho(1)\)</span>값이 <span class="math inline">\(\theta_{1}\)</span>값에 의해 조정되므로, <span class="math inline">\(AR(1)\)</span>보다 첫 번째 시차에서의 상관이 더 크거나 작을 수 있다. <span class="math inline">\(h \geq 2\)</span>에서는 <span class="math inline">\(AR(1)\)</span>과 동일하게 <span class="math inline">\(\phi_{1}\)</span>의 거듭제곱에 따라 감소한다.</p>
+<p>ACF와 PACF 이용한 모형 식별</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 39%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">모형</th>
+<th style="text-align: center;">ACF</th>
+<th style="text-align: center;">PACF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">AR(p)</td>
+<td style="text-align: center;">지수적으로 감소한다.</td>
+<td style="text-align: center;">시차 <span class="math inline">\(p\)</span> 이후 0으로 떨어진다.</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">MA(q)</td>
+<td style="text-align: center;">시차 <span class="math inline">\(q\)</span> 이후 0으로 떨어진다.</td>
+<td style="text-align: center;">지수적으로 감소한다.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">ARMA(p, q)</td>
+<td style="text-align: center;">지수적으로 감소한다.</td>
+<td style="text-align: center;">지수적으로 감소한다.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="사례분석" class="level4">
+<h4 class="anchored" data-anchor-id="사례분석"><span style="color:blue">5. 사례분석</span></h4>
+<section id="데이터-사전-진단-및-전처리" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-사전-진단-및-전처리">(1) 데이터 사전 진단 및 전처리</h5>
+<p><strong>시간도표</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 예제 데이터 불러오기</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'date'</span>] <span class="op">=</span> df.<span class="bu">apply</span>(<span class="kw">lambda</span> x: datetime.strptime(<span class="ss">f"</span><span class="sc">{</span>x[<span class="st">'year'</span>]<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>x[<span class="st">'month'</span>]<span class="sc">}</span><span class="ss">"</span>, <span class="st">'%Y-%b'</span>), axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># date를 인덱스로 설정</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.set_index(<span class="st">'date'</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 시간도표 그리기</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>plt.plot(df.index, df[<span class="st">'passengers'</span>], marker<span class="op">=</span><span class="st">'o'</span>, linestyle<span class="op">=</span><span class="st">'-'</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Time Plot of Monthly Passengers (1949–1960)"</span>)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Date"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Number of Passengers"</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_시간도표03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>1. 추세 존재</p>
+<p>1949년부터 1960년까지 승객 수가 전반적으로 증가하는 뚜렷한 상승 추세를 보이고 있다. 이는 장기적으로 항공 여행 수요가 꾸준히 늘어났음을 의미한다.</p>
+<p>2. 계절성 뚜렷</p>
+<p>매년 일정한 주기(12개월)를 두고 승객 수가 반복적으로 증감하는 패턴이 나타난다. 여름철과 연말에 승객 수가 높은 피크를 보이고, 겨울·초봄에는 감소하는 경향이 있다.</p>
+<p>3. 변동폭 확대(Heteroscedasticity)</p>
+<p>시간 경과에 따라 계절 변동폭(peak와 trough의 차이)이 점점 커지고 있다. 이는 비정상 시계열에서 자주 나타나는 특징으로, 분산이 일정하지 않다는 것을 시사합니다.</p>
+<p>4. 비정상성 가능성</p>
+<p>평균과 분산이 시간에 따라 변동하므로 정상성(stationarity)을 만족하지 않을 가능성이 크다. ARMA 모형 적용 전에 차분(differencing) 또는 변환(log transformation) 등을 통해 정상화를 시도해야 할 필요가 있다.</p>
+<p><strong>백색잡음 진단: Ljung-Box and Box-Pierce 통계량</strong></p>
+<ul>
+<li><p>귀무가설 : 분석대상 시계열 데이터는 백색 잡음이다. <span class="math inline">\(Y_{t} = e_{t}\)</span> &lt;=&gt; 모형인식 불가능</p></li>
+<li><p>대립가설 : 백색 잡음이 아니다. &lt;=&gt; 패턴이 존재한다. &lt;=&gt; ARMA 모형 인식이 가능하다.</p></li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#백색잡음 진단</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>sm.stats.acorr_ljungbox(df[<span class="st">'passengers'</span>],lags<span class="op">=</span>[<span class="dv">20</span>],boxpierce<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 25%">
+<col style="width: 22%">
+<col style="width: 25%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">lb_stat</td>
+<td style="text-align: center;">lb_pvalue</td>
+<td style="text-align: center;">bp_stat</td>
+<td style="text-align: center;">bp_pvalue</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1434.148907</td>
+<td style="text-align: center;">5.300473E-292</td>
+<td style="text-align: center;">1328.532248</td>
+<td style="text-align: center;">2.291495E-269</td>
+</tr>
+</tbody>
+</table>
+<p>첫 행은 Ljung-Box 통계량(1456)과 유의확률, 두번째 행은 Box-Pierce 통계량(1381)과 유의확률이다. 두 방법 모두 유의확률이 &lt;0.001이므로 백색잡음이 아니다. boxpierce=True을 제외하면 Ljung-Box 통계량만 출력된다.</p>
+<p>해당 시계열 데이터에는 자기상관이 강하게 존재하며, 단순한 무작위 잡음이 아니다. 즉, ARMA 등 자기상관 구조를 반영한 모형을 적용할 필요가 있다.</p>
+<p><strong>단위근 unit root 검정</strong></p>
+<p>귀무가설 : 단위근을 갖는다. 단위근 unit root 모형 &lt;=&gt; random walk 모형</p>
+<p>대립가설 : 단위근 문제가 없다.</p>
+<p>단위근 문제가 발생하면 차분으로 문제를 해결한다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Augmented Dickey-Fuller 단일근 검정</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> adfuller</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>adf_result <span class="op">=</span> adfuller(df[<span class="st">'passengers'</span>])</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"ADF Statistic:"</span>, adf_result[<span class="dv">0</span>])</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p-value:"</span>, adf_result[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>ADF Statistic: 0.8153688792060498</p>
+<p>p-value: 0.991880243437641</p>
+<p>ADF 검정의 귀무가설(H₀)은 <span dir="rtl">”</span>시계열이 단위근을 가진 비정상 과정이다”이다. p-value가 0.99로 매우 크기 때문에 귀무가설을 기각할 수 없다. 즉, 이 시계열은 비정상 시계열이며, 추세 제거(차분) 또는 변환 후에 ARMA 모형을 적용해야 한다.</p>
+<p><strong>등분산 검정(ARCH test)</strong></p>
+<ul>
+<li><p>귀무가설(H₀): 잔차는 등분산성을 가진다.</p></li>
+<li><p>대립가설(H₁): 잔차는 이분산성을 가진다.</p></li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 등분산성 검정 (ARCH test)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> het_arch</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># flights 데이터에서 'passengers' 컬럼 사용</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>stat, p_value, _, _ <span class="op">=</span> het_arch(df[<span class="st">'passengers'</span>])</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ARCH LM 통계량: </span><span class="sc">{</span>stat<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-value: </span><span class="sc">{</span>p_value<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> p_value <span class="op">&lt;</span> <span class="fl">0.05</span>:</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"귀무가설 기각: 이 데이터는 이분산성을 가질 가능성이 큼"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"귀무가설 채택: 이 데이터는 등분산성을 가짐"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>ARCH LM 통계량: 126.0645062581934</p>
+<p>p-value: 2.961233760503082e-22</p>
+<p>귀무가설 기각: 이 데이터는 이분산성을 가질 가능성이 큼</p>
+<p>p-value가 0.05 미만이므로 귀무가설을 기각한다. 따라서, 이 데이터는 이분산성을 가질 가능성이 매우 높다고 결론낼 수 있다. 즉, flights 데이터의 승객 수 시계열은 분산이 시간에 따라 일정하지 않고, 변동성이 시점에 따라 달라진다고 해석된다.</p>
+<p>로그변환, 제곱근 변환, Box-Cox 변환이 있는데 가장 많이 사용되는 로그변환을 사용한다.</p>
+<p><strong>전처리후 ADF 검정</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> adfuller</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 로그 변환</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'log_passengers'</span>] <span class="op">=</span> np.log(df[<span class="st">'passengers'</span>])</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1차 차분</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'log_diff1'</span>] <span class="op">=</span> df[<span class="st">'log_passengers'</span>].diff()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># NaN 제거 후 ADF 테스트</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>adf_result <span class="op">=</span> adfuller(df[<span class="st">'log_diff1'</span>].dropna())</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"ADF Statistic:"</span>, adf_result[<span class="dv">0</span>])</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p-value:"</span>, adf_result[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>ADF Statistic: -2.717130598388114</p>
+<p>p-value: 0.07112054815086184</p>
+<p>유의수준 5%에서 단위근 문제없다. (정상성 프로세스)</p>
+</section>
+<section id="모형진단" class="level5">
+<h5 class="anchored" data-anchor-id="모형진단">(2) 모형진단</h5>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.tsa.stattools <span class="im">import</span> adfuller</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 로그 변환</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'log_passengers'</span>] <span class="op">=</span> np.log(df[<span class="st">'passengers'</span>])</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1차 차분</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'log_diff1'</span>] <span class="op">=</span> df[<span class="st">'log_passengers'</span>].diff()</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># NaN 제거 후 ADF 테스트</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>adf_result <span class="op">=</span> adfuller(df[<span class="st">'log_diff1'</span>].dropna())</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"ADF Statistic:"</span>, adf_result[<span class="dv">0</span>])</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p-value:"</span>, adf_result[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_acf_pacf.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>1. ACF</p>
+<ul>
+<li><p>대부분의 시차에서 값이 신뢰구간(파란 음영 영역) 안에 있음.</p></li>
+<li><p>특정 시차(예: 1, 12)에서만 약간의 유의한 값이 있지만, 전반적으로 빠르게 소멸하는 형태.</p></li>
+<li><p>이는 잔여 상관 구조가 거의 없음을 의미합니다.</p></li>
+</ul>
+<p>2. PACF</p>
+<ul>
+<li><p>PACF도 비슷하게, 거의 모든 시차에서 값이 유의하지 않음.</p></li>
+<li><p>시차 1, 12 부근에 약간의 봉이 보이지만 강하지 않음.</p></li>
+<li><p>AR 계수가 크게 필요하지 않음을 시사.</p></li>
+</ul>
+<p>3. 잠재 모형</p>
+<p><strong>비계절 부분</strong></p>
+<ul>
+<li><p>ACF: 시차 1에서만 살짝 유의 → MA(1) 가능성</p></li>
+<li><p>PACF: 시차 1에서만 살짝 유의 → AR(1) 가능성 → p, q 둘 다 0~1 범위에서 시도</p></li>
+</ul>
+<p><strong>계절 부분 (주기 12)</strong></p>
+<ul>
+<li><p>ACF: 시차 12 부근 약간 유의 → 계절 MA(1) 가능성</p></li>
+<li><p>PACF: 시차 12 부근 약간 유의 → 계절 AR(1) 가능성 → P, Q 둘 다 0~1 범위에서 시도</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">모형</td>
+<td style="text-align: center;">비계절 차수 (p,d,q)</td>
+<td style="text-align: center;">계절 차수 (P,D,Q,s)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">모델 1</td>
+<td style="text-align: center;">(0,1,1)</td>
+<td style="text-align: center;">(0,1,1,12)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">모델 2</td>
+<td style="text-align: center;">(1,1,0)</td>
+<td style="text-align: center;">(0,1,1,12)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">모델 3</td>
+<td style="text-align: center;">(1,1,1)</td>
+<td style="text-align: center;">(0,1,1,12)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">모델 4</td>
+<td style="text-align: center;">(0,1,1)</td>
+<td style="text-align: center;">(1,1,0,12)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">모델 5</td>
+<td style="text-align: center;">(0,1,1)</td>
+<td style="text-align: center;">(1,1,1,12)</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+</section>
+<section id="최적-모형" class="level5">
+<h5 class="anchored" data-anchor-id="최적-모형">(3) 최적 모형</h5>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#모형 비교</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>candidates <span class="op">=</span> [</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    ((<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>),(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>)),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    ((<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>),(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>)),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    ((<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>),(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>)),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    ((<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>),(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">12</span>)),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    ((<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>),(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>)),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> order, seas <span class="kw">in</span> candidates:</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> sm.tsa.statespace.SARIMAX(df[<span class="st">"log_passengers"</span>], order<span class="op">=</span>order, seasonal_order<span class="op">=</span>seas,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>                                  enforce_stationarity<span class="op">=</span><span class="va">False</span>, enforce_invertibility<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> m.fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    rows.append({<span class="st">"order"</span>: order, <span class="st">"seasonal_order"</span>: seas, <span class="st">"AIC"</span>: r.aic, <span class="st">"BIC"</span>: r.bic})</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(rows).sort_values(<span class="st">"AIC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">차수</td>
+<td style="text-align: center;">계절차수</td>
+<td style="text-align: center;">AIC</td>
+<td style="text-align: center;">BIC</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">(1, 1, 0)</td>
+<td style="text-align: center;">(0, 1, 1, 12)</td>
+<td style="text-align: center;">-437.52582</td>
+<td style="text-align: center;">-429.21377</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">(0, 1, 1)</td>
+<td style="text-align: center;">(1, 1, 0, 12)</td>
+<td style="text-align: center;">-437.11592</td>
+<td style="text-align: center;">-428.77855</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">(0, 1, 1)</td>
+<td style="text-align: center;">(0, 1, 1, 12)</td>
+<td style="text-align: center;">-435.44352</td>
+<td style="text-align: center;">-427.157</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">(1, 1, 1)</td>
+<td style="text-align: center;">(0, 1, 1, 12)</td>
+<td style="text-align: center;">-433.78518</td>
+<td style="text-align: center;">-422.73649</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">(0, 1, 1)</td>
+<td style="text-align: center;">(1, 1, 1, 12)</td>
+<td style="text-align: center;">-428.86966</td>
+<td style="text-align: center;">-417.82097</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>AIC 최솟값: -437.525820 → 차수=(1,1,0), 계절차수=(0,1,1,12)</p></li>
+<li><p>BIC 최솟값: -429.213766 → 동일하게 차수=(1,1,0), 계절차수=(0,1,1,12)</p></li>
+</ul>
+<p><strong>모형 추정 및 검정</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 데이터 로드 &amp; 인덱스 설정</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">"year"</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">"-"</span> <span class="op">+</span> df[<span class="st">"month"</span>].astype(<span class="bu">str</span>))</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.set_index(<span class="st">"date"</span>).sort_index()</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 로그 변환(열로 보관)</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"log_passengers"</span>] <span class="op">=</span> np.log(df[<span class="st">"passengers"</span>])</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) SARIMA 적합: (p,d,q)×(P,D,Q,12)</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> sm.tsa.statespace.SARIMAX(</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"log_passengers"</span>],</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    order<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    seasonal_order<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>),</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    enforce_stationarity<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    enforce_invertibility<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> model.fit()</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.summary())</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 잔차 추출</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> res.resid</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) ACF/PACF 그래프</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>sm.graphics.tsa.plot_acf(residuals, lags<span class="op">=</span><span class="dv">30</span>, ax<span class="op">=</span>ax[<span class="dv">0</span>])</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>sm.graphics.tsa.plot_pacf(residuals, lags<span class="op">=</span><span class="dv">30</span>, ax<span class="op">=</span>ax[<span class="dv">1</span>])</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Ljung-Box 검정 (잔차 독립성)</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>lb_test <span class="op">=</span> acorr_ljungbox(residuals, lags<span class="op">=</span>[<span class="dv">12</span>,<span class="dv">24</span>], return_df<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ljung-Box test:</span><span class="ch">\n</span><span class="st">"</span>, lb_test)</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) ARCH 검정 (이분산성 확인)</span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>arch_test <span class="op">=</span> het_arch(residuals)</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">ARCH Test: LM stat=</span><span class="sc">%.4f</span><span class="st">, p=</span><span class="sc">%.4f</span><span class="st">"</span> <span class="op">%</span> (arch_test[<span class="dv">0</span>], arch_test[<span class="dv">1</span>]))</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 정규성 검정 (Jarque-Bera/Anderson-Darling)</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>norm_test <span class="op">=</span> normal_ad(residuals)</span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Normality test (Anderson-Darling): stat=</span><span class="sc">%.4f</span><span class="st">, p=</span><span class="sc">%.4f</span><span class="st">"</span> <span class="op">%</span> (norm_test[<span class="dv">0</span>], norm_test[<span class="dv">1</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>모형 계수 유의성</strong></p>
+<p>회귀계수 유의성 매우 높음</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_arma추정.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>추정식: <span class="math inline">\(Y_{t} = - 0.380Y_{t - 1} - 0.553\varepsilon_{t - 12} + \varepsilon_{t},\sigma^{2} = 0.0014)\)</span></p>
+<p><span class="math display">\[(1 + 0.380L)(1 - L)(1 - L^{12})X_{t} = (1 - 0.553L^{12})\varepsilon_{t}\]</span></p>
+<p><strong>잔차 진단 결과</strong></p>
+<p>1. ACF/PACF</p>
+<ul>
+<li><p>대부분의 시차에서 자기상관이 95% 신뢰구간 내에 있음.</p></li>
+<li><p>다만 lag=12 근처에서 뚜렷한 음(-) 피크가 나타남 → 계절적 효과가 다 설명되지 않았을 가능성.</p></li>
+</ul>
+<p>2. Ljung-Box test (Q-stat)</p>
+<ul>
+<li><p>12시차: p=0.0001, 24시차: p=0.022 → 잔차가 백색잡음 가정을 위배 (독립성 결여).</p></li>
+<li><p>즉, 모형이 데이터의 자기상관을 완전히 설명하지 못함.</p></li>
+</ul>
+<p>3. ARCH test</p>
+<p>- p=1 → 조건부 이분산성(ARCH 효과) 없음.</p>
+<p>4. 정규성 검정 (Anderson-Darling)</p>
+<ul>
+<li><p>p=0.0000 → 잔차가 정규성을 따르지 않음.</p></li>
+<li><p>분포가 비정규적(꼬리 두꺼움, 왜도 존재)임을 시사.</p></li>
+</ul>
+<p>추정된 SARIMA(1,1,0)×(0,1,1,12) 모형은 데이터의 전반적인 추세와 계절성을 잘 설명하였으나, 잔차에 계절적 자기상관(특히 lag=12)이 남아 있음 → 추가 개선 필요.</p>
+<p>잔차는 이분산성 문제는 없지만, 정규성 및 독립성 가정을 위배 → 예측 신뢰구간 해석에 주의 필요.</p>
+<p>5. 개선 방향 제안</p>
+<ul>
+<li><p>계절 차수를 더 늘려서 SARIMA(1,1,0)×(0,1,2,12) 또는 SARIMA(1,1,1)×(0,1,1,12) 시도. ➟ <u>시도 했으나 모형 적합도 낮고 여전히 잔차 진단 결과 문제점 해결되지 않음</u></p></li>
+<li><p>혹은 외생 변수(X) 포함한 SARIMAX 또는 구조적 시계열 모형(Trend+Seasonal decomposition) 검토.</p></li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) SARIMA 적합: (p,d,q)×(P,D,Q,12)</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> sm.tsa.statespace.SARIMAX(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"log_passengers"</span>],</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    order<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    seasonal_order<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    enforce_stationarity<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    enforce_invertibility<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> model.fit()</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 12개월 예측 (로그 스케일의 평균과 신뢰구간)</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>forecast_res <span class="op">=</span> res.get_forecast(steps<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>forecast_mean <span class="op">=</span> forecast_res.predicted_mean         <span class="co"># Series (index가 미래 월)</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>forecast_ci   <span class="op">=</span> forecast_res.conf_int()             <span class="co"># DataFrame</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 잘못된 변수명 수정</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"12개월 예측(로그 스케일):"</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(forecast_mean)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) SSE 계산 (원단위 복원 + NaN 정리)</span></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> df[<span class="st">"passengers"</span>]</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>y_pred_in_sample <span class="op">=</span> np.exp(res.fittedvalues)         <span class="co"># 원단위</span></span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 관측치와 예측치의 공통 구간만 사용</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>y_true_aligned  <span class="op">=</span> y_true.loc[y_pred_in_sample.index].dropna()</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>y_pred_aligned  <span class="op">=</span> y_pred_in_sample.loc[y_true_aligned.index]</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>SSE <span class="op">=</span> <span class="bu">float</span>(((y_true_aligned <span class="op">-</span> y_pred_aligned) <span class="op">**</span> <span class="dv">2</span>).<span class="bu">sum</span>())</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 그래프 시각화</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>plt.plot(df.index, y_true, label<span class="op">=</span><span class="st">"Observed"</span>)</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>plt.plot(y_pred_aligned.index, y_pred_aligned, label<span class="op">=</span><span class="st">"Fitted"</span>)</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측(원단위, 로그→exp 복원)</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>fc_idx <span class="op">=</span> forecast_mean.index</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>plt.plot(fc_idx, np.exp(forecast_mean), label<span class="op">=</span><span class="st">"Forecast"</span>, color<span class="op">=</span><span class="st">"red"</span>)</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>plt.fill_between(</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    fc_idx,</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    np.exp(forecast_ci.iloc[:, <span class="dv">0</span>]),</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    np.exp(forecast_ci.iloc[:, <span class="dv">1</span>]),</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>    color<span class="op">=</span><span class="st">"pink"</span>, alpha<span class="op">=</span><span class="fl">0.3</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"SARIMA(1,1,0)×(0,1,1,12) Forecast  |  SSE=</span><span class="sc">{</span>SSE<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Date"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Passengers"</span>)</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_arma추정02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>res.fittedvalues는 칼만필터의 diffuse 초기화(불확실한 초기 상태) 때문에 처음 몇 달 값이 비정상적으로 튀기도 합니다. 그래서 1949~1950 초반에 오렌지선이 바늘처럼 치솟죠. 데이터/모형 문제라기보다 시작값 처리 방식 때문입니다.</p>
+<ul>
+<li><p>초기 1차+계절차분 만큼의 웜업 구간을 버리고(보통 13~24개월) 그 이후부터 적합치를 사용</p></li>
+<li><p>res.fittedvalues 대신 res.get_prediction(start=...)로 안정화된 구간만 가져오기</p></li>
+<li><p>SSE도 같은 구간에서 계산</p></li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 로드 &amp; 빈도 지정</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"flights"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"date"</span>] <span class="op">=</span> pd.to_datetime(df[<span class="st">"year"</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">"-"</span> <span class="op">+</span> df[<span class="st">"month"</span>].astype(<span class="bu">str</span>))</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.set_index(<span class="st">"date"</span>).sort_index().asfreq(<span class="st">"MS"</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"log_passengers"</span>] <span class="op">=</span> np.log(df[<span class="st">"passengers"</span>])</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) SARIMA 적합</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> sm.tsa.statespace.SARIMAX(</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"log_passengers"</span>],</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    order<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>),</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    seasonal_order<span class="op">=</span>(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">12</span>),</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    enforce_stationarity<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    enforce_invertibility<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> model.fit(disp<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 추정 결과 요약 출력</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.summary())</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 안정화 이후 fitted values (초기 스파이크 방지)</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>warmup <span class="op">=</span> <span class="dv">24</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>pred_in <span class="op">=</span> res.get_prediction(start<span class="op">=</span>df.index[warmup], end<span class="op">=</span>df.index[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>mu  <span class="op">=</span> pred_in.predicted_mean</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>var <span class="op">=</span> <span class="bu">getattr</span>(pred_in, <span class="st">"var_pred_mean"</span>, pred_in.se_mean<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>fitted_stable <span class="op">=</span> np.exp(mu <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span>var)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> df[<span class="st">"passengers"</span>].loc[fitted_stable.index]</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="co"># SSE 계산</span></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>SSE <span class="op">=</span> <span class="bu">float</span>(((y_true <span class="op">-</span> fitted_stable) <span class="op">**</span> <span class="dv">2</span>).<span class="bu">sum</span>())</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[모형 적합도]"</span>)</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"SSE = </span><span class="sc">{</span>SSE<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 12개월 예측</span></span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>fc <span class="op">=</span> res.get_forecast(steps<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>mu_f  <span class="op">=</span> fc.predicted_mean</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>var_f <span class="op">=</span> <span class="bu">getattr</span>(fc, <span class="st">"var_pred_mean"</span>, fc.se_mean<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>fc_mean <span class="op">=</span> np.exp(mu_f <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span>var_f)</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>fc_ci   <span class="op">=</span> np.exp(fc.conf_int())</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[12개월 예측치]"</span>)</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fc_mean)</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 시각화</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>plt.plot(df.index, df[<span class="st">"passengers"</span>], label<span class="op">=</span><span class="st">"Observed"</span>, color<span class="op">=</span><span class="st">"C0"</span>)</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>plt.plot(fitted_stable.index, fitted_stable, label<span class="op">=</span><span class="ss">f"Fitted (after </span><span class="sc">{</span>warmup<span class="sc">}</span><span class="ss">m warmup)"</span>, color<span class="op">=</span><span class="st">"C1"</span>)</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>plt.plot(fc_mean.index, fc_mean, label<span class="op">=</span><span class="st">"Forecast (12m)"</span>, color<span class="op">=</span><span class="st">"C3"</span>)</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>plt.fill_between(fc_mean.index, fc_ci.iloc[:,<span class="dv">0</span>], fc_ci.iloc[:,<span class="dv">1</span>], color<span class="op">=</span><span class="st">"C3"</span>, alpha<span class="op">=</span><span class="fl">0.25</span>)</span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"SARIMA(1,1,0)×(0,1,1,12) | SSE=</span><span class="sc">{</span>SSE<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Date"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"Passengers"</span>)<span class="op">;</span> plt.legend()<span class="op">;</span> plt.tight_layout()<span class="op">;</span> plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_arma추정03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/항공승객_arma추정04.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

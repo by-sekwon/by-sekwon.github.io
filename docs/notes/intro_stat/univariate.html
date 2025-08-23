@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>기초통계 3. 일변량 분석(비교분석) – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-c1fac2584b48ed01fb6e278e36375074.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">기초수학</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">수리통계</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본_난수생성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/estimation.html">
+ <span class="dropdown-text">추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/hypothesis_testing.html">
+ <span class="dropdown-text">가설검정_신뢰구간</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">조사방법론</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이_AHP_컨조인트</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/psm.html">
+ <span class="dropdown-text">PSM 성향점수매칭</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">일변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/concept_of_stat.html">
+ <span class="dropdown-text">일변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/data.html">
+ <span class="dropdown-text">데이터와 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/univariate.html">
+ <span class="dropdown-text">일변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/crosstab.html">
+ <span class="dropdown-text">교차표분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/goodness_of_fits.html">
+ <span class="dropdown-text">적합성검정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/normality.html">
+ <span class="dropdown-text">정규변환</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/correlation.html">
+ <span class="dropdown-text">상관분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/anova.html">
+ <span class="dropdown-text">실험설계 분산분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/time_series.html">
+ <span class="dropdown-text">시계열분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">|카드뉴스|</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">|통계상담|</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--4" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--4">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-비교분석일변량분석-기초" id="toc-chapter-1.-비교분석일변량분석-기초" class="nav-link active" data-scroll-target="#chapter-1.-비교분석일변량분석-기초"><span style="color:green">chapter 1. 비교분석(일변량분석) 기초</span></a>
+  <ul>
+  <li><a href="#개념" id="toc-개념" class="nav-link" data-scroll-target="#개념"><span style="color:blue">1. 개념</span></a></li>
+  <li><a href="#분석절차" id="toc-분석절차" class="nav-link" data-scroll-target="#분석절차"><span style="color:blue">2. 분석절차</span></a></li>
+  <li><a href="#예제-데이터" id="toc-예제-데이터" class="nav-link" data-scroll-target="#예제-데이터"><span style="color:blue">3. 예제 데이터</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-두-사물이-다르다는-것을-어떻게-알-수-있는가" id="toc-chapter-2.-두-사물이-다르다는-것을-어떻게-알-수-있는가" class="nav-link" data-scroll-target="#chapter-2.-두-사물이-다르다는-것을-어떻게-알-수-있는가"><span style="color:green">chapter 2. 두 사물이 다르다는 것을 어떻게 알 수 있는가?</span></a></li>
+  <li><a href="#chapter-3.-모비율-추론" id="toc-chapter-3.-모비율-추론" class="nav-link" data-scroll-target="#chapter-3.-모비율-추론"><span style="color:green">chapter 3. 모비율 추론</span></a>
+  <ul>
+  <li><a href="#일집단-모비율" id="toc-일집단-모비율" class="nav-link" data-scroll-target="#일집단-모비율"><span style="color:blue">1. 일집단 모비율</span></a></li>
+  <li><a href="#일집단-모비율-특수한-경우" id="toc-일집단-모비율-특수한-경우" class="nav-link" data-scroll-target="#일집단-모비율-특수한-경우"><span style="color:blue">2. 일집단 모비율-특수한 경우</span></a></li>
+  <li><a href="#독립인-두-모집단-비율-차이" id="toc-독립인-두-모집단-비율-차이" class="nav-link" data-scroll-target="#독립인-두-모집단-비율-차이"><span style="color:blue">3. 독립인 두 모집단 비율 차이</span></a></li>
+  <li><a href="#짝진-집단-비율-차이-mcnemar-검정" id="toc-짝진-집단-비율-차이-mcnemar-검정" class="nav-link" data-scroll-target="#짝진-집단-비율-차이-mcnemar-검정"><span style="color:blue">4. 짝진 집단 비율 차이 McNemar 검정</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-4.-모평균-추론" id="toc-chapter-4.-모평균-추론" class="nav-link" data-scroll-target="#chapter-4.-모평균-추론"><span style="color:green">chapter 4. 모평균 추론</span></a>
+  <ul>
+  <li><a href="#일집단-모비율-1" id="toc-일집단-모비율-1" class="nav-link" data-scroll-target="#일집단-모비율-1"><span style="color:blue">1. 일집단 모비율</span></a></li>
+  <li><a href="#독립인-두-모집단-평균-차이" id="toc-독립인-두-모집단-평균-차이" class="nav-link" data-scroll-target="#독립인-두-모집단-평균-차이"><span style="color:blue">2. 독립인 두 모집단 평균 차이</span></a></li>
+  <li><a href="#짝진-두-모집단-평균-차이" id="toc-짝진-두-모집단-평균-차이" class="nav-link" data-scroll-target="#짝진-두-모집단-평균-차이"><span style="color:blue">3. 짝진 두 모집단 평균 차이</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-5.-모분산-추론" id="toc-chapter-5.-모분산-추론" class="nav-link" data-scroll-target="#chapter-5.-모분산-추론"><span style="color:green">chapter 5. 모분산 추론</span></a>
+  <ul>
+  <li><a href="#일집단-모분산" id="toc-일집단-모분산" class="nav-link" data-scroll-target="#일집단-모분산"><span style="color:blue">1. 일집단 모분산</span></a></li>
+  <li><a href="#독립인-두-모집단-분산-차이" id="toc-독립인-두-모집단-분산-차이" class="nav-link" data-scroll-target="#독립인-두-모집단-분산-차이"><span style="color:blue">2. 독립인 두 모집단 분산 차이</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">기초통계 3. 일변량 분석(비교분석)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-비교분석일변량분석-기초" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-비교분석일변량분석-기초"><span style="color:green">chapter 1. 비교분석(일변량분석) 기초</span></h3>
+<section id="개념" class="level4">
+<h4 class="anchored" data-anchor-id="개념"><span style="color:blue">1. 개념</span></h4>
+<p><strong>일변량분석</strong></p>
+<p>데이터 분석에서 개별 확률변수를 독립적으로 분석하는 과정을 일변량 분석이라 한다. 이는 각 변수의 분포 특성을 파악하고, 중심 경향이나 산포 정도를 요약함으로써 데이터의 전반적인 구조를 이해하는 데 필수적인 출발점이 된다.</p>
+<p>변수의 유형에 따라 분석 방식은 달라진다. 범주형 변수는 개체를 분류하는 기능을 하며, 이 경우 분석은 주로 빈도와 상대빈도(비율)를 중심으로 이루어진다. 반면, 측정형 변수는 수치적으로 의미 있는 값을 가지므로 평균, 중앙값, 분산, 표준편차 등의 요약 통계량으로 변수의 중심과 퍼짐을 정리할 수 있다.</p>
+<p>모집단으로부터 추출한 확률표본 데이터는 모집단의 모든 정보를 가진 축소 데이터이므로 확률표본의 확률분포함수는 모집단 확률분포함수와 동일하다. 이를 이용하여 <span class="math inline">\(f(x)\)</span>(모집단에 대한 모든 정보)와 <span class="math inline">\(\theta\)</span>(요약 정보)를 추론한다. (1) 확률분포함수 <span class="math inline">\(f(x)\)</span>의 형태를 추론하는 것을 적합성 검정이라 한다. (2) 모수 <span class="math inline">\(\theta\)</span>에 대한 추론을 한다.</p>
+<p><span class="math display">\[X \sim f(x;\theta)\]</span></p>
+<p><span class="math display">\[r.s. = (x_{1},x_{2},\ldots,x_{n})\]</span></p>
+<p><span class="math display">\[x_{i} \sim f(x_{i};\theta)\]</span></p>
+<p><span class="math display">\[s(x_{1},x_{2},...,x_{n}) \sim f(s)\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/확률표본_일변량분석.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p><strong>비교분석</strong></p>
+<p>각 확률변수는 이론적으로는 고유의 확률분포함수를 가지고 있으며, 해당 분포를 대표하는 값으로는 모비율, 모평균, 모분산과 같은 모수가 있다. 이러한 모수에 대한 추정과 비교는 단순한 요약을 넘어서 두 개 이상의 모집단 또는 조건 간의 차이를 평가하는 분석으로 이어지며, 이를 비교 분석이라 한다.</p>
+<p>일변량 분석은 개별 변수의 요약 통계와 분포적 특성을 이해하는 과정이며, 비교 분석은 그러한 요약값들이 서로 다른 조건이나 그룹 간에 실질적인 차이를 보이는지를 확률과 통계적 추론의 틀 안에서 검증하는 과정이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/비교분석개념.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p><strong>관심 모수</strong></p>
+<p>일변량 분석: 모비율 <span class="math inline">\((\theta = p)\)</span>, 모평균 <span class="math inline">\((\theta = \mu)\)</span>, 모분산 <span class="math inline">\((\theta = \sigma^{2})\)</span></p>
+<p>비교분석:</p>
+<ul>
+<li><p>모비율 차이 <span class="math inline">\((\theta = p_{1} - p_{2})\)</span></p></li>
+<li><p>모평균 차이 <span class="math inline">\((\theta = \mu_{1} - \mu_{2})\)</span></p></li>
+<li><p>모분산 차이 <span class="math inline">\((\theta = \sigma_{2}^{2}/\sigma_{1}^{2})\)</span></p></li>
+</ul>
+</section>
+<section id="분석절차" class="level4">
+<h4 class="anchored" data-anchor-id="분석절차"><span style="color:blue">2. 분석절차</span></h4>
+<p>일변량 분석은 하나의 변수에 대해 그 분포 특성과 대표값을 요약하고 해석하는 분석이다. 이는 통계 분석의 가장 기본적인 단계이며, 이후 다변량 분석 또는 비교 분석의 기초가 된다.</p>
+<p>일변량 분석은 하나의 변수에 대한 기술적 요약뿐 아니라, 그 변수의 모집단 특성(모수)에 대해 추론적 판단을 내리기 위한 통계적 가설 을 설정하면서 시작된다. 가설 검정 중심의 일변량 분석은 단순한 분포 요약을 넘어 관측된 통계량이 우연에 의한 것인지, 실제로 의미 있는 차이를 나타내는 것인지를 판단하는 데 목적이 있다.</p>
+<p><strong>모수에 대한 통계적 가설 설정</strong></p>
+<p>일변량 분석은 단일 변수에 대한 자료를 기술적으로 요약하고, 그 분포 특성을 파악하는 데서 출발하지만 통계적 추론의 맥락에서는 모수에 대한 가설 설정이 분석의 첫 단계가 된다.</p>
+<p>통계학에서 말하는 모수란, 모집단의 특성을 수치적으로 나타내는 값으로서, 예를 들어 모평균, 모비율, 모분산 등이 이에 해당한다. 연구자는 관찰된 표본 데이터를 기반으로, 이러한 모수에 대해 일정한 주장을 하고 이를 검정하게 된다.</p>
+<p>【예시】 모평균에 대한 가설</p>
+<p>예를 들어, 어떤 교육 프로그램이 대학생의 수학 성취도에 미치는 영향을 평가하고자 할 때, 연구자는 해당 프로그램을 이수한 학생들의 수학 점수 평균이 전국 대학생 평균 점수인 70점과 유의미하게 다른지를 확인하고자 한다.</p>
+<p>귀무가설: <span class="math inline">\(\mu = 70\)</span> → 해당 프로그램을 이수한 학생들의 수학 점수는 전국 평균과 같다.</p>
+<p>대립가설:<span class="math inline">\(\mu \neq 70\)</span> → 프로그램을 이수한 학생들의 평균 점수는 전국 평균과 다르다.</p>
+<p>이와 같이, 연구문제는 결국 모수에 대한 통계적 가설로 정식화되며, 그 이후의 분석 절차는 표본으로부터 계산된 통계량이 이 가설을 지지하거나 반박할 수 있는지를 판단하는 과정으로 구성된다.</p>
+<p><strong>데이터 시각화</strong></p>
+<p>일변량 분석에서 통계적 검정에 앞서 먼저 수행해야 할 작업은 시각화와 탐색적 분석이다. 하나의 변수에 대해 히스토그램, 박스플롯, 밀도함수 곡선 등을 통해 분포의 형태, 이상값 존재 여부, 중심과 산포의 구조 등을 직관적으로 파악할 수 있다.</p>
+<p>이 과정을 통해 변수의 특성을 이해하고, 이어서 설정할 가설이 타당한지, 검정에 필요한 전제 조건(예: 정규성)이 충족되는지를 평가할 수 있다. 시각화를 기반으로 연구 문제를 모수에 대한 통계적 가설로 정식화한 뒤, 이에 대한 검정통계량과 <span class="math inline">\(p\)</span>값을 통해 귀무가설의 기각 여부를 판단하게 된다.</p>
+<p><strong>MVUE 및 샘플링 분포 도출</strong></p>
+<p>통계적 가설검정은 표본으로부터 관측된 통계량이, 귀무가설 하에서 나타날 수 있는 우연한 변동인지, 아니면 실제 모수의 차이로부터 기인한 것인지를 판단하는 데 그 목적이 있다. 이러한 판단은 근본적으로 모수에 대한 통계량의 성질과 분포를 기반으로 이루어진다.</p>
+<p>가설검정에서 사용하는 통계량은 해당 모수에 대한 추정량이며, 이 추정량이 가질 수 있는 여러 후보 중에서도, 최소분산 불편추정량(MVUE)이 가장 선호된다. 그 이유는 다음과 같다.</p>
+<ul>
+<li><p>불편성: 추정량의 평균이 실제 모수와 일치</p></li>
+<li><p>최소 분산: 동일한 정보 하에서 가장 정확하고 안정적인 추정 → 즉, MVUE는 신뢰성 있는 비교 기준을 제공하여 검정통계량의 변동성을 최소화하고, 기각 여부에 대한 결정의 오류 확률을 줄일 수 있다.</p></li>
+</ul>
+<p>가설검정은 다음과 같은 구조를 따른다.</p>
+<p><span class="math inline">\(\text{검정통계량} = \frac{\text{MVUE - 귀무가설 하 모수}}{\text{표준오차}}\)</span>, 여기서 핵심은 표본 통계량의 분포, 즉 샘플링 분포이다. 왜냐하면,</p>
+<ul>
+<li><p><span class="math inline">\(p\)</span>값 계산은 <span dir="rtl">”</span>이 통계량이 얼마나 극단적인가?<span dir="rtl">”</span>를 분포의 확률 기준에서 판단해야 하기 때문이다.</p></li>
+<li><p>기각역 또는 임계값 결정은 표본 통계량의 분포 형태를 전제로 하기 때문이다.</p></li>
+</ul>
+<p>즉, 귀무가설이 참일 때 추정량이 어떤 확률분포를 따르는지를 알아야 우리가 관측한 통계량이 우연히 나타났을 가능성을 수치적으로 판단할 수 있다.</p>
+<ul>
+<li><p>통계적 가설 검정의 수학적 정당성을 위한 필요 조건</p></li>
+<li><p>MVUE는 정확하고 효율적인 모수 추정의 기준선을 제공하고,</p></li>
+<li><p>샘플링 분포는 검정통계량의 변동성과 극단값의 확률을 판단할 기준이 된다.</p></li>
+</ul>
+<p>이 두 요소가 없다면, 가설검정은 단순한 수치 비교 이상의 의미를 갖지 못하며, <span class="math inline">\(p\)</span>값이나 가설검정 결론에 대한 해석적 정당성이 크게 약화된다.</p>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산</strong></p>
+<p>가설검정의 목적은, 귀무가설 하에서 관측된 표본 결과가 발생할 가능성이 얼마나 희박한지를 평가하는 것이다. 이를 위해 우리는 먼저 검정통계량을 정의하고, 그에 대한 관측값을 계산하여 기각 여부를 판단하게 된다. “교육 프로그램이 대학생의 수학 성취도 평가”에 대한 모평균 가설검정을 예시로 설명하기로 한다.</p>
+<p>검정통계량 정의 <span class="math inline">\(H_{0}:\mu = 70\)</span></p>
+<ul>
+<li><p>전제: 정규분포 또는 중심극한정리 성립</p></li>
+<li><p>표준편차 <span class="math inline">\(\sigma\)</span>를 알고 있는 경우: <span class="math inline">\(z = \frac{\overline{X} - \mu_{0}}{\frac{\sigma}{\sqrt{n}}} \sim N(0,1)\)</span></p></li>
+<li><p>표준편차 <span class="math inline">\(\sigma\)</span>를 모를 경우: <span class="math inline">\(t = \frac{\overline{X} - \mu_{0}}{\frac{s}{\sqrt{n}}} \sim t(n - 1)\)</span></p></li>
+</ul>
+<p><strong>기각역과 유의확률 <span class="math inline">\(p\)</span>값</strong></p>
+<p>기각역이란, 귀무가설이 참일 때 통계량이 나타나기 어려운 극단적인 영역을 의미한다. 이 영역의 경계값을 임계값이라 하고, 이 값은 유의수준(<span class="math inline">\(\alpha\)</span>)과 검정의 방향성(단측/양측)에 따라 결정된다.</p>
+<p>유의확률 <span class="math inline">\(p\)</span>값은, 귀무가설이 참이라는 전제 하에서 관측된 검정통계량 이상으로 극단적인 값이 나타날 확률을 의미한다.</p>
+<ul>
+<li><p><span class="math inline">\(p &lt; \alpha\)</span>: 귀무가설 기각 → 결과는 통계적으로 유의하다.</p></li>
+<li><p><span class="math inline">\(p \geq \alpha\)</span>: 귀무가설 기각하지 않음 → 통계적으로 유의하지 않다.</p></li>
+</ul>
+<p><strong>결론</strong></p>
+<p>통계적 가설검정 결과를 보고할 때는 단순히 기각 여부를 언급하는 것을 넘어, 주요 요약 통계량, 검정통계량, 유의확률, 그리고 필요한 경우 신뢰구간까지 함께 제시함으로써. 결과의 정량적 의미와 해석 가능성을 풍부하게 전달해야 한다. 이러한 구성은 통계 분석의 재현 가능성을 보장하고, 해석의 과학적 엄밀성을 확보하는 데 필수적이다.</p>
+</section>
+<section id="예제-데이터" class="level4">
+<h4 class="anchored" data-anchor-id="예제-데이터"><span style="color:blue">3. 예제 데이터</span></h4>
+<p>seaborn 라이브러리의 titanic 데이터셋은 실제 1912년 타이타닉 호 침몰 사고의 승객 정보를 바탕으로 구성되어 있다(15개 변수, 표본크기-승객 891명)</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 50%">
+<col style="width: 21%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">변수명</td>
+<td style="text-align: center;">설명</td>
+<td style="text-align: center;">데이터 타입</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">survived</td>
+<td style="text-align: center;">생존 여부 (0 = 사망, 1 = 생존)</td>
+<td style="text-align: center;">int (범주형)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">pclass</td>
+<td style="text-align: center;">선실 등급 (1, 2, 3등급)</td>
+<td style="text-align: center;">int (순서형)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">sex</td>
+<td style="text-align: center;">성별</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">age</td>
+<td style="text-align: center;">나이</td>
+<td style="text-align: center;">float</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">sibsp</td>
+<td style="text-align: center;">동반한 형제자매/배우자 수</td>
+<td style="text-align: center;">int</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">parch</td>
+<td style="text-align: center;">동반한 부모/자녀 수</td>
+<td style="text-align: center;">int</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">fare</td>
+<td style="text-align: center;">운임 요금</td>
+<td style="text-align: center;">float</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">embarked</td>
+<td style="text-align: center;">탑승 항구 (C = Cherbourg, Q = Queenstown, S = Southampton)</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">class</td>
+<td style="text-align: center;">선실 등급 (문자형: First, Second, Third)</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">who</td>
+<td style="text-align: center;">승객 구분 (man, woman, child)</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">adult_male</td>
+<td style="text-align: center;">성인 남성 여부</td>
+<td style="text-align: center;">bool</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">deck</td>
+<td style="text-align: center;">선실 위치 (A–G, 일부 결측)</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">embark_town</td>
+<td style="text-align: center;">탑승 도시 (Cherbourg, Queenstown, Southampton)</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">alive</td>
+<td style="text-align: center;">생존 여부 (yes/no)</td>
+<td style="text-align: center;">category</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">alone</td>
+<td style="text-align: center;">혼자 탑승 여부</td>
+<td style="text-align: center;">bool</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#타이타닉 데이터 불러오기</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>titanic <span class="op">=</span> sns.load_dataset(“titanic<span class="st">")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="er">titanic.info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/타이타닉info.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="chapter-2.-두-사물이-다르다는-것을-어떻게-알-수-있는가" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-두-사물이-다르다는-것을-어떻게-알-수-있는가"><span style="color:green">chapter 2. 두 사물이 다르다는 것을 어떻게 알 수 있는가?</span></h3>
+<p>통계는 두 현상이 서로 다른지 판단할 때 유용한 도구다. 하지만 이 단순한 질문—“이 둘은 같은가, 다른가?”—의 답은 언제나 확률적인 것이다. 예를 들어 어떤 약이 효과가 있는지 알아보려 할 때, 우리는 다음과 같은 질문을 한다:</p>
+<p><span dir="rtl">”</span>이 약을 복용한 환자들과 그렇지 않은 환자들 사이에 실질적인 차이가 존재하는가?”</p>
+<p>이는 두 그룹의 평균값이나 비율 또는 확률이 서로 통계적으로 유의미하게 다르냐는 문제로 귀결된다.</p>
+<p><strong>평균의 차이가 진짜일까, 우연일까?</strong></p>
+<p>가령, 한 실험에서 위약(placebo)을 투여한 집단의 평균 체중 감소량이 2파운드, 신약을 투여한 집단의 평균 감소량이 4파운드라고 하자. 이 경우 우리는 신약이 더 효과적이라고 생각할 수 있다. 하지만 그 차이가 단지 무작위 변동에 의한 것일 가능성도 있다.</p>
+<p>모든 측정은 일정 수준의 무작위성(randomness)을 내포하고 있다. 그렇기 때문에 단순히 평균값이 다르다는 사실만으로 두 집단이 다르다고 단정지을 수 없다.</p>
+<p>여기서 통계는 두 질문에 답한다:</p>
+<p>1. 관측된 차이가 얼마나 큰가?</p>
+<p>2. 그 차이가 우연히 발생했을 가능성은 얼마나 작은가?</p>
+<p>이 질문들에 대한 답은 신뢰 구간(confidence intervals)과 p값(p-values), 그리고 통계적 유의성(statistical significance)을 통해 평가된다.</p>
+<p><strong>통계적 유의성과 실제적 유의성의 차이</strong></p>
+<p>통계적으로 유의미한 차이가 있다고 해서, 그 차이가 실제로도 의미 있는 것은 아니다. 예를 들어, 두 도시의 평균 기온이 0.1도 차이 나고, 그 차이가 통계적으로 유의미하다고 하더라도, 실제 생활에서는 아무런 체감이 없을 수 있다.</p>
+<p>통계적 유의성은 오직 그 차이가 무작위로 발생할 가능성이 매우 낮다는 사실만을 말해줄 뿐이다.</p>
+<p>반면 실질적(또는 실용적) 유의성은 그 차이가 현실에서 중요하거나 영향력이 있는가를 판단한다.</p>
+<p>즉, <span dir="rtl">”</span>차이가 있다”는 것과 <span dir="rtl">”</span>중요한 차이다”는 것은 다르다.</p>
+<p><strong>차이를 평가하는 기준: 효과 크기와 표준오차</strong></p>
+<p>효과 크기(effect size)는 두 집단 간의 차이의 크기를 의미하며, 이를 표준오차(standard error)와 비교해 해석한다.</p>
+<ul>
+<li><p>신약 복용 그룹 평균 체중 감소: 4.0 파운드</p></li>
+<li><p>위약 그룹 평균 체중 감소: 2.0 파운드</p></li>
+<li><p>두 집단 간 차이: 2.0 파운드</p></li>
+<li><p>표준오차: 0.5 파운드</p></li>
+</ul>
+<p>차이(2.0)가 표준오차(0.5)의 4배이면, 이는 무작위로 발생했을 가능성이 매우 낮다고 해석할 수 있다.</p>
+<p>이러한 판단은 z-통계량 또는 t-통계량으로 정량화된다.</p>
+<p><strong>무작위 샘플링의 중요성</strong></p>
+<p>통계적 검정을 하기 위해서는, 샘플이 모집단을 대표해야 한다. 만약 샘플이 편향되어 있다면, 아무리 통계적으로 유의한 결과가 나와도 모집단에 일반화할 수 없다.</p>
+<p>예: 특정 체중 감량 약의 효과를 평가하는 실험에서 오직 운동선수들만을 대상으로 했다면, 그 결과를 일반 성인에게 적용하는 것은 무리다.</p>
+<p>통계적 검정의 전제 조건은 무작위 추출(random sampling)이다.</p>
+<p><strong>p-값에 대한 오해</strong></p>
+<p>p-값은 흔히 <span dir="rtl">”</span>이 결과가 우연일 확률”이라고 해석되지만, 정확히는 다음과 같은 의미를 가진다:</p>
+<p><span dir="rtl">”</span>귀무가설(null hypothesis)이 참일 때, 이 정도 이상의 차이가 나타날 확률”</p>
+<p>즉, p &lt; 0.05란,</p>
+<ul>
+<li><p><span dir="rtl">”</span>차이가 우연히 발생했을 가능성이 5% 미만이다.”</p></li>
+<li><p><span dir="rtl">”</span>따라서 우리는 귀무가설을 기각할 수 있다.” 는 의미일 뿐이다.</p></li>
+</ul>
+<p>하지만 p-값은 다음을 의미하지 않는다:</p>
+<ul>
+<li><p><span dir="rtl">”</span>귀무가설이 5% 확률로 참이다.”</p></li>
+<li><p><span dir="rtl">”</span>대립가설이 95% 확률로 참이다.”</p></li>
+</ul>
+<p>이는 매우 흔한 오해이므로 주의해야 한다.</p>
+<p><strong>결론: 차이를 이해한다는 것의 의미</strong></p>
+<p>두 사물, 두 그룹, 두 평균, 두 비율이 서로 다른지를 판단하려면, 우리는 그 차이가 단순한 무작위 노이즈(noise)로부터 비롯된 것인지 아닌지를 평가해야 한다. 이를 위해 통계는 다음과 같은 도구들을 제공한다:</p>
+<ul>
+<li><p>평균 및 비율</p></li>
+<li><p>표준편차, 표준오차</p></li>
+<li><p>신뢰구간 및 효과 크기</p></li>
+<li><p>p-값과 유의수준 (보통 5%)</p></li>
+</ul>
+<p>그리고 이 모든 분석은 무작위 추출과 적절한 표본 설계라는 기반 위에서만 의미를 가진다.</p>
+</section>
+<section id="chapter-3.-모비율-추론" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-모비율-추론"><span style="color:green">chapter 3. 모비율 추론</span></h3>
+<section id="일집단-모비율" class="level4">
+<h4 class="anchored" data-anchor-id="일집단-모비율"><span style="color:blue">1. 일집단 모비율</span></h4>
+<p>연구문제 및 통계적 가설</p>
+<p>대규모 해양 재난인 타이타닉호 사고 당시, 전체 승객에 대한 사망률이 60%보다 높았다는 통계적 근거가 있는가?</p>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:p = 0.6( = p_{0})\)</span>, 여기서 <span class="math inline">\(p\)</span>는 모집단 사망률</p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:p &gt; 0.6( = p_{0})\)</span> (단측가설)</p></li>
+<li><p>모수: <span class="math inline">\(\theta = p\)</span></p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/모비율일집단.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<ul>
+<li><p>모집단 확률변수 <span class="math inline">\(X\)</span>는 사망, 생존 두 개의 결과만 갖는 베르누이 시행 결과이며 모수는 사망율 <span class="math inline">\(p\)</span>이다.</p></li>
+<li><p>데이터: 탑승인원 2,224중 신원이 확인된 891명 승객의 사망여부이다.</p></li>
+</ul>
+<p><strong>시각화</strong></p>
+<p>일변량 범주형 변수의 시각화는 빈도와 비율(확률분포함수)를 표현하는 것으로 바차트나 파이차트 도구를 이용한다. 타이타닉 승객의 표본 사망율은 61.6%이다.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>titanic <span class="op">=</span> sns.load_dataset(<span class="st">"titanic"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 생존/사망 값 개수 계산</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>counts <span class="op">=</span> titanic[<span class="st">'survived'</span>].value_counts()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">'Died'</span>, <span class="st">'Survived'</span>]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'#ff9999'</span>,<span class="st">'#66b3ff'</span>]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 파이차트 그리기</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>plt.pie(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    counts,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>labels,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    autopct<span class="op">=</span><span class="st">'</span><span class="sc">%1.1f%%</span><span class="st">'</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    startangle<span class="op">=</span><span class="dv">90</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    colors<span class="op">=</span>colors,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    explode<span class="op">=</span>(<span class="fl">0.05</span>, <span class="dv">0</span>)  <span class="co"># 강조 효과</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Titanic Survival Distribution"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)  <span class="co"># 원형 유지</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/파이차트.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p><strong>MVUE 및 샘플링분포</strong></p>
+<p>모비율의 MVUE 추정치는 표본 비율 <span class="math inline">\(\widehat{p} = \frac{\#\_ of\_ death}{\#\_ of\_ n} = 0.62\)</span>이고 샘플링분포는 중심극한정리에 의해 <span class="math inline">\(\widehat{p} \sim N(p,\frac{p(1 - p)}{n})\)</span>이다.</p>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산, 그리고 신뢰구간</strong></p>
+<p>추정분산 <span class="math inline">\(V(\widehat{p}) = \frac{p(1 - p)}{n}\)</span>은 이므로 표본비율의 표준편차인 표준오차 <span class="math inline">\(s(\widehat{p}) = \sqrt{\frac{p(1 - p)}{n}}\)</span>이다.</p>
+<ul>
+<li><p>검정통계량: <span class="math inline">\(ts = \frac{\widehat{p} - p_{0}}{s(\widehat{p}) = \sqrt{\frac{p_{0}(1 - p_{0})}{n}}} \sim z\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(pvalue = P(z &gt; |ts|)\)</span></p></li>
+</ul>
+<p><strong>모비율 <span class="math inline">\(100(1 - \alpha)\%\)</span>신뢰구간</strong></p>
+<p><span class="math display">\[\widehat{p} \pm z_{1 - \alpha/2}\sqrt{\widehat{p}(1 - \widehat{p})/n} = (0.584,0.648)\]</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.proportion <span class="im">import</span> proportions_ztest</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 사망자 수 및 전체 탑승자 수</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>count <span class="op">=</span> titanic[titanic[<span class="st">'survived'</span>] <span class="op">==</span> <span class="dv">0</span>].shape[<span class="dv">0</span>]</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>nobs <span class="op">=</span> titanic.shape[<span class="dv">0</span>]</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>p0 <span class="op">=</span> <span class="fl">0.6</span>  <span class="co"># 귀무가설: 사망률 = 0.6</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 검정 수행</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>stat, pval <span class="op">=</span> proportions_ztest(count, nobs, value<span class="op">=</span>p0, alternative<span class="op">=</span><span class="st">'larger'</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 신뢰구간 계산 (normal approximation)</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>ci_low, ci_upp <span class="op">=</span> sm.stats.proportion_confint(count, nobs, alpha<span class="op">=</span><span class="fl">0.05</span>, method<span class="op">=</span><span class="st">'normal'</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 출력</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"사망자 수: </span><span class="sc">{</span>count<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"전체 탑승자 수: </span><span class="sc">{</span>nobs<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"관측된 사망률: </span><span class="sc">{</span>count<span class="op">/</span>nobs<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"검정통계량: </span><span class="sc">{</span>stat<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-값: </span><span class="sc">{</span>pval<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"사망률 95% 신뢰구간: (</span><span class="sc">{</span>ci_low<span class="sc">:.3f}</span><span class="ss">, </span><span class="sc">{</span>ci_upp<span class="sc">:.3f}</span><span class="ss">)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>결론</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 32%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="3" style="text-align: center;">승객 사망률은 0.6 초과인가?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">표본비율</td>
+<td style="text-align: center;">검정통계량</td>
+<td style="text-align: center;">유의확률</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.616</td>
+<td style="text-align: center;">0.992</td>
+<td style="text-align: center;">0.321</td>
+</tr>
+<tr class="odd">
+<td colspan="3" style="text-align: center;">95% 신뢰구간: (0.584, 0.648)</td>
+</tr>
+</tbody>
+</table>
+<p>유의확률이 0.321로 유의수준 0.05보다 크므로 귀무가설이 채택되어, 승객 사망률이 0.6보다 크다고 할 만한 통계적 근거는 부족하다. 따라서 관측된 사망률이 61.6%이기는 하나, 이는 표본 오차 범위 내의 우연한 차이일 수 있으며, 사망률이 정확히 60%라는 주장을 기각하기에는 충분하지 않다.</p>
+</section>
+<section id="일집단-모비율-특수한-경우" class="level4">
+<h4 class="anchored" data-anchor-id="일집단-모비율-특수한-경우"><span style="color:blue">2. 일집단 모비율-특수한 경우</span></h4>
+<section id="모비율-소표본-minnpn1-p-le-5" class="level5">
+<h5 class="anchored" data-anchor-id="모비율-소표본-minnpn1-p-le-5">(1) 모비율 소표본 <span class="math inline">\(min(np,n(1-p)) \le 5\)</span></h5>
+<p>모비율 검정 시 검정통계량의 분포는 정규분포를 가정한다. 이는 중심극한 정리에 의한 것으로 대표본 경유에만 MVUE, 표본비율 샘플링분포는 정규분포를 따른다.</p>
+<p>그러나 소표본(<span class="math inline">\(min(np,n(1 - p)) &lt; 5\)</span>)인 경우는 이항분포를 이용하여 가설을 검정한다. 모집단의 개체가 성공(성공 확률이 <span class="math inline">\(p\)</span>), 실패의 결과만 있으므로 확률표본은 베르누이 시행과 동일하다. 그러므로 표본크기 <span class="math inline">\(n\)</span> 확률표본으로부터 구한 성공 개체의 수 합은 이항분포 <span class="math inline">\(B(n,p)\)</span>를 따른다.</p>
+<p>학생 흡연 비율이 20% 미만이라고 발표했다. 맞 는지 알아보기 위하여 학생 20명을 확률 추출하여 흡연여부를 알아본 결과 3명이 흡연하고 있다고 조사 되었다. 발표가 맞는지 검정하시오.</p>
+<blockquote class="blockquote">
+<p>귀무가설 : <span class="math inline">\(H_{0}:p = 0.2\)</span> vs.&nbsp;대립가설 : <span class="math inline">\(H_{0}:p &lt; 0.2\)</span></p>
+<p><span class="math inline">\(min(20*0.2,20*0.8) = 4 &lt; 5\)</span>이므로 중심극한정리 적용이 불가능하다. 대신 흡연자 수는 이항분포(20, p=0.2)를 따르므로 유의확률은 다음과 같다. 귀무가설을 기각할 수 없어 학생 흡연율은 20% 미만이라 할 수 없다. <span class="math inline">\(P(\sum X_{i} \leq 3|sumX_{i} \sim B(n = 20,p = 0.2)) = 0.42\)</span></p>
+</blockquote>
+</section>
+<section id="wilson-통계량" class="level5">
+<h5 class="anchored" data-anchor-id="wilson-통계량">(2) Wilson 통계량</h5>
+<p>표본크기 <span class="math inline">\(n\)</span>에 비해 성공회수 <span class="math inline">\(\sum x_{i} = x\)</span> 가 매우 작은 경우 비율 추정치는 <span class="math inline">\(\widehat{p} = \frac{x}{n}\)</span> 대신 <span class="math inline">\(\widehat{p} = \frac{x + 2}{n + 4}\)</span>를 사용하고 추정방법은 대표본 동일하다.</p>
+</section>
+</section>
+<section id="독립인-두-모집단-비율-차이" class="level4">
+<h4 class="anchored" data-anchor-id="독립인-두-모집단-비율-차이"><span style="color:blue">3. 독립인 두 모집단 비율 차이</span></h4>
+<p><strong>연구문제 및 통계적 가설</strong></p>
+<p>타이타닉호 사고 당시, 단독 탑승 승객의 생존률이 동반자와 함께 탑승한 승객의 생존률보다 통계적으로 유의하게 15% 이상 높은지를 검정하고자 한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/모비율비교.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:p_{1} - p_{2} = 0.15\)</span>, 여기서 <span class="math inline">\(p_{1}\)</span>는 혼자 여행하는 승객의 생존율, <span class="math inline">\(p_{2}\)</span>는 동반 여행하는 승객의 생존율</p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:p_{1} - p_{2} &gt; 0.15\)</span> (단측가설)</p></li>
+<li><p>모수: <span class="math inline">\(\theta = p_{1} - p_{2}\)</span></p></li>
+</ul>
+<p><strong>시각화</strong></p>
+<p>집단별 일변량 범주형 변수의 시각화는 빈도와 비율(확률분포함수)를 표현하는 것으로 바차트 도구를 이용한다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#동반여부별 생존여부 시각화</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 상대빈도 계산 (교차비율표 → 정규화)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>prop_df <span class="op">=</span> (</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    titanic</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">'alone'</span>, <span class="st">'survived'</span>])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    .size()</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    .reset_index(name<span class="op">=</span><span class="st">'count'</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 대비 비율 계산 (alone 그룹 내 비율)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>prop_df[<span class="st">'proportion'</span>] <span class="op">=</span> prop_df.groupby(<span class="st">'alone'</span>)[<span class="st">'count'</span>].transform(<span class="kw">lambda</span> x: x <span class="op">/</span> x.<span class="bu">sum</span>())</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">5</span>))</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.barplot(data<span class="op">=</span>prop_df, x<span class="op">=</span><span class="st">'alone'</span>, y<span class="op">=</span><span class="st">'proportion'</span>, hue<span class="op">=</span><span class="st">'survived'</span>, palette<span class="op">=</span><span class="st">'Set2'</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 축 라벨 및 타이틀 설정</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels([<span class="st">'Not Alone'</span>, <span class="st">'Alone'</span>])</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Proportion"</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Traveling Alone"</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Survival Rate by Alone Status"</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 비율 라벨 표시</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> container <span class="kw">in</span> ax.containers:</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    ax.bar_label(container, labels<span class="op">=</span>[<span class="ss">f'</span><span class="sc">{</span>h<span class="sc">:.1%}</span><span class="ss">'</span> <span class="cf">for</span> h <span class="kw">in</span> container.datavalues], label_type<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">"Survived"</span>, labels<span class="op">=</span>[<span class="st">"No"</span>, <span class="st">"Yes"</span>])</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/두집단모비율차트.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p><strong>MVUE 및 샘플링분포</strong></p>
+<ul>
+<li><p>동반 여행하는 승객 표본비율: <span class="math inline">\({\widehat{p}}_{1} = 0.506\)</span></p></li>
+<li><p>혼자 여행하는 승객 표본비율: <span class="math inline">\({\widehat{p}}_{2} = 0.304\)</span></p></li>
+<li><p>MVUE: <span class="math inline">\(\widehat{\theta} = {\widehat{p}}_{1} - {\widehat{p}}_{2} = 0.202\)</span></p></li>
+</ul>
+<p><strong>샘플링분포</strong></p>
+<p><span class="math display">\[{\widehat{p}}_{1} - {\widehat{p}}_{2} = N(p_{1} - p_{2},\frac{p_{1}(1 - p_{1})}{n_{1}} + \frac{p_{2}(1 - p_{2})}{n_{2}})\]</span></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># alone별 survived = 1 비율 (평균값이 생존률)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>survival_rate_by_alone <span class="op">=</span> titanic.groupby(<span class="st">'alone'</span>)[<span class="st">'survived'</span>].mean()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(titanic[<span class="st">'survived'</span>].mean(),survival_rate_by_alone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>0.3838383838383838 <br> alone <br> False 0.505650 <br> True 0.303538</p>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산, 그리고 신뢰구간</strong></p>
+<p>추정량 <span class="math inline">\(\widehat{\theta} = {\widehat{p}}_{1} - {\widehat{p}}_{2}\)</span>의 표준오차는 <span class="math inline">\(s({\widehat{p}}_{1} - {\widehat{p}}_{2}) = \sqrt{\frac{{\widehat{p}}_{1}(1 - {\widehat{p}}_{1})}{n_{1}} + \frac{{\widehat{p}}_{2}(1 - {\widehat{p}}_{2})}{n_{2}}}\)</span>이다. 신뢰구간 구할 경우에는 표준오차는 위의 식을 사용해야 하나 가설검정 시에는 귀무가설이 맞다는 가정 하에 검정통계량을 계산하므로 개별 표본비율 대신 통합비율 <span class="math inline">\({\widehat{p}}_{0} = \frac{n_{x} + n_{y}}{n_{1} + n_{2}}\)</span>을 사용하여 구해야 한다.</p>
+<ul>
+<li><p>검정통계량: <span class="math inline">\(TS = \frac{{\widehat{p}}_{1} - {\widehat{p}}_{2} - 0}{s({\widehat{p}}_{1} - {\widehat{p}}_{2})} \sim z\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(pvalue = P(z &gt; |ts|)\)</span></p></li>
+</ul>
+<p><strong><span class="math inline">\(100(1-\alpha) \%\)</span> 모비율 차이(<span class="math inline">\(p_{1} - p_{2}\)</span>) 신뢰구간</strong></p>
+<p><span class="math display">\[({\widehat{p}}_{1} - {\widehat{p}}_{2}) \pm z_{1 - \alpha/2}\sqrt{\frac{{\widehat{p}}_{1}(1 - {\widehat{p}}_{1})}{n_{1}} + \frac{{\widehat{p}}_{2}(1 - {\widehat{p}}_{2})}{n_{2}}}\]</span></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#모비율 차이 검정</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.proportion <span class="im">import</span> proportions_ztest</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 집단별 생존자 수 및 전체 수</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>grouped <span class="op">=</span> titanic.groupby(<span class="st">"alone"</span>)[<span class="st">"survived"</span>].agg([<span class="st">'sum'</span>, <span class="st">'count'</span>])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>success <span class="op">=</span> [grouped.loc[<span class="va">False</span>, <span class="st">'sum'</span>], grouped.loc[<span class="va">True</span>, <span class="st">'sum'</span>]]</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>nobs <span class="op">=</span> [grouped.loc[<span class="va">False</span>, <span class="st">'count'</span>], grouped.loc[<span class="va">True</span>, <span class="st">'count'</span>]]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 단측 검정 : 모수차이 0.15 설정</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>stat, pval <span class="op">=</span> proportions_ztest(success, nobs, value<span class="op">=</span><span class="fl">0.15</span>, alternative<span class="op">=</span><span class="st">'larger'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 출력</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"검정통계량: </span><span class="sc">{</span>stat<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-값: </span><span class="sc">{</span>pval<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>결론</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="4" style="text-align: center;">혼자 여행 승객 생존률은 동반 여행 승객 생존률보다 15% 높은가?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">집단</td>
+<td style="text-align: center;">표본비율</td>
+<td style="text-align: center;">검정통계량</td>
+<td style="text-align: center;">유의확률</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">동반 여행</td>
+<td style="text-align: center;">0.506</td>
+<td style="text-align: center;">1.565</td>
+<td style="text-align: center;">0.059</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">홀로 여행</td>
+<td style="text-align: center;">0.304</td>
+<td colspan="2" rowspan="2" style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">총합</td>
+<td style="text-align: center;">0.384</td>
+</tr>
+</tbody>
+</table>
+<p>유의확률이 0.059로 유의수준 0.05를 초과하므로 귀무가설을 기각할 수 없다. 동반자와 함께 여행한 승객의 생존률(50.6%)이 혼자 여행한 승객의 생존률(30.4%)보다 높기는 하지만, 그 차이가 통계적으로 15% 이상이라고 단정할 수는 없다.</p>
+</section>
+<section id="짝진-집단-비율-차이-mcnemar-검정" class="level4">
+<h4 class="anchored" data-anchor-id="짝진-집단-비율-차이-mcnemar-검정"><span style="color:blue">4. 짝진 집단 비율 차이 McNemar 검정</span></h4>
+<p><strong>연구문제(시나리오)</strong></p>
+<p>동일한 개체에 대하여 이진형(성공, 실패) 결과의 실험(프로그램)을 서로 다른 두 기간(before - after)에 측정하여 실험(프로그램) 효과가 있는지 알아보는 방법이다.</p>
+<p>[사례연구] Bland (2000) 1319명 어린이에 대하여 12살에 독감에 걸릴 가능성은 나이가 14살이 되면 높아지는지, 낮아지는지 알아보기 위하여 조사한 결과이다. 즉 1,319명 어린이는 동일하며 12살에 조사하고 14살에 다시 한 번 조사한 결과이다. https://www.medcalc.org/manual/ mcnemartest2.php</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/맥니마검정.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>12세와 14세 사이에 감기에 걸릴 확률은 변하지 않는다. ⇔ 심한 감기에 걸릴 확률이 시간에 따라 달라지지 않았다.</p>
+<p>P(A)+P(B)(12 살에 걸린 독감 걸린 사람 비율)=P(A)+P(C)(14 살에 걸린 독감 걸린 사람 비율)은 동일하고 (2) P(C)+P(D)(12 살에 걸린 독감 안 걸린 사람 비율)=P(B)+P(D)(14 살에 걸린 독감 안 걸린 사람 비율)은 동일하다는 가정이 성립하면 <span class="math inline">\(P(B) = P(C)\)</span>이성립한다. 즉 12살에 독감 감염자의 14살 미감염 비율과 14살 독감 감염자의 12살 독간 미감염 비율은 동일하다.</p>
+<p><strong>통계적 가설</strong></p>
+<ul>
+<li><p>귀무가설 : 나이에 관계없이 감기 걸릴 가능성은 동일하다. <span class="math inline">\(P(B) = P(C)\)</span></p></li>
+<li><p>대립가설 : 나이에 따른 독감 걸릴 가능성은 달라진다.</p></li>
+</ul>
+<p><strong>점추정치 및 샘플링 분포</strong>: <span class="math inline">\(TS = \frac{(B - C)^2}{B + C}
+= \frac{(144 - 256)^2}{144 + 256}
+= 31.36 \sim \chi^2(1)\)</span></p>
+<p><strong>유의확률</strong>: <span class="math inline">\(p = P(\chi_{(1)}^{2} &gt; 31.36) &lt; 0.001\)</span></p>
+<p><strong>결론</strong></p>
+<p>귀무가설은 기각되어, 12살에 독감 걸릴 확률은 27%(=356/1319)이다. 14살에 독감 걸릴 확률은 34.7%(=468/1319)이다. 그러므로 나이가 올라가면 독감에 걸릴 가능성이 높아진다.</p>
+</section>
+</section>
+<section id="chapter-4.-모평균-추론" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-4.-모평균-추론"><span style="color:green">chapter 4. 모평균 추론</span></h3>
+<section id="일집단-모비율-1" class="level4">
+<h4 class="anchored" data-anchor-id="일집단-모비율-1"><span style="color:blue">1. 일집단 모비율</span></h4>
+<p><strong>연구문제 및 통계적 가설</strong></p>
+<p>타이타닉호 승객들의 평균 연령이 30세 미만이었는지를 알아보고자 한다.</p>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:\mu = 30( = \mu_{0})\)</span>, 여기서 <span class="math inline">\(\mu\)</span>는 승객 평균 나이</p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:\mu &lt; 30( = \mu_{0})\)</span> (단측가설)</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/모평균일집단.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<ul>
+<li>모수: <span class="math inline">\(\theta = \mu\)</span>, 보조 ancillary 모수 <span class="math inline">\(\sigma^{2}\)</span>는 MVUE(<span class="math inline">\(\widehat{\sigma^{2}} = S^{2}\)</span>)로 대체한 후 모수 <span class="math inline">\(\theta\)</span>에 대한 추론을 한다.</li>
+</ul>
+<p><strong>시각화</strong></p>
+<section id="히스토그램" class="level5">
+<h5 class="anchored" data-anchor-id="히스토그램">(1) 히스토그램</h5>
+<p>히스토그램은 연속형(측정형) 변수의 분포 특성을 시각적으로 표현하는 대표적인 그래프로, 수평축(x-축)은 데이터의 구간(계급), 수직축(y-축)은 해당 구간에 속하는 도수 또는 상대도수를 나타낸다. 이는 범주형 자료에 사용하는 막대그래프와 유사하나, 구간 간 간격이 균등하며, 데이터의 수치적 분포를 반영한다는 점에서 차이를 갖는다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/분포치우침.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>데이터는 먼저 오름차순으로 정렬한 후, 최소값과 최대값을 기준으로 전체 범위를 결정한다. 그 다음, 계급의 개수(또는 bin의 수)를 정하고, 이 범위를 균등하게 나누어 계급 구간을 구성한다. 계급의 수는 일반적으로 8개에서 12개 사이가 적절하며, 표본의 크기를 <span class="math inline">\(n\)</span>이라 할 때 적절한 계급 수 <span class="math inline">\(k\)</span>는 다음과 같은 Sturges의 공식으로도 근사할 수 있다. <span class="math inline">\(k = 1 + 3.322\log_{10}(n)\)</span></p>
+<p>각 계급 구간 내에 포함된 데이터의 수 또는 상대빈도를 계산하고, 이를 막대의 높이로 표현하면 히스토그램이 완성된다. 이때 구간 폭은 가능한 해석의 의미를 갖도록 정수 단위로 조정하는 것이 바람직하다.</p>
+<p>1. 분포의 모양 (Shape) - 왜도</p>
+<ul>
+<li><p>대칭 분포: 종 모양이거나 좌우 대칭 → 예: 정규분포</p></li>
+<li><p>우측(+) 치우침: 긴 오른쪽 꼬리, 예: 소득, 주가</p></li>
+<li><p>좌측(−) 치우침: 긴 왼쪽 꼬리, 예: 소득에서 기본 소득 미만 많음</p></li>
+<li><p>이첨성(Bimodal) 또는 다첨성(Multimodal): 두 개 이상의 중심이 있는 분포 → 이질적 모집단 가능성 예: 남녀 혼합 신장 데이터</p></li>
+</ul>
+<p>2. 중심위치 (Center)</p>
+<ul>
+<li><p>최빈값(mode) 위치에서 가장 높은 막대</p></li>
+<li><p>평균이나 중앙값의 대략적 위치를 가늠</p></li>
+</ul>
+<p>3. 산포도 (Spread) - 첨도</p>
+<ul>
+<li><p>분포의 넓이로 데이터의 변동성이나 표준편차의 정도를 직관적으로 판단</p></li>
+<li><p>고첨도 (Leptokurtic): 뾰족하고 꼬리가 두꺼움, 극단값 자주 발생 (수익률, 사고율)</p></li>
+<li><p>평첨도 (Platykurtic): 평평하고 꼬리가 짧음, 시험점수, 설문척도</p></li>
+</ul>
+<p>4. 이상값(Outliers)의 존재 가능성</p>
+<ul>
+<li><p>분포의 양쪽 끝에 고립된 막대가 있을 경우, 극단치 존재 가능성 있음</p></li>
+<li><p>상자수염 그림을 병행하여 이상값 여부를 정밀 진단할 수 있음</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/상자수염그림개념도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>상자 그림은 연속형 자료의 분포를 시각적으로 요약하는 대표적인 탐색적 자료 분석 도구로, 데이터의 중심 경향과 산포도, 분포의 비대칭성, 이상치의 존재 여부를 직관적으로 파악할 수 있다. 다음의 다섯 가지 핵심 통계량을 기반으로 구성된다.</p>
+<p>최소값 (minimum), 제1사분위수 (Q₁, 25th percentile), 중앙값 (median, Q₂), 제3사분위수 (Q₃, 75th percentile), 최대값 (maximum)</p>
+<ul>
+<li><p><span class="math inline">\(IQR = Q_{3} - Q_{1}\)</span>: 사분위 범위(Interquartile Range)로,데이터의 중심 50%가 분포하는 구간이다.</p>
+<p>상자는 Q₁부터 Q₃까지를 연결하여 그리며, 이 구간은 전체 데이터의 중간 50%를 나타낸다.</p>
+<p>상자 내에 중앙값을 수직선으로 표시한다.</p>
+<p>중위값이 상자의 한쪽으로 치우쳐 있다면 비대칭 분포를 의미한다 (예: 오른쪽 치우침일 경우<span class="math inline">\(Q_{3} - MD &gt; MD - Q_{1}\)</span>).</p>
+<p>수염(whisker): 다음의 범위 내에 있는 최소값과 최대값을 가리킨다:</p></li>
+<li><p><span class="math inline">\(\lbrack Q_{1} - 1.5 \times IQR,Q_{3} + 1.5 \times IQR\rbrack\)</span>: 수염 밖에 존재하는 관측값은 이상치(outlier)로 간주되며, 보통 별표(*) 혹은 점(·)으로 표시한다.</p>
+<p>극단적인 이상치를 검출할 경우, <span class="math inline">\(3 \times IQR\)</span>을 기준으로 하기도 한다.</p></li>
+</ul>
+</section>
+<section id="커널추정" class="level5">
+<h5 class="anchored" data-anchor-id="커널추정">(2) 커널추정</h5>
+<p>확률표본 데이터를 모집단으로 유한개의 데이터 표본을 이용하여 모집단 확률분포함수를 평활법에 의해 구한다. 신호처리에서는 Parzen–Rosenblatt window 방법이라고 한다. KDE kernel density estimator는 커널 함수를 이용하여 히스토그램 폴리곤 방법을 보다 스무드한 곡선으로 연결하여 추정하는 방법이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/커널함수추정.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+<p>커널함수 <span class="math inline">\(\int_{- \infty}^{\infty}K(x)dx = 1\)</span>는 양의실수 적분가능한 좌우 대칭인 함수이며 Gaussian, Epanechnikov 등이 유명한 커널 함수이다. 확률분포함수 <span class="math inline">\(f(x)\)</span>로 부터 확률표본 데이터 <span class="math inline">\(x_{1},x_{2},\cdots,x_{n}\)</span>가 주어진 경우 커널추정량은 <span class="math inline">\(\widehat{f(x)} = \frac{1}{nh}\overset{n}{\sum_{i = 1}}K(\frac{x - x_{i}}{h})\)</span>이다. <span class="math inline">\(K()\)</span>는 커널함수이고 <span class="math inline">\(h\)</span>는 bandwith 모수이다. <span class="math inline">\(h\)</span>가 크면 완만한 형태가 되고 작으면 뾰족한 형태이다.</p>
+<ul>
+<li><p>최적 <span class="math inline">\(h = (\frac{4{\widehat{\sigma}}^{5}}{3n})^{\frac{1}{5}} \approx 1.06\widehat{\sigma}n^{- 0.2}\)</span></p></li>
+<li><p>만약 좌우로 치우친 분포의 경우<span class="math inline">\(\widehat{\sigma} = min(sd,IQR/1,34)\)</span></p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/히스토그램_상자수염.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>이상치 진단되면 제거하고 추정하자. 상자그림을 보면 우측 꼬리에 많은 관측치가 이상치로 진단되었다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#이상치 제거</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># age 변수의 이상치 기준 계산 (IQR)</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>q1 <span class="op">=</span> titanic[<span class="st">'age'</span>].quantile(<span class="fl">0.25</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>q3 <span class="op">=</span> titanic[<span class="st">'age'</span>].quantile(<span class="fl">0.75</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>iqr <span class="op">=</span> q3 <span class="op">-</span> q1</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 이상치 경계</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>lower_bound <span class="op">=</span> q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> iqr</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>upper_bound <span class="op">=</span> q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> iqr</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 이상치 제외한 데이터프레임 생성</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>titanic0 <span class="op">=</span> titanic[(titanic[<span class="st">'age'</span>] <span class="op">&gt;=</span> lower_bound) <span class="op">&amp;</span> (titanic[<span class="st">'age'</span>] <span class="op">&lt;=</span> upper_bound)]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 확인</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"원래 데이터 수: </span><span class="sc">{</span>titanic<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"이상치 제거 후 데이터 수: </span><span class="sc">{</span>titanic0<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>원래 데이터 수: 891 <br> 이상치 제거 후 데이터 수: 703</p>
+<p>MVUE 및 샘플링분포</p>
+<p>모평균 <span class="math inline">\(\mu\)</span>의 MVUE 추정치는 표본평균 <span class="math inline">\(\overline{x} = \sum x_{i}/n = 29.1\)</span></p>
+<p>보조모수 <span class="math inline">\(\sigma^{2}\)</span> MVUE: <span class="math inline">\(\widehat{\sigma^{2}} = s^{2} = \frac{\sum(x_{i} - \overline{x})^{2}}{n - 1}\)</span></p>
+<p><strong>샘플링분포</strong></p>
+<ul>
+<li><p>(대표본 <span class="math inline">\(n &gt; 20\)</span>) 중심극한정리에 의해 <span class="math inline">\(\overline{x} \sim N(\mu,\sigma^{2}/n)\)</span>이다.</p></li>
+<li><p>(소표본) 모집단 확률분포 정규분포라는 가정 하에 <span class="math inline">\(\frac{\overline{x} - \mu}{\frac{s}{\sqrt{n}}} \sim t(n - 1)\)</span>이다.</p></li>
+</ul>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산, 그리고 신뢰구간</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_1samp</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 이상치 제거된 titanic0 사용</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>age_clean <span class="op">=</span> titanic0[<span class="st">'age'</span>].dropna()  <span class="co"># 결측값 제거</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 단일 평균에 대한 t-검정</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>t_stat, p_val <span class="op">=</span> ttest_1samp(age_clean, popmean<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"표본 크기: </span><span class="sc">{</span>age_clean<span class="sc">.</span>shape[<span class="dv">0</span>]<span class="sc">:.0f}</span><span class="ss">"</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"표본 평균: </span><span class="sc">{</span>age_clean<span class="sc">.</span>mean()<span class="sc">:.1f}</span><span class="ss">"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"표본 표준편차: </span><span class="sc">{</span>age_clean<span class="sc">.</span>std()<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"t-통계량: </span><span class="sc">{</span>t_stat<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-값: </span><span class="sc">{</span>p_val<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>표본 크기: 703 <br> 표본 평균: 29.1 <br> 표본 표준편차: 13.73 <br> t-통계량: -1.792 <br> p-값: 0.0735</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#모평균 신뢰구간</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> st</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 'confidence' argument added to specify the confidence level</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>st.t.interval(confidence<span class="op">=</span><span class="fl">0.95</span>, df<span class="op">=</span><span class="bu">len</span>(age_clean)<span class="op">-</span><span class="dv">1</span>, </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>              loc<span class="op">=</span>age_clean.mean(), scale<span class="op">=</span>st.sem(age_clean))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>(np.float64(28.06), np.float64(30.09))</p>
+<ul>
+<li><p>MVUE 표본평균: <span class="math inline">\(\widehat{\theta} = \overline{x} = 29.1\)</span></p></li>
+<li><p><span class="math inline">\(\overline{x}\)</span>의 표준오차: <span class="math inline">\(se(\overline{x}) = \frac{s}{\sqrt{n}} = \frac{13.73}{\sqrt{793}}\)</span></p></li>
+<li><p>(대표본)검정통계량: <span class="math inline">\(ts = \frac{\overline{x} - \mu_{0}}{se(\overline{x})} = \frac{29.1 - 30}{\frac{13.73}{\sqrt{703}}} = - 1.79\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(p = P(z &gt; | - 1.79|) = 0.0735\)</span></p></li>
+<li><p>모평균 [<span class="math inline">\(100(1 - \alpha)\%\)</span>신뢰구간]</p></li>
+</ul>
+<p><span class="math display">\[(\overline{x} - t_{1 - \alpha/2;n - 1}\frac{s}{\sqrt{n}},\overline{x} + t_{1 - \alpha/2;n - 1}\frac{s}{\sqrt{n}})\]</span></p>
+<p><strong>결론</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="4" style="text-align: center;">타이타닉 승객 평균 나이는 30세 미만인가?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">표본평균</td>
+<td style="text-align: center;">표준편차</td>
+<td style="text-align: center;">검정통계량</td>
+<td style="text-align: center;">유의확률</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">29.1</td>
+<td style="text-align: center;">13.73</td>
+<td style="text-align: center;">-1.792</td>
+<td style="text-align: center;">0.074</td>
+</tr>
+<tr class="odd">
+<td colspan="4" style="text-align: center;">숭객 평균 95% 신뢰구간: (28.06, 30.09)</td>
+</tr>
+</tbody>
+</table>
+<p>타이타닉 승객의 평균 나이가 30세 미만인지를 검정한 결과, 표본 평균은 29.1세, 표준편차는 13.73으로 나타났으며, 단측 t-검정의 검정통계량은 -1.792, 유의확률은 0.074였다. 일반적으로 사용하는 유의수준 0.05를 기준으로 할 때, 유의확률이 이를 초과하므로 귀무가설을 기각할 수 없으며, 따라서 타이타닉 승객의 평균 나이가 30세 미만이라고 통계적으로 유의하게 말하기는 어렵다.</p>
+</section>
+</section>
+<section id="독립인-두-모집단-평균-차이" class="level4">
+<h4 class="anchored" data-anchor-id="독립인-두-모집단-평균-차이"><span style="color:blue">2. 독립인 두 모집단 평균 차이</span></h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/독립두집단평균비교.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>연구문제 및 통계적 가설</strong></p>
+<p>타이타닉호 승객들의 성별에 따른 나이의 차이가 있는지 알아보고자 한다.</p>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:\mu_{1} - \mu_{2} = 0\)</span>, 여기서 <span class="math inline">\(\mu_{1}\)</span>은 남자 승객 평균 나이, <span class="math inline">\(\mu_{2}\)</span>은 여자 승객 평균 나이는 같다.</p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:\mu_{1} - \mu_{2} \neq 0\)</span> (양측가설) 승객 남녀 평균 나이 차이는 유의하다.</p></li>
+<li><p>모수: <span class="math inline">\(\theta = \mu_{1} - \mu_{2}\)</span></p></li>
+</ul>
+<p><strong>시각화</strong></p>
+<p>집단변수(성별)별 관심변수(나이)에 대한 (히스토그램, 상자그림, KDE)로 데이터를 시각화 한다.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>titanic <span class="op">=</span> sns.load_dataset(<span class="st">"titanic"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>titanic <span class="op">=</span> titanic[[<span class="st">'sex'</span>, <span class="st">'age'</span>]].dropna()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 그래프 그리기</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>), sharex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 히스토그램</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>titanic, x<span class="op">=</span><span class="st">"age"</span>, hue<span class="op">=</span><span class="st">"sex"</span>, bins<span class="op">=</span><span class="dv">30</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>],</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>             element<span class="op">=</span><span class="st">"step"</span>, stat<span class="op">=</span><span class="st">"density"</span>, common_norm<span class="op">=</span><span class="va">False</span>, alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># KDE 추가</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>sns.kdeplot(data<span class="op">=</span>titanic, x<span class="op">=</span><span class="st">"age"</span>, hue<span class="op">=</span><span class="st">"sex"</span>, ax<span class="op">=</span>axs[<span class="dv">0</span>], common_norm<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="st">"age distribution by gender (histogram + KDE)"</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_ylabel(<span class="st">"density"</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 상자그림</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>titanic, x<span class="op">=</span><span class="st">"age"</span>, y<span class="op">=</span><span class="st">"sex"</span>, ax<span class="op">=</span>axs[<span class="dv">1</span>])</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">"age distribution by gender (box plot)"</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_xlabel(<span class="st">"age"</span>)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/커널_상자수염_두집단.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>MVUE 및 샘플링분포</strong></p>
+<ul>
+<li><p>모평균 <span class="math inline">\(\mu_{1}\)</span>의 MVUE 추정치: 표본 평균 <span class="math inline">\(\overline{x} = \frac{\sum x_{i}}{n_{1}} = 27.9\)</span></p></li>
+<li><p>모평균 <span class="math inline">\(\mu_{2}\)</span>의 MVUE 추정치: 표본 평균 <span class="math inline">\(\overline{y} = \frac{\sum y_{i}}{n_{2}} = 30.7\)</span></p></li>
+<li><p>모수의 MVUE: <span class="math inline">\(\widehat{\theta} = \overline{x} - \overline{y} = - 2.8\)</span></p></li>
+<li><p>보조 모수 <span class="math inline">\(\sigma_{1}^{2},\sigma_{1}^{2}\)</span></p></li>
+<li><p>모집단 분산 추정량 <span class="math inline">\(\widehat{\sigma_{1}^{2}} = \frac{(\sum x_{i} - \overline{x})^{2}}{n_{1} - 1} = s_{1}^{2}\)</span>, <span class="math inline">\(\widehat{\sigma_{2}} = \frac{(\sum y_{i} - \overline{y})^{2}}{n_{2} - 1} = s_{2}^{2}\)</span></p></li>
+<li><p>추정 분산 : <span class="math inline">\(\widehat{V(\overline{x} - \overline{y})} = \frac{\sigma_{1}^{2}}{n_{1}} + \frac{\sigma_{2}^{2}}{n_{2}}\)</span></p></li>
+<li><p>등분산 가정 시(통합분산): <span class="math inline">\(s_{p}^{2} = \frac{(n_{1} - 1)s_{1}^{2} + (n_{2} - 1)s_{2}^{2}}{n_{1} + n_{2} - 2}\)</span></p></li>
+</ul>
+<p><strong>모평균 검정 시 모분산 동일한지 검정해야 하는 이유</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/모분산비교개념.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>두 독립된 모집단의 평균이 동일하더라도, 분산이 서로 다를 경우 분산이 큰 모집단(예: 모집단 2)에서는 확률적으로 극단값, 즉 왼쪽 또는 오른쪽 꼬리 부분에서 더 많은 표본이 추출될 가능성이 있다. 이로 인해 표본 평균이 왜곡되어(극단값 쪽으로 치우쳐) 실제 모집단 평균을 정확히 반영하지 못할 수 있으며, 검정 통계량 계산에 사용되는 분산 또한 과대 추정될 위험이 있다. 따라서 이러한 분산 차이를 고려한 통계적 방법을 사용하는 것이 중요하다.</p>
+<p><strong>등분산성(homoscedasticity): Levene<span dir="rtl">’</span>s test</strong></p>
+<p><span class="math display">\[H_{0}:\sigma_{1}^{2} = \sigma_{2}^{2}\text{vs.}H_{1}:\sigma_{1}^{2} \neq \sigma_{2}^{2}\]</span></p>
+<p>검정통계량: <span class="math inline">\(ts = \frac{s_{1}^{2}}{s_{2}^{2}} \sim F(df_{1} = n_{1} - 1,df_{2} = n_{2} - 1)\)</span></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> levene</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 타이타닉 데이터에서 성별별 나이</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> titanic[[<span class="st">'sex'</span>, <span class="st">'age'</span>]].dropna()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>male_age <span class="op">=</span> df[df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'male'</span>][<span class="st">'age'</span>]</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>female_age <span class="op">=</span> df[df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'female'</span>][<span class="st">'age'</span>]</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 등분산 검정</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>stat, p <span class="op">=</span> levene(male_age, female_age)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Levene 검정 통계량: </span><span class="sc">{</span>stat<span class="sc">:.3f}</span><span class="ss">, p-값: </span><span class="sc">{</span>p<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Levene 검정 통계량: 0.001, p-값: 0.9712</p>
+<p>등분산에 대한 귀무가설을 기각할 수 없으므로, 두 집단은 등분산성을 만족한다고 볼 수 있다.</p>
+<p><strong>샘플링분포(대표본)</strong></p>
+<ul>
+<li><p>이분산: <span class="math inline">\(\overline{x} - \overline{y} \sim N(\mu_{1} - \mu_{2},\frac{s_{1}^{2}}{n_{1}} + \frac{s_{2}^{2}}{n_{2}})\)</span></p></li>
+<li><p>등분산: <span class="math inline">\(\overline{x} - \overline{y} \sim N(\mu_{1} - \mu_{2},s_{p}^{2}(\frac{1}{n_{1}} + \frac{1}{n_{2}}))\)</span></p></li>
+</ul>
+<p><strong>샘플링분포(소표본) 정규분포 가정</strong></p>
+<ul>
+<li><p>이분산: <span class="math inline">\(t = \frac{{\overline{X}}_{1} - {\overline{X}}_{2}}{\sqrt{\frac{s_{1}^{2}}{n_{1}} + \frac{s_{2}^{2}}{n_{2}}}} \sim t(df^{*})\)</span> , Welch–Satterthwaite<span class="math inline">\(df^{*} = \frac{\left( \frac{s_{1}^{2}}{n_{1}} + \frac{s_{2}^{2}}{n_{2}} \right)^{2}}{\frac{(s_{1}^{2}/n_{1})^{2}}{n_{1} - 1} + \frac{(s_{2}^{2}/n_{2})^{2}}{n_{2} - 1}}\)</span></p></li>
+<li><p>등분산: <span class="math inline">\(\frac{{\overline{X}}_{1} - {\overline{X}}_{2}}{s_{p} \cdot \sqrt{\frac{1}{n_{1}} + \frac{1}{n_{2}}}} \sim t(df = n_{1} + n_{2} - 2)\)</span></p></li>
+</ul>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산, 그리고 신뢰구간</strong></p>
+<p>등분산 시</p>
+<ul>
+<li><p>검정통계량: <span class="math inline">\(ts = {\overline{X}}_{1} - {\overline{X}}_{2}/s_{p} \cdot \sqrt{\frac{1}{n_{1}} + \frac{1}{n_{2}}}\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(p = P(t_{(n_{1} + n_{2} - 2)} &gt; |ts|)\)</span></p></li>
+</ul>
+<p>이분산 시</p>
+<ul>
+<li><p>검정통계량: <span class="math inline">\(ts = {\overline{X}}_{1} - {\overline{X}}_{2}/\sqrt{\frac{s_{1}^{2}}{n_{1}} + \frac{s_{2}^{2}}{n_{2}}}\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(p = P(t_{(df^{*})} &gt; |ts|)\)</span></p></li>
+</ul>
+<p><span class="math display">\[(\overline{x} - \overline{y}) \pm t(\alpha/2,n + m - 2)\sqrt{\frac{s_{x}^{2}}{n} + \frac{s_{y}^{2}}{m}}\]</span></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_ind</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>titanic <span class="op">=</span> sns.load_dataset(<span class="st">"titanic"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> titanic[[<span class="st">'sex'</span>, <span class="st">'age'</span>]].dropna()</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별에 따른 나이의 평균 및 표준편차</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> df.groupby(<span class="st">'sex'</span>)[<span class="st">'age'</span>].agg([<span class="st">'mean'</span>, <span class="st">'std'</span>]).rename(columns<span class="op">=</span>{<span class="st">'mean'</span>: <span class="st">'평균 나이'</span>, <span class="st">'std'</span>: <span class="st">'표준편차'</span>})</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 소수점 2자리로 출력</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> summary.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(summary)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">#승객 나이 평균, 표준편차</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df[<span class="st">'age'</span>].mean(),df[<span class="st">'age'</span>].std())</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별 그룹 분리</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>male_age <span class="op">=</span> df[df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'male'</span>][<span class="st">'age'</span>]</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>female_age <span class="op">=</span> df[df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'female'</span>][<span class="st">'age'</span>]</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 독립표본 t-검정 (등분산 가정 X)</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>t_stat, p_value <span class="op">=</span> ttest_ind(male_age, female_age, equal_var<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"t-통계량: </span><span class="sc">{</span>t_stat<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-값: </span><span class="sc">{</span>p_value<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<blockquote class="blockquote">
+<blockquote class="blockquote">
+<p>평균 나이 표준편차 <br> female 27.92 14.11 <br> male 30.73 14.68 <br> 29.69911764705882 14.526497332334044 <br> t-통계량: 2.526 <br> p-값: 0.0118</p>
+</blockquote>
+</blockquote>
+<p>결론</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="5" style="text-align: center;">여성 승객과 남성 승객 평균 나이는 차이가 있나?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">집단</td>
+<td style="text-align: center;">평균</td>
+<td style="text-align: center;">표준편차</td>
+<td style="text-align: center;">검정통계량</td>
+<td style="text-align: center;">유의확률</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">여성</td>
+<td style="text-align: center;">27.9</td>
+<td style="text-align: center;">14.1</td>
+<td style="text-align: center;">2.53</td>
+<td style="text-align: center;">0.012</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">남성</td>
+<td style="text-align: center;">30.7</td>
+<td style="text-align: center;">14.7</td>
+<td colspan="2" rowspan="2" style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">총합</td>
+<td style="text-align: center;">29.7</td>
+<td style="text-align: center;">14.5</td>
+</tr>
+</tbody>
+</table>
+<p>귀무가설이 기각되어, 여성 승객의 평균 나이 27.9세와 남성 승객의 평균 나이 30.7세 사이에는 통계적으로 유의한 차이가 있는 것으로 나타났다.</p>
+<p><strong>남자 승객 나이 이상치 제거 후 분석</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th colspan="5" style="text-align: center;">여성 승객과 남성 승객 평균 나이는 차이가 있나?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">집단</td>
+<td style="text-align: center;">평균</td>
+<td style="text-align: center;">표준편차</td>
+<td style="text-align: center;">검정통계량</td>
+<td style="text-align: center;">유의확률</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">여성</td>
+<td style="text-align: center;">27.9</td>
+<td style="text-align: center;">14.1</td>
+<td style="text-align: center;">1.977</td>
+<td style="text-align: center;">0.049</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">남성</td>
+<td style="text-align: center;">30.1</td>
+<td style="text-align: center;">13.8</td>
+<td colspan="2" rowspan="2" style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">총합</td>
+<td style="text-align: center;">29.3</td>
+<td style="text-align: center;">13.96</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> ttest_ind</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 데이터 불러오기 및 결측 제거</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>titanic <span class="op">=</span> sns.load_dataset(<span class="st">"titanic"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> titanic[[<span class="st">'sex'</span>, <span class="st">'age'</span>]].dropna()</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 남성 나이 이상치 제거 (IQR 방식)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>male <span class="op">=</span> df[df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'male'</span>][<span class="st">'age'</span>]</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>Q1 <span class="op">=</span> male.quantile(<span class="fl">0.25</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>Q3 <span class="op">=</span> male.quantile(<span class="fl">0.75</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>IQR <span class="op">=</span> Q3 <span class="op">-</span> Q1</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>lower <span class="op">=</span> Q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>upper <span class="op">=</span> Q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> IQR</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>male_clean <span class="op">=</span> male[(male <span class="op">&gt;=</span> lower) <span class="op">&amp;</span> (male <span class="op">&lt;=</span> upper)]</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 여성 나이</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>female <span class="op">=</span> df[df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'female'</span>][<span class="st">'age'</span>]</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 통합 데이터 (여성 + 이상치 제거된 남성)</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>combined <span class="op">=</span> pd.concat([female, male_clean], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 평균 및 표준편차 요약표</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> pd.DataFrame({<span class="st">'평균 나이'</span>: [female.mean(),male_clean.mean(),combined.mean()],</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'표준편차'</span>: [female.std(),male_clean.std(),combined.std()],</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'표본 수'</span>: [<span class="bu">len</span>(female),<span class="bu">len</span>(male_clean),<span class="bu">len</span>(combined)]</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>[<span class="st">'female'</span>, <span class="st">'male(이상치제외)'</span>, <span class="st">'통합'</span>]).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"📊 성별 및 통합 평균 나이와 표준편차:"</span>)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(summary)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 독립표본 t-검정 (등분산 가정 X)</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>t_stat, p_val <span class="op">=</span> ttest_ind(male_clean, female, equal_var<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">🧪 평균 차이 검정 (Welch's t-test):"</span>)</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"t-통계량: </span><span class="sc">{</span>t_stat<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-값: </span><span class="sc">{</span>p_val<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>📊 성별 및 통합 평균 나이와 표준편차: <br> 평균 나이 표준편차 표본 수 <br> female 27.92 14.11 261 <br> male(이상치제외) 30.07 13.82 446 <br> 통합 29.28 13.96 707 <br> 🧪 평균 차이 검정 (Welch’s t-test): <br> t-통계량: 1.977 <br> p-값: 0.0486</p>
+</section>
+<section id="짝진-두-모집단-평균-차이" class="level4">
+<h4 class="anchored" data-anchor-id="짝진-두-모집단-평균-차이"><span style="color:blue">3. 짝진 두 모집단 평균 차이</span></h4>
+<p><strong>개념</strong></p>
+<p>짝진 집단의 평균 차이 검정은 동일하거나 연관된 실험 단위로부터 두 번 측정된 자료(예: 처리 전·후 측정값)에 대해, 두 처리 간 평균 차이에 통계적으로 유의한 차이가 있는지를 검정하는 절차이다. 이는 일반적인 독립표본 간 평균 비교와 달리, 측정값 간 짝이 지어져 있다는 점에서 통계적 종속성이 존재하며, 이로 인해 보다 정밀한 비교가 가능해진다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/짝진모집단평균비교.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>짝진 집단 평균 차이 검정은 동일한 실험 단위를 두 번 측정하거나, 서로 밀접한 관련이 있는 두 개체 간 비교 상황에서 주로 사용된다. 대표적인 예로는 동일한 피험자에게 어떤 처치를 가하기 전과 후에 측정한 결과를 비교하는 경우가 있으며, 이는 약물 복용 전후의 혈압 변화와 같은 사례로 설명할 수 있다.</p>
+<p>또한, 한 피험자의 좌우 혹은 상하 신체 부위처럼 구조적으로 연결된 부위 간 비교에서도 짝진 구조가 성립한다. 예를 들어, 같은 사람의 왼팔과 오른팔 근력을 비교하거나 좌·우 시력의 차이를 분석할 때가 이에 해당한다.</p>
+<p><strong>짝지어진 두 표본 간의 평균 차이를 비교하는 것은, 그 차이값들의 평균이 0인지 검정하는 것과 완전히 동일하다.</strong></p>
+<p>짝진 표본 평균 차이 검정은 본질적으로 단일 집단 평균이 0인지 검정하는 것과 같은 구조를 가진다. 예를 들어, 같은 환자의 치료 전과 후 혈압을 비교하거나, 유전적으로 일치하는 쌍둥이의 특정 특성을 비교하는 경우가 이에 해당한다.각 짝<span class="math inline">\((x_{i},y_{i})\)</span>마다 두 값의 차이를 계산하면, 새로운 변수인 <span dir="rtl">”</span>차이값<span class="math inline">\(d_{i} = (x_{i} - y_{i})\)</span>“의 집합이 형성된다.</p>
+<p>이제 분석의 초점은 각 쌍의 차이값이 평균적으로 0인지 여부를 확인하는 데 있다. 즉, 원래의 두 변수를 비교하는 문제가 아니라, 차이값의 평균이 0인지에 대한 단일 집단 평균 검정(one-sample t-test) 문제가 되는 것이다. 이렇게 보면, 짝진 평균 차이 검정은 단지 두 집단 평균의 차이를 보는 것이 아니라, <span dir="rtl">’</span>차이<span dir="rtl">’</span>라는 하나의 변수에 대한 평균 검정 문제로 변환된다는 점에서, 단일 집단의 평균이 어떤 값(보통 0)과 다른지를 검정하는 문제와 구조적으로 동일하다고 할 수 있다.</p>
+</section>
+</section>
+<section id="chapter-5.-모분산-추론" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-5.-모분산-추론"><span style="color:green">chapter 5. 모분산 추론</span></h3>
+<section id="일집단-모분산" class="level4">
+<h4 class="anchored" data-anchor-id="일집단-모분산"><span style="color:blue">1. 일집단 모분산</span></h4>
+<p><strong>연구문제 및 통계적 가설</strong></p>
+<p>분산은 통계학에서 관측값이 평균으로부터 얼마나 퍼져 있는지를 나타내는 지표로, 매우 기본적이면서도 핵심적인 개념이다. 이 분산이라는 개념은 분야에 따라 서로 다른 이름과 의미로 해석된다. 특히 금융 분야와 품질 관리 분야에서는 전혀 다른 철학과 시각에서 분산을 바라본다.</p>
+<p>투자에서의 수익률은 불확실하며, 이 불확실성의 크기를 정량화한 것이 바로 변동성(volatility)이다. 통계적으로 변동성은 수익률의 분산 또는 표준편차로 측정된다. 수익률의 분산이 클수록, 즉 수익이 평균에서 크게 벗어날 가능성이 클수록 투자자는 더 많은 위험을 감수하게 된다. 따라서 투자 분야에서는 분산이 클수록 리스크가 크다, 다시 말해 예측이 어렵고 손실 가능성도 크다고 해석한다. 이 경우, 분산은 부정적인 신호이며, 분산이 작을수록 더 안정적인 투자 자산으로 간주된다.</p>
+<p>반면, 제조나 공정 품질 관리 분야에서는 일관성과 정밀성이 품질의 핵심이다. 여기서도 분산은 중심값(목표 사양값)으로부터의 퍼짐 정도를 나타내며, 작은 분산은 제품이 일관되게 생산되고 있다는 신호로 받아들여진다. 따라서 품질 분야에서는 분산이 클수록 공정이 불안정하거나 품질이 나쁘다고 판단하며, “품질은 분산의 역수”라는 표현이 널리 사용된다. 즉, 분산이 작을수록 품질이 높다고 보는 것이다.</p>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:\sigma^{2} = \sigma_{0}^{2}\)</span></p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:\sigma^{2} \neq \sigma_{0}^{2}\)</span></p></li>
+</ul>
+<p><strong>시각화</strong></p>
+<p>모분산(또는 표준편차)에 대한 검정은 데이터의 퍼짐 정도, 즉 흩어짐의 크기를 평가하는 데 목적이 있다. 하지만 분산이라는 수치는 단순히 하나의 숫자이기 때문에, 그 분산이 실제로 데이터에 어떻게 드러나 있는지를 직관적으로 이해하려면 시각화가 반드시 필요하다.</p>
+<p>이때 사용할 수 있는 시각화 도구는 히스토그램과 상자그림이다. 이 두 도구는 모평균 분석에서도 사용되는 시각화 방법이지만, 데이터의 분산이나 변동성 판단에도 매우 효과적인 도구다.</p>
+<p><strong>히스토그램과 분산</strong></p>
+<p>히스토그램은 데이터의 전체 분포 형태를 보여준다. 평균은 히스토그램의 중심이 어디에 있는지를 말해주지만, 분산은 그 히스토그램이 얼마나 좌우로 넓게 퍼져 있는지를 반영한다.</p>
+<ul>
+<li><p>히스토그램이 넓고 평평하게 퍼져 있다면 → 분산이 크다.</p></li>
+<li><p>히스토그램이 뾰족하고 좁게 몰려 있다면 → 분산이 작다.</p></li>
+</ul>
+<p><strong>상자그림과 분산</strong></p>
+<p>상자그림은 데이터의 중심, 범위, 사분위수, 이상치 등을 요약해서 보여주는 도구로, 특히 데이터의 퍼짐 정도를 시각적으로 파악하기에 매우 유용하다.</p>
+<ul>
+<li><p>사분위범위(제3사분위수 - 제1사분위수)가 넓을수록 → 분산이 클 가능성이 크다</p></li>
+<li><p>수염의 길이, 이상치의 분포도 분산의 크기와 관련된 정보를 제공한다</p></li>
+</ul>
+<p><strong>MVUE 및 샘플링분포</strong></p>
+<ul>
+<li><p>MVUE : <span class="math inline">\(\widehat{\sigma^{2}} = s^{2} = \frac{\sum(x_{i} - \overline{x})^{2}}{n - 1}\)</span></p></li>
+<li><p>샘플링분포: <span class="math inline">\((n - 1)\frac{s^{2}}{\sigma^{2}} \sim \chi^{2}(n - 1)\)</span>, 모집단 정규분포 가정이 필요함</p></li>
+</ul>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산</strong></p>
+<ul>
+<li><p>검정통계량: <span class="math inline">\(ts = (n - 1)\frac{s^{2}}{\sigma_{0}^{2}}\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(p = P(\chi_{(df = n - 1)}^{2} &gt; ts)\)</span></p></li>
+</ul>
+<p><strong>사례</strong></p>
+<p>한 자산운용사는 단기 투자용 펀드의 월간 수익률이 안정적인 수준을 유지하고 있는지 점검하고자 한다. 이 펀드는 <span dir="rtl">”</span>월간 수익률의 표준편차가 4% 이하여야 한다”는 내부 리스크 관리 기준을 갖고 있다.</p>
+<p>펀드운용팀은 최근 24개월 동안의 수익률 데이터(<span class="math inline">\(n = 24,s^{2} = {0.05}^{2}\)</span>)를 수집한 뒤, 실제 수익률 변동성이 이 기준보다 통계적으로 유의하게 크지 않은지 검정하고자 한다.</p>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:\sigma^{2} = \sigma_{0}^{2} = {0.04}^{2}\)</span></p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:\sigma^{2} \neq \sigma_{0}^{2} = {0.04}^{2}\)</span></p></li>
+<li><p>검정통계량: <span class="math inline">\(ts = (n - 1)\frac{s^{2}}{\sigma_{0}^{2}} = (24 - 1)\frac{{0.05}^{2}}{{0.04}^{2}} \approx 35.9\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(p = P(\chi_{(df = n - 1)}^{2} &gt; 35.9) &lt; 0.001\)</span></p></li>
+</ul>
+<p>결론: 귀무가설이 기각되어 펀드의 수익률 표준편차가 4%라는 내부 기준을 초과하는 것으로 나타나며, 이는 투자자 보호 및 리스크 관리 차원에서 제도적 개입이 필요함을 시사한다.</p>
+</section>
+<section id="독립인-두-모집단-분산-차이" class="level4">
+<h4 class="anchored" data-anchor-id="독립인-두-모집단-분산-차이"><span style="color:blue">2. 독립인 두 모집단 분산 차이</span></h4>
+<p><strong>개념</strong></p>
+<p>서로 다른 두 개의 자산이 있을 때, 단순히 평균 수익률만 비교하는 것은 투자 전략 수립에 불충분할 수 있다. 특히, 두 자산의 수익률이 독립적으로 관측된 경우, 이들 사이의 분산 차이가 유의미한지를 검정함으로써, 어떤 자산이 더 불안정하고 위험한가를 평가할 수 있다.</p>
+<ul>
+<li><p>귀무가설: <span class="math inline">\(H_{0}:\sigma_{1}^{2} = \sigma_{2}^{2}\)</span></p></li>
+<li><p>대립가설: <span class="math inline">\(H_{1}:\sigma_{1}^{2} \neq \sigma_{2}^{2}\)</span></p></li>
+<li><p>모수: <span class="math inline">\(\theta = \frac{\sigma_{1}^{2}}{\sigma_{2}^{2}}\)</span></p></li>
+</ul>
+<p><strong>MVUE 및 샘플링분포</strong></p>
+<ul>
+<li><p>MVUE : <span class="math inline">\(\widehat{\theta} = \frac{s_{1}^{2}}{s_{2}^{2}}\)</span></p></li>
+<li><p>샘플링분포: <span class="math inline">\(\frac{s_{1}^{2}}{s_{2}^{2}} \sim F(df_{1} = n_{1} - 1,df_{2} = n_{2} - 1)\)</span>, 두 모집단 각각 정규분포 가정이 필요함</p></li>
+</ul>
+<p><strong>검정통계량 및 <span class="math inline">\(p\)</span>값 계산</strong></p>
+<ul>
+<li><p>검정통계량: <span class="math inline">\(ts = \frac{max(s_{1}^{2},s_{2}^{2})}{min(s_{1}^{2},s_{2}^{2})}\)</span></p></li>
+<li><p>유의확률: <span class="math inline">\(p = P(F &gt; ts)\)</span></p></li>
+</ul>
+<p><strong>사례</strong></p>
+<p>한 투자자는 기술주 중심의 자산 A와 에너지주 중심의 자산 B를 포트폴리오에 포함시키는 것을 고려하고 있다. 그는 두 자산의 월간 수익률을 지난 36개월 동안 수집하였으며, 각각의 수익률 평균은 유사하다고 판단하고 있다. 하지만, 수익률의 평균이 같더라도, 변동성(위험)의 차이는 투자 전략에 큰 영향을 미칠 수 있으므로, 두 자산의 수익률 분산(변동성)이 통계적으로 같은지 여부를 판단하고자 한다.</p>
+<p><strong>가설 설정</strong></p>
+<ul>
+<li><p>귀무가설: 자산 A와 B의 수익률 분산은 같다. <span class="math inline">\(H_{0}:\sigma_{A}^{2} = \sigma_{B}^{2}\)</span></p></li>
+<li><p>대립가설: 자산 A와 B의 수익률 분산은 다르다. <span class="math inline">\(H_{0}:\sigma_{A}^{2} \neq \sigma_{B}^{2}\)</span></p></li>
+</ul>
+<p>자산 A: 표본 표준편차 = 0.058 → 분산 = 0.003364</p>
+<p>자산 B: 표본 표준편차 = 0.039 → 분산 = 0.001521</p>
+<p><span class="math display">\[F = \frac{0.003364}{0.001521} \approx 2.211\]</span><span class="math display">\[\sim F_{(36 - 1),(26 - 1)}\]</span></p>
+<p>유의확률 0.031이므로 귀무가설을 기각되어 두 자산의 투자 변동성은 통계적으로 유의하게 다르다고 판단한다.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
