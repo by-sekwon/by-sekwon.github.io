@@ -1,15 +1,15 @@
-Chapter 1. 회귀분석 개요
+---
+title: "회귀분석 1. 개념&추정"
+format: html
+---
+<br>
 
-권세혁교수 통계 사전 【회귀분석】
+### <span style="color:green">chapter 1. 회귀분석 개념</span>
 
-s[[https://sites.google.com/view/wolfpack61]{.underline}](https://sites.google.com/view/wolfpack61)
+#### <span style="color:blue"> 1. 역사</span>
 
-1 역사
-
-영국의 통계학자이자 유전학자인 Francis Galton(1822--1911) 은 식물 실험,
-특히 완두콩(sweet pea) 씨앗 무게의 유전을 관찰하면서
-["]{dir="rtl"}평균으로의 회귀(regression toward the mean)" 현상에
-주목하였다.
+영국의 통계학자이자 유전학자인 Francis Galton(1822--1911) 은 식물 실험, 특히 완두콩(sweet pea) 씨앗 무게의 유전을 관찰하면서
+["]{dir="rtl"}평균으로의 회귀(regression toward the mean)" 현상에 주목하였다.
 
 큰 씨앗에서 나온 후대 씨앗은 크지만 부모만큼 극단적으로 크지 않고 평균에
 더 가까워지는 경향을 보이며, 작은 씨앗에서 나온 후대 씨앗 역시
@@ -23,24 +23,23 @@ $\frac{FatherHeight + 1.08 \times MotherHeight}{2}$, 이는 어머니가
 아버지보다 평균적으로 키가 작다는 점을 보정하기 위하여, 어머니 키에
 1.08배 보정 계수를 곱한 것이다.
 
-부모 평균키와 자녀 키를 교차표와 산점도로 정리한 결과, 다음과 같은
+- 부모 평균키와 자녀 키를 교차표와 산점도로 정리한 결과, 다음과 같은
 패턴이 나타났다.
 
-부모 키가 평균 수준에 가까운 경우, 자녀 키는 직선적 비례 관계를 보인다.
+- 부모 키가 평균 수준에 가까운 경우, 자녀 키는 직선적 비례 관계를 보인다.
 
-부모 키가 매우 크거나 작은 경우, 자녀 키는 부모만큼 극단적이지 않고 전체
+- 부모 키가 매우 크거나 작은 경우, 자녀 키는 부모만큼 극단적이지 않고 전체
 평균 신장 쪽으로 더 가까워진다.
 
 Galton은 이 현상을 회귀(regression)라고 명명하였다. 이는 원래 평균으로
 되돌아가는 경향을 의미하며, 여기에서 오늘날의 회귀분석 용어가
 비롯되었다.
 
-![pasted-image.tiff](media/image1.tif){width="4.4998611111111115in"
-height="2.8245439632545932in"}
+![](images/갤톤회귀.png){fig-align="center" width="80%"}
 
-2\. 회귀모형 개념
+#### <span style="color:blue"> 2. 회귀모형</span>
 
-함수관계
+**함수관계**
 
 측정형 변수들 사이의 함수적 관계에 관심을 갖는다. 함수관계 중에서도
 해석이 가장 용이한 형태는 직선 함수관계이다. 상관분석은 변수들 간의
@@ -53,7 +52,7 @@ variable, output, 또는 목표변수 target variable) 로 설정한다. 회귀�
 이러한 독립변수와 종속변수 간의 함수적 관계를 모형화하고 해석하는
 방법이다.
 
-함수 형태 중 선형을 가장 선호
+**함수 형태 중 선형을 가장 선호**
 
 $y = a + b_{1}X_{1} + b_{2}X_{2} + ... + b_{p}X_{p} + e$
 
@@ -78,17 +77,17 @@ $y = a + b_{1}X_{1} + b_{2}X_{2} + ... + b_{p}X_{p} + e$
 따라서 회귀분석에서는 선형 모형을 기본 틀로 두고, 필요할 경우 비선형
 모형도 적절한 변환을 통해 선형 모형으로 분석하는 것이 가능하다.
 
-목표변수($Y$)와 분포 가정
+**목표변수($Y$)와 분포 가정**
 
 회귀분석에서 목표변수(종속변수) 는 하나이며, 원칙적으로 정규분포를
 따르는 측정형 변수이다. 목표변수가 정규분포를 따르지 않는 경우에는
 연결함수를 이용하여 종속변수를 정규분포로 변환한 후 선형 회귀모형을
 적용한다. 특히, 종속변수가 이산형인 경우에는 적합한 연결함수를 사용한다.
 
-예를 들어, 종속변수가 성공/실패 와 같은 이분형 변수인 경우, 로짓
+- 예를 들어, 종속변수가 성공/실패 와 같은 이분형 변수인 경우, 로짓
 함수(logit function) 를 연결함수로 사용한다.
 
-$\text{logit}(p) = \ln\left( \frac{p}{1 - p} \right)$. 여기서
+- $\text{logit}(p) = \ln\left( \frac{p}{1 - p} \right)$. 여기서
 $p = P(Y = 1)$이며, Y는 성공(1) 또는 실패(0) 값을 갖는 이항 변수이다.
 
 이 경우 모형은 다음과 같이 표현된다.
@@ -98,7 +97,7 @@ $$\ln\left( \frac{p}{1 - p} \right) = \beta_{0} + \beta_{1}X_{1} + \cdots + \bet
 즉, 성공 확률 p 자체를 직접 모형화하는 대신, 성공 확률의 로그
 오즈(log-odds)를 선형함수로 모형화하는 방식이다.
 
-회귀분석과 일반화 선형모형(GLM)
+**회귀분석과 일반화 선형모형(GLM)**
 
 회귀분석은 두 변수 간의 단순한 상관관계를 넘어, 원인과 결과의 방향성을
 고려하여 함수적 관계를 설정하는 방법이다. 가장 기본적인 회귀모형은 선형
@@ -144,7 +143,7 @@ $\ln(\mu) = \beta_{0} + \beta_{1}X_{1} + \cdots + \beta_{k}X_{k}$로
 모형으로 확장된다. 따라서 고전적 회귀분석은 GLM의 한 특별한 경우라 할 수
 있으며, GLM은 회귀분석의 현대적 일반화라고 이해할 수 있다.
 
-예측변수($X's$)는 다수이고 역시 측정형변수를 원칙으로 한다.
+**예측변수($X's$)는 다수이고 역시 측정형변수를 원칙으로 한다.**
 
 회귀분석에서 예측변수(독립변수) 는 다수일 수 있으며, 원칙적으로 측정형
 변수를 사용한다. 예측변수가 하나인 경우를 단순회귀분석이라 하고, 두 개
@@ -170,7 +169,7 @@ $\ln(\mu) = \beta_{0} + \beta_{1}X_{1} + \cdots + \beta_{k}X_{k}$로
 
 - $Y = a + b_{1}D + b_{2}X + b_{3}(X*D) + e$
 
-함수관계와 인과관계
+**함수관계와 인과관계**
 
 회귀분석은 변수들 사이의 함수적 관계를 밝히는 방법이지, 인과관계를
 증명하는 방법은 아니다. 회귀분석의 목적은 단지 관심의 대상이 되는
@@ -192,20 +191,19 @@ $\ln(\mu) = \beta_{0} + \beta_{1}X_{1} + \cdots + \beta_{k}X_{k}$로
 최대한 통제한 상태에서 예측변수와 목표변수 사이의 함수적 관계를 추정해야
 한다. 이 과정에서 중요한 역할을 하는 변수가 있다.
 
-통제변수(control variable) : 다른 요인의 영향을 제거하기 위해 모형에
+- 통제변수(control variable) : 다른 요인의 영향을 제거하기 위해 모형에
 포함하는 변수
 
-매개변수(mediator variable) : 독립변수가 종속변수에 영향을 주는 경로를
+- 매개변수(mediator variable) : 독립변수가 종속변수에 영향을 주는 경로를
 매개하는 변수
 
-교락변수(confounding variable) : 독립변수와 종속변수 모두에 영향을 주어
+- 교락변수(confounding variable) : 독립변수와 종속변수 모두에 영향을 주어
 관계를 왜곡시키는 변수
 
 따라서 회귀분석을 활용할 때에는 결과를 단순히 인과적 해석으로 확대하지
 않고, 함수적 관계와 통제변수의 역할을 명확히 이해하는 것이 필요하다.
 
-![pasted-image.png](media/image3.png){width="3.9521062992125984in"
-height="1.441052055993001in"}
+![](images/통제변수.png){fig-align="center" width="60%"}
 
 회귀분석에서 중요한 개념은 교락(confounding) 이다. 교락변수는 독립변수와
 종속변수 모두에 영향을 주어, 두 변수 사이의 함수관계를 왜곡할 수 있다.
@@ -217,14 +215,14 @@ height="1.441052055993001in"}
 통제변수로 포함하여 동일 연령에서의 $X \rightarrow Y$관계를 추정하는
 것이 필요하다.
 
-3\. 통제변수 매개변수 교락변수
+#### <span style="color:blue"> 3. 통제변수 매개변수 교락변수</span>
 
 생략변수편의란 실제로는 종속변수 Y에 영향을 주는 중요한 변수를
 회귀모형에서 누락시킴으로써, 포함된 예측변수의 회귀계수가 편의(bias) 를
 가지게 되는 현상을 말한다. X는 예측변수(처치, 원인), Y는
 목표변수(결과)이다.
 
-통제변수(control variable)
+##### \(1) 통제변수(control variable)
 
 모형에 포함하여 원하지 않는 변동을 제거하거나 편의를 줄이기 위해
 사용하는 변수이다. 통제변수라는 말은 용도가 넓다. 실무에서는 크게 두
@@ -236,14 +234,14 @@ $Z \rightarrow Y$이다.
 정밀도 변수: Y에만 강하게 연관되어 분산을 줄이는 변수(교락은 아님),
 $Z \rightarrow Y$이고 $Z \nrightarrow X$이다.
 
-통제 효과
+**통제 효과**
 
 - 교락이면 포함해야 편의가 줄어든다.
 
 - 정밀도 변수면 포함해도 편의는 변하지 않지만 추정의 표준오차가 줄어들
   수 있다.
 
-모형
+**모형**
 
 시험점수 예측에서 ["]{dir="rtl"}이전 학업성취도(중간고사 점수)"는
 최종점수 Y의 변동을 설명하므로 정밀도를 높이는 통제변수이다.
@@ -259,7 +257,7 @@ $Z \rightarrow Y$이고 $Z \nrightarrow X$이다.
 
 통제 후: 같은 연령에서 운동능력의 순수 효과, $\beta_{1}$.
 
-매개변수(mediator)
+##### \(2) 매개변수(mediator)
 
 X가 Y에 영향을 미치는 경로 중간에 위치하는 변수이다.
 $X \rightarrow M \rightarrow Y$ 구조이다. ["]{dir="rtl"}효과가 어떻게
@@ -272,24 +270,24 @@ $X \rightarrow M \rightarrow Y$ 구조이다. ["]{dir="rtl"}효과가 어떻게
 영향) 와 간접효과(매개변수를 통해 전달되는 영향) 로 분해할 수 있으며, 이
 둘의 합이 총효과가 된다.
 
-직접효과 (Direct Effect) $X \rightarrow Y$
+**직접효과 (Direct Effect) $X \rightarrow Y$**
 
 M을 거치지 않고 바로 Y에 영향을 미치는 효과로 회귀식으로 표현하면,
 $Y = \beta_{0} + \beta_{1}X + \beta_{2}M + u$, 여기서 $\beta_{1}$이 바로
 직접효과이다.
 
-간접효과 (Indirect Effect)
+**간접효과 (Indirect Effect)**
 
 $X \rightarrow M \rightarrow Y$경로를 따라 전달되는 효과이다.
 
-매개변수 방정식: $M = \alpha_{0} + \alpha_{1}X + v$
+- 매개변수 방정식: $M = \alpha_{0} + \alpha_{1}X + v$
 
-종속변수 방정식: $Y = \beta_{0} + \beta_{1}X + \beta_{2}M + u$
+- 종속변수 방정식: $Y = \beta_{0} + \beta_{1}X + \beta_{2}M + u$
 
 이때 간접효과는 $\alpha_{1} \times \beta_{2}$이다. 즉, X가 M에 영향을
 주고, 그 M이 다시 Y에 영향을 주는 효과의 곱이다.
 
-총효과 (Total Effect)
+**총효과 (Total Effect)**
 
 총효과는 직접효과 + 간접효과 이다.
 $\beta_{1} + (\alpha_{1} \times \beta_{2})$
@@ -301,7 +299,7 @@ X: 운동능력, M: 칼로리 소모량, Y: 체중 변화
 운동능력이 칼로리 소모를 증가시키고, 그 칼로리 소모가 체중 변화로
 이어진다면 → 간접효과
 
-교락변수(confounder)
+##### \(3) 교락변수(confounder)
 
 X와 Y에 동시에 원인으로 작용하여 $X \rightarrow Y$ 관계를 왜곡하는
 변수이다. 교락을 통제하지 않으면 생략변수편의가 발생한다.
@@ -325,7 +323,7 @@ $\text{Bias}({\widehat{\alpha}}_{1}) = \beta_{2} \cdot \frac{Cov(X,Z)}{Var(X)}$
 운동능력 X--체중증가 Y에서 연령 Z. 연령은 활동에도, 체중에도 영향 →
 교락. 반드시 통제한다.
 
-비교
+##### \(4) 비교
 
 운동능력 X--체중증가 Y에서 연령
 
@@ -339,7 +337,7 @@ $\text{Bias}({\widehat{\alpha}}_{1}) = \beta_{2} \cdot \frac{Cov(X,Z)}{Var(X)}$
 병원 방문 여부 C : 활동과 연령의 공통 결과라면 콜라이더 → 통제하지
 않는다.
 
-실무 판별 체크리스트
+**실무 판별 체크리스트**
 
 시간 순서: 원인은 결과보다 앞서야 한다. Z가 X 이후에 발생하면 교락이
 아니다(매개일 가능성).
@@ -355,16 +353,16 @@ $\text{Bias}({\widehat{\alpha}}_{1}) = \beta_{2} \cdot \frac{Cov(X,Z)}{Var(X)}$
 콜라이더 경계: 공통 결과나 선택 변수(병원 내 환자만 분석 등)를 통제하지
 않는다.
 
-콜라이더 collider
+**콜라이더 collider**
 
 $X \rightarrow C \leftarrow Z$, 여기서 $C$가 콜라이더다. 원래는 X와 Z가
 독립일 수 있으나 C를 조건부로 통제(회귀모형에 포함, 표본을 C 값으로
 제한)하면, X와 Z 사이에 가짜 상관이 생긴다. 이 현상을 콜라이더 편향 또는
 선택편의라고 한다.
 
-3\. 회귀분석 절차
+#### <span style="color:blue"> 4. 회귀분석 절차</span>
 
-1\. 모형 설정
+##### \(1) 모형 설정
 
 첫 단계는 연구자가 관심을 두는 목표변수(종속변수) 와 그것에 영향을 미칠
 것으로 가정되는 예측변수(독립변수) 를 명확히 설정하는 것이다. 이 과정은
@@ -372,7 +370,7 @@ $X \rightarrow C \leftarrow Z$, 여기서 $C$가 콜라이더다. 원래는 X와
 근거와 선행연구를 바탕으로 이루어진다. 즉, ["]{dir="rtl"}어떤 변수가
 결과에 영향을 줄 것인가?"를 합리적으로 규정해야 한다.
 
-2\. 데이터 전처리
+##### \(2) 데이터 전처리
 
 자료를 확보한 후에는 산점도를 그려 변수 간의 기초적 관계를 탐색하고,
 필요할 경우 자료를 변환한다. 예를 들어, 분포가 비대칭인 경우 로그 변환을
@@ -380,14 +378,14 @@ $X \rightarrow C \leftarrow Z$, 여기서 $C$가 콜라이더다. 원래는 X와
 다항항 추가를 고려한다. 또한 결측치 처리, 이상치 확인, 단위 일관성 확보
 등의 기본 정제 작업도 이 단계에서 수행된다.
 
-3\. 모형 추정
+##### \(3) 모형 추정
 
 자료 준비가 완료되면 회귀모형을 실제로 적합한다. 가장 기본적인 방법은
 최소제곱법(OLS, Ordinary Least Squares) 으로, 이는 잔차제곱합
 $\sum(y_{i} - \widehat{y_{i}})^{2}$을 최소화하는 방식이다. 이 과정에서
 회귀계수의 추정치가 얻어진다.
 
-4\. 유의 변수 선택
+##### \(4) 유의 변수 선택
 
 추정된 모형 내에서 모든 변수가 실제로 유의한 것은 아니다. 일부 변수는
 목표변수에 거의 영향을 주지 않을 수 있다. 따라서 회귀계수의 통계적
@@ -395,7 +393,7 @@ $\sum(y_{i} - \widehat{y_{i}})^{2}$을 최소화하는 방식이다. 이 과정�
 식별한다. 필요할 경우 변수선택 기법(예: 단계적 회귀, LASSO 등)을
 활용하여 최적의 설명변수 집합을 구성한다.
 
-5\. 다중공선성 진단
+##### \(5) 다중공선성 진단
 
 예측변수들 사이에 지나치게 높은 상관관계가 존재하면, 회귀계수의 추정이
 불안정해지고 해석이 왜곡될 수 있다. 이를 다중공선성(multicollinearity)
@@ -403,7 +401,7 @@ $\sum(y_{i} - \widehat{y_{i}})^{2}$을 최소화하는 방식이다. 이 과정�
 다중공선성을 확인하고, 필요하다면 변수를 제거하거나 결합하여 문제를
 완화한다.
 
-6\. 모형 진단 및 활용
+##### \(6) 모형 진단 및 활용
 
 마지막 단계는 적합된 모형이 회귀분석의 가정을 충족하는지 점검하는
 것이다.
@@ -420,9 +418,9 @@ $\sum(y_{i} - \widehat{y_{i}})^{2}$을 최소화하는 방식이다. 이 과정�
 가설 검증과 정책적·실무적 의사결정을 지원하는 유용한 도구로 활용될 수
 있다.
 
-Chapter 2. 회귀모형
+### <span style="color:green">chapter 2. 회귀모형</span>
 
-1\. 모형
+#### <span style="color:blue"> 1. 모형</span>
 
 $$Y_{i} = a + b_{1}X_{i1} + b_{2}X_{i2} + \ldots + + b_{p}X_{ip} + e_{i}$$
 
@@ -448,29 +446,29 @@ e_{2} \\
 e_{n}
 \end{array} \right\rbrack$$$$\underset{¯}{y} = X\underset{¯}{b} + \underset{¯}{e}$$
 
-첨자 $i$는 표본 데이터를 구별을 위한 것으로. $i = 1,2,...,n$이고 $n$은
+- 첨자 $i$는 표본 데이터를 구별을 위한 것으로. $i = 1,2,...,n$이고 $n$은
 총 표본의 크기이다.
 
-$Y$ : 종속 dependent 변수, 반응 response 변수, 내생 endogeous 변수, 목표
+- $Y$ : 종속 dependent 변수, 반응 response 변수, 내생 endogeous 변수, 목표
 target 변수 등으로 불리고 목표변수는 확률변수이다.
 
-$X's$ : 독립 independent 변수, 설명 exploratory 변수, 외생 exogenous
+- $X's$ : 독립 independent 변수, 설명 exploratory 변수, 외생 exogenous
 변수, 예측 predictor, feature 변수 등으로 불리고 예측변수는 결정변수로
 확률변수가 아니므로 분포함수를 갖지 않으며 모형 내에서 결정된다.
 
-$p$ : 모형 내 고려되는 예측변수 개수
+- $p$ : 모형 내 고려되는 예측변수 개수
 
-$\alpha$ : 절편(intercept), 모든 예측변수 $X$ 값들이 0 일때 목표변수
+- $\alpha$ : 절편(intercept), 모든 예측변수 $X$ 값들이 0 일때 목표변수
 $Y$의 값
 
-$\beta_{k}$ : 예측변수 $X_{k}$의 회귀계수 - 예측변수 $X_{k}$ 가 한 단위
+- $\beta_{k}$ : 예측변수 $X_{k}$의 회귀계수 - 예측변수 $X_{k}$ 가 한 단위
 증가할 때마다 목표변수 $Y$의 증가량(편미분 계수)
 
-$e_{i}$ : 오차항(백색잡음)으로 정규분포를 가정한다.
+- $e_{i}$ : 오차항(백색잡음)으로 정규분포를 가정한다.
 
-2\. 가정
+#### <span style="color:blue"> 2. 가정</span>
 
-선형성 linearity
+##### \(1) 선형성 linearity
 
 회귀분석은 목표변수(종속변수) 와 예측변수(독립변수) 사이의 관계가 직선
 형태를 따른다고 가정한다. 즉, 예측변수 $X_{1},X_{2},\ldots,X_{k}$가 있을
@@ -484,18 +482,18 @@ $$E(Y \mid X_{1},X_{2},\ldots,X_{k}) = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{
 $X^{2}$같은 항을 포함하면 변수 변환을 통해 곡선 관계도 선형회귀의 틀
 안에서 다룰 수 있다.
 
-전체 모형의 선형성 검정
+**전체 모형의 선형성 검정**
 
 전체 회귀모형의 선형성은 분산분석 F-검정을 통해 확인한다.
 
-귀무가설: 모든 회귀계수 $\beta_{1} = \beta_{2} = \cdots = \beta_{k} = 0$
+- 귀무가설: 모든 회귀계수 $\beta_{1} = \beta_{2} = \cdots = \beta_{k} = 0$
 
-대립가설: 적어도 하나의 회귀계수 $\beta_{j} \neq 0$이다.
+- 대립가설: 적어도 하나의 회귀계수 $\beta_{j} \neq 0$이다.
 
 F-검정에서 유의하면, 목표변수와 예측변수 전체가 집합적으로 직선적
 함수관계를 가진다고 해석할 수 있다.
 
-개별 예측변수의 선형성 검정
+**개별 예측변수의 선형성 검정**
 
 각 예측변수의 선형성은 해당 회귀계수의 t-검정을 통해 확인한다.
 
@@ -504,7 +502,7 @@ F-검정에서 유의하면, 목표변수와 예측변수 전체가 집합적으
 t-검정에서 유의하면, 해당 예측변수 $X_{j}$가 목표변수 Y와 유의미한
 선형적 관계를 가진다고 해석한다.
 
-선형성 위배 시 대처
+**선형성 위배 시 대처**
 
 만약 선형성이 충족되지 않는다면, 다음과 같은 방법을 고려할 수 있다.
 
@@ -516,68 +514,13 @@ t-검정에서 유의하면, 해당 예측변수 $X_{j}$가 목표변수 Y와 �
 
 스플라인 회귀(spline regression)와 같은 유연한 함수형
 
-선형성 사전 진단도구
+**선형성 사전 진단도구**
 
 산점도 행렬 : 목표변수와 예측변수 간 개별 산점도 - 직선관계 발견
 
-![pastedGraphic.pdf](media/image4.png){width="4.080652887139108in"
-height="2.0365266841644796in"}
+![](images/선형변환.png){fig-align="center" width="60%"}
 
-선형 변환 Linear Transformation
-
-목표변수와 예측변수가 선형이 아닌 경우 선형회귀모형이므로 문제 해결
-필요하다.
-
-모형 식 Y변환 X변환
-
-Power ![equation.pdf](media/image5.png){width="0.7104451006124235in"
-height="0.27891076115485564in"}
-![1\_\_#\$!@%!#\_\_equation.pdf](media/image6.png){width="0.44534667541557305in"
-height="0.2723086176727909in"}
-![2\_\_#\$!@%!#\_\_equation.pdf](media/image7.png){width="0.4361832895888014in"
-height="0.27203193350831145in"}
-
-Exponential
-![3\_\_#\$!@%!#\_\_equation.pdf](media/image8.png){width="0.8520538057742783in"
-height="0.308160542432196in"}
-![4\_\_#\$!@%!#\_\_equation.pdf](media/image9.png){width="0.5039796587926509in"
-height="0.308160542432196in"}
-![5\_\_#\$!@%!#\_\_equation.pdf](media/image10.png){width="0.13969488188976378in"
-height="0.30638779527559057in"}
-
-logarithmic
-![6\_\_#\$!@%!#\_\_equation.pdf](media/image11.png){width="1.1449846894138234in"
-height="0.308160542432196in"}
-![7\_\_#\$!@%!#\_\_equation.pdf](media/image12.png){width="0.13402777777777777in"
-height="0.308160542432196in"}
-![8\_\_#\$!@%!#\_\_equation.pdf](media/image13.png){width="0.42574693788276463in"
-height="0.2655227471566054in"}
-
-Reciprocal
-![9\_\_#\$!@%!#\_\_equation.pdf](media/image14.png){width="1.1207699037620298in"
-height="0.5474606299212599in"}
-![10\_\_#\$!@%!#\_\_equation.pdf](media/image15.png){width="0.19305555555555556in"
-height="0.586418416447944in"}
-![11\_\_#\$!@%!#\_\_equation.pdf](media/image16.png){width="0.13969488188976378in"
-height="0.30638779527559057in"}
-
-Square
-Root![12\_\_#\$!@%!#\_\_equation.pdf](media/image17.png){width="1.0656036745406825in"
-height="0.2825853018372703in"}
-![13\_\_#\$!@%!#\_\_equation.pdf](media/image18.png){width="0.13402777777777777in"
-height="0.308160542432196in"}
-![14\_\_#\$!@%!#\_\_equation.pdf](media/image19.png){width="0.29118110236220474in"
-height="0.2876979440069991in"}
-
-Square
-![15\_\_#\$!@%!#\_\_equation.pdf](media/image20.png){width="1.01167104111986in"
-height="0.27087489063867015in"}
-![16\_\_#\$!@%!#\_\_equation.pdf](media/image21.png){width="0.13402777777777777in"
-height="0.308160542432196in"}
-![17\_\_#\$!@%!#\_\_equation.pdf](media/image22.png){width="0.2558180227471566in"
-height="0.33971019247594053in"}
-
-단순회귀모형에서의 선형변환
+**단순회귀모형에서의 선형변환**
 
 단순회귀모형에서 목표변수 Y, 예측변수 X에 대한 선형변환, 즉
 $Y^{*} = a + bx^{*}(b \neq 0)$를 취하더라도 모형의 구조는 그대로
@@ -585,7 +528,7 @@ $Y^{*} = a + bx^{*}(b \neq 0)$를 취하더라도 모형의 구조는 그대로
 선형성 자체는 변하지 않는다. 따라서 단순회귀에서는 목표변수의 선형변환이
 허용된다.
 
-다중회귀모형에서의 선형변환 문제
+**다중회귀모형에서의 선형변환 문제**
 
 $$Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k} + \varepsilon$$
 
@@ -598,7 +541,7 @@ $$Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k} + \v
 목표변수보다는 예측변수의 변환(log, 제곱근, 다항항 추가 등) 에 국한해야
 한다.
 
-빅데이터·고차원 데이터의 경우
+**빅데이터·고차원 데이터의 경우**
 
 예측변수가 많거나 빅데이터 환경에서는 개별 예측변수와 목표변수 사이의
 선형성 진단이 사실상 불가능하거나 불필요하다.
@@ -612,7 +555,7 @@ $$Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k} + \v
 따라서 전통적 회귀분석에서 강조하는 선형성 진단은 고차원 데이터에서는
 상대적으로 중요도가 낮아진다.
 
-오차 가정 $\underset{¯}{e} \sim MNV(\underset{¯}{0},\sigma^{2}I)$
+##### \(2) 오차 가정 $\underset{¯}{e} \sim MNV(\underset{¯}{0},\sigma^{2}I)$
 
 회귀모형에서 오차항은 예측변수들에 의해 설명되지 않는 부분이다.
 
@@ -626,7 +569,7 @@ $$Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k} + \v
 이 두 변동의 비율을 이용하여 회귀모형 전체의 유의성을 검정할 수 있으며,
 이것이 바로 분산분석 F-검정이다.
 
-독립성(independent)
+**독립성(independent)**
 
 오차항은 서로 독립이어야 한다. 즉, 어떤 관측치의 오차가 다른 관측치의
 오차에 영향을 주어서는 안 된다.
@@ -638,7 +581,7 @@ $$Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k} + \v
 위배된 것이다. 이 경우에는 자기상관(autocorrelation)을 점검해야 하며, 더
 적합한 시계열모형(AR, ARIMA 등)을 사용해야 한다.
 
-정규성(normality)
+**정규성(normality)**
 
 회귀분석에서 가장 중요한 오차항 가정 가운데 하나는 정규성이다. 오차항이
 정규분포를 따른다고 가정하는 이유는 통계적 검정을 정당화하기 위함이다.
@@ -678,7 +621,7 @@ t-검정을 수행하기 위한 수학적 전제이다. 그러나 실제 연구�
 가정을 완화한 비모수적 방법이나 강건 회귀(robust regression), 부트스트랩
 추론과 같은 대안을 사용하는 것이 바람직하다.
 
-등분산성(Homoscedasticity)
+**등분산성(Homoscedasticity)**
 
 등분산성은 모든 예측변수 값에서 오차항의 분산이 동일하다는 가정이다.
 다시 말해, 특정한 X 값에서 관측된 종속변수 Y의 분산은 다른 X 값에서의
@@ -700,7 +643,7 @@ t-검정을 수행하기 위한 수학적 전제이다. 그러나 실제 연구�
 있다. 즉, 같은 점이라도 등분산성이 성립하는지 여부에 따라 이상치인지
 정상치인지의 판단이 달라질 수 있다.
 
-3\. 수리적 접근(상관계수 접근)
+#### <span style="color:blue"> 3. 수리적 접근(상관계수 접근)</span>
 
 두 측정형 변수 $(X,Y)$는 평균으로 $\mu_{x},\mu_{y}$, 분산은
 $\sigma_{x}^{2},\sigma_{y}^{2}$를 따르고 상관계수를 $\rho$을 가질 때,
@@ -715,56 +658,41 @@ $b = \rho\frac{\sigma_{y}}{\sigma_{x}}$이다. 따라서 $m(x)$는 X에 대한
 예측한 Y의 조건부분산은 항상 일정하며, 두 변수의 상관계수 크기에 의해
 결정된다. $v(x) = Var(Y \mid X = x) = \sigma_{y}^{2}(1 - \rho^{2})$
 
-이 두 식은 다음을 말해 준다.
-
-X로 Y를 선형적으로 예측할 수 있으며, 예측식은 회귀직선
-$m(x) = a + bx$이다.
-
-예측이 아무리 좋아도 여전히 일정한 오차 분산이 남으며, 그 크기는
+이 두 식은 다음을 말해 준다. X로 Y를 선형적으로 예측할 수 있으며, 예측식은 회귀직선
+$m(x) = a + bx$이다. 예측이 아무리 좋아도 여전히 일정한 오차 분산이 남으며, 그 크기는
 $\sigma_{y}^{2}(1 - \rho^{2})$이다.
 
 따라서 상관계수 $\rho$는 단순한 상관의 크기를 넘어, 예측직선의 기울기
 $b$를 결정하고, 설명된 변동과 설명되지 않은 변동의 비율까지 규정한다.
 
-4\. 범주형 예측변수 처리
+#### <span style="color:blue"> 4. 범주형 예측변수 처리</span>
 
 회귀분석은 기본적으로 측정형 변수를 전제로 한다. 따라서 범주형 변수는
 그대로 사용할 수 없고, 수치형으로 변환해야 한다. 이때 가장 널리 쓰이는
 방법이 더미변수 dummy, 지시변수 indicator 변환이다.
 
-더미변수의 정의
+**더미변수의 정의**
 
 범주형 변수가 k개의 수준(level)을 가질 때, 회귀모형에 직접 넣을 수
 없으므로 k-1개의 이진(dummy) 변수를 만들어 사용한다. 예를 들어, 성별
-변수가 남자/여자 두 수준이라면, 하나의 더미변수를 만들어
-
-$D = \{\begin{matrix}
-1 & \text{남자일 때} \\
-0 & \text{여자일 때}
+변수가 남자/여자 두 수준이라면, 하나의 더미변수를 만들어 $D = \{\begin{matrix}
+1 & \text{male} \\
+0 & \text{female}
 \end{matrix}$ 라고 정의한다.
 
-기준범주(reference category)
+**기준범주(reference category)**
 
 범주형 변수의 한 수준은 기준범주로 남기고, 나머지 범주들을 더미변수로
-만든다.
-
-기준범주는 회귀식 절편에 포함된다.
-
-다른 범주 계수는 기준범주 대비 효과로 해석된다.
+만든다. 기준범주는 회귀식 절편에 포함된다. 다른 범주 계수는 기준범주 대비 효과로 해석된다.
 
 예를 들면 학력 변수가 ["]{dir="rtl"}고졸, 대졸, 대학원졸" 3개 수준이라면
 기준범주: 고졸, 더미1: 대졸(대졸이면 1, 아니면 0), 더미2:
 대학원졸(대학원졸이면 1, 아니면 0)
 $Y = \beta_{0} + \beta_{1}D_{\text{대졸}} + \beta_{2}D_{\text{대학원}} + u$
 
-해석상의 유의점
+**해석상의 유의점**
 
-더미변수 계수는 차이(difference) 의 의미를 갖는다.
-
-기준범주에 따라 계수 해석이 달라지므로, 해석 의도를 고려해 기준을
-설정하는 것이 중요하다.
-
-더미변수와 다른 연속형 변수의 상호작용항을 넣으면, 범주별로 기울기가
+더미변수 계수는 차이(difference) 의 의미를 갖는다. 기준범주에 따라 계수 해석이 달라지므로, 해석 의도를 고려해 기준을 설정하는 것이 중요하다. 더미변수와 다른 연속형 변수의 상호작용항을 넣으면, 범주별로 기울기가
 다른 모형을 추정할 수도 있다.
 
 $$Y = \beta_{0} + \beta_{1}X + \beta_{2}D + \beta_{3}(X \times D) + u.$$
@@ -773,49 +701,25 @@ $$D = 0:Y = \beta_{0} + \beta_{1}X + u$$
 
 $$D = 1:Y = \beta_{0} + \beta_{2} + (\beta_{1} + \beta_{3})X + u$$
 
-빅데이터에서 전통적 더미 처리의 한계
+**빅데이터에서 전통적 더미 처리의 한계**
+범주형 변수를 회귀모형에 투입하려면 보통 더미 변수 처리를 한다. 수준이 k개라면 기준 범주를 하나 정해 두고 나머지 k-1개에 대한 더미를 만든다. 그런데 빅데이터 환경에서는 이 방식이 곧바로 한계에 부딪힌다. 범주의 종류가 수천 개에 이르는 경우라면 열(column)도 수천 개가 추가되면서 차원이 급격히 불어난다. 그 결과 계산 속도가 느려지고 메모리 사용량이 커지며, 변수들 사이의 상관관계가 복잡하게 얽히면서 다중공선성의 위험까지 높아진다.
 
-k개의 범주 수준 → k-1개의 더미 변수 필요하다.
+또 다른 문제는 드물게 나타나는 범주 수준이다. 특정 수준이 데이터에 몇 번밖에 관측되지 않는다면, 그 범주에 대응하는 회귀계수는 극도로 불안정해지고 추정치의 신뢰성이 떨어진다. 결국 전통적인 더미 처리 방식은 범주가 많거나 희귀 수준이 많은 빅데이터 상황에서는 적합하지 않으며, 이를 보완할 다른 차원 축소 기법이나 범주 병합, 임베딩 방법 등이 필요해진다.
 
-빅데이터에서 k가 수천이면, 수천 개 열(column)이 생겨 차원이 폭발한다. →
-계산량 증가, 메모리 문제, 다중공선성 위험.
+**빅데이터에서의 대안적 처리 방법**
 
-희귀 수준(관측이 몇 개밖에 없는 범주)은 계수 추정이 불안정하다.
+\(1\) 차원 축소 기반 방법: 희귀 수준 통합: 빈도가 낮은 범주를 ["]{dir="rtl"}기타(Other)" 범주로
+묶는다. 빈도/순위 인코딩: 범주를 등장 빈도나 순위로 치환해 수치형 변수로 사용한다.
 
-빅데이터에서의 대안적 처리 방법
+\(2\) 목표값(target) 기반 인코딩: 타깃 인코딩(Target / Mean Encoding): 각 범주를 종속변수의 평균값으로
+대체한다. 예를 들면, 고객 ID별 평균 구매율을 사용한다. 차원 폭발을 방지할 수 있으나, 데이터 누설(leakage) 가능 → 반드시 교차검증이나 홀드아웃 기반으로 추정한다.
 
-\(1\) 차원 축소 기반 방법
+\(3\) 해싱 인코딩(Feature Hashing): 각 범주 수준을 해시 함수로 고정된 크기의 벡터 공간으로 매핑. 차원이 제한되므로 효율적이나 충돌이 생겨 서로 다른 범주가 같은 벡터로 인코딩될 수 있다.
 
-희귀 수준 통합: 빈도가 낮은 범주를 ["]{dir="rtl"}기타(Other)" 범주로
-묶는다.
+\(4\) 임베딩(embedding): 딥러닝 접근: 범주형 변수를 밀집 벡터(dense vector) 로 학습한다. 예를
+들면 Word2Vec, Entity Embedding → 범주 간의 유사성을 벡터 공간에서 반영한다. 빅데이터에서 강력하며, 추천 시스템·클릭 예측 모델에서 표준으로 쓰인다.
 
-빈도/순위 인코딩: 범주를 등장 빈도나 순위로 치환해 수치형 변수로
-사용한다.
-
-\(2\) 목표값(target) 기반 인코딩
-
-타깃 인코딩(Target / Mean Encoding): 각 범주를 종속변수의 평균값으로
-대체한다. 예를 들면, 고객 ID별 평균 구매율을 사용한다.
-
-차원 폭발을 방지할 수 있으나, 데이터 누설(leakage) 가능 → 반드시
-교차검증이나 홀드아웃 기반으로 추정.
-
-\(3\) 해싱 인코딩(Feature Hashing)
-
-각 범주 수준을 해시 함수로 고정된 크기의 벡터 공간으로 매핑.
-
-차원이 제한되므로 효율적이나 충돌이 생겨 서로 다른 범주가 같은 벡터로
-인코딩될 수 있다.
-
-\(4\) 임베딩(embedding)
-
-딥러닝 접근: 범주형 변수를 밀집 벡터(dense vector) 로 학습한다. 예를
-들면 Word2Vec, Entity Embedding → 범주 간의 유사성을 벡터 공간에서
-반영한다.
-
-빅데이터에서 강력하며, 추천 시스템·클릭 예측 모델에서 표준으로 쓰임.
-
-빅데이터 환경에서의 선택 기준
+**빅데이터 환경에서의 선택 기준**
 
 데이터 규모: 수준이 10\~20개 정도면 여전히 더미 변수가 적절.
 
@@ -834,9 +738,9 @@ k개의 범주 수준 → k-1개의 더미 변수 필요하다.
 빅데이터 환경에서는 해석보다는 차원 축소와 일반화 성능에 중점을 두는
 방식이 더 적합하다.
 
-Chapter 3. 회귀모형 추정
+### <span style="color:green">chapter 3. 회귀모형 추정</span>
 
-1\. 회귀계수 추정 OLS 방법
+#### <span style="color:blue"> 1. 회귀계수 추정 OLS 방법</span>
 
 회귀분석에서 가장 중요한 절차는 주어진 데이터로부터 회귀계수(절편과
 기울기) 를 추정하는 것이다. 이때 사용되는 가장 기본적이고 널리 쓰이는
@@ -847,14 +751,12 @@ Chapter 3. 회귀모형 추정
 연구에서 아버지와 성인 아들의 키 데이터를 사용하여 두 변수 사이의 직선적
 관계를 도출하는 과정에서 최소자승법을 활용하였다.
 
-![pasted-image.png](media/image23.png){width="3.1380653980752404in"
-height="2.30000656167979in"}
+![](images/OLS추정.png){fig-align="center" width="60%"}
 
-관측점들을 가장 대표하는 직선 (best fit)을 어떻게 구할 것인가?
+**관측점들을 가장 대표하는 직선 (best fit)을 어떻게 구할 것인가?**
 
 데이터 $(x_{i},y_{i})$를 활용하여 점들에 가장 적합한 직선의
-회귀계수![pasted-image.png](media/image23.png){width="3.340016404199475in"
-height="2.448024934383202in"} $(a,b)$를 추정하고 이를 이용하여 목표변수
+회귀계수 $(a,b)$ 를 추정하고 이를 이용하여 목표변수
 추정값을 ${\widehat{y}}_{i} = \widehat{a} + \widehat{b}x_{i}$(fitted
 value) 구한다. 오차항에 대한 추정값으로
 ${\widehat{e}}_{i} = y_{i} - {\widehat{y}}_{i}$을 사용하여 직선의
@@ -866,23 +768,21 @@ min_{a,b}
 min_{a,b}
 \end{array}\sum(y_{i} - {\widehat{y}}_{i})^{2}$$
 
-수평, 수직 편차 중 왜 수직 편차인가?
+**수평, 수직 편차 중 왜 수직 편차인가?**
 
 수평편차는 예측변수의 변동에 대한 척도이고 수직편차는 목표변수의 변동을
 척도이다. 선형모형은 목표변수의 변동(값)을 예측하는 것이 목표이므로 수직
 편차를 최소화 하는 것이 점들을 대표하는 회귀식(적합식)이다.
 
-왜 제곱인가?
+**왜 제곱인가?**
 
-잔차 $(y_{i} - {\widehat{y}}_{i})$를 그대로 합하면 0이 되므로 오차
-크기를 반영할 수 없다. 절대값을 사용할 수도 있지만 수학적으로 다루기
-불편하다(오차의 크기를 모두 양수로 만들 수 있지만, 절대값 함수는 미분이
+잔차 $(y_{i} - {\widehat{y}}_{i})$를 그대로 합하면 0이 되므로 오차 크기를 반영할 수 없다. 절대값을 사용할 수도 있지만 수학적으로 다루기 불편하다(오차의 크기를 모두 양수로 만들 수 있지만, 절대값 함수는 미분이
 불가능한 점(0에서의 뾰족함)이 있어 수학적으로 다루기 어렵다).
 
 제곱은 항상 양수이고, 미분 가능하며, 오차가 클수록 더 큰 페널티를 주기
 때문에 회귀분석에서 잔차 제곱합을 최소화하는 방법을 사용한다.
 
-2\. 단순회귀모형 추정
+#### <span style="color:blue"> 2. 단순회귀모형 추정</span>
 
 모형: $y_{i} = a + bx_{i} + e_{i},e_{i} \sim N(0,\sigma^{2})$
 
@@ -898,7 +798,7 @@ $\widehat{b} = \frac{\sum(x_{i} - \overline{x})(y_{i} - \overline{y})}{\sum(x_{i
 상관계수와 관계:
 $r = b\frac{\sqrt{\sum(x_{i} - \overline{x})^{2}}}{\sqrt{\sum(y_{i} - \overline{y})^{2}}}$
 
-최대우도추정량 Maximum Likelihood Estimator
+**최대우도추정량 Maximum Likelihood Estimator**
 
 $y_{i} \sim iidN(a + bx_{i},\sigma^{2})$이므로 우도함수는 다음과
 같으므로 우도함수 최대화 = OLS 추정과 동일하다.
@@ -910,8 +810,9 @@ $$L(a,b;x_{1},x_{2},...,x_{n}) = (\frac{1}{\sqrt{2\pi}\sigma})^{n}exp( - \frac{\
 분포함수가 지수족이므로 MLE는 CSS이고 불편추정량이므로 Rao-Blackwell
 정리에 의해 MVUE이다.
 
-잔차 = 오차의 추정량
-$r_{i} = {\widehat{e}}_{i} = y_{i} - {\widehat{y}}_{i}$
+**잔차 = 오차의 추정량**
+
+- $r_{i} = {\widehat{e}}_{i} = y_{i} - {\widehat{y}}_{i}$
 
 - $\sum r_{i} = 0$ : 잔차의 합은 0이다.
 
@@ -923,10 +824,10 @@ $r_{i} = {\widehat{e}}_{i} = y_{i} - {\widehat{y}}_{i}$
 
 - 적합된 회귀직선은 $(\overline{x},\overline{y})$을 지난다.
 
-3\. 다중회귀모형 추정
+#### <span style="color:blue"> 3. 다중회귀모형 추정</span>
 
-행렬모형 : $\underset{¯}{y} = X\underset{¯}{b} + \underset{¯}{e}$,
-(가정) $\underset{¯}{e} \sim N(\underset{¯}{0},\sigma^{2}I_{n})$
+**행렬모형 : $\underset{¯}{y} = X\underset{¯}{b} + \underset{¯}{e}$,
+(가정) $\underset{¯}{e} \sim N(\underset{¯}{0},\sigma^{2}I_{n})$**
 
 $\underset{¯}{y} = \left( \begin{array}{r}
 y_{1} \\
@@ -973,14 +874,14 @@ $\frac{\partial Q}{\partial\underset{¯}{b}} = - X'\underset{¯}{y} - X'\underse
 이를 정리하면
 $\widehat{\underset{¯}{b}} = (X'X)^{- 1}(X'\underset{¯}{y})$는 OLS이다.
 
-OLS 추정치 성질 : GAUSS-MARKOV Theorem
+**OLS 추정치 성질 : GAUSS-MARKOV Theorem**
 
 회귀계수에 대한 OLS 추정치는 BLUE(Best Linear Unbiased Estimator)이다.
 즉 모든 선형, 불편 추정량 중 최소 분산(minimum variance)를 갖는다.
 분포함수가 지수족이므로 MLE는 CSS이고 불편추정량이므로 Rao-Blackwell
 정리에 의해 MVUE이다.
 
-OLS 평균과 (추정)분산
+**OLS 평균과 (추정)분산**
 
 OLS는 불편추정량이다.
 $E(\widehat{\underset{¯}{b}}) = E((X'X)^{- 1}X'\underset{¯}{y}) = (X'X)^{- 1}X'E(\underset{¯}{y}) = (X'X)^{- 1}X'X\underset{¯}{b} = \underset{¯}{b}$
@@ -988,13 +889,12 @@ $E(\widehat{\underset{¯}{b}}) = E((X'X)^{- 1}X'\underset{¯}{y}) = (X'X)^{- 1}X
 OLS
 추정분산$V(\widehat{\underset{¯}{b}}) = V((X'X)^{- 1}X'\underset{¯}{y}) = (X'X)^{- 1}X')\sigma^{2}I((X'X)^{- 1}X')' = \sigma^{2}(X'X)^{- 1}$
 
-추정분산 추정치 :
-$\widehat{V(\widehat{\underset{¯}{b}})} = \widehat{\sigma^{2}}(X'X)^{- 1} = MSE(X'X)^{- 1}$
+추정분산 추정치: $\widehat{V(\widehat{\underset{¯}{b}})} = \widehat{\sigma^{2}}(X'X)^{- 1} = MSE(X'X)^{- 1}$
 
 예측변수 $X^{k}$ 추정오차 $s({\widehat{b}}_{k})$ : $MSE(X'X)^{- 1}$의
 $k$번째 대각원소 양의 제곱근
 
-MLE 추정
+**MLE 추정**
 
 오차항의 가정
 $\underset{¯}{e} \sim N(\underset{¯}{0},\sigma^{2}I_{n})$이므로
@@ -1006,7 +906,7 @@ $min_{\underset{¯}{\beta}}(\underset{¯}{y} - X\underset{¯}{b})'(\underset{¯}
 최소화 하는 OLS 추정치와 동일하다. 그리고 MLE는 MVUE이므로 가장 좋은
 추정치이다.
 
-적합치 ${\widehat{y}}_{i}$
+**적합치 ${\widehat{y}}_{i}$**
 
 $\widehat{\underset{¯}{y}} = X\widehat{\underset{¯}{b}} = X(X'X)^{- 1}X'\underset{¯}{y} = H\underset{¯}{y}$,
 Hat 행렬 $H = X(X'X)^{- 1}X'$
@@ -1018,7 +918,7 @@ Hat 행렬 $H = X(X'X)^{- 1}X'$
 - 만약 $AA = A$가 성립하는 행렬 $A$를 멱등행렬(idempodent)이라 한다. A가
   멱등행렬이면, $A^{n} = A$(n은 2보다 큰 정수)가 성립한다.
 
-잔차 residual $r_{i} = y_{i} - {\widehat{y}}_{i}$
+**잔차 residual $r_{i} = y_{i} - {\widehat{y}}_{i}$**
 
 관측치와 적합치의 차이로 오차항에 대한 추정치이다.
 
@@ -1031,9 +931,9 @@ $$\underset{¯}{r} = \underset{¯}{y} - \widehat{\underset{¯}{y}} = \underset{�
 - 잔차 분산 :
   $V(\underset{¯}{r}) = V((I - H)\underset{¯}{y}) = \sigma^{2}(I - H)$
 
-4\. 회귀모형 검정
+#### <span style="color:blue"> 4. 회귀모형 검정</span>
 
-분산분석적 접근
+##### \(1) 분산분석적 접근
 
 목표변수의 분산(총변동 )을 모형이 설명변동과 설명하지 못하는
 오차변동으로 이분화 하고 설명변동이 오차변동에 비해 충분히 크다면
@@ -1057,15 +957,13 @@ $$\underset{¯}{r} = \underset{¯}{y} - \widehat{\underset{¯}{y}} = \underset{�
 - 대립가설 : 적어도 하나의 회귀계수는 유의하다. 적어도
   $b_{k} \neq 0$이다.
 
-  변동분할 variation decomposition
+##### \(2) 변동분할 variation decomposition
 
 회귀분석은 단순히 회귀계수를 추정하는 과정이 아니라, 종속변수의 변동을
 모형이 얼마나 설명하는가를 평가하는 과정이다. 이를 위해 목표변수의
-변동을 세 부분으로
-분할한다.![72\_\_#\$!@%!#\_\_pastedGraphic.pdf](media/image24.png){width="3.66548009623797in"
-height="1.8954746281714785in"}
+변동을 세 부분으로 분할한다.
 
-총변동 Total Sum of Square
+**총변동 Total Sum of Square**
 
 목표변수의 값들의 변동에 대한 척도로 예측변수들이 목표변수를 잘
 설명한다는 것은 변화를 예측하는 것이다. 목표변수의 실제 관측값은 전체
@@ -1076,14 +974,14 @@ Squares, SST) 이다. 총변동은 목표변수의 분산과 동일한 개념으
 $SST = \sum(y_{i} - \overline{y})^{2} = (\underset{¯}{y} - \overline{y}1)'(\underset{¯}{y} - \overline{y}1) = {\underset{¯}{y}}'M\underset{¯}{y}$,
 여기서 $M = I - \frac{1}{n}11' = I - \frac{1}{n}J$
 
-모형변동 Regression (Model) SS
+**모형변동 Regression (Model) SS**
 
 설정된 회귀모형 목표변수 총변동 중 설정된 모형에 의한 설명 부분이다.
 총변동에 가까울수록 회귀모형 설정이 적절함을 의미한다.
 
 $$SSR = \sum({\widehat{y}}_{i} - \overline{y})^{2} = {\underset{¯}{y}}'(H - (1/n)J)\underset{¯}{y}$$
 
-오차변동 Error SS
+**오차변동 Error SS**
 
 회귀모형으로도 설명되지 않는 부분, 즉 오차변동(Error Sum of Squares,
 SSE) 이다. 이는 실제값과 예측값 사이의 차이, 즉 잔차(residual)에서
@@ -1091,7 +989,7 @@ SSE) 이다. 이는 실제값과 예측값 사이의 차이, 즉 잔차(residual
 
 $$SSE = \sum(y_{i} - {\widehat{y}}_{i})^{2} = (\underset{¯}{y} - H\underset{¯}{y})'(\underset{¯}{y} - H\underset{¯}{y}) = {\underset{¯}{y}}'(I - H)\underset{¯}{y}$$
 
-이차형식
+##### \(3) 이차형식
 
 【정의】 확률변수 벡터 $\underset{¯}{y}$, 상수행렬 $A$에 대하여
 $\underset{¯}{y}'A\underset{¯}{y}$을 이차형식이라 한다.
@@ -1102,31 +1000,28 @@ $\underset{¯}{y} \sim MVN(\underset{¯}{\mu} = \underset{¯}{0},\Sigma = I)$(�
 $Q = \underset{¯}{y}'A\underset{¯}{y}$은 자유도가 $rank(A)$ 인
 $\chi^{2}$분포를 따른다.
 
-변동분포
+##### \(4) 변동분포
 
 총변동 분포 $SST \sim \chi^{2}(n - 1)$
 
 - $SST = {\underset{¯}{y}}'(I - (1/n)J)\underset{¯}{y}$ 는 목표변수
-  ![2\_\_#\$!@%!#\_\_equation.pdf](media/image25.png){width="0.17511154855643044in"
-  height="0.3590419947506562in"}의 이차형식이다.
+$\underline y$ 의 이차형식이다.
 
 - 오차항의 정규성 가정에 의하여
   $\underset{¯}{y} \sim MVN(X\underset{¯}{b},\sigma^{2}I)$ 정규분포를
   따르므로 이차형식인 $SST$는 자유도 $rank(I - J/n) = n - 1$인
   $\chi^{2}$분포를 따른다.
 
-오차변동 분포 $SSE \sim \chi^{2}(n - p - 1)$
+**오차변동 분포 $SSE \sim \chi^{2}(n - p - 1)$**
 
-- $SSE = {\underset{¯}{y}}'(I - H)\underset{¯}{y}$는 목표변수
-  ![2\_\_#\$!@%!#\_\_equation.pdf](media/image25.png){width="0.17511154855643044in"
-  height="0.3590419947506562in"}의 이차형식이다.
+- $SSE = {\underset{¯}{y}}'(I - H)\underset{¯}{y}$는 목표변수 $\underline y$ 의 이차형식이다.
 
 - 오차항의 정규성 가정에 의하여
   $\underset{¯}{y} \sim MVN(X\underset{¯}{b},\sigma^{2}I)$정규분포를
   따르므로 이차형식인 $SSE$는 자유도 $rank(I - H) = n - p - 1$인
   $\chi^{2}$분포를 따른다.
 
-자유도 분할: Cochran 정리
+**자유도 분할: Cochran 정리**
 
 - 총변동의 자유도(관측치 중 자유로운 개수, 관측치 하나 하나는 독립적이고
   정보를 갖고 있다)는 평균이 추정되었으므로 ($n - 1$)이다. \<=\>
@@ -1141,16 +1036,16 @@ $\chi^{2}$분포를 따른다.
 
 - 그러므로 $SSR \sim \chi^{2}(p)$
 
-  평균변동및 기대평균변동 Expected MSE
+##### \(5) 평균변동및 기대평균변동 Expected MSE
 
-평균오차변동
+**평균오차변동**
 
 $MSE = \frac{SSE}{n - p - 1}$ : 오차분산 $\sigma^{2}$의 추정값 -
 $\widehat{\sigma^{2}} = MSE$
 
 평균오차변동 기대값 : $E(\widehat{\sigma^{2}}) = E(MSE) = \sigma^{2}$
 
-평균회귀변동
+**평균회귀변동**
 
 $MSR = \frac{SSR}{p}$ : 평균 회귀변동 :
 $E(MSR) = \sigma^{2} + b^{2}\sum(x_{i} - \overline{x})^{2}$ (단순회귀
@@ -1162,7 +1057,7 @@ $E(MSR) = \sigma^{2} + b^{2}\sum(x_{i} - \overline{x})^{2}$ (단순회귀
 회귀변동이 커진다는 것은 회귀계수가 유의하든가 예측변수의 차이가 많다는
 것을 의미한다.
 
-분산분석표, F - 검정 : 설정 회귀모형 유의성 검정
+##### \(6) 분산분석표, F - 검정 : 설정 회귀모형 유의성 검정
 
 - 귀무가설 : 설정한 회귀모형은 유의하지 않다. \<=\> 모든 예측변수의
   회귀계수 값은 0이다. \<=\> $\underset{¯}{y} = X\underset{¯}{b}$
@@ -1170,9 +1065,7 @@ $E(MSR) = \sigma^{2} + b^{2}\sum(x_{i} - \overline{x})^{2}$ (단순회귀
   않는다.
 
 - 대립가설 : 설정한 회귀모형 $\underset{¯}{y} = X\underset{¯}{b}$은
-  유의하다. \<=\> 회귀계수 벡터
-  ![1\_\_#\$!@%!#\_\_equation.pdf](media/image26.png){width="0.1725951443569554in"
-  height="0.31299978127734035in"} 중 유의한 회귀계수가 적어도 하나가
+  유의하다. \<=\> 회귀계수 벡터 $\underline b$ 중 유의한 회귀계수가 적어도 하나가
   있다.
 
 - 검정통계량 : $TS = \frac{MSR}{MSE} \sim F(p,n - p - 1)$
@@ -1195,7 +1088,7 @@ $E(MSR) = \sigma^{2} + b^{2}\sum(x_{i} - \overline{x})^{2}$ (단순회귀
 | 총변동       | $$SST = {\underset{¯}{y}}'(I - (1/n)J)\underset{¯}{y}$$ | $$n - 1$$     |                                 |                          |
 +--------------+---------------------------------------------------------+---------------+---------------------------------+--------------------------+
 
-$t -$검정 : 개별 예측변수 유의성 검정 $H_{0}:b_{k} = 0$
+##### \(7) $t -$검정 : 개별 예측변수 유의성 검정 $H_{0}:b_{k} = 0$
 
 - 귀무가설 : 예측변수 $X_{k}$는 유의하지 않다. $H_{0}:b_{k} = 0$
 
@@ -1273,69 +1166,61 @@ Type III: marginal or orthogonal , partial
 타입 2 자승합과 동일하다. 부분자승합 개념이나 교차항이 있는 경우
 상이하다.
 
-Chapter 4. 사례 데이터
+### <span style="color:green">chapter 4. 사례 데이터</span>
 
-1\. 보스턴 주택가격
+**보스턴 주택가격**
 
-+-----------------------------------------------------------------------+
-| \# Boston Housing 데이터 불러오기 및 회귀분석 사례                    |
-|                                                                       |
-| import pandas as pd                                                   |
-|                                                                       |
-| import statsmodels.api as sm                                          |
-|                                                                       |
-| from sklearn.datasets import fetch_openml                             |
-|                                                                       |
-| \# 1. 데이터 불러오기 (OpenML에서 Boston Housing)                     |
-|                                                                       |
-| boston = fetch_openml(name=\"boston\", version=1, as_frame=True)      |
-|                                                                       |
-| df = boston.frame                                                     |
-|                                                                       |
-| [[df.info]{.underline}](http://df.info)()                             |
-+-----------------------------------------------------------------------+
+```python
+# Boston Housing 데이터 불러오기 및 회귀분석 사례
+import pandas as pd
+import statsmodels.api as sm
+from sklearn.datasets import fetch_openml
+
+# 1. 데이터 불러오기 (OpenML에서 Boston Housing)
+boston = fetch_openml(name="boston", version=1, as_frame=True)
+df = boston.frame
+df.info()
+```
 
 CRIM: per capita crime rate by town → 타운별 1인당 범죄율.
-
+<br>
 ZN: proportion of residential land zoned for lots over 25,000 sq.ft. →
 25,000 제곱피트(약 695평) 이상의 부지로 구획된 주거용 토지 비율.
-
+<br>
 INDUS: proportion of non-retail business acres per town → 타운별
 비소매(non-retail) 상업용 토지 비율.
-
+<br>
 CHAS: Charles River dummy variable (= 1 if tract bounds river; 0
 otherwise) → Charles River 더미 변수, 강을 경계로 하면 1, 아니면 0.
-
+<br>
 NOX: nitric oxides concentration (parts per 10 million, ppm × 10) →
 산화질소(NOₓ) 농도, 단위: 10ppm.
-
+<br>
 RM: average number of rooms per dwelling → 주택당 평균 방의 수.
-
+<br>
 AGE: proportion of owner-occupied units built prior to 1940 → 1940년
 이전에 건축된 자가 주택 비율.
-
+<br>
 DIS: weighted distances to five Boston employment centres → 보스턴 고용
 중심지 5곳까지의 가중 평균 거리.
-
+<br>
 RAD: index of accessibility to radial highways → 방사형(radial) 고속도로
 접근성 지수.
-
+<br>
 TAX: full-value property-tax rate per \$10,000 → \$10,000당 재산세율.
-
+<br>
 PTRATIO: pupil-teacher ratio by town → 타운별 학생-교사 비율.
-
+<br>
 B: 1000(Bk − 0.63)², where Bk is the proportion of Black residents by
 town → 인종 관련 변수: B = 1000(Bk − 0.63)\^2. 여기서 Bk는 흑인 비율.
-
+<br>
 LSTAT: % lower status of the population → 저소득·사회적 지위가 낮은
 계층의 비율(%).
-
+<br>
 MEDV: median value of owner-occupied homes in \$1000[']{dir="rtl"}s →
 자가 주택의 중앙값 가격 (단위: \$1000).
 
-2\. 산점도
-행렬![pasted-image.pdf](media/image28.png){width="3.023050087489064in"
-height="1.9878849518810149in"}
+**산점도 행렬**
 
 2개의 측정형 변수 데이터$(x_{i},y_{i})$를 2차원 공간에 표현하여 두
 변수의 함수 관계를 시각적으로 예상한다.
@@ -1346,7 +1231,7 @@ height="1.9878849518810149in"}
 - Y-축 : 결과로 목표변수, 종속변수, 반응변수로 불리는 변수를 사용한다.
   그러므로 산점도는 두 변수의 인과 관계를 시각적으로 표현한다.
 
-진단내용(1) 함수관계
+**진단내용(1) 함수관계**
 
 산점도는 두 변수 간의 함수 관계를 본다. 일반적으로 해석이 용이하고
 상관계수의 척도인 직선 관계의 정도를 파악하는데 사용된다. 두 변수의 함수
@@ -1354,7 +1239,7 @@ height="1.9878849518810149in"}
 벗어나는 경우 두 변수의 함수관계는 수집된 데이터 범위 내의 패턴(함수
 관계)과 다를 수 있기 때문이다.
 
-진단내용(2) 이상치
+**진단내용(2) 이상치**
 
 두 변수의 직선 관계에서 특이한 패턴을 보이는 관측치를 시각적으로
 진단한다.
@@ -1373,7 +1258,7 @@ height="1.9878849518810149in"}
   그러나 대용량 데이터에서 이상치는 정상적인 패턴을 벗어나는 관측치여서
   향후 시스템 개발에 주요한 정보를 제공하게 된다.
 
-진단내용(3) 영향치
+**진단내용(3) 영향치**
 
 X-축(예측변수) 데이터의 범위를 벗어난 관측치를 영향치 influential
 observation 라 한다. 영향치에는 다음 2 종류의 영향치가 존재한다.
@@ -1390,17 +1275,14 @@ observation 라 한다. 영향치에는 다음 2 종류의 영향치가 존재�
 - (해결) 영향치 주변의 관측값을 추가 수집 후 분석, 영향치 값이 실제 발생
   가능하지 않은 경우 제외
 
-+:----------------------------------------------------------------------+
-| #산점도 행렬 그리기                                                   |
-|                                                                       |
-| import seaborn as sns                                                 |
-|                                                                       |
-| import matplotlib.pyplot as plt                                       |
-|                                                                       |
-| sns.pairplot(boston.iloc\[:,1:15\],kind=\'reg\',diag_kind=\'kde\')    |
-|                                                                       |
-| plt.show()                                                            |
-+-----------------------------------------------------------------------+
+
+```python
+#산점도 행렬 그리기
+import seaborn as sns
+import matplotlib.pyplot as plt
+sns.pairplot(boston.iloc[:,1:15],kind='reg',diag_kind='kde')
+plt.show()
+```
 
 MEDV 목표변수(제일 마지막 대각 KDE - 커널추정 확률밀도함수)의 분포는
 좌우 대칭을 보이므로 정규변환 필요는 없어 보인다. 예측변수가 많은 경우
@@ -1412,8 +1294,9 @@ MEDV 목표변수(제일 마지막 대각 KDE - 커널추정 확률밀도함수)
 다중회귀모형에서 영향치, 이상치 사전 진단 또한 의미가 없고 모형 최종
 진단 과정에서 이루어진다.
 
-![붙여넣은 동영상.png](media/image29.png){width="4.303011811023622in"
-height="4.303011811023622in"}
+![](images/산점도행렬.png){fig-align="center" width="80%"}
+
+**추정**
 
 이진형변수 chas가 (1=주변지역, 0=아닌 지역)으로 입력되어 있어 그대로
 사용해도 되지만 만약 문자로 입력되었다면 (1,0)으로 변환하여 추정해야
@@ -1421,68 +1304,49 @@ height="4.303011811023622in"}
 
 **pd.get_dummies(boston\[\'chas\'\],drop_first=True)**
 
-+------------------------------------------------------------------------+
-| #Using Pearson Correlation                                             |
-|                                                                        |
-| df_cor=df.iloc\[:,1:15\].corr(method =\'pearson\')                     |
-|                                                                        |
-| \# 스타일 지정: 소숫점 2자리 + 색상맵                                  |
-|                                                                        |
-| df_cor.style.format(\"{:.2f}\").background_gradient(cmap=\'coolwarm\') |
-+------------------------------------------------------------------------+
+```python
+#Using Pearson Correlation
+df_cor=df.iloc[:,1:15].corr(method ='pearson')
+# 스타일 지정: 소숫점 2자리 + 색상맵
+df_cor.style.format("{:.2f}").background_gradient(cmap='coolwarm')
+```
 
-![붙여넣은 동영상.png](media/image30.png){width="4.5in"
-height="2.6746325459317584in"}
+![](images/상관계수행렬.png){fig-align="center" width="80%"}
+
 
 종속변수와 상관관계(상관계수 크기)가 가장 높은 예측변수는 lstat(-0.74)
 \> rm(0.695) \> ptratio(0.51) 순이다.
 
-+-----------------------------------------------------------------------+
-| import pandas as pd                                                   |
-|                                                                       |
-| import statsmodels.api as sm                                          |
-|                                                                       |
-| \# 1) 종속/설명변수 분리                                              |
-|                                                                       |
-| y = pd.to_numeric(df\[\'MEDV\'\], errors=\'coerce\') \# 숫자화        |
-|                                                                       |
-| X = df.drop(columns=\[\'MEDV\'\]).copy()                              |
-|                                                                       |
-| \# 2) 설명변수 전부 숫자형으로 강제 변환                              |
-|                                                                       |
-| for col in X.columns:                                                 |
-|                                                                       |
-| \# category/object이면 숫자로 변환 (필요시 coerce로 NaN 처리)         |
-|                                                                       |
-| if X\[col\].dtype.name in \[\'category\', \'object\'\]:               |
-|                                                                       |
-| X\[col\] = pd.to_numeric(X\[col\], errors=\'coerce\')                 |
-|                                                                       |
-| else:                                                                 |
-|                                                                       |
-| \# float/int 등은 그대로 두되, numpy형 보장                           |
-|                                                                       |
-| X\[col\] = X\[col\].astype(float)                                     |
-|                                                                       |
-| \# 3) 결측치 제거(숫자화 과정에서 생겼을 수 있는 NaN)                 |
-|                                                                       |
-| mask = y.notna() & X.notna().all(axis=1)                              |
-|                                                                       |
-| y = y\[mask\]                                                         |
-|                                                                       |
-| X = X\[mask\]                                                         |
-|                                                                       |
-| \# 4) 절편 추가 후 적합                                               |
-|                                                                       |
-| X = sm.add_constant(X, has_constant=\'add\')                          |
-|                                                                       |
-| fit = sm.OLS(y, X).fit()                                              |
-|                                                                       |
-| print(fit.summary())                                                  |
-+-----------------------------------------------------------------------+
+```python
+import pandas as pd
+import statsmodels.api as sm
 
-![붙여넣은 동영상.png](media/image31.png){width="4.303011811023622in"
-height="4.345545713035871in"}
+# 1) 종속/설명변수 분리
+y = pd.to_numeric(df['MEDV'], errors='coerce')             # 숫자화
+X = df.drop(columns=['MEDV']).copy()
+
+# 2) 설명변수 전부 숫자형으로 강제 변환
+for col in X.columns:
+    # category/object이면 숫자로 변환 (필요시 coerce로 NaN 처리)
+    if X[col].dtype.name in ['category', 'object']:
+        X[col] = pd.to_numeric(X[col], errors='coerce')
+    else:
+        # float/int 등은 그대로 두되, numpy형 보장
+        X[col] = X[col].astype(float)
+
+# 3) 결측치 제거(숫자화 과정에서 생겼을 수 있는 NaN)
+mask = y.notna() & X.notna().all(axis=1)
+y = y[mask]
+X = X[mask]
+
+# 4) 절편 추가 후 적합
+X = sm.add_constant(X, has_constant='add')
+fit = sm.OLS(y, X).fit()
+
+print(fit.summary())
+```
+
+![](images/보스톤추정결과.png){fig-align="center" width="80%"}
 
 age 예측변수를 제외하고는 모든 예측변수는 유의하다. 모형의 결정계수는
 74.1%로 설명력이 매우 높다. 분석결과 아래 Notes \[2\]에 보면, 예측변수
