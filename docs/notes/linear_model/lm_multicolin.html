@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>lm_multicolin – 세상의 모든 통계 이야기</title>
+<title>회귀분석 3. 다중공선성 – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -319,67 +354,106 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-다중공선성-개념" id="toc-chapter-1.-다중공선성-개념" class="nav-link active" data-scroll-target="#chapter-1.-다중공선성-개념"><span style="color:green">chapter 1. 다중공선성 개념</span></a>
+  <ul>
+  <li><a href="#다중공선성이란" id="toc-다중공선성이란" class="nav-link" data-scroll-target="#다중공선성이란"><span style="color:blue"> 1. 다중공선성이란?</span></a></li>
+  <li><a href="#다중공선성-문제는-무엇인가" id="toc-다중공선성-문제는-무엇인가" class="nav-link" data-scroll-target="#다중공선성-문제는-무엇인가"><span style="color:blue"> 2. 다중공선성 문제는 무엇인가?</span></a></li>
+  <li><a href="#다중공선성-맛보기" id="toc-다중공선성-맛보기" class="nav-link" data-scroll-target="#다중공선성-맛보기"><span style="color:blue"> 3. 다중공선성 맛보기</span></a></li>
+  <li><a href="#다중공선성-문재-반드시-해결-해야-하나" id="toc-다중공선성-문재-반드시-해결-해야-하나" class="nav-link" data-scroll-target="#다중공선성-문재-반드시-해결-해야-하나"><span style="color:blue"> 4. 다중공선성 문재 반드시 해결 해야 하나?</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-다중공선성-진단" id="toc-chapter-2.-다중공선성-진단" class="nav-link" data-scroll-target="#chapter-2.-다중공선성-진단"><span style="color:green">chapter 2. 다중공선성 진단</span></a>
+  <ul>
+  <li><a href="#진단-도구" id="toc-진단-도구" class="nav-link" data-scroll-target="#진단-도구"><span style="color:blue"> 1. 진단 도구</span></a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-다중공선성-해결방안" id="toc-chapter-3.-다중공선성-해결방안" class="nav-link" data-scroll-target="#chapter-3.-다중공선성-해결방안"><span style="color:green">chapter 3. 다중공선성 해결방안</span></a>
+  <ul>
+  <li><a href="#주성분분석" id="toc-주성분분석" class="nav-link" data-scroll-target="#주성분분석"><span style="color:blue"> 1. 주성분분석</span></a></li>
+  <li><a href="#능형-회귀분석-ridge-regression" id="toc-능형-회귀분석-ridge-regression" class="nav-link" data-scroll-target="#능형-회귀분석-ridge-regression"><span style="color:blue"> 2. 능형 회귀분석 Ridge Regression</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">회귀분석 3. 다중공선성</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Chapter 1. 다중공선성 개념</p>
-<p>권세혁교수 통계 사전 【다중공선성】</p>
-<p>s<a href="https://sites.google.com/view/wolfpack61"><u>https://sites.google.com/view/wolfpack61</u></a></p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-다중공선성-개념" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-다중공선성-개념"><span style="color:green">chapter 1. 다중공선성 개념</span></h3>
 <p>다중공선성이란 독립변수들 간에 강한 선형관계가 존재하는 경우를 말한다. 회귀모형은 각 독립변수가 종속변수에 미치는 <span dir="rtl">”</span>순수한 영향”을 추정하는 것을 목표로 한다. 그러나 독립변수끼리 강하게 상관되어 있으면 각 계수 추정치가 불안정해지고, 통계적 유의성이 왜곡될 수 있다.</p>
-<p>1. 다중공선성이란?</p>
+<section id="다중공선성이란" class="level4">
+<h4 class="anchored" data-anchor-id="다중공선성이란"><span style="color:blue"> 1. 다중공선성이란?</span></h4>
 <p>다중 회귀모형에서 분석자가 가장 먼저 확인하는 것은 모형 전체가 목표변수를 잘 설명하는지에 대한 F-검정과, 각각의 예측변수가 독립적으로 의미 있는 역할을 하는지를 살펴보는 t-검정이다. 이러한 과정에서 자연스럽게 두 가지 관심사가 생긴다. 하나는 여러 예측변수 중에서 어떤 변수가 상대적으로 더 중요한가 하는 문제이고, 다른 하나는 각 변수가 목표변수에 구체적으로 어느 정도 영향을 미치는가 하는 문제이다.</p>
 <p>상대적 중요성은 표준화 회귀계수를 통해 비교할 수 있으며, 목표변수에 대한 구체적 설명력은 OLS로 추정된 회귀계수를 통해 확인할 수 있다. 회귀계수의 의미는 단순하다. 다른 조건이 모두 동일할 때, 특정 예측변수가 한 단위 증가하면 목표변수는 그 계수 값만큼 변동한다는 것이다. 그러나 이런 해석은 다른 예측변수들이 변하지 않고 고정되어 있다는 전제가 필요하다. 만약 예측변수들 사이에 상관관계가 전혀 없다면, 각 회귀계수는 그 변수의 순수한 효과, 즉 주변효과를 그대로 보여주게 된다.</p>
 <p>이처럼 회귀모형의 해석은 예측변수들 사이의 관계 구조에 크게 의존하며, 특히 예측변수들이 서로 강하게 연관되어 있을 때는 해석이 훨씬 복잡해진다.</p>
 <p>현실의 데이터에서 예측변수들이 완벽하게 서로 독립인 경우는 거의 없다. 다만 예측변수들 간의 상관계수가 낮아 통계적으로 유의하지 않다면, 회귀계수의 해석은 여전히 타당하게 이루어질 수 있다. 반대로 예측변수들 간의 상관관계가 높아 통계적으로 유의하다면, 그때는 OLS로 얻은 회귀계수의 추정치와 분산 추정이 불안정해지고 검정 결과 역시 신뢰할 수 없게 된다. 이러한 상황을 다중공선성(multicollinearity) 문제라고 부른다.</p>
 <p>예측변수들 사이에 높은 상관관계가 존재한다는 것은 곧 두 변수가 유사한 특성을 공유하고 있다는 뜻이며, 따라서 목표변수를 설명하는 역할에서도 상당 부분이 겹치게 된다. 원래 회귀분석에서 예측변수가 목표변수를 잘 설명한다는 것은 목표변수의 변동 방향을 정확하게 예측할 수 있음을 의미한다. 회귀계수가 양수라면 같은 방향으로, 음수라면 반대 방향으로 움직임을 포착한다는 것이다. 그런데 여러 예측변수가 동시에 목표변수와 강한 상관을 보인다면, 이들이 설명하는 변동 부분이 서로 중복되어 구분이 어려워진다. 이 때문에 다중공선성은 계수 해석을 혼란스럽게 만들고, 때로는 분석자가 의도한 해석을 무너뜨리기도 한다.</p>
-<p>발생 원인</p>
+<p><strong>발생 원인</strong></p>
 <p>첫째는 구조적 다중공선성이다. 이는 연구자가 설정한 회귀모형 자체에서 비롯된다. 예를 들어 예측변수의 제곱항이나 곱항 같은 다항식 항을 포함하면, 원래 변수와 이들 변환 변수 사이에 강한 상관이 자연스럽게 발생한다. 이 경우 다중공선성은 데이터의 특성이 아니라 모형의 구조 때문에 나타난다.</p>
 <p>둘째는 데이터 기반 다중공선성이다. 이는 실제 관측된 자료에서 예측변수들 간의 상관관계가 매우 높을 때 발생한다. 예컨대 소득과 소비, 교육수준과 소득처럼 현실적으로 밀접히 연관된 변수들을 동시에 포함하면 이들 간에 중복된 설명력이 생겨 다중공선성이 나타난다. 즉, 구조적 다중공선성은 모형 설계의 결과, 데이터 다중공선성은 자료의 속성에서 비롯된다고 정리할 수 있다.</p>
-<p>2. 다중공선성 문제는 무엇인가?</p>
+</section>
+<section id="다중공선성-문제는-무엇인가" class="level4">
+<h4 class="anchored" data-anchor-id="다중공선성-문제는-무엇인가"><span style="color:blue"> 2. 다중공선성 문제는 무엇인가?</span></h4>
 <p>예측변수(<span class="math inline">\(X_{k}\)</span>) 간의 상관관계가 높으면(예: 두 설명변수의 상관관계가 높으면 (데이터 행렬의 한 열(변수)이 다른 열(변수와 상관계수가 큰 변수)로 표현되므로 <span class="math inline">\(det|X'X| \approx 0\)</span> 되므로 <span class="math inline">\((X'X)^{- 1} = \frac{adj(X'X)}{det|X'X|}\)</span>의 값이 매우 커진다. 이로 인하여 회귀계수 OLS 추정치 <span class="math inline">\(\widehat{\underset{¯}{b}} = (X'X)^{- 1}X'\underset{¯}{y}\)</span> 값이 불안정해진다.</p>
 <p>다중공선성 문제를 일으키지 않는 예측변수의 회귀계수에 비해 변동이 커진다. - 회귀모형의 작은 변화에도 회귀계수의 추정치는 매우 민감하게 반응한다.</p>
 <p>그리고 OLS 추정의 추정분산(<span class="math inline">\(s^{2}(\widehat{\underset{¯}{b}}) = MSE(X'X)^{- 1}\)</span>) 또한 매우 커져 회귀계수의 부호까지 바뀌는 문제가 발생한다.</p>
 <p>회귀계수 추정 오차가 커지면 추정 정확도가 떨어지고 더 이상 회귀계수 유의성을 판단하는 유의확률(p-값)에 대한 신뢰성도 낮아진다. - 즉, 회귀계수 유의성 검정의 신뢰성 저하되어 추정 회귀모형 신뢰성 낮아진다.</p>
-<p>3. 다중공선성 맛보기</p>
+</section>
+<section id="다중공선성-맛보기" class="level4">
+<h4 class="anchored" data-anchor-id="다중공선성-맛보기"><span style="color:blue"> 3. 다중공선성 맛보기</span></h4>
 <p>보스톤 주택 가격(medv)의 예측변수 (lstat, indus, rm) 3개를 이용 다중공선성 문제를 살펴보자.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><p>#피어슨 상관계수</p>
-<p>boston[['medv','lstat','rm','ptratio']].corr(method ='pearson')</p></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><blockquote class="blockquote">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Boston house 데이터</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 데이터 불러오기</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>boston <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"boston"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">True</span>).frame</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#피어슨 상관계수</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>boston[[<span class="st">'MEDV'</span>,<span class="st">'LSTAT'</span>,<span class="st">'RM'</span>,<span class="st">'PTRATIO'</span>]].corr(method <span class="op">=</span><span class="st">'pearson'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image3.png" style="width:2.77193in;height:1.53003in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/다중공선성_상관계수.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-</blockquote></td>
-</tr>
-</tbody>
-</table>
-<p><span class="math display">\[medv = 34.6 - 0.95*lstat,R^{2} = 54.4\%\]</span></p>
+<p><span class="math inline">\(medv = 34.6 - 0.95*lstat,R^{2} = 54.4\%\)</span></p>
 <p>먼저 lstat만 포함한 단순회귀모형에서는 회귀계수가 -0.95로 추정된다. 이는 저소득층 비율이 한 단위 증가할 때 주택가격이 평균적으로 약 0.95 단위 감소한다는 의미이며, 결정계수는 약 54.4%로 나타난다.</p>
-<p><span class="math display">\[medv = - 1.36 - 0.64*lstat + 5.09*rm,R^{2} = 63.9\%\]</span></p>
+<p><span class="math inline">\(medv = - 1.36 - 0.64*lstat + 5.09*rm,R^{2} = 63.9\%\)</span></p>
 <p>여기에 rm을 함께 넣으면 상황이 달라진다. lstat과 rm은 강한 상관관계를 갖는 변수인데, 두 변수를 동시에 포함하면 lstat의 회귀계수가 -0.64로 크게 줄어든다. 그 대신 rm의 회귀계수는 5.09로 추정되고, 결정계수는 63.9%로 상승한다. 즉, 두 변수가 설명하는 부분이 겹치면서 계수 값이 불안정해지고, 그 결과 단일변수 모형과 다변수 모형에서 해석이 달라지는 다중공선성의 전형적인 현상이 발생한다.</p>
-<p><span class="math display">\[medv = 34.9 - 0.903*lstat - 0.08*indus,R^{2} = 54.6\%\]</span></p>
+<p><span class="math inline">\(medv = 34.9 - 0.903*lstat - 0.08*indus,R^{2} = 54.6\%\)</span></p>
 <p>반면 indus처럼 lstat과의 상관관계가 낮은 변수를 추가하면 다른 결과가 나온다. indus를 포함한 모형에서 lstat의 계수는 여전히 -0.9 수준으로 거의 변하지 않고, 결정계수 역시 54.6%로 단 0.2% 정도만 증가한다. 즉, 상관성이 낮은 변수를 추가하면 기존 변수의 계수에 큰 영향을 주지 않으며, 설명력도 크게 개선되지 않는다.</p>
 <p>이 사례는 다중공선성이 주로 서로 상관관계가 큰 예측변수를 함께 투입할 때 발생한다는 점을 잘 보여준다. 목표변수를 설명하는 부분이 겹치기 때문에 회귀계수 값이 불안정해지고, 해석이 왜곡되거나 혼란스러워진다. 반대로 상관성이 낮은 변수를 포함할 때는 계수 해석이 비교적 안정적이다.</p>
-<p>3. 다중공선성 문재 반드시 해결 해야 하나?</p>
+</section>
+<section id="다중공선성-문재-반드시-해결-해야-하나" class="level4">
+<h4 class="anchored" data-anchor-id="다중공선성-문재-반드시-해결-해야-하나"><span style="color:blue"> 4. 다중공선성 문재 반드시 해결 해야 하나?</span></h4>
 <p>다중공선성 문제가 발생했다고 해서 반드시 그것을 제거하거나 해결해야 하는 것은 아니다. 다중공선성이 존재해도 회귀모형의 전체 예측력이나 적합도에는 큰 문제가 없기 때문이다. 실제로 목표변수를 예측하는 데 초점을 맞춘다면, 다중공선성이 있더라도 모형의 예측 성능은 크게 저하되지 않는다.</p>
 <p>문제는 주로 해석 단계에서 나타난다. 다중공선성이 심할 경우, 회귀계수의 표준오차가 커져서 유의성이 불명확해지고, 계수의 크기나 부호가 직관에 어긋나게 추정될 수 있다. 따라서 <span dir="rtl">”</span>어떤 예측변수가 목표변수에 더 큰 영향을 미치는가?“와 같은 변수별 효과 해석이 중요한 연구에서는 다중공선성을 무시하기 어렵다.</p>
 <p>다중공선성이 반드시 해결해야 할 문제는 아니다. 특히 회귀모형에 통제변수가 포함된 경우, 다중공선성이 통제변수들에서만 발생하고 연구자가 관심을 두는 실험변수(주효과 변수)에서는 발생하지 않는다면, 굳이 제거하거나 수정할 필요가 없다.</p>
@@ -387,33 +461,39 @@ window.Quarto = {
 <p>따라서 연구 목적이 <span dir="rtl">”</span>주요 실험변수의 효과 검정”이라면, 통제변수들 사이의 다중공선성은 크게 문제 되지 않는다. 오히려 통제변수의 역할은 실험변수의 효과를 명확히 드러내는 데 있으므로, 약간의 공선성을 이유로 불필요하게 제거한다면 모형 해석이 왜곡될 수 있다.</p>
 <p>이는 Baron &amp; Kenny(1986)가 조절변수(moderator)와 매개변수(mediator) 모형을 제시할 때도 중요한 함의로 다루어졌다. 통제변수나 매개·조절변수는 본래 주요 변수의 관계를 보다 정교하게 설명하기 위해 포함되는 것이며, 이 과정에서 일부 상관관계가 존재하더라도 반드시 제거해야 하는 것은 아니라는 것이다.</p>
 <p>즉, 실험변수에서 다중공선성이 없다면 문제 삼지 않아도 되며, 통제변수 사이의 공선성은 분석 목적상 자연스럽게 허용될 수 있다는 점이 핵심이다.</p>
-<p>매개효과 Mediator</p>
+<p><strong>매개효과 Mediator</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image4.png" style="width:4.49986in;height:0.85418in" class="figure-img"></p>
-<figcaption>pastedGraphic.pdf</figcaption>
+<p><img src="images/매개효과.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
 <p>(순서1) <span class="math inline">\(y = a + b_{11}X + e\)</span> : <span class="math inline">\(b_{11}\)</span> 유의해야 한다.</p>
 <p>(순서2) <span class="math inline">\(Me = a + b_{21}X + e\)</span> : <span class="math inline">\(b_{21}\)</span> 유의해야 한다.</p>
 <p>(순서3) <span class="math inline">\(y = a + b_{31}X + b_{32}Me + e\)</span> : <span class="math inline">\(b_{32}\)</span> (매개효과) 유의하고 <span class="math inline">\(b_{31}\)</span>은 <span class="math inline">\(b_{11}\)</span>보다 절대값이 작아지거나 유의하지 않을 수 있음</p>
-<p>조절효과 Moderate</p>
+<p><strong>조절효과 Moderate</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image5.png" style="width:4.49986in;height:0.94366in" class="figure-img"></p>
-<figcaption>1__#$!@%!#__pastedGraphic.pdf</figcaption>
+<p><img src="images/조절효과.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<p><span class="math display">\[y = a + b_{1}X + b_{2}MO + b_{3}X*MO + e\]</span></p>
+<p><span class="math inline">\(y = a + b_{1}X + b_{2}MO + b_{3}X*MO + e\)</span></p>
 <p><span class="math inline">\(b_{3}\)</span>는 반드시 유의해야 한다.</p>
-<p>Chapter 2. 다중공선성 진단</p>
-<p>1. 진단도구</p>
-<p>산점도_상관계수</p>
+</section>
+</section>
+<section id="chapter-2.-다중공선성-진단" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-다중공선성-진단"><span style="color:green">chapter 2. 다중공선성 진단</span></h3>
+<section id="진단-도구" class="level4">
+<h4 class="anchored" data-anchor-id="진단-도구"><span style="color:blue"> 1. 진단 도구</span></h4>
+<section id="산점도_상관계수" class="level5">
+<h5 class="anchored" data-anchor-id="산점도_상관계수">(1) 산점도_상관계수</h5>
 <p>다중공선성을 진단하는 가장 기본적인 출발점은 산점도 행렬과 상관계수 행렬이다. 회귀분석을 시작할 때, 먼저 산점도 행렬을 통해 종속변수와 각 설명변수의 관계를 시각적으로 살펴볼 수 있으며, 동시에 설명변수들 사이의 관계도 확인할 수 있다.</p>
 <p>상관계수 행렬은 보다 정량적으로 설명변수들 간의 상관관계를 파악하게 해준다. 이를 통해 종속변수와 밀접한 관련이 있는 설명변수를 미리 선별할 수 있을 뿐만 아니라, 설명변수들 사이에 높은 상관이 존재한다면 다중공선성이 발생할 가능성을 사전에 진단할 수 있다.</p>
 <p>이 방법은 직관적이고 계산이 간단하다는 장점이 있지만, 몇 가지 한계가 있다. 무엇보다 상관계수 행렬은 설명변수들 간의 쌍체(pairwise) 관계만 보여줄 뿐, 여러 변수들이 함께 작용하는 경우의 다중공선성을 직접 검정하지는 못한다. 또한 단순히 상관계수가 높다고 해서 반드시 심각한 다중공선성이 발생한다고 단정할 수 없고, 반대로 상관계수가 낮더라도 다중공선성이 존재할 수 있다.</p>
 <p>따라서 산점도와 상관계수는 다중공선성을 <span dir="rtl">”</span>예상하고 탐색하는 도구”일 뿐, 유의성 검정을 제공하지는 못한다는 점을 명확히 이해할 필요가 있다..</p>
-<p>분산팽창지수 Variance Inflation Index <span class="math inline">\(VIF_{k} = \frac{1}{1 - R_{k}^{2}}\)</span></p>
+</section>
+<section id="분산팽창지수-variance-inflation-index" class="level5">
+<h5 class="anchored" data-anchor-id="분산팽창지수-variance-inflation-index">(2) 분산팽창지수 Variance Inflation Index</h5>
+<p><span class="math inline">\(VIF_{k} = \frac{1}{1 - R_{k}^{2}}\)</span></p>
 <p>특정 예측변수를 목표변수로 하고 나머지 예측변수를 설명변수로 하여 회귀분석 한 후 결정계수를 구한다. 결정계수 <span class="math inline">\(R_{k}^{2}\)</span> 값이 크다는 것은 <span class="math inline">\(X_{k}\)</span>가 다른 예측변수들에 의해 충분히 설명되고 있다는 것이고 이는 바로 다중공선성 문제가 발생할 수 있다는 증거이다. 만약 결정계수 <span class="math inline">\(R^{2} = 0.9\)</span>이면 분산팽창지수 <span class="math inline">\(VIF = 10\)</span>이다.</p>
 <p>다수의 예측변수들에 의해 설명되는 정도를 나타내지만 상관계수와 같이 두 개의(쌍체) 예측변수에 의한 진단에는 적절하지 못하다. VIF 진단 기준값은 다음과 같이 상이하다.</p>
 <ul>
@@ -421,10 +501,14 @@ window.Quarto = {
 <li><p>5이상(문제로 간즈): Ringle, Christian M., Wende, Sven, &amp; Becker, Jan-Michael. (2015).</p></li>
 <li><p>빅데이터에서는 보수적 기준으로 2.5를 사용한다.</p></li>
 </ul>
-<p>상태지수 Condition Index <span class="math inline">\(CI = \sqrt{\frac{\lambda_{max}}{\lambda_{k}}}\)</span></p>
+</section>
+<section id="상태지수-condition-index-ci-sqrtfraclambda_maxlambda_k" class="level5">
+<h5 class="anchored" data-anchor-id="상태지수-condition-index-ci-sqrtfraclambda_maxlambda_k">(3) 상태지수 Condition Index <span class="math inline">\(CI = \sqrt{\frac{\lambda_{max}}{\lambda_{k}}}\)</span></h5>
 <p>예측변수의 공분산(상관계수)행렬을 이용하여 고유값 eigen value(<span class="math inline">\(\lambda_{k}\)</span>) 를 구한다. 이에 대응하는 Norm 1인 고유벡터가 주성분 부하 loading 이다. 고유값은 원변수(설명변수)의 선 형결합에 의해 만들어진 주성분 변수의 원변수 변동에 대한 설명력이다. 그러므로 고유값가 크다는 것(상태지수 값이 큰 값) 주성분의 원 변수 변동에 설명력이 크다는 것을 의미한다.</p>
 <p>고유벡터 내의 부하크기가 상대적으로 큰 변수들 간에는 상관관계가 높다는 것을 의미한다. 상태지수가 10이상(일반적으로 30이상)인 부하벡터에서 부하계수가 상대적으로 큰 변수들에 의해 다중공선성 문제가 발생한다고 진단할 수 있다.</p>
-<p>권장 진단 방법</p>
+</section>
+<section id="권장-진단-방법" class="level5">
+<h5 class="anchored" data-anchor-id="권장-진단-방법">(4) 권장 진단 방법</h5>
 <p>다중공선성을 진단할 때는 우선 분산팽창지수(VIF)를 활용하는 것이 일반적이다. 실무적으로는 VIF \geq 3을 기준으로 주의가 필요하다고 본다. 이때 단순히 모든 변수를 대상으로 일괄 판단하기보다는, 최종적으로 유의하다고 확인된 설명변수를 중심으로 검토하는 것이 바람직하다.</p>
 <p>특히 최종 모형에서 추정된 회귀계수의 부호와, 해당 설명변수와 종속변수 간의 피어슨 상관계수 부호를 비교하는 것이 중요하다. 두 부호가 동일하다면, 비록 다중공선성이 존재한다고 하더라도 모형의 해석에 심각한 왜곡을 주지 않으므로 굳이 다중공선성을 해결할 필요가 없다.</p>
 <table class="caption-top table">
@@ -461,154 +545,117 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># ==============================================</p>
-<p># Boston Housing: Multicollinearity Diagnostics (All predictors - “ZN”제외 + Correlation)</p>
-<p># ==============================================</p>
-<p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>import statsmodels.api as sm</p>
-<p>from sklearn.datasets import fetch_openml</p>
-<p>from statsmodels.stats.outliers_influence import variance_inflation_factor</p>
-<p># ------------------------------------------------</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Boston Housing: Multicollinearity Diagnostics (All predictors - "ZN" 제외 + Correlation)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> variance_inflation_factor</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 데이터 로드</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>boston <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"boston"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> boston.frame.copy()</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 숫자형으로 변환</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> df.columns:</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> df[c].dtype.name <span class="kw">in</span> [<span class="st">"object"</span>, <span class="st">"category"</span>]:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        df[c] <span class="op">=</span> pd.to_numeric(df[c].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip(), errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"MEDV"</span>]</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"MEDV"</span>,<span class="st">"ZN"</span>])   <span class="co"># 모든 예측변수</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"전체 예측변수 목록:"</span>, <span class="bu">list</span>(X.columns))</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 상관계수 행렬</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[1] 상관계수 행렬 (medv 포함)"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>corr <span class="op">=</span> df.corr()</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(corr.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) VIF 계산</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_vif(Xdf):</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    X_ <span class="op">=</span> sm.add_constant(Xdf)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    vif_list <span class="op">=</span> []</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, col <span class="kw">in</span> <span class="bu">enumerate</span>(X_.columns):</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> col <span class="op">==</span> <span class="st">"const"</span>:</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        vif <span class="op">=</span> variance_inflation_factor(X_.values, i)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        vif_list.append({<span class="st">"variable"</span>: col, <span class="st">"VIF"</span>: vif})</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(vif_list).sort_values(<span class="st">"VIF"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[2] VIF (모든 변수)"</span>)</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>vif_tbl <span class="op">=</span> compute_vif(X)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vif_tbl.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Condition Index (Belsley)</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> condition_index(Xdf):</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    Z <span class="op">=</span> (Xdf <span class="op">-</span> Xdf.mean(axis<span class="op">=</span><span class="dv">0</span>)) <span class="op">/</span> Xdf.std(axis<span class="op">=</span><span class="dv">0</span>, ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    C <span class="op">=</span> np.corrcoef(Z.values, rowvar<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    eigvals, eigvecs <span class="op">=</span> np.linalg.eigh(C)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    lam_max <span class="op">=</span> eigvals.<span class="bu">max</span>()</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    ci <span class="op">=</span> np.sqrt(lam_max <span class="op">/</span> eigvals)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    Phi <span class="op">=</span> eigvecs <span class="op">/</span> np.sqrt(eigvals)[<span class="va">None</span>, :]</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    phi2 <span class="op">=</span> Phi<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    prop <span class="op">=</span> phi2 <span class="op">/</span> phi2.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    ci_tbl <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>        <span class="st">"eigenvalue"</span>: eigvals,</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        <span class="st">"condition_index"</span>: ci</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>    prop_tbl <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>        prop,</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        index<span class="op">=</span>Xdf.columns,</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>        columns<span class="op">=</span>[<span class="ss">f"eig</span><span class="sc">{</span>k<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(eigvals))]</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ci_tbl.sort_values(<span class="st">"condition_index"</span>, ascending<span class="op">=</span><span class="va">True</span>), prop_tbl</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>ci_tbl, prop_tbl <span class="op">=</span> condition_index(X)</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[3] Condition Index"</span>)</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ci_tbl.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[3-1] Variance-Decomposition Proportions"</span>)</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(prop_tbl.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 전체 변수 포함 OLS 회귀 적합</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>X_const <span class="op">=</span> sm.add_constant(X)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>ols_full <span class="op">=</span> sm.OLS(y, X_const).fit()</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[4] 전체 회귀 결과 요약"</span>)</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ols_full.summary())</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) 결론 요약</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[결론]"</span>)</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"- 상관계수 행렬로 변수 간 높은 pairwise 관계 확인."</span>)</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"- VIF ≥ 5 (또는 10) → 다중공선성 문제 의심."</span>)</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"- Condition Index ≥ 30 → 다중공선성 가능, ≥ 100 → 심각."</span>)</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"- 회귀계수 부호와 단순 상관 부호가 다를 경우 해석 주의."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>전체 예측변수 목록: ['CRIM', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']</p>
 <p>[1] 상관계수 행렬 (medv 포함)</p>
-<p>CRIM ZN INDUS CHAS NOX RM AGE DIS RAD TAX \</p>
-<p>CRIM 1.000 -0.200 0.407 -0.056 0.421 -0.219 0.353 -0.380 0.626 0.583</p>
-<p>ZN -0.200 1.000 -0.534 -0.043 -0.517 0.312 -0.570 0.664 -0.312 -0.315</p>
-<p>INDUS 0.407 -0.534 1.000 0.063 0.764 -0.392 0.645 -0.708 0.595 0.721</p>
-<p>CHAS -0.056 -0.043 0.063 1.000 0.091 0.091 0.087 -0.099 -0.007 -0.036</p>
-<p>NOX 0.421 -0.517 0.764 0.091 1.000 -0.302 0.731 -0.769 0.611 0.668</p>
-<p>RM -0.219 0.312 -0.392 0.091 -0.302 1.000 -0.240 0.205 -0.210 -0.292</p>
-<p>AGE 0.353 -0.570 0.645 0.087 0.731 -0.240 1.000 -0.748 0.456 0.506</p>
-<p>DIS -0.380 0.664 -0.708 -0.099 -0.769 0.205 -0.748 1.000 -0.495 -0.534</p>
-<p>RAD 0.626 -0.312 0.595 -0.007 0.611 -0.210 0.456 -0.495 1.000 0.910</p>
-<p>TAX 0.583 -0.315 0.721 -0.036 0.668 -0.292 0.506 -0.534 0.910 1.000</p>
-<p>PTRATIO 0.290 -0.392 0.383 -0.122 0.189 -0.356 0.262 -0.232 0.465 0.461</p>
-<p>B -0.385 0.176 -0.357 0.049 -0.380 0.128 -0.274 0.292 -0.444 -0.442</p>
-<p>LSTAT 0.456 -0.413 0.604 -0.054 0.591 -0.614 0.602 -0.497 0.489 0.544</p>
-<p>MEDV -0.388 0.360 -0.484 0.175 -0.427 0.695 -0.377 0.250 -0.382 -0.469</p>
-<p>PTRATIO B LSTAT MEDV</p>
-<p>CRIM 0.290 -0.385 0.456 -0.388</p>
-<p>ZN -0.392 0.176 -0.413 0.360</p>
-<p>INDUS 0.383 -0.357 0.604 -0.484</p>
-<p>CHAS -0.122 0.049 -0.054 0.175</p>
-<p>NOX 0.189 -0.380 0.591 -0.427</p>
-<p>RM -0.356 0.128 -0.614 0.695</p>
-<p>AGE 0.262 -0.274 0.602 -0.377</p>
-<p>DIS -0.232 0.292 -0.497 0.250</p>
-<p>RAD 0.465 -0.444 0.489 -0.382</p>
-<p>TAX 0.461 -0.442 0.544 -0.469</p>
-<p>PTRATIO 1.000 -0.177 0.374 -0.508</p>
-<p>B -0.177 1.000 -0.366 0.333</p>
-<p>LSTAT 0.374 -0.366 1.000 -0.738</p>
-<p>MEDV -0.508 0.333 -0.738 1.000</p>
+<p>CRIM ZN INDUS CHAS NOX RM AGE DIS RAD TAX PTRATIO B LSTAT MEDV <br> CRIM 1.000 -0.200 0.407 -0.056 0.421 -0.219 0.353 -0.380 0.626 0.583 0.290 -0.385 0.456 -0.388 <br> ZN -0.200 1.000 -0.534 -0.043 -0.517 0.312 -0.570 0.664 -0.312 -0.315 -0.392 0.176 -0.413 0.360 <br> (중략) <br> MEDV -0.388 0.360 -0.484 0.175 -0.427 0.695 -0.377 0.250 -0.382 -0.469 -0.508 0.333 -0.738 1.000</p>
 <p>[2] VIF (모든 변수)</p>
-<p>variable VIF</p>
-<p>8 TAX 8.560</p>
-<p>7 RAD 7.401</p>
-<p>3 NOX 4.388</p>
-<p>1 INDUS 3.946</p>
-<p>6 DIS 3.314</p>
-<p>5 AGE 3.056</p>
-<p>11 LSTAT 2.933</p>
-<p>4 RM 1.887</p>
-<p>0 CRIM 1.779</p>
-<p>9 PTRATIO 1.625</p>
-<p>10 B 1.348</p>
-<p>2 CHAS 1.074</p>
+<p>variable VIF <br> 8 TAX 8.560 <br> 7 RAD 7.401 <br> 3 NOX 4.388 <br> 1 INDUS 3.946 <br> 6 DIS 3.314 <br> 5 AGE 3.056 <br> 11 LSTAT 2.933 <br> 4 RM 1.887 <br> 0 CRIM 1.779 <br> 9 PTRATIO 1.625 <br> 10 B 1.348 <br> 2 CHAS 1.074</p>
 <p>[3] Condition Index</p>
-<p>eigenvalue condition_index</p>
-<p>11 5.769 1.000</p>
-<p>10 1.367 2.054</p>
-<p>9 1.143 2.246</p>
-<p>8 0.855 2.598</p>
-<p>7 0.772 2.734</p>
-<p>6 0.602 3.094</p>
-<p>5 0.490 3.432</p>
-<p>4 0.330 4.179</p>
-<p>3 0.239 4.915</p>
-<p>2 0.197 5.408</p>
-<p>1 0.170 5.827</p>
-<p>0 0.066 9.362</p>
+<p>eigenvalue condition_index <br> 11 5.769 1.000 <br> 10 1.367 2.054 <br> 9 1.143 2.246 <br> 8 0.855 2.598 <br> 7 0.772 2.734 <br> 6 0.602 3.094 <br> 5 0.490 3.432 <br> 4 0.330 4.179 <br> 3 0.239 4.915 <br> 2 0.197 5.408 <br> 1 0.170 5.827 <br> 0 0.066 9.362</p>
 <p>[3-1] Variance-Decomposition Proportions</p>
-<p>eig1 eig2 eig3 eig4 eig5 eig6 eig7 eig8 eig9 eig10 \</p>
-<p>CRIM 0.002 0.006 0.018 0.013 0.099 0.206 0.407 0.031 0.002 0.109</p>
-<p>INDUS 0.064 0.024 0.038 0.468 0.136 0.085 0.016 0.013 0.000 0.013</p>
-<p>CHAS 0.001 0.000 0.000 0.000 0.000 0.004 0.001 0.117 0.568 0.000</p>
-<p>NOX 0.002 0.675 0.007 0.029 0.001 0.049 0.001 0.001 0.030 0.002</p>
-<p>RM 0.001 0.021 0.038 0.156 0.060 0.054 0.016 0.121 0.016 0.374</p>
-<p>AGE 0.001 0.063 0.321 0.018 0.147 0.161 0.003 0.026 0.034 0.033</p>
-<p>DIS 0.006 0.080 0.317 0.091 0.164 0.033 0.002 0.045 0.034 0.007</p>
-<p>RAD 0.415 0.014 0.015 0.082 0.076 0.068 0.011 0.016 0.038 0.134</p>
-<p>TAX 0.505 0.051 0.003 0.000 0.032 0.159 0.003 0.018 0.019 0.067</p>
-<p>PTRATIO 0.003 0.061 0.000 0.000 0.010 0.146 0.191 0.154 0.199 0.008</p>
-<p>B 0.000 0.002 0.003 0.004 0.009 0.010 0.338 0.381 0.056 0.139</p>
-<p>LSTAT 0.000 0.004 0.240 0.138 0.265 0.024 0.010 0.079 0.004 0.115</p>
-<p>eig11 eig12</p>
-<p>CRIM 0.035 0.072</p>
-<p>INDUS 0.015 0.127</p>
-<p>CHAS 0.309 0.000</p>
-<p>NOX 0.079 0.124</p>
-<p>RM 0.107 0.037</p>
-<p>AGE 0.092 0.100</p>
-<p>DIS 0.120 0.103</p>
-<p>RAD 0.017 0.115</p>
-<p>TAX 0.013 0.129</p>
-<p>PTRATIO 0.186 0.043</p>
-<p>B 0.011 0.047</p>
-<p>LSTAT 0.016 0.103</p>
-<p>[4] 전체 회귀 결과 요약</p>
-<p>OLS Regression Results</p>
-<p>==============================================================================</p>
-<p>Dep. Variable: MEDV R-squared: 0.735</p>
-<p>Model: OLS Adj. R-squared: 0.728</p>
-<p>Method: Least Squares F-statistic: 113.7</p>
-<p>Date: Thu, 04 Sep 2025 Prob (F-statistic): 1.68e-133</p>
-<p>Time: 00:36:11 Log-Likelihood: -1504.6</p>
-<p>No.&nbsp;Observations: 506 AIC: 3035.</p>
-<p>Df Residuals: 493 BIC: 3090.</p>
-<p>Df Model: 12</p>
-<p>Covariance Type: nonrobust</p>
-<p>==============================================================================</p>
-<p>coef std err t P&gt;|t| [0.025 0.975]</p>
-<p>------------------------------------------------------------------------------</p>
-<p>const 36.8633 5.156 7.150 0.000 26.733 46.993</p>
-<p>CRIM -0.0983 0.033 -2.972 0.003 -0.163 -0.033</p>
-<p>INDUS -0.0016 0.062 -0.025 0.980 -0.123 0.120</p>
-<p>CHAS 2.7297 0.871 3.136 0.002 1.019 4.440</p>
-<p>NOX -18.2289 3.857 -4.726 0.000 -25.808 -10.650</p>
-<p>RM 4.0300 0.417 9.660 0.000 3.210 4.850</p>
-<p>AGE -0.0047 0.013 -0.355 0.723 -0.031 0.021</p>
-<p>DIS -1.2040 0.184 -6.526 0.000 -1.566 -0.841</p>
-<p>RAD 0.2823 0.067 4.235 0.000 0.151 0.413</p>
-<p>TAX -0.0095 0.004 -2.564 0.011 -0.017 -0.002</p>
-<p>PTRATIO -1.0904 0.126 -8.679 0.000 -1.337 -0.844</p>
-<p>B 0.0094 0.003 3.469 0.001 0.004 0.015</p>
-<p>LSTAT -0.5156 0.051 -10.076 0.000 -0.616 -0.415</p>
-<p>==============================================================================</p>
-<p>Omnibus: 182.216 Durbin-Watson: 1.051</p>
-<p>Prob(Omnibus): 0.000 Jarque-Bera (JB): 816.643</p>
-<p>Skew: 1.554 Prob(JB): 4.66e-178</p>
-<p>Kurtosis: 8.392 Cond. No.&nbsp;1.51e+04</p>
-<p>==============================================================================</p>
-<p>Notes:</p>
-<p>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</p>
-<p>[2] The condition number is large, 1.51e+04. This might indicate that there are</p>
-<p>strong multicollinearity or other numerical problems.</p>
-<p>[결론]</p>
-<p>- 상관계수 행렬로 변수 간 높은 pairwise 관계 확인.</p>
-<p>- VIF ≥ 5 (또는 10) → 다중공선성 문제 의심.</p>
-<p>- Condition Index ≥ 30 → 다중공선성 가능, ≥ 100 → 심각.</p>
-<p>회귀계수 부호와 단순 상관 부호가 다를 경우 해석 주의.</p>
+<p>eig1 eig2 eig3 eig4 eig5 eig6 eig7 eig8 eig9 eig10 eig11 eig12 <br> CRIM 0.002 0.006 0.018 0.013 0.099 0.206 0.407 0.031 0.002 0.109 0.035 0.072 <br> INDUS 0.064 0.024 0.038 0.468 0.136 0.085 0.016 0.013 0.000 0.013 0.015 0.127 <br> (중략) <br> LSTAT 0.000 0.004 0.240 0.138 0.265 0.024 0.010 0.079 0.004 0.115 0.016 0.103</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/다중공선성_보스톤_진단결과.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 <p>1. 상관계수 행렬</p>
 <ul>
 <li><p>INDUS–NOX (0.764), RAD–TAX (0.910), NOX–DIS (-0.769) 같이 변수 간 높은 상관이 존재합니다.</p></li>
@@ -641,247 +688,242 @@ window.Quarto = {
 <li><p>RAD 변수를 제외하고, 예측변수의 유의성을 검증한 후 회귀진단을 실시하면 된다.</p></li>
 <li><p>예측 vs 해석: 전체 모형은 예측에는 강력하지만, 각 설명변수의 순수 효과 해석은 일부 왜곡 가능성이 있음. 정책적 함의를 뽑아내려면 변수 선택/차원축소(예: Ridge, PCA 회귀)가 바람직.</p></li>
 </ul>
-<p>최종 회귀모형</p>
-<p>RM은 변수선택에서 제외</p>
-<p>RAD는 다중공선성 문제 발생으로 제외</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># ==============================================</p>
-<p># 최종 회귀모형 선택</p>
-<p># ==============================================</p>
-<p>import pandas as pd</p>
-<p>import numpy as np</p>
-<p>import statsmodels.api as sm</p>
-<p>from sklearn.datasets import fetch_openml</p>
-<p># --- 0) 데이터 로드 ---</p>
-<p>boston = fetch_openml(name="boston", version=1, as_frame=True)</p>
-<p>df = boston.frame.copy()</p>
-<p># 종속변수 / 설명변수</p>
-<p>y = pd.to_numeric(df["MEDV"], errors="coerce")</p>
-<p>X = df.drop(columns=["MEDV", "RM", "RAD","DIS","AGE"]).copy()</p></td>
-</tr>
-</tbody>
-</table>
+<p><strong>6. 최종 회귀모형</strong></p>
+<ul>
+<li><p>(RM, “DIS”,“AGE”)은 변수선택에서 제외</p></li>
+<li><p>RAD는 다중공선성 문제 발생으로 제외</p></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 최종 회귀모형 선택</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 0) 데이터 로드 ---</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>boston <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"boston"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> boston.frame.copy()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 종속변수 / 설명변수</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> pd.to_numeric(df[<span class="st">"MEDV"</span>], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"MEDV"</span>, <span class="st">"RM"</span>, <span class="st">"RAD"</span>,<span class="st">"DIS"</span>,<span class="st">"AGE"</span>]).copy()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>단계선택 방법: 결정계수 67.1%</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image6.png" style="width:4.5in;height:1.43274in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/보스톤_최종변수선택.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>DIS: 목표변수와 상관계수 부호와 회귀계수 부호 상이 -&gt; 경고문에 다중 공선성 문제 발생 출력</p>
-<p>다시 단계선택 방법을 적용한 결과 AGE 변수도 동일한 문제 발셍 -&gt; 경고문에 다중 공선성 문제 발생 출력<img src="media/image7.png" style="width:4.5in;height:3.27687in" alt="붙여넣은 동영상.png"></p>
-<p>Chapter 3. 다중공선성 해결방안</p>
+<ul>
+<li><p>DIS: 목표변수와 상관계수 부호와 회귀계수 부호 상이 -&gt; 경고문에 다중 공선성 문제 발생 출력되었다.</p></li>
+<li><p>다시 단계선택 방법을 적용한 결과 AGE 변수도 동일한 문제 발셍 -&gt; 경고문에 다중 공선성 문제 발생 출력되었다.</p></li>
+<li><p>최종 모형: LSTAT, PTRATIO, CHAS 3개 예측변수만 사용되었다.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/보스톤_최종변수선택02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="chapter-3.-다중공선성-해결방안" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-다중공선성-해결방안"><span style="color:green">chapter 3. 다중공선성 해결방안</span></h3>
 <p>구조적 다중공선성 문제 해결 - 예측변수 centering (중심화) - 다항식 모형(예측변수의 제곱항, 세제곱항)에 적합</p>
 <ul>
-<li><p>표준화는 데이터의 평균과 표준편차를 활용하여 단위를 없앤 개념임 : <span class="math inline">\(z_{i} = \frac{x_{i} - {\overline{x}}_{i}}{s(x_{i})}\)</span></p></li>
-<li><p>중심화는 데이터의 평균을 0으로 이동한 개념임, 산포는 동일하게 유지됨 : <span class="math inline">\(c_{i} = x_{i} - {\overline{x}}_{i}\)</span></p></li>
+<li><p>표준화는 데이터의 평균과 표준편차를 활용하여 단위를 없앤 개념이다. <span class="math inline">\(z_{i} = \frac{x_{i} - {\overline{x}}_{i}}{s(x_{i})}\)</span></p></li>
+<li><p>중심화는 데이터의 평균을 0으로 이동한 개념임, 산포는 동일하게 유지된다. <span class="math inline">\(c_{i} = x_{i} - {\overline{x}}_{i}\)</span></p></li>
 </ul>
-<p>문제변수 제거</p>
+<p><strong>문제변수 제거</strong></p>
 <ul>
 <li><p>다중공선성 문제가 되는 설명변수를 제외한다.</p></li>
 <li><p>여러개가 존재하는 경우 목표변수와 상관관계가 낮은 예측변수를 제외한다.</p></li>
 </ul>
-<p>1. 주성분 분석</p>
+<section id="주성분분석" class="level4">
+<h4 class="anchored" data-anchor-id="주성분분석"><span style="color:blue"> 1. 주성분분석</span></h4>
 <p>주성분분석(PCA)은 여러 개의 상관된 변수들을, 서로 상관이 없는 새로운 변수들(주성분, principal components)로 변환하는 차원 축소 방법이다. 각 주성분은 원래 변수들의 선형결합으로 만들어지며, 첫 번째 주성분은 데이터 변동성을 가장 크게 설명하고, 두 번째 주성분은 그 다음으로 큰 변동성을 설명하되 첫 번째 주성분과 직교(orthogonal)하도록 구성된다.</p>
 <p>즉, PCA의 목적은 복잡하게 얽힌 변수들의 중복된 정보를 제거하고, 데이터의 주요한 구조를 단순화하는 데 있다. 주성분분석은 단순히 데이터 요약 방법이 아니라, 다중공선성 문제를 해결할 수 있는 강력한 도구이다. 원래 변수들 간의 상관관계를 제거하고 새로운 직교 좌표축을 제공하기 때문에, 예측력을 유지하면서 회귀계수의 안정성을 높여준다. 다만, 주성분의 해석이 직관적이지 않다는 점을 감안하여, 예측이 목적일 때 특히 효과적이고, 해석이 목적일 때는 신중하게 적용해야 한다.</p>
 <p>다중공선성은 예측변수들 간의 높은 상관관계에서 발생한다. 여러 변수가 서로 비슷한 정보를 담고 있기 때문에, 회귀분석에서 회귀계수가 불안정해지고 표준오차가 커지는 문제가 생긴다.</p>
 <p>PCA를 적용하면 원래 상관관계가 높던 변수들을 서로 독립적인 주성분으로 변환할 수 있다. 이렇게 하면 회귀모형에 투입되는 설명변수들 사이의 공선성이 사라지고, 안정된 계수 추정이 가능해진다.</p>
-<p>해결 방안으로서 PCA의 활용</p>
+<p><strong>해결 방안으로서 PCA의 활용</strong></p>
 <ul>
 <li><p>PCA를 통해 얻은 주성분들을 새로운 설명변수로 사용하여 회귀분석을 수행한다.</p></li>
 <li><p>주성분들은 서로 독립적이므로 다중공선성 문제가 해소된다.</p></li>
 <li><p>다만, 주성분은 원래 변수의 해석이 쉽지 않다는 단점이 있다.</p></li>
 </ul>
-<p>차원 축소 효과</p>
+<p><strong>차원 축소 효과</strong></p>
 <ul>
 <li><p>설명력이 낮은 주성분을 제외하고 상위 몇 개의 주성분만 사용하면, 변동성을 유지하면서 불필요한 잡음과 다중공선성을 동시에 줄일 수 있다.</p></li>
 <li><p>예를 들어, 원래 10개 변수로 구성된 데이터라도 상위 34개의 주성분으로 전체 변동성의 8090%를 설명할 수 있다면, 훨씬 단순하고 안정적인 모형을 얻을 수 있다.</p></li>
 </ul>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># ==============================================</p>
-<p># PCA (주성분분석) + Principal Component Regression</p>
-<p># ==============================================</p>
-<p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>from sklearn.datasets import fetch_openml</p>
-<p>from sklearn.preprocessing import StandardScaler</p>
-<p>from sklearn.decomposition import PCA</p>
-<p>import statsmodels.api as sm</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA (주성분분석) + Principal Component Regression</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 데이터 로드</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>boston <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"boston"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> boston.frame.copy()</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 숫자형 변환</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> df.columns:</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> df[c].dtype.name <span class="kw">in</span> [<span class="st">"object"</span>, <span class="st">"category"</span>]:</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        df[c] <span class="op">=</span> pd.to_numeric(df[c].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip(), errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"MEDV"</span>]</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"MEDV"</span>,<span class="st">"ZN"</span>])</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"예측변수 목록:"</span>, <span class="bu">list</span>(X.columns))</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 표준화</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) PCA 적합</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA()</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>X_pca <span class="op">=</span> pca.fit_transform(X_scaled)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 설명된 분산 비율 (각 주성분 기여도)</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>explained_var <span class="op">=</span> pca.explained_variance_ratio_</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[1] 각 주성분 설명 분산 비율"</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(explained_var, <span class="dv">3</span>))</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[2] 누적 설명력"</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(np.cumsum(explained_var), <span class="dv">3</span>))</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 주성분 부하량 (loadings)</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>loadings <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    pca.components_.T,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>X.columns,</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f"PC</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(X.columns))]</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[3] 주성분 부하량 (원 변수 → 주성분 기여도)"</span>)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(loadings.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 주성분 점수 DataFrame</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>pc_scores <span class="op">=</span> pd.DataFrame(X_pca, columns<span class="op">=</span>[<span class="ss">f"PC</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(X.columns))])</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[4] 주성분 점수 DataFrame (앞부분)"</span>)</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pc_scores.head())</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) PCR (주성분 회귀 예시: 상위 k개 주성분만 사용)</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="co"># ------------------------------------------------</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">5</span>   <span class="co"># 상위 5개 주성분만 사용</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>X_pc <span class="op">=</span> sm.add_constant(pc_scores.iloc[:, :k])</span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>pcr_model <span class="op">=</span> sm.OLS(y, X_pc).fit()</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">[5] PCR 결과 (상위 </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">개 주성분 사용)"</span>)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pcr_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>예측변수 목록: ['CRIM', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']</p>
 <p>[1] 각 주성분 설명 분산 비율</p>
 <p>[0.481 0.114 0.095 0.071 0.064 0.05 0.041 0.028 0.02 0.016 0.014 0.005]</p>
 <p>[2] 누적 설명력</p>
 <p>[0.481 0.595 0.69 0.761 0.825 0.876 0.916 0.944 0.964 0.98 0.995 1. ]</p>
 <p>[3] 주성분 부하량 (원 변수 → 주성분 기여도)</p>
-<p>PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 \</p>
-<p>CRIM 0.268 -0.186 0.330 0.046 -0.177 0.638 0.454 -0.315 0.114 0.135</p>
-<p>INDUS 0.356 0.124 -0.114 0.009 0.112 -0.128 -0.292 -0.369 0.684 0.196</p>
-<p>CHAS 0.003 0.555 0.010 0.753 -0.342 -0.029 0.066 0.020 -0.003 -0.015</p>
-<p>NOX 0.352 0.280 -0.045 -0.173 0.026 0.032 -0.221 -0.033 -0.171 0.083</p>
-<p>RM -0.193 0.328 0.611 -0.127 0.348 -0.126 0.232 0.244 0.395 -0.195</p>
-<p>AGE 0.317 0.304 -0.181 -0.185 0.160 -0.054 0.402 0.384 -0.135 0.566</p>
-<p>DIS -0.321 -0.346 0.082 0.183 -0.212 0.047 -0.181 0.405 0.301 0.563</p>
-<p>RAD 0.339 -0.131 0.366 0.194 0.125 0.105 -0.261 0.276 -0.287 -0.122</p>
-<p>TAX 0.359 -0.115 0.258 0.138 0.133 0.054 -0.399 0.180 -0.012 0.053</p>
-<p>PTRATIO 0.207 -0.431 -0.091 0.446 0.393 -0.437 0.382 -0.098 -0.008 -0.015</p>
-<p>B -0.217 0.105 -0.373 0.237 0.617 0.582 -0.102 0.093 0.065 -0.054</p>
-<p>LSTAT 0.321 -0.127 -0.339 -0.062 -0.281 0.102 0.155 0.515 0.371 -0.490</p>
-<p>PC11 PC12</p>
-<p>CRIM 0.075 0.041</p>
-<p>INDUS -0.154 -0.254</p>
-<p>CHAS -0.002 0.037</p>
-<p>NOX 0.822 0.048</p>
-<p>RM 0.144 0.033</p>
-<p>AGE -0.251 -0.031</p>
-<p>DIS 0.282 -0.075</p>
-<p>RAD -0.116 -0.644</p>
-<p>TAX -0.227 0.711</p>
-<p>PTRATIO 0.247 0.050</p>
-<p>B 0.040 -0.006</p>
-<p>LSTAT 0.067 0.018</p>
+<p>PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 <br> CRIM 0.268 -0.186 0.330 0.046 -0.177 0.638 0.454 -0.315 0.114 0.135 0.075 0.041 <br> INDUS 0.356 0.124 -0.114 0.009 0.112 -0.128 -0.292 -0.369 0.684 0.196 -0.154 -0.254 <br> (중략) <br> LSTAT 0.321 -0.127 -0.339 -0.062 -0.281 0.102 0.155 0.515 0.371 -0.490 0.067 0.018</p>
 <p>[4] 주성분 점수 DataFrame (앞부분)</p>
-<p>PC1 PC2 PC3 PC4 PC5 PC6 PC7 \</p>
-<p>0 -2.100508 0.794845 0.098831 -0.978169 -0.095970 0.507272 -0.023877</p>
-<p>1 -1.649298 0.094635 -0.483831 -0.397519 0.141078 -0.028798 0.605383</p>
-<p>2 -2.280518 0.345673 0.555412 -0.384408 0.592043 -0.231237 0.497210</p>
-<p>3 -2.826744 -0.361504 0.637358 0.061903 0.436344 -0.235396 0.502932</p>
-<p>4 -2.669692 -0.242109 0.591630 -0.035176 0.478284 -0.226862 0.723477</p>
-<p>PC8 PC9 PC10 PC11 PC12</p>
-<p>0 -0.043068 -0.750781 0.223956 0.029284 0.362596</p>
-<p>1 0.183476 -0.022345 0.529996 -0.219936 -0.128753</p>
-<p>2 -0.166574 0.223905 0.313149 0.045882 -0.085665</p>
-<p>3 -0.070508 -0.213217 0.249970 0.429724 -0.080312</p>
-<p>4 0.269469 -0.043381 0.212839 0.408998 -0.076439</p>
-<p>[5] PCR 결과 (상위 5개 주성분 사용)</p>
-<p>OLS Regression Results</p>
-<p>==============================================================================</p>
-<p>Dep. Variable: MEDV R-squared: 0.699</p>
-<p>Model: OLS Adj. R-squared: 0.696</p>
-<p>Method: Least Squares F-statistic: 232.1</p>
-<p>Date: Thu, 04 Sep 2025 Prob (F-statistic): 8.56e-128</p>
-<p>Time: 01:21:30 Log-Likelihood: -1536.6</p>
-<p>No.&nbsp;Observations: 506 AIC: 3085.</p>
-<p>Df Residuals: 500 BIC: 3111.</p>
-<p>Df Model: 5</p>
-<p>Covariance Type: nonrobust</p>
-<p>==============================================================================</p>
-<p>coef std err t P&gt;|t| [0.025 0.975]</p>
-<p>------------------------------------------------------------------------------</p>
-<p>const 22.5328 0.225 99.931 0.000 22.090 22.976</p>
-<p>PC1 -2.3446 0.094 -24.974 0.000 -2.529 -2.160</p>
-<p>PC2 3.1494 0.193 16.329 0.000 2.770 3.528</p>
-<p>PC3 2.9981 0.211 14.218 0.000 2.584 3.412</p>
-<p>PC4 -0.3160 0.244 -1.296 0.196 -0.795 0.163</p>
-<p>PC5 2.0885 0.257 8.139 0.000 1.584 2.593</p>
-<p>==============================================================================</p>
-<p>Omnibus: 235.315 Durbin-Watson: 0.967</p>
-<p>Prob(Omnibus): 0.000 Jarque-Bera (JB): 1735.425</p>
-<p>Skew: 1.882 Prob(JB): 0.00</p>
-<p>Kurtosis: 11.255 Cond. No.&nbsp;2.73</p>
-<p>==============================================================================</p>
-<p>Notes:</p>
-<p>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.</p>
+<p>PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 PC11 PC12 <br> 0 -2.100508 0.794845 0.098831 -0.978169 -0.095970 0.507272 -0.023877 -0.043068 -0.750781 0.223956 0.029284 0.362596 <br> 1 -1.649298 0.094635 -0.483831 -0.397519 0.141078 -0.028798 0.605383 0.183476 -0.022345 0.529996 -0.219936 -0.128753 <br> 2 -2.280518 0.345673 0.555412 -0.384408 0.592043 -0.231237 0.497210 -0.166574 0.223905 0.313149 0.045882 -0.085665 <br> 3 -2.826744 -0.361504 0.637358 0.061903 0.436344 -0.235396 0.502932 -0.070508 -0.213217 0.249970 0.429724 -0.080312 <br> 4 -2.669692 -0.242109 0.591630 -0.035176 0.478284 -0.226862 0.723477 0.269469 -0.043381 0.212839 0.408998 -0.076439</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/다중공선성_주성분분석.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
 <p>1. PC1 (분산 비율 48.1%)</p>
-<p>• CRIM(+), INDUS(+), NOX(+), AGE(+), TAX(+), LSTAT(+) vs RM(-), DIS(-), B(-)</p>
-<p>• 해석: 도시집중·노후·환경악화 축</p>
-<p>→ 범죄율, 공업비율, 공해, 노후주택, 세금, 저소득층 비율이 높고, 방 개수·쾌적성은 낮은 방향</p>
-<p>이름 제안: <span dir="rtl">”</span>도시 낙후·환경 악화 요인”</p>
+<ul>
+<li><p>CRIM(+), INDUS(+), NOX(+), AGE(+), TAX(+), LSTAT(+) vs RM(-), DIS(-), B(-)</p></li>
+<li><p>해석: 도시집중·노후·환경악화 축 → 범죄율, 공업비율, 공해, 노후주택, 세금, 저소득층 비율이 높고, 방 개수·쾌적성은 낮은 방향</p></li>
+<li><p>이름 제안: <span dir="rtl">”</span>도시 낙후·환경 악화 요인”</p></li>
+</ul>
 <p>2. PC2 (11.4%)</p>
-<p>• CHAS(+), RM(+), AGE(+), NOX(+), vs PTRATIO(-), DIS(-)</p>
-<p>• 해석: 강변·주거환경·교육조건 축</p>
-<p>→ 찰스강 인접, 방 개수와 노후도, 환경이 관련되며, 학급당 학생수(PTRATIO)와 도심거리(DIS)는 반대</p>
-<p>이름 제안: <span dir="rtl">”</span>강변 주거환경·교육 조건 요인”</p>
-<p>⸻</p>
+<ul>
+<li><p>CHAS(+), RM(+), AGE(+), NOX(+), vs PTRATIO(-), DIS(-)</p></li>
+<li><p>해석: 강변·주거환경·교육조건 축 → 찰스강 인접, 방 개수와 노후도, 환경이 관련되며, 학급당 학생수(PTRATIO)와 도심거리(DIS)는 반대</p></li>
+<li><p>이름 제안: <span dir="rtl">”</span>강변 주거환경·교육 조건 요인”</p></li>
+</ul>
 <p>3. PC3 (9.5%)</p>
-<p>• RM(+), RAD(+), TAX(+), CRIM(+), vs B(-), LSTAT(-)</p>
-<p>• 해석: 주거규모·교통·재정 축</p>
-<p>→ 방이 많고 교통 접근성(RAD, TAX)과 범죄율이 높을수록, 흑인비율(B)과 저소득층 비율(LSTAT)은 반대</p>
-<p>이름 제안: <span dir="rtl">”</span>주거규모·교통 재정 요인”</p>
-<p>⸻</p>
+<ul>
+<li><p>RM(+), RAD(+), TAX(+), CRIM(+), vs B(-), LSTAT(-)</p></li>
+<li><p>해석: 주거규모·교통·재정 축 → 방이 많고 교통 접근성(RAD, TAX)과 범죄율이 높을수록, 흑인비율(B)과 저소득층 비율(LSTAT)은 반대</p></li>
+<li><p>이름 제안: <span dir="rtl">”</span>주거규모·교통 재정 요인”</p></li>
+</ul>
 <p>4. PC4 (7.1%)</p>
-<p>• CHAS(+), PTRATIO(+), B(+), INDUS(+), 일부 환경 변수와 약한 관련</p>
-<p>• 해석: 특수 입지·교육 인프라 축</p>
-<p>→ 찰스강 인접, 교육 환경, 일부 산업 비율 등이 섞여 있는 보조 요인</p>
-<p>이름 제안: <span dir="rtl">”</span>입지·교육 보조 요인”</p>
-<p>⸻</p>
+<ul>
+<li><p>CHAS(+), PTRATIO(+), B(+), INDUS(+), 일부 환경 변수와 약한 관련</p></li>
+<li><p>해석: 특수 입지·교육 인프라 축 → 찰스강 인접, 교육 환경, 일부 산업 비율 등이 섞여 있는 보조 요인</p></li>
+<li><p>이름 제안: <span dir="rtl">”</span>입지·교육 보조 요인”</p></li>
+</ul>
 <p>5. PC5 (6.4%)</p>
-<p>• B(+), RM(+), PTRATIO(+), 일부 LSTAT(-)</p>
-<p>• 해석: 주택 품질·사회구성 축</p>
-<p>→ 흑인비율, 방 개수, 학급당 학생 수와 연관 → 주거 품질과 사회적 요인이 혼합</p>
-<p>이름 제안: <span dir="rtl">”</span>주택 품질·사회구성 요인”</p>
-<p>2. 능형 회귀분석 Ridge Regression</p>
+<ul>
+<li><p>B(+), RM(+), PTRATIO(+), 일부 LSTAT(-)</p></li>
+<li><p>해석: 주택 품질·사회구성 축 → 흑인비율, 방 개수, 학급당 학생 수와 연관 → 주거 품질과 사회적 요인이 혼합</p></li>
+<li><p>이름 제안: <span dir="rtl">”</span>주택 품질·사회구성 요인”</p></li>
+</ul>
+</section>
+<section id="능형-회귀분석-ridge-regression" class="level4">
+<h4 class="anchored" data-anchor-id="능형-회귀분석-ridge-regression"><span style="color:blue"> 2. 능형 회귀분석 Ridge Regression</span></h4>
 <p>다중공선성은 회귀계수의 추정오차를 증가시키므로 불편성(OLS는 불편 추정량이다)을 포기하는 대신 MSE(Mean Square of Error 평균오차자승합)를 최소화 하는 편기(biased) 추정량을 구하는 추정 방법을 사용함으로써 다중공성선 문제를 해결하는데 이를 능형 회귀분석((Ridge Regression)이라 한다.</p>
 <ul>
 <li><p>편기 추정량 <span class="math inline">\(\widehat{{\underset{¯}{b}}_{*}} = (X'X + \lambda I)X'\underset{¯}{y}\)</span>의 <span class="math inline">\(MSE(\widehat{{\underset{¯}{b}}_{*}}) = E(\widehat{{\underset{¯}{b}}_{*}} - \underset{¯}{b})^{2}\)</span>를 최소화 하는 <span class="math inline">\(0 &lt; \lambda\)</span>를 구하면 이를 능형 추정량이라 한다. <span class="math inline">\(c = 0\)</span>이면 OLS 추정값이다.</p></li>
 <li><p>상수 <span class="math inline">\(c\)</span>와 VIF 산점도를 이용하여 각 예측변수의 추정 회귀계수 값이 안정화 되는 <span class="math inline">\(c\)</span>값을 최적값으로 설정한다. 다소 주관적이다.</p></li>
 <li><p>Ridge 회귀는회귀계수 해석”보다는 <span dir="rtl">”</span>예측 안정성 향상에 초점을 두므로 OLS처럼 <span dir="rtl">”</span>이 변수가 유의하다/아니다”를 말하기 위해 쓰는 기법은 아니다.</p></li>
 </ul>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># ==============================================</p>
-<p># 능형 Regression</p>
-<p># ==============================================</p>
-<p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>from sklearn.datasets import fetch_openml</p>
-<p>from sklearn.preprocessing import StandardScaler</p>
-<p>from sklearn.linear_model import RidgeCV</p>
-<p>from sklearn.pipeline import Pipeline</p>
-<p>from sklearn.metrics import mean_squared_error</p>
-<p>from sklearn.model_selection import KFold</p>
-<p># 데이터</p>
-<p>boston = fetch_openml(name="boston", version=1, as_frame=True)</p>
-<p>df = boston.frame.dropna().reset_index(drop=True)</p>
-<p>y = df["MEDV"]</p>
-<p>X = df.drop(columns=["MEDV","ZN"])</p>
-<p># 후보 λ (alpha)들</p>
-<p>alphas = np.logspace(-3, 3, 100)</p>
-<p># 파이프라인: 표준화 + RidgeCV(K-fold)</p>
-<p>pipe = Pipeline([</p>
-<p>("scaler", StandardScaler()),</p>
-<p>("ridge", RidgeCV(alphas=alphas, cv=KFold(n_splits=10, shuffle=True, random_state=42),</p>
-<p>scoring="neg_mean_squared_error"))</p>
-<p>])</p>
-<p>pipe.fit(X, y)</p>
-<p>best_alpha = pipe.named_steps["ridge"].alpha_</p>
-<p>coefs = pipe.named_steps["ridge"].coef_</p>
-<p>print("최적 λ(alpha):", best_alpha)</p>
-<p>print(“추정 회귀계수:", pd.Series(coefs, index=X.columns).sort_values(key=abs, ascending=False))</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 능형 Regression</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> RidgeCV</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>boston <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"boston"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> boston.frame.dropna().reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"MEDV"</span>]</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"MEDV"</span>,<span class="st">"ZN"</span>])</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 후보 λ (alpha)들</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">100</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 파이프라인: 표준화 + RidgeCV(K-fold)</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"ridge"</span>, RidgeCV(alphas<span class="op">=</span>alphas, cv<span class="op">=</span>KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                      scoring<span class="op">=</span><span class="st">"neg_mean_squared_error"</span>))</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>pipe.fit(X, y)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>best_alpha <span class="op">=</span> pipe.named_steps[<span class="st">"ridge"</span>].alpha_</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>coefs <span class="op">=</span> pipe.named_steps[<span class="st">"ridge"</span>].coef_</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ 최적 λ(alpha):"</span>, best_alpha)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ 회귀계수:"</span>, pd.Series(coefs, index<span class="op">=</span>X.columns).sort_values(key<span class="op">=</span><span class="bu">abs</span>, ascending<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>최적 λ(alpha): 4.9770235643321135</p>
-<p>추정회귀 계수(상위 5개): LSTAT -3.625057</p>
-<p>RM 2.852304</p>
-<p>DIS -2.451308</p>
-<p>PTRATIO -2.298852</p>
-<p>RAD 2.188506</p>
-<p>NOX -1.981206</p>
-<p>TAX -1.381737</p>
-<p>B 0.855040</p>
-<p>CRIM -0.815508</p>
-<p>CHAS 0.704650</p>
-<p>AGE -0.152481</p>
-<p>INDUS -0.094937</p>
+<p>추정회귀 계수: <br> LSTAT -3.625057 <br> RM 2.852304 <br> DIS -2.451308 <br> PTRATIO -2.298852 <br> RAD 2.188506 <br> NOX -1.981206 <br> TAX -1.381737 <br> B 0.855040 <br> CRIM -0.815508 <br> CHAS 0.704650 <br> AGE -0.152481 <br> INDUS -0.094937</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
