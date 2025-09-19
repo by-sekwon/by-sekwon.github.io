@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>lm_diagnosis – 세상의 모든 통계 이야기</title>
+<title>회귀분석 4. 회귀진단 – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -319,31 +354,61 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-회귀진단-개념" id="toc-chapter-1.-회귀진단-개념" class="nav-link active" data-scroll-target="#chapter-1.-회귀진단-개념"><span style="color:green">chapter 1. 회귀진단 개념</span></a>
+  <ul>
+  <li><a href="#회귀진단이란" id="toc-회귀진단이란" class="nav-link" data-scroll-target="#회귀진단이란"><span style="color:blue"> 1. 회귀진단이란?</span></a></li>
+  <li><a href="#잔차분석" id="toc-잔차분석" class="nav-link" data-scroll-target="#잔차분석"><span style="color:blue"> 2. 잔차분석</span></a></li>
+  <li><a href="#잔차종류" id="toc-잔차종류" class="nav-link" data-scroll-target="#잔차종류"><span style="color:blue"> 3. 잔차종류 </span></a></li>
+  <li><a href="#진단도구" id="toc-진단도구" class="nav-link" data-scroll-target="#진단도구"><span style="color:blue"> 4. 진단도구</span></a></li>
+  <li><a href="#회귀진단-절차-및-최종-추정모형" id="toc-회귀진단-절차-및-최종-추정모형" class="nav-link" data-scroll-target="#회귀진단-절차-및-최종-추정모형"><span style="color:blue"> 5. 회귀진단 절차 및 최종 추정모형</span></a></li>
+  </ul></li>
+  </ul>
+</nav>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">회귀분석 4. 회귀진단</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
 
-<p>Chapter 1. 회귀진단</p>
-<p>권세혁교수 통계 사전 【다중공선성】</p>
-<p>s<a href="https://sites.google.com/view/wolfpack61"><u>https://sites.google.com/view/wolfpack61</u></a></p>
-<p>1. 회귀진단이란?</p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="chapter-1.-회귀진단-개념" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-회귀진단-개념"><span style="color:green">chapter 1. 회귀진단 개념</span></h3>
+<section id="회귀진단이란" class="level4">
+<h4 class="anchored" data-anchor-id="회귀진단이란"><span style="color:blue"> 1. 회귀진단이란?</span></h4>
 <p>회귀분석에서 모델을 한 번 적합했다고 해서 그 결과를 그대로 신뢰할 수는 없다. 추정된 회귀계수는 최소제곱법에 의해 잘 정의되지만, 실제 데이터에서는 여러 가지 문제가 숨어 있을 수 있다. 이러한 문제를 찾아내고 모델이 가정에 잘 부합하는지 점검하는 과정이 회귀진단(regression diagnostics)이다.</p>
 <p>회귀진단의 출발점은 <span dir="rtl">”</span>이 모델이 데이터를 제대로 설명하고 있는가?“라는 질문이다. 그 답을 찾기 위해 크게 두 가지 축에서 생각한다. 첫째, 회귀모형의 가정 점검이다. 선형성, 오차항의 등분산성, 독립성, 정규성과 같은 기본 가정들이 지켜지지 않으면 추정량의 성질이나 검정의 신뢰성이 흔들리게 된다. 예를 들어 잔차(residuals)를 살펴보면 선형관계가 어긋나거나 특정 구간에서만 분산이 커지는 등분산 위배 패턴을 발견할 수 있다.</p>
 <p>둘째, 이상점(outlier)과 영향점(influential point)의 탐색이다. 데이터 중 일부는 다른 점들과 지나치게 동떨어져 있거나, 회귀직선의 모양 자체를 크게 좌우하는 경우가 있다. 이러한 점들을 무시하면 추정치가 왜곡되므로, 잔차분석, 레버리지(leverage), 쿡의 거리(Cook<span dir="rtl">’</span>s distance)와 같은 진단통계량을 활용하여 확인한다.</p>
 <p>요컨대 회귀진단은 단순히 결정계수(R²)나 유의확률만 보는 것이 아니라, 모델이 데이터의 구조를 얼마나 충실히 반영하고 있는지, 가정 위배나 특정 관측치의 왜곡이 없는지를 살펴보는 과정이다. 이러한 진단 과정을 거쳐야 회귀분석 결과를 자신 있게 해석하고 실무적 의사결정에 활용할 수 있다.</p>
-<p>오차 가정 진단</p>
+<p><strong>오차 가정 진단</strong></p>
 <p>회귀분석의 기본 전제는 오차항이 일정한 가정을 충족한다는 것이다. 이러한 가정이 성립하지 않으면 추정된 회귀계수나 검정 결과를 신뢰할 수 없게 된다. 따라서 회귀모형이 가정을 만족하는지 여부를 점검하는 과정이 필요하며, 이를 회귀진단(잔차분석)이라 한다.</p>
 <p>선형성 가정은 회귀모형의 유의성 검정 결과와 직접적으로 연결되므로, 잔차분석에서는 주로 오차항에 대한 세 가지 가정을 점검한다. 즉, 정규성, 등분산성, 독립성이다. 이 가운데 독립성은 자료가 시계열 형태일 때 비로소 문제가 되므로, 일반 횡단면 자료에서는 정규성과 등분산성을 중점적으로 진단한다.</p>
 <p>요컨대 잔차분석은 회귀모형이 통계적 가정을 위배하지 않고 안정적으로 추정되었는지를 검증하는 핵심 절차이다.</p>
-<p>이상치, 영향치 진단</p>
+<p><strong>이상치, 영향치 진단</strong></p>
 <p>회귀모형은 데이터 전체의 경향성을 바탕으로 추정되기 때문에 일부 관측값이 지나치게 벗어나 있거나 모형을 과도하게 지배할 경우 추정 결과가 왜곡될 수 있다. 이러한 점을 이상치 또는 영향치라 하며, 회귀분석에서는 이들을 진단하는 과정이 반드시 필요하다.</p>
 <p>이상치와 영향치 진단이 필요한 이유는 다음과 같다.</p>
 <p>첫째, 모형의 정확성 보장이다. 이상치나 영향치를 방치하면 회귀계수 추정치가 왜곡되고, 그 결과 예측력과 설명력이 저하된다.</p>
@@ -352,25 +417,26 @@ window.Quarto = {
 <p>넷째, 해석의 정확성 제고이다. 영향치는 회귀계수의 크기와 방향을 바꿀 수 있어, 이를 무시하면 계수 해석이 잘못될 수 있다.</p>
 <p>다섯째, 데이터 품질 향상이다. 이상치와 영향치 탐지는 자료 수집이나 측정 과정에서 발생한 오류를 찾아내어 수정할 기회를 제공한다.</p>
 <p>따라서 이상치와 영향치를 체계적으로 진단하고 적절히 처리하는 것은 회귀분석 결과의 타당성과 해석의 정확성을 높이는 핵심 과정이다.</p>
-<p>2. 잔차분석</p>
-<p>회귀모형 및 OLS 추정</p>
+</section>
+<section id="잔차분석" class="level4">
+<h4 class="anchored" data-anchor-id="잔차분석"><span style="color:blue"> 2. 잔차분석</span></h4>
+<p><strong>회귀모형 및 OLS 추정</strong></p>
 <p>회귀모형 <span class="math inline">\(y_{i} = \alpha + \overset{p}{\sum_{k = 1}}\beta_{k}x_{ki} + e_{i}\)</span> , <span class="math inline">\(e_{i} \sim N(0,\sigma^{2})\)</span> [행렬 표현] <span class="math inline">\(\underset{¯}{y} = X\underset{¯}{\beta} + \underset{¯}{e}\)</span>, <span class="math inline">\(\underset{¯}{e} \sim MN(\underset{¯}{0},\sigma^{2}I)\)</span></p>
 <p>추정 (OLS) : <span class="math inline">\(\widehat{\underset{¯}{\beta}} = (X'X)^{- 1}X'\underset{¯}{y}\)</span></p>
 <p>적합치 : <span class="math inline">\(\widehat{\underset{¯}{y}} = H\underset{¯}{y}\)</span>, <span class="math inline">\(H = X(X'X)^{- 1}X'\)</span>는 멱등행렬</p>
-<p>잔차 정의</p>
+<p><strong>잔차 정의</strong></p>
 <p><span class="math inline">\(\underset{¯}{r} = (I - H)\underset{¯}{y}\)</span>, <span class="math inline">\(r_{i} = y_{i} - {\widehat{y}}_{i}\)</span> : 잔차는 종속변수 관측치와 모형 적합치의 차이</p>
 <p>회귀모형 오차항(<span class="math inline">\(e_{i}\)</span>)의 MVUE : <span class="math inline">\({\widehat{e}}_{i} = r_{i}\)</span></p>
-<p>잔차성질</p>
+<p><strong>잔차성질</strong></p>
 <p>잔차의 평균은 <span class="math inline">\(E(r_{i}) = 0\)</span>이고 분산은 <span class="math inline">\(V(r_{i}) = \sigma^{2}\)</span>이다.</p>
 <p>잔차는 서로 독립인가? 사실 오차는 독립을 가정하나 잔차는 독립이 아니다. 회귀계수 OLS추정에는 <span class="math inline">\((x_{i},y_{i})\)</span>모든 관측치가 포함되어 있기 때문이다.</p>
 <p><span class="math inline">\(\sum x_{i}r_{i} = 0\)</span>: 예측변수와 잔차의 곱의 합은 0이다 - 설명변수와 잔차는 독립이다. 예측변수에 의해 설명되고 남은 부분(잔차)은 서로 독립이다.</p>
 <p><span class="math inline">\(\sum{\widehat{y}}_{i}r_{i} = 0\)</span> : 적합치와 잔차의 곱의 합은 0이다. 적합치는 예측변수에 의해 설명된 부분과 설명되지 않은 잔차 부분은 서로 독립이다.</p>
-<p>잔차분석이란</p>
+<p><strong>잔차분석이란</strong></p>
 <p>잔차분석은 회귀분석에서 오차항을 직접 관측할 수 없기 때문에, 그 추정치인 잔차(residual)를 활용하여 모형의 가정을 점검하는 과정이다. 잔차가 회귀모형의 기본 가정을 잘 따르고 있는지를 확인함으로써 추정 결과의 신뢰성과 해석의 타당성을 확보할 수 있다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image3.png" style="width:2.37613in;height:1.70811in" class="figure-img"></p>
-<figcaption>pasted-image.pdf</figcaption>
+<p><img src="images/회귀진단_잔차산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
 </figure>
 </div>
 <p>잔차분석에서 확인하는 주요 사항은 다음과 같다.</p>
@@ -381,120 +447,154 @@ window.Quarto = {
 <p>다섯째, 이상치와 영향치의 존재 여부다. 표준화 잔차가 지나치게 크거나, 회귀선의 모양을 크게 바꾸는 영향점은 모형의 추정 결과를 왜곡시킬 수 있으므로 반드시 확인해야 한다.</p>
 <p>여섯째, 누락 변수 가능성이다. 잔차가 특정한 패턴을 보인다면 이는 모형에 포함되지 않은 중요한 설명변수가 존재함을 시사한다. 이 경우 현실성이 떨어지는 모형이 될 수 있다.</p>
 <p>결국 잔차분석은 단순히 모형의 적합도를 평가하는 단계를 넘어, 회귀모형이 기본 가정을 충족하는지 점검하고, 잠재적인 문제를 찾아내어 보완하는 핵심 절차이다.</p>
-<p>3. 잔차 종류</p>
-<p>표준화 standardized 잔차</p>
+</section>
+<section id="잔차종류" class="level4">
+<h4 class="anchored" data-anchor-id="잔차종류"><span style="color:blue"> 3. 잔차종류 </span></h4>
+<p><strong>표준화 standardized 잔차</strong></p>
 <p><span class="math inline">\(z_{i} = \frac{r_{i} - \overline{r}}{s(r_{i}) = \sqrt{MSE}}\)</span>, <span class="math inline">\(MSE = \widehat{\sigma^{2}}\)</span></p>
 <p>표준화 잔차는 추정 회귀식으로부터 관측치가 얼마나 떨어져 있나를 나타내는 것으로 <span class="math inline">\(\pm 2\)</span> (표준정규분포의 경우 <span class="math inline">\(\pm 1.96\)</span> 구간 안에는 95% 관측치가 있음) 보다 크면 이상치일 가능성이 높다.</p>
-<p>스튜던트 studentized 잔차</p>
+<p><strong>스튜던트 studentized 잔차</strong></p>
 <p><span class="math inline">\(st_{i} = \frac{r_{i}}{\sqrt{MSE/(1 - h_{ii})}}\)</span>, <span class="math inline">\(h_{ii} = {\underset{¯}{x}}_{i}'(X'X)^{- 1}{\underset{¯}{x}}_{i}\)</span></p>
 <p>잔차를 t-분포를 따르는 통계량으로 만든 것으로 <span class="math inline">\(\pm 2\)</span>이면 이상치로 판단한다.</p>
 <p><span class="math inline">\(h_{ii}\)</span> : <span class="math inline">\(H = X(X'X)^{- 1}X'\)</span> 행렬의 대각 원소로 leverage 레버리지(지렛대)로 정의되며 영향치 판단에 사용한다.</p>
-<p>표준화/스튜던트 제외 standardized &amp; deleted 잔차</p>
+<p><strong>표준화/스튜던트 제외 standardized &amp; deleted 잔차</strong></p>
 <p><span class="math inline">\(z_{(i)} = \frac{r_{(i)} - \overline{r}}{\sqrt{MSE_{(i)}}}\)</span>, <span class="math inline">\(st_{(i)} = \frac{r_{(}i)}{\sqrt{MSE_{(i)}/(1 - h_{ii})}}\)</span></p>
 <p><span class="math inline">\(i -\)</span>번째 관측치를 제외하고 회귀모형을 추정한 후 얻은 적합치를 사용하여 얻은 잔차로 표준화/스튜던트 잔차에 비해 더 정확한 개념의 잔차이지만 현실에서는 자주 사용하지 않는다.</p>
-<p>4. 진단도구</p>
-<p>잔차와 종속변수 추정치 산점도</p>
+</section>
+<section id="진단도구" class="level4">
+<h4 class="anchored" data-anchor-id="진단도구"><span style="color:blue"> 4. 진단도구</span></h4>
+<p><strong>잔차와 종속변수 추정치 산점도</strong></p>
 <p>잔차와 종속변수 추정치 산점도는 회귀모형의 타당성을 점검하는 가장 기본적인 도구이다. 이때 잔차를 Y축에 두고, 종속변수의 예측값(추정치)을 X축에 두어 산점도를 작성한다.</p>
 <p>잔차는 추정된 회귀모형이 설명하지 못한 부분에 해당하므로, 이 산점도에는 어떠한 체계적인 패턴도 나타나지 않아야 한다. 즉, 잔차가 평균 0을 중심으로 무작위로 흩어져 있는 형태가 바람직하다. 만약 특정 곡선 형태나 일정한 방향성을 띠는 패턴이 나타난다면, 이는 선형성 가정의 위배나 누락된 설명변수의 존재를 시사한다.</p>
 <p>또한 예측값이 커지거나 작아짐에 따라 잔차의 분산이 달라지는 모습이 관찰된다면, 이는 등분산성 가정의 위배를 의미한다. 따라서 잔차 산점도를 통해 선형성과 등분산성을 동시에 진단할 수 있다.</p>
 <p>아울러 잔차가 지나치게 크게 나타나는 점은 다른 점들과 동떨어진 이상치(outlier)일 가능성이 있으며, 이러한 점들은 회귀계수 추정치와 모형의 안정성을 심각하게 왜곡할 수 있다.</p>
 <p>결국 잔차–추정치 산점도는 회귀모형의 기본 가정(선형성, 등분산성) 진단뿐 아니라, 이상치 탐지에도 중요한 역할을 하는 핵심 도구이다.</p>
-<p>잔차(Y-축)와 시간(time, X-축)의 시간도표(time plot)</p>
-<p>시계열 데이터에만 국한된다.</p>
-<p>잔차 활용</p>
+<p><strong>잔차(Y-축)와 시간(time, X-축)의 시간도표(time plot)</strong></p>
+<p>오차의 독립성 검정은 시계열 데이터에만 국한된다.</p>
+<p><strong>잔차 활용</strong></p>
 <p>회귀분석에서 오차항 자체는 관측할 수 없으므로, 그 추정치인 잔차를 활용하여 모형의 타당성을 점검하게 된다. 잔차는 종속변수의 실제값과 회귀모형이 추정한 예측값의 차이로 정의되며, 이 값 속에는 모형이 설명하지 못한 변동이 담겨 있다. 따라서 잔차를 체계적으로 살펴보면 회귀모형이 기본적으로 전제한 오차항의 가정이 충족되는지, 그리고 개별 관측치가 모형에 과도한 영향을 주고 있지는 않은지를 확인할 수 있다.</p>
 <p>구체적으로는 잔차의 분포와 패턴을 분석하여 정규성, 등분산성, 독립성과 같은 오차항의 가정을 진단한다. 예를 들어 잔차가 무작위로 흩어져 있으면 선형성과 등분산성이 충족되었다고 볼 수 있고, 잔차의 분포가 종 모양을 띠면 정규성이 유지된 것으로 해석할 수 있다.</p>
 <p>아울러 잔차의 크기와 분포를 살펴보면 이상치나 영향치를 식별할 수 있다. 잔차가 지나치게 크거나 특정 관측치가 회귀직선의 기울기와 절편을 크게 좌우한다면, 이는 모형의 안정성과 해석의 신뢰성을 저해하는 요인으로 작용한다.</p>
 <p>결국 잔차분석은 단순히 회귀모형의 적합도를 평가하는 수준을 넘어, 오차항의 가정 점검과 이상치 진단을 동시에 수행하는 핵심 절차이며, 회귀분석 결과를 신뢰할 수 있도록 보장하는 중요한 단계이다.</p>
 <p>*) 잔차의 정규성 검정에 대해서는 상반된 견해가 존재한다. 한쪽에서는 잔차가 종속변수의 평균에 기반하여 계산되므로, 표본의 크기가 충분히 크면 중심극한정리에 따라 정규분포에 근사한다고 본다. 따라서 일반적으로 표본이 30개 이상인 경우에는 정규성 위배가 분석 결과에 큰 영향을 주지 않으며, 이때는 굳이 정규성 검정을 수행하지 않아도 된다는 입장이다.</p>
-<p>5. 회귀진단 절차 및 최종 추정모형</p>
-<p>회귀모형 추정 및 잔차 산점도</p>
+</section>
+<section id="회귀진단-절차-및-최종-추정모형" class="level4">
+<h4 class="anchored" data-anchor-id="회귀진단-절차-및-최종-추정모형"><span style="color:blue"> 5. 회귀진단 절차 및 최종 추정모형</span></h4>
+<section id="회귀모형-추정" class="level5">
+<h5 class="anchored" data-anchor-id="회귀모형-추정">(1) 회귀모형 추정</h5>
 <p>데이터에 설정된 회귀모형이 완전하다면 (목표변수 관측값- 추정 모형에 의해 적합된 값) 차이인 잔차에는 어떤 패턴도 있어서는 안된다. 즉 백색잡음, 정규분포를 따라야 한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># ==============================================</p>
-<p># 최종 회귀모형 추정 : adjust 결정계수 최대</p>
-<p># ==============================================</p>
-<p>import itertools</p>
-<p>import pandas as pd</p>
-<p>import numpy as np</p>
-<p>import statsmodels.api as sm</p>
-<p>from sklearn.datasets import fetch_openml</p>
-<p># 1. 데이터 불러오기</p>
-<p>boston = fetch_openml(name="boston", version=1, as_frame=True)</p>
-<p>df = boston.frame.copy()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 최종 회귀모형 추정 : adjust 결정계수 최대</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ==============================================</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> fetch_openml</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 데이터 불러오기</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>boston <span class="op">=</span> fetch_openml(name<span class="op">=</span><span class="st">"boston"</span>, version<span class="op">=</span><span class="dv">1</span>, as_frame<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> boston.frame.copy()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 종속변수 / 설명변수</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> pd.to_numeric(df[<span class="st">"MEDV"</span>], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"MEDV"</span>]).copy()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 숫자형 변환</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> X.columns:</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> X[c].dtype.name <span class="kw">in</span> [<span class="st">"object"</span>, <span class="st">"category"</span>]:</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        X[c] <span class="op">=</span> X[c].astype(<span class="bu">str</span>).<span class="bu">str</span>.strip()</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        X[c] <span class="op">=</span> pd.to_numeric(X[c], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        X[c] <span class="op">=</span> X[c].astype(<span class="bu">float</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측 제거</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> y.notna() <span class="op">&amp;</span> X.notna().<span class="bu">all</span>(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> y[mask].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> X.loc[mask].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Best Subset 함수</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> best_subset(X, y, max_features<span class="op">=</span><span class="dv">5</span>, criterion<span class="op">=</span><span class="st">"adj_r2"</span>):</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    results <span class="op">=</span> []</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(y)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, max_features<span class="op">+</span><span class="dv">1</span>):  <span class="co"># 변수 개수 1개부터 max_features까지</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> combo <span class="kw">in</span> itertools.combinations(X.columns, k):</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>            X_combo <span class="op">=</span> sm.add_constant(X[<span class="bu">list</span>(combo)], has_constant<span class="op">=</span><span class="st">"add"</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>            model <span class="op">=</span> sm.OLS(y, X_combo).fit()</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> criterion <span class="op">==</span> <span class="st">"adj_r2"</span>:</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>                score <span class="op">=</span> model.rsquared_adj</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> criterion <span class="op">==</span> <span class="st">"aic"</span>:</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>                score <span class="op">=</span> <span class="op">-</span>model.aic  <span class="co"># 최소화 기준 → 부호 바꿔서 최대화</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>            <span class="cf">elif</span> criterion <span class="op">==</span> <span class="st">"bic"</span>:</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>                score <span class="op">=</span> <span class="op">-</span>model.bic</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>                <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"criterion은 'adj_r2', 'aic', 'bic' 중 선택"</span>)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>            results.append({</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>                <span class="st">"num_features"</span>: k,</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>                <span class="st">"features"</span>: combo,</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>                <span class="st">"criterion"</span>: score</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 최적 모형 선택</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    best_model <span class="op">=</span> <span class="bu">max</span>(results, key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="st">"criterion"</span>])</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(results), best_model</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 실행 (예: 최대 10개 변수까지 탐색, Adjusted R² 기준)</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>all_results, best <span class="op">=</span> best_subset(X, y, max_features<span class="op">=</span><span class="dv">7</span>, criterion<span class="op">=</span><span class="st">"adj_r2"</span>)</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best Model (Adjusted R² 기준):"</span>)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"변수:"</span>, best[<span class="st">"features"</span>])</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Adj R²:"</span>, best[<span class="st">"criterion"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Best Model (Adjusted R² 기준):</p>
 <p>변수: ('CHAS', 'NOX', 'RM', 'DIS', 'PTRATIO', 'B', 'LSTAT')</p>
 <p>Adj R²: 0.7182560407158507</p>
-<p>예측변수 DIS 상관계수 부호와 회귀계수 부호</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># --- 4) 최종 모형 적합 ---</p>
-<p>selected = ['CHAS', 'NOX', 'RM', 'PTRATIO', 'B', 'LSTAT'] # 선택된 변수 리스트</p>
-<p>X_final = sm.add_constant(X[selected], has_constant='add') # 정제된 X 사용</p>
-<p>final_model = sm.OLS(y, X_final).fit()</p>
-<p>print(final_model.summary())</p></td>
-</tr>
-</tbody>
-</table>
+<p>예측변수 DIS 상관계수 부호와 회귀계수 부호가 상이하여 제외하였다.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4) 최종 모형 적합 ---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> [<span class="st">'CHAS'</span>, <span class="st">'NOX'</span>, <span class="st">'RM'</span>, <span class="st">'PTRATIO'</span>, <span class="st">'B'</span>, <span class="st">'LSTAT'</span>]  <span class="co"># 선택된 변수 리스트</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X_final <span class="op">=</span> sm.add_constant(X[selected], has_constant<span class="op">=</span><span class="st">'add'</span>)        <span class="co"># 정제된 X 사용</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>final_model <span class="op">=</span> sm.OLS(y, X_final).fit()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(final_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image4.png" style="width:4.5in;height:3.77974in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/회귀진단_모형추정.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
+<p>6개 예측변수로 하여 모형을 추정한 출력결과 하단에 다중공선성 경고는 있으나 VIF 값 진단 결과 모두 3미만이므로 본 모형을 최종 추정모형으로 사용하였다.</p>
 <p>[2] VIF (모든 변수)</p>
-<p>variable VIF</p>
-<p>5 LSTAT 2.453</p>
-<p>2 RM 1.698</p>
-<p>1 NOX 1.664</p>
-<p>4 B 1.242</p>
-<p>3 PTRATIO 1.216</p>
-<p>0 CHAS 1.045</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import seaborn as sns</p>
-<p>import matplotlib.pyplot as plt</p>
-<p># 1. 잔차 계산</p>
-<p>residuals = final_model.resid_pearson</p>
-<p>fitted = final_model.fittedvalues</p>
-<p># 2. 잔차, 예측 산점도</p>
-<p>sns.residplot(x=fitted, y=residuals, lowess=True, line_kws={'color': 'red', 'lw': 1})</p>
-<p>plt.title('scatter plot of (yhat vs standard_res)')</p>
-<p>plt.axhline(2)</p>
-<p>plt.axhline(-2)</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+<p>variable VIF <br> 5 LSTAT 2.453 <br> 2 RM 1.698 <br> 1 NOX 1.664 <br> 4 B 1.242 <br> 3 PTRATIO 1.216 <br> 0 CHAS 1.045</p>
+</section>
+<section id="잔차-vs-예측값-산점도" class="level5">
+<h5 class="anchored" data-anchor-id="잔차-vs-예측값-산점도">(2) 잔차 vs 예측값 산점도</h5>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 잔차 계산</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> final_model.resid_pearson</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>fitted <span class="op">=</span> final_model.fittedvalues</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 잔차, 예측 산점도</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>sns.residplot(x<span class="op">=</span>fitted, y<span class="op">=</span>residuals, lowess<span class="op">=</span><span class="va">True</span>, line_kws<span class="op">=</span>{<span class="st">'color'</span>: <span class="st">'red'</span>, <span class="st">'lw'</span>: <span class="dv">1</span>})</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'scatter plot of (yhat vs standard_res)'</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">2</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="op">-</span><span class="dv">2</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image5.png" style="width:4.5in;height:3.58517in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/회귀진단_보스톤_잔차산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<p>곡선 패턴 존재</p>
+<p><strong>곡선 패턴 존재</strong></p>
 <p>잔차가 단순히 무작위로 흩어진 것이 아니라, 예측값이 작을 때와 클 때 잔차가 양수 방향으로 커지고, 중간값에서는 음수 쪽으로 몰려 있으므로 빨간 곡선(스무딩 선)이 U자형을 그리는 모습이 선형성 가정이 무너졌음을 보여준다. → 선형성 가정 위배</p>
-<p>잔차 분산의 불균일</p>
+<p><strong>잔차 분산의 불균일</strong></p>
 <p>예측값이 커질수록 잔차의 분산이 조금 더 커지는 경향이 보이므로 이는 등분산성 위배(이분산성)의 가능성을 시사한다.</p>
-<p>극단적인 점들</p>
+<p><strong>극단적인 점들</strong></p>
 <p>y축 <span dir="rtl">±</span>2를 넘는 점들이 상당히 보이고, 특히 위쪽으로 튀는 점들이 다수 있으므로 이는 이상치 또는 영향치일 가능성이 크다.</p>
-<p>선형성 검정</p>
+<section id="선형성-검정" class="level6">
+<h6 class="anchored" data-anchor-id="선형성-검정">(3) 선형성 검정</h6>
 <p>회귀분석에서 가장 먼저 확인해야 할 사항은 선형성 가정이다. 즉, 종속변수와 설명변수 간의 함수관계가 선형(직선)으로 표현될 수 있어야 한다는 것이다. 이는 선형 회귀모형의 기본 전제 조건이다.</p>
 <p>실제 분석에서는 회귀모형을 추정하기 전에 종속변수와 각 설명변수 간의 산점도를 통해 선형성 여부를 사전 점검하고, 필요하다면 적절한 변환을 통해 문제를 해결한다. 이후 회귀모형의 유의성 검정을 거치면, 일반적으로 선형성 가정은 만족하는 것으로 판단할 수 있다. 따라서 기본적인 회귀분석에서는 별도의 선형성 검정 절차가 필수적이지 않다.</p>
 <p>그러나 설명변수 간의 관계가 복잡하게 얽혀 있거나, 함수형태의 잘못된 특정화 가능성이 우려될 경우에는 보다 엄밀한 통합적 선형성 검정 방법을 적용할 필요가 있다. 대표적으로 Harvey와 Collier(1977)가 제안한 Functional Form Misspecification Test가 있으며, Johnston(1984)에서도 이 방법이 소개되어 있다.</p>
@@ -504,47 +604,32 @@ window.Quarto = {
 <li><p>대립가설 : 목표변수와 예측변수들 간에는 선형성이 존재하지 않는다.</p></li>
 </ul>
 <p>본 연구에서는 목표변수와 설명변수 간의 상관계수가 매우 유의하게 나타났으며, 이는 곧 선형 함수관계가 존재함을 의미한다. 따라서 선형성 가정은 충족되었고, 앞서 언급한 것처럼 굳이 별도의 검정을 수행할 필요는 없다는 결론에 도달한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 선형성 검정</p>
-<p>from statsmodels.stats.diagnostic import linear_harvey_collier</p>
-<p>t_stat, p_val = linear_harvey_collier(final_model)</p>
-<p>print(f"[Harvey–Collier] t = {t_stat:.3f}, p-value = {p_val:.4g}")</p>
-<p># 해석: p-value &lt; 0.05 이면 선형성 가정이 유의하게 깨졌다고 본다.</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 선형성 검정</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> linear_harvey_collier</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>t_stat, p_val <span class="op">=</span> linear_harvey_collier(final_model)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[Harvey–Collier] t = </span><span class="sc">{</span>t_stat<span class="sc">:.3f}</span><span class="ss">, p-value = </span><span class="sc">{</span>p_val<span class="sc">:.4g}</span><span class="ss">"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 해석: p-value &lt; 0.05 이면 선형성 가정이 유의하게 깨졌다고 본다.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>linear_harvey_collier 오류는 초기 부분표본이 특이(singular) 해서 생긴다. 해결은 두 가지다:</p>
 <p>1. 초기 표본 크기 skip를 충분히 크게 잡고,</p>
 <p>2. 초기에 변동이 충분히 들어오도록 표본 순서를 order_by로 재배열한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from statsmodels.stats.diagnostic import linear_reset</p>
-<p># Ramsey RESET (비선형성/함수형 잘못특정)</p>
-<p>reset_res = linear_reset(final_model, power=2, use_f=True)</p>
-<p>print("[RESET test]")</p>
-<p>print(f"F-statistic = {reset_res.fvalue:.3f}")</p>
-<p>print(f"p-value = {reset_res.pvalue:.4g}")</p></td>
-</tr>
-</tbody>
-</table>
-<p>[RESET test]</p>
-<p>F-statistic = 183.651</p>
-<p>p-value = 7.741e-36</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> linear_reset</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Ramsey RESET (비선형성/함수형 잘못특정)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>reset_res <span class="op">=</span> linear_reset(final_model, power<span class="op">=</span><span class="dv">2</span>, use_f<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[RESET test]"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F-statistic = </span><span class="sc">{</span>reset_res<span class="sc">.</span>fvalue<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-value     = </span><span class="sc">{</span>reset_res<span class="sc">.</span>pvalue<span class="sc">:.4g}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[RESET test] F-statistic = 183.651 p-value = 7.741e-36</p>
 <p>p-value 사실상 0에 가까우므로 귀무가설(회귀모형은 선형으로 잘 특정되었다)**는 기각된다. 즉, 현재 추정한 선형회귀모형은 종속변수와 예측변수 간의 관계를 제대로 설명하지 못하고 있으며, 비선형성이나 누락된 변수가 존재할 가능성이 매우 높다는 의미한다.</p>
 <ul>
 <li><p>비선형항(예: RM², LSTAT²)이나 변수 변환(로그, 제곱근 등)을 도입해 모델을 개선해야 한다.</p></li>
-<li><p>또는 상호작용항 추가, 더 나아가 비선형 모형(GAM, 트리기반 모형)을 고려할 필요가 있다.</p>
-<p>정규성</p></li>
+<li><p>또는 상호작용항 추가, 더 나아가 비선형 모형(GAM, 트리기반 모형)을 고려할 필요가 있다.</p></li>
 </ul>
+</section>
+<section id="정규성" class="level6">
+<h6 class="anchored" data-anchor-id="정규성">(4) 정규성</h6>
 <p>회귀분석에서 오차항이 정규분포를 따른다는 가정은 매우 중요한 전제이다. 이 가정이 충족되어야만 모형 전체의 유의성을 검정하는 분산분석 F-검정과 개별 예측변수의 유의성을 검정하는 t-검정이 타당하게 적용될 수 있다.</p>
 <p>오차항은 직접 관측할 수 없으므로, 그 추정치인 잔차를 이용하여 정규성을 검정한다. 따라서 잔차의 정규성 검정은 곧 오차항의 정규성 가정을 점검하는 절차이다.</p>
 <ul>
@@ -552,140 +637,180 @@ window.Quarto = {
 <li><p>대립가설 : 정규분포를 따르지 않는다.</p></li>
 </ul>
 <p>잔차가 정규성을 만족한다면 회귀분석에서의 추론이 통계적으로 타당하다고 볼 수 있으며, 정규성이 위배될 경우에는 비모수적 방법, 변수변환, 또는 강건추정 방법을 고려해야 한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><p>#오차의 정규성 검정</p>
-<p>from scipy.stats import shapiro, jarque_bera</p>
-<p># Shapiro–Wilk</p>
-<p>stat, p = shapiro(residuals)</p>
-<p>print(f"Shapiro–Wilk W={stat:.3f}, p={p:.4g}")</p>
-<p># Jarque–Bera</p>
-<p>jb_stat, jb_p = jarque_bera(residuals)</p>
-<p>print(f"Jarque–Bera JB={jb_stat:.3f}, p={jb_p:.4g}")</p></td>
-</tr>
-</tbody>
-</table>
-<p>Shapiro–Wilk W=0.873, p=6.84e-20</p>
-<p>Jarque–Bera JB=1187.536, p=1.348e-258</p>
-<p>등분산 가정</p>
-<p>잔차와 예측치 산점도가 다음과 같이 나팔 fan 모양일 때 등분산 가정이 무너진다. 종속변수의 값에 의존하여 분산이 커지거나 작아짐 - 등분산 가정이 무너지면 분산이 큰 부분에서 종속변수의 값이 적합선을 많이 벗어난 것이 적합 정도가 떨어진다고 결론 내릴 수 없음, 이는 분산이 다르므로 이상치가 발생할 수 있기 때문이다.<img src="media/image6.png" style="width:4.30301in;height:1.22509in" alt="pastedGraphic.pdf"></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> shapiro, jarque_bera, kstest</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Shapiro–Wilk</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>stat, p <span class="op">=</span> shapiro(residuals)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Shapiro–Wilk W=</span><span class="sc">{</span>stat<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>p<span class="sc">:.4g}</span><span class="ss">"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Jarque–Bera</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>jb_stat, jb_p <span class="op">=</span> jarque_bera(residuals)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Jarque–Bera JB=</span><span class="sc">{</span>jb_stat<span class="sc">:.3f}</span><span class="ss">, p=</span><span class="sc">{</span>jb_p<span class="sc">:.4g}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Shapiro–Wilk W=0.873, p=6.84e-20 <br> Jarque–Bera JB=1187.536, p=1.348e-258</p>
+</section>
+<section id="등분산-가정" class="level6">
+<h6 class="anchored" data-anchor-id="등분산-가정">(5) 등분산 가정</h6>
+<p>잔차와 예측치 산점도가 다음과 같이 나팔 fan 모양일 때 등분산 가정이 무너진다. 종속변수의 값에 의존하여 분산이 커지거나 작아짐 - 등분산 가정이 무너지면 분산이 큰 부분에서 종속변수의 값이 적합선을 많이 벗어난 것이 적합 정도가 떨어진다고 결론 내릴 수 없음, 이는 분산이 다르므로 이상치가 발생할 수 있기 때문이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/회귀진단_잔차산점도02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
 <ul>
 <li><p>귀무가설 : 잔차는 등분산성을 갖는다.</p></li>
 <li><p>대립가설 : 잔차는 등분산성을 갖지 않는다.</p></li>
 </ul>
-<p>Breush-Pagan test</p>
+<p><strong>Breush-Pagan test</strong></p>
 <p>Gujarati, Damodar N.; Porter, Dawn C. (2009).&nbsp;Basic Econometrics&nbsp;(Fifth ed.). New York: McGraw-Hill Irwin. pp.&nbsp;385–86.</p>
-<p>Goldfeld-Quandt test</p>
+<p><strong>Goldfeld-Quandt test</strong></p>
 <p>Goldfeld, Stephen M.; Quandt, R. E. (June 1965). "Some Tests for Homoscedasticity".&nbsp;Journal of the American Statistical Association.&nbsp;60&nbsp;(310): 539–547.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 등분산 가정 검정 패키지</p>
-<p>from statsmodels.stats.diagnostic import het_breuschpagan, het_white, het_goldfeldquandt</p>
-<p>from statsmodels.nonparametric.smoothers_lowess import lowess</p>
-<p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>import seaborn as sns</p>
-<p># ---------------------------------------</p>
-<p># 0) 준비: 잔차(피어슨), 적합값</p>
-<p># ---------------------------------------</p>
-<p>resid = final_model.resid_pearson # 표준화 잔차(피어슨)</p>
-<p>fitted = final_model.fittedvalues</p>
-<p>exog = final_model.model.exog # 상수 포함 X 행렬</p>
-<p>endog = final_model.model.endog # y</p></td>
-</tr>
-</tbody>
-</table>
-<p>[Breusch–Pagan]</p>
-<p>LM stat = 27.371, LM p = 0.0001234</p>
-<p>F stat = 4.756, F p = 9.984e-05</p>
-<p>[White]</p>
-<p>LM stat = 182.805, LM p = 1.644e-25</p>
-<p>F stat = 10.420, F p = 1.309e-32</p>
-<p>[Goldfeld–Quandt]</p>
-<p>F stat = 1.229, df = two-sided, p = 0.1068</p>
-<p>BP, White는 <span dir="rtl">”</span>이분산 있음” 쪽으로 강한 신호.</p>
-<p>GQ는 <span dir="rtl">”</span>등분산 vs 이분산”에서 결정적 증거를 못 줌.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 등분산 가정 검정 패키지</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.diagnostic <span class="im">import</span> het_breuschpagan, het_white, het_goldfeldquandt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.nonparametric.smoothers_lowess <span class="im">import</span> lowess</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 준비: 잔차(피어슨), 적합값</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>resid <span class="op">=</span> final_model.resid_pearson      <span class="co"># 표준화 잔차(피어슨)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>fitted <span class="op">=</span> final_model.fittedvalues</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>exog <span class="op">=</span> final_model.model.exog          <span class="co"># 상수 포함 X 행렬</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>endog <span class="op">=</span> final_model.model.endog        <span class="co"># y</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Breusch–Pagan test</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   귀무: 등분산 (Var(ε) = σ²)</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>bp_lm, bp_lm_p, bp_f, bp_f_p <span class="op">=</span> het_breuschpagan(final_model.resid, exog)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Breusch–Pagan]"</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"LM stat = </span><span class="sc">{</span>bp_lm<span class="sc">:.3f}</span><span class="ss">,  LM p = </span><span class="sc">{</span>bp_lm_p<span class="sc">:.4g}</span><span class="ss">"</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F  stat = </span><span class="sc">{</span>bp_f<span class="sc">:.3f}</span><span class="ss">,   F  p = </span><span class="sc">{</span>bp_f_p<span class="sc">:.4g}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) White test (이분산 + 일부 비선형성 민감)</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   귀무: 등분산</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>w_lm, w_lm_p, w_f, w_f_p <span class="op">=</span> het_white(final_model.resid, exog)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[White]"</span>)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"LM stat = </span><span class="sc">{</span>w_lm<span class="sc">:.3f}</span><span class="ss">,  LM p = </span><span class="sc">{</span>w_lm_p<span class="sc">:.4g}</span><span class="ss">"</span>)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F  stat = </span><span class="sc">{</span>w_f<span class="sc">:.3f}</span><span class="ss">,   F  p = </span><span class="sc">{</span>w_f_p<span class="sc">:.4g}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Goldfeld–Quandt test (양쪽/단측 가능)</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">#   데이터 순서를 어떤 기준으로 정렬해 부분집단 분산 비교</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">#   보통 fitted(적합값)나 특정 설명변수에 따라 정렬합니다.</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">#   귀무: 등분산</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 적합값 기준으로 정렬 인덱스 생성</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>order_idx <span class="op">=</span> np.argsort(fitted.values)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co"># GQ: two-sided(양측) 권장. 단측은 'increasing' 또는 'decreasing'</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>gq_stat, gq_p, gq_df <span class="op">=</span> het_goldfeldquandt(endog[order_idx], exog[order_idx, :], alternative<span class="op">=</span><span class="st">'two-sided'</span>)</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Goldfeld–Quandt]"</span>)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F stat = </span><span class="sc">{</span>gq_stat<span class="sc">:.3f}</span><span class="ss">, df = </span><span class="sc">{</span>gq_df<span class="sc">}</span><span class="ss">, p = </span><span class="sc">{</span>gq_p<span class="sc">:.4g}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 잔차 진단 플롯 (패턴/부채꼴 확인)</span></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span>fitted, y<span class="op">=</span>resid, s<span class="op">=</span><span class="dv">25</span>, edgecolor<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="co"># LOWESS 추세선(잔차-적합값 관계 시각화)</span></span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>lo <span class="op">=</span> lowess(resid, fitted, frac<span class="op">=</span><span class="fl">0.6</span>, return_sorted<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>plt.plot(lo[:,<span class="dv">0</span>], lo[:,<span class="dv">1</span>], linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">0</span>, linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Fitted values"</span>)</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Pearson residuals"</span>)</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Residuals vs Fitted"</span>)</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Scale-Location(=Spread-Location) plot: sqrt(|standardized residuals|) vs fitted</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>sr <span class="op">=</span> np.sqrt(np.<span class="bu">abs</span>(resid))</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span>fitted, y<span class="op">=</span>sr, s<span class="op">=</span><span class="dv">25</span>, edgecolor<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a>lo2 <span class="op">=</span> lowess(sr, fitted, frac<span class="op">=</span><span class="fl">0.6</span>, return_sorted<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a>plt.plot(lo2[:,<span class="dv">0</span>], lo2[:,<span class="dv">1</span>], linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Fitted values"</span>)</span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"sqrt(|Pearson residuals|)"</span>)</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Scale-Location (Spread vs Fitted)"</span>)</span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 이분산 존재 시: 강건표준오차(HC3) 요약</span></span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------</span></span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>robust <span class="op">=</span> final_model.get_robustcov_results(cov_type<span class="op">=</span><span class="st">"HC3"</span>)</span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(robust.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[Breusch–Pagan] <br> LM stat = 27.371, LM p = 0.0001234 <br> F stat = 4.756, F p = 9.984e-05</p>
+<p>[White] <br> LM stat = 182.805, LM p = 1.644e-25 <br> F stat = 10.420, F p = 1.309e-32</p>
+<p>[Goldfeld–Quandt] <br> F stat = 1.229, df = two-sided, p = 0.1068</p>
+<p>BP, White는 <span dir="rtl">”</span>이분산 있음” 쪽으로 강한 신호이나 GQ는 <span dir="rtl">”</span>등분산 vs 이분산”에서 결정적 증거를 주지 못하고 있다.</p>
 <p>보통 White가 가장 포괄적이라, 결과적으로는 이 모형의 잔차는 등분산 가정을 만족하지 않는다라고 보는 게 타당합니다.</p>
 <p>1. 강건표준오차(robust standard errors, HC3)로 계수 검정 보정 → 추론 왜곡 방지.</p>
 <p>2. WLS(가중최소제곱): 분산구조를 모형화(예: fitted에 비례, 특정 변수의 역수).</p>
 <p>3. 변수변환: y나 문제되는 X에 로그/제곱근 변환 고려.</p>
 <p>4. 모형 재특정: 누락된 변수·비선형 항이 없는지 점검.</p>
-<p>OLS대신 WLS 가중최소자승법 사용</p>
+<p><strong>OLS대신 WLS 가중최소자승법 사용</strong></p>
 <p><span class="math inline">\(min_{\alpha,\beta_{1},...,\beta_{p}}\sum w_{i}(y_{i} - \alpha - \overset{p}{\sum_{k = 1}}\beta_{k}x_{ki})^{2}\)</span>을 최소화 하는 추정치를 가중최소추정량이라 한다. 가중치 <span class="math inline">\(w_{i} = \frac{1}{{\widehat{y}}_{i}^{2}}\)</span>을 사용한다.</p>
-<p>잔차는 등분산 가정이 무너져 WLS 추정 결과 결정계수 55%로 떨어졌고 예측변수 RM는 유의하지 않고 회귀계수 부호와 상관계수 부호가 일치하지 않는다. 등분산 검정 결과 등분산성이 여전히 만족되지 않는다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import statsmodels.api as sm</p>
-<p>import numpy as np</p>
-<p># --- 1) 적합값 기반 가중치 ---</p>
-<p># 잔차 크기와 fitted 관계를 보고, 분산이 fitted^2에 비례한다고 가정</p>
-<p>weights = 1 / (final_model.fittedvalues**2)</p>
-<p>X_final = sm.add_constant(X[selected], has_constant='add')</p>
-<p>wls_model = sm.WLS(y, X_final, weights=weights).fit()</p>
-<p>print("\n[WLS: fitted값 기반 가중치]")</p>
-<p>print(wls_model.summary())</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1) 적합값 기반 가중치 ---</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 잔차 크기와 fitted 관계를 보고, 분산이 fitted^2에 비례한다고 가정</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (final_model.fittedvalues<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>X_final <span class="op">=</span> sm.add_constant(X[selected], has_constant<span class="op">=</span><span class="st">'add'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>wls_model <span class="op">=</span> sm.WLS(y, X_final, weights<span class="op">=</span>weights).fit()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[WLS: fitted값 기반 가중치]"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(wls_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image7.png" style="width:4.5in;height:2.73739in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/회귀진단_WLS추정.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from statsmodels.stats.diagnostic import het_breuschpagan, het_white</p>
-<p># --- WLS 잔차 (weighted residuals) ---</p>
-<p>resid_wls = wls_model.resid</p>
-<p>exog_wls = wls_model.model.exog # 설명변수 행렬</p>
-<p># --- Breusch–Pagan test ---</p>
-<p>bp_lm, bp_lm_p, bp_f, bp_f_p = het_breuschpagan(resid_wls, exog_wls)</p>
-<p>print("\n[WLS Breusch–Pagan]")</p>
-<p>print(f"LM stat = {bp_lm:.3f}, p = {bp_lm_p:.4g}")</p>
-<p>print(f"F stat = {bp_f:.3f}, p = {bp_f_p:.4g}")</p>
-<p># --- White test ---</p>
-<p>w_lm, w_lm_p, w_f, w_f_p = het_white(resid_wls, exog_wls)</p>
-<p>print("\n[WLS White]")</p>
-<p>print(f"LM stat = {w_lm:.3f}, p = {w_lm_p:.4g}")</p>
-<p>print(f"F stat = {w_f:.3f}, p = {w_f_p:.4g}")</p></td>
-</tr>
-</tbody>
-</table>
-<p>[WLS Breusch–Pagan]</p>
-<p>LM stat = 102.675, p = 6.938e-20</p>
-<p>F stat = 21.172, p = 3.565e-22</p>
-<p>[WLS White]</p>
-<p>LM stat = 252.399, p = 5.857e-39</p>
-<p>F stat = 18.336, p = 3.614e-56</p>
-<p>독립성</p>
-<p>개념</p>
+<p>잔차는 등분산 가정이 무너져 WLS 추정 결과 결정계수 55%로 떨어졌고 예측변수 RM는 유의하지 않고 회귀계수 부호와 상관계수 부호가 일치하지 않는다. 등분산 검정 결과 등분산성이 여전히 만족되지 않는다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.nonparametric.smoothers_lowess <span class="im">import</span> lowess</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># --- WLS 잔차 vs 적합값 ---</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>resid_wls  <span class="op">=</span> wls_model.resid      <span class="co"># WLS 잔차</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>fitted_wls <span class="op">=</span> wls_model.fittedvalues  <span class="co"># WLS 적합값</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>,<span class="dv">5</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span>fitted_wls, y<span class="op">=</span>resid_wls, s<span class="op">=</span><span class="dv">28</span>, alpha<span class="op">=</span><span class="fl">0.8</span>, edgecolor<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># LOWESS 추세선</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>lo <span class="op">=</span> lowess(resid_wls, fitted_wls, frac<span class="op">=</span><span class="fl">0.6</span>, return_sorted<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>plt.plot(lo[:,<span class="dv">0</span>], lo[:,<span class="dv">1</span>], color<span class="op">=</span><span class="st">"red"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">0</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>, color<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"WLS(Fitted)"</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"WLS (Residuals)"</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"WLS Residuals vs Fitted"</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/회귀진단_WLS추정02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="독립성" class="level6">
+<h6 class="anchored" data-anchor-id="독립성">(6) 독립성</h6>
+<p><strong>개념</strong></p>
 <p>시계열 데이터의 경우 오차항이 전 차항의 오차들에 의해 영향을 받게 되면 오차의 독립성이 파괴된다. 오차항 독립이 아니면 종속변수에 설정된 설명변수가 설명하지 못하는 일정의 패턴이 존재하므로 회귀추정이 불완전하게 된다.</p>
-<p>진단도구</p>
-<p>Durbin Watson 퉁계량 <img src="media/image8.png" style="width:1.88889in;height:0.53223in" alt="pastedGraphic.pdf"></p>
+<p><strong>진단도구</strong></p>
+<p>Durbin Watson 퉁계량 <span class="math inline">\(d=\frac{\sum_{T}^{t=2} (e_t - e_{t-1})^2}{\sum_{t=1}^{T} e_t^2}\)</span></p>
 <p>DW 검정통계량의 값은 <span class="math inline">\(2(1 - r)\)</span>에 근사한다. 상관계수 <span class="math inline">\(r\)</span>은 <span class="math inline">\((e_{t},e_{t - 1})\)</span>의 상관계수 (&lt;=&gt; 오차의 1차 자기상관계수)이다.</p>
 <p>오차가 독립(자기상관이 존재하지 않음)이면 <span class="math inline">\(r = 0\)</span>이고 <span class="math inline">\(DW = 2\)</span>에 근사한다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image9.png" style="width:4.49986in;height:1.12277in" class="figure-img"></p>
-<figcaption>1__#$!@%!#__pastedGraphic.pdf</figcaption>
+<p><img src="images/DW통계량.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 <p>positive autocorrelation (양의 상관관계)</p>
@@ -700,62 +825,65 @@ window.Quarto = {
 <li><p>If <span class="math inline">\(DW &lt; 4 - D_{U}\)</span>, 자기상관이 존재하지 않는다. 독립이다.</p></li>
 <li><p>If <span class="math inline">\(4 - d_{u} &lt; DW &lt; 4 - d_{L}\)</span>, 결론 내릴 수 없음</p></li>
 </ul>
-<p>해결책</p>
+<p><strong>해결책</strong></p>
 <p>목표변수의 1차 전기 항<span class="math inline">\((y_{t - 1})\)</span>을 예측변수로 사용하거나 종속변수의 차분항(<span class="math inline">\(\bigtriangledown Y_{t} = (Y_{t} - Y_{t - 1})\)</span>)을 목표변수로 사용한다.</p>
 <p>sm.OLS, sm.WLS 실행하면 DW(Durbin Watson) 자동 출력된다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image10.png" style="width:4.5in;height:1.47309in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/DW통계량_추정결과.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>오차 가정 만족하지 않은 회귀모형 이유 파악</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><p>#잔차분석 관련 모든 그래프</p>
-<p>import matplotlib.pyplot as plt</p>
-<p># 잔차</p>
-<p>residuals = final_model.resid</p>
-<p># 선택된 변수들</p>
-<p>selected = ['CHAS', 'NOX', 'RM', 'PTRATIO', 'B', 'LSTAT']</p>
-<p># 그리기</p>
-<p>fig, axes = plt.subplots(2, 3, figsize=(15, 8))</p>
-<p>axes = axes.flatten()</p>
-<p>for i, var in enumerate(selected):</p>
-<p>axes[i].scatter(X[var], residuals, alpha=0.7)</p>
-<p>axes[i].axhline(y=0, color="red", linestyle="--", linewidth=1)</p>
-<p>axes[i].set_xlabel(var)</p>
-<p>axes[i].set_ylabel("Residuals")</p>
-<p>axes[i].set_title(f"{var} vs Residuals")</p>
-<p>plt.suptitle("scatter plot of (yhat vs standard_res)", fontsize=14)</p>
-<p>plt.tight_layout()</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
-<p>RM, LSTA 예측변수가 이분산 형태를 가지므로 잔차의 등분산 가정이 무너졌다.</p>
+</section>
+<section id="오차-가정-만족하지-않은-회귀모형-이유-파악" class="level6">
+<h6 class="anchored" data-anchor-id="오차-가정-만족하지-않은-회귀모형-이유-파악">(7) 오차 가정 만족하지 않은 회귀모형 이유 파악</h6>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#잔차분석 관련 모든 그래프</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 잔차</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>residuals <span class="op">=</span> final_model.resid</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 선택된 변수들</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> [<span class="st">'CHAS'</span>, <span class="st">'NOX'</span>, <span class="st">'RM'</span>, <span class="st">'PTRATIO'</span>, <span class="st">'B'</span>, <span class="st">'LSTAT'</span>]</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 그리기</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>axes <span class="op">=</span> axes.flatten()</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, var <span class="kw">in</span> <span class="bu">enumerate</span>(selected):</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    axes[i].scatter(X[var], residuals, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    axes[i].axhline(y<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">"red"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    axes[i].set_xlabel(var)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    axes[i].set_ylabel(<span class="st">"Residuals"</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    axes[i].set_title(<span class="ss">f"</span><span class="sc">{</span>var<span class="sc">}</span><span class="ss"> vs Residuals"</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">"scatter plot of (yhat vs standard_res)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image11.png" style="width:4.5in;height:2.38449in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/회귀진단_잔차산점도행렬.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>이상치 &amp; 영향치<img src="media/image12.png" style="width:3.40278in;height:1.68328in" alt="pasted-image.pdf"></p>
+<p>RM, LSTA 예측변수가 이분산 형태를 가지므로 잔차의 등분산 가정이 무너졌다.</p>
+</section>
+<section id="이상치-영향치" class="level6">
+<h6 class="anchored" data-anchor-id="이상치-영향치">(8) 이상치 &amp; 영향치</h6>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/영향치_이상치산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
 <p>이상치와 영향치는 회귀분석에서 반드시 구분해야 하는 개념이다.</p>
 <p>이상치(outlier)는 설명변수의 관측값은 정상 범위 내에 있으나 반응변수 값이 회귀선에서 크게 벗어난 점이다. 이상치는 잔차가 크므로 회귀모형의 적합 정도를 떨어뜨리고, 결정계수를 낮추는 원인이 된다. 데이터 입력 오류로 발생한 이상치는 제거하는 것이 옳고, 실제 값인 경우에는 robust 회귀와 같은 방법으로 영향을 줄일 수 있다.</p>
 <p>영향치(influential point)는 설명변수 값 자체가 다른 관측치와 동떨어져 분포 범위를 벗어난 점이다. 이러한 점은 레버리지가 높아 회귀선을 강하게 끌어당긴다. 표면적으로는 회귀선에 잘 붙어 있어 잔차가 크지 않을 수 있으나, 실제로는 회귀계수와 결정계수를 왜곡시킨다. 그 결과 모형이 잘 맞는 것처럼 보이게 만들며, 회귀계수의 유의성이 과대평가되는 문제가 발생한다. 영향치는 주변에 표본을 추가로 수집하거나 해당 관측치를 제외한 후 모형을 다시 적합하는 방식으로 대처할 수 있다.</p>
 <p>따라서 이상치는 반응변수의 문제이고, 영향치는 설명변수의 문제이다. 이 둘을 구분하여 진단하고 적절히 처리하는 것이 회귀모형 분석의 핵심이다.</p>
-<p>이상치 진단도구</p>
+<p><strong>이상치 진단도구</strong></p>
 <ul>
 <li><p>원 변수 산점도, 잔차-적합치 산점도에서 시각적 판단</p></li>
 <li><p>표준화 잔차: <span class="math inline">\(r_{i} = \frac{e_{i}}{\widehat{\sigma}\sqrt{1 - h_{ii}}}\)</span>, 여기서 <span class="math inline">\(e_{i} = y_{i} - {\widehat{y}}_{i}\)</span>는 잔차, <span class="math inline">\({\widehat{\sigma}}^{2} = MSE\)</span>, <span class="math inline">\(h_{ii}\)</span>는 hat matrix <span class="math inline">\(H = X(X'X)^{- 1}X'\)</span>의 대각원소, 레버리지이다. 단순 잔차를 표준오차로 나눈 값으로, 서로 다른 관측치 간 비교가 가능하다. <span class="math inline">\(\pm 2\)</span>이상이면 이상치이다.</p></li>
 <li><p>스튜던트 잔차: <span class="math inline">\(t_{i} = \frac{e_{i}}{\widehat{\sigma}(i)\sqrt{1 - hii}}\)</span>, <span class="math inline">\(\widehat{\sigma}{(i)}^{2} = \frac{\sum j \neq ie_{j}^{2}}{n - p - 1}\)</span>는 <span class="math inline">\(i\)</span>번째 관측치를 제외하고 추정한 오차분산이다.표준화 잔차와 비슷하지만, 특정 관측치를 제거하고 분산을 다시 계산하기 때문에 해당 점의 영향력을 더 정확히 반영한다. <span class="math inline">\(t_{i}\)</span>는 근사적으로 자유도 <span class="math inline">\(n - p - 1\)</span>인 <span class="math inline">\(t\)</span>-분포를 따른다.</p></li>
 </ul>
-<p>영향치 판단도구</p>
+<p><strong>영향치 판단도구</strong></p>
 <ul>
 <li><p>레버러지 <span class="math inline">\(h_{ii} = x_{i}'(X'X)^{- 1}x_{i}\)</span>: <span class="math inline">\(i\)</span>번째 예측변수 벡터(관측값)가 전체 회귀모형 적합에 얼마나 영향을 주는지 나타내는 값이다. <span class="math inline">\(0 \leq h_{ii} \leq 1\)</span>, 평균값은 <span class="math inline">\(\overline{h} = \frac{p + 1}{n}\)</span>( p: 예측변수 개수, n: 표본 수 )이고 <span class="math inline">\(h_{ii} &gt; 2\overline{h}\)</span>이면 높은 레버리지 점으로 본다.</p></li>
 <li><p>DFFITS(Difference in Fits) <span class="math inline">\(DFBETAS_{ij} = \frac{{\widehat{\beta}}_{j} - {\widehat{\beta}}_{j(i)}}{SE({\widehat{\beta}}_{j})}\)</span>: 관측치 i를 제거했을 때 회귀계수 <span class="math inline">\(\beta_{j}\)</span>가 얼마나 변하는지 표준오차 단위로 측정한다. <span class="math inline">\(|DFBETAS_{ij}| &gt; \frac{2}{\sqrt{n}}\)</span>이면 변수 j의 추정치에 큰 영향을 미친다고 판단한다.</p></li>
@@ -767,86 +895,102 @@ window.Quarto = {
 <li><p>이상치 - 삭제 : 회귀모형의 적합성 높아짐 &lt;=&gt; 결정계수 높아짐</p></li>
 <li><p>영향치 : 결정계수를 커지게 하는 경향이 있음 &lt;=&gt; 제외하고 추정 모형을 예측하는 것이 적절하다.</p></li>
 </ul>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># -----------------------------------------</p>
-<p># 1) 진단 그래프 2종: Studentized Residuals vs Fitted, Influence plot</p>
-<p># -----------------------------------------</p>
-<p>import numpy as np</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>import seaborn as sns</p>
-<p>from statsmodels.nonparametric.smoothers_lowess import lowess</p>
-<p>from statsmodels.graphics.regressionplots import influence_plot</p>
-<p># --- 최종 모형 적합 ---</p>
-<p>selected = ['CHAS', 'NOX', 'RM', 'PTRATIO', 'B', 'LSTAT'] # 선택된 변수 리스트</p>
-<p>X_final = sm.add_constant(X[selected], has_constant='add') # 정제된 X 사용</p>
-<p>final_model = sm.OLS(y, X_final).fit()</p>
-<p>print(final_model.summary())</p>
-<p>sns.set_style("whitegrid")</p>
-<p># ✅ studentized residuals는 get_influence()에서 가져온다.</p>
-<p>infl = final_model.get_influence()</p>
-<p>resid = infl.resid_studentized_internal # 또는 infl.resid_studentized_external</p>
-<p>fitted = final_model.fittedvalues</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 진단 그래프 2종: Studentized Residuals vs Fitted, Influence plot</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.nonparametric.smoothers_lowess <span class="im">import</span> lowess</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.graphics.regressionplots <span class="im">import</span> influence_plot</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 최종 모형 적합 ---</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> [<span class="st">'CHAS'</span>, <span class="st">'NOX'</span>, <span class="st">'RM'</span>, <span class="st">'PTRATIO'</span>, <span class="st">'B'</span>, <span class="st">'LSTAT'</span>]  <span class="co"># 선택된 변수 리스트</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>X_final <span class="op">=</span> sm.add_constant(X[selected], has_constant<span class="op">=</span><span class="st">'add'</span>)        <span class="co"># 정제된 X 사용</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>final_model <span class="op">=</span> sm.OLS(y, X_final).fit()</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(final_model.summary())</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ studentized residuals는 get_influence()에서 가져온다.</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>infl   <span class="op">=</span> final_model.get_influence()</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>resid  <span class="op">=</span> infl.resid_studentized_internal   <span class="co"># 또는 infl.resid_studentized_external</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>fitted <span class="op">=</span> final_model.fittedvalues</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co"># (a) Studentized Residuals vs Fitted</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>,<span class="dv">5</span>))</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(x<span class="op">=</span>fitted, y<span class="op">=</span>resid, s<span class="op">=</span><span class="dv">28</span>, edgecolor<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>lo <span class="op">=</span> lowess(resid, fitted, frac<span class="op">=</span><span class="fl">0.6</span>, return_sorted<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>plt.plot(lo[:,<span class="dv">0</span>], lo[:,<span class="dv">1</span>], linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">0</span>, ls<span class="op">=</span><span class="st">"--"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Fitted values"</span>)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Studentized residuals"</span>)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Studentized Residuals vs Fitted (Final OLS)"</span>)</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="co"># (b) Influence plot (Studentized residual vs Leverage, 원 크기=Cook's D)</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> influence_plot(final_model, criterion<span class="op">=</span><span class="st">"cooks"</span>, size<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Influence Plot (Final OLS)"</span>)</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image13.png" style="width:4.5in;height:3.19565in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/잔차_예측산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image14.png" style="width:4.5in;height:3.37321in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/잔차_레버리지산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>import statsmodels.api as sm</p>
-<p>from statsmodels.stats.outliers_influence import OLSInfluence</p>
-<p># --- 1. 기존 최종 모형 적합 ---</p>
-<p>selected = ['CHAS', 'NOX', 'RM', 'PTRATIO', 'B', 'LSTAT']</p>
-<p>X_final = sm.add_constant(X[selected], has_constant='add')</p>
-<p>final_model = sm.OLS(y, X_final).fit()</p>
-<p>print("[원래 최종 모형]")</p>
-<p>print(final_model.summary())</p>
-<p># --- 2. 영향치/이상치 진단 ---</p>
-<p>infl = OLSInfluence(final_model)</p>
-<p>std_resid = infl.resid_studentized_internal # studentized residuals</p>
-<p>cooks_d = infl.cooks_distance[0] # Cook's D</p>
-<p>lev = infl.hat_matrix_diag # leverage</p>
-<p>n = int(final_model.nobs)</p>
-<p>p = int(final_model.df_model) + 1</p>
-<p># 기준값</p>
-<p>thr_resid = 2.0</p>
-<p>thr_cook = 4/n</p>
-<p>thr_lev = 2*p/n</p>
-<p># 이상치 또는 영향치 플래그</p>
-<p>mask_bad = (np.abs(std_resid) &gt; thr_resid) | (cooks_d &gt; thr_cook) | (lev &gt; thr_lev)</p>
-<p>print(f"제거 대상 관측치 수: {mask_bad.sum()} / {n}")</p>
-<p># --- 3. 이상치/영향치 제거 후 모형 재적합 ---</p>
-<p>X_clean = X_final.loc[~mask_bad].copy()</p>
-<p>y_clean = y.loc[~mask_bad].copy()</p>
-<p>refit_model = sm.OLS(y_clean, X_clean).fit()</p>
-<p>print("\n[이상치/영향치 제거 후 모형]")</p>
-<p>print(refit_model.summary())</p></td>
-</tr>
-</tbody>
-</table>
-<p>CHAS의 회귀계수 부호가 상관계수 부호와 상이하여 제거 후 최종 회귀모형을 추정하였다.<img src="media/image15.png" style="width:4.5in;height:2.79425in" alt="붙여넣은 동영상.png"></p>
-<p>예측값, 신뢰구간, 예측구간</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.outliers_influence <span class="im">import</span> OLSInfluence</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. 기존 최종 모형 적합 ---</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>selected <span class="op">=</span> [<span class="st">'CHAS'</span>, <span class="st">'NOX'</span>, <span class="st">'RM'</span>, <span class="st">'PTRATIO'</span>, <span class="st">'B'</span>, <span class="st">'LSTAT'</span>]</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>X_final <span class="op">=</span> sm.add_constant(X[selected], has_constant<span class="op">=</span><span class="st">'add'</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>final_model <span class="op">=</span> sm.OLS(y, X_final).fit()</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[원래 최종 모형]"</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(final_model.summary())</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. 영향치/이상치 진단 ---</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>infl <span class="op">=</span> OLSInfluence(final_model)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>std_resid <span class="op">=</span> infl.resid_studentized_internal   <span class="co"># studentized residuals</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>cooks_d   <span class="op">=</span> infl.cooks_distance[<span class="dv">0</span>]            <span class="co"># Cook's D</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>lev       <span class="op">=</span> infl.hat_matrix_diag              <span class="co"># leverage</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">int</span>(final_model.nobs)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="bu">int</span>(final_model.df_model) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 기준값</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>thr_resid <span class="op">=</span> <span class="fl">2.0</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>thr_cook  <span class="op">=</span> <span class="dv">4</span><span class="op">/</span>n</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>thr_lev   <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>p<span class="op">/</span>n</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 이상치 또는 영향치 플래그</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>mask_bad <span class="op">=</span> (np.<span class="bu">abs</span>(std_resid) <span class="op">&gt;</span> thr_resid) <span class="op">|</span> (cooks_d <span class="op">&gt;</span> thr_cook) <span class="op">|</span> (lev <span class="op">&gt;</span> thr_lev)</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"제거 대상 관측치 수: </span><span class="sc">{</span>mask_bad<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. 이상치/영향치 제거 후 모형 재적합 ---</span></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>X_clean <span class="op">=</span> X_final.loc[<span class="op">~</span>mask_bad].copy()</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>y_clean <span class="op">=</span> y.loc[<span class="op">~</span>mask_bad].copy()</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>refit_model <span class="op">=</span> sm.OLS(y_clean, X_clean).fit()</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[이상치/영향치 제거 후 모형]"</span>)</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(refit_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>CHAS의 회귀계수 부호가 상관계수 부호와 상이하여 제거 후 최종 회귀모형을 추정하였다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/보스톤_최종추정결과.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>예측값, 신뢰구간, 예측구간</strong></p>
 <p>회귀모형 <span class="math inline">\(\underset{¯}{y} = X\underset{¯}{\beta} + \underset{¯}{e}\)</span></p>
 <p>OLS 추정치 : <span class="math inline">\(\widehat{\underset{¯}{\beta}} = (X'X)^{- 1}X'\underset{¯}{y}\)</span></p>
 <p>주어진 예측변수 값 벡터 : <span class="math inline">\({\underset{¯}{x}}_{0}\)</span> 예측구간</p>
@@ -861,49 +1005,36 @@ window.Quarto = {
 <p>추정량 분산 : <span class="math inline">\(V(\widehat{{\underset{¯}{y}}_{0}}|{\underset{¯}{x}}_{0}) = \sigma^{2}I\)</span></p>
 <p>추정량은 목표변수의 선형결합이므로 추정량의 샘플링분포는 정규분포를 따른다.</p>
 <p>예측구간, 신뢰구간 어느 것을 사용하나? 신뢰구간이 예측구간보다 작으나 예측변수의 개별 관측값이 주어진 경우 목표변수 관측값을 예측하는 것이므로 예측구간을 사용하는 것이 적절하다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># refit_model에 적합했던 행렬을 그대로 사용</p>
-<p>pred_int = refit_model.get_prediction(X_clean)</p>
-<p>pred_int.summary_frame(alpha=0.05)</p></td>
-</tr>
-</tbody>
-</table>
-<p>mean mean_se mean_ci_lower mean_ci_upper obs_ci_lower obs_ci_upper</p>
-<p>0 29.474740 0.399196 28.690070 30.259410 22.918274 36.031206</p>
-<p>1 25.281274 0.195985 24.896039 25.666508 18.760542 31.802006</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import pandas as pd</p>
-<p># 예: 새 관측치 (변수는 최종 모형과 동일하게 입력)</p>
-<p>new_X = pd.DataFrame({</p>
-<p>"NOX": [0.5],</p>
-<p>"RM": [6.5],</p>
-<p>"PTRATIO": [18],</p>
-<p>"B": [390],</p>
-<p>"LSTAT": [10]</p>
-<p>})</p>
-<p># 상수항 추가</p>
-<p>X_new = sm.add_constant(new_X, has_constant="add")</p>
-<p># 최종 모형 기준 예측</p>
-<p>pred = refit_model.get_prediction(X_new)</p>
-<p># 신뢰구간(평균 응답), 예측구간(새 관측치) 모두 포함</p>
-<p>print(pred.summary_frame(alpha=0.05))</p></td>
-</tr>
-</tbody>
-</table>
-<p>mean mean_se mean_ci_lower mean_ci_upper obs_ci_lower obs_ci_upper</p>
-<p>25.022419 0.178576 24.671405 25.373433 18.503619 31.541219</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># refit_model에 적합했던 행렬을 그대로 사용</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pred_int <span class="op">=</span> refit_model.get_prediction(X_clean)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pred_int.summary_frame(alpha<span class="op">=</span><span class="fl">0.05</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>mean mean_se mean_ci_lower mean_ci_upper obs_ci_lower obs_ci_upper <br> 0 29.474740 0.399196 28.690070 30.259410 22.918274 36.031206 <br> 1 25.281274 0.195985 24.896039 25.666508 18.760542 31.802006</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 예: 새 관측치 (변수는 최종 모형과 동일하게 입력)</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>new_X <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"NOX"</span>: [<span class="fl">0.5</span>],</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RM"</span>: [<span class="fl">6.5</span>],</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PTRATIO"</span>: [<span class="dv">18</span>],</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"B"</span>: [<span class="dv">390</span>],</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"LSTAT"</span>: [<span class="dv">10</span>]</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 상수항 추가</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>X_new <span class="op">=</span> sm.add_constant(new_X, has_constant<span class="op">=</span><span class="st">"add"</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 최종 모형 기준 예측</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> refit_model.get_prediction(X_new)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 신뢰구간(평균 응답), 예측구간(새 관측치) 모두 포함</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pred.summary_frame(alpha<span class="op">=</span><span class="fl">0.05</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>mean mean_se mean_ci_lower mean_ci_upper obs_ci_lower obs_ci_upper <br> 25.022419 0.178576 24.671405 25.373433 18.503619 31.541219</p>
 
 
+</section>
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
