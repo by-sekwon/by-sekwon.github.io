@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>다변량분석 1. 개념 – 세상 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d24c3880db9ce3ca4ea2d5bb002bea1f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색",
+    "search-label": "검색"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="검색"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="탐색 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">기초수학</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">수리통계</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본_난수생성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/estimation.html">
+ <span class="dropdown-text">추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/hypothesis_testing.html">
+ <span class="dropdown-text">가설검정_신뢰구간</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">일변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/concept_of_stat.html">
+ <span class="dropdown-text">일변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/data.html">
+ <span class="dropdown-text">데이터와 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/univariate.html">
+ <span class="dropdown-text">일변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/crosstab.html">
+ <span class="dropdown-text">교차표분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/goodness_of_fits.html">
+ <span class="dropdown-text">적합성검정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/normality.html">
+ <span class="dropdown-text">정규변환</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/correlation.html">
+ <span class="dropdown-text">상관분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/anova.html">
+ <span class="dropdown-text">실험설계 분산분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/time_series.html">
+ <span class="dropdown-text">시계열분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">회귀분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_concept.html">
+ <span class="dropdown-text">회귀분석 개념&amp;추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_selection.html">
+ <span class="dropdown-text">변수선택</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_multicolin.html">
+ <span class="dropdown-text">다중공선성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_diagnosis.html">
+ <span class="dropdown-text">회귀진단</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_logistic.html">
+ <span class="dropdown-text">로지스틱회귀</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--4" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">다변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--4">    
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_concepts.html">
+ <span class="dropdown-text">다변량분석 개념</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--5" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">조사방법론</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--5">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이_AHP_컨조인트</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/psm.html">
+ <span class="dropdown-text">PSM 성향점수매칭</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--6" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--6">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app" target="_blank">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/" target="_blank">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-다변량분석-기초" id="toc-chapter-1.-다변량분석-기초" class="nav-link active" data-scroll-target="#chapter-1.-다변량분석-기초">Chapter 1. 다변량분석 기초</a>
+  <ul>
+  <li><a href="#다변량분석-개념" id="toc-다변량분석-개념" class="nav-link" data-scroll-target="#다변량분석-개념">1. 다변량분석 개념</a></li>
+  <li><a href="#다변량-분석-유형" id="toc-다변량-분석-유형" class="nav-link" data-scroll-target="#다변량-분석-유형">2. 다변량 분석 유형</a></li>
+  <li><a href="#다변량분석-방법론" id="toc-다변량분석-방법론" class="nav-link" data-scroll-target="#다변량분석-방법론">3. 다변량분석 방법론</a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-다변량-확률분포" id="toc-chapter-2.-다변량-확률분포" class="nav-link" data-scroll-target="#chapter-2.-다변량-확률분포">Chapter 2. 다변량 확률분포</a>
+  <ul>
+  <li><a href="#다변량-데이터" id="toc-다변량-데이터" class="nav-link" data-scroll-target="#다변량-데이터">1. 다변량 데이터</a></li>
+  <li><a href="#다변량-확률분포함수" id="toc-다변량-확률분포함수" class="nav-link" data-scroll-target="#다변량-확률분포함수">2. 다변량 확률분포함수</a></li>
+  <li><a href="#데이터-생성시뮬레이션" id="toc-데이터-생성시뮬레이션" class="nav-link" data-scroll-target="#데이터-생성시뮬레이션">3. 데이터 생성(시뮬레이션)</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">다변량분석 1. 개념</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-1.-다변량분석-기초" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-다변량분석-기초">Chapter 1. 다변량분석 기초</h3>
+<section id="다변량분석-개념" class="level4">
+<h4 class="anchored" data-anchor-id="다변량분석-개념">1. 다변량분석 개념</h4>
+<p>다변량분석은 한마디로 말해 여러 개의 변수를 동시에 고려하면서 데이터 속 패턴이나 관계를 이해하려는 통계적 방법론이다. 우리가 일상에서 접하는 데이터는 단순히 하나의 변수만으로 설명되지 않는다. 예를 들어 소비자의 구매 행동을 설명하려면 나이, 소득, 직업, 취향 같은 다양한 요인이 얽혀 있고, 환자의 건강 상태를 이해하려면 혈압, 혈당, 체중, 생활습관 같은 여러 요인을 함께 보아야 한다. 이런 상황에서 단일변수 분석으로는 본질을 놓칠 수 있기 때문에, 다변량분석이 필요해진다.</p>
+<p>다변량분석은 크게 두 가지 축에서 작동한다. 하나는 변수들 사이의 구조적 관계를 파악하는 것, 다른 하나는 관측 대상들(사람, 기업, 지역 등)의 집단적 유사성이나 차이를 밝히는 것이다. 전자는 주성분분석(PCA), 요인분석, 다변량회귀 같은 기법으로, 변수 간 상관 구조를 축약하거나 설명하는 데 활용된다. 후자는 판별분석, 군집분석, 다차원척도법 등으로, 관측 대상을 분류하거나 시각적으로 표현하는 데 쓰인다.</p>
+<p>또한, 다변량분석은 단순히 기술적 도구를 넘어 차원을 축소하고 해석을 단순화하는 역할도 한다. 현실 데이터는 차원이 높아질수록(변수가 많아질수록) 분석이 복잡해지고, 소위 <span dir="rtl">’</span>차원의 저주<span dir="rtl">’</span>라 불리는 문제에 부딪히게 된다. 주성분분석처럼 핵심적인 몇 개의 축으로 변수를 압축하거나, 군집분석처럼 비슷한 대상끼리 묶어 구조를 단순화하는 것은 해석의 가독성을 높여준다.</p>
+<p>정리하자면, 다변량분석은 (1) 여러 변수의 상호작용과 구조를 이해하고, (2) 복잡한 데이터를 간결하게 표현하며, (3) 예측, 분류, 요약, 시각화 등 다양한 응용 목적을 가진 종합적인 분석 틀이라 할 수 있다.</p>
+<p>여기서 흥미로운 점은, 이 전통적인 다변량분석 기법들이 오늘날 머신러닝, 인공지능의 여러 알고리즘과 맞닿아 있다는 것이다. 예컨대 판별분석은 현대의 분류 문제와 연결되고, 주성분분석은 신경망의 차원축소 과정과 닮아 있다. 다변량분석을 배우는 것은 통계적 사고의 전통과, 데이터 과학의 최신 흐름을 이어주는 가교를 이해하는 일과 같다.</p>
+</section>
+<section id="다변량-분석-유형" class="level4">
+<h4 class="anchored" data-anchor-id="다변량-분석-유형">2. 다변량 분석 유형</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 27%">
+<col style="width: 17%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">구분</td>
+<td style="text-align: left;">중심 개념</td>
+<td style="text-align: left;">주요 연구 질문</td>
+<td style="text-align: left;">대표 기법</td>
+<td style="text-align: left;">응용 사례</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">인과 관계</td>
+<td style="text-align: left;">변수 간 원인–결과 구조 규명</td>
+<td style="text-align: left;">“어떤 변수가 다른 변수에 영향을 주는가?”</td>
+<td style="text-align: left;">회귀분석(Regression), 분산분석(ANOVA), 구조방정식모형(SEM)</td>
+<td style="text-align: left;">교육 수준 → 소득, 신약 투여 → 혈압 변화</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">상관 관계</td>
+<td style="text-align: left;">변수 간 공분산·상관 구조 파악</td>
+<td style="text-align: left;">“변수들이 어떻게 함께 움직이는가?”</td>
+<td style="text-align: left;">주성분분석(PCA), 요인분석(Factor Analysis), 다차원척도법(MDS)</td>
+<td style="text-align: left;">고객 만족 요인 축약, 시험 과목 간 점수 패턴 분석</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">개체 유사성</td>
+<td style="text-align: left;">개체 간 유사성 기반 그룹화</td>
+<td style="text-align: left;">“어떤 개체들이 서로 비슷한가?”</td>
+<td style="text-align: left;">판별분석(Discriminant Analysis), 군집분석(Clustering), 분류(Classification), K-means</td>
+<td style="text-align: left;">고객 세분화, 질병 패턴 분류, 이미지 인식</td>
+</tr>
+</tbody>
+</table>
+<section id="인과-관계-변수-관계" class="level5">
+<h5 class="anchored" data-anchor-id="인과-관계-변수-관계">(1) 인과 관계 [변수 관계]</h5>
+<p>다변량 분석에서 가장 전통적이고도 중요한 접근 가운데 하나는 변수들 사이의 인과 관계를 규명하는 것이다. 여기서 인과 관계란 어떤 변수가 다른 변수에 영향을 주고받는 구조를 의미한다. 즉, 하나의 변수가 원인이 되어 다른 변수의 결과를 설명할 수 있을 때 우리는 그 둘 사이에 인과 관계가 있다고 말한다.</p>
+<p>원인이 되는 변수는 설명변수, 독립변수, 혹은 예측변수라고 부른다. 반대로, 설명 변수의 영향을 받아 나타나는 결과 변수는 종속변수, 반응변수, 혹은 목표변수라고 한다. 일반적으로 수식으로는 목표변수를 Y, 예측변수를 X로 표기한다. 예컨대, 교육수준(X)이 소득(Y)에 영향을 준다고 설정하면, 교육 수준은 독립 변수이고 소득은 종속 변수가 된다.</p>
+<p>통계 분석에서는 연구 설계와 맥락에 따라 이 용어들이 조금씩 달리 쓰이기도 한다. 예를 들어 분산분석(ANOVA)에서는 설명 변수를 <span dir="rtl">’</span>처리 효과(treatment effect)<span dir="rtl">’</span> 또는 <span dir="rtl">’</span>요인(factor)<span dir="rtl">’</span>이라고 부른다. 실험군과 대조군을 나누어 처치의 효과를 검증할 때, 그 처치가 바로 설명 변수 역할을 한다.</p>
+<p>중요한 점은 인과 관계의 설정이 단순히 통계적 기법이나 데이터 분석만으로 결정되는 것이 아니라는 사실이다. 인과 관계는 반드시 이론적 근거나 경험적 타당성에 바탕하여 연구 목적 속에서 먼저 규정된다. 데이터 분석은 그 관계를 확인하거나 추정하는 과정일 뿐이다. 예를 들어, 단순히 두 변수 간에 상관관계가 나타났다고 해서 곧바로 인과 관계가 있다고 결론 내릴 수는 없다. 인과 관계는 연구자의 이론적 배경, 선행 연구, 실험 설계, 맥락적 조건 등을 종합적으로 고려해 설정해야 한다.</p>
+<p>따라서 인과적 다변량 분석은 <span dir="rtl">’</span>데이터 → 인과 규명<span dir="rtl">’</span>의 순서가 아니라, 먼저 <span dir="rtl">’</span>이론·가설 → 데이터 분석 → 검증<span dir="rtl">’</span>의 순서를 따른다. 이는 통계학적 방법론이 단순한 데이터 마이닝을 넘어, 사회과학·자연과학에서 현상을 이해하고 설명하는 도구로 기능하는 이유이기도 하다.</p>
+</section>
+<section id="상관관계-변수-관계" class="level5">
+<h5 class="anchored" data-anchor-id="상관관계-변수-관계">(2) 상관관계 [변수 관계]</h5>
+<p>다변량 분석에서 두 번째 유형은 상관 관계를 중심으로 한 분석이다. 상관 관계란 변수들이 얼마나 유사하게 변동하는가, 즉 함께 움직이는 정도를 나타낸다. 이를 계량화하는 대표적인 지표가 상관계수이며, 더 일반적으로는 공분산 구조이다.</p>
+<p>상관 관계 분석의 첫 번째 활용은 변수 간의 함수적 관계를 탐색하는 것이다. 예컨대 두 변수 간에 직선적 관계가 존재하는지를 확인하고, 그 기울기와 상관성을 추정하는 회귀분석이 대표적이다. 두 번째 활용은 변수들 간의 유사성을 바탕으로 차원을 줄이는 것이다. 변수의 수가 많을수록 자료 구조가 복잡해지므로, 서로 높은 상관성을 가진 변수들을 몇 개의 대표적인 요인이나 축으로 요약하는 기법이 필요하다. 이러한 맥락에서 주성분분석(PCA), 요인분석(factor analysis) 등이 개발되었다.</p>
+<p>특히 주성분분석은 공분산 행렬을 분해하여 데이터가 가장 크게 퍼져 있는 방향(주성분)을 찾아내고, 이를 통해 다차원 자료를 소수의 차원으로 축약한다. 요인분석은 변수들 간 상관구조를 설명하는 잠재 요인을 가정하고, 관측된 변수들의 공통적 변동성을 요인으로 요약한다. 두 방법 모두 변수들의 상관 구조를 근거로 데이터의 차원을 줄여, 해석을 단순화하고 시각화를 가능하게 한다.</p>
+<p>빅데이터 시대에 들어서면서 이러한 차원축소의 필요성은 더욱 커졌다. 과거에는 변수(열)의 차원을 줄이는 데 집중했지만, 데이터의 규모가 방대해지면서 개체(행)의 차원까지 줄이는 기법들이 발전하였다. 예컨대 서포트 벡터 머신(SVM)이나 커널 기반 방법은 고차원 데이터의 분류와 예측에서, 행과 열의 차원을 동시에 축소하여 계산 효율을 높이고 본질적인 구조를 추출한다.</p>
+<p>따라서 현대의 상관 관계 분석은 단순한 변수 요약을 넘어, 데이터 전체의 구조를 간결하게 표현하는 도구로 발전하고 있다. 이는 복잡한 데이터 환경에서 핵심 패턴을 식별하고, 예측 가능성을 높이는 데 결정적인 역할을 한다.</p>
+</section>
+<section id="개체의-유사성-similarity-of-objects" class="level5">
+<h5 class="anchored" data-anchor-id="개체의-유사성-similarity-of-objects">(3) 개체의 유사성 (Similarity of Objects)</h5>
+<p>세 번째 유형은 개체의 유사성을 중심으로 한 분석이다. 여기서는 변수들이 매개체 역할을 하여 개체 간 거리를 정의하고, 서로 비슷한 개체들을 묶어 분류하는 것이 핵심이다. 다시 말해, 변수 중심이 아니라 개체 중심의 다변량 분석이다.</p>
+<p>분석 접근은 크게 두 가지로 나뉜다.</p>
+<p>첫째는 판별분석(discriminant analysis)이다. 이 방법은 이미 사전에 정의된 그룹이 있을 때, 그룹 간의 차이를 가장 잘 설명하는 선형 혹은 비선형 판별함수를 구축한다. 그리고 이를 이용해 새로운 개체가 주어졌을 때 어떤 그룹에 속할지를 판별한다. 예를 들어 학생들의 성적과 생활 습관을 이용하여 <span dir="rtl">”</span>우수 학업 집단”과 <span dir="rtl">”</span>일반 집단”을 구분하는 모형을 만드는 것이 판별분석의 전형적 응용이다.</p>
+<p>둘째는 분류(classification) 또는 군집분석(clustering)이다. 판별분석이 사전에 그룹이 정의된 경우라면, 군집분석은 그룹이 전혀 정의되지 않은 상태에서 출발한다. 분석자는 개체 간의 유사성을 기준으로, 데이터 스스로 그룹 구조를 형성하도록 탐색한다. 이때 그룹의 수조차도 분석 과정에서 정해질 수 있다. 대표적인 방법으로는 계층적 군집분석, K-평균(K-means), 혼합분포 모형(mixture model) 등이 있다.</p>
+<p>유사성 분석의 응용 범위는 매우 넓다. 마케팅에서는 고객 세분화(customer segmentation), 의학에서는 질병 패턴 분류(disease classification), 공학에서는 영상 인식(image recognition) 등 다양한 분야에서 활용된다. 즉, 인과 관계 분석이 <span dir="rtl">”</span>왜 발생했는가?“라는 질문에, 상관 관계 분석이 <span dir="rtl">”</span>어떻게 함께 변하는가?”라는 질문에 답한다면, 유사성 분석은 <span dir="rtl">”</span>누가 누구와 비슷한가?“라는 질문에 답한다.</p>
+<p>개체 유사성 분석은 특히 데이터가 고차원·대규모화될수록 중요해진다. 개체를 효과적으로 분류하고 집단 간 차이를 설명할 수 있다면, 빅데이터 속에서 의미 있는 패턴을 추출해 실질적인 의사결정에 활용할 수 있기 때문이다.</p>
+</section>
+</section>
+<section id="다변량분석-방법론" class="level4">
+<h4 class="anchored" data-anchor-id="다변량분석-방법론">3. 다변량분석 방법론</h4>
+<section id="예측-모델" class="level5">
+<h5 class="anchored" data-anchor-id="예측-모델">(1) 예측 모델</h5>
+<p><span class="math inline">\(\underset{¯}{y} = X\underset{¯}{b} + \underset{¯}{e},\underset{¯}{e} \sim MN(\underset{¯}{0},\sigma^{2}I)\)</span></p>
+<p>예측을 목적으로 하는 다변량 분석의 대표적 도구는 회귀분석과 분산분석이다.</p>
+<p>회귀분석은 한 변수(종속 변수)가 다른 변수들(설명 변수)에 의해 어떻게 변화하는지를 모델링한다. 설명 변수는 하나일 수도 있고 여러 개일 수도 있는데, 후자의 경우 다중회귀분석이 된다. 회귀모형은 종속 변수와 설명 변수 간의 관계를 선형 또는 비선형 형태로 표현하며, 이를 통해 새로운 관측값이 주어졌을 때 종속 변수를 예측할 수 있다. 응용 사례로는 광고비 지출과 매출액의 관계, 체질량지수와 건강 지표의 관계 등이 있다.</p>
+<p>분산분석은 주로 실험 설계에서 사용되며, 여러 집단 간 평균 차이가 통계적으로 유의미한가를 검증하는 방법이다. 예를 들어, 세 가지 교육 프로그램이 학생들의 성적에 차이를 만드는지를 비교할 때 활용된다. 분산분석에서는 집단 간 변동과 집단 내 변동을 분리하여, 설명 변수(요인)가 종속 변수에 영향을 미치는지 파악한다.</p>
+<p>회귀분석과 분산분석은 모두 인과적 설명과 예측을 목적으로 하며, 실험적 연구와 관찰적 연구에서 모두 중요한 역할을 한다.</p>
+</section>
+<section id="차원-축소-주성분분석" class="level5">
+<h5 class="anchored" data-anchor-id="차원-축소-주성분분석">(2) 차원 축소: 주성분분석</h5>
+<p>현대 데이터는 변수의 수가 많아지는 고차원적 특성을 띠는데, 모든 변수를 동시에 다루는 것은 해석과 계산 모두에서 부담이 크다. 이를 해결하기 위한 방법이 주성분분석이다.</p>
+<p>주성분분석은 변수들 간의 상관 구조를 바탕으로, 변동성을 가장 잘 설명하는 새로운 축(주성분)을 찾아낸다. 이렇게 얻어진 주성분들은 서로 독립적이며, 원래의 많은 변수를 소수의 대표적 성분으로 요약한다. 예컨대 수십 개의 시험 과목 점수를 소수의 주성분으로 줄이면, <span dir="rtl">”</span>수학·과학적 능력”과 <span dir="rtl">”</span>언어·사회적 능력” 같은 큰 축이 드러난다.</p>
+<p>주성분분석은 데이터의 구조를 간결하게 표현하고, 고차원 자료를 시각화하거나 다른 분석 기법의 입력 변수로 활용할 때 유용하다. 빅데이터 분석, 영상 처리, 유전자 데이터 분석 등 다양한 분야에서 널리 응용된다.</p>
+</section>
+<section id="판별분석" class="level5">
+<h5 class="anchored" data-anchor-id="판별분석">(3) 판별분석</h5>
+<p>판별분석은 이미 사전에 정의된 집단이 있을 때, 어떤 개체가 어느 집단에 속하는지를 판별하는 기법이다. 즉, 새로운 개체의 특성을 보고 그가 속할 집단을 예측하는 문제에 사용된다.</p>
+<p>대표적인 방법은 선형판별분석(LDA: linear discriminant analysis)이다. LDA는 집단 간 차이가 최대가 되면서 집단 내 변동은 최소가 되도록 하는 판별 축을 찾는다. 이를 통해 각 개체를 판별 점수에 따라 그룹에 분류한다. 예를 들어, 꽃잎의 길이와 폭을 이용해 붓꽃 품종을 구분하는 것이 판별분석의 전형적 사례다.</p>
+<p>판별분석은 회귀분석과 달리 종속 변수가 연속형이 아니라 범주형이라는 특징을 가진다. 의료 분야의 질병 진단, 마케팅에서의 고객 분류, 교육에서의 학업 성취도 그룹 판별 등 다양한 분야에서 응용된다.</p>
+</section>
+<section id="군집분석" class="level5">
+<h5 class="anchored" data-anchor-id="군집분석">(4) 군집분석</h5>
+<p>군집분석은 판별분석과 달리 사전에 집단이 정의되어 있지 않을 때 활용되는 방법이다. 데이터 자체의 유사성 구조를 바탕으로, 비슷한 개체들을 묶어 새로운 집단을 형성하는 것이 목적이다.</p>
+<p>군집분석에는 여러 접근이 있다. 계층적 군집분석(hierarchical clustering)은 개체들을 순차적으로 묶거나 나누어 dendrogram를 형성한다. K-평균 군집(K-means clustering)은 사용자가 미리 설정한 군집 수에 따라 데이터를 분류하며, 각 군집의 중심점과 가까운 개체들을 배정하는 방식이다.</p>
+<p>군집분석은 탐색적 분석의 성격을 강하게 띠며, 데이터 속에 숨어 있는 패턴을 찾아내는 데 유용하다. 대표적인 응용 사례로는 마케팅에서의 고객 세분화, 생물학에서의 종 분류, 소셜 네트워크에서의 커뮤니티 탐지 등이 있다.</p>
+</section>
+<section id="판별-및-분류-비교" class="level5">
+<h5 class="anchored" data-anchor-id="판별-및-분류-비교">(5) 판별 및 분류 비교</h5>
+<p><strong>개체 판별 discrimination</strong></p>
+<p>판별분석은 자료 수집 시 이미 그룹이 나누어져 있어( 빨간원, 파랑원 개체) 이를 가장 잘 판별하는 판별규칙(측정변수의 거리에 의해 개체의 유사성을 측정함)을 도출하여 새로운 개체의 군집을 판별하는 방법이다.</p>
+<p><strong>개체분류 classification</strong></p>
+<p>군집분석에서는 개체의 그룹에 대한 정보 없이 (사전에는 ▵◻︎◎ 구분이 없이 동일하나 분석 후 나누어 짐) 유사성이 가까운 개체들끼리 계층적으로 묶어 가거나 군집의 개수를 정하여 군집의 중심점을 이용하 여 개체를 군집화 하는 방법이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/판별분석_군집분석.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="정준상관분석-canonical-correlation" class="level5">
+<h5 class="anchored" data-anchor-id="정준상관분석-canonical-correlation">(6) 정준상관분석 canonical correlation</h5>
+<p>서로 다른 변수 군으로부터 상관계수 0(서로 독립) 변수군을 만들어 변수군간 상관분석을 실시한다. 변수의 개수를 줄이는 한 방법이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/정준상관분석_도표.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="다차원척도법-multidimensional-scaling-mds" class="level5">
+<h5 class="anchored" data-anchor-id="다차원척도법-multidimensional-scaling-mds">(7) 다차원척도법 (Multidimensional Scaling, MDS)</h5>
+<p>다차원척도법은 개체들 사이의 유사성(similarity)이나 비유사성(dissimilarity) 정보를 바탕으로, 그 구조를 저차원의 공간(보통 2차원 또는 3차원)에 시각적으로 배치하는 기법이다. 즉, 개체 간 거리를 보존하면서 <span dir="rtl">”</span>지도 위에 점찍기”처럼 공간 좌표를 재구성하는 방법이다.</p>
+<p>예를 들어 여러 나라 간 무역 구조의 유사성, 소비자들이 브랜드를 얼마나 비슷하다고 인식하는지, 도시 간 이동 시간 등을 입력으로 주면, MDS는 이를 가능한 한 잘 반영하는 좌표를 찾아낸다. 그 결과, 유사한 개체들은 가까이, 서로 다른 개체들은 멀리 배치되어 데이터의 패턴을 시각적으로 직관적으로 이해할 수 있다.</p>
+<p>MDS는 주성분분석처럼 차원을 줄이지만, 변수 중심이 아니라 개체 간 거리를 중심으로 한다는 점에서 차별화된다. 따라서 응용은 마케팅 리서치(브랜드 포지셔닝 지도), 심리학(자극 간 인지적 거리), 사회학(집단 간 관계) 등 사람들의 인식이나 개체 간 관계를 시각화하는 데 적합하다.</p>
+</section>
+<section id="대응분석-correspondence-analysis-ca" class="level5">
+<h5 class="anchored" data-anchor-id="대응분석-correspondence-analysis-ca">(8) 대응분석 (Correspondence Analysis, CA)</h5>
+<p>대응분석은 주로 범주형 자료, 특히 교차표 형태의 자료를 분석할 때 쓰이는 차원축소 기법이다. 교차표에서 행과 열의 관계를 시각적으로 단순화해, 범주들 간의 연관성을 직관적으로 보여주는 것이 목적이다.</p>
+<p>예를 들어 <span dir="rtl">”</span>연령대 × 선호 브랜드” 교차표가 주어졌다고 하자. 대응분석은 이 교차표의 행과 열을 동시에 저차원 공간에 배치한다. 그 결과 특정 연령대와 특정 브랜드가 가까이 놓인다면, 그 두 범주 간에 밀접한 연관이 있음을 의미한다.</p>
+<p>대응분석은 일종의 범주형 데이터 전용의 주성분분석이라 할 수 있다. 주성분분석이 연속형 변수들의 상관 구조를 축약한다면, 대응분석은 범주형 변수들의 연관 구조를 요약한다. 마케팅에서는 소비자-제품 선호 분석, 사회학에서는 계층-문화 선호 분석 등 다양한 범주형 자료 해석에 널리 쓰인다.</p>
+</section>
+<section id="다변량분석-방법론-총괄" class="level5">
+<h5 class="anchored" data-anchor-id="다변량분석-방법론-총괄">(9) 다변량분석 방법론 총괄</h5>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 15%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">내용</td>
+<td style="text-align: left;">예측모형</td>
+<td style="text-align: left;">주성분분석</td>
+<td style="text-align: left;">요인분석</td>
+<td style="text-align: left;">판별분석</td>
+<td style="text-align: left;">군집분석</td>
+<td style="text-align: left;">정준상관분석</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">변수 관계 탐색</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">S</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">S</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">자료 탐색</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">S</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">S</td>
+<td style="text-align: left;">N</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">새 변수 만들기</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">개체 분류</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">No</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">변수 그룹</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">P</td>
+<td style="text-align: left;">P</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">D</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">차원 줄이기</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">D</td>
+<td style="text-align: left;">P</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">N</td>
+<td style="text-align: left;">N</td>
+</tr>
+</tbody>
+</table>
+<p>Sometimes, Definitely, Never, Possible, Rarely</p>
+</section>
+</section>
+</section>
+<section id="chapter-2.-다변량-확률분포" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-다변량-확률분포">Chapter 2. 다변량 확률분포</h3>
+<section id="다변량-데이터" class="level4">
+<h4 class="anchored" data-anchor-id="다변량-데이터">1. 다변량 데이터</h4>
+<section id="데이터-행렬" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-행렬">(1) 데이터 행렬</h5>
+<p>다변량 데이터란 두 개 이상의 확률변수로 이루어진 데이터 형태를 말한다. 하나의 데이터셋에서 각 열은 관심 있는 확률변수를, 각 행은 분석 대상이 되는 개체를 나타내며, 따라서 각 원소는 특정 개체에서 관측된 해당 변수의 값으로 구성된다.</p>
+<p><span class="math inline">\(\mathbf{X} = \begin{bmatrix}
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1p} \\
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2p} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{np}
+\end{bmatrix}\)</span>, 여기서 n은 데이터 개수(행의 수), p는 확률변수의 수(열의 수), 그리고 <span class="math inline">\(x_{ij}\)</span>는 i-번째 개체의 j-번째 변수에 대한 관측치이다.</p>
+<p>다변량분석에서는 주로 수치형(정량적) 변수들이 기본 자료로 사용된다. 이러한 분석은 크게 두 가지 방향에서 전개된다. 첫째, 변수들 간의 함수적 관계를 모형화하여 예측에 활용하거나, 변수 간 유사성을 바탕으로 차원을 축소한다. 둘째, 개체들 간의 유사성을 이용해 집단을 분류하거나 군집을 찾는다. 이러한 접근은 모두 정량적 데이터 구조를 기반으로 가능하다.</p>
+<p>다만 예측 모형을 설정할 때는 정성적 변수(예: 범주형, 질적 변수) 역시 독립변수로 포함시킬 수 있다. 따라서 다변량분석은 수치형 데이터를 중심으로 하되, 상황에 따라 질적 변수를 보조적으로 결합하여 더욱 포괄적인 분석을 수행할 수 있다.</p>
+</section>
+<section id="확률변수-열벡터-평균벡터-공분산행렬" class="level5">
+<h5 class="anchored" data-anchor-id="확률변수-열벡터-평균벡터-공분산행렬">(2) 확률변수 (열)벡터, 평균벡터, 공분산행렬</h5>
+<p>p개의 다변량 확률변수 벡터는 <span class="math inline">\(\underset{¯}{x} = \left( \begin{array}{r}
+x_{1} \\
+x_{2} \\
+\ldots \\
+x_{p}
+\end{array} \right)\)</span>으로 표현하며, 다변량 확률변수의 평균벡터와 공분산행렬은 다음과 같다.</p>
+<p><span class="math display">\[\mathbf{\mu} = E\lbrack\mathbf{x}\rbrack = \left\lbrack \begin{array}{r}
+\mu_{1} \\
+\mu_{2} \\
+\vdots \\
+\mu_{p}
+\end{array} \right\rbrack\]</span></p>
+<p><span class="math inline">\(\mathbf{\Sigma} = Cov(\mathbf{x}) = \begin{bmatrix}
+\sigma_{11} &amp; \sigma_{12} &amp; \cdots &amp; \sigma_{1p} \\
+\sigma_{21} &amp; \sigma_{22} &amp; \cdots &amp; \sigma_{2p} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\sigma_{p1} &amp; \sigma_{p2} &amp; \cdots &amp; \sigma_{pp}
+\end{bmatrix}\)</span>, 여기서 <span class="math inline">\(\mu_{j} = E\lbrack x_{j}\rbrack\)</span>는 j-번째 확률변수의 평균, <span class="math inline">\(\sigma_{ij} = Cov(x_{i},x_{j})\)</span>는 i-번째와 j-번째 확률변수 간의 공분산을 의미한다. 즉, <span class="math inline">\(\mathbf{\mu}\)</span>는 <span class="math inline">\(p \times 1\)</span>벡터, <span class="math inline">\(\mathbf{\Sigma}\)</span>는 <span class="math inline">\(p \times p\)</span>대칭행렬이 된다.</p>
+</section>
+<section id="데이터-평균-공분산행렬" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-평균-공분산행렬">(3) 데이터 평균, 공분산행렬</h5>
+<p>데이터 평균 벡터는 <span class="math inline">\(E(\underset{¯}{x}) = \overline{\mathbf{x}} = \left\lbrack \begin{array}{r}
+{\overline{x}}_{1} \\
+{\overline{x}}_{2} \\
+\vdots \\
+{\overline{x}}_{p}
+\end{array} \right\rbrack\)</span>이다. 여기서 <span class="math inline">\({\overline{x}}_{j} = \frac{1}{n}\overset{n}{\sum_{i = 1}}x_{ij},j = 1,2,\ldots,p\)</span>이다. <span class="math inline">\(E(\underset{¯}{x}) = \overline{\mathbf{x}} = \frac{1}{n}\mathbf{1}_{n}^{T}\mathbf{X}\)</span></p>
+<p>데이터 공분산행렬 <span class="math inline">\(\mathbf{S} = \frac{1}{n - 1}\left( \mathbf{X} - \mathbf{1}_{n}{\overline{\mathbf{x}}}^{T} \right)^{T}\left( \mathbf{X} - \mathbf{1}_{n}{\overline{\mathbf{x}}}^{T} \right)\)</span>은 이렇게 표시한다. <span class="math inline">\(\mathbf{S} = Cov(\mathbf{x}) = \begin{bmatrix}
+s_{11} &amp; s_{12} &amp; \cdots &amp; s_{1p} \\
+s_{21} &amp; s_{22} &amp; \cdots &amp; s_{2p} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+s_{p1} &amp; s_{p2} &amp; \cdots &amp; s_{pp}
+\end{bmatrix}\)</span>.</p>
+</section>
+</section>
+<section id="다변량-확률분포함수" class="level4">
+<h4 class="anchored" data-anchor-id="다변량-확률분포함수">2. 다변량 확률분포함수</h4>
+<section id="다변량-확률분포함수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="다변량-확률분포함수-정의">(1) 다변량 확률분포함수 정의</h5>
+<p>다변량 확률분포함수(multivariate probability distribution function)는 둘 이상의 확률변수들이 동시에 어떻게 분포하는지를 나타내는 함수이다. 확률변수가 p개라면, 이들을 <span class="math inline">\(\mathbf{X} = (X_{1},X_{2},\ldots,X_{p})^{T}\)</span>라 두고, 그들의 결합분포함수(joint distribution)를 <span class="math inline">\(F(x_{1},x_{2},\ldots,x_{p})\)</span> 정의하고 연속형인 경우에는 결합확률밀도함수(joint PDF)는 다음과 같이 정의한다. <span class="math inline">\(f(x_{1},x_{2},\ldots,x_{p}),\int_{- \infty}^{\infty}\cdots\int_{- \infty}^{\infty}f(x_{1},x_{2},\ldots,x_{p})dx_{1}\cdots dx_{p} = 1\)</span></p>
+<p>이 함수는 각 확률변수가 단독으로 어떤 분포를 따르는지, 그리고 변수들 사이가 얼마나 상관되어 있는지를 동시에 담아낸다.</p>
+<p>1. 변수 간 관계 파악</p>
+<p>두 변수 X와 Y가 독립인지, 상관성이 있는지, 어떤 구조로 얽혀 있는지 모두 결합분포로 설명할 수 있다. 예를 들어, 다변량 정규분포는 평균벡터와 공분산행렬을 통해 변수들의 상호 의존관계를 전부 기술한다.</p>
+<p>2. 조건부 확률과 예측</p>
+<p>특정 변수 값이 주어졌을 때 다른 변수의 분포를 알기 위해서는 결합분포와 주변분포, 조건부분포를 자유자재로 다룰 수 있어야 한다. 예측모형이나 베이즈 추론의 근간이 바로 이 개념이다.</p>
+<p>3. 차원축소와 요약</p>
+<p>주성분분석(PCA)이나 요인분석은 사실상 다변량 정규분포의 공분산 구조를 해석하는 과정이다. 즉, 결합분포를 이해해야 왜 특정 축으로 차원을 줄이는지 수학적으로 설명할 수 있다.</p>
+<p>4. 현실 데이터 반영</p>
+<p>실제 사회·경제·의학 데이터는 대부분 여러 변수가 동시에 움직이므로 단변량 분포만으로는 현실을 설명하기에 턱없이 부족하다. 예를 들어, 혈압·혈당·체중을 독립적으로 보는 게 아니라 같이 분포하는 방식을 봐야 건강 상태를 평가할 수 있다.</p>
+<p>다변량 확률분포함수는 <span dir="rtl">”</span>변수들이 함께 어떻게 움직이는가”를 수학적으로 그려낸 지도이다. 이를 알아야 차원축소, 분류, 예측 등 다변량분석 기법의 의미와 한계를 제대로 이해할 수 있다.</p>
+</section>
+<section id="다변량-정규분포-undersetx_p-sim-mvnundersetmu_psigma_p-times-p" class="level5">
+<h5 class="anchored" data-anchor-id="다변량-정규분포-undersetx_p-sim-mvnundersetmu_psigma_p-times-p">(2) 다변량 정규분포 <span class="math inline">\({\underset{¯}{x}}_{p} \sim MVN({\underset{¯}{\mu}}_{p},\Sigma_{p \times p})\)</span></h5>
+<p>다변량 정규분포는 다변량 분석에서 가장 중요한 확률분포이다. 이 분포는 평균벡터와 공분산행렬이라는 두 가지 요소만으로 완전히 규정되며, 주변분포와 조건부분포가 모두 정규분포의 형태를 유지한다는 성질을 가진다. 따라서 수학적으로 매우 다루기 쉬운 분포이다.</p>
+<p>다변량 정규분포는 고전적 통계기법의 이론적 토대이기도 하다. 판별분석, 주성분분석, 요인분석, 회귀분석과 같은 기법들은 데이터가 다변량 정규분포를 따른다는 가정 위에서 성립하거나, 그 구조를 해석하는 과정으로 설명된다.</p>
+<p>또한 중심극한정리가 다변량 상황에서도 성립하기 때문에, 실제 데이터가 반드시 정규분포를 따르지 않더라도 많은 경우 다변량 정규분포로 근사할 수 있다. 이러한 이유로 현실 데이터를 설명하는 데에도 유용하다.</p>
+<p>다변량 정규분포는 선형변환에 대해 닫혀 있으며, 공분산행렬을 통해 변수 간 상관관계와 분포의 형태를 직관적으로 나타낼 수 있다. 더불어 베이즈 추론에서도 자주 사용되는데, 정규분포는 켤레사전분포(conjugate prior)의 성질을 가지므로 계산을 단순화한다.</p>
+<p>요약하면, 다변량 정규분포는 수학적으로 단순하고, 통계이론의 기초가 되며, 현실 데이터에도 잘 부합하는 확률분포이므로 다변량분석에서 핵심적 위치를 차지하는 분포이다.</p>
+<p>차수 p인 확률변수 벡터 <span class="math inline">\({\underset{¯}{x}}_{p} \sim MN({\underset{¯}{\mu}}_{p},\Sigma_{p \times p})\)</span>는 평균이 <span class="math inline">\(\underset{¯}{\mu}\)</span>, 공분산행렬이 <span class="math inline">\(\Sigma\)</span>인 다변량 정규분포의 확률분포함수는 다음과 같다.</p>
+<p><span class="math display">\[f(\underset{¯}{x};\underset{¯}{\mu},\Sigma) = \frac{1}{(2\pi)^{\frac{p}{2}}|\Sigma|^{\frac{1}{2}}}exp\lbrack - 1/2(\underset{¯}{x} - \mu)'\Sigma^{- 1}(\underset{¯}{x} - \mu)\rbrack\]</span></p>
+<p><strong><span class="math display">\[\Sigma = \sigma^{2}I\]</span></strong></p>
+<p>다변량 확률변수는 서로 독립이고 동일 분산(등분산)을 갖는다.</p>
+<p><strong>성질</strong></p>
+<ul>
+<li><p>각 확률변수의 조건부 확률분포함수, 주변확률분포함수는 모두 정규분포를 따른다.</p></li>
+<li><p>선형계수벡터 <span class="math inline">\({\underset{¯}{a}}^{T} = \lbrack a_{1}a_{2}\ldots,a_{p}\rbrack_{p \times 1}\)</span>에 대하여 <span class="math inline">\({\underset{¯}{a}}^{T}{\underset{¯}{x}}_{p \times 1} \sim MVN({\underset{¯}{a}}^{T}\underset{¯}{\mu},{\underset{¯}{a}}^{T}\Sigma\underset{¯}{a})\)</span></p></li>
+</ul>
+</section>
+<section id="이차형식-quardratic-form-undersetxtaundersetx" class="level5">
+<h5 class="anchored" data-anchor-id="이차형식-quardratic-form-undersetxtaundersetx">(3) 이차형식 Quardratic form <span class="math inline">\({\underset{¯}{x}}^{T}A\underset{¯}{x}\)</span></h5>
+<p>다변량 확률변수(열벡터) <span class="math inline">\({\underset{¯}{x}}_{p}\)</span>, 정방행렬 <span class="math inline">\(A_{p \times p}\)</span>에 대하여 <span class="math inline">\({\underset{¯}{x}}^{T}A\underset{¯}{x}\)</span>을 이차형식이라 한다.</p>
+<p>만약 <span class="math inline">\(A = I\)</span>(항등행렬)인 경우: <span class="math inline">\({\underset{¯}{x}}^{T}\underset{¯}{x} = x_{1}^{2} + x_{2}^{2} + \ldots + x_{p}^{2}\)</span></p>
+<p><strong>Positive semi-Definite matrix 양(준)정부호행렬</strong></p>
+<p>행렬 <span class="math inline">\(A\)</span>는 양(준)정부호행렬 &lt;=&gt; 모든 <span class="math inline">\(\underset{¯}{x}\)</span>에 대하여 <span class="math inline">\({\underset{¯}{x}}^{T}A\underset{¯}{x} &gt; 0\)</span>, <span class="math inline">\({\underset{¯}{x}}^{T}A\underset{¯}{x} \geq 0\)</span></p>
+<ul>
+<li><p>양정부호행렬의 고유값은 양수이다. (semi의 경우는 0을 포함한 양수)</p></li>
+<li><p>양정부호행렬은 Choleski-분해(decomposition) <span class="math inline">\(A = LL^{*}\)</span>(<span class="math inline">\(L\)</span>=&nbsp;하삼각행렬) 가능하다.</p></li>
+</ul>
+<p><strong>이차형식 분포</strong></p>
+<p>만약 확률변수 벡터가 평균벡터 <span class="math inline">\(\underset{¯}{\mu}\)</span>, 공분산 행렬 <span class="math inline">\(\Sigma\)</span>인 다변량정규분포를 따른다면 <span class="math inline">\({\underset{¯}{x}}_{p} \sim MVN({\underset{¯}{\mu}}_{p},\Sigma_{p \times p})\)</span>,</p>
+<p>이차형식 <span class="math inline">\({\underset{¯}{x}}^{T}A\underset{¯}{x}\)</span> (<span class="math inline">\(A\)</span>=대칭행렬)에 대하여</p>
+<p><span class="math display">\[E({\underset{¯}{x}}^{T}A\underset{¯}{x}) = tr(A\Sigma) + {\underset{¯}{\mu}}^{T}A\underset{¯}{\mu}\]</span></p>
+<p><span class="math display">\[V({\underset{¯}{x}}^{T}A\underset{¯}{x}) = 2tr(A\Sigma A\Sigma)) + 4{\underset{¯}{\mu}}^{T}A\Sigma A\underset{¯}{\mu}\]</span></p>
+<p><span class="math inline">\((\underset{¯}{x} - \underset{¯}{\mu})^{T}\Sigma^{- 1}(\underset{¯}{x} - \underset{¯}{\mu}) \sim \chi^{2}(p)\)</span>이다.</p>
+</section>
+</section>
+<section id="데이터-생성시뮬레이션" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-생성시뮬레이션">3. 데이터 생성(시뮬레이션)</h4>
+<p>이변량정규분포 생성 <span class="math inline">\(\left\lbrack \begin{array}{r}
+x \\
+y
+\end{array} \right\rbrack \sim BN(\left\lbrack \begin{array}{r}
+\mu_{x} \\
+\mu_{y}
+\end{array} \right\rbrack,\begin{bmatrix}
+\sigma_{x} &amp; \sigma_{xy} \\
+\sigma_{xy} &amp; \sigma_{y}
+\end{bmatrix})\)</span></p>
+<p><strong>수리적 변수변환 이용</strong></p>
+<p>만약 <span class="math inline">\(Z_{1},Z_{2} \sim iidN(0,1)\)</span>, <span class="math inline">\(X = \sigma_{x}Z_{1} + \mu_{x}\)</span>, <span class="math inline">\(Y = \sigma_{y}\lbrack\rho Z_{1} + \sqrt{1 - \rho^{2}}Z_{2} + \mu_{y}\rbrack\)</span>은 이변량 정규분포를 따른다.</p>
+<p><span class="math display">\[\left\lbrack \begin{array}{r}
+x \\
+y
+\end{array} \right\rbrack \sim BN(\left\lbrack \begin{array}{r}
+2 \\
+1
+\end{array} \right\rbrack,\begin{bmatrix}
+1 &amp; 1.4 \\
+1.4 &amp; 4
+\end{bmatrix})\]</span></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 표준정규분포 N(0,1)에서 각각 100개의 난수 생성</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>z1 <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>z2 <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># x는 단순히 z1에 2를 더한 값 → 평균만 2만큼 이동, 분산은 변하지 않음</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> z1 <span class="op">+</span> <span class="dv">2</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># y는 0.7*z1 + sqrt(1-0.7^2)*z2 + 1에 2를 곱한 값</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   → 이는 (z1, z2)가 독립일 때 z1과 상관계수 0.7을 갖도록 z2를 섞은 구조</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   → 즉, y는 z1과 0.7의 상관관계를 가지도록 설계된 변수</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> (<span class="fl">0.7</span><span class="op">*</span>z1 <span class="op">+</span> np.sqrt(<span class="dv">1</span> <span class="op">-</span> <span class="fl">0.7</span><span class="op">**</span><span class="dv">2</span>)<span class="op">*</span>z2 <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># x와 y의 표본 공분산 행렬 (2x2) 출력</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.cov(x, y))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># x와 y의 표본 상관계수 행렬 (2x2) 출력</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[[1.11733863 1.44628517] <br> [1.44628517 4.25387359]] <br> [[1. 0.66339048] <br> [0.66339048 1. ]]</p>
+<p><strong>함수 이용</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 다변량 정규분포의 평균벡터 지정: E[X] = 2, E[Y] = 1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mean <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">1</span>]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 공분산행렬 지정</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   Var(X) = 1, Var(Y) = 4, Cov(X,Y) = 1.4</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>cov <span class="op">=</span> [[<span class="dv">1</span>, <span class="fl">1.4</span>],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>       [<span class="fl">1.4</span>, <span class="dv">4</span>]]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 다변량 정규분포로부터 난수 100개 추출</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   결과는 (100, 2) 행렬이며, 이를 전치(.T)해서 x, y로 분리</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> np.random.multivariate_normal(mean, cov, <span class="dv">100</span>).T</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># x와 y의 표본 공분산행렬</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.cov(x, y))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># x와 y의 표본 상관계수행렬</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.corrcoef(x, y))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[[1.01638644 1.39742159] <br> [1.39742159 4.18379016]] <br> [[1. 0.67766191] <br> [0.67766191 1. ]]</p>
+<p><strong>Affine transformations of the multivariate normal</strong></p>
+<p>만약 <span class="math inline">\(X \sim N(\mu_{X},\Sigma_{X})\)</span>이고 <span class="math inline">\(Y = LX + u\)</span>(<span class="math inline">\(L\)</span>=선형변환행렬, <span class="math inline">\(u\)</span>=임의의 벡터)이라면 확률변수(벡터) <span class="math inline">\(Y\)</span>는 정규분포를 따르고 <span class="math inline">\(\mu_{Y} = u + L\mu_{X}\)</span> 이고 <span class="math inline">\(\Sigma_{Y} = L\Sigma_{X}L^{T}\)</span>이다.</p>
+<p>이변량 정규분포를 생성하는 경우에는 <span class="math inline">\(X \sim N(\mu,\sigma^{2}I)\)</span>을 사용하므로 <span class="math inline">\(Y\)</span>의 공분산은 <span class="math inline">\(\Sigma_{Y} = LL^{T}\)</span>이다.</p>
+<p>선형변환행렬 <span class="math inline">\(L\)</span>은 공분산행렬을 사용한 Cholesky Decomposition(분해)을 이용한다.</p>
+<p><span class="math inline">\((X,Y)\)</span>의 공분산행렬(양반정치행렬 Positive semidefinite matrix) <span class="math inline">\(\Sigma = LL^{*}\)</span>, <span class="math inline">\(L\)</span>=하한대각행렬, <span class="math inline">\(L^{*}\)</span>=대각행렬 L의 conjugate transpose이다.</p>
+<p><span class="math display">\[Y \sim BN(\left\lbrack \begin{array}{r}
+2 \\
+1
+\end{array} \right\rbrack,\begin{bmatrix}
+1 &amp; 1.4 \\
+1.4 &amp; 4
+\end{bmatrix})\]</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> <span class="dv">2</span>     <span class="co"># 차원 수: 2차원 (X와 Y)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">100</span>   <span class="co"># 표본 개수</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 평균 벡터 (2x1)</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>mean <span class="op">=</span> np.matrix([[<span class="dv">2</span>],</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">1</span>]])</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 공분산 행렬 (대칭, 양의 정부호)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>covariance <span class="op">=</span> np.matrix([[<span class="dv">1</span>,   <span class="fl">1.4</span>],</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                        [<span class="fl">1.4</span>, <span class="dv">4</span>]])</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 공분산행렬의 Cholesky 분해: covariance = L * L^T</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># L은 하삼각행렬</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> np.linalg.cholesky(covariance)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 표준정규분포 N(0,1)에서 난수 생성</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># shape=(d, n) → 2행 n열 행렬 (각 열이 2차원 표본 하나)</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.normal(size<span class="op">=</span>(d, n))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Y = L * X + mean</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   1) L * X → 공분산 구조 반영</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   2) + mean → 평균 벡터 이동</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과: 다변량 정규분포 N(mean, covariance)로부터 n개의 표본</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> L.dot(X) <span class="op">+</span> mean</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 출력</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(L, X.shape, Y.shape)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[[1. 0. ] <br> [1.4 1.42828569]] (2, 100) (2, 100)</p>
+<p><strong>다변량 정규분포함수 그리기</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#다변량 정규분포함수 정의</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mvn_pdf(X, mean, cov):</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">    X: (n, d) 배열, 각 행이 한 점 (예: [[x1,y1], [x2,y2], ...])</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">    mean: (d,) 또는 (d,1) 평균벡터</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">    cov: (d, d) 대칭 양의정정부호(positive definite) 공분산 행렬</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">    반환: (n,) 각 점에서의 다변량 정규분포 밀도값</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 입력 데이터 모양 보정</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.atleast_2d(X)                 <span class="co"># X를 최소 2차원 배열로 변환</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> np.asarray(mean).reshape(<span class="op">-</span><span class="dv">1</span>)  <span class="co"># mean을 1차원 벡터로 변환</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> mean.size                        <span class="co"># 차원 수</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 공분산 행렬의 Cholesky 분해: cov = L L^T</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 수치적으로 안정적이고 역행렬 계산을 피할 수 있음</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> np.linalg.cholesky(cov)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 정규화 상수 = (2π)^{-d/2} |Σ|^{-1/2}</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    log_norm <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (d <span class="op">*</span> np.log(<span class="dv">2</span><span class="op">*</span>np.pi) <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.<span class="bu">sum</span>(np.log(np.diag(L))))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># X - mean (데이터 중심화)</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    Xm <span class="op">=</span> X <span class="op">-</span> mean</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mahalanobis 거리 계산</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># L z = (X-mean)^T → z = L^{-1}(X-mean)^T</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> np.linalg.solve(L, Xm.T)         <span class="co"># shape: (d, n)</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    quad <span class="op">=</span> np.<span class="bu">sum</span>(z<span class="op">*</span>z, axis<span class="op">=</span><span class="dv">0</span>)           <span class="co"># 각 점의 (x-μ)^T Σ^{-1} (x-μ)</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 로그 pdf → pdf</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    log_pdf <span class="op">=</span> log_norm <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> quad</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.exp(log_pdf)               <span class="co"># 최종 확률밀도값 (n,)</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co">#다변량 정규분포함수 그리기 함수</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_surface_fast(mean, covariance, xlim<span class="op">=</span>(<span class="op">-</span><span class="dv">5</span>,<span class="dv">5</span>), ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">5</span>,<span class="dv">5</span>), nb_of_x<span class="op">=</span><span class="dv">200</span>):</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># x축, y축에 대해 nb_of_x개 점을 균등분할</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    x1s <span class="op">=</span> np.linspace(<span class="op">*</span>xlim, num<span class="op">=</span>nb_of_x)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    x2s <span class="op">=</span> np.linspace(<span class="op">*</span>ylim, num<span class="op">=</span>nb_of_x)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2차원 격자 생성 (X1, X2 모두 nb_of_x × nb_of_x 크기)</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    X1, X2 <span class="op">=</span> np.meshgrid(x1s, x2s)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 격자 좌표를 (nb_of_x^2, 2) 모양으로 펴기 → 각 행은 한 점 (x,y)</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    grid <span class="op">=</span> np.column_stack([X1.ravel(), X2.ravel()])</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 각 격자점에서 pdf 값 계산 후 다시 2차원 격자 모양으로 reshape</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    pdf <span class="op">=</span> mvn_pdf(grid, mean, covariance).reshape(nb_of_x, nb_of_x)</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># X1, X2: 격자 좌표, pdf: 밀도값</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X1, X2, pdf</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> cm</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># === 다변량 정규분포 pdf (벡터화) ===</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mvn_pdf(X, mean, cov):</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.atleast_2d(X)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> np.asarray(mean).reshape(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> mean.size</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cholesky 분해</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> np.linalg.cholesky(cov)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 정규화 상수 (log-scale)</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    log_norm <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (d <span class="op">*</span> np.log(<span class="dv">2</span><span class="op">*</span>np.pi) <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>np.<span class="bu">sum</span>(np.log(np.diag(L))))</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    Xm <span class="op">=</span> X <span class="op">-</span> mean</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> np.linalg.solve(L, Xm.T)           <span class="co"># (d, n)</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    quad <span class="op">=</span> np.<span class="bu">sum</span>(z<span class="op">*</span>z, axis<span class="op">=</span><span class="dv">0</span>)             <span class="co"># Mahalanobis 거리 제곱</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    log_pdf <span class="op">=</span> log_norm <span class="op">-</span> <span class="fl">0.5</span> <span class="op">*</span> quad</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.exp(log_pdf)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># === 등고선 그리드 생성 ===</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_surface_fast(mean, covariance, xlim<span class="op">=</span>(<span class="op">-</span><span class="dv">5</span>,<span class="dv">5</span>), ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">5</span>,<span class="dv">5</span>), nb_of_x<span class="op">=</span><span class="dv">200</span>):</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    x1s <span class="op">=</span> np.linspace(<span class="op">*</span>xlim, num<span class="op">=</span>nb_of_x)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    x2s <span class="op">=</span> np.linspace(<span class="op">*</span>ylim, num<span class="op">=</span>nb_of_x)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    X1, X2 <span class="op">=</span> np.meshgrid(x1s, x2s)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    grid <span class="op">=</span> np.column_stack([X1.ravel(), X2.ravel()])</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    pdf <span class="op">=</span> mvn_pdf(grid, mean, covariance).reshape(nb_of_x, nb_of_x)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X1, X2, pdf</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># === 파라미터와 샘플 생성 ===</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>mean <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">1</span>]</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>covariance <span class="op">=</span> [[<span class="dv">1</span>, <span class="fl">1.4</span>],</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">1.4</span>, <span class="dv">4</span>]]</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>d, n <span class="op">=</span> <span class="dv">2</span>, <span class="dv">100</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> np.linalg.cholesky(covariance)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.normal(size<span class="op">=</span>(d, n))</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> L.dot(X) <span class="op">+</span> np.array(mean).reshape(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># === 플로팅 ===</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">4.5</span>))</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 등고선 (density surface)</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>x1, x2, p <span class="op">=</span> generate_surface_fast(mean, covariance, xlim<span class="op">=</span>(<span class="op">-</span><span class="fl">2.5</span>,<span class="fl">2.5</span>), ylim<span class="op">=</span>(<span class="op">-</span><span class="fl">1.5</span>,<span class="fl">3.5</span>))</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>con <span class="op">=</span> ax.contourf(x1, x2, p, <span class="dv">100</span>, cmap<span class="op">=</span>cm.YlGnBu)</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 샘플 점 찍기</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>ax.plot(Y[<span class="dv">0</span>,:], Y[<span class="dv">1</span>,:], <span class="st">'ro'</span>, alpha<span class="op">=</span><span class="fl">.6</span>,</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        markeredgecolor<span class="op">=</span><span class="st">'k'</span>, markeredgewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'$y_1$'</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'$y_2$'</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>ax.axis([<span class="op">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="op">-</span><span class="fl">1.5</span>, <span class="fl">3.5</span>])</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">'equal'</span>)</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Samples from bivariate normal distribution'</span>)</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="co"># 색상바</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>cbar <span class="op">=</span> plt.colorbar(con)</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>cbar.ax.set_ylabel(<span class="st">'density: $p(y_1, y_2)$'</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/이변량정규분포.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>주변 정규분포함수_조건부 확률밀도함수 그리기</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> multivariate_normal, norm</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== 다변량 정규분포 파라미터 ====</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>mean <span class="op">=</span> np.array([<span class="dv">2</span>, <span class="dv">1</span>])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>cov <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="fl">0.8</span>],</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                [<span class="fl">0.8</span>, <span class="dv">2</span>]])  <span class="co"># X,Y 상관 있음</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== 주변 분포 ====</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Marginal of X ~ N(mean[0], cov[0,0])</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>marginal_X <span class="op">=</span> norm(loc<span class="op">=</span>mean[<span class="dv">0</span>], scale<span class="op">=</span>np.sqrt(cov[<span class="dv">0</span>,<span class="dv">0</span>]))</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Marginal of Y ~ N(mean[1], cov[1,1])</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>marginal_Y <span class="op">=</span> norm(loc<span class="op">=</span>mean[<span class="dv">1</span>], scale<span class="op">=</span>np.sqrt(cov[<span class="dv">1</span>,<span class="dv">1</span>]))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== 조건부 분포 ====</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 조건부 분포 공식: Y|X=x0 ~ N(mu_Y + Σ_yx Σ_xx^{-1} (x0 - mu_X), Σ_yy - Σ_yx Σ_xx^{-1} Σ_xy)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conditional_Y_given_X(x0):</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    mu_X, mu_Y <span class="op">=</span> mean</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    var_X <span class="op">=</span> cov[<span class="dv">0</span>,<span class="dv">0</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    var_Y <span class="op">=</span> cov[<span class="dv">1</span>,<span class="dv">1</span>]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    cov_YX <span class="op">=</span> cov[<span class="dv">1</span>,<span class="dv">0</span>]</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    cond_mean <span class="op">=</span> mu_Y <span class="op">+</span> cov_YX<span class="op">/</span>var_X <span class="op">*</span> (x0 <span class="op">-</span> mu_X)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    cond_var <span class="op">=</span> var_Y <span class="op">-</span> cov_YX<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> var_X</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> norm(loc<span class="op">=</span>cond_mean, scale<span class="op">=</span>np.sqrt(cond_var))</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== 그리기 ====</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">4</span>))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 주변 분포</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">200</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].plot(xs, marginal_X.pdf(xs), label<span class="op">=</span><span class="st">'$p(x)$'</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].plot(xs, marginal_Y.pdf(xs), label<span class="op">=</span><span class="st">'$p(y)$'</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">'Marginal distributions'</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].legend()</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].grid(<span class="va">True</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 조건부 분포 (예: X=3으로 고정)</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>cond_dist <span class="op">=</span> conditional_Y_given_X(x0)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">200</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].plot(ys, cond_dist.pdf(ys), label<span class="op">=</span><span class="ss">f'$p(y|x=</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">)$'</span>)</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">'Conditional distribution of Y given X'</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].legend()</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].grid(<span class="va">True</span>)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/이변량정규분포_조건부.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> gridspec</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> multivariate_normal, norm</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== 파라미터 ====</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> np.array([<span class="dv">2</span>, <span class="dv">1</span>])</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>Sigma <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="fl">0.8</span>],</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                  [<span class="fl">0.8</span>, <span class="dv">2</span>]])</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== joint density grid ====</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">200</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">200</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>X, Y <span class="op">=</span> np.meshgrid(x, y)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>pos <span class="op">=</span> np.dstack((X, Y))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>rv <span class="op">=</span> multivariate_normal(mu, Sigma)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> rv.pdf(pos)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== marginals ====</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>marg_x <span class="op">=</span> norm(loc<span class="op">=</span>mu[<span class="dv">0</span>], scale<span class="op">=</span>np.sqrt(Sigma[<span class="dv">0</span>,<span class="dv">0</span>]))</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>marg_y <span class="op">=</span> norm(loc<span class="op">=</span>mu[<span class="dv">1</span>], scale<span class="op">=</span>np.sqrt(Sigma[<span class="dv">1</span>,<span class="dv">1</span>]))</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ==== figure layout (2x2, with shared axes) ====</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">6</span>))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>gs <span class="op">=</span> gridspec.GridSpec(<span class="dv">2</span>, <span class="dv">2</span>, width_ratios<span class="op">=</span>[<span class="dv">4</span>,<span class="dv">1</span>], height_ratios<span class="op">=</span>[<span class="dv">1</span>,<span class="dv">4</span>],</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>                       wspace<span class="op">=</span><span class="fl">0.05</span>, hspace<span class="op">=</span><span class="fl">0.05</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>ax_joint <span class="op">=</span> plt.subplot(gs[<span class="dv">1</span>,<span class="dv">0</span>])   <span class="co"># main heatmap</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>ax_margx <span class="op">=</span> plt.subplot(gs[<span class="dv">0</span>,<span class="dv">0</span>], sharex<span class="op">=</span>ax_joint)  <span class="co"># top marginal</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>ax_margy <span class="op">=</span> plt.subplot(gs[<span class="dv">1</span>,<span class="dv">1</span>], sharey<span class="op">=</span>ax_joint)  <span class="co"># right marginal</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Joint density heatmap</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>im <span class="op">=</span> ax_joint.imshow(Z, extent<span class="op">=</span>(x.<span class="bu">min</span>(), x.<span class="bu">max</span>(), y.<span class="bu">min</span>(), y.<span class="bu">max</span>()),</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>                     origin<span class="op">=</span><span class="st">'lower'</span>, cmap<span class="op">=</span><span class="st">"YlGnBu"</span>, aspect<span class="op">=</span><span class="st">'auto'</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Marginal of X</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>ax_margx.plot(x, marg_x.pdf(x), <span class="st">'r--'</span>, label<span class="op">=</span><span class="st">'$p(x)$'</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>ax_margx.axis(<span class="st">'off'</span>)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>ax_margx.legend()</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Marginal of Y</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>ax_margy.plot(marg_y.pdf(y), y, <span class="st">'b--'</span>, label<span class="op">=</span><span class="st">'$p(y)$'</span>)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>ax_margy.axis(<span class="st">'off'</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>ax_margy.legend()</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Colorbar</span></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>cbar <span class="op">=</span> fig.colorbar(im, ax<span class="op">=</span>[ax_joint, ax_margx, ax_margy], fraction<span class="op">=</span><span class="fl">0.046</span>, pad<span class="op">=</span><span class="fl">0.04</span>)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>cbar.set_label(<span class="st">'density'</span>)</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>ax_joint.set_xlabel(<span class="st">'$x$'</span>)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>ax_joint.set_ylabel(<span class="st">'$y$'</span>)</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>ax_joint.set_title(<span class="st">'Bivariate normal with marginals'</span>)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/이변량정규분포_주변확률.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>4. 놈과 고유치</p>
+<p>벡터 놈 Norm</p>
+<p>벡터의 단일 척도로 추상화된 길이이다. 벡터 <span class="math inline">\(\underset{¯}{x} = \left( \begin{array}{r}
+x_{1} \\
+x_{2} \\
+\ldots \\
+x_{n}
+\end{array} \right)\)</span>에 대한 놈 정의는 다음과 같다. <span class="math inline">\(p - Norm\)</span> : <span class="math inline">\(|\underset{¯}{x}|_{p} = (\sum_{i}|x_{i}|^{p})^{(1/p)}\)</span></p>
+<p><span class="math inline">\({\underset{¯}{x}}' = (134)\)</span>에 대하여,</p>
+<p><span class="math display">\[L1 - norm:|\underset{¯}{x}| = \sum_{i}|x_{i}| = 8\]</span></p>
+<ul>
+<li><dl>
+<dt><span class="math inline">\(L2 - norm:|\underset{¯}{x}|_{2} = (\sum_{i}x_{i}^{2})^{\frac{1}{2}} = \sqrt{26}\)</span></dt>
+<dd>
+유크리디안 거리
+</dd>
+</dl></li>
+<li><span class="math inline">\(L\infty - norm:|\underset{¯}{x}|_{\infty} = max|x_{i}| = 4\)</span> : 최대값n</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy.linalg <span class="im">as</span> la</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># L1 노름(맨해튼 거리, 절댓값의 합) 계산</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 벡터 [1, 3, 4]의 L1 노름 = |1| + |3| + |4| = 8</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>L1 <span class="op">=</span> la.norm(np.array([[<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>]]), <span class="dv">1</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># L2 노름(유클리드 거리, 제곱합의 제곱근) 계산</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 벡터 [1, 3, 4]의 L2 노름 = sqrt(1^2 + 3^2 + 4^2) = sqrt(26) ≈ 5.099</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>L2 <span class="op">=</span> la.norm(np.array([[<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>]]), <span class="dv">2</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(L1, L2)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>4.0 5.099019513592785</p>
+<p>고유값 eigen value</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/고유치_그림이해.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/고유치_그림이해02png.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>행렬 <span class="math inline">\(A\)</span>는 <span class="math inline">\(v\)</span> 벡터를 방향의 변화 없이 변환한다. Eigen 독일어 어원, own 자신의, typycal 전형적인 고유값 <span class="math inline">\(\lambda\)</span>=1 =&gt; 변화없음, <span class="math inline">\(\lambda = 2\)</span>=&gt; 길이가 2배, <span class="math inline">\(\lambda = - 1\)</span>=&gt; 방향 반대</p>
+<p>고유값 구하기</p>
+<p>차수가 <span class="math inline">\(k\)</span>인 정방행렬 <span class="math inline">\(A_{k \times k}\)</span>(선형계수행렬), 벡터 <span class="math inline">\(\underset{¯}{x}\)</span>로 이루어진 고유 방정식(characteristic equation) <span class="math inline">\(A\underset{¯}{x} = \lambda\underset{¯}{x}\)</span>를 만족하는 <span class="math inline">\(\lambda\)</span>들을 고유치(eigen value, characteristic value, latent value)라 하고 각 고유치에 대해 고유방정식을 만족하는 벡터를 고유 벡터(eigen vector)라 한다.</p>
+<p><span class="math inline">\((A - \lambda I)\underset{¯}{x} = 0\)</span>을 만족하는 해는 <span class="math inline">\(det(A - \lambda I) = 0 &lt; = &gt; |A - \lambda I| = 0\)</span>을 만족하는 <span class="math inline">\(\lambda\)</span>를 구하면 된다(Cramer Rule). 이렇게 구한 것을 고유값이라 한다.</p>
+<ul>
+<li><p>차수가 n인 정방행렬 <span class="math inline">\(A_{n \times n}\)</span> 의 <span class="math inline">\(| A- \lambda I |\)</span> 행렬식을 계산한다. 이 방정식은 차수가 n인 <span class="math inline">\(f(\lambda) =a_1 \lambda^n + a_2 \lambda^{n-1} + ... +a_n\)</span> 의 다항방정식이다.</p></li>
+<li><p><span class="math inline">\(f(\lambda) =a_1 \lambda^n + a_2 \lambda^{n-1} + ... +a_n = 0\)</span> 특성방정식(characteristic equation) 를 만족하는 <span class="math inline">\(\lambda_1, \lambda_2, ...,\lambda_n\)</span> (n개 존재) 고유치(eigen value, characteristic value, latent value)라 한다.</p></li>
+<li><p>이렇게 구한 <span class="math inline">\(\lambda_i\)</span> 는 <span class="math inline">\((A-\lambda I)\)</span> 행렬을 singular(역행렬이 존재하지 않는다)로 만든다.</p></li>
+</ul>
+<p><strong>고유벡터 구하기</strong></p>
+<ul>
+<li><p>각 <span class="math inline">\(\lambda_i\)</span>에 대하여 <span class="math inline">\((A- \lambda_i I) \underline x = 0\)</span> 을 만족하는 <span class="math inline">\(\underline x\)</span> 을 구하면 이를 고유벡터라 한다.</p></li>
+<li><p>[단점] <span class="math inline">\(\lambda_i\)</span> 는 <span class="math inline">\((A-\lambda I)\)</span> 행렬은 singular이므로 고유벡터 <span class="math inline">\(\underline x\)</span> 는 무수히 많이 존재한다.</p></li>
+<li><p>[활용] 이 성질 때문에 요인 분석에서 요인 회전이 가능하고 주성분분석에서 주성분변수 벡터를 활용 시 <span class="math inline">\(\underline x' \underline x =1\)</span> 을 만족하는 정규(Norm) 고유벡터만를 사용한다.</p></li>
+</ul>
+<p><strong>성질</strong></p>
+<ul>
+<li><p>고유치의 합은 행렬 A의 대각원소의 합니다. <span class="math inline">\(\sum\lambda_{i} = tr(A)\)</span></p></li>
+<li><p>고유벡터는 서로 독립이다. =&gt; 좌표를 독립(상호 독립, 직교) 공간에 표현한다.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/고유벡터_그림이해.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>활용</p>
+<p>고유치와는 달리 고유 벡터는 무수히 많이 존재한다는 것이다. 이 성질 때문에 요인 분석에서 요인 회전이 가능하다. 다음은 벡터의 놈이 1인 단위 고유벡터(주성분분석의 주성분 벡터)를 구한 예제이다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy.linalg <span class="im">as</span> la</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ----- 행렬 정의 및 고유분해 -----</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> np.array([[<span class="dv">1</span>, <span class="fl">0.5</span>],</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.5</span>, <span class="dv">1</span>]])</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>eigval, eigvec <span class="op">=</span> la.eig(A)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"고유값:"</span>, eigval)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"고유벡터:</span><span class="ch">\n</span><span class="st">"</span>, eigvec)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ----- 원 (단위벡터 집합) 그리기 -----</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">2</span><span class="op">*</span>np.pi, <span class="dv">200</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>circle <span class="op">=</span> np.array([np.cos(theta), np.sin(theta)])  <span class="co"># 단위원 좌표</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">6</span>))</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 단위 원</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>ax.plot(circle[<span class="dv">0</span>], circle[<span class="dv">1</span>], <span class="st">'b--'</span>, label<span class="op">=</span><span class="st">'unit circle'</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># ----- 고유벡터 그리기 -----</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>origin <span class="op">=</span> np.zeros(<span class="dv">2</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">'r'</span>, <span class="st">'g'</span>]</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(eigval)):</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 고유벡터는 방향만 중요하므로 정규화해서 그림</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    v <span class="op">=</span> eigvec[:, i] <span class="op">/</span> la.norm(eigvec[:, i])</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    ax.quiver(<span class="op">*</span>origin, <span class="op">*</span>v, angles<span class="op">=</span><span class="st">'xy'</span>, scale_units<span class="op">=</span><span class="st">'xy'</span>, scale<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>              color<span class="op">=</span>colors[i], label<span class="op">=</span><span class="ss">f'eigvec </span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">, λ=</span><span class="sc">{</span>eigval[i]<span class="sc">:.2f}</span><span class="ss">'</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co"># ----- 좌표계 설정 -----</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(<span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">'equal'</span>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">'k'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">'k'</span>, linewidth<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Unit circle &amp; eigenvectors of A"</span>)</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>고유값: [1.5 0.5] <br> 고유벡터: <br> [[ 0.70710678 -0.70710678] <br> [ 0.70710678 0.70710678]]</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/고유치_고유벡터.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "복사완료!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "복사완료!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2025 Kwon</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with Quarto</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
