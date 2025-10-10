@@ -381,6 +381,11 @@ window.Quarto = {
   <li><a href="#주성분-구하기" id="toc-주성분-구하기" class="nav-link" data-scroll-target="#주성분-구하기">2. 주성분 구하기</a></li>
   <li><a href="#주성분-사례분석" id="toc-주성분-사례분석" class="nav-link" data-scroll-target="#주성분-사례분석">3. 주성분 사례분석</a></li>
   </ul></li>
+  <li><a href="#chapter-3.-svd-차원축소" id="toc-chapter-3.-svd-차원축소" class="nav-link" data-scroll-target="#chapter-3.-svd-차원축소">Chapter 3. SVD 차원축소</a>
+  <ul>
+  <li><a href="#pca와-svd-비교" id="toc-pca와-svd-비교" class="nav-link" data-scroll-target="#pca와-svd-비교">1. PCA와 SVD 비교</a></li>
+  <li><a href="#sigular-value-decomposition" id="toc-sigular-value-decomposition" class="nav-link" data-scroll-target="#sigular-value-decomposition">2. Sigular Value Decomposition</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -647,7 +652,8 @@ x_{p}
 </section>
 <section id="주성분-사례분석" class="level4">
 <h4 class="anchored" data-anchor-id="주성분-사례분석">3. 주성분 사례분석</h4>
-<p>Lahman Baseball Database</p>
+<section id="lahman-baseball-database" class="level5">
+<h5 class="anchored" data-anchor-id="lahman-baseball-database">(1) Lahman Baseball Database</h5>
 <p>파이썬의 lahman 모듈은 파이썬에서 메이저리그(MLB) 통계의 표준 데이터베이스인 Lahman Baseball Database를 불러다 쓸 수 있도록 만든 패키지이다.</p>
 <ul>
 <li><p>Lahman Baseball Database란? Sean Lahman이 만든 공개 MLB 기록 데이터베이스</p></li>
@@ -684,34 +690,29 @@ x_{p}
 <p><img src="images/pca mlb데이터.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<p>상관분석</p>
+</section>
+<section id="상관분석" class="level5">
+<h5 class="anchored" data-anchor-id="상관분석">(2) 상관분석</h5>
 <p>주성분분석(PCA)은 변수들 간의 상관관계를 토대로 새로운 축을 찾아내어 데이터의 차원을 줄이는 방법이다. 이렇게 도출된 주성분은 다시 개체의 분류나 예측 모델의 설명 변수로 활용되는 등 다양한 2차 분석으로 이어질 수 있다. 따라서 PCA를 수행하기에 앞서 변수들 간의 상관 구조를 사전에 분석하는 것은 매우 중요한 의미를 가진다.</p>
 <p>첫째, 상관분석은 변수 간 중복성, 즉 다중공선성의 존재 여부를 파악할 수 있게 해 준다. 주성분분석의 목적은 서로 강하게 연관된 변수들을 요약해 새로운 축으로 재구성하는 데 있다. 만약 변수들 사이의 상관이 거의 없다면 주성분분석을 통해 얻을 수 있는 정보의 압축 효과는 크지 않다. 반대로 변수들이 강하게 상관되어 있다면 소수의 주성분만으로도 전체 변동을 효과적으로 설명할 수 있다. 결국 상관관계의 크기는 PCA를 수행할 가치가 있는지 판단하는 중요한 지표가 된다.</p>
 <p>둘째, 상관분석은 변수의 단위 문제를 점검하는 데 도움이 된다. 서로 다른 단위를 가진 변수를 공분산 행렬을 통해 분석하면 단위가 큰 변수가 주성분의 방향을 지배하게 된다. 이때 상관행렬을 사용하면 모든 변수를 표준화한 것과 동일한 효과를 주어 단위 차이를 제거할 수 있다. 따라서 사전 상관분석을 통해 변수 간의 구조를 비교할 때 표준화가 필요한지를 확인할 수 있다.</p>
 <p>셋째, 상관분석은 주성분 해석의 방향성을 제공한다. 예를 들어 키와 체중이 강한 양의 상관을 가진다거나, 속도와 시간이 음의 상관을 보인다는 사실은 이후 주성분을 해석할 때 중요한 단서가 된다. 특정 변수들이 함께 움직이는 경향이나 서로 반대 방향으로 움직이는 패턴을 파악해 두면, 추출된 주성분의 의미를 보다 명확하게 해석할 수 있다.</p>
 <p>넷째, 상관분석은 불필요한 변수, 즉 노이즈 변수를 걸러내는 데에도 유용하다. 어떤 변수는 다른 변수들과 거의 상관이 없고 독립적으로 움직일 수 있는데, 이런 변수는 전체 구조 요약에 기여도가 낮다. 이 경우 PCA에 포함시키더라도 분석의 효율을 떨어뜨릴 수 있다. 따라서 사전에 상관분석을 실시하면 기여도가 낮은 변수를 미리 파악해 제거함으로써, 보다 간결하고 해석 가능한 주성분 구조를 얻을 수 있다.</p>
 <p>이처럼 상관분석은 PCA의 전처리 단계로서 단순한 변수 관계의 탐색을 넘어, 분석 수행의 타당성 점검, 단위 조정 필요성 확인, 주성분 해석의 실마리 제공, 그리고 불필요한 변수 제거를 통한 효율성 제고라는 중요한 역할을 한다고 할 수 있다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 1) 분석 변수</p>
-<p>cols = ['HR','RBI','SB','BB','SO','H','AB','GIDP']</p>
-<p>X = bat_with_name[cols].fillna(0)</p>
-<p># 2) 상관행렬 계산</p>
-<p>corr_matrix = X.corr()</p>
-<p># 3) 히트맵 시각화</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>import seaborn as sns</p>
-<p>plt.figure(figsize=(8,6))</p>
-<p>sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".3f", linewidths=0.5)</p>
-<p>plt.title(f"{latest_year} correlation matrix")</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 분석 변수</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'HR'</span>,<span class="st">'RBI'</span>,<span class="st">'SB'</span>,<span class="st">'BB'</span>,<span class="st">'SO'</span>,<span class="st">'H'</span>,<span class="st">'AB'</span>,<span class="st">'GIDP'</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> bat_with_name[cols].fillna(<span class="dv">0</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 상관행렬 계산</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>corr_matrix <span class="op">=</span> X.corr()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 히트맵 시각화</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>sns.heatmap(corr_matrix, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">"coolwarm"</span>, fmt<span class="op">=</span><span class="st">".3f"</span>, linewidths<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"</span><span class="sc">{</span>latest_year<span class="sc">}</span><span class="ss"> correlation matrix"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/pca 산점도행렬.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
@@ -722,143 +723,117 @@ x_{p}
 <p>상관계수의 패턴은 주성분 해석의 방향성도 제시한다. HR–RBI–BB는 서로 양의 상관을 보이므로 <span dir="rtl">’</span>장타 및 생산력<span dir="rtl">’</span> 요인으로 묶일 수 있고, H–AB의 높은 상관은 <span dir="rtl">’</span>경기 기회와 안타 생산<span dir="rtl">’</span> 요인을 형성할 수 있다. 한편 삼진(SO)은 안타(H)와 음의 상관(-0.294)을 보이는데, 이는 <span dir="rtl">’</span>컨택 능력 대 삼진 성향<span dir="rtl">’</span>이라는 대비적 축으로 해석될 수 있다.</p>
 <p>마지막으로 상관계수가 전반적으로 낮은 변수들은 노이즈 변수로 볼 수 있다. 병살타(GIDP)는 대부분의 지표와 관련성이 약해 전체 변동 요약에 크게 기여하지 못할 가능성이 크고, 도루(SB) 역시 주요 타격 지표들과는 거의 상관이 없어 별도의 부차적 주성분 축을 형성할 가능성이 있다.</p>
 <p>결국 이 상관행렬을 통해 PCA에서 형성될 주성분의 구조를 예측할 수 있다. HR–RBI–BB가 하나의 주성분을, H–AB가 또 다른 주성분을 형성하며, SO는 이와 대립되는 방향의 변동을 설명하고, SB와 GIDP는 부차적이거나 설명력이 낮은 변수로 작용할 것임을 짐작할 수 있다. 이는 곧 PCA가 선수들의 타격 성향을 2~3개의 주성분으로 압축할 수 있음을 보여주는 사전적 근거이다.</p>
-<p>주성분 구하기</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import pandas as pd</p>
-<p>import numpy as np</p>
-<p>from sklearn.preprocessing import StandardScaler</p>
-<p>from sklearn.decomposition import PCA</p>
-<p>import matplotlib.pyplot as plt</p>
-<p># 1) 분석 변수</p>
-<p>cols = ['HR','RBI','SB','BB','SO','H','AB','GIDP']</p>
-<p>X = bat_with_name[cols].fillna(0)</p>
-<p># 2) 표준화</p>
-<p>scaler = StandardScaler()</p>
-<p>X_std = scaler.fit_transform(X)</p>
-<p># 3) PCA (전체 성분 학습)</p>
-<p>pca = PCA()</p>
-<p>scores = pca.fit_transform(X_std)</p>
-<p># 3-1) 점수 붙이기</p>
-<p>for j in range(scores.shape[1]):</p>
-<p>bat_with_name[f'PC{j+1}'] = scores[:, j]</p>
-<p># 4) 고유값과 Kaiser 필터</p>
-<p>eigs = pca.explained_variance_</p>
-<p>mask = eigs &gt;= 1</p>
-<p>selected_idx = np.where(mask)[0]</p>
-<p>selected_eigs = eigs[mask]</p>
-<p># 5) 부하 행렬 (선택된 PC만)</p>
-<p>loadings = pd.DataFrame(</p>
-<p>pca.components_.T[:, mask] * np.sqrt(selected_eigs),</p>
-<p>index=cols,</p>
-<p>columns=[f'PC{i+1}' for i in selected_idx] # ✅ +1 제거!</p>
-<p>)</p>
-<p># ✅ 부하 행렬 출력</p>
-<p>print("고유값 (전체):", np.round(eigs, 3))</p>
-<p>print("선택된 주성분 (λ ≥ 1):", selected_idx+1)</p>
-<p>print("부하 행렬 (loadings):")</p>
-<p>print(loadings.round(3))</p>
-<p># 6) 각 주성분의 설명 분산 비율</p>
-<p>explained_ratio = pca.explained_variance_ratio_</p>
-<p># 7) 누적 설명 분산 비율</p>
-<p>cumulative_ratio = np.cumsum(explained_ratio)</p>
-<p># ✅ 출력</p>
-<p>print("주성분별 변동 설명 기여율:")</p>
-<p>for i, (r, c) in enumerate(zip(explained_ratio, cumulative_ratio), start=1):</p>
-<p>print(f"PC{i}: {r:.3f} (누적 {c:.3f})")</p></td>
-</tr>
-</tbody>
-</table>
-<p>고유값 (전체): [2.423 1.854 1.258 0.945 0.633 0.542 0.306 0.162]</p>
-<p>선택된 주성분 (λ ≥ 1): [1 2 3]</p>
-<p>부하 행렬 (loadings):</p>
-<p>PC1 PC2 PC3</p>
-<p>HR 0.776 0.467 -0.070</p>
-<p>RBI 0.865 0.282 -0.200</p>
-<p>SB 0.090 -0.291 0.838</p>
-<p>BB 0.135 0.719 0.186</p>
-<p>SO 0.079 0.609 0.175</p>
-<p>H 0.696 -0.532 0.122</p>
-<p>AB 0.709 -0.371 0.238</p>
-<p>GIDP 0.229 -0.403 -0.611</p>
-<p>주성분별 변동 설명 기여율:</p>
-<p>PC1: 0.298 (누적 0.298)</p>
-<p>PC2: 0.228 (누적 0.527)</p>
-<p>PC3: 0.155 (누적 0.681)</p>
-<p>PC4: 0.116 (누적 0.798)</p>
-<p>PC5: 0.078 (누적 0.876)</p>
-<p>PC6: 0.067 (누적 0.942)</p>
-<p>PC7: 0.038 (누적 0.980)</p>
-<p>PC8: 0.020 (누적 1.000)</p>
-<p>주성분 이름부여</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>#부하 산점도 그리기</p>
-<p>import plotly.express as px</p>
-<p># Plotly 산점도 (PC1 vs PC2)</p>
-<p>fig = px.scatter(</p>
-<p>loadings.reset_index(), # index(변수명)를 컬럼으로 복원</p>
-<p>x="PC1",</p>
-<p>y="PC2",</p>
-<p>text="index" # 변수명을 라벨로 표시</p>
-<p>)</p>
-<p>fig.update_traces(textposition="top center")</p>
-<p>fig.update_layout(title_text="Loading Scatterplot of PC1 and PC2")</p>
-<p>fig.show()</p></td>
-</tr>
-</tbody>
-</table>
+</section>
+<section id="주성분-구하기-2" class="level5">
+<h5 class="anchored" data-anchor-id="주성분-구하기-2">(3) 주성분 구하기</h5>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 분석 변수</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'HR'</span>,<span class="st">'RBI'</span>,<span class="st">'SB'</span>,<span class="st">'BB'</span>,<span class="st">'SO'</span>,<span class="st">'H'</span>,<span class="st">'AB'</span>,<span class="st">'GIDP'</span>]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> bat_with_name[cols].fillna(<span class="dv">0</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 표준화</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>X_std <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) PCA (전체 성분 학습)</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA()</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pca.fit_transform(X_std)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 3-1) 점수 붙이기</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(scores.shape[<span class="dv">1</span>]):</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    bat_with_name[<span class="ss">f'PC</span><span class="sc">{</span>j<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span>] <span class="op">=</span> scores[:, j]</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 고유값과 Kaiser 필터</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>eigs <span class="op">=</span> pca.explained_variance_</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>mask <span class="op">=</span> eigs <span class="op">&gt;=</span> <span class="dv">1</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>selected_idx <span class="op">=</span> np.where(mask)[<span class="dv">0</span>]</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>selected_eigs <span class="op">=</span> eigs[mask]</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 부하 행렬 (선택된 PC만)</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>loadings <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    pca.components_.T[:, mask] <span class="op">*</span> np.sqrt(selected_eigs),</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>cols,</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f'PC</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> selected_idx]   <span class="co"># ✅ +1 제거!</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 부하 행렬 출력</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"고유값 (전체):"</span>, np.<span class="bu">round</span>(eigs, <span class="dv">3</span>))</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"선택된 주성분 (λ ≥ 1):"</span>, selected_idx<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"부하 행렬 (loadings):"</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(loadings.<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) 각 주성분의 설명 분산 비율</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>explained_ratio <span class="op">=</span> pca.explained_variance_ratio_</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 7) 누적 설명 분산 비율</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>cumulative_ratio <span class="op">=</span> np.cumsum(explained_ratio)</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 출력</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"주성분별 변동 설명 기여율:"</span>)</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, (r, c) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(explained_ratio, cumulative_ratio), start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"PC</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>r<span class="sc">:.3f}</span><span class="ss"> (누적 </span><span class="sc">{</span>c<span class="sc">:.3f}</span><span class="ss">)"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>고유값 (전체): [2.423 1.854 1.258 0.945 0.633 0.542 0.306 0.162] <br> 선택된 주성분 (λ ≥ 1): [1 2 3] <br> 부하 행렬 (loadings): <br> PC1 PC2 PC3 <br> HR 0.776 0.467 -0.070 <br> RBI 0.865 0.282 -0.200 <br> SB 0.090 -0.291 0.838 <br> BB 0.135 0.719 0.186 <br> SO 0.079 0.609 0.175 <br> H 0.696 -0.532 0.122 <br> AB 0.709 -0.371 0.238 <br> GIDP 0.229 -0.403 -0.611</p>
+<p>주성분별 변동 설명 기여율: <br> PC1: 0.298 (누적 0.298) <br> PC2: 0.228 (누적 0.527) <br> PC3: 0.155 (누적 0.681) <br> PC4: 0.116 (누적 0.798) <br> PC5: 0.078 (누적 0.876) <br> PC6: 0.067 (누적 0.942) <br> PC7: 0.038 (누적 0.980) <br> PC8: 0.020 (누적 1.000)</p>
+</section>
+<section id="주성분-이름부여" class="level5">
+<h5 class="anchored" data-anchor-id="주성분-이름부여">(4) 주성분 이름부여</h5>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#부하 산점도 그리기</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plotly 산점도 (PC1 vs PC2)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> px.scatter(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    loadings.reset_index(),   <span class="co"># index(변수명)를 컬럼으로 복원</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span><span class="st">"PC1"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    y<span class="op">=</span><span class="st">"PC2"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span><span class="st">"index"</span>              <span class="co"># 변수명을 라벨로 표시</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>fig.update_traces(textposition<span class="op">=</span><span class="st">"top center"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>fig.update_layout(title_text<span class="op">=</span><span class="st">"Loading Scatterplot of PC1 and PC2"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/pca 부하산점도.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<p>PC1: 파워</p>
+<p><strong>PC1: 파워</strong></p>
 <ul>
 <li><p>높은 부하: RBI (0.865), HR (0.776), H (0.696), AB (0.709) → 타점, 홈런, 안타, 타수 모두 양의 기여.</p></li>
 <li><p>해석: 타격 생산력과 파워를 반영하는 주성분: <span dir="rtl">”</span>타격 생산력/파워 성분”</p></li>
 </ul>
-<p>PC2: 선구안</p>
+<p><strong>PC2: 선구안</strong></p>
 <ul>
 <li><p>높은 부하: BB (0.719), SO (0.609) (+), HR (0.467)(중간), 음의 부하: H (-0.532), GIDP (-0.403) → 볼넷과 삼진이 동시에 높고, 안타는 음의 방향.</p></li>
 <li><p>해석: 컨택(안타 중심)과 선구안·삼진 경향의 대비: <span dir="rtl">”</span>선구안 vs 컨택 성분”</p></li>
 </ul>
-<p>PC3: 주루</p>
+<p><strong>PC3: 주루</strong></p>
 <ul>
 <li><p>높은 부하: SB (0.838) 양수, GIDP (-0.611) 음수 → 도루가 많은 선수일수록 병살타는 적은 경향.</p></li>
-<li><p>해석: 주루 능력(스피드)을 보여주는 주성분: <span dir="rtl">”</span>스피드/주루 성분”</p>
-<p>주성분 활용(1) 개체분류</p></li>
+<li><p>해석: 주루 능력(스피드)을 보여주는 주성분: <span dir="rtl">”</span>스피드/주루 성분”</p></li>
 </ul>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># PC1, PC2 산점도</p>
-<p>plt.figure(figsize=(9,7))</p>
-<p>plt.scatter(bat_with_name['PC1'], bat_with_name['PC2'], alpha=0.6)</p>
-<p># 선수 이름 표시 (홈런 15개 이상 선수)</p>
-<p>for _, row in bat_with_name.iterrows():</p>
-<p>if row['HR'] &gt;= 15:</p>
-<p>plt.text(row['PC1']+0.05, row['PC2']+0.05,</p>
-<p>f"{row['nameFirst']} {row['nameLast']}", fontsize=8)</p>
-<p>plt.xlabel("PC1 (batting ability / power)")</p>
-<p>plt.ylabel("PC2 (plate discipline vs contact)")</p>
-<p>plt.title("MLB Batters PCA (PC1 vs PC2)")</p>
-<p>plt.grid(True)</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+</section>
+<section id="주성분-활용1-개체분류" class="level5">
+<h5 class="anchored" data-anchor-id="주성분-활용1-개체분류">(5) 주성분 활용(1) 개체분류</h5>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PC1, PC2 산점도</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">9</span>,<span class="dv">7</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(bat_with_name[<span class="st">'PC1'</span>], bat_with_name[<span class="st">'PC2'</span>], alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 선수 이름 표시 (홈런 15개 이상 선수)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _, row <span class="kw">in</span> bat_with_name.iterrows():</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">'HR'</span>] <span class="op">&gt;=</span> <span class="dv">15</span>:</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>        plt.text(row[<span class="st">'PC1'</span>]<span class="op">+</span><span class="fl">0.05</span>, row[<span class="st">'PC2'</span>]<span class="op">+</span><span class="fl">0.05</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>                 <span class="ss">f"</span><span class="sc">{</span>row[<span class="st">'nameFirst'</span>]<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>row[<span class="st">'nameLast'</span>]<span class="sc">}</span><span class="ss">"</span>, fontsize<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"PC1 (batting ability / power)"</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"PC2 (plate discipline vs contact)"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"MLB Batters PCA (PC1 vs PC2)"</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/pca mlb분류.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
@@ -869,220 +844,156 @@ x_{p}
 <p><img src="images/pca mlb분류02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 각 주성분별 상위 5명 출력</p>
-<p>for pc in [’PC1','PC2','PC3']:</p>
-<p>print(f"\n{pc} 상위 5명:")</p>
-<p>top5 = (bat_with_name[['nameFirst','nameLast','HR','RBI','SB',pc]]</p>
-<p>.sort_values(pc, ascending=False)</p>
-<p>.head(5))</p>
-<p>print(top5.to_string(index=False))</p></td>
-</tr>
-</tbody>
-</table>
-<p>PC1 타격 상위 5명:</p>
-<p>nameFirst nameLast HR RBI SB PC1</p>
-<p>Jose Abreu 19 60.0 0.0 4.934120</p>
-<p>Marcell Ozuna 18 56.0 0.0 3.823145</p>
-<p>Manny Machado 16 47.0 6.0 2.837655</p>
-<p>Trea Turner 12 41.0 12.0 2.651955</p>
-<p>Freddie Freeman 13 53.0 2.0 2.554560</p>
-<p>PC2 선구안 상위 5명:</p>
-<p>nameFirst nameLast HR RBI SB PC2</p>
-<p>Matt Olson 14 42.0 1.0 3.382615</p>
-<p>Christian Yelich 12 22.0 4.0 3.281660</p>
-<p>Max Muncy 12 27.0 1.0 2.790429</p>
-<p>Yoan Moncada 6 24.0 0.0 2.166739</p>
-<p>Carlos Santana 8 30.0 0.0 2.059597</p>
-<p>PC3 주루 상위 5명:</p>
-<p>nameFirst nameLast HR RBI SB PC3</p>
-<p>Adalberto Mondesi 6 22.0 24.0 3.875285</p>
-<p>Trevor Story 11 28.0 15.0 2.501421</p>
-<p>Trent Grisham 10 26.0 10.0 2.397888</p>
-<p>Whit Merrifield 9 30.0 12.0 2.271729</p>
-<p>Dansby Swanson 10 35.0 5.0 2.135323</p>
-<p>주성분 활용(2) 타자 능력 종합지표</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 주성분별 상위 5명 출력</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pc <span class="kw">in</span> [‘PC1<span class="st">','</span>PC2<span class="st">','</span>PC3<span class="st">']:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="er">    print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="sc">{</span>pc<span class="sc">}</span><span class="ss"> 상위 5명:"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    top5 <span class="op">=</span> (bat_with_name[[<span class="st">'nameFirst'</span>,<span class="st">'nameLast'</span>,<span class="st">'HR'</span>,<span class="st">'RBI'</span>,<span class="st">'SB'</span>,pc]]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>             .sort_values(pc, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>             .head(<span class="dv">5</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(top5.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>PC1 타격 상위 5명</strong></p>
+<p>nameFirst nameLast HR RBI SB PC1 <br> Jose Abreu 19 60.0 0.0 4.934120 <br> Marcell Ozuna 18 56.0 0.0 3.823145 <br> Manny Machado 16 47.0 6.0 2.837655 <br> Trea Turner 12 41.0 12.0 2.651955 <br> Freddie Freeman 13 53.0 2.0 2.554560</p>
+<p><strong>PC2 선구안 상위 5명</strong> <br> nameFirst nameLast HR RBI SB PC2 <br> Matt Olson 14 42.0 1.0 3.382615 <br> Christian Yelich 12 22.0 4.0 3.281660 <br> Max Muncy 12 27.0 1.0 2.790429 <br> Yoan Moncada 6 24.0 0.0 2.166739 <br> Carlos Santana 8 30.0 0.0 2.059597</p>
+<p><strong>PC3 주루 상위 5명</strong></p>
+<p>nameFirst nameLast HR RBI SB PC3 <br> Adalberto Mondesi 6 22.0 24.0 3.875285 <br> Trevor Story 11 28.0 15.0 2.501421 <br> Trent Grisham 10 26.0 10.0 2.397888 <br> Whit Merrifield 9 30.0 12.0 2.271729 <br> Dansby Swanson 10 35.0 5.0 2.135323</p>
+</section>
+<section id="주성분-활용2-타자-능력-종합지표" class="level5">
+<h5 class="anchored" data-anchor-id="주성분-활용2-타자-능력-종합지표">(6) 주성분 활용(2) 타자 능력 종합지표</h5>
 <p>PCA의 큰 장점은 여러 개의 서로 다른 변수들을 중복 없이 압축해 낼 수 있다는 점이다. 예컨대 PCA 결과에서 PC2, PC3, PC4가 각각 파워, 선구안, 그리고 주루 능력을 나타낸다. 그러면 이 세 가지 축은 서로 독립적이면서도 타자의 주요 특성을 대표하는 성분이라고 볼 수 있다.</p>
 <p>이때 각 선수의 타격 능력을 하나의 종합 지표로 나타내고 싶다면, 세 성분을 단순 합이 아니라 설명 분산 기여율을 가중치로 반영한 가중합으로 설계할 수 있다. 즉, 각 주성분의 설명력이 큰 만큼 그 성분의 기여도를 더 크게 반영하는 방식이다.</p>
 <p>이렇게 하면 최종적으로 얻어지는 PCA-Batting Index는 단일 수치로 선수의 타격 능력을 요약하면서도, 원래 다양한 변수들의 정보를 균형 있게 담아낼 수 있다. 말하자면 OPS나 WAR 같은 전통적 지표와는 다른, 데이터 축약 기반의 통합 평가 지표가 되는 셈이다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 선택된 PC 점수만 추출 (예: PC1, PC2, PC3)</p>
-<p>selected_pcs = ['PC1','PC2','PC3']</p>
-<p>weights = explained_ratio[0:3] / explained_ratio[0:3].sum() # PC1~PC3 비율 정규화</p>
-<p># 종합 지표 계산</p>
-<p>bat_with_name['PCA_Batting_Index'] = (</p>
-<p>bat_with_name[selected_pcs].values @ weights</p>
-<p>)</p>
-<p># 상위 10명 확인</p>
-<p>print(bat_with_name[['nameFirst','nameLast','HR','RBI','SB','PCA_Batting_Index']]</p>
-<p>.sort_values('PCA_Batting_Index', ascending=False)</p>
-<p>.head(10))</p></td>
-</tr>
-</tbody>
-</table>
-<p>nameFirst nameLast HR RBI SB PCA_Batting_Index</p>
-<p>43 Marcell Ozuna 18 56.0 0.0 2.237267</p>
-<p>46 Jose Ramirez 17 46.0 10.0 1.567421</p>
-<p>59 Fernando Tatis 17 45.0 11.0 1.446034</p>
-<p>0 Jose Abreu 19 60.0 0.0 1.446032</p>
-<p>63 Luke Voit 22 52.0 0.0 1.287682</p>
-<p>22 Freddie Freeman 13 53.0 2.0 1.231654</p>
-<p>42 Matt Olson 14 42.0 1.0 1.209545</p>
-<p>58 Dansby Swanson 10 35.0 5.0 1.205611</p>
-<p>7 Mookie Betts 16 39.0 10.0 1.043342</p>
-<p>57 Trevor Story 11 28.0 15.0 0.910111</p>
-<p>주성분 활용(4) 이상치 진단</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 선택된 PC 점수만 추출 (예: PC1, PC2, PC3)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>selected_pcs <span class="op">=</span> [<span class="st">'PC1'</span>,<span class="st">'PC2'</span>,<span class="st">'PC3'</span>]</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> explained_ratio[<span class="dv">0</span>:<span class="dv">3</span>] <span class="op">/</span> explained_ratio[<span class="dv">0</span>:<span class="dv">3</span>].<span class="bu">sum</span>()  <span class="co"># PC1~PC3 비율 정규화</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 종합 지표 계산</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>bat_with_name[<span class="st">'PCA_Batting_Index'</span>] <span class="op">=</span> (</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    bat_with_name[selected_pcs].values <span class="op">@</span> weights</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 10명 확인</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bat_with_name[[<span class="st">'nameFirst'</span>,<span class="st">'nameLast'</span>,<span class="st">'HR'</span>,<span class="st">'RBI'</span>,<span class="st">'SB'</span>,<span class="st">'PCA_Batting_Index'</span>]]</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      .sort_values(<span class="st">'PCA_Batting_Index'</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      .head(<span class="dv">10</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>nameFirst nameLast HR RBI SB PCA_Batting_Index <br> 43 Marcell Ozuna 18 56.0 0.0 2.237267 <br> 46 Jose Ramirez 17 46.0 10.0 1.567421 <br> 59 Fernando Tatis 17 45.0 11.0 1.446034 <br> 0 Jose Abreu 19 60.0 0.0 1.446032 <br> 63 Luke Voit 22 52.0 0.0 1.287682 <br> 22 Freddie Freeman 13 53.0 2.0 1.231654 <br> 42 Matt Olson 14 42.0 1.0 1.209545 <br> 58 Dansby Swanson 10 35.0 5.0 1.205611 <br> 7 Mookie Betts 16 39.0 10.0 1.043342 <br> 57 Trevor Story 11 28.0 15.0 0.910111</p>
+</section>
+<section id="주성분-활용4-이상치-진단" class="level5">
+<h5 class="anchored" data-anchor-id="주성분-활용4-이상치-진단">(7) 주성분 활용(4) 이상치 진단</h5>
 <p>주성분 분석은 원 변수들의 선형함수를 이용하여 그 변수들의 공분산 구조를 설명하는 방법이다. 표본이 <span class="math inline">\(n\)</span>, 변수 개수가 <span class="math inline">\(p\)</span>개인 데이터 행렬 로부터의 공분산 행렬을 <span class="math inline">\(S_{p \times p}\)</span>라 하고, <span class="math inline">\(\Sigma\)</span>의 고유값을<span class="math inline">\(\lambda_{1} \geq \cdots \geq \lambda_{p}\)</span>, 대응 고유벡터를 <span class="math inline">\(e_{i}\)</span>라 하자. 고유벡터 <span class="math inline">\(e_{i}\)</span>를 계수로 하는 원변수의 선형결합 <span class="math inline">\(y_{i} = e_{i}^{\top}(x - \mu)\)</span>를 i-번째 주성분이라 한다. 다변량 정규 <span class="math inline">\(x \sim N_{p}(\mu,\Sigma)\)</span>를 가정하면 <span class="math inline">\(y_{i} \sim N(0,\lambda_{i})\)</span>이며 서로 독립이다.</p>
 <p>이상치 진단은 공통 변동을 대표하는 주요 주성분과, 그 밖의 잔차(부) 주성분을 구분하여 수행할 수 있다. 데이터의 전체 변동 중 주요 공통 요인을 설명하는 상위 k개의 주성분을 선택하는 기준은 누적기여율, 스크리 플롯, Kaiser 기준, 병렬분석 등으로 정하는 것이 일반적이다. 이때 Cochran 정리에 의해 정규화된 제곱합은 다음과 같은 카이제곱 분포를 가진다.(Johnson과 Wichern, 2007).</p>
 <p>주요 주성분에 의한 이상치 진단 통계량: <span class="math inline">\(\overset{k}{\sum_{i = 1}}\frac{y_{i}^{2}}{\lambda_{i}} \sim \chi^{2}(k)\)</span></p>
 <p>잔차 주성분에 의한 이상치 발견 통계량: <span class="math inline">\(\overset{p}{\sum_{i = k + 1}}\frac{y_{i}^{2}}{\lambda_{i}} \sim \chi^{2}(p - k)\)</span></p>
 <p>두 통계량은 서로 독립이다. 첫 번째 통계량은 공통 구조(저차 공간)에서의 이상 행동을, 두 번째 통계량은 공통 구조로 설명되지 않는 잔차 공간에서의 이상 행동을 포착한다. 실무에서는 <span class="math inline">\(\Sigma\)</span> 대신 표본공분산 S와 표본 고유분해를 사용하므로 분포는 엄밀히 근사이며, 대응 임계값은 경험적 기준 또는 모니터링 기법(Hotelling의 T^2, Q-통계 등)과 함께 사용되는 것이 권장된다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><h1 id="pca-기반-이상치-진단"># === PCA 기반 이상치 진단</h1>
-<p>from scipy.stats import chi2</p>
-<p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p># 0) 준비 (위에서 이미 계산된 것들 사용)</p>
-<p># - scores: PCA 점수 (표준화된 X에 대해 학습)</p>
-<p># - eigs: 고유값 (explained_variance_)</p>
-<p># - selected_idx: Kaiser(λ&gt;=1)로 선택된 성분의 인덱스 (0-based)</p>
-<p>p = scores.shape[1]</p>
-<p>sel = np.array(sorted(selected_idx)) # 주요 주성분 index</p>
-<p>res = np.setdiff1d(np.arange(p), sel) # 잔차 주성분 index</p>
-<p>k = len(sel)</p>
-<p>df_main = k</p>
-<p>df_res = p - k</p>
-<p>alpha_main = 0.05</p>
-<p>alpha_res = 0.05</p>
-<p># 1) 정규화된 PC 점수 (각 성분을 표준편차 sqrt(λ)로 나눔)</p>
-<p>z = scores / np.sqrt(eigs) # shape: (n_samples, p)</p>
-<p># 2) 통계량 계산</p>
-<p>T2_main = (z[:, sel]**2).sum(axis=1) if k &gt; 0 else np.zeros(len(z))</p>
-<p>T2_res = (z[:, res]**2).sum(axis=1) if df_res &gt; 0 else np.zeros(len(z))</p>
-<p># 3) 임계값 (카이제곱)</p>
-<p>crit_main = chi2.ppf(1 - alpha_main, df_main) if df_main &gt; 0 else np.inf</p>
-<p>crit_res = chi2.ppf(1 - alpha_res, df_res) if df_res &gt; 0 else np.inf</p>
-<p># 4) 데이터프레임에 부착 및 플래그</p>
-<p>bat_with_name["T2_main"] = T2_main</p>
-<p>bat_with_name["T2_res"] = T2_res</p>
-<p>bat_with_name["flag_main"] = (T2_main &gt; crit_main) if np.isfinite(crit_main) else False</p>
-<p>bat_with_name["flag_res"] = (T2_res &gt; crit_res) if np.isfinite(crit_res) else False</p>
-<p>bat_with_name["flag_any"] = bat_with_name["flag_main"] | bat_with_name["flag_res"]</p>
-<p>print(f"[선택 성분 개수 k={k}, df_main={df_main}, df_res={df_res}]")</p>
-<p>print(f"임계값(α=0.05): main χ²({df_main})={crit_main:.3f}, residual χ²({df_res})={crit_res:.3f}")</p>
-<p># 5) 상위 이상치 후보 확인 (주요/잔차 각각 상위 10명씩)</p>
-<p>top_main = bat_with_name.sort_values("T2_main", ascending=False).head(10)[</p>
-<p>["nameFirst","nameLast","T2_main","flag_main"]</p>
-<p>]</p>
-<p>top_res = bat_with_name.sort_values("T2_res", ascending=False).head(10)[</p>
-<p>["nameFirst","nameLast","T2_res","flag_res"]</p>
-<p>]</p>
-<p>print("\n[주요 주성분 영역 이상치 후보 TOP 10]")</p>
-<p>print(top_main.to_string(index=False))</p>
-<p>print("\n[잔차 주성분 영역 이상치 후보 TOP 10]")</p>
-<p>print(top_res.to_string(index=False))</p></td>
-</tr>
-</tbody>
-</table>
-<p>[선택 성분 개수 k=3, df_main=3, df_res=5]</p>
-<p>임계값(α=0.05): main χ²(3)=7.815, residual χ²(5)=11.070</p>
-<p>[주요 주성분 영역 이상치 후보 TOP 10]</p>
-<p>nameFirst nameLast T2_main flag_main</p>
-<p>Jose Abreu 13.735414 True</p>
-<p>Adalberto Mondesi 13.266429 True</p>
-<p>Whit Merrifield 9.340053 True</p>
-<p>Marcell Ozuna 7.434100 False</p>
-<p>Christian Yelich 6.806291 False</p>
-<p>Trea Turner 6.614026 False</p>
-<p>Trevor Story 6.595463 False</p>
-<p>Matt Olson 6.206043 False</p>
-<p>Trent Grisham 5.437111 False</p>
-<p>Hanser Alberto 5.087521 False</p>
-<p>[잔차 주성분 영역 이상치 후보 TOP 10]</p>
-<p>nameFirst nameLast T2_res flag_res</p>
-<p>Cesar Hernandez 15.628843 True</p>
-<p>Adalberto Mondesi 14.008599 True</p>
-<p>Freddie Freeman 13.942985 True</p>
-<p>Javier Baez 11.264646 True</p>
-<p>Dansby Swanson 10.582634 False</p>
-<p>Carlos Santana 10.357712 False</p>
-<p>Tim Anderson 10.154598 False</p>
-<p>Kyle Seager 9.084776 False</p>
-<p>Kyle Tucker 8.849439 False</p>
-<p>Keston Hiura 8.728401 False</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 6) 2D 타원 시각화 (PC1 vs PC2, 95%)</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>from matplotlib.patches import Ellipse</p>
-<p>from scipy.stats import chi2</p>
-<p>import numpy as np</p>
-<p># (1) 좌표와 공분산</p>
-<p>pcx, pcy = 0, 1 # 필요시 주성분은 pc1=0, pc2=1, ...</p>
-<p>x = scores[:, pcx]</p>
-<p>y = scores[:, pcy]</p>
-<p>XY = np.column_stack([x, y])</p>
-<p>mu = XY.mean(axis=0)</p>
-<p>cov = np.cov(XY, rowvar=False)</p>
-<p># (2) 타원 파라미터</p>
-<p>vals, vecs = np.linalg.eigh(cov)</p>
-<p>order = vals.argsort()[::-1]</p>
-<p>vals, vecs = vals[order], vecs[:, order]</p>
-<p>chi2_val = chi2.ppf(0.95, df=2)</p>
-<p>width, height = 2*np.sqrt(vals*chi2_val)</p>
-<p>angle = np.degrees(np.arctan2(*vecs[:,0][::-1]))</p>
-<p># (3) 마할라노비스 거리^2로 이상치 판정(타원 밖)</p>
-<p>inv_cov = np.linalg.inv(cov)</p>
-<p>d = XY - mu</p>
-<p>d2 = np.einsum('ij,jk,ik-&gt;i', d, inv_cov, d) # 거리^2</p>
-<p>outlier_mask = d2 &gt; chi2_val</p>
-<p># 4) 플롯 (수정 버전)</p>
-<p>fig, ax = plt.subplots(figsize=(8,6))</p>
-<p>ax.scatter(x, y, s=25)</p>
-<p>ax.scatter(mu[0], mu[1], c='black', s=30) # 중심점</p>
-<p># 🔧 angle을 keyword argument로 명시!</p>
-<p>ellipse = Ellipse(xy=mu, width=width, height=height, angle=angle,</p>
-<p>edgecolor='orange', facecolor='none', lw=2)</p>
-<p>ax.add_patch(ellipse)</p>
-<p># 라벨: 타원 밖만 표시 (playerID 없으면 nameFirst+nameLast 사용)</p>
-<p>label_col = 'playerID' if 'playerID' in bat_with_name.columns else None</p>
-<p>for i in np.where(outlier_mask)[0]:</p>
-<p>if label_col:</p>
-<p>txt = str(bat_with_name.iloc[i][label_col])</p>
-<p>else:</p>
-<p>txt = f"{bat_with_name.iloc[i]['nameLast']}{bat_with_name.iloc[i]['nameFirst']}"</p>
-<p>ax.text(x[i], y[i]+0.12, txt, fontsize=9)</p>
-<p># 축 라벨: 분산 기여율 표시</p>
-<p>vx = pca.explained_variance_ratio_[pcx]*100</p>
-<p>vy = pca.explained_variance_ratio_[pcy]*100</p>
-<p>ax.set_xlabel(f'PC{pcx+1} component ({vx:.0f}%)')</p>
-<p>ax.set_ylabel(f'PC{pcy+1} component ({vy:.0f}%)')</p>
-<p>ax.set_title('scatter plot of POWER and Hitting components (Anomaly)')</p>
-<p>ax.grid(True, alpha=0.3)</p>
-<p>plt.tight_layout()</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># === PCA 기반 이상치 진단 ==========================================</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> chi2</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 준비 (위에서 이미 계산된 것들 사용)</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># - scores: PCA 점수 (표준화된 X에 대해 학습)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># - eigs:   고유값 (explained_variance_)</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># - selected_idx: Kaiser(λ&gt;=1)로 선택된 성분의 인덱스 (0-based)</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> scores.shape[<span class="dv">1</span>]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>sel <span class="op">=</span> np.array(<span class="bu">sorted</span>(selected_idx))                     <span class="co"># 주요 주성분 index</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> np.setdiff1d(np.arange(p), sel)                   <span class="co"># 잔차 주성분 index</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="bu">len</span>(sel)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>df_main <span class="op">=</span> k</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>df_res  <span class="op">=</span> p <span class="op">-</span> k</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>alpha_main <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>alpha_res  <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 정규화된 PC 점수 (각 성분을 표준편차 sqrt(λ)로 나눔)</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> scores <span class="op">/</span> np.sqrt(eigs)                              <span class="co"># shape: (n_samples, p)</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 통계량 계산</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>T2_main <span class="op">=</span> (z[:, sel]<span class="op">**</span><span class="dv">2</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="cf">if</span> k <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> np.zeros(<span class="bu">len</span>(z))</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>T2_res  <span class="op">=</span> (z[:, res]<span class="op">**</span><span class="dv">2</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>) <span class="cf">if</span> df_res <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> np.zeros(<span class="bu">len</span>(z))</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 임계값 (카이제곱)</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>crit_main <span class="op">=</span> chi2.ppf(<span class="dv">1</span> <span class="op">-</span> alpha_main, df_main) <span class="cf">if</span> df_main <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> np.inf</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>crit_res  <span class="op">=</span> chi2.ppf(<span class="dv">1</span> <span class="op">-</span> alpha_res,  df_res)  <span class="cf">if</span> df_res  <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> np.inf</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 데이터프레임에 부착 및 플래그</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>bat_with_name[<span class="st">"T2_main"</span>] <span class="op">=</span> T2_main</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>bat_with_name[<span class="st">"T2_res"</span>]  <span class="op">=</span> T2_res</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>bat_with_name[<span class="st">"flag_main"</span>] <span class="op">=</span> (T2_main <span class="op">&gt;</span> crit_main) <span class="cf">if</span> np.isfinite(crit_main) <span class="cf">else</span> <span class="va">False</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>bat_with_name[<span class="st">"flag_res"</span>]  <span class="op">=</span> (T2_res  <span class="op">&gt;</span> crit_res)  <span class="cf">if</span> np.isfinite(crit_res)  <span class="cf">else</span> <span class="va">False</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>bat_with_name[<span class="st">"flag_any"</span>]  <span class="op">=</span> bat_with_name[<span class="st">"flag_main"</span>] <span class="op">|</span> bat_with_name[<span class="st">"flag_res"</span>]</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[선택 성분 개수 k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">, df_main=</span><span class="sc">{</span>df_main<span class="sc">}</span><span class="ss">, df_res=</span><span class="sc">{</span>df_res<span class="sc">}</span><span class="ss">]"</span>)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"임계값(α=0.05): main χ²(</span><span class="sc">{</span>df_main<span class="sc">}</span><span class="ss">)=</span><span class="sc">{</span>crit_main<span class="sc">:.3f}</span><span class="ss">, residual χ²(</span><span class="sc">{</span>df_res<span class="sc">}</span><span class="ss">)=</span><span class="sc">{</span>crit_res<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 상위 이상치 후보 확인 (주요/잔차 각각 상위 10명씩)</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>top_main <span class="op">=</span> bat_with_name.sort_values(<span class="st">"T2_main"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)[</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"nameFirst"</span>,<span class="st">"nameLast"</span>,<span class="st">"T2_main"</span>,<span class="st">"flag_main"</span>]</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>top_res  <span class="op">=</span> bat_with_name.sort_values(<span class="st">"T2_res"</span>,  ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)[</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"nameFirst"</span>,<span class="st">"nameLast"</span>,<span class="st">"T2_res"</span>,<span class="st">"flag_res"</span>]</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[주요 주성분 영역 이상치 후보 TOP 10]"</span>)</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(top_main.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[잔차 주성분 영역 이상치 후보 TOP 10]"</span>)</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(top_res.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[선택 성분 개수 k=3, df_main=3, df_res=5] <br> 임계값(α=0.05): main χ²(3)=7.815, residual χ²(5)=11.070</p>
+<p>[주요 주성분 영역 이상치 후보 TOP 10] <br> nameFirst nameLast T2_main flag_main <br> Jose Abreu 13.735414 True <br> Adalberto Mondesi 13.266429 True <br> Whit Merrifield 9.340053 True <br> Marcell Ozuna 7.434100 False <br> Christian Yelich 6.806291 False <br> Trea Turner 6.614026 False <br> Trevor Story 6.595463 False <br> Matt Olson 6.206043 False <br> Trent Grisham 5.437111 False <br> Hanser Alberto 5.087521 False</p>
+<p>[잔차 주성분 영역 이상치 후보 TOP 10] <br> nameFirst nameLast T2_res flag_res <br> Cesar Hernandez 15.628843 True <br> Adalberto Mondesi 14.008599 True <br> Freddie Freeman 13.942985 True <br> Javier Baez 11.264646 True <br> Dansby Swanson 10.582634 False <br> Carlos Santana 10.357712 False <br> Tim Anderson 10.154598 False <br> Kyle Seager 9.084776 False <br> Kyle Tucker 8.849439 False <br> Keston Hiura 8.728401 False</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) 2D 타원 시각화 (PC1 vs PC2, 95%)</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.patches <span class="im">import</span> Ellipse</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> chi2</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) 좌표와 공분산</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>pcx, pcy <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span>                          <span class="co"># 필요시 주성분은 pc1=0, pc2=1, ...</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> scores[:, pcx]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> scores[:, pcy]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>XY <span class="op">=</span> np.column_stack([x, y])</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>mu <span class="op">=</span> XY.mean(axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>cov <span class="op">=</span> np.cov(XY, rowvar<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) 타원 파라미터</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>vals, vecs <span class="op">=</span> np.linalg.eigh(cov)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> vals.argsort()[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>vals, vecs <span class="op">=</span> vals[order], vecs[:, order]</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>chi2_val <span class="op">=</span> chi2.ppf(<span class="fl">0.95</span>, df<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>width, height <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>np.sqrt(vals<span class="op">*</span>chi2_val)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>angle <span class="op">=</span> np.degrees(np.arctan2(<span class="op">*</span>vecs[:,<span class="dv">0</span>][::<span class="op">-</span><span class="dv">1</span>]))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co"># (3) 마할라노비스 거리^2로 이상치 판정(타원 밖)</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>inv_cov <span class="op">=</span> np.linalg.inv(cov)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> XY <span class="op">-</span> mu</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>d2 <span class="op">=</span> np.einsum(<span class="st">'ij,jk,ik-&gt;i'</span>, d, inv_cov, d)            <span class="co"># 거리^2</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>outlier_mask <span class="op">=</span> d2 <span class="op">&gt;</span> chi2_val</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 플롯 (수정 버전)</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>ax.scatter(x, y, s<span class="op">=</span><span class="dv">25</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>ax.scatter(mu[<span class="dv">0</span>], mu[<span class="dv">1</span>], c<span class="op">=</span><span class="st">'black'</span>, s<span class="op">=</span><span class="dv">30</span>)               <span class="co"># 중심점</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 🔧 angle을 keyword argument로 명시!</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>ellipse <span class="op">=</span> Ellipse(xy<span class="op">=</span>mu, width<span class="op">=</span>width, height<span class="op">=</span>height, angle<span class="op">=</span>angle,</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>                  edgecolor<span class="op">=</span><span class="st">'orange'</span>, facecolor<span class="op">=</span><span class="st">'none'</span>, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>ax.add_patch(ellipse)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 라벨: 타원 밖만 표시 (playerID 없으면 nameFirst+nameLast 사용)</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>label_col <span class="op">=</span> <span class="st">'playerID'</span> <span class="cf">if</span> <span class="st">'playerID'</span> <span class="kw">in</span> bat_with_name.columns <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> np.where(outlier_mask)[<span class="dv">0</span>]:</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> label_col:</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        txt <span class="op">=</span> <span class="bu">str</span>(bat_with_name.iloc[i][label_col])</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>        txt <span class="op">=</span> <span class="ss">f"</span><span class="sc">{</span>bat_with_name<span class="sc">.</span>iloc[i][<span class="st">'nameLast'</span>]<span class="sc">}{</span>bat_with_name<span class="sc">.</span>iloc[i][<span class="st">'nameFirst'</span>]<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    ax.text(x[i], y[i]<span class="op">+</span><span class="fl">0.12</span>, txt, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 축 라벨: 분산 기여율 표시</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>vx <span class="op">=</span> pca.explained_variance_ratio_[pcx]<span class="op">*</span><span class="dv">100</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>vy <span class="op">=</span> pca.explained_variance_ratio_[pcy]<span class="op">*</span><span class="dv">100</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="ss">f'PC</span><span class="sc">{</span>pcx<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> component (</span><span class="sc">{</span>vx<span class="sc">:.0f}</span><span class="ss">%)'</span>)</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="ss">f'PC</span><span class="sc">{</span>pcy<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss"> component (</span><span class="sc">{</span>vy<span class="sc">:.0f}</span><span class="ss">%)'</span>)</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'scatter plot of POWER and Hitting components (Anomaly)'</span>)</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.3</span>)</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/pca 이상개체진단.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
@@ -1093,66 +1004,59 @@ x_{p}
 <p>연봉은 잡음이 많음: MLB 연봉은 단순히 성적뿐 아니라 나이, 계약 시점, FA·ARB 제도, 포지션, 팀 재정 여건 등 외생 변수가 강하게 작용하여 예측력 지표인 결정계수가 매우 낮아 타격 성적만으로 설명하는 회귀모형은 편향적일 가능성이 크다.</p>
 <p>분석 목적이 <span dir="rtl">”</span>설명력”이 아니라 <span dir="rtl">”</span>관계 파악”: 분석 목적은 <span dir="rtl">”</span>어떤 능력(PC2=파워, PC3=선구안, PC4=스피드)이 시장에서 평가받는가?“를 보는 것이므로 상관분석 정도로 충분히 의미를 전달할 수 있다.</p>
 <p>연봉 데이터는 2020년 데이터가 없어 타자 능력 데이터와 달리 2016년 데이터를 이용하여 분석 대상 선수는 33명이다(최초 분석 데이터 66명).</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from lahman import salaries</p>
-<p># 연봉 데이터 불러오기</p>
-<p>sal = salaries()</p>
-<p># 분석 시즌(예: latest_year) 연봉 데이터 선택</p>
-<p>sal_latest = sal[sal['yearID'] == 2016] #2020 연봉이 없어 2016년 연봉을 사용</p>
-<p># 선수 이름+PCA 점수 데이터와 연봉 join</p>
-<p>bat_with_salary = bat_with_name.merge(</p>
-<p>sal_latest[['playerID','salary']],</p>
-<p>on='playerID',</p>
-<p>how='left'</p>
-<p>)</p>
-<p># 결측치 제거</p>
-<p>bat_with_salary = bat_with_salary.dropna(subset=['salary'])</p>
-<p># 상관계수 계산 (연봉과 PC 점수)</p>
-<p>corrs = bat_with_salary[[’salary','PC1','PC2','PC3']].corr()</p>
-<p>print("연봉과 PCA 성분 상관계수:")</p>
-<p>print(corrs['salary'].round(3))</p></td>
-</tr>
-</tbody>
-</table>
-<p>연봉과 PCA 성분 상관계수:</p>
-<p>salary 1.000</p>
-<p>PC1(타격 생산력/파워 성분) 0.074</p>
-<p>PC2 (plate discipline vs contact) 0.259</p>
-<p>PC3 (speed/baserunning) -0.215</p>
-<p>연봉(5salary)–PC1(타격 생산력/파워 성분): +0.074</p>
-<p>PC1은 홈런(HR), 타점(RBI), 안타(H) 등 공격 생산력의 공통 변동을 대표하는 성분이다.</p>
-<p>상관계수 +0.07은 매우 약한 양(+)의 상관으로, 파워 중심의 성적이 연봉에 일부 긍정적 영향을 주지만, 설명력은 미미하다는 의미이다.</p>
-<p>즉, MLB 연봉이 단순히 타격 지표(홈런·타점 등)에 의해 결정되지 않으며, 계약 시기·경력·포지션·수비력 등 복합적 요인이 작용함을 시사한다.</p>
-<p>연봉(salary)–PC2(plate discipline vs contact): +0.259</p>
-<p>PC2는 볼넷(BB)과 삼진(SO)의 대립 구조로, <span dir="rtl">”</span>선구안·출루력 vs 컨택 능력”의 대비를 나타내는 축이다.</p>
-<p>상관계수 +0.26은 약한 양(+)의 상관으로, 볼넷이 많고 삼진이 적은, 즉 선구안이 좋은 타자일수록 연봉이 높은 경향이 있음을 보여준다.</p>
-<p>이는 현대 MLB 시장이 <span dir="rtl">”</span>출루(OBP)“와 <span dir="rtl">”</span>타석 퀄리티(plate discipline)”를 일정 부분 보상하고 있음을 시사한다.</p>
-<p>다만 0.26 정도면 여전히 제한적 관계이므로, 선구안이 뛰어나도 파워·포지션 프리미엄이 더 큰 영향력을 가질 가능성이 높다.</p>
-<p>연봉(salary)–PC3(speed/baserunning): -0.215</p>
-<p>PC3은 도루(SB)·주루 능력 등 스피드형 변동을 나타내는 성분이다.</p>
-<p>상관계수 -0.22는 음(-)의 약한 상관으로, 주루 능력이 좋은 선수일수록 오히려 연봉이 낮은 경향이 있음을 의미한다.</p>
-<p>이는 현대 MLB 시장에서 스피드보다는 파워·출루 중심의 효율적 공격이 더 높은 경제적 가치를 지니는 흐름을 반영한다.</p>
-<p>과거 <span dir="rtl">’</span>도루왕=고액 연봉<span dir="rtl">’</span>의 공식이 이미 무너졌으며, 스피드는 부가적 능력으로만 평가되고 있음을 보여준다.</p>
-<p>연봉과 PCA 성분 간의 상관 구조는 전반적으로 약하며,</p>
-<p>시장 가치가 특정 기술(파워, 주루, 선구안) 하나로 결정되지 않는다는 점을 드러낸다.</p>
-<p>특히 **plate discipline(PC2)**의 양(+)의 상관이 가장 높게 나타났다는 점은,</p>
-<p>최근 MLB에서 <span dir="rtl">’</span>볼넷 관리 능력<span dir="rtl">’</span>이 점차 중요해지고 있다는 신호로 해석할 수 있다.</p>
-<p>결국 연봉은 성적 지표 + 나이 + 계약제도 + 포지션 희소성 + 팀 전략적 필요가 교차하여 형성되는 복합 함수임을 시사한다.</p>
-<p>Chapter 3. SVD 차원축소</p>
-<p>1. PCA와 SVD 비교</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> lahman <span class="im">import</span> salaries</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 연봉 데이터 불러오기</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>sal <span class="op">=</span> salaries()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 시즌(예: latest_year) 연봉 데이터 선택</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>sal_latest <span class="op">=</span> sal[sal[<span class="st">'yearID'</span>] <span class="op">==</span> <span class="dv">2016</span>] <span class="co">#2020 연봉이 없어 2016년 연봉을 사용</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 선수 이름+PCA 점수 데이터와 연봉 join</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>bat_with_salary <span class="op">=</span> bat_with_name.merge(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    sal_latest[[<span class="st">'playerID'</span>,<span class="st">'salary'</span>]],</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">'playerID'</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">'left'</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측치 제거</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>bat_with_salary <span class="op">=</span> bat_with_salary.dropna(subset<span class="op">=</span>[<span class="st">'salary'</span>])</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 상관계수 계산 (연봉과 PC 점수)</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>corrs <span class="op">=</span> bat_with_salary[[‘salary<span class="st">','</span>PC1<span class="st">','</span>PC2<span class="st">','</span>PC3<span class="st">']].corr()</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="er">print</span>(<span class="st">"연봉과 PCA 성분 상관계수:"</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(corrs[<span class="st">'salary'</span>].<span class="bu">round</span>(<span class="dv">3</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>연봉과 PCA 성분 상관계수</strong></p>
+<p>salary 1.000 <br> PC1(타격 생산력/파워 성분) 0.074 <br> PC2 (plate discipline vs contact) 0.259 <br> PC3 (speed/baserunning) -0.215</p>
+<p><strong>연봉(5salary)–PC1(타격 생산력/파워 성분): +0.074</strong></p>
+<p>PC1은 홈런(HR), 타점(RBI), 안타(H) 등 공격 생산력의 공통 변동을 대표하는 성분이다. 상관계수 +0.07은 매우 약한 양(+)의 상관으로, 파워 중심의 성적이 연봉에 일부 긍정적 영향을 주지만, 설명력은 미미하다는 의미이다. 즉, MLB 연봉이 단순히 타격 지표(홈런·타점 등)에 의해 결정되지 않으며, 계약 시기·경력·포지션·수비력 등 복합적 요인이 작용함을 시사한다.</p>
+<p><strong>연봉(salary)–PC2(plate discipline vs contact): +0.259</strong></p>
+<p>PC2는 볼넷(BB)과 삼진(SO)의 대립 구조로, <span dir="rtl">”</span>선구안·출루력 vs 컨택 능력”의 대비를 나타내는 축이다. 상관계수 +0.26은 약한 양(+)의 상관으로, 볼넷이 많고 삼진이 적은, 즉 선구안이 좋은 타자일수록 연봉이 높은 경향이 있음을 보여준다. 이는 현대 MLB 시장이 <span dir="rtl">”</span>출루(OBP)“와 <span dir="rtl">”</span>타석 퀄리티(plate discipline)”를 일정 부분 보상하고 있음을 시사한다. 다만 0.26 정도면 여전히 제한적 관계이므로, 선구안이 뛰어나도 파워·포지션 프리미엄이 더 큰 영향력을 가질 가능성이 높다.</p>
+<p><strong>연봉(salary)–PC3(speed/baserunning): -0.215</strong></p>
+<p>PC3은 도루(SB)·주루 능력 등 스피드형 변동을 나타내는 성분이다. 상관계수 -0.22는 음(-)의 약한 상관으로, 주루 능력이 좋은 선수일수록 오히려 연봉이 낮은 경향이 있음을 의미한다. 이는 현대 MLB 시장에서 스피드보다는 파워·출루 중심의 효율적 공격이 더 높은 경제적 가치를 지니는 흐름을 반영한다.</p>
+<p>과거 <span dir="rtl">’</span>도루왕=고액 연봉<span dir="rtl">’</span>의 공식이 이미 무너졌으며, 스피드는 부가적 능력으로만 평가되고 있음을 보여준다. 연봉과 PCA 성분 간의 상관 구조는 전반적으로 약하며, 시장 가치가 특정 기술(파워, 주루, 선구안) 하나로 결정되지 않는다는 점을 드러낸다.</p>
+<p>특히 plate discipline(PC2)의 양(+)의 상관이 가장 높게 나타났다는 점은, 최근 MLB에서 <span dir="rtl">’</span>볼넷 관리 능력<span dir="rtl">’</span>이 점차 중요해지고 있다는 신호로 해석할 수 있다. 결국 연봉은 성적 지표 + 나이 + 계약제도 + 포지션 희소성 + 팀 전략적 필요가 교차하여 형성되는 복합 함수임을 시사한다.</p>
+</section>
+</section>
+</section>
+<section id="chapter-3.-svd-차원축소" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-svd-차원축소">Chapter 3. SVD 차원축소</h3>
+<section id="pca와-svd-비교" class="level4">
+<h4 class="anchored" data-anchor-id="pca와-svd-비교">1. PCA와 SVD 비교</h4>
 <p>PCA는 원래 변수들 간의 공분산 구조를 분석하여 변수의 수를 줄이는 차원 축소 방법이다.즉, 여러 변수가 내포한 중복된 정보를 제거하고, 분산이 큰 방향으로 축을 회전시켜 소수의 주성분 변수로 요약한다.</p>
 <p>반면, SVD는 데이터 행렬 자체를 직교 행렬과 특이값 대각행렬로 분해하는 행렬 분해 기법으로, 변수뿐 아니라 관측치(행) 의 차원까지 함께 축소할 수 있다.</p>
 <p>이 때문에 SVD는 데이터의 행과 열을 동시에 저차원 공간으로 표현할 수 있으며, 특히 이미지나 문서처럼 고차원 행렬 데이터를 다루는 기계학습(예: 이미지 분류, LSA 등) 에 널리 활용된다.</p>
 <p>PCA는 공분산행렬을 기반으로 하므로 각 주성분의 부하량(loadings) 을 통해 원래 변수들이 주성분에 어떻게 기여하는지를 해석할 수 있지만, SVD는 행렬 전체를 수치적으로 분해하기 때문에 변수의 해석보다는 구조적 압축과 근사에 초점을 둔다.</p>
 <p>요약하자면, PCA는 <span dir="rtl">”</span>변수를 줄이고 해석하는” 통계적 방법이고 SVD는 <span dir="rtl">”</span>행렬 전체를 축소하고 근사하는” 수학적 방법이다.</p>
-<p>PCA</p>
-<p>SVD</p>
-<p>2. Sigular Value Decomposition</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/pca svd비교.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="sigular-value-decomposition" class="level4">
+<h4 class="anchored" data-anchor-id="sigular-value-decomposition">2. Sigular Value Decomposition</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -1179,102 +1083,82 @@ x_{p}
 </tr>
 </tbody>
 </table>
-<p>Full SVD and Reduced SVD</p>
+<section id="full-svd-and-reduced-svd" class="level5">
+<h5 class="anchored" data-anchor-id="full-svd-and-reduced-svd">(1) Full SVD and Reduced SVD</h5>
 <ul>
 <li><p><span class="math inline">\(\Sigma_{n \times p} = \begin{bmatrix}
 \text{diag}(\sigma_{1},\sigma_{2},\ldots,\sigma_{r}) &amp; 0 \\
 0 &amp; 0
 \end{bmatrix}\)</span>, 여기서 <span class="math inline">\(\sigma_{i} = \sqrt{\lambda_{i}}\)</span>(<span class="math inline">\(X'X\)</span>의 고유치)이며 <span class="math inline">\(r = \text{rank}(X)\)</span>이다. <span class="math inline">\(\Sigma_{n \times p}\)</span>은 비대칭 대각행렬이다.</p></li>
 <li><p><span class="math inline">\(U'U = I_{n}\)</span>: <span class="math inline">\(U\)</span>가 <span class="math inline">\(n \times n\)</span> 정사각행렬이면 <span class="math inline">\(U'U = I_{n}\)</span>이다(Full SVD). 그러나 실제 SVD 계산에서는 보통 Reduced SVD 형태를 사용하므로 <span class="math inline">\(U\)</span>가 <span class="math inline">\(n \times r\)</span> 정사각행렬이면 <span class="math inline">\(U'U = I_{r}\)</span>이다.</p></li>
-<li><p><span class="math inline">\(V'V = I_{p}\)</span>: 같은 이유로, Reduced SVD에서는 <span class="math inline">\(V'V = I_{r}\)</span>이다. <span class="math inline">\(X'X\)</span>의 고유벡터는 <span class="math inline">\(p \times p\)</span> 행렬 <span class="math inline">\(V\)</span>의 열로 구성되지만, 실제 계산에서는 <span class="math inline">\(r\)</span>개의 주축만 사용한다.</p>
-<p>Truncated SVD</p></li>
+<li><p><span class="math inline">\(V'V = I_{p}\)</span>: 같은 이유로, Reduced SVD에서는 <span class="math inline">\(V'V = I_{r}\)</span>이다. <span class="math inline">\(X'X\)</span>의 고유벡터는 <span class="math inline">\(p \times p\)</span> 행렬 <span class="math inline">\(V\)</span>의 열로 구성되지만, 실제 계산에서는 <span class="math inline">\(r\)</span>개의 주축만 사용한다.</p></li>
 </ul>
+</section>
+<section id="truncated-svd" class="level5">
+<h5 class="anchored" data-anchor-id="truncated-svd">(2) Truncated SVD</h5>
 <p>reduced SVD은 원 데이터 행렬의 계수 r 까지 차원을 줄인다면 Truncated SVD는 그 중에서도 상위 <span class="math inline">\(k( &lt; r)\)</span>개의 특이값과 대응하는 성분만 남겨, 정보의 손실을 최소화하면서 행렬을 근사하는 방법이다.</p>
 <p>즉, 전체 구조를 완전히 복원하는 Reduced SVD와 달리, Truncated SVD는 데이터의 주요 패턴(가장 큰 변동 방향)만 보존하고 미세한 변동이나 노이즈에 해당하는 뒷부분 성분을 버림으로써 데이터를 압축하고 계산 효율을 높이는 목적을 가진다.</p>
 <p><span class="math inline">\(k\)</span>를 결정할 때는 일반적으로 누적 설명변동 비율(예: 80%)을 기준으로 하므로, 주성분분석에서 차원을 선택하는 방식과 동일하다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>from sklearn.preprocessing import StandardScaler</p>
-<p>from sklearn.decomposition import TruncatedSVD</p>
-<p># 1) 변수 선택</p>
-<p>cols = ['HR','RBI','SB','BB','SO','H','AB','GIDP']</p>
-<p>X = bat_with_name[cols].fillna(0)</p>
-<p># 2) 표준화: 평균 0, 표준편차 1</p>
-<p>scaler = StandardScaler()</p>
-<p>Z = scaler.fit_transform(X)</p>
-<p># Full SVD: 모든 직교기저 포함</p>
-<p>U_full, S_full, Vt_full = np.linalg.svd(Z, full_matrices=True)</p>
-<p>print("U_full:", U_full.shape) # (n, n)</p>
-<p>print("S_full:", S_full.shape) # (min(n, p),)</p>
-<p>print("Vt_full:", Vt_full.shape) # (p, p)</p>
-<p># 복원 확인 (완벽하게 동일해야 함)</p>
-<p>Z_recon_full = (U_full[:, :len(S_full)] * S_full) @ Vt_full</p>
-<p>np.allclose(Z, Z_recon_full, atol=1e-10)</p></td>
-</tr>
-</tbody>
-</table>
-<p>U_full: (66, 66)</p>
-<p>S_full: (8,)</p>
-<p>Vt_full: (8, 8)</p>
-<p>True</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 3) Reduced (Thin) SVD: 정확한 분해</p>
-<p>U_r, S_r, Vt_r = np.linalg.svd(Z, full_matrices=False)</p>
-<p># r = rank(Z)</p>
-<p>r = len(S_r)</p>
-<p>print("rank:", r) # (Z 행렬 계수)</p>
-<p>print("U_r:", U_r.shape) # (n, n)</p>
-<p>print("S_r:", S_r.shape) # (min(n, p),)</p>
-<p>print("Vt_r:", Vt_r.shape) # (p, p)</p>
-<p># 복원 확인</p>
-<p>Z_recon = (U_r * S_r) @ Vt_r</p></td>
-</tr>
-</tbody>
-</table>
-<p>rank: 8</p>
-<p>U_r: (66, 8)</p>
-<p>S_r: (8,)</p>
-<p>Vt_r: (8, 8)</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 4) Truncated SVD (상위 k개 성분만 근사)</p>
-<p>k = 3</p>
-<p>svd_k = TruncatedSVD(n_components=k, random_state=0)</p>
-<p>Z_k = svd_k.fit_transform(Z) # U_k Σ_k</p>
-<p>Vk = svd_k.components_ # Vt_k</p>
-<p>Sk = svd_k.singular_values_</p>
-<p># 5) 누적 분산비율로 정보량 확인</p>
-<p>explained_var = (S_r**2)</p>
-<p>ratio = explained_var / explained_var.sum()</p>
-<p>cumulative = np.cumsum(ratio)</p>
-<p>print(f"Reduced rank r = {r}")</p>
-<p>print(f"상위 {k}개 누적 분산 비율: {cumulative[:k]}")</p>
-<p>print("Sk:", Sk.shape) # (min(n, p),)</p>
-<p>print("Vk:", Vk.shape) # (p, p)</p></td>
-</tr>
-</tbody>
-</table>
-<p>Reduced rank r = 8</p>
-<p>상위 3개 누적 분산 비율: [0.29831468 0.52653148 0.68138709]</p>
-<p>Sk: (3,)</p>
-<p>Vk: (3, 8)</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> TruncatedSVD</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 변수 선택</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'HR'</span>,<span class="st">'RBI'</span>,<span class="st">'SB'</span>,<span class="st">'BB'</span>,<span class="st">'SO'</span>,<span class="st">'H'</span>,<span class="st">'AB'</span>,<span class="st">'GIDP'</span>]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> bat_with_name[cols].fillna(<span class="dv">0</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 표준화: 평균 0, 표준편차 1</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Full SVD: 모든 직교기저 포함</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>U_full, S_full, Vt_full <span class="op">=</span> np.linalg.svd(Z, full_matrices<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"U_full:"</span>, U_full.shape)   <span class="co"># (n, n)</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"S_full:"</span>, S_full.shape)   <span class="co"># (min(n, p),)</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Vt_full:"</span>, Vt_full.shape) <span class="co"># (p, p)</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 복원 확인 (완벽하게 동일해야 함)</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>Z_recon_full <span class="op">=</span> (U_full[:, :<span class="bu">len</span>(S_full)] <span class="op">*</span> S_full) <span class="op">@</span> Vt_full</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>np.allclose(Z, Z_recon_full, atol<span class="op">=</span><span class="fl">1e-10</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>U_full: (66, 66) <br> S_full: (8,) <br> Vt_full: (8, 8) <br> True</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Reduced (Thin) SVD: 정확한 분해</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>U_r, S_r, Vt_r <span class="op">=</span> np.linalg.svd(Z, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># r = rank(Z)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="bu">len</span>(S_r)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"rank:"</span>, r)   <span class="co"># (Z 행렬 계수)</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"U_r:"</span>, U_r.shape)   <span class="co"># (n, n)</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"S_r:"</span>, S_r.shape)   <span class="co"># (min(n, p),)</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Vt_r:"</span>, Vt_r.shape) <span class="co"># (p, p)</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 복원 확인</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>Z_recon <span class="op">=</span> (U_r <span class="op">*</span> S_r) <span class="op">@</span> Vt_r</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>rank: 8 <br> U_r: (66, 8) <br> S_r: (8,) <br> Vt_r: (8, 8)</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Truncated SVD (상위 k개 성분만 근사)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>svd_k <span class="op">=</span> TruncatedSVD(n_components<span class="op">=</span>k, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>Z_k <span class="op">=</span> svd_k.fit_transform(Z)      <span class="co"># U_k Σ_k</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>Vk <span class="op">=</span> svd_k.components_            <span class="co"># Vt_k</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>Sk <span class="op">=</span> svd_k.singular_values_</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 누적 분산비율로 정보량 확인</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>explained_var <span class="op">=</span> (S_r<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>ratio <span class="op">=</span> explained_var <span class="op">/</span> explained_var.<span class="bu">sum</span>()</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>cumulative <span class="op">=</span> np.cumsum(ratio)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Reduced rank r = </span><span class="sc">{</span>r<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"상위 </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">개 누적 분산 비율: </span><span class="sc">{</span>cumulative[:k]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Sk:"</span>, Sk.shape)   <span class="co"># (min(n, p),)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Vk:"</span>, Vk.shape) <span class="co"># (p, p)</span></span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Reduced rank r = 8 <br> 상위 3개 누적 분산 비율: [0.29831468 0.52653148 0.68138709] <br> Sk: (3,) <br> Vk: (3, 8)</p>
 
 
+</section>
 </section>
 </section>
 

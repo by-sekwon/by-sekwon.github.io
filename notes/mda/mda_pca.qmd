@@ -529,7 +529,7 @@ $\frac{\lambda_{k}}{p}$
 
 #### 3\. 주성분 사례분석
 
-Lahman Baseball Database
+##### \(1) Lahman Baseball Database
 
 파이썬의 lahman 모듈은 파이썬에서 메이저리그(MLB) 통계의 표준
 데이터베이스인 Lahman Baseball Database를 불러다 쓸 수 있도록 만든
@@ -588,7 +588,7 @@ bat_with_name.head()
 
 ![](images/pca mlb데이터.png){fig-align="center" width="100%"}
 
-상관분석
+##### \(2) 상관분석
 
 주성분분석(PCA)은 변수들 간의 상관관계를 토대로 새로운 축을 찾아내어
 데이터의 차원을 줄이는 방법이다. 이렇게 도출된 주성분은 다시 개체의
@@ -628,32 +628,22 @@ bat_with_name.head()
 제공, 그리고 불필요한 변수 제거를 통한 효율성 제고라는 중요한 역할을
 한다고 할 수 있다.
 
-+-----------------------------------------------------------------------+
-| \# 1) 분석 변수                                                       |
-|                                                                       |
-| cols = \[\'HR\',\'RBI\',\'SB\',\'BB\',\'SO\',\'H\',\'AB\',\'GIDP\'\]  |
-|                                                                       |
-| X = bat_with_name\[cols\].fillna(0)                                   |
-|                                                                       |
-| \# 2) 상관행렬 계산                                                   |
-|                                                                       |
-| corr_matrix = X.corr()                                                |
-|                                                                       |
-| \# 3) 히트맵 시각화                                                   |
-|                                                                       |
-| import matplotlib.pyplot as plt                                       |
-|                                                                       |
-| import seaborn as sns                                                 |
-|                                                                       |
-| plt.figure(figsize=(8,6))                                             |
-|                                                                       |
-| sns.heatmap(corr_matrix, annot=True, cmap=\"coolwarm\", fmt=\".3f\",  |
-| linewidths=0.5)                                                       |
-|                                                                       |
-| plt.title(f\"{latest_year} correlation matrix\")                      |
-|                                                                       |
-| plt.show()                                                            |
-+-----------------------------------------------------------------------+
+```python
+# 1) 분석 변수
+cols = ['HR','RBI','SB','BB','SO','H','AB','GIDP']
+X = bat_with_name[cols].fillna(0)
+
+# 2) 상관행렬 계산
+corr_matrix = X.corr()
+
+# 3) 히트맵 시각화
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.figure(figsize=(8,6))
+sns.heatmap(corr_matrix, annot=True, cmap="coolwarm", fmt=".3f", linewidths=0.5)
+plt.title(f"{latest_year} correlation matrix")
+plt.show()
+```
 
 ![](images/pca 산점도행렬.png){fig-align="center" width="100%"}
 
@@ -688,166 +678,126 @@ HR--RBI--BB가 하나의 주성분을, H--AB가 또 다른 주성분을 형성�
 낮은 변수로 작용할 것임을 짐작할 수 있다. 이는 곧 PCA가 선수들의 타격
 성향을 2\~3개의 주성분으로 압축할 수 있음을 보여주는 사전적 근거이다.
 
-주성분 구하기
+##### \(3) 주성분 구하기
 
-+-----------------------------------------------------------------------+
-| import pandas as pd                                                   |
-|                                                                       |
-| import numpy as np                                                    |
-|                                                                       |
-| from sklearn.preprocessing import StandardScaler                      |
-|                                                                       |
-| from sklearn.decomposition import PCA                                 |
-|                                                                       |
-| import matplotlib.pyplot as plt                                       |
-|                                                                       |
-| \# 1) 분석 변수                                                       |
-|                                                                       |
-| cols = \[\'HR\',\'RBI\',\'SB\',\'BB\',\'SO\',\'H\',\'AB\',\'GIDP\'\]  |
-|                                                                       |
-| X = bat_with_name\[cols\].fillna(0)                                   |
-|                                                                       |
-| \# 2) 표준화                                                          |
-|                                                                       |
-| scaler = StandardScaler()                                             |
-|                                                                       |
-| X_std = scaler.fit_transform(X)                                       |
-|                                                                       |
-| \# 3) PCA (전체 성분 학습)                                            |
-|                                                                       |
-| pca = PCA()                                                           |
-|                                                                       |
-| scores = pca.fit_transform(X_std)                                     |
-|                                                                       |
-| \# 3-1) 점수 붙이기                                                   |
-|                                                                       |
-| for j in range(scores.shape\[1\]):                                    |
-|                                                                       |
-| bat_with_name\[f\'PC{j+1}\'\] = scores\[:, j\]                        |
-|                                                                       |
-| \# 4) 고유값과 Kaiser 필터                                            |
-|                                                                       |
-| eigs = pca.explained_variance\_                                       |
-|                                                                       |
-| mask = eigs \>= 1                                                     |
-|                                                                       |
-| selected_idx = np.where(mask)\[0\]                                    |
-|                                                                       |
-| selected_eigs = eigs\[mask\]                                          |
-|                                                                       |
-| \# 5) 부하 행렬 (선택된 PC만)                                         |
-|                                                                       |
-| loadings = pd.DataFrame(                                              |
-|                                                                       |
-| pca.components\_.T\[:, mask\] \* np.sqrt(selected_eigs),              |
-|                                                                       |
-| index=cols,                                                           |
-|                                                                       |
-| columns=\[f\'PC{i+1}\' for i in selected_idx\] \# ✅ +1 제거!         |
-|                                                                       |
-| )                                                                     |
-|                                                                       |
-| \# ✅ 부하 행렬 출력                                                  |
-|                                                                       |
-| print(\"고유값 (전체):\", np.round(eigs, 3))                          |
-|                                                                       |
-| print(\"선택된 주성분 (λ ≥ 1):\", selected_idx+1)                     |
-|                                                                       |
-| print(\"부하 행렬 (loadings):\")                                      |
-|                                                                       |
-| print(loadings.round(3))                                              |
-|                                                                       |
-| \# 6) 각 주성분의 설명 분산 비율                                      |
-|                                                                       |
-| explained_ratio = pca.explained_variance_ratio\_                      |
-|                                                                       |
-| \# 7) 누적 설명 분산 비율                                             |
-|                                                                       |
-| cumulative_ratio = np.cumsum(explained_ratio)                         |
-|                                                                       |
-| \# ✅ 출력                                                            |
-|                                                                       |
-| print(\"주성분별 변동 설명 기여율:\")                                 |
-|                                                                       |
-| for i, (r, c) in enumerate(zip(explained_ratio, cumulative_ratio),    |
-| start=1):                                                             |
-|                                                                       |
-| print(f\"PC{i}: {r:.3f} (누적 {c:.3f})\")                             |
-+-----------------------------------------------------------------------+
+```python
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# 1) 분석 변수
+cols = ['HR','RBI','SB','BB','SO','H','AB','GIDP']
+X = bat_with_name[cols].fillna(0)
+
+# 2) 표준화
+scaler = StandardScaler()
+X_std = scaler.fit_transform(X)
+
+# 3) PCA (전체 성분 학습)
+pca = PCA()
+scores = pca.fit_transform(X_std)
+
+# 3-1) 점수 붙이기
+for j in range(scores.shape[1]):
+    bat_with_name[f'PC{j+1}'] = scores[:, j]
+
+# 4) 고유값과 Kaiser 필터
+eigs = pca.explained_variance_
+mask = eigs >= 1
+selected_idx = np.where(mask)[0]
+selected_eigs = eigs[mask]
+
+# 5) 부하 행렬 (선택된 PC만)
+loadings = pd.DataFrame(
+    pca.components_.T[:, mask] * np.sqrt(selected_eigs),
+    index=cols,
+    columns=[f'PC{i+1}' for i in selected_idx]   # ✅ +1 제거!
+)
+
+# ✅ 부하 행렬 출력
+print("고유값 (전체):", np.round(eigs, 3))
+print("선택된 주성분 (λ ≥ 1):", selected_idx+1)
+print("부하 행렬 (loadings):")
+print(loadings.round(3))
+
+# 6) 각 주성분의 설명 분산 비율
+explained_ratio = pca.explained_variance_ratio_
+
+# 7) 누적 설명 분산 비율
+cumulative_ratio = np.cumsum(explained_ratio)
+
+# ✅ 출력
+print("주성분별 변동 설명 기여율:")
+for i, (r, c) in enumerate(zip(explained_ratio, cumulative_ratio), start=1):
+    print(f"PC{i}: {r:.3f} (누적 {c:.3f})")
+```
 
 고유값 (전체): \[2.423 1.854 1.258 0.945 0.633 0.542 0.306 0.162\]
-
+<br>
 선택된 주성분 (λ ≥ 1): \[1 2 3\]
-
+<br>
 부하 행렬 (loadings):
-
+<br>
 PC1 PC2 PC3
-
+<br>
 HR 0.776 0.467 -0.070
-
+<br>
 RBI 0.865 0.282 -0.200
-
+<br>
 SB 0.090 -0.291 0.838
-
+<br>
 BB 0.135 0.719 0.186
-
+<br>
 SO 0.079 0.609 0.175
-
+<br>
 H 0.696 -0.532 0.122
-
+<br>
 AB 0.709 -0.371 0.238
-
+<br>
 GIDP 0.229 -0.403 -0.611
 
 주성분별 변동 설명 기여율:
-
+<br>
 PC1: 0.298 (누적 0.298)
-
+<br>
 PC2: 0.228 (누적 0.527)
-
+<br>
 PC3: 0.155 (누적 0.681)
-
+<br>
 PC4: 0.116 (누적 0.798)
-
+<br>
 PC5: 0.078 (누적 0.876)
-
+<br>
 PC6: 0.067 (누적 0.942)
-
+<br>
 PC7: 0.038 (누적 0.980)
-
+<br>
 PC8: 0.020 (누적 1.000)
 
-주성분 이름부여
+##### \(4) 주성분 이름부여
 
-+-----------------------------------------------------------------------+
-| #부하 산점도 그리기                                                   |
-|                                                                       |
-| import plotly.express as px                                           |
-|                                                                       |
-| \# Plotly 산점도 (PC1 vs PC2)                                         |
-|                                                                       |
-| fig = px.scatter(                                                     |
-|                                                                       |
-| loadings.reset_index(), \# index(변수명)를 컬럼으로 복원              |
-|                                                                       |
-| x=\"PC1\",                                                            |
-|                                                                       |
-| y=\"PC2\",                                                            |
-|                                                                       |
-| text=\"index\" \# 변수명을 라벨로 표시                                |
-|                                                                       |
-| )                                                                     |
-|                                                                       |
-| fig.update_traces(textposition=\"top center\")                        |
-|                                                                       |
-| fig.update_layout(title_text=\"Loading Scatterplot of PC1 and PC2\")  |
-|                                                                       |
-| fig.show()                                                            |
-+-----------------------------------------------------------------------+
+```python
+#부하 산점도 그리기
+import plotly.express as px
+
+# Plotly 산점도 (PC1 vs PC2)
+fig = px.scatter(
+    loadings.reset_index(),   # index(변수명)를 컬럼으로 복원
+    x="PC1",
+    y="PC2",
+    text="index"              # 변수명을 라벨로 표시
+)
+
+fig.update_traces(textposition="top center")
+fig.update_layout(title_text="Loading Scatterplot of PC1 and PC2")
+fig.show()
+```
 
 ![](images/pca 부하산점도.png){fig-align="center" width="100%"}
 
-PC1: 파워
+**PC1: 파워**
 
 - 높은 부하: RBI (0.865), HR (0.776), H (0.696), AB (0.709) → 타점,
   홈런, 안타, 타수 모두 양의 기여.
@@ -855,7 +805,7 @@ PC1: 파워
 - 해석: 타격 생산력과 파워를 반영하는 주성분: ["]{dir="rtl"}타격
   생산력/파워 성분"
 
-PC2: 선구안
+**PC2: 선구안**
 
 - 높은 부하: BB (0.719), SO (0.609) (+), HR (0.467)(중간), 음의 부하: H
   (-0.532), GIDP (-0.403) → 볼넷과 삼진이 동시에 높고, 안타는 음의 방향.
@@ -863,7 +813,7 @@ PC2: 선구안
 - 해석: 컨택(안타 중심)과 선구안·삼진 경향의 대비: ["]{dir="rtl"}선구안
   vs 컨택 성분"
 
-PC3: 주루
+**PC3: 주루**
 
 - 높은 부하: SB (0.838) 양수, GIDP (-0.611) 음수 → 도루가 많은
   선수일수록 병살타는 적은 경향.
@@ -871,101 +821,84 @@ PC3: 주루
 - 해석: 주루 능력(스피드)을 보여주는 주성분: ["]{dir="rtl"}스피드/주루
   성분"
 
-  주성분 활용(1) 개체분류
 
-+-----------------------------------------------------------------------+
-| \# PC1, PC2 산점도                                                    |
-|                                                                       |
-| plt.figure(figsize=(9,7))                                             |
-|                                                                       |
-| plt.scatter(bat_with_name\[\'PC1\'\], bat_with_name\[\'PC2\'\],       |
-| alpha=0.6)                                                            |
-|                                                                       |
-| \# 선수 이름 표시 (홈런 15개 이상 선수)                               |
-|                                                                       |
-| for \_, row in bat_with_name.iterrows():                              |
-|                                                                       |
-| if row\[\'HR\'\] \>= 15:                                              |
-|                                                                       |
-| plt.text(row\[\'PC1\'\]+0.05, row\[\'PC2\'\]+0.05,                    |
-|                                                                       |
-| f\"{row\[\'nameFirst\'\]} {row\[\'nameLast\'\]}\", fontsize=8)        |
-|                                                                       |
-| plt.xlabel(\"PC1 (batting ability / power)\")                         |
-|                                                                       |
-| plt.ylabel(\"PC2 (plate discipline vs contact)\")                     |
-|                                                                       |
-| plt.title(\"MLB Batters PCA (PC1 vs PC2)\")                           |
-|                                                                       |
-| plt.grid(True)                                                        |
-|                                                                       |
-| plt.show()                                                            |
-+-----------------------------------------------------------------------+
+##### \(5) 주성분 활용(1) 개체분류
+
+```python
+# PC1, PC2 산점도
+plt.figure(figsize=(9,7))
+plt.scatter(bat_with_name['PC1'], bat_with_name['PC2'], alpha=0.6)
+
+# 선수 이름 표시 (홈런 15개 이상 선수)
+for _, row in bat_with_name.iterrows():
+    if row['HR'] >= 15:
+        plt.text(row['PC1']+0.05, row['PC2']+0.05,
+                 f"{row['nameFirst']} {row['nameLast']}", fontsize=8)
+
+plt.xlabel("PC1 (batting ability / power)")
+plt.ylabel("PC2 (plate discipline vs contact)")
+plt.title("MLB Batters PCA (PC1 vs PC2)")
+plt.grid(True)
+plt.show()
+```
 
 ![](images/pca mlb분류.png){fig-align="center" width="100%"}
 
 ![](images/pca mlb분류02.png){fig-align="center" width="100%"}
 
-+---------------------------------------------------------------------------+
-| \# 각 주성분별 상위 5명 출력                                              |
-|                                                                           |
-| for pc in \['PC1\',\'PC2\',\'PC3\'\]:                                     |
-|                                                                           |
-| print(f\"\\n{pc} 상위 5명:\")                                             |
-|                                                                           |
-| top5 =                                                                    |
-| (bat_with_name\[\[\'nameFirst\',\'nameLast\',\'HR\',\'RBI\',\'SB\',pc\]\] |
-|                                                                           |
-| .sort_values(pc, ascending=False)                                         |
-|                                                                           |
-| .head(5))                                                                 |
-|                                                                           |
-| print(top5.to_string(index=False))                                        |
-+---------------------------------------------------------------------------+
+```python
+# 각 주성분별 상위 5명 출력
+for pc in [‘PC1','PC2','PC3']:
+    print(f"\n{pc} 상위 5명:")
+    top5 = (bat_with_name[['nameFirst','nameLast','HR','RBI','SB',pc]]
+             .sort_values(pc, ascending=False)
+             .head(5))
+    print(top5.to_string(index=False))
+```
 
-PC1 타격 상위 5명:
+**PC1 타격 상위 5명**
 
 nameFirst nameLast HR RBI SB PC1
-
+<br>
 Jose Abreu 19 60.0 0.0 4.934120
-
+<br>
 Marcell Ozuna 18 56.0 0.0 3.823145
-
+<br>
 Manny Machado 16 47.0 6.0 2.837655
-
+<br>
 Trea Turner 12 41.0 12.0 2.651955
-
+<br>
 Freddie Freeman 13 53.0 2.0 2.554560
 
-PC2 선구안 상위 5명:
-
+**PC2 선구안 상위 5명**
+<br>
 nameFirst nameLast HR RBI SB PC2
-
+<br>
 Matt Olson 14 42.0 1.0 3.382615
-
+<br>
 Christian Yelich 12 22.0 4.0 3.281660
-
+<br>
 Max Muncy 12 27.0 1.0 2.790429
-
+<br>
 Yoan Moncada 6 24.0 0.0 2.166739
-
+<br>
 Carlos Santana 8 30.0 0.0 2.059597
 
-PC3 주루 상위 5명:
+**PC3 주루 상위 5명**
 
 nameFirst nameLast HR RBI SB PC3
-
+<br>
 Adalberto Mondesi 6 22.0 24.0 3.875285
-
+<br>
 Trevor Story 11 28.0 15.0 2.501421
-
+<br>
 Trent Grisham 10 26.0 10.0 2.397888
-
+<br>
 Whit Merrifield 9 30.0 12.0 2.271729
-
+<br>
 Dansby Swanson 10 35.0 5.0 2.135323
 
-주성분 활용(2) 타자 능력 종합지표
+##### \(6) 주성분 활용(2) 타자 능력 종합지표
 
 PCA의 큰 장점은 여러 개의 서로 다른 변수들을 중복 없이 압축해 낼 수
 있다는 점이다. 예컨대 PCA 결과에서 PC2, PC3, PC4가 각각 파워, 선구안,
@@ -982,53 +915,45 @@ PCA의 큰 장점은 여러 개의 서로 다른 변수들을 중복 없이 압�
 수 있다. 말하자면 OPS나 WAR 같은 전통적 지표와는 다른, 데이터 축약
 기반의 통합 평가 지표가 되는 셈이다.
 
-+---------------------------------------------------------------------------------------------------+
-| \# 선택된 PC 점수만 추출 (예: PC1, PC2, PC3)                                                      |
-|                                                                                                   |
-| selected_pcs = \[\'PC1\',\'PC2\',\'PC3\'\]                                                        |
-|                                                                                                   |
-| weights = explained_ratio\[0:3\] / explained_ratio\[0:3\].sum() \# PC1\~PC3 비율 정규화           |
-|                                                                                                   |
-| \# 종합 지표 계산                                                                                 |
-|                                                                                                   |
-| bat_with_name\[\'PCA_Batting_Index\'\] = (                                                        |
-|                                                                                                   |
-| bat_with_name\[selected_pcs\].values @ weights                                                    |
-|                                                                                                   |
-| )                                                                                                 |
-|                                                                                                   |
-| \# 상위 10명 확인                                                                                 |
-|                                                                                                   |
-| print(bat_with_name\[\[\'nameFirst\',\'nameLast\',\'HR\',\'RBI\',\'SB\',\'PCA_Batting_Index\'\]\] |
-|                                                                                                   |
-| .sort_values(\'PCA_Batting_Index\', ascending=False)                                              |
-|                                                                                                   |
-| .head(10))                                                                                        |
-+---------------------------------------------------------------------------------------------------+
+```python
+# 선택된 PC 점수만 추출 (예: PC1, PC2, PC3)
+selected_pcs = ['PC1','PC2','PC3']
+weights = explained_ratio[0:3] / explained_ratio[0:3].sum()  # PC1~PC3 비율 정규화
+
+# 종합 지표 계산
+bat_with_name['PCA_Batting_Index'] = (
+    bat_with_name[selected_pcs].values @ weights
+)
+
+# 상위 10명 확인
+print(bat_with_name[['nameFirst','nameLast','HR','RBI','SB','PCA_Batting_Index']]
+      .sort_values('PCA_Batting_Index', ascending=False)
+      .head(10))
+```
 
 nameFirst nameLast HR RBI SB PCA_Batting_Index
-
+<br>
 43 Marcell Ozuna 18 56.0 0.0 2.237267
-
+<br>
 46 Jose Ramirez 17 46.0 10.0 1.567421
-
+<br>
 59 Fernando Tatis 17 45.0 11.0 1.446034
-
+<br>
 0 Jose Abreu 19 60.0 0.0 1.446032
-
+<br>
 63 Luke Voit 22 52.0 0.0 1.287682
-
+<br>
 22 Freddie Freeman 13 53.0 2.0 1.231654
-
+<br>
 42 Matt Olson 14 42.0 1.0 1.209545
-
+<br>
 58 Dansby Swanson 10 35.0 5.0 1.205611
-
+<br>
 7 Mookie Betts 16 39.0 10.0 1.043342
-
+<br>
 57 Trevor Story 11 28.0 15.0 0.910111
 
-주성분 활용(4) 이상치 진단
+##### \(7) 주성분 활용(4) 이상치 진단
 
 주성분 분석은 원 변수들의 선형함수를 이용하여 그 변수들의 공분산 구조를
 설명하는 방법이다. 표본이 $n$, 변수 개수가 $p$개인 데이터 행렬 로부터의
@@ -1059,257 +984,170 @@ $\overset{p}{\sum_{i = k + 1}}\frac{y_{i}^{2}}{\lambda_{i}} \sim \chi^{2}(p - k)
 또는 모니터링 기법(Hotelling의 T\^2, Q-통계 등)과 함께 사용되는 것이
 권장된다.
 
-+-----------------------------------------------------------------------+
-| \# === PCA 기반 이상치 진단                                           |
-| ==========================================                            |
-|                                                                       |
-| from scipy.stats import chi2                                          |
-|                                                                       |
-| import numpy as np                                                    |
-|                                                                       |
-| import pandas as pd                                                   |
-|                                                                       |
-| \# 0) 준비 (위에서 이미 계산된 것들 사용)                             |
-|                                                                       |
-| \# - scores: PCA 점수 (표준화된 X에 대해 학습)                        |
-|                                                                       |
-| \# - eigs: 고유값 (explained_variance\_)                              |
-|                                                                       |
-| \# - selected_idx: Kaiser(λ\>=1)로 선택된 성분의 인덱스 (0-based)     |
-|                                                                       |
-| p = scores.shape\[1\]                                                 |
-|                                                                       |
-| sel = np.array(sorted(selected_idx)) \# 주요 주성분 index             |
-|                                                                       |
-| res = np.setdiff1d(np.arange(p), sel) \# 잔차 주성분 index            |
-|                                                                       |
-| k = len(sel)                                                          |
-|                                                                       |
-| df_main = k                                                           |
-|                                                                       |
-| df_res = p - k                                                        |
-|                                                                       |
-| alpha_main = 0.05                                                     |
-|                                                                       |
-| alpha_res = 0.05                                                      |
-|                                                                       |
-| \# 1) 정규화된 PC 점수 (각 성분을 표준편차 sqrt(λ)로 나눔)            |
-|                                                                       |
-| z = scores / np.sqrt(eigs) \# shape: (n_samples, p)                   |
-|                                                                       |
-| \# 2) 통계량 계산                                                     |
-|                                                                       |
-| T2_main = (z\[:, sel\]\*\*2).sum(axis=1) if k \> 0 else               |
-| np.zeros(len(z))                                                      |
-|                                                                       |
-| T2_res = (z\[:, res\]\*\*2).sum(axis=1) if df_res \> 0 else           |
-| np.zeros(len(z))                                                      |
-|                                                                       |
-| \# 3) 임계값 (카이제곱)                                               |
-|                                                                       |
-| crit_main = chi2.ppf(1 - alpha_main, df_main) if df_main \> 0 else    |
-| np.inf                                                                |
-|                                                                       |
-| crit_res = chi2.ppf(1 - alpha_res, df_res) if df_res \> 0 else np.inf |
-|                                                                       |
-| \# 4) 데이터프레임에 부착 및 플래그                                   |
-|                                                                       |
-| bat_with_name\[\"T2_main\"\] = T2_main                                |
-|                                                                       |
-| bat_with_name\[\"T2_res\"\] = T2_res                                  |
-|                                                                       |
-| bat_with_name\[\"flag_main\"\] = (T2_main \> crit_main) if            |
-| np.isfinite(crit_main) else False                                     |
-|                                                                       |
-| bat_with_name\[\"flag_res\"\] = (T2_res \> crit_res) if               |
-| np.isfinite(crit_res) else False                                      |
-|                                                                       |
-| bat_with_name\[\"flag_any\"\] = bat_with_name\[\"flag_main\"\] \|     |
-| bat_with_name\[\"flag_res\"\]                                         |
-|                                                                       |
-| print(f\"\[선택 성분 개수 k={k}, df_main={df_main},                   |
-| df_res={df_res}\]\")                                                  |
-|                                                                       |
-| print(f\"임계값(α=0.05): main χ²({df_main})={crit_main:.3f}, residual |
-| χ²({df_res})={crit_res:.3f}\")                                        |
-|                                                                       |
-| \# 5) 상위 이상치 후보 확인 (주요/잔차 각각 상위 10명씩)              |
-|                                                                       |
-| top_main = bat_with_name.sort_values(\"T2_main\",                     |
-| ascending=False).head(10)\[                                           |
-|                                                                       |
-| \[\"nameFirst\",\"nameLast\",\"T2_main\",\"flag_main\"\]              |
-|                                                                       |
-| \]                                                                    |
-|                                                                       |
-| top_res = bat_with_name.sort_values(\"T2_res\",                       |
-| ascending=False).head(10)\[                                           |
-|                                                                       |
-| \[\"nameFirst\",\"nameLast\",\"T2_res\",\"flag_res\"\]                |
-|                                                                       |
-| \]                                                                    |
-|                                                                       |
-| print(\"\\n\[주요 주성분 영역 이상치 후보 TOP 10\]\")                 |
-|                                                                       |
-| print(top_main.to_string(index=False))                                |
-|                                                                       |
-| print(\"\\n\[잔차 주성분 영역 이상치 후보 TOP 10\]\")                 |
-|                                                                       |
-| print(top_res.to_string(index=False))                                 |
-+-----------------------------------------------------------------------+
+```python
+# === PCA 기반 이상치 진단 ==========================================
+from scipy.stats import chi2
+import numpy as np
+import pandas as pd
+
+# 0) 준비 (위에서 이미 계산된 것들 사용)
+# - scores: PCA 점수 (표준화된 X에 대해 학습)
+# - eigs:   고유값 (explained_variance_)
+# - selected_idx: Kaiser(λ>=1)로 선택된 성분의 인덱스 (0-based)
+p = scores.shape[1]
+sel = np.array(sorted(selected_idx))                     # 주요 주성분 index
+res = np.setdiff1d(np.arange(p), sel)                   # 잔차 주성분 index
+k = len(sel)
+df_main = k
+df_res  = p - k
+alpha_main = 0.05
+alpha_res  = 0.05
+
+# 1) 정규화된 PC 점수 (각 성분을 표준편차 sqrt(λ)로 나눔)
+z = scores / np.sqrt(eigs)                              # shape: (n_samples, p)
+
+# 2) 통계량 계산
+T2_main = (z[:, sel]**2).sum(axis=1) if k > 0 else np.zeros(len(z))
+T2_res  = (z[:, res]**2).sum(axis=1) if df_res > 0 else np.zeros(len(z))
+
+# 3) 임계값 (카이제곱)
+crit_main = chi2.ppf(1 - alpha_main, df_main) if df_main > 0 else np.inf
+crit_res  = chi2.ppf(1 - alpha_res,  df_res)  if df_res  > 0 else np.inf
+
+# 4) 데이터프레임에 부착 및 플래그
+bat_with_name["T2_main"] = T2_main
+bat_with_name["T2_res"]  = T2_res
+bat_with_name["flag_main"] = (T2_main > crit_main) if np.isfinite(crit_main) else False
+bat_with_name["flag_res"]  = (T2_res  > crit_res)  if np.isfinite(crit_res)  else False
+bat_with_name["flag_any"]  = bat_with_name["flag_main"] | bat_with_name["flag_res"]
+
+print(f"[선택 성분 개수 k={k}, df_main={df_main}, df_res={df_res}]")
+print(f"임계값(α=0.05): main χ²({df_main})={crit_main:.3f}, residual χ²({df_res})={crit_res:.3f}")
+
+# 5) 상위 이상치 후보 확인 (주요/잔차 각각 상위 10명씩)
+top_main = bat_with_name.sort_values("T2_main", ascending=False).head(10)[
+    ["nameFirst","nameLast","T2_main","flag_main"]
+]
+top_res  = bat_with_name.sort_values("T2_res",  ascending=False).head(10)[
+    ["nameFirst","nameLast","T2_res","flag_res"]
+]
+
+print("\n[주요 주성분 영역 이상치 후보 TOP 10]")
+print(top_main.to_string(index=False))
+print("\n[잔차 주성분 영역 이상치 후보 TOP 10]")
+print(top_res.to_string(index=False))
+```
 
 \[선택 성분 개수 k=3, df_main=3, df_res=5\]
-
+<br>
 임계값(α=0.05): main χ²(3)=7.815, residual χ²(5)=11.070
 
 \[주요 주성분 영역 이상치 후보 TOP 10\]
-
+<br>
 nameFirst nameLast T2_main flag_main
-
+<br>
 Jose Abreu 13.735414 True
-
+<br>
 Adalberto Mondesi 13.266429 True
-
+<br>
 Whit Merrifield 9.340053 True
-
+<br>
 Marcell Ozuna 7.434100 False
-
+<br>
 Christian Yelich 6.806291 False
-
+<br>
 Trea Turner 6.614026 False
-
+<br>
 Trevor Story 6.595463 False
-
+<br>
 Matt Olson 6.206043 False
-
+<br>
 Trent Grisham 5.437111 False
-
+<br>
 Hanser Alberto 5.087521 False
 
 \[잔차 주성분 영역 이상치 후보 TOP 10\]
-
+<br>
 nameFirst nameLast T2_res flag_res
-
+<br>
 Cesar Hernandez 15.628843 True
-
+<br>
 Adalberto Mondesi 14.008599 True
-
+<br>
 Freddie Freeman 13.942985 True
-
+<br>
 Javier Baez 11.264646 True
-
+<br>
 Dansby Swanson 10.582634 False
-
+<br>
 Carlos Santana 10.357712 False
-
+<br>
 Tim Anderson 10.154598 False
-
+<br>
 Kyle Seager 9.084776 False
-
+<br>
 Kyle Tucker 8.849439 False
-
+<br>
 Keston Hiura 8.728401 False
 
-+------------------------------------------------------------------------------------------+
-| \# 6) 2D 타원 시각화 (PC1 vs PC2, 95%)                                                   |
-|                                                                                          |
-| import matplotlib.pyplot as plt                                                          |
-|                                                                                          |
-| from matplotlib.patches import Ellipse                                                   |
-|                                                                                          |
-| from scipy.stats import chi2                                                             |
-|                                                                                          |
-| import numpy as np                                                                       |
-|                                                                                          |
-| \# (1) 좌표와 공분산                                                                     |
-|                                                                                          |
-| pcx, pcy = 0, 1 \# 필요시 주성분은 pc1=0, pc2=1, \...                                    |
-|                                                                                          |
-| x = scores\[:, pcx\]                                                                     |
-|                                                                                          |
-| y = scores\[:, pcy\]                                                                     |
-|                                                                                          |
-| XY = np.column_stack(\[x, y\])                                                           |
-|                                                                                          |
-| mu = XY.mean(axis=0)                                                                     |
-|                                                                                          |
-| cov = np.cov(XY, rowvar=False)                                                           |
-|                                                                                          |
-| \# (2) 타원 파라미터                                                                     |
-|                                                                                          |
-| vals, vecs = np.linalg.eigh(cov)                                                         |
-|                                                                                          |
-| order = vals.argsort()\[::-1\]                                                           |
-|                                                                                          |
-| vals, vecs = vals\[order\], vecs\[:, order\]                                             |
-|                                                                                          |
-| chi2_val = chi2.ppf(0.95, df=2)                                                          |
-|                                                                                          |
-| width, height = 2\*np.sqrt(vals\*chi2_val)                                               |
-|                                                                                          |
-| angle = np.degrees(np.arctan2(\*vecs\[:,0\]\[::-1\]))                                    |
-|                                                                                          |
-| \# (3) 마할라노비스 거리\^2로 이상치 판정(타원 밖)                                       |
-|                                                                                          |
-| inv_cov = np.linalg.inv(cov)                                                             |
-|                                                                                          |
-| d = XY - mu                                                                              |
-|                                                                                          |
-| d2 = np.einsum(\'ij,jk,ik-\>i\', d, inv_cov, d) \# 거리\^2                               |
-|                                                                                          |
-| outlier_mask = d2 \> chi2_val                                                            |
-|                                                                                          |
-| \# 4) 플롯 (수정 버전)                                                                   |
-|                                                                                          |
-| fig, ax = plt.subplots(figsize=(8,6))                                                    |
-|                                                                                          |
-| ax.scatter(x, y, s=25)                                                                   |
-|                                                                                          |
-| ax.scatter(mu\[0\], mu\[1\], c=\'black\', s=30) \# 중심점                                |
-|                                                                                          |
-| \# 🔧 angle을 keyword argument로 명시!                                                   |
-|                                                                                          |
-| ellipse = Ellipse(xy=mu, width=width, height=height, angle=angle,                        |
-|                                                                                          |
-| edgecolor=\'orange\', facecolor=\'none\', lw=2)                                          |
-|                                                                                          |
-| ax.add_patch(ellipse)                                                                    |
-|                                                                                          |
-| \# 라벨: 타원 밖만 표시 (playerID 없으면 nameFirst+nameLast 사용)                        |
-|                                                                                          |
-| label_col = \'playerID\' if \'playerID\' in bat_with_name.columns else None              |
-|                                                                                          |
-| for i in np.where(outlier_mask)\[0\]:                                                    |
-|                                                                                          |
-| if label_col:                                                                            |
-|                                                                                          |
-| txt = str(bat_with_name.iloc\[i\]\[label_col\])                                          |
-|                                                                                          |
-| else:                                                                                    |
-|                                                                                          |
-| txt =                                                                                    |
-| f\"{bat_with_name.iloc\[i\]\[\'nameLast\'\]}{bat_with_name.iloc\[i\]\[\'nameFirst\'\]}\" |
-|                                                                                          |
-| ax.text(x\[i\], y\[i\]+0.12, txt, fontsize=9)                                            |
-|                                                                                          |
-| \# 축 라벨: 분산 기여율 표시                                                             |
-|                                                                                          |
-| vx = pca.explained_variance_ratio\_\[pcx\]\*100                                          |
-|                                                                                          |
-| vy = pca.explained_variance_ratio\_\[pcy\]\*100                                          |
-|                                                                                          |
-| ax.set_xlabel(f\'PC{pcx+1} component ({vx:.0f}%)\')                                      |
-|                                                                                          |
-| ax.set_ylabel(f\'PC{pcy+1} component ({vy:.0f}%)\')                                      |
-|                                                                                          |
-| ax.set_title(\'scatter plot of POWER and Hitting components (Anomaly)\')                 |
-|                                                                                          |
-| ax.grid(True, alpha=0.3)                                                                 |
-|                                                                                          |
-| plt.tight_layout()                                                                       |
-|                                                                                          |
-| plt.show()                                                                               |
-+------------------------------------------------------------------------------------------+
+```python
+# 6) 2D 타원 시각화 (PC1 vs PC2, 95%)
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
+from scipy.stats import chi2
+import numpy as np
+
+# (1) 좌표와 공분산
+pcx, pcy = 0, 1                          # 필요시 주성분은 pc1=0, pc2=1, ...
+x = scores[:, pcx]
+y = scores[:, pcy]
+XY = np.column_stack([x, y])
+mu = XY.mean(axis=0)
+cov = np.cov(XY, rowvar=False)
+
+# (2) 타원 파라미터
+vals, vecs = np.linalg.eigh(cov)
+order = vals.argsort()[::-1]
+vals, vecs = vals[order], vecs[:, order]
+chi2_val = chi2.ppf(0.95, df=2)
+width, height = 2*np.sqrt(vals*chi2_val)
+angle = np.degrees(np.arctan2(*vecs[:,0][::-1]))
+
+# (3) 마할라노비스 거리^2로 이상치 판정(타원 밖)
+inv_cov = np.linalg.inv(cov)
+d = XY - mu
+d2 = np.einsum('ij,jk,ik->i', d, inv_cov, d)            # 거리^2
+outlier_mask = d2 > chi2_val
+
+# 4) 플롯 (수정 버전)
+fig, ax = plt.subplots(figsize=(8,6))
+ax.scatter(x, y, s=25)
+ax.scatter(mu[0], mu[1], c='black', s=30)               # 중심점
+
+# 🔧 angle을 keyword argument로 명시!
+ellipse = Ellipse(xy=mu, width=width, height=height, angle=angle,
+                  edgecolor='orange', facecolor='none', lw=2)
+ax.add_patch(ellipse)
+
+# 라벨: 타원 밖만 표시 (playerID 없으면 nameFirst+nameLast 사용)
+label_col = 'playerID' if 'playerID' in bat_with_name.columns else None
+for i in np.where(outlier_mask)[0]:
+    if label_col:
+        txt = str(bat_with_name.iloc[i][label_col])
+    else:
+        txt = f"{bat_with_name.iloc[i]['nameLast']}{bat_with_name.iloc[i]['nameFirst']}"
+    ax.text(x[i], y[i]+0.12, txt, fontsize=9)
+
+# 축 라벨: 분산 기여율 표시
+vx = pca.explained_variance_ratio_[pcx]*100
+vy = pca.explained_variance_ratio_[pcy]*100
+ax.set_xlabel(f'PC{pcx+1} component ({vx:.0f}%)')
+ax.set_ylabel(f'PC{pcy+1} component ({vy:.0f}%)')
+ax.set_title('scatter plot of POWER and Hitting components (Anomaly)')
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.show()
+```
 
 ![](images/pca 이상개체진단.png){fig-align="center" width="100%"}
 
@@ -1331,109 +1169,67 @@ FA·ARB 제도, 포지션, 팀 재정 여건 등 외생 변수가 강하게 작�
 연봉 데이터는 2020년 데이터가 없어 타자 능력 데이터와 달리 2016년
 데이터를 이용하여 분석 대상 선수는 33명이다(최초 분석 데이터 66명).
 
-+-----------------------------------------------------------------------+
-| from lahman import salaries                                           |
-|                                                                       |
-| \# 연봉 데이터 불러오기                                               |
-|                                                                       |
-| sal = salaries()                                                      |
-|                                                                       |
-| \# 분석 시즌(예: latest_year) 연봉 데이터 선택                        |
-|                                                                       |
-| sal_latest = sal\[sal\[\'yearID\'\] == 2016\] #2020 연봉이 없어       |
-| 2016년 연봉을 사용                                                    |
-|                                                                       |
-| \# 선수 이름+PCA 점수 데이터와 연봉 join                              |
-|                                                                       |
-| bat_with_salary = bat_with_name.merge(                                |
-|                                                                       |
-| sal_latest\[\[\'playerID\',\'salary\'\]\],                            |
-|                                                                       |
-| on=\'playerID\',                                                      |
-|                                                                       |
-| how=\'left\'                                                          |
-|                                                                       |
-| )                                                                     |
-|                                                                       |
-| \# 결측치 제거                                                        |
-|                                                                       |
-| bat_with_salary = bat_with_salary.dropna(subset=\[\'salary\'\])       |
-|                                                                       |
-| \# 상관계수 계산 (연봉과 PC 점수)                                     |
-|                                                                       |
-| corrs =                                                               |
-| bat_with_salary\[\['salary\',\'PC1\',\'PC2\',\'PC3\'\]\].corr()       |
-|                                                                       |
-| print(\"연봉과 PCA 성분 상관계수:\")                                  |
-|                                                                       |
-| print(corrs\[\'salary\'\].round(3))                                   |
-+-----------------------------------------------------------------------+
+```python
+from lahman import salaries
 
-연봉과 PCA 성분 상관계수:
+# 연봉 데이터 불러오기
+sal = salaries()
+
+# 분석 시즌(예: latest_year) 연봉 데이터 선택
+sal_latest = sal[sal['yearID'] == 2016] #2020 연봉이 없어 2016년 연봉을 사용
+
+# 선수 이름+PCA 점수 데이터와 연봉 join
+bat_with_salary = bat_with_name.merge(
+    sal_latest[['playerID','salary']],
+    on='playerID',
+    how='left'
+)
+
+# 결측치 제거
+bat_with_salary = bat_with_salary.dropna(subset=['salary'])
+
+# 상관계수 계산 (연봉과 PC 점수)
+corrs = bat_with_salary[[‘salary','PC1','PC2','PC3']].corr()
+
+print("연봉과 PCA 성분 상관계수:")
+print(corrs['salary'].round(3))
+```
+
+**연봉과 PCA 성분 상관계수**
 
 salary 1.000
-
+<br>
 PC1(타격 생산력/파워 성분) 0.074
-
+<br>
 PC2 (plate discipline vs contact) 0.259
-
+<br>
 PC3 (speed/baserunning) -0.215
 
-연봉(5salary)--PC1(타격 생산력/파워 성분): +0.074
+**연봉(5salary)--PC1(타격 생산력/파워 성분): +0.074**
 
 PC1은 홈런(HR), 타점(RBI), 안타(H) 등 공격 생산력의 공통 변동을 대표하는
-성분이다.
+성분이다. 상관계수 +0.07은 매우 약한 양(+)의 상관으로, 파워 중심의 성적이 연봉에
+일부 긍정적 영향을 주지만, 설명력은 미미하다는 의미이다. 즉, MLB 연봉이 단순히 타격 지표(홈런·타점 등)에 의해 결정되지 않으며, 계약 시기·경력·포지션·수비력 등 복합적 요인이 작용함을 시사한다.
 
-상관계수 +0.07은 매우 약한 양(+)의 상관으로, 파워 중심의 성적이 연봉에
-일부 긍정적 영향을 주지만, 설명력은 미미하다는 의미이다.
-
-즉, MLB 연봉이 단순히 타격 지표(홈런·타점 등)에 의해 결정되지 않으며,
-계약 시기·경력·포지션·수비력 등 복합적 요인이 작용함을 시사한다.
-
-연봉(salary)--PC2(plate discipline vs contact): +0.259
+**연봉(salary)--PC2(plate discipline vs contact): +0.259**
 
 PC2는 볼넷(BB)과 삼진(SO)의 대립 구조로, ["]{dir="rtl"}선구안·출루력 vs
-컨택 능력"의 대비를 나타내는 축이다.
+컨택 능력"의 대비를 나타내는 축이다. 상관계수 +0.26은 약한 양(+)의 상관으로, 볼넷이 많고 삼진이 적은, 즉 선구안이 좋은 타자일수록 연봉이 높은 경향이 있음을 보여준다. 이는 현대 MLB 시장이 ["]{dir="rtl"}출루(OBP)"와 ["]{dir="rtl"}타석 퀄리티(plate discipline)"를 일정 부분 보상하고 있음을 시사한다. 다만 0.26 정도면 여전히 제한적 관계이므로, 선구안이 뛰어나도 파워·포지션 프리미엄이 더 큰 영향력을 가질 가능성이 높다.
 
-상관계수 +0.26은 약한 양(+)의 상관으로, 볼넷이 많고 삼진이 적은, 즉
-선구안이 좋은 타자일수록 연봉이 높은 경향이 있음을 보여준다.
+**연봉(salary)--PC3(speed/baserunning): -0.215**
 
-이는 현대 MLB 시장이 ["]{dir="rtl"}출루(OBP)"와 ["]{dir="rtl"}타석
-퀄리티(plate discipline)"를 일정 부분 보상하고 있음을 시사한다.
-
-다만 0.26 정도면 여전히 제한적 관계이므로, 선구안이 뛰어나도 파워·포지션
-프리미엄이 더 큰 영향력을 가질 가능성이 높다.
-
-연봉(salary)--PC3(speed/baserunning): -0.215
-
-PC3은 도루(SB)·주루 능력 등 스피드형 변동을 나타내는 성분이다.
-
-상관계수 -0.22는 음(-)의 약한 상관으로, 주루 능력이 좋은 선수일수록
-오히려 연봉이 낮은 경향이 있음을 의미한다.
-
-이는 현대 MLB 시장에서 스피드보다는 파워·출루 중심의 효율적 공격이 더
-높은 경제적 가치를 지니는 흐름을 반영한다.
+PC3은 도루(SB)·주루 능력 등 스피드형 변동을 나타내는 성분이다. 상관계수 -0.22는 음(-)의 약한 상관으로, 주루 능력이 좋은 선수일수록 오히려 연봉이 낮은 경향이 있음을 의미한다. 이는 현대 MLB 시장에서 스피드보다는 파워·출루 중심의 효율적 공격이 더 높은 경제적 가치를 지니는 흐름을 반영한다.
 
 과거 [']{dir="rtl"}도루왕=고액 연봉[']{dir="rtl"}의 공식이 이미
-무너졌으며, 스피드는 부가적 능력으로만 평가되고 있음을 보여준다.
+무너졌으며, 스피드는 부가적 능력으로만 평가되고 있음을 보여준다. 연봉과 PCA 성분 간의 상관 구조는 전반적으로 약하며, 시장 가치가 특정 기술(파워, 주루, 선구안) 하나로 결정되지 않는다는 점을 드러낸다.
 
-연봉과 PCA 성분 간의 상관 구조는 전반적으로 약하며,
+특히 plate discipline(PC2)의 양(+)의 상관이 가장 높게 나타났다는
+점은, 최근 MLB에서 [']{dir="rtl"}볼넷 관리 능력[']{dir="rtl"}이 점차
+중요해지고 있다는 신호로 해석할 수 있다. 결국 연봉은 성적 지표 + 나이 + 계약제도 + 포지션 희소성 + 팀 전략적 필요가 교차하여 형성되는 복합 함수임을 시사한다.
 
-시장 가치가 특정 기술(파워, 주루, 선구안) 하나로 결정되지 않는다는 점을
-드러낸다.
+### Chapter 3. SVD 차원축소
 
-특히 \*\*plate discipline(PC2)\*\*의 양(+)의 상관이 가장 높게 나타났다는
-점은,
-
-최근 MLB에서 [']{dir="rtl"}볼넷 관리 능력[']{dir="rtl"}이 점차
-중요해지고 있다는 신호로 해석할 수 있다.
-
-결국 연봉은 성적 지표 + 나이 + 계약제도 + 포지션 희소성 + 팀 전략적
-필요가 교차하여 형성되는 복합 함수임을 시사한다.
-
-Chapter 3. SVD 차원축소
-
-1\. PCA와 SVD 비교
+#### 1\. PCA와 SVD 비교
 
 PCA는 원래 변수들 간의 공분산 구조를 분석하여 변수의 수를 줄이는 차원
 축소 방법이다.즉, 여러 변수가 내포한 중복된 정보를 제거하고, 분산이 큰
@@ -1455,11 +1251,9 @@ PCA는 공분산행렬을 기반으로 하므로 각 주성분의 부하량(load
 요약하자면, PCA는 ["]{dir="rtl"}변수를 줄이고 해석하는" 통계적 방법이고
 SVD는 ["]{dir="rtl"}행렬 전체를 축소하고 근사하는" 수학적 방법이다.
 
-PCA
+![](images/pca svd비교.png){fig-align="center" width="60%"}
 
-SVD
-
-2\. Sigular Value Decomposition
+#### 2\. Sigular Value Decomposition
 
 +--------------------+-------+-----------------------------------------------------+
 | 원데이터           |       | 행렬분해                                            |
@@ -1472,7 +1266,7 @@ SVD
 |                    |       | $V$ : 특이값 직교행렬                               |
 +--------------------+-------+-----------------------------------------------------+
 
-Full SVD and Reduced SVD
+##### \(1) Full SVD and Reduced SVD
 
 - $\Sigma_{n \times p} = \begin{bmatrix}
   \text{diag}(\sigma_{1},\sigma_{2},\ldots,\sigma_{r}) & 0 \\
@@ -1490,7 +1284,7 @@ Full SVD and Reduced SVD
   $X'X$의 고유벡터는 $p \times p$ 행렬 $V$의 열로 구성되지만, 실제
   계산에서는 $r$개의 주축만 사용한다.
 
-  Truncated SVD
+##### \(2) Truncated SVD
 
 reduced SVD은 원 데이터 행렬의 계수 r 까지 차원을 줄인다면 Truncated
 SVD는 그 중에서도 상위 $k( < r)$개의 특이값과 대응하는 성분만 남겨,
@@ -1504,116 +1298,89 @@ SVD는 그 중에서도 상위 $k( < r)$개의 특이값과 대응하는 성분�
 $k$를 결정할 때는 일반적으로 누적 설명변동 비율(예: 80%)을 기준으로
 하므로, 주성분분석에서 차원을 선택하는 방식과 동일하다.
 
-+-----------------------------------------------------------------------+
-| import numpy as np                                                    |
-|                                                                       |
-| import pandas as pd                                                   |
-|                                                                       |
-| from sklearn.preprocessing import StandardScaler                      |
-|                                                                       |
-| from sklearn.decomposition import TruncatedSVD                        |
-|                                                                       |
-| \# 1) 변수 선택                                                       |
-|                                                                       |
-| cols = \[\'HR\',\'RBI\',\'SB\',\'BB\',\'SO\',\'H\',\'AB\',\'GIDP\'\]  |
-|                                                                       |
-| X = bat_with_name\[cols\].fillna(0)                                   |
-|                                                                       |
-| \# 2) 표준화: 평균 0, 표준편차 1                                      |
-|                                                                       |
-| scaler = StandardScaler()                                             |
-|                                                                       |
-| Z = scaler.fit_transform(X)                                           |
-|                                                                       |
-| \# Full SVD: 모든 직교기저 포함                                       |
-|                                                                       |
-| U_full, S_full, Vt_full = np.linalg.svd(Z, full_matrices=True)        |
-|                                                                       |
-| print(\"U_full:\", U_full.shape) \# (n, n)                            |
-|                                                                       |
-| print(\"S_full:\", S_full.shape) \# (min(n, p),)                      |
-|                                                                       |
-| print(\"Vt_full:\", Vt_full.shape) \# (p, p)                          |
-|                                                                       |
-| \# 복원 확인 (완벽하게 동일해야 함)                                   |
-|                                                                       |
-| Z_recon_full = (U_full\[:, :len(S_full)\] \* S_full) @ Vt_full        |
-|                                                                       |
-| np.allclose(Z, Z_recon_full, atol=1e-10)                              |
-+-----------------------------------------------------------------------+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import TruncatedSVD
+
+# 1) 변수 선택
+cols = ['HR','RBI','SB','BB','SO','H','AB','GIDP']
+X = bat_with_name[cols].fillna(0)
+
+# 2) 표준화: 평균 0, 표준편차 1
+scaler = StandardScaler()
+Z = scaler.fit_transform(X)
+
+# Full SVD: 모든 직교기저 포함
+U_full, S_full, Vt_full = np.linalg.svd(Z, full_matrices=True)
+
+print("U_full:", U_full.shape)   # (n, n)
+print("S_full:", S_full.shape)   # (min(n, p),)
+print("Vt_full:", Vt_full.shape) # (p, p)
+
+# 복원 확인 (완벽하게 동일해야 함)
+Z_recon_full = (U_full[:, :len(S_full)] * S_full) @ Vt_full
+np.allclose(Z, Z_recon_full, atol=1e-10)
+```
 
 U_full: (66, 66)
-
+<br>
 S_full: (8,)
-
+<br>
 Vt_full: (8, 8)
-
+<br>
 True
 
-+-----------------------------------------------------------------------+
-| \# 3) Reduced (Thin) SVD: 정확한 분해                                 |
-|                                                                       |
-| U_r, S_r, Vt_r = np.linalg.svd(Z, full_matrices=False)                |
-|                                                                       |
-| \# r = rank(Z)                                                        |
-|                                                                       |
-| r = len(S_r)                                                          |
-|                                                                       |
-| print(\"rank:\", r) \# (Z 행렬 계수)                                  |
-|                                                                       |
-| print(\"U_r:\", U_r.shape) \# (n, n)                                  |
-|                                                                       |
-| print(\"S_r:\", S_r.shape) \# (min(n, p),)                            |
-|                                                                       |
-| print(\"Vt_r:\", Vt_r.shape) \# (p, p)                                |
-|                                                                       |
-| \# 복원 확인                                                          |
-|                                                                       |
-| Z_recon = (U_r \* S_r) @ Vt_r                                         |
-+-----------------------------------------------------------------------+
+```python
+# 3) Reduced (Thin) SVD: 정확한 분해
+U_r, S_r, Vt_r = np.linalg.svd(Z, full_matrices=False)
+
+# r = rank(Z)
+r = len(S_r)
+
+print("rank:", r)   # (Z 행렬 계수)
+print("U_r:", U_r.shape)   # (n, n)
+print("S_r:", S_r.shape)   # (min(n, p),)
+print("Vt_r:", Vt_r.shape) # (p, p)
+
+
+# 복원 확인
+Z_recon = (U_r * S_r) @ Vt_r
+```
 
 rank: 8
-
+<br>
 U_r: (66, 8)
-
+<br>
 S_r: (8,)
-
+<br>
 Vt_r: (8, 8)
 
-+-----------------------------------------------------------------------+
-| \# 4) Truncated SVD (상위 k개 성분만 근사)                            |
-|                                                                       |
-| k = 3                                                                 |
-|                                                                       |
-| svd_k = TruncatedSVD(n_components=k, random_state=0)                  |
-|                                                                       |
-| Z_k = svd_k.fit_transform(Z) \# U_k Σ_k                               |
-|                                                                       |
-| Vk = svd_k.components\_ \# Vt_k                                       |
-|                                                                       |
-| Sk = svd_k.singular_values\_                                          |
-|                                                                       |
-| \# 5) 누적 분산비율로 정보량 확인                                     |
-|                                                                       |
-| explained_var = (S_r\*\*2)                                            |
-|                                                                       |
-| ratio = explained_var / explained_var.sum()                           |
-|                                                                       |
-| cumulative = np.cumsum(ratio)                                         |
-|                                                                       |
-| print(f\"Reduced rank r = {r}\")                                      |
-|                                                                       |
-| print(f\"상위 {k}개 누적 분산 비율: {cumulative\[:k\]}\")             |
-|                                                                       |
-| print(\"Sk:\", Sk.shape) \# (min(n, p),)                              |
-|                                                                       |
-| print(\"Vk:\", Vk.shape) \# (p, p)                                    |
-+-----------------------------------------------------------------------+
+```python
+# 4) Truncated SVD (상위 k개 성분만 근사)
+k = 3
+svd_k = TruncatedSVD(n_components=k, random_state=0)
+Z_k = svd_k.fit_transform(Z)      # U_k Σ_k
+Vk = svd_k.components_            # Vt_k
+Sk = svd_k.singular_values_
+
+# 5) 누적 분산비율로 정보량 확인
+explained_var = (S_r**2)
+ratio = explained_var / explained_var.sum()
+cumulative = np.cumsum(ratio)
+
+print(f"Reduced rank r = {r}")
+print(f"상위 {k}개 누적 분산 비율: {cumulative[:k]}")
+
+print("Sk:", Sk.shape)   # (min(n, p),)
+print("Vk:", Vk.shape) # (p, p)
+```
 
 Reduced rank r = 8
-
+<br>
 상위 3개 누적 분산 비율: \[0.29831468 0.52653148 0.68138709\]
-
+<br>
 Sk: (3,)
-
+<br>
 Vk: (3, 8)
