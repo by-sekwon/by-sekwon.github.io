@@ -956,7 +956,7 @@ results=ols('y~C(species)',data=iris).fit()
 sm.stats.anova_lm(results,typ=2)
 ```
 
-![](images/분꽃_분산분석표.png){fig-align="center" width="80%"}
+![](images/irisanovatable.png){fig-align="center" width="60%"}
 
 모형 $y_{ij} = \mu + A_{i} + e_{ij}$
 
@@ -969,7 +969,7 @@ virginica 꽃잎 평균 길이 : 1.462+4.09=5.552이다.
 results.summary()
 ```
 
-![](images/분꽃_회귀분석.png){fig-align="center" width="80%"}
+![](images/분꽃_회귀분석.png){fig-align="center" width="60%"}
 
 사후검정 : 튜키 다중비교 검정
 
@@ -986,7 +986,7 @@ mc=MultiComparison(iris['petal_length'],iris['species'])
 mc_results = mc.tukeyhsd()
 ```
 
-![](images/분꽃_다중비교.png){fig-align="center" width="80%"}
+![](images/iristukey.png){fig-align="center" width="60%"}
 
 분석결과표
 
@@ -1008,7 +1008,7 @@ mc_results = mc.tukeyhsd()
 
 #### 1. 개념 
 
-![](images/CRD_BRD설계.png){fig-align="center" width="60%"}
+![](images/crdrbd.png){fig-align="center" width="60%"}
 
 각 논 구역에는 동일한 조건을 갖춘 세 구간이 있으며, 일부 구간은 물이
 있는 상태를 나타낸다(그림 속 오리 표시는 물이 있는 구간임). 만약 세 가지
@@ -1040,7 +1040,7 @@ RCBD는 외생적 변동 요인(블록)이 존재할 때 t개의 처리 평균�
 
 #### 2. 모형 및 가정 
 
-![](images/RBD설계데이터.png){fig-align="center" width="60%"}
+![](images/rbddata.png){fig-align="center" width="60%"}
 
 $$y_{ij} = \mu + \alpha_{i} + \beta_{j} + \varepsilon_{ij}$$
 
@@ -1098,7 +1098,7 @@ $SSE = \overset{t}{\sum_{i = 1}}\overset{b}{\sum_{j = 1}}(y_{ij} - {\overline{y}
 
 **분산분석표**
 
-![](images/RBD분산분석.png){fig-align="center" width="80%"}
+![](images/rbdanova.png){fig-align="center" width="80%"}
 
 
 - 귀무가설 $H_{0}:\alpha_{1} = \alpha_{2} = \ldots = \alpha_{t} = 0$ (모든
@@ -1221,7 +1221,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-![](images/RBD예제_상자수염.png){fig-align="center" width="70%"}
+![](images/rbdboxplot.png){fig-align="center" width="70%"}
 
 ### chapter 4. 이원 분산분석 two-way ANOVA  
 
@@ -1268,7 +1268,7 @@ $\beta_{j} = {\overline{y}}_{.j.} - {\overline{y}}_{...}$
 - 상호효과 $\alpha\beta_{ij}$ 의 점추정치:
 $\alpha\beta_{ij} = {\overline{y}}_{ij.} - {\overline{y}}_{i..} - {\overline{y}}_{.j.} + {\overline{y}}_{...}$
 
-![](images/주효과_상호효과.png){fig-align="center" width="80%"}
+![](images/effects.png){fig-align="center" width="80%"}
 
 **변동분해**
 
@@ -1357,7 +1357,7 @@ sns.boxplot(x="cylinders",y="mpg",hue='origin',notch=True,data=data)
 plt.show()
 ```
 
-![](images/이원분산분석_나무상자.png){fig-align="center" width="70%"}
+![](images/twowayboxplot.png){fig-align="center" width="70%"}
 
 **평균, 표준편차**
 
@@ -1365,7 +1365,7 @@ plt.show()
 #요인별 기초통계량
 data.pivot_table(index=['origin'],columns=['cylinders'],values=['mpg'],aggfunc=['mean','std'],margins=True)
 ```
-![](images/차연비_기초통계량.png){fig-align="center" width="70%"}
+![](images/carstattable.png){fig-align="center" width="70%"}
 
 생산국가 : 생산국가에 따른 연비차이는 매유 유의함(유의확률 \<0.001),
 생산국가 일본 \> 유럽 \> 미국 순으로 연비가 높다. 사후검정 결과 3개
@@ -1385,7 +1385,7 @@ results=ols('y~C(cylinders)+C(origin)+C(cylinders):C(origin)',data=data).fit()
 sm.stats.anova_lm(results,typ=2)
 ```
 
-![](images/차연비_이원분산분석표.png){fig-align="center" width="70%"}
+![](images/car_anova_table.png){fig-align="center" width="70%"}
 
 **평균도표**
 
