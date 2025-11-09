@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>다변량분석 3. 요인분석 – 세상 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-302e6895c9654fb97c48ad8f826d3f42.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색",
+    "search-label": "검색"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="검색"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="탐색 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">기초수학</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">수리통계</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본_난수생성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/estimation.html">
+ <span class="dropdown-text">추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/hypothesis_testing.html">
+ <span class="dropdown-text">가설검정_신뢰구간</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">일변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/concept_of_stat.html">
+ <span class="dropdown-text">일변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/data.html">
+ <span class="dropdown-text">데이터와 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/univariate.html">
+ <span class="dropdown-text">일변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/crosstab.html">
+ <span class="dropdown-text">교차표분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/goodness_of_fits.html">
+ <span class="dropdown-text">적합성검정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/normality.html">
+ <span class="dropdown-text">정규변환</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/correlation.html">
+ <span class="dropdown-text">상관분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/anova.html">
+ <span class="dropdown-text">실험설계 분산분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/time_series.html">
+ <span class="dropdown-text">시계열분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">회귀분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_concept.html">
+ <span class="dropdown-text">회귀분석 개념&amp;추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_selection.html">
+ <span class="dropdown-text">변수선택</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_multicolin.html">
+ <span class="dropdown-text">다중공선성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_diagnosis.html">
+ <span class="dropdown-text">회귀진단</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_logistic.html">
+ <span class="dropdown-text">로지스틱회귀</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--4" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">다변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--4">    
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_concepts.html">
+ <span class="dropdown-text">다변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_pca.html">
+ <span class="dropdown-text">주성분분석 svd</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_factor.html">
+ <span class="dropdown-text">요인분석 구조방정식</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--5" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">조사방법론</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--5">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이_AHP_컨조인트</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/psm.html">
+ <span class="dropdown-text">PSM 성향점수매칭</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--6" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--6">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app" target="_blank">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/" target="_blank">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-요인분석-개념" id="toc-chapter-1.-요인분석-개념" class="nav-link active" data-scroll-target="#chapter-1.-요인분석-개념">Chapter 1. 요인분석 개념</a>
+  <ul>
+  <li><a href="#역사" id="toc-역사" class="nav-link" data-scroll-target="#역사">1. 역사</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">다변량분석 3. 요인분석</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-1.-요인분석-개념" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-요인분석-개념">Chapter 1. 요인분석 개념</h3>
+<p>요인분석은 인간의 지능이 단일한 능력인지, 혹은 여러 하위 능력으로 구성되어 있는지를 탐구하려는 심리학적 연구에서 출발한 분석 방법이다.</p>
+<p>초기의 심리학자들은 지능검사 점수들 사이에 일정한 상관이 존재한다는 사실에 주목하였다. 예를 들어 수리능력, 언어능력, 공간능력 등 서로 다른 과목의 점수가 비슷하게 높거나 낮게 나타나는 현상은, 이들 능력의 배후에 공통된 요인이 존재함을 암시한다.</p>
+<p>이러한 가정 아래, 요인분석(factor analysis)은 여러 관측변수들 간의 상관구조를 분석하여 그 배후에 숨겨진 잠재적 요인(latent factors)을 찾아내는 통계적 방법이다.</p>
+<p>즉, 관측된 데이터가 몇 개의 기본적인 차원이나 요인으로 설명될 수 있다는 전제를 두고, 그 요인들이 서로 어떤 의미를 가지는지를 탐색한다.</p>
+<p>결국 요인분석은 인간의 지능뿐 아니라 태도, 성격, 소비행동, 사회적 가치 등 다양한 복합적 현상 속에서 <span dir="rtl">’</span>표면의 다양성 뒤에 숨어 있는 공통 구조<span dir="rtl">’</span>를 밝히는 도구라 할 수 있다.</p>
+<section id="역사" class="level4">
+<h4 class="anchored" data-anchor-id="역사">1. 역사</h4>
+<p>Charles Spearman, 1904: 일반 지능 요인(G 요인) 이론</p>
+<p>찰스 스피어만(Charles Spearman, 1904)은 요인분석의 출발점을 마련한 인물이다.</p>
+<p>그는 여러 지능 검사 점수들 사이에 높은 상관관계가 존재한다는 사실을 발견하고, 이러한 공통된 변동성이 하나의 근본적인 능력, 즉 일반 지능 요인(g 요인)에 의해 설명될 수 있다고 주장하였다</p>
+<p>스피어만은 인간의 지능이 단일한 능력으로만 구성되어 있지 않으며, 각 과목이나 과제에는 그 과제 특유의 능력도 함께 작용한다고 보았다. 이에 따라 그는 2요인 이론(two-factor theory)을 제안하였다.</p>
+<p>즉, 각 개인의 관측된 성적(또는 변수 값)은 모든 검사에 공통적으로 작용하는 일반 요인(g)과, 각 검사에 고유하게 작용하는 특수 요인(s)의 결합으로 설명된다고 하였다.</p>
+<p>이 이론은 심리학에서 <span dir="rtl">’</span>지능의 구조<span dir="rtl">’</span>를 설명하는 최초의 통계적 접근으로, 데이터에 내재된 공통 구조(common structure)를 수학적으로 찾아내려는 시도의 출발점이 되었다.</p>
+<p>결국 스피어만의 연구는 단순한 지능 연구를 넘어, 복잡한 현상을 몇 개의 잠재 요인으로 요약하여 해석할 수 있다는 통계적 사고의 기반을 마련한 셈이다.</p>
+<p>Louis Thurstone, 1930s: - 다중 요인 이론</p>
+<p>루이스 서스톤(Louis Thurstone, 1930s)은 스피어만의 단일 g 요인 이론에 도전하며, 다중 요인 이론(Multiple Factor Theory)을 제안한 인물이다. 그는 인간의 지능이 하나의 일반 요인으로만 설명될 수 없으며, 여러 개의 독립적인 능력으로 구성되어 있다고 주장하였다.</p>
+<p>서스톤은 다양한 지능 검사를 실시한 뒤, 그 점수들 사이의 상관구조를 분석하여 몇 가지 기본적인 능력 요인을 추출하였다. 그는 이 과정을 통해 언어 능력, 공간적 시각화, 수리 능력, 추론 능력, 기억력) 등 서로 구별되는 기본 정신 능력이 존재함을 제시하였다.</p>
+<p>그의 접근은 단일 요인을 중심으로 한 스피어만의 시각과 달리, 여러 요인이 동시에 작용하여 인간의 복잡한 지적 행동을 설명할 수 있다는 점을 강조하였다.</p>
+<p>또한 서스톤은 이러한 다요인적 구조를 검증하기 위해 탐색적 요인분석(Exploratory Factor Analysis, EFA)의 기초적인 절차를 체계화하였다. 그 결과, 요인분석은 심리학을 넘어 교육, 사회과학, 경영, 마케팅 등 다양한 분야에서 데이터 속 잠재 구조를 탐색하는 통계적 도구로 발전하게 되었다.</p>
+<p>확증적 요인분석(CFA)의 발전 - 1960년대 이후</p>
+<p>1960년대 이후에는 요인분석이 탐색적 접근에서 한 단계 더 발전하여, 확증적 요인분석(Confirmatory Factor Analysis, CFA)이라는 새로운 패러다임이 등장하였다.</p>
+<p>CFA는 단순히 데이터 속에서 요인을 찾아내는 것이 아니라, 이론적으로 설정된 요인 구조가 실제 자료에 부합하는지를 검증하는 절차이다.</p>
+<p>즉, 연구자가 사전에 요인 수, 각 변수와 요인의 관계, 요인 간 상관 구조 등을 명시적으로 가정하고, 그 가정이 데이터에 의해 지지되는지를 통계적으로 검토한다.</p>
+<p>이러한 접근은 기존의 탐색적 요인분석(EFA)이 <span dir="rtl">”</span>데이터로부터 구조를 찾아내는 방법”이었다면, 확증적 요인분석은 <span dir="rtl">”</span>이론이 데이터에 적합한지를 검증하는 방법”이라는 점에서 본질적인 차이를 가진다.</p>
+<p>CFA의 발전은 심리학, 교육학, 사회학, 마케팅 연구 등 다양한 분야에서 측정모형(measurement model) 검증을 가능하게 하였고, 더 나아가 구조방정식모형(Structural Equation Modeling, SEM)의 핵심 구성 요소로 자리잡게 되었다.</p>
+<p>결국 CFA는 <span dir="rtl">”</span>요인의 존재를 밝히는 기술”에서 <span dir="rtl">”</span>이론을 경험적으로 검증하는 과학적 절차”로 요인분석을 진화시킨 전환점이라 할 수 있다.</p>
+<p>구조방정식 모형(SEM)과의 통합</p>
+<p>1980년대 이후 요인분석은 구조방정식 모형(Structural Equation Modeling, SEM)으로 확장·통합되면서 한층 정교한 분석 체계를 갖추게 되었다.</p>
+<p>SEM은 요인분석의 측정모형과 회귀분석의 구조모형을 결합하여, 잠재 변수와 관측 변수 간의 관계를 동시에 추정할 수 있는 통합적 통계 방법이다.</p>
+<p>이 접근을 통해 연구자는 단순히 <span dir="rtl">”</span>요인이 존재하는가?“를 넘어서, <span dir="rtl">”</span>요인들이 서로 어떤 인과적 관계를 맺고 있는가?”까지 검증할 수 있게 되었다. 즉, SEM은 측정의 타당성과 이론적 구조의 인과적 경로를 동시에 분석하는 틀을 제공한다.</p>
+<p>이 방법은 심리학, 교육학, 사회학, 경영학, 마케팅 등 인간 행동과 인식의 복합적 구조를 다루는 사회과학 분야에서 폭넓게 활용되고 있다. 결국 구조방정식 모형의 등장은 요인분석을 단순한 탐색 도구에서 이론 검증을 위한 과학적 모델링 체계로 발전시키는 결정적 전환점이 되었다.</p>
+<p>2 스피어만 연구결과</p>
+<p>스피어만의 2요인 이론(two factor theory)</p>
+<p>스피어만의 2요인 이론은 인간의 지적 수행을 설명하는 최초의 체계적 요인모형으로, 모든 인지적 과제가 공통 요인과 특수 요인에 의해 결정된다고 보는 접근이다.</p>
+<p>일반 요인(g 요인)</p>
+<p>스피어만은 g 요인을 모든 인지적 활동에 공통적으로 작용하는 일반 지능으로 정의하였다. 이는 문제 해결, 논리적 추론, 정보 처리 등 다양한 과제 수행의 기반이 되는 보편적 정신 능력이다.</p>
+<p>서로 다른 형태의 지능 검사―예를 들어 언어, 수리, 공간 과제―에서 상관이 관찰되는 이유는, 이 모든 과제들이 일정 부분 동일한 일반 지능(g)의 영향을 받기 때문이라 보았다.</p>
+<p>특수 요인(s 요인)</p>
+<p>그러나 스피어만은 모든 지적 활동이 완전히 동일한 능력에 의해 설명된다고는 보지 않았다. 각 과제에는 그 과제만의 특수한 능력, 즉 특수 요인(s)이 존재하며, 이는 특정 영역에만 작용한다.</p>
+<p>예를 들어 수학 문제 해결에는 일반 지능(g)이 기여하지만, 동시에 수학적 사고나 계산 능력과 같은 수학 고유의 s 요인이 별도로 작용한다.</p>
+<p>이와 같이 스피어만의 2요인 이론은 모든 인지적 수행이 공통된 일반 능력(g)과 과제 특유의 특수 능력(s)의 결합으로 이루어진다고 설명하였다. 이 모델은 이후의 요인분석과 다중지능 이론 발전의 기초가 되었으며, 인간 지능의 구조를 이해하는 데 중요한 이정표가 되었다.</p>
+<ol type="1">
+<li>상관계수 행렬과 부하값</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/factor_spearmen.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>부하값 0.80 0.75 0.65 0.85 0.60</p>
+<ol start="2" type="1">
+<li>결과 해석</li>
+</ol>
+<p>요인부하값(factor loading)은 각 변수가 요인과 얼마나 강하게 관련되어 있는지를 나타내는 지표로, 값이 높을수록 해당 변수가 그 요인의 특성을 잘 반영한다는 뜻이다.</p>
+<p>수리 능력의 g 요인 부하값이 0.80이라면, 수리 능력 점수의 분산 중 약 80%가 일반 지능 요인(g)에 의해 설명된다는 의미이다. 즉, 수리 능력 검사는 개인의 전반적인 지적 능력 수준을 비교적 잘 반영하는 과제라 할 수 있다.</p>
+<p>추론 능력이 g 요인에 대해 0.85로 가장 높은 부하값을 가진다면, 이는 추론 과제가 일반 지능을 가장 직접적으로 측정하고 있음을 의미한다. 다시 말해, 논리적 사고나 문제 해결 능력은 g 요인과의 관련성이 특히 강한 인지 영역이다.</p>
+<p>반면, 지각 속도의 부하값이 0.60이라면 g 요인과의 연관성이 상대적으로 낮음을 뜻한다. 이는 지각 속도 과제의 수행이 일반 지능보다는 과제 특유의 처리 속도, 주의 집중, 시각적 변별 능력 등과 같은 특수 요인(s 요인)의 영향을 더 많이 받기 때문으로 해석된다.</p>
+<p>따라서 요인부하값을 통해 각 인지 능력이 얼마나 공통 요인(g)에 의해 설명되는지, 그리고 어느 정도가 특수 요인(s)에 기인하는지를 정량적으로 파악할 수 있다.</p>
+<p>이러한 해석은 요인분석이 단순한 상관관계 탐색을 넘어, 인간의 인지 구조를 이해하는 데 기여하는 핵심적인 근거가 된다.</p>
+<p>3. 주요 용어</p>
+<p>공통요인(Common Factors)은 여러 관측변수가 함께 공유하는 잠재적 원인으로, 변수들 간의 상관관계를 설명하는 근본적 구조이다. 즉, 각 변수의 총 변동성 가운데 여러 변수에 공통적으로 작용하는 부분을 의미하며, 인간의 지능, 태도, 성격 등 복합적 특성의 공통된 차원을 찾아내는 데 활용된다.</p>
+<p>특수요인(Specific Factors)은 각 변수에 고유하게 작용하는 요인으로, 다른 변수들과는 공유되지 않는다. 이는 각 변수가 가지는 독립적인 특성이나 측정상의 특수한 영향을 반영하며, 공통요인으로 설명되지 않는 잔여 변동성을 나타낸다.</p>
+<p>요인 부하(Factor Loadings)는 각 요인이 관측변수에 미치는 영향의 크기이자, 변수와 요인 간의 상관계수로 해석된다. 요인 부하값이 높을수록 해당 변수가 그 요인의 특성을 잘 반영하며, 값이 낮을수록 요인과의 관련성이 약함을 의미한다. 따라서 요인 부하는 각 변수의 의미를 해석하고 요인의 성격을 규정하는 핵심 단서가 된다.</p>
+<p>요인 회전은 추출된 요인들의 해석을 단순하고 명확하게 하기 위한 절차이다. 초기 요인 추출 후의 결과는 해석이 모호할 수 있으므로, 요인축을 회전시켜 변수들이 특정 요인에 더 뚜렷하게 부하되도록 만든다. 회전 방식에는 요인 간 상관을 허용하지 않는 직교 회전(Varimax)과, 요인들 간의 상관을 허용하는 사교 회전(Oblimin) 등이 있으며, 이를 통해 연구자는 각 요인의 의미를 보다 명확하게 해석할 수 있다.</p>
+<p>4. 요인분석 종류</p>
+<p>탐색적 요인분석(Exploratory Factor Analysis, EFA)은 데이터에 내재된 요인 구조를 사전 가정 없이 탐색하는 통계적 방법이다. 연구자가 요인의 수나 변수와 요인 간의 관계에 대해 미리 알지 못하는 상태에서, 관측된 변수들 간의 상관관계를 분석하여 잠재 요인(latent factors)을 찾아내는 데 목적이 있다.</p>
+<p>즉, 데이터로부터 요인의 개수와 구조를 <span dir="rtl">’</span>발견<span dir="rtl">’</span>하는 과정이라 할 수 있다. EFA는 새로운 개념이나 척도를 개발할 때, 또는 복잡한 현상의 기저 구조를 파악하고자 할 때 주로 사용된다.</p>
+<p>확증적 요인분석(Confirmatory Factor Analysis, CFA)은 이와 달리, 연구자가 이론적으로 설정한 요인 구조가 실제 데이터에 부합하는지를 검정하는 절차이다. EFA가 요인을 찾아내는 과정이라면, CFA는 이미 설정된 모형이 데이터를 잘 설명하는지 확인하는 과정이다. 따라서 CFA에서는 요인 수, 변수와 요인의 연결 관계, 요인 간 상관 구조 등을 사전에 명시해야 하며, 모형의 적합도 지수(fit indices)를 통해 이론적 모형의 타당성을 평가한다.</p>
+<p>탐색적 요인분석과 확증적 요인분석은 모두 여러 관측변수에 내재된 잠재 요인을 밝히려는 동일한 목표를 가지고 있지만, 접근 방식과 사용 목적에서 본질적인 차이를 가진다.</p>
+<p>EFA는 말 그대로 탐색적 성격을 갖는다. 연구자가 요인의 개수나 변수와 요인의 관계에 대해 명확한 사전 가정을 두지 않은 상태에서, 데이터 자체에 내재된 상관구조를 분석하여 잠재 요인의 수와 구성을 찾아내는 데 목적이 있다.</p>
+<p>즉, 데이터로부터 자연스럽게 드러나는 패턴을 통해 <span dir="rtl">”</span>어떤 요인이 존재하는가”를 발견하는 과정이다. 이 과정에서 요인의 개수 결정, 요인 회전(rotation), 요인 부하 해석 등은 연구자의 판단과 통계적 기준(예: 고유값, 스크리 플롯, 누적 설명력)에 의존한다. 따라서 EFA는 이론의 발견을 위한 초기 단계의 분석이라 할 수 있다.</p>
+<p>반면, CFA는 확증적 성격을 지닌다. EFA로 탐색된 요인 구조나 기존 이론에 기반하여, 연구자가 미리 설정한 요인 모형이 실제 데이터에 적합한지를 검증한다. 즉, <span dir="rtl">”</span>이 변수들은 특정 요인에 속한다”, <span dir="rtl">”</span>이 요인들은 서로 어떤 관계를 가진다”라는 가정이 이미 존재하며, CFA는 그 가정이 데이터에 의해 얼마나 지지되는가를 평가하는 절차이다.</p>
+<p>이를 위해 요인 부하의 경로를 사전에 명시하고, 변수 간의 상관 구조를 제약하며, 모형 적합도 지수(예: CFI, TLI, RMSEA, SRMR 등)를 통해 전체 모형의 타당성을 판단한다. CFA는 단순히 요인을 찾는 데 그치지 않고, 이론적 모형의 검증과 측정의 타당성 평가에 초점을 둔다.</p>
+<p>요약하자면, EFA는 <span dir="rtl">”</span>데이터가 어떤 구조를 갖고 있는가?“를 묻는 과정이고, CFA는 <span dir="rtl">”</span>가정한 구조가 데이터에 부합하는가?”를 검증하는 과정이다. 이 두 방법은 상호보완적인 관계를 이루며, 일반적으로 연구는 EFA를 통해 요인 구조의 윤곽을 파악한 후, CFA를 이용하여 그 구조가 이론적으로나 경험적으로 타당한지를 검증하는 순서로 진행된다.</p>
+<p>이러한 연속적 접근은 단순히 변수들 간의 상관을 기술하는 수준을 넘어, 데이터 속 잠재적 개념을 수학적으로 모델링하고, 이론적 타당성을 검증하는 구조방정식 모형(SEM)의 기초로 이어지게 된다. 따라서 EFA와 CFA는 요인분석의 두 축이자,<span dir="rtl">”</span>탐색에서 검증으로” 이어지는 사회과학 연구의 논리적 흐름을 완성하는 핵심적인 분석 틀이라 할 수 있다.</p>
+<p>Chapter 2. 탐색적 요인분석</p>
+<p>1. 탐색적 요인분석 절차</p>
+<p>탐색적 요인분석은 관찰된 여러 변수들 간의 상관관계를 분석하여, 그 배후에 존재하는 잠재 요인(latent factors)을 찾아내는 통계적 절차이다. 즉, 다수의 변수들이 실제로는 몇 개의 공통된 차원 또는 개념에 의해 설명될 수 있다는 가정에서 출발한다.</p>
+<p>탐색적 요인분석의 기본 목적은 데이터 속에서 변수 간의 상관구조를 탐색하고, 그 구조를 가장 잘 요약하는 잠재 요인을 식별하는 것이다. 이 과정을 통해 변수들이 어떤 요인에 의해 함께 움직이는지를 파악할 수 있으며, 복잡한 데이터의 차원을 축소하고 의미 있는 해석 단위를 만들어 낼 수 있다.</p>
+<p>예를 들어, 한 개인의 학업 능력을 측정하는 여러 과목 점수(수학, 과학, 언어, 사회 등)가 서로 높은 상관을 보인다면, 이들 과목은 <span dir="rtl">”</span>학업 성취도”라는 공통 요인에 의해 설명될 수 있다. 탐색적 요인분석은 바로 이러한 공통 구조를 찾아내어 변수들을 체계적으로 묶는 방법이다.</p>
+<p>따라서 EFA는 이론이 명확히 정립되지 않았거나, 새로운 영역의 데이터를 다룰 때 특히 유용하다. 데이터로부터 요인 수를 추정하고, 각 변수들이 어떤 요인에 강하게 연관되어 있는지를 밝힘으로써 연구자는 변수의 집단적 의미를 탐색하고, 후속 이론 구축의 기초 자료를 얻을 수 있다.</p>
+<p>결국 탐색적 요인분석은 복잡한 현상 속에서 데이터의 숨은 질서를 발견하는 과정이며, 이를 통해 연구자는 변수 간의 관계를 단순화하고, 데이터에 내재된 패턴을 이론적으로 해석할 수 있게 된다.</p>
+<ol type="1">
+<li>데이터 수집</li>
+</ol>
+<p>요인분석을 수행할 때는 충분한 표본 크기를 확보하는 것이 중요하다. 일반적으로 변수 한 개당 최소 10개 이상의 표본이 권장되며, 표본 수가 많을수록 분석 결과의 안정성과 신뢰도가 높아진다.</p>
+<p>요인분석에 포함되는 변수들은 동일한 개념 또는 구성개념을 측정해야 한다. 따라서 구조화된 설문조사에서 하나의 개념을 여러 하위 문항으로 측정한 리커트 척도 자료가 요인분석에 가장 적합하다. 예를 들어, <span dir="rtl">”</span>고객 서비스”에 관한 설문 문항들—응답 속도, 직원의 친절도, 문제 해결 능력 등—은 공통적으로 서비스 품질이라는 잠재 요인을 반영할 수 있다.</p>
+<ol start="3" type="1">
+<li>요인분석 모형</li>
+</ol>
+<p>p개의 확률변수 데이터 <span class="math inline">\({\underset{¯}{x}}' = (x_{1},x_{2},...,x_{p})\)</span>의 평균 벡터 <span class="math inline">\(\underset{¯}{\mu}\)</span>, 공분산행렬을 <span class="math inline">\(\Sigma\)</span>라 하면, <span class="math inline">\({\underset{¯}{x}}_{p} = L_{p \times m}{\underset{¯}{f}}_{m} + {\underset{¯}{\eta}}_{p}\)</span>이다.</p>
+<p><span class="math inline">\(f_{1},f_{2},...,f_{m}\)</span>: 공통 common 요인, <span class="math inline">\(\underset{¯}{f} \sim (\underset{¯}{0},I)\)</span> 공통 요인들의 평균은 0이고 분산은 1이며, 공통 요인간 상관 관계는 없다.</p>
+<p><span class="math inline">\(L_{p \times m}\)</span>: 부하행렬(loading matrix)로, 각 관측변수가 요인에 의해 얼마나 영향을 받는지를 나타내는 계수를 포함한다. 즉, <span class="math inline">\(L_{ij}\)</span>는 i-번째 변수와 j-번째 요인 간의 관계 강도를 의미한다.</p>
+<p><span class="math inline">\(\eta_{1},\eta_{2},...,\eta_{p}\)</span>: 특수 specific 요인, <span class="math inline">\(\underset{¯}{\eta} \sim (\underset{¯}{0},\Psi)\)</span> 특수 요인(specific factors)으로, 각 변수에 고유하게 작용하는 변동 요인을 나타낸디.</p>
+<p><span class="math inline">\(\underset{¯}{f}\)</span> 와 <span class="math inline">\(\underset{¯}{\eta}\)</span>는 서로 독립이다.</p>
+<ol start="4" type="1">
+<li>전제 조건 확인</li>
+</ol>
+<p>요인분석을 실시하기 전에, 변수들 간의 상관관계가 충분히 높아 공통 요인을 추출할 수 있는 구조인지 확인해야 한다. 즉, 변수들이 서로 일정한 관계망을 형성해야 요인분석이 의미 있는 결과를 낼 수 있다.</p>
+<p>이를 위해 다음의 적합성 검정 절차를 수행한다.</p>
+<p>1. KMO(Kaiser-Meyer-Olkin) 검정</p>
+<p>KMO 지수는 변수들 간의 상관관계가 요인분석에 적합한지를 평가하는 지표이다. 값이 0과 1 사이에서 산출되며, 일반적으로 0.7 이상이면 요인분석에 적합하다고 본다. 0.8 이상이면 매우 양호한 수준으로 판단된다.</p>
+<p>2. Bartlett의 구형성 검정(Bartlett<span dir="rtl">’</span>s Test of Sphericity)</p>
+<p>이 검정은 변수들 간의 상관관계가 전반적으로 유의한지를 평가한다. 귀무가설은 <span dir="rtl">”</span>상관행렬이 단위행렬과 같다”이며, 검정 결과가 통계적으로 유의(p &lt; 0.05)할 경우 변수들 간 상관이 충분하므로 요인분석을 수행할 수 있다.</p>
+<p>3. 상관행렬(Correlation Matrix) 분석</p>
+<p>변수들 간의 상관행렬을 생성하여 상관 패턴을 검토한다. 특정 변수들이 다른 변수들과 전반적으로 높은 상관을 가진다면, 이 변수들은 공통된 잠재 요인을 공유하고 있을 가능성이 높다. 반대로 상관이 매우 낮거나 불규칙한 변수는 요인구조에 잘 부합하지 않을 수 있다.</p>
+<ol start="5" type="1">
+<li>요인 추출 방법 선택</li>
+</ol>
+<p>1. 주축 요인법 (Principal Axis Factoring)</p>
+<p>주축 요인법은 변수들의 상관행렬 <span class="math inline">\(R_{p \times p}\)</span>로부터 고유값과 고유벡터를 구하여 요인을 추출하는 방법이다. 고유값을 <span class="math inline">\(\lambda_{1} \geq \lambda_{2} \geq \ldots \geq \lambda_{p}\)</span>, 고유벡터를 <span class="math inline">\((e_{1},e_{2},\ldots,e_{p})\)</span>라 하면, 상관행렬은 다음과 같이 분해된다.</p>
+<p><span class="math display">\[R_{p \times p} = \begin{bmatrix}
+\sqrt{\lambda_{1}}e_{1} &amp; \sqrt{\lambda_{2}}e_{2} &amp; \ldots &amp; \sqrt{\lambda_{p}}e_{p}
+\end{bmatrix}\left\lbrack \begin{array}{r}
+\sqrt{\lambda_{1}}e_{1}' \\
+\sqrt{\lambda_{2}}e_{2}' \\
+\vdots \\
+\sqrt{\lambda_{p}}e_{p}'
+\end{array} \right\rbrack = LL'\]</span></p>
+<p>이때 L은 부하행렬로, 각 변수와 요인 간의 관계 강도를 나타낸다. 상관행렬로부터 부하행렬을 계산하고, 이를 이용하여 주성분 점수 <span class="math inline">\(y = Lx\)</span>를 구한 뒤, 요인 점수는 다음과 같이 계산된다. <span class="math inline">\(f_{k} = \frac{y_{k}}{\sqrt{\lambda_{k}}}\)</span></p>
+<p>2. Bartlett 방법</p>
+<p>Bartlett 방법은 관측치 간의 상관이 없다는 가정하에 요인 점수를 추정하는 방식이다. 이 방법은 요인구조가 명확하고, 변수 간 독립성이 어느 정도 보장될 때 적합하다. 요인 점수를 추정할 때 오차를 최소화하는 가중치를 부여하여, 각 요인의 상대적 영향력을 추정한다.</p>
+<p>(3) 회귀법 (Thompson Method)</p>
+<p>Thompson 방법은 요인 점수를 선형회귀 원리에 따라 추정하는 방식이다. 관측변수 x에 대하여, 다음과 같이 표준화된 벡터 <span class="math inline">\(z = (x - \mu)/\sigma\)</span>를 정의한다.</p>
+<p>이때 z와 f의 결합분포를 다음과 같이 놓는다.</p>
+<p><span class="math inline">\(\left\lbrack \begin{array}{r}
+z \\
+f
+\end{array} \right\rbrack \sim N\left( \left\lbrack \begin{array}{r}
+0 \\
+0
+\end{array} \right\rbrack,\begin{bmatrix}
+P &amp; L \\
+L' &amp; I
+\end{bmatrix} \right)\)</span>, 조건부 기댓값을 이용하면 요인 점수의 추정치는 다음과 같이 주어진다. <span class="math inline">\(E(f \mid z) = L'P^{- 1}z\)</span> 또는 상관행렬 R을 이용하면, <span class="math inline">\(f_{r} = L'R^{- 1}z_{r}\)</span> 로 표현된다. 이 방식은 요인과 관측변수 간의 선형 관계를 바탕으로 요인 점수를 회귀적으로 추정하므로, 계산이 간편하고 실제 응용에서 널리 사용된다.</p>
+<p>요약하면, 주축 요인법은 상관행렬의 고유값 분해를 기반으로 요인을 추출하는 방법이며, Bartlett 방법과 회귀법은 각각의 가정 하에서 요인 점수를 산출하는 절차이다. 이들 방법의 선택은 연구 목적, 데이터 특성, 그리고 요인구조의 명확성에 따라 달라진다.</p>
+<ol start="5" type="1">
+<li>추출할 요인의 수 결정</li>
+</ol>
+<p>요인분석에서 중요한 단계는 몇 개의 요인을 추출할 것인가를 결정하는 것이다. 요인의 수가 너무 적으면 데이터의 복잡한 구조를 충분히 설명하지 못하고, 너무 많으면 불필요한 요인이 포함되어 해석이 어렵게 된다. 따라서 적절한 요인 수를 선택하기 위해 여러 통계적 기준이 사용된다.</p>
+<p>1. 고유값(Eigenvalue) 기준</p>
+<p>요인분석에서는 상관행렬 R의 고유값을 이용하여 각 요인이 설명하는 분산의 크기를 평가한다. 고유값이 1보다 크다는 것은, 해당 요인이 하나의 변수 이상을 설명할 만큼의 정보량을 갖고 있다는 의미이다. 따라서 일반적으로 고유값이 1 이상인 요인만을 추출하는 것이 기준이다. 이 기준은 Kaiser 기준이라 불리며, 가장 널리 사용되는 요인 수 결정 방법이다.</p>
+<p>2. 총 분산 설명율(Total Variance Explained)</p>
+<p>요인분석은 각 요인이 설명하는 분산 비율을 통해, 전체 데이터 변동 중 어느 정도가 요인에 의해 설명되는지를 평가한다. 즉, 전체 변동성 중 공통 요인들이 차지하는 비율이 높을수록 모형의 설명력이 높다고 본다.</p>
+<p>k번째 요인의 분산(변동) 설명율은 다음과 같이 계산된다.<span class="math inline">\(\text{요인}k\text{의 설명율} = \frac{\lambda_{k}}{\sum_{i = 1}^{p}\lambda_{i}} \times 100(\%)\)</span>. 여기서 <span class="math inline">\(\lambda_{k}\)</span>는 k번째 요인의 고유값이다. 또한 여러 요인을 함께 고려할 때, 누적 설명율은 다음과 같다. <span class="math inline">\(\text{누적 설명율} = \frac{\sum_{i = 1}^{m}\lambda_{i}}{\sum_{i = 1}^{p}\lambda_{i}} \times 100(\%)\)</span></p>
+<p>일반적으로 사회과학 분야에서는 60% 이상, 자연과학 및 공학 분야에서는 80% 이상의 누적 설명율을 확보하면 모형이 충분히 적합하다고 본다.</p>
+<ol start="6" type="1">
+<li>요인 회전</li>
+</ol>
+<p>요인 회전은 추출된 요인들의 해석을 단순하고 명확하게 하기 위해 수행되는 과정이다. 초기에 추출된 요인들은 변수들이 여러 요인에 동시에 부하될 수 있어, 각 요인의 의미를 명확히 구분하기 어렵다. 이에 요인축을 회전시켜, 각 변수들이 특정 요인에 보다 강하게 부착되도록 조정함으로써 요인의 해석력을 극대화한다.</p>
+<p>요인 회전은 요인들 간의 상관관계를 어떻게 처리하느냐에 따라 두 가지 방식으로 구분된다.</p>
+<p>1. 직교 회전(Orthogonal Rotation)</p>
+<p>요인들 간에 상관관계가 없다고 가정하는 회전 방식이다. 요인 간 독립성을 유지하면서 변수들이 특정 요인에 명확히 부하되도록 회전한다. 가장 대표적인 방법은 Varimax 회전으로, 각 요인의 분산을 최대화하여 변수들이 어느 한 요인에 강하게, 다른 요인에는 약하게 부하되도록 만든다. 사회과학 및 심리학 연구에서 가장 널리 사용되는 방법이다.</p>
+<p>2. 사교 회전(Oblique Rotation)</p>
+<p>요인들 간의 상관을 허용하는 회전 방식이다. 실제 현상에서 요인들이 완전히 독립적이지 않을 가능성이 있을 때 사용한다. 대표적인 방법으로는 Oblimin과 Promax 회전이 있다. 이 방식은 요인들 간의 관계까지 함께 해석할 수 있다는 장점이 있다.</p>
+<p>요약하면, 요인 회전은 통계적 단순화 과정을 통해 요인 해석을 직관적으로 만드는 절차이다. 그 결과, 각 요인은 보다 명확한 의미를 갖게 되고, 연구자는 데이터의 구조를 쉽게 이해하고 설명할 수 있다.</p>
+<ol start="7" type="1">
+<li>요인 부하량 해석 및 이름부여</li>
+</ol>
+<p>요인분석의 마지막 단계는 각 요인이 무엇을 의미하는가를 해석하고, 그에 맞는 이름을 부여하는 과정이다. 이를 위해 먼저 요인 부하량을 확인한다. 요인 부하량은 각 변수가 해당 요인에 얼마나 강하게 관련되어 있는지를 나타내는 계수로, 요인이 해당 변수를 얼마나 잘 설명하는지를 보여주는 척도이다.</p>
+<p>일반적으로 요인 부하량의 절댓값이 0.5 이상이면 통계적으로 유의한 관계로 간주하며, 그 변수는 해당 요인에 의미 있게 부하된 변수로 판단한다. 요인 부하량이 높을수록 그 변수는 해당 요인의 특성을 더 잘 반영한다.</p>
+<p>요인 부하행렬을 분석한 뒤, 각 요인에 높은 부하를 보이는 변수들을 중심으로 요인의 의미를 해석한다. 예를 들어, 한 요인에 <span dir="rtl">”</span>직원 친절도”, <span dir="rtl">”</span>응답 속도”, <span dir="rtl">”</span>문제 해결 능력” 등의 항목이 높게 부하된다면, 이 요인은 <span dir="rtl">’</span>서비스 품질<span dir="rtl">’</span> 요인으로 해석할 수 있다.</p>
+<p>이처럼 요인에 포함된 변수들의 공통된 특성을 찾아내고, 그 요인의 본질을 대표할 수 있는 핵심 개념이나 키워드로 이름을 부여한다. 이 과정은 통계적 절차뿐 아니라 연구자의 이론적 통찰과 해석적 판단이 함께 요구되는 단계이다.</p>
+<ol start="8" type="1">
+<li>신뢰도 및 타당성 평가</li>
+</ol>
+<p>각 요인이 신뢰성 있는지를 평가하기 위해 크론바흐 알파(Cronbach<span dir="rtl">’</span>s Alpha) 값을 계산합니다. 일반적으로 0.7 이상이면 신뢰성이 높다고 봅니다.</p>
+<ol start="9" type="1">
+<li><p>2차 분석시 요인점수 사용 혹은 분류 문항 평균 사용</p>
+<p>이론 기반: 이론적으로, 요인점수를 사용하는 것이 더 정교하며 요인 구조를 더 잘 반영할 수 있습니다. 특히 요인 간의 기여도 차이가 크다면 요인점수가 유리합니다.</p>
+<p>실용성: 그러나 실용적으로는 문항의 평균점수를 사용하는 경우가 많습니다. 이는 해석이 용이하고 분석 절차가 간단하기 때문입니다. 평균점수는 요인 간의 가중치 차이가 크지 않을 때 적절한 대안입니다.</p>
+<p>요인점수: 이론적으로 더 정확하고 요인 구조를 잘 반영하나, 계산이 복잡하고 해석이 어려울 수 있음.</p>
+<p>평균점수: 계산이 쉽고 해석이 용이하나, 문항 간 가중치를 반영하지 못하는 경우가 있음.</p></li>
+</ol>
+<p>결국 분석 목적에 맞춰 선택하면 됩니다. 요인 간 기여도가 중요한 경우 요인점수를, 간단한 분석을 원한다면 평균점수를 사용하는 것이 적합할 수 있습니다.</p>
+<p>2. 문항 신뢰도 reliability 평가</p>
+<p>EFA 단계에서는 주로 Cronbach<span dir="rtl">’</span>s α를 사용하고, CFA 및 SEM 단계에서는 CR과 ω가 더 선호된다. 이 세 지표를 함께 고려하면 신뢰도의 통계적 안정성과 해석적 타당성을 모두 확보할 수 있다.</p>
+<p>크론바흐 알파(Cronbach<span dir="rtl">’</span>s Alpha)</p>
+<p>신뢰도는 동일한 개념을 측정하는 문항들이 얼마나 일관된 결과를 보이는가를 나타내는 지표이다. 이를 평가하기 위해 가장 널리 사용되는 척도는 크론바흐 알파이다. 이 지수는 문항들 간의 평균 상관관계를 바탕으로 계산되며, 다음과 같이 정의된다.</p>
+<p><span class="math inline">\(\alpha = \frac{k}{k - 1}\left( 1 - \frac{\sum_{i = 1}^{k}\sigma_{i}^{2}}{\sigma_{T}^{2}} \right)\)</span>, 여기서 k는: 문항의 개수, <span class="math inline">\(\sigma_{i}^{2}\)</span>은 각 문항의 분산, 그리고 <span class="math inline">\(\sigma_{T}^{2}\)</span> 전체 척도의 총분산이다. 일반적으로</p>
+<p>α ≥ 0.9 → 매우 우수한 신뢰도, 0.8 ≤ α &lt; 0.9 → 양호한 신뢰도, 0.7 ≤ α &lt; 0.8 → 수용 가능한 신뢰도, α &lt; 0.7 → 신뢰도가 낮은 것으로 해석한다.</p>
+<p>즉, 크론바흐 알파 값이 0.7 이상이면 신뢰성이 충분히 높다고 판단하며, 이 값이 높을수록 요인을 구성하는 문항들이 동일한 개념을 안정적으로 측정하고 있음을 의미한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 27%">
+<col style="width: 52%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">α 값</td>
+<td style="text-align: left;">신뢰도 수준</td>
+<td style="text-align: left;">해석</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">≥ 0.9</td>
+<td style="text-align: left;">매우 높음</td>
+<td style="text-align: left;">항목 간 일관성이 거의 완벽</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.8~0.9</td>
+<td style="text-align: left;">높음</td>
+<td style="text-align: left;">실무 연구에서 매우 양호</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.7~0.8</td>
+<td style="text-align: left;">보통 이상</td>
+<td style="text-align: left;">사회과학 연구에서 수용 가능</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0.6~0.7</td>
+<td style="text-align: left;">다소 낮음</td>
+<td style="text-align: left;">탐색적 연구에서는 허용 가능</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">&lt; 0.6</td>
+<td style="text-align: left;">낮음</td>
+<td style="text-align: left;">항목 수정 필요</td>
+</tr>
+</tbody>
+</table>
+<p>(2) 개념 신뢰도 (Composite Reliability, CR)</p>
+<p>구조방정식모형(SEM)에서 가장 많이 사용되는 신뢰도 지표이다. 각 문항의 요인부하량을 가중치로 반영하여 계산하므로, 크론바흐 알파보다 보다 정확한 내적 일관성 측정치로 평가된다.</p>
+<p><span class="math inline">\(CR = \frac{(\sum_{i = 1}^{n}\lambda_{i})^{2}}{(\sum_{i = 1}^{n}\lambda_{i})^{2} + \sum_{i = 1}^{n}(1 - \lambda_{i}^{2})}\)</span>. <span class="math inline">\(CR \geq 0.7\)</span>이면 충분한 신뢰도가 확보된 것으로 본다.</p>
+<p>(3) 맥도널드 오메가 (McDonald<span dir="rtl">’</span>s Omega, ω)</p>
+<p>크론바흐 알파의 한계를 보완하기 위해 제안된 지표이다. 각 문항의 요인부하량을 반영하면서도, 요인 간 상관을 허용하는 좀 더 유연한 신뢰도 척도이다. 특히 문항 간 부하가 균등하지 않은 실제 데이터에서 α보다 더 안정적인 값을 제공한다.</p>
+<p><span class="math inline">\(\omega = \frac{(\sum_{i = 1}^{n}\lambda_{i})^{2} \cdot \sigma_{f}^{2}}{(\sum_{i = 1}^{n}\lambda_{i})^{2} \cdot \sigma_{f}^{2} + \sum_{i = 1}^{n}\psi_{i}}\)</span>, 여기서 <span class="math inline">\(\lambda_{i}\)</span>는 문항의 요인부하, <span class="math inline">\(\sigma_{f}^{2}\)</span>는 공통요인의 분산, <span class="math inline">\(\psi_{i}\)</span>는 문항의 고유오차이다. 0.7 이상 충분한 신뢰도가 확보된 것으로 판단한다.</p>
+<p>(4) 분할 신뢰도 (Split-Half Reliability)</p>
+<p>문항을 두 부분(예: 홀수·짝수 문항)으로 나누어 각각의 점수 간 상관을 계산하는 방식이다. 전체 척도의 일관성을 직접적으로 평가하지는 않지만, 간단한 신뢰도 검증 방법으로 예비 분석 단계에서 자주 사용된다. 스피어만-브라운 보정(Spearman–Brown formula)을 적용하여 전체 척도의 신뢰도를 추정하며 0.7 이상이 기준이다.</p>
+<p>(5) 검사–재검사 신뢰도 (Test–Retest Reliability)</p>
+<p>동일한 측정도구를 일정한 시간 간격을 두고 두 번 실시한 후, 두 측정 결과 간의 상관계수를 계산하여 시간적 안정성을 평가한다. 측정도구가 시간의 흐름에도 일관된 결과를 산출하는지를 검증할 때 유용하다. 0.7 이상이면 시간 간 일관성이 있다고 본다.</p>
+<p>(6) 평가자 간 신뢰도 (Inter-Rater Reliability)</p>
+<p>여러 평가자가 동일한 대상을 평가할 때, 평가 결과가 얼마나 일치하는지를 나타내는 지표이다. 주로 관찰, 코딩, 면접 평가 등 주관적 판단이 개입되는 연구에서 사용된다. 대표적인 통계량은 Cohen<span dir="rtl">’</span>s κ(kappa)와 ICC(Intraclass Correlation Coefficient)이다. 평가자간 평가의 일치성은 0.75가 기준이다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">구분</td>
+<td style="text-align: center;">주요 지표</td>
+<td style="text-align: center;">기준</td>
+<td style="text-align: center;">특징</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">내적 일관성</td>
+<td style="text-align: center;">Cronbach’s α</td>
+<td style="text-align: center;">≥ 0.7</td>
+<td style="text-align: center;">기본적, 단순 가정</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">내적 일관성 (가중치 반영)</td>
+<td style="text-align: center;">Composite Reliability (CR)</td>
+<td style="text-align: center;">≥ 0.7</td>
+<td style="text-align: center;">요인부하 반영, SEM 사용</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">내적 일관성 (비균등 부하 허용)</td>
+<td style="text-align: center;">McDonald’s ω</td>
+<td style="text-align: center;">≥ 0.7</td>
+<td style="text-align: center;">α보다 유연하고 정확</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">반분 신뢰도</td>
+<td style="text-align: center;">Split-Half Reliability</td>
+<td style="text-align: center;">≥ 0.7</td>
+<td style="text-align: center;">간단한 예비 검증</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">시간적 안정성</td>
+<td style="text-align: center;">Test–Retest Reliability</td>
+<td style="text-align: center;">≥ 0.7</td>
+<td style="text-align: center;">시간 간 일관성</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">평가자 일치도</td>
+<td style="text-align: center;">Inter-Rater Reliability</td>
+<td style="text-align: center;">κ, ICC ≥ 0.75</td>
+<td style="text-align: center;">평가자 간 일치 평가</td>
+</tr>
+</tbody>
+</table>
+<p>3. 문항 타당도 validity 평가</p>
+<p>(1) 수렴 타당성 (Convergent Validity)</p>
+<p>수렴 타당성은 동일한 구성개념을 측정하는 여러 문항들이 서로 높은 상관을 보이는지를 평가하는 것이다. 즉, 같은 요인에 속한 문항들이 충분히 모여 하나의 개념을 반영하는지를 검증한다. 다음의 세 가지 지표를 주로 사용한다.</p>
+<ul>
+<li><p>표준화 요인부하량(Standardized Factor Loadings): 각 문항의 요인부하량이 0.5 이상(이상적으로는 0.7 이상)이면, 해당 문항이 요인을 충분히 잘 반영한다고 본다. 부하값이 낮으면 문항을 제거하거나 수정할 필요가 있다.</p></li>
+<li><p>평균분산추출(AVE, Average Variance Extracted): 한 요인이 그에 속한 문항들의 분산을 얼마나 설명하는지를 나타내는 지표이다. 계산식은 다음과 같다. <span class="math inline">\(AVE = \frac{\sum_{i = 1}^{n}\lambda_{i}^{2}}{n}\)</span>, 여기서 <span class="math inline">\(\lambda_{i}\)</span>는 각 문항의 표준화된 요인부하량이다. AVE ≥ 0.5이면 해당 요인이 구성개념의 절반 이상을 설명하므로 수렴 타당성이 확보되었다고 판단한다.</p></li>
+<li><p>개념 신뢰도(CR, Composite Reliability): 내적 일관성을 요약적으로 보여주는 지표로, 크론바흐 알파보다 요인부하량의 가중치를 반영한 개선된 지표이다. <span class="math inline">\(CR = \frac{(\sum_{i = 1}^{n}\lambda_{i})^{2}}{(\sum_{i = 1}^{n}\lambda_{i})^{2} + \sum_{i = 1}^{n}(1 - \lambda_{i}^{2})}\)</span>. CR ≥ 0.7이면 신뢰도와 수렴 타당성이 양호한 것으로 평가한다.</p></li>
+</ul>
+<p>요약하자면, 요인부하 ≥ 0.5, AVE ≥ 0.5, CR ≥ 0.7이면 수렴 타당성이 확보되었다고 본다.</p>
+<p>(2) 판별 타당성 (Discriminant Validity)</p>
+<p>판별 타당성은 서로 다른 구성개념들이 명확히 구별되는가를 검증하는 개념이다. 즉, 각 요인이 고유한 의미를 가지고 있는지를 통계적으로 확인한다. 대표적인 평가 기준은 다음과 같다.</p>
+<ul>
+<li><p>Fornell–Larcker 기준: 각 요인의 AVE 제곱근이 다른 요인과의 상관계수보다 커야 한다. <span class="math inline">\(\sqrt{AVE_{j}} &gt; r_{jk}(\text{for all}j \neq k)\)</span>. 이 조건을 만족하면 요인 간 중복이 낮고, 개별 요인이 서로 구별된다고 본다.</p></li>
+<li><p>HTMT(Heterotrait–Monotrait Ratio): 최근 많이 사용되는 판별 타당성 지표로, 두 요인 간의 교차 상관의 평균을 동일 요인 내 상관의 평균으로 나눈 비율이다. <span class="math inline">\(HTMT_{jk} = \frac{\text{평균}(r_{\text{heterotrait}})}{\text{평균}(r_{\text{monotrait}})}\)</span>. HTMT &lt; 0.85 (또는 0.90)이면 판별 타당성이 확보된 것으로 해석한다.</p></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 19%">
+<col style="width: 22%">
+<col style="width: 30%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">구분</td>
+<td style="text-align: center;">지표</td>
+<td style="text-align: center;">권장 기준</td>
+<td style="text-align: center;">의미</td>
+</tr>
+<tr class="even">
+<td rowspan="3" style="text-align: center;">수렴 타당성</td>
+<td style="text-align: center;">요인부하량</td>
+<td style="text-align: center;">≥ 0.5 (권장 0.7↑)</td>
+<td style="text-align: center;">문항이 요인을 잘 반영</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">AVE</td>
+<td style="text-align: center;">≥ 0.5</td>
+<td style="text-align: center;">요인이 문항 분산의 절반 이상 설명</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CR</td>
+<td style="text-align: center;">≥ 0.7</td>
+<td style="text-align: center;">내적 일관성 확보</td>
+</tr>
+<tr class="odd">
+<td rowspan="2" style="text-align: center;">판별 타당성</td>
+<td style="text-align: center;">√AVE &gt; 상관계수</td>
+<td style="text-align: center;">만족 시 판별 타당성 확보</td>
+<td style="text-align: center;">요인 간 구별됨</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">HTMT</td>
+<td style="text-align: center;">&lt; 0.85 (또는 0.90)</td>
+<td style="text-align: center;">요인 간 상관 과도하지 않음</td>
+</tr>
+</tbody>
+</table>
+<p>4. 실습예제</p>
+<p>데이터</p>
+<p>본 예제에서 활용하는 데이터는 항공 탑승객의 서비스 만족도를 조사한 자료로, 원래는 Kaggle에서 제공된 공개 데이터이다.</p>
+<p>본 교재에서는 독자의 활용 편의성을 돕기 위하여 이 데이터를 저자의 API 경로를 통해 손쉽게 불러올 수 있도록 하였다.</p>
+<p>A. 인구·고객 특성</p>
+<p>Gender: 성별(범주). 보통 Male/Female.</p>
+<p>Customer_Type: 신규/기존 고객 등 충성도 단서(범주). (예: Loyal Customer, Disloyal Customer)</p>
+<p>Age: 나이(정수).</p>
+<p>B. 여행 정보</p>
+<p>Type_of_Travel: 여행 목적(범주). (Business travel, Personal Travel)</p>
+<p>Class: 좌석 등급(범주). (Eco, Eco Plus, Business)</p>
+<p>Flight_Distance: 비행 거리</p>
+<p>C. 서비스 만족도: 14개 분야, 5점 척도</p>
+<p>결측값 있는 문항을 제외한 데이터 수는 103,594개이다.</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td><p># 항공 승객 서비스 만족도 데이터</p>
+<p>import pandas as pd</p>
+<p>url = "<a href="https://by-sekwon.github.io/api/airline_passenger_satisfaction.xlsx"><u>https://by-sekwon.github.io/api/airline_passenger_satisfaction.xlsx</u></a>"</p>
+<p>df = pd.read_excel(url)</p>
+<p># 결측치 제거</p>
+<p>df = df.dropna()</p>
+<p><a href="http://df.info"><u>df.info</u></a>()</p></td>
+</tr>
+</tbody>
+</table>
+<p>요인분석 전제조건 검증</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>import numpy as np</p>
+<p>import pandas as pd</p>
+<p>from scipy.stats import chi2</p>
+<p>from sklearn.preprocessing import StandardScaler</p>
+<p># ---- 0) 데이터 준비(사용자가 이미 선택한 리커트 변수) ----</p>
+<p># 요인분석 대상 변수 선택 (리커트 척도 변수)</p>
+<p>selected_columns = ['Inflight_wifi_service', 'Departure_Arrival_time_convenient', 'Ease_of_Online_booking',</p>
+<p>'Gate_location', 'Food_and_drink', 'Online_boarding', 'Seat_comfort','Inflight_entertainment', 'On_board_service',</p>
+<p>'Legroom_service', 'Baggage_handling', 'Checkin_service', 'Inflight_service','Cleanliness']</p>
+<p>data = df[selected_columns]</p>
+<p># ---- 1) 상관행렬(요인분석은 상관구조가 전제) ----</p>
+<p>R = np.corrcoef(data, rowvar=False)</p>
+<p>p = R.shape[0]</p>
+<p>n = data.shape[0]</p>
+<p># ---- 2) Bartlett<span dir="rtl">’</span>s Test of Sphericity (상관행렬이 단위행렬이 아닌지) ----</p>
+<p>def bartlett_sphericity_test(R, n):</p>
+<p>p = R.shape[0]</p>
+<p>detR = np.linalg.det(R)</p>
+<p># 수치안정: 음수 소수 오차 보정</p>
+<p>if detR &lt;= 0:</p>
+<p># 아주 작은 양수로 클립</p>
+<p>detR = np.finfo(float).tiny</p>
+<p>chi2_stat = -(n - 1 - (2*p + 5)/6) * np.log(detR)</p>
+<p>dof = p*(p-1)/2</p>
+<p>p_value = 1 - chi2.cdf(chi2_stat, dof)</p>
+<p>return chi2_stat, dof, p_value</p>
+<p>chi2_stat, dof, pval_bartlett = bartlett_sphericity_test(R, n)</p>
+<p># ---- 3) KMO (Kaiser-Meyer-Olkin) &amp; 변수별 MSA ----</p>
+<p>def kmo_msa(R):</p>
+<p>"""R: 상관행렬, 반환: KMO 전체, 변수별 MSA(Series)"""</p>
+<p>p = R.shape[0]</p>
+<p>invR = np.linalg.pinv(R) # 안정적 역행렬</p>
+<p># 부분상관행렬 계산</p>
+<p>A = np.zeros_like(R)</p>
+<p>for i in range(p):</p>
+<p>for j in range(p):</p>
+<p>A[i, j] = -invR[i, j] / np.sqrt(invR[i, i] * invR[j, j])</p>
+<p>np.fill_diagonal(A, 0.0)</p>
+<p># 원상관/부분상관 제곱합</p>
+<p>r2 = (R**2); np.fill_diagonal(r2, 0.0)</p>
+<p>a2 = (A**2); np.fill_diagonal(a2, 0.0)</p>
+<p># 변수별 MSA</p>
+<p>msa_vars = r2.sum(axis=0) / (r2.sum(axis=0) + a2.sum(axis=0))</p>
+<p># 전체 KMO</p>
+<p>kmo_overall = r2.sum() / (r2.sum() + a2.sum())</p>
+<p>return float(kmo_overall), pd.Series(msa_vars, index=selected_columns)</p>
+<p>kmo_overall, msa_series = kmo_msa(R)</p>
+<p># ---- 4) 추가 진단: 조건수, 판별식(양호한지), 고유값(스크리 확인용) ----</p>
+<p>eigvals, _ = np.linalg.eig(R)</p>
+<p>cond_number = np.linalg.cond(R)</p>
+<p>detR = np.linalg.det(R)</p>
+<p># ---- 5) 결과 요약 출력 ----</p>
+<p>print("=== Factorability Checks ===")</p>
+<p>print(f"Samples (n) = {n}, Variables (p) = {p}")</p>
+<p>print(f"Determinant of R = {detR:.6e} (너무 0에 가까우면 다중공선성 의심)")</p>
+<p>print(f"Condition number of R = {cond_number:.2f} (일반적으로 30~100↑ 크면 주의)")</p>
+<p>print("\n[ Bartlett<span dir="rtl">’</span>s Test of Sphericity ]")</p>
+<p>print(f"Chi-square = {chi2_stat:.2f}, df = {int(dof)}, p-value = {pval_bartlett:.3e}")</p>
+<p>print("해석: p &lt; 0.05 이면 '상관행렬이 단위행렬이 아니다' → 요인분석 적합성 긍정")</p>
+<p>print("\n[ KMO / MSA ]")</p>
+<p>print(f"KMO overall = {kmo_overall:.3f}")</p>
+<p>print("권장 해석 지침(대략): 0.6 미만=부적합, 0.6~0.7=미흡, 0.7~0.8=보통, 0.8~0.9=양호, 0.9+=탁월")</p>
+<p>print("\n변수별 MSA (낮은 변수는 제거 후보):")</p>
+<p>print(msa_series.sort_values())</p>
+<p>print("\n[ Eigenvalues of R ] (스크리 플롯 참고용)")</p>
+<p>print(np.round(np.sort(eigvals)[::-1], 3))</p></td>
+</tr>
+</tbody>
+</table>
+<p>=== Factorability Checks ===</p>
+<p>Samples (n) = 103594, Variables (p) = 14</p>
+<p>Determinant of R = 3.052419e-03 (너무 0에 가까우면 다중공선성 의심)</p>
+<p>Condition number of R = 20.22 (일반적으로 30~100↑ 크면 주의)</p>
+<p>[ Bartlett<span dir="rtl">’</span>s Test of Sphericity ]</p>
+<p>Chi-square = 599960.23, df = 91, p-value = 0.000e+00</p>
+<p>해석: p &lt; 0.05 이면 '상관행렬이 단위행렬이 아니다' → 요인분석 적합성 긍정</p>
+<p>[ KMO / MSA ]</p>
+<p>KMO overall = 0.781</p>
+<p>권장 해석 지침(대략): 0.6 미만=부적합, 0.6~0.7=미흡, 0.7~0.8=보통, 0.8~0.9=양호, 0.9+=탁월</p>
+<p>변수별 MSA (낮은 변수는 제거 후보):</p>
+<p>Ease_of_Online_booking 0.681642</p>
+<p>Checkin_service 0.699901</p>
+<p>Gate_location 0.706627</p>
+<p>Online_boarding 0.736463</p>
+<p>Inflight_wifi_service 0.741874</p>
+<p>Departure_Arrival_time_convenient 0.752781</p>
+<p>Inflight_entertainment 0.767890</p>
+<p>Inflight_service 0.784186</p>
+<p>Baggage_handling 0.814801</p>
+<p>Cleanliness 0.816882</p>
+<p>On_board_service 0.828932</p>
+<p>Seat_comfort 0.832942</p>
+<p>Food_and_drink 0.840904</p>
+<p>Legroom_service 0.889804</p>
+<p>dtype: float64</p>
+<p>[ Eigenvalues of R ] (스크리 플롯 참고용)</p>
+<p>[3.8 2.362 2.166 1.063 0.951 0.7 0.54 0.515 0.469 0.368 0.329 0.295</p>
+<p>0.253 0.188]</p>
+<p>첫째, 상관행렬의 판별식(determinant)은 0.003으로 0에 지나치게 가깝지 않으며, 조건수(condition number)는 20.21로 30 미만이다. 이는 변수들 간의 다중공선성이 심하지 않다는 것을 의미하며, 요인분석을 수행하기에 적절한 상태이다.</p>
+<p>둘째, Bartlett의 구형성 검정 결과는 χ² = 601,676.89, 자유도 91, p값 &lt; 0.001이다. 이 검정의 귀무가설은 <span dir="rtl">”</span>상관행렬이 단위행렬이다”이다. p값이 매우 작으므로 귀무가설이 기각되며, 변수들 간에 유의한 상관이 존재한다는 것을 보여준다. 따라서 요인분석을 적용할 수 있는 통계적 근거가 충분하다.</p>
+<p>셋째, 전체 KMO 값은 0.781이다. KMO 값이 0.7 이상이면 보통(adequate) 수준으로 간주되므로, 이 데이터는 요인분석에 적합하다. 변수별 MSA 값 역시 모두 0.68 이상으로 나타났으며, 이는 모든 변수가 공통 요인을 일정 부분 공유하고 있음을 의미한다. 다만 Ease_of_Online_booking의 MSA 값(0.68)이 상대적으로 낮으므로, 분석 과정에서 결과에 미치는 영향을 검토할 필요가 있다.</p>
+<p>넷째, 상관행렬의 고유값 중 1 이상인 요인은 4개이다(3.80, 2.36, 2.17, 1.06). 이는 전체 14개 변수의 분산을 요약하는 데 4개의 요인이 유의미한 설명력을 가진다는 것을 의미한다. 스크리 플롯을 그리면 보통 세 번째 또는 네 번째 요인 부근에서 기울기가 완만해지는 <span dir="rtl">”</span>무릎(elbow)“이 나타날 가능성이 크다.</p>
+<p>결론적으로, 이 데이터는 다중공선성 문제 없이 변수 간 상관이 충분하며, KMO 지수 또한 양호한 수준이므로 요인분석을 적용하기에 적합하다. 고유값 기준으로 볼 때 약 3~4개의 요인을 추출하는 것이 타당할 것으로 판단된다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>import matplotlib.pyplot as plt</p>
+<p>import numpy as np</p>
+<p># 고유값 계산 (상관행렬 R 이용)</p>
+<p>eigvals, eigvecs = np.linalg.eig(R)</p>
+<p>eigvals_sorted = np.sort(eigvals)[::-1]</p>
+<p># 스크리 플롯</p>
+<p>plt.figure(figsize=(8,5))</p>
+<p>plt.plot(range(1, len(eigvals_sorted)+1), eigvals_sorted, marker='o', linestyle='-', linewidth=1.5)</p>
+<p>plt.title("Scree Plot (Airline Passenger Satisfaction Data)", fontsize=13)</p>
+<p>plt.xlabel("factor number", fontsize=12)</p>
+<p>plt.ylabel("(Eigenvalue)", fontsize=12)</p>
+<p>plt.grid(alpha=0.3)</p>
+<p># 고유값 1 기준선</p>
+<p>plt.axhline(y=1, color='red', linestyle='--', linewidth=1)</p>
+<p>plt.text(len(eigvals_sorted)-3, 1.05, "eigen value = 1", color='red')</p>
+<p>plt.show()</p></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="media/image4.png" style="width:4.5in;height:3.06906in" class="figure-img"></p>
+</figure>
+</div>
+<p>요인추출</p>
+<p>요인의 개수는 3개로 하고 PCA 기반 요인 추출, 요인 회전은 VARIMAX 방법을 사용하였다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>import seaborn as sns</p>
+<p>import pandas as pd</p>
+<p>import matplotlib.pyplot as plt</p>
+<p>from factor_analyzer import FactorAnalyzer</p>
+<p># 1. 변수 선택</p>
+<p>selected_columns = ['Inflight_wifi_service', 'Departure_Arrival_time_convenient', 'Ease_of_Online_booking',</p>
+<p>'Gate_location', 'Food_and_drink', 'Online_boarding', 'Seat_comfort','Inflight_entertainment',</p>
+<p>'On_board_service','Legroom_service', 'Baggage_handling', 'Checkin_service','Inflight_service','Cleanliness']</p>
+<p>data = df[selected_columns]</p>
+<p># 2. 탐색적 요인분석</p>
+<p>fa = FactorAnalyzer(n_factors=3, rotation='varimax')</p>
+<p>fa.fit(data)</p>
+<p># 3. 요인 부하량 추출</p>
+<p>loadings = pd.DataFrame(fa.loadings_,</p>
+<p>index=data.columns,</p>
+<p>columns=['Factor1','Factor2','Factor3'])</p>
+<p># 4. 시각화</p>
+<p>plt.figure(figsize=(8,6))</p>
+<p>sns.heatmap(loadings, annot=True, cmap='coolwarm', center=0)</p>
+<p>plt.title("Factor Loadings (Varimax rotation)")</p>
+<p>plt.show()</p>
+<p># 5. 요인별 분산 설명비율</p>
+<p>variance = fa.get_factor_variance()</p>
+<p>print("Variance Explained by Factors:\n")</p>
+<p>print(pd.DataFrame({</p>
+<p>'Eigenvalue': variance[0],</p>
+<p>'Proportion Var': variance[1],</p>
+<p>'Cumulative Var': variance[2]</p>
+<p>}, index=['Factor1','Factor2','Factor3']))</p></td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="media/image5.png" style="width:4.5in;height:2.77246in" class="figure-img"></p>
+</figure>
+</div>
+<p>Variance Explained by Factors:</p>
+<p>Eigenvalue Proportion Var Cumulative Var</p>
+<p>Factor1 2.706579 0.193327 0.193327</p>
+<p>Factor2 2.296400 0.164029 0.357356</p>
+<p>Factor3 2.089330 0.149238 0.506593</p>
+<p>요인 이름 부여</p>
+<p>요인 이름 부여는 탐색적 요인분석의 해석을 사람의 언어로 번역하는 일이다. 회전된 요인부하행렬을 얻으면, 각 요인에서 부하량이 충분히 큰 변수들—보통 0.4~0.5 이상—을 먼저 한데 모은다. 그 묶음이 공통적으로 가리키는 개념을 조용히 음미한다. 변수명이 <span dir="rtl">’</span>청결, 좌석 편안함, 기내식, 오락<span dir="rtl">’</span>이라면 물리적‧환경적 쾌적성이 자연스럽게 떠오르고, <span dir="rtl">’</span>승무원 서비스, 온보드 응대, 레그룸<span dir="rtl">’</span>이라면 인적 서비스와 탑승 경험이 한 줄로 이어진다. 핵심은 숫자들의 우연한 배열을 억지로 설명하는 것이 아니라, 함께 높은 부하를 보이는 항목들이 실제 현장에서 한 덩어리로 지각되는지를 상상하는 것이다.</p>
+<p>이름은 간결한 명사구로 정제하는 편이 좋다. <span dir="rtl">’</span>기내 환경 품질<span dir="rtl">’</span>, <span dir="rtl">’</span>승무원 및 온보드 서비스<span dir="rtl">’</span>, <span dir="rtl">’</span>예약‧접근 편의성<span dir="rtl">’</span>처럼 길지 않되 무엇을 포함하고 무엇을 제외하는지 경계가 선명해야 한다. 가능하다면 기존 연구의 용어 체계와 접점을 확인해 용어를 정돈한다. 예컨대 서비스품질 연구에서 <span dir="rtl">’</span>유형성(Tangibles)<span dir="rtl">’</span>이나 <span dir="rtl">’</span>대응성(Responsiveness)<span dir="rtl">’</span> 같은 전통적 차원에 자연스럽게 포개질 수 있다면 해석의 설득력이 커진다. 반대로 <span dir="rtl">’</span>만족도<span dir="rtl">’</span>처럼 결과 변수에 가까운 이름은 피한다. 요인은 원인적 잠재구조를 지칭해야 하기 때문이다.</p>
+<p>부하가 이중으로 높아 어느 요인에도 단정하기 어려운 항목은 맥락을 더 본다. 설문 문항의 실제 문구, 측정 상황, 표본 특성과 같은 주변 증거가 결정을 도와준다. 필요하면 사각회전처럼 요인 간 상관을 허용하는 해석 틀을 시도해 본다. 요인 점수를 계산해 외생 변수와의 상관이나 신뢰도(크론바흐 α)도 함께 점검하면, 붙인 이름이 단지 말의 수사가 아니라 데이터가 지지하는 개념이라는 것을 확인할 수 있다.</p>
+<p>결국 요인명은 데이터의 패턴, 이론의 문맥, 실무의 직관이 만나는 지점에서 태어난다. 같은 행렬이라도 연구 목적과 현장 언어가 다르면 이름은 달라질 수 있다. 다음 단계로, 지금 붙인 이름이 예측·세분화·만족도 모델링 같은 실제 분석 과제에서 얼마나 유용한 설명력을 제공하는지 시험해 보면 해석이 더 단단해진다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 48%">
+<col style="width: 31%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">요인</td>
+<td style="text-align: left;">주요 변수</td>
+<td style="text-align: left;">제안 이름</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Factor1</td>
+<td style="text-align: left;">Cleanliness, Seat_comfort, Food_and_drink, Inflight_entertainment</td>
+<td style="text-align: left;">기내 환경 및 품질 요인 (In-flight Quality)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Factor2</td>
+<td style="text-align: left;">Inflight_service, On_board_service, Legroom_service</td>
+<td style="text-align: left;">승무원 및 탑승 서비스 요인 (Staff &amp; Onboard Service)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Factor3</td>
+<td style="text-align: left;">Ease_of_Online_booking, Inflight_wifi_service, Departure/Arrival_time_convenient, Gate_location</td>
+<td style="text-align: left;">예약·접근성 및 디지털 편의 요인 (Booking &amp; Accessibility)</td>
+</tr>
+</tbody>
+</table>
+<p>요인 문항 신뢰도 평가</p>
+<p>요인분석에서 문항의 신뢰도를 평가하는 이유는, 통계적으로 요인이 도출되었다고 해서 그 요인이 실제로 일관된 개념을 측정한다고 단정할 수 없기 때문이다. 요인분석은 여러 문항들이 서로 상관되어 있다는 사실을 근거로 공통된 잠재요인을 찾아내는 절차이지만, 그 요인이 개념적으로 일관된지를 확인하는 것은 또 다른 문제이다.</p>
+<p>예를 들어 고객 만족을 측정하기 위해 여러 문항을 사용했다면, 요인분석을 통해 이 문항들이 하나의 요인으로 묶였다고 하더라도, 각 문항이 동일한 개념을 안정적으로 반영하고 있는지는 신뢰도 검사를 통해 확인해야 한다. 이를 위해 주로 사용하는 지표가 크론바흐 알파(Cronbach<span dir="rtl">’</span>s α) 값이며, 일반적으로 0.7 이상이면 해당 요인이 일관성과 신뢰성을 갖춘 것으로 본다.</p>
+<p>즉, 신뢰도 평가는 요인분석에서 도출된 결과가 실제로 신뢰할 수 있는 측정도구인지 검증하는 과정이다. 이 절차를 통해 문항들이 동일한 개념을 지속적으로 측정하고 있음을 확인해야만, 이후의 구조방정식 모형이나 회귀분석 등에서 요인 점수를 유의미하게 사용할 수 있다. 따라서 요인 문항의 신뢰도 평가는 요인의 통계적 적합성뿐 아니라, 개념적 타당성과 분석 결과의 안정성을 보장하기 위한 필수 단계이다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>import pandas as pd</p>
+<p>import numpy as np</p>
+<p>def cronbach_alpha(df):</p>
+<p>"""</p>
+<p>Cronbach's alpha = (k / (k-1)) * (1 - sum(var_i) / var_total)</p>
+<p>k: 변수 개수</p>
+<p>"""</p>
+<p>df_corr = df.corr()</p>
+<p>k = len(df.columns)</p>
+<p>var_sum = df.var(axis=0, ddof=1).sum()</p>
+<p>total_var = df.sum(axis=1).var(ddof=1)</p>
+<p>alpha = (k / (k - 1)) * (1 - var_sum / total_var)</p>
+<p>return alpha</p>
+<p># Factor 1: 기내 환경 및 품질 요인</p>
+<p>f1_vars = ['Food_and_drink', 'Seat_comfort', 'Inflight_entertainment', 'Cleanliness']</p>
+<p># Factor 2: 승무원 및 탑승 서비스 요인</p>
+<p>f2_vars = ['Inflight_service', 'On_board_service', 'Legroom_service', 'Baggage_handling']</p>
+<p># Factor 3: 예약·접근성 및 디지털 편의 요인</p>
+<p>f3_vars = ['Ease_of_Online_booking', 'Inflight_wifi_service',</p>
+<p>'Departure_Arrival_time_convenient', 'Gate_location', 'Online_boarding']</p>
+<p>alpha_f1 = cronbach_alpha(df[f1_vars])</p>
+<p>alpha_f2 = cronbach_alpha(df[f2_vars])</p>
+<p>alpha_f3 = cronbach_alpha(df[f3_vars])</p>
+<p>print(f"Cronbach's alpha (Factor1 - Inflight Quality): {alpha_f1:.3f}")</p>
+<p>print(f"Cronbach's alpha (Factor2 - Service Interaction): {alpha_f2:.3f}")</p>
+<p>print(f"Cronbach's alpha (Factor3 - Accessibility): {alpha_f3:.3f}")</p></td>
+</tr>
+</tbody>
+</table>
+<p>Cronbach's alpha (Factor1 - Inflight Quality): 0.876</p>
+<p>Cronbach's alpha (Factor2 - Service Interaction): 0.772</p>
+<p>Cronbach's alpha (Factor3 - Accessibility): 0.742</p>
+<p>요인 점수와 요인 내 문항 평균</p>
+<p>요인분석을 마친 뒤, 도출된 요인을 이용해 회귀분석, 군집분석, 구조방정식 등 2차 분석을 수행할 때는 두 가지 대표적인 선택지가 있다.</p>
+<p>1. 요인 내 문항의 평균값을 사용하는 방법</p>
+<p>2. 요인분석에서 계산된 요인점수(factor score)를 사용하는 방법</p>
+<p>두 방법은 겉보기에 비슷하지만, 개념적으로 다르고 결과 해석에도 차이가 있다.</p>
+<p>요인 내 문항의 평균값을 사용하는 방법은 가장 단순하고 직관적이다. 각 요인에 속하는 문항들이 모두 같은 가중치를 가진다고 가정하고, 문항의 평균이나 합계를 요인의 대표값으로 삼는다. 이 방법은 해석이 쉽고, 측정도구의 신뢰도(크론바흐 알파)가 충분히 높을 때에는 큰 문제 없이 사용된다. 실제로 사회과학 연구에서는 설문척도의 점수 산출 시 이 방식이 가장 널리 쓰인다. 예를 들어 <span dir="rtl">’</span>서비스 만족도<span dir="rtl">’</span> 요인이 4개 문항으로 구성되어 있다면, 각 문항의 평균값이 서비스 만족도의 대표점수로 간주된다.</p>
+<p>반면, 요인점수는 요인분석을 통해 통계적으로 산출된 추정값으로, 각 문항에 부여되는 가중치가 다르다. 요인분석은 변수 간 상관관계를 고려하여 요인부하량이 큰 문항에 더 높은 가중치를 주고, 상대적으로 덜 관련된 문항에는 낮은 가중치를 준다. 따라서 요인점수는 이론적으로 보다 정교하게 잠재요인을 반영하지만, 추정 과정에서 표본 특성이 반영되어 일반화 가능성이 낮을 수 있다. 또 요인점수는 분석 프로그램마다 계산 방식이 다르며(회귀법, Bartlett법, Anderson–Rubin법 등), 절대적 척도가 아니라 표준화된 상대값으로 해석해야 한다는 제약도 있다.</p>
+<p>요약하면, 측정의 신뢰도와 단순성을 중시하는 응용 연구에서는 문항 평균을, 통계적 정밀성과 요인 간 관계를 정교하게 추정하려는 분석(예: 구조방정식 모형, 경로분석 등)에서는 요인점수를 사용하는 것이 적절하다.)</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># factor scores</p>
+<p>factor_scores = pd.DataFrame(fa.transform(data))</p>
+<p>factor_scores.columns = ['Comfort_factor', 'Service_factor', 'Convenience_factor']</p>
+<p>df=pd.concat([df,factor_scores],axis=1)</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># 요인 내 문항들의 means</p>
+<p>df['Comfort_mean']=df[['Food_and_drink', 'Seat_comfort', 'Inflight_entertainment', 'Cleanliness']].mean(axis=1)</p>
+<p>df['Service_mean']=df[['On_board_service', 'Baggage_handling', 'Inflight_service']].mean(axis=1)</p>
+<p>df['Convenience_mean']= df[['Inflight_wifi_service', 'Departure_Arrival_time_convenient', 'Ease_of_Online_booking', 'Gate_location']].mean(axis=1)</p></td>
+</tr>
+</tbody>
+</table>
+<p>Chapter 3. 확증적 요인분석: 구조 방정식 모형</p>
+<p>1. 요인분석과 구조방정식 관계</p>
+<p>요인분석은 구조방정식 모형의 일부</p>
+<p>요인분석은 구조방정식 모형의 한 구성 요소이다.</p>
+<p>요인분석은 관측된 변수들 간의 공통된 요인을 추출하는 데 초점을 둔 분석 방법이다. 즉, 여러 관측 변수들이 몇 개의 잠재 요인(latent factors)에 의해 설명된다는 가정하에, 이 잠재 요인을 찾아내는 과정이다.</p>
+<p>반면 구조방정식 모형(SEM: Structural Equation Model)은 요인분석을 포함하는 보다 확장된 분석 틀이다. 구조방정식 모형은 잠재 변수와 관측 변수 간의 관계뿐 아니라, 잠재 변수들 간의 인과적 관계까지 동시에 추정한다는 점에서 요인분석보다 포괄적이다.</p>
+<p>따라서 요인분석은 구조방정식 모형의 측정모형(measurement model) 부분을 구성하며, 잠재 변수를 정의하고 그 변수가 어떤 관측 변수들에 의해 측정되는지를 규명하는 역할을 한다. 이후 구조방정식 모형은 이 측정모형을 기반으로 구조모형(structural model)을 설정하여, 잠재 변수들 간의 인과적 경로를 추정한다.</p>
+<p>결국 요인분석은 잠재 요인을 도출하기 위한 기초적 단계이며, 구조방정식 모형은 그 잠재 요인들을 이용해 변수 간 인과 구조를 설명하는 통합적 분석 체계이다.</p>
+<p>확증적 요인분석(CFA)와 구조방정식 모형(SEM)의 확장</p>
+<p>확증적 요인분석은 요인분석의 한 형태로, 연구자가 사전에 설정한 요인 구조가 실제 자료에 적합한지를 검정하는 방법이다. 즉, 어떤 문항이 어떤 요인에 속하는지에 대한 연구자의 가설이 이미 존재하며, 이를 통계적으로 검증하는 절차이다.</p>
+<p>이에 비해 구조방정식 모형(SEM)은 확증적 요인분석을 포함하는 보다 확장된 분석 틀이다. 구조방정식 모형은 잠재 변수들 간의 인과적 관계를 동시에 분석할 수 있는 통합적 모델링 기법이다. 다시 말해, SEM은 각 요인을 어떻게 측정하는지(측정모형, CFA 부분)와 요인들 간의 관계가 어떻게 연결되는지(구조모형)를 하나의 체계 안에서 추정한다.</p>
+<p>예를 들어, <span dir="rtl">’</span>서비스 품질<span dir="rtl">’</span>과 <span dir="rtl">’</span>고객 만족<span dir="rtl">’</span>이라는 두 잠재 변수가 있을 때, 확증적 요인분석은 각 잠재 변수를 구성하는 문항들이 적절히 묶여 있는지를 검정한다. 반면 구조방정식 모형은 <span dir="rtl">’</span>서비스 품질이 고객 만족에 영향을 미친다<span dir="rtl">’</span>는 인과 경로를 포함하여, 두 잠재 변수 간의 관계까지 함께 추정한다.</p>
+<p>따라서 확증적 요인분석은 구조방정식 모형의 한 부분으로서 측정모형을 검정하는 절차이며, 구조방정식 모형은 이를 바탕으로 잠재 변수들 간의 인과 구조까지 분석하는 확장된 모형이다.</p>
+<p>요인분석은 측정 모형을 제공</p>
+<p>요인분석은 구조방정식 모형의 기초가 되는 측정모형을 제공하는 역할을 한다. 측정모형은 관측된 변수들이 잠재 변수(요인)를 얼마나 잘 반영하는지를 나타내며, 요인분석의 핵심 결과인 요인부하량이 바로 이 관계의 강도를 보여준다. 요인부하량이 높을수록 해당 관측변수는 잠재변수를 더 잘 설명한다고 해석한다.</p>
+<p>즉, 요인분석은 관측된 여러 변수들 간의 상관 구조를 바탕으로, 이들이 공통적으로 설명되는 잠재 요인을 찾아내고 그 측정 구조를 통계적으로 제시한다. 이를 통해 각 잠재 변수가 어떤 문항들에 의해 형성되는지, 그리고 각 문항이 그 잠재 요인을 얼마나 충실히 반영하는지를 검정할 수 있다.</p>
+<p>구조방정식 모형은 이러한 요인분석의 결과를 바탕으로 구조모형을 추가하여 잠재 변수들 간의 인과 관계를 분석한다. 예를 들어, <span dir="rtl">’</span>인지 능력<span dir="rtl">’</span>이라는 잠재 변수가 <span dir="rtl">’</span>학업 성취도<span dir="rtl">’</span>라는 관측 변수에 영향을 미치는지를 검정하는 것이 구조모형의 역할이다.</p>
+<p>결국 요인분석은 구조방정식 모형의 측정적 토대를 제공하고, 구조방정식 모형은 그 위에서 잠재 요인 간의 관계를 설명하는 인과적 확장 모형을 완성한다.</p>
+<p>구조방정식 모형은 복잡한 관계 분석</p>
+<p>요인분석은 변수들 간의 상관 구조를 단순화하여, 여러 관측 변수들 속에 내재된 공통된 잠재 요인을 찾아내는 데 초점을 둔다. 이를 통해 복잡한 변수 간 관계를 몇 개의 요인으로 축약하고, 데이터의 구조를 이해할 수 있다.</p>
+<p>반면 구조방정식 모형은 이러한 요인분석의 결과를 확장하여, 관측 변수와 잠재 변수 간의 관계뿐 아니라 잠재 변수들 간의 인과 관계까지 동시에 분석할 수 있는 종합적 모형이다. 즉, 구조방정식 모형은 <span dir="rtl">”</span>무엇이 무엇에 영향을 미치는가”를 통계적으로 검정할 수 있는 인과적 분석 도구이다.</p>
+<p>예를 들어 학업 성취도를 설명하는 모형을 구축한다고 할 때, 요인분석은 <span dir="rtl">’</span>IQ<span dir="rtl">’</span>, <span dir="rtl">’</span>학습 동기<span dir="rtl">’</span>, <span dir="rtl">’</span>학교 환경<span dir="rtl">’</span> 등 여러 측정 문항이 각각 어떤 요인을 구성하는지를 밝히는 데 그친다. 그러나 구조방정식 모형은 이 요인들 간의 관계까지 고려하여, 학생의 IQ가 학습 동기에 영향을 미치고, 학습 동기가 다시 학업 성취도에 영향을 미친다와 같은 복잡한 인과 구조를 동시에 추정할 수 있다.</p>
+<p>따라서 구조방정식 모형은 요인분석을 바탕으로 한 확장적 인과 분석 도구로서, 실제 사회·교육·경영 연구 등에서 변수들 간의 복합적 상호작용을 통합적으로 설명하는 데 활용된다.</p>
+<p>2. 구조방정식 모형과 경로분석 관계</p>
+<p>구조방정식 모형과 경로분석은 모두 변수들 간의 인과 관계를 분석하는 방법이지만, 다루는 변수의 성격에 따라 구분된다.</p>
+<p>관측변수와 잠재변수</p>
+<p>경로분석은 모든 변수가 관측변수로 이루어진 모형이다. 즉, 실제로 측정된 데이터(시험 점수, 소득, 연령 등)를 직접 사용하여 변수 간의 인과적 경로를 추정한다. 경로분석은 회귀분석의 확장 형태로 볼 수 있으며, 여러 개의 독립변수와 종속변수 간의 복잡한 인과관계를 동시에 분석할 수 있다. 다만, 모든 변수가 실제 관측값으로 주어져야 하므로, <span dir="rtl">’</span>태도<span dir="rtl">’</span>, <span dir="rtl">’</span>동기<span dir="rtl">’</span>, <span dir="rtl">’</span>만족도<span dir="rtl">’</span>처럼 직접 관측할 수 없는 개념은 다루기 어렵다.</p>
+<p>반면 구조방정식 모형은 경로분석을 포함하면서도 잠재변수를 다룰 수 있다는 점에서 한 단계 확장된 개념이다. 잠재변수는 직접 관측되지 않지만, 여러 관측변수들로부터 추정되는 개념적 변수이다. 예를 들어 <span dir="rtl">’</span>지능<span dir="rtl">’</span>은 하나의 시험 점수가 아니라 여러 테스트 점수의 공통된 요인으로 정의되며, 이러한 잠재변수를 구조방정식 모형에서 추정할 수 있다.</p>
+<p>따라서 경로분석은 구조방정식 모형의 특수한 형태로 볼 수 있다. 경로분석이 관측변수들만을 사용하여 인과 구조를 설명한다면, 구조방정식 모형은 관측변수와 잠재변수를 모두 포함하여 보다 포괄적인 인과 관계를 분석한다. 결국 SEM은 경로분석의 틀을 유지하면서, 관측 불가능한 개념까지 통계적으로 모델링할 수 있도록 확장된 형태의 분석 방법이다.</p>
+<p>모델의 복잡성</p>
+<p>경로분석은 변수 간의 단순한 인과 관계를 다루는 모형이다. 주로 변수들 사이의 단방향(선형적) 관계를 분석하며, 각 변수는 다른 변수에 영향을 미치거나 영향을 받는 구조로 표현된다. 이러한 모형은 비교적 단순하여 변수 간의 직접효과를 중심으로 해석된다.</p>
+<p>반면 구조방정식 모형은 이러한 단순한 인과 구조를 넘어서는 복합적 관계 모델링이 가능하다. 구조방정식 모형은 관측변수와 잠재변수 간의 관계를 동시에 다루며, 여러 인과 경로를 한 모형 안에서 추정할 수 있다. 또한 매개효과와 조절효과, 잠재변수 간의 상호작용 등 다양한 형태의 간접 경로를 분석할 수 있어 현실적이고 다층적인 관계를 반영할 수 있다.</p>
+<p>SEM은 측정모형과 구조모형을 결합하여, 관측변수가 잠재변수를 얼마나 잘 측정하는지(측정모형)와 잠재변수들 간의 인과 관계(구조모형)를 동시에 추정한다. 따라서 구조방정식 모형은 경로분석보다 모형의 복잡성이 높지만, 그만큼 이론적 구조를 정교하게 검증할 수 있는 유연한 분석 틀을 제공한다.</p>
+<p>사용 목적</p>
+<p>경로분석은 변수들 간의 직접적 인과 관계를 설명하고자 할 때 사용된다. 모든 변수가 실제로 관측 가능한 값으로 주어지며, 연구자는 각 변수 간의 영향 경로를 명확히 파악하는 데 초점을 둔다. 예를 들어, <span dir="rtl">’</span>학습시간 → 성적<span dir="rtl">’</span>, <span dir="rtl">’</span>학습동기 → 성적<span dir="rtl">’</span>과 같은 직접적인 관계를 분석할 때 경로분석이 적합하다.</p>
+<p>반면, 구조방정식 모형은 보다 복잡한 이론적 구조를 검증하는 데 사용된다. 관측되지 않은 개념(잠재변수)을 측정하거나, 변수 간의 간접효과·매개효과·조절효과 등 다층적인 관계를 동시에 탐색할 수 있다. 즉, 단순히 변수 간의 인과관계 확인을 넘어, 이론적으로 설정된 개념적 구조가 실제 데이터에 부합하는지를 검증하는 데 목적이 있다.</p>
+<p>따라서 경로분석은 단순한 인과 경로의 확인에 초점을 두고, 구조방정식 모형은 이론적 모형의 종합적 검증과 잠재 개념의 추정을 목적으로 하는 보다 확장된 분석 방법이다.</p>
+<p>3. 확증적요인분석과 구조방정식 모형</p>
+<p>확증적 요인분석(CFA)은 연구자가 사전에 설정한 요인 구조가 실제 자료에 부합하는지를 검정하는 분석 방법이다. 즉, 어떤 관측변수가 어떤 요인에 속하는지에 대한 이론적 가설을 세운 뒤, 그 가설이 통계적으로 타당한지를 검증한다.</p>
+<p>CFA의 핵심은 잠재변수와 관측변수 간의 관계를 평가하는 데 있다. 잠재변수는 직접 측정할 수 없는 개념(예: 지능, 우울감, 직무만족도 등)이며, 이러한 개념이 여러 개의 관측변수(테스트 점수, 설문 문항 등)를 통해 얼마나 잘 측정되는지를 확인한다. 예를 들어, <span dir="rtl">’</span>직무만족도<span dir="rtl">’</span>라는 잠재변수를 다섯 개의 설문 문항으로 측정한다고 할 때, 이 문항들이 직무만족도를 얼마나 정확히 반영하는지를 검증하는 것이 CFA이다.</p>
+<p>확증적 요인분석은 측정모형의 적합성을 평가하는 데 초점을 둔다. 즉, 잠재변수가 관측변수들을 통해 얼마나 잘 측정되는지, 각 문항이 기대한 요인에 제대로 부하되어 있는지를 검정한다. 그러나 요인 간의 인과 관계나 구조적 연결은 분석하지 않는다.</p>
+<p>반면 구조방정식 모형은 이러한 CFA를 포함하는 보다 포괄적인 분석 방법이다. 구조방정식 모형은 잠재변수와 관측변수 간의 관계(측정모형)뿐 아니라, 잠재변수들 간의 인과 관계(구조모형)까지 동시에 추정할 수 있다. 예를 들어, <span dir="rtl">’</span>직무만족도<span dir="rtl">’</span>라는 잠재변수가 <span dir="rtl">’</span>업무성과<span dir="rtl">’</span>에 어떤 영향을 미치는지를 검증하려면, 먼저 직무만족도를 여러 문항을 통해 측정한 뒤(측정모형), 그 잠재변수가 업무성과에 미치는 인과적 영향을 분석해야 한다(구조모형).</p>
+<p>결론적으로, 확증적 요인분석(CFA)은 구조방정식 모형(SEM)의 한 부분이다.</p>
+<ul>
+<li><p>CFA는 잠재변수와 이를 측정하는 관측변수 간의 관계를 평가하는 데 초점을 두며, 구조적 관계를 포함하지 않는다.</p></li>
+<li><p>SEM은 CFA를 포함하면서, 잠재변수들 간의 인과 구조까지 통합적으로 분석하는 방법이다.</p></li>
+</ul>
+<p>따라서 CFA가 <span dir="rtl">’</span>측정의 타당성<span dir="rtl">’</span>을 검증하는 도구라면, SEM은 그 위에 <span dir="rtl">’</span>이론적 인과 구조<span dir="rtl">’</span>를 검증하는 확장된 분석 체계라고 할 수 있다.</p>
+<p>4. 구조방정식 모형</p>
+<p>모형1</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="media/image6.png" style="width:4.5in;height:0.58771in" class="figure-img"></p>
+</figure>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>#구조방정식 모듈 설치</p>
+<p>!pip install semopy</p>
+<p>import pandas as pd</p>
+<p>from semopy import Model</p>
+<p>from semopy import Model, calc_stats</p>
+<p># SEM 모형 정의</p>
+<p>desc = """</p>
+<p>ServiceQuality =~ Comfort + Service + Convenience</p>
+<p>Comfort =~ Food_and_drink + Seat_comfort + Inflight_entertainment + Cleanliness</p>
+<p>Service =~ On_board_service + Baggage_handling + Inflight_service</p>
+<p>Convenience =~ Inflight_wifi_service + Departure_Arrival_time_convenient + Ease_of_Online_booking + Gate_location</p>
+<p>"""</p>
+<p># 모델 생성 및 적합</p>
+<p>model = Model(desc)</p>
+<p>model.fit(df)</p>
+<p># 결과 확인</p>
+<p>estimates = model.inspect()</p>
+<p>estimates_df = pd.DataFrame(estimates)</p>
+<p># 적합도 지표 계산</p>
+<p>fit_stats = calc_stats(model)</p>
+<p># 주요 적합도 지표 출력</p>
+<p>print(f"RMSEA: {fit_stats['RMSEA']}")</p>
+<p>print(f"CFI: {fit_stats['CFI']}")</p>
+<p>print(f"AGFI: {fit_stats['AGFI']}")</p>
+<p>print(f"TLI: {fit_stats['TLI']}")</p>
+<p>print(f"Chi-square: {fit_stats['chi2']}")</p>
+<p>print(f"Degrees of Freedom: {fit_stats['DoF']}")</p>
+<p>print(f"p-value: {fit_stats['chi2 p-value']}")</p>
+<p>estimates_df</p></td>
+</tr>
+</tbody>
+</table>
+<p>RMSEA: Value 0.119678</p>
+<p>Name: RMSEA, dtype: float64</p>
+<p>CFI: Value 0.87756</p>
+<p>Name: CFI, dtype: float64</p>
+<p>AGFI: Value 0.835659</p>
+<p>Name: AGFI, dtype: float64</p>
+<p>TLI: Value 0.835752</p>
+<p>Name: TLI, dtype: float64</p>
+<p>Chi-square: Value 60874.359602</p>
+<p>Name: chi2, dtype: float64</p>
+<p>Degrees of Freedom: Value 41</p>
+<p>Name: DoF, dtype: int64</p>
+<p>p-value: Value 0.0</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="media/image7.png" style="width:4.5in;height:3.63035in" class="figure-img"></p>
+</figure>
+</div>
+<p>구조방정식모형 분석 결과 해석</p>
+<p>본 연구에서 설정한 구조방정식모형의 전반적 적합도를 평가한 결과,</p>
+<p>χ²(41)=60874.36, p&lt;0.001로 나타나 모형이 완벽하게 자료에 부합한다고 보기는 어렵다.</p>
+<p>표본의 크기가 매우 큰 경우 카이제곱 검정은 민감하게 반응하므로, 보조적 적합도 지표를 함께 검토하였다. 그 결과 RMSEA=0.1197, CFI=0.8776, TLI=0.8358, AGFI=0.8357로 나타났다.</p>
+<p>일반적으로 RMSEA는 0.08 이하, CFI와 TLI는 0.90 이상, AGFI는 0.90 이상일 때 모형 적합도가 양호하다고 평가한다.</p>
+<p>따라서 본 모형의 RMSEA 값은 다소 높고 CFI, TLI, AGFI 역시 0.9 미만으로, 전반적으로 모형 적합도가 만족스럽지 못한 수준이다. 이는 측정모형이나 구조모형 일부에서 경로 제약이 과도하거나, 측정변수 간 공분산 구조가 충분히 반영되지 않았음을 시사한다.</p>
+<p>측정모형(Measurement Model) 결과</p>
+<p>1. 잠재변수 ServiceQuality</p>
+<p><span dir="rtl">’</span>서비스 품질(ServiceQuality)<span dir="rtl">’</span>은 Comfort, Service, Convenience의 세 잠재요인으로 구성되었다. ServiceQuality가 Comfort에 미치는 경로계수는 1.00으로 기준화되었고, Service에 대한 경로계수는 0.953, Convenience에 대한 경로계수는 0.323으로 나타났다.</p>
+<p>이는 서비스 품질이 전반적 <span dir="rtl">’</span>편안함<span dir="rtl">’</span>과 <span dir="rtl">’</span>서비스<span dir="rtl">’</span> 요인에는 강하게 작용하나, <span dir="rtl">’</span>편의성(Convenience)<span dir="rtl">’</span>에는 상대적으로 약한 영향을 미침을 의미한다.</p>
+<p>2. 잠재변수 Comfort</p>
+<p>Comfort는 <span dir="rtl">’</span>기내식(Food_and_drink)<span dir="rtl">’</span>, <span dir="rtl">’</span>좌석 편안함(Seat_comfort)<span dir="rtl">’</span>,</p>
+<p><span dir="rtl">’</span>기내 오락(Inflight_entertainment)<span dir="rtl">’</span>, <span dir="rtl">’</span>청결도(Cleanliness)<span dir="rtl">’</span> 네 항목으로 측정되었다. 모든 요인부하량이 각각 1.00, 1.01, 1.09, 1.12로 높고,</p>
+<p>표준오차가 작으며 p값이 모두 0.001 미만으로 유의하였다. 이는 Comfort 요인이 매우 안정적으로 측정되었음을 의미한다.</p>
+<p>3. 잠재변수 Service</p>
+<p>Service는 <span dir="rtl">’</span>기내 서비스(On_board_service)<span dir="rtl">’</span>, <span dir="rtl">’</span>수하물 처리(Baggage_handling)<span dir="rtl">’</span>, <span dir="rtl">’</span>기내 응대(Inflight_service)<span dir="rtl">’</span> 세 항목으로 구성되었다. 각 요인부하량은 1.00, 1.04, 1.09로 모두 유의하였으며,</p>
+<p>서비스 품질에 대한 강한 설명력을 가진다. 따라서 이 세 문항은 Service 요인의 개념을 일관되게 반영하는 것으로 판단된다.</p>
+<p>4. 잠재변수 Convenience</p>
+<p>Convenience는 <span dir="rtl">’</span>출도착 시간의 편리성(Departure_Arrival_time_convenient)<span dir="rtl">’</span>, <span dir="rtl">’</span>온라인 예약 용이성(Ease_of_Online_booking)<span dir="rtl">’</span>, <span dir="rtl">’</span>탑승구 위치(Gate_location)<span dir="rtl">’</span> 세 항목으로 구성되었다. 요인부하량은 각각 0.73, 1.26, 0.63으로 모두 유의하였다. 특히 <span dir="rtl">’</span>온라인 예약 용이성<span dir="rtl">’</span>의 부하량이 가장 높아, 편의성 인식에 가장 큰 영향을 미치는 항목으로 해석된다.</p>
+<p>공분산 및 오차분산 구조</p>
+<p>각 관측변수의 분산 추정치는 모두 양(+)의 값으로 유의하였으며 (예: Seat_comfort 0.721, Cleanliness 0.452 등), 잠재요인 간 공분산 역시 통계적으로 유의하게 나타났다. 특히 Comfort와 Convenience의 공분산이 1.02, Service와 ServiceQuality 간 공분산이 0.54 수준으로 관측되어 요인 간 밀접한 연관성이 존재하나 완전히 중복되지는 않음을 시사한다. 이는 기내 서비스 품질을 구성하는 여러 요인들이 서로 관련되어 있지만, 각기 독립적인 속성도 함께 가지고 있음을 보여준다.</p>
+<p>종합적 해석</p>
+<p>전반적으로 각 잠재요인을 구성하는 측정문항들의 요인부하량은 모두 높고 유의하므로, 측정모형의 수렴타당성(convergent validity)은 확보된 것으로 볼 수 있다. 그러나 RMSEA와 CFI, TLI 지표를 고려하면 모형의 전반적 적합도는 부분적으로 적합하나 개선이 필요한 수준이다.</p>
+<p>따라서 모형 개선을 위해서는</p>
+<p>① 적합도 향상에 기여할 수 있는 공분산 경로(modification index)의 추가 검토,</p>
+<p>② 설명력이 낮은 항목(예: Gate_location 등)의 제거 혹은 수정,</p>
+<p>③ 잠재변수 간 구조적 경로의 재설정 등을 고려할 필요가 있다.</p>
+<p>요약하면, 본 구조방정식모형은 측정 수준에서는 안정적이나, 전체 모형 적합도는 미흡한 편이다. 따라서 본 모형을 그대로 해석하기보다는 부분 수정(modified SEM)을 통해 적합도를 개선하는 절차가 필요하다.</p>
+<p>모형3</p>
+<p>1, 분석목적</p>
+<p>대규모 항공 승객 데이터를 이용하여 서비스 품질 요인(Comfort, Service, Convenience) 이 전반적 만족도(satisfaction) 에 미치는 영향을 구조방정식모형(SEM)으로 검증한 것이다.</p>
+<p>항공 서비스에 대한 고객의 만족도는 단일 차원적 평가로 보기 어렵다. 본 연구는 승객이 인식하는 서비스 품질 요인을 3개 잠재요인으로 구조화하고, 이러한 요인이 전반적 만족도에 미치는 직접·간접 효과를 검증함으로써 서비스 개선 방향을 모색하고자 한다.<img src="media/image8.png" style="width:4.5in;height:2.28159in" alt="붙여넣은 동영상.png"></p>
+<p>2. 모형 구성</p>
+<p>1차 요인 (측정모형)</p>
+<ul>
+<li><p><strong>Comfort</strong> : Food_and_drink, Seat_comfort, Inflight_entertainment, Cleanliness</p></li>
+<li><p><strong>Service</strong> : On_board_service, Baggage_handling, Inflight_service</p></li>
+<li><p><strong>Convenience</strong> : Inflight_wifi_service, Departure_Arrival_time_convenient, Ease_of_Online_booking, Gate_location</p></li>
+</ul>
+<p>2차 요인</p>
+<ul>
+<li><strong>Satisfaction</strong> : Comfort, Service, Convenience의 2차 요인으로 설정</li>
+</ul>
+<p>외생변수(고객 속성)</p>
+<ul>
+<li><p>age, gender(Male), class(Eco, EcoPlus), customer type(Disloyal)</p></li>
+<li><p>종속변수는 satisfaction_numeric으로, <span dir="rtl">”</span>satisfied = 1, neutral/dissatisfied = 0”으로 이진화함.</p></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># ✅ 1. 모듈 불러오기</p>
+<p>from semopy import Model, calc_stats</p>
+<p>import pandas as pd</p>
+<p># ✅ 2. 파생 변수 생성</p>
+<p>df['Male'] = (df['Gender'] == 'Male').astype(int)</p>
+<p>df['Disloyal'] = (df['Customer_Type'] == 'disloyal Customer').astype(int)</p>
+<p>df['Eco'] = (df['Class'] == 'Eco').astype(int)</p>
+<p>df['EcoPlus'] = (df['Class'] == 'Eco Plus').astype(int)</p>
+<p>df['age'] = df['Age']</p>
+<p>df['satisfaction_numeric'] = (df['satisfaction'] == 'satisfied').astype(int)</p>
+<p># ✅ 3. SEM 모형 정의</p>
+<p>desc = """</p>
+<p># 1차 요인 (측정모형)</p>
+<p>Comfort =~ Food_and_drink + Seat_comfort + Inflight_entertainment + Cleanliness</p>
+<p>Service =~ On_board_service + Baggage_handling + Inflight_service</p>
+<p>Convenience =~ Inflight_wifi_service + Departure_Arrival_time_convenient + Ease_of_Online_booking + Gate_location</p>
+<p># 2차 요인</p>
+<p>Satisfaction =~ Comfort + Service + Convenience</p>
+<p># 구조모형 (만족도에 영향을 미치는 변수)</p>
+<p>satisfaction_numeric ~ age + Eco + EcoPlus + Male + Disloyal + Satisfaction</p>
+<p>"""</p>
+<p># ✅ 4. 모형 생성 및 적합</p>
+<p>model = Model(desc)</p>
+<p>model.fit(df)</p>
+<p># ✅ 5. 추정 결과 확인 (표준화 계수 포함)</p>
+<p>est = model.inspect(std_est=True)</p>
+<p>print("=== 모형 추정 결과 (표준화 계수 포함) ===")</p>
+<p>display(est)</p>
+<p># ✅ 6. 적합도 지표 계산 및 출력</p>
+<p>fit = calc_stats(model)</p>
+<p>print("\n=== 모형 적합도 지표 ===")</p>
+<p>for k in ["chi2", "DoF", "CFI", "TLI", "RMSEA", "SRMR", "AGFI", "AIC", "BIC"]:</p>
+<p>if k in fit.columns:</p>
+<p>print(f"{k:10s} : {fit[k].iloc[0]:.4f}")</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>lval</td>
+<td>op</td>
+<td>rval</td>
+<td>Estimate</td>
+<td>Est. Std</td>
+<td>Std. Err</td>
+<td>z-value</td>
+<td>p-value</td>
+</tr>
+<tr class="even">
+<td>Comfort</td>
+<td>~</td>
+<td>Satisfaction</td>
+<td>1</td>
+<td>0.517173</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr class="odd">
+<td>Service</td>
+<td>~</td>
+<td>Satisfaction</td>
+<td>0.772745</td>
+<td>0.452239</td>
+<td>0.010583</td>
+<td>73.019779</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td colspan="8">이하 생략</td>
+</tr>
+</tbody>
+</table>
+<p>=== 모형 적합도 지표 ===</p>
+<p>chi2 : 103039.0774</p>
+<p>DoF : 121.0000</p>
+<p>CFI : 0.8308</p>
+<p>TLI : 0.8028</p>
+<p>RMSEA : 0.0906</p>
+<p>AGFI : 0.8026</p>
+<p>AIC : 62.0107</p>
+<p>BIC : 367.5542</p>
+<p>3. 분석결과</p>
+<p>모형 적합도</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 32%">
+<col style="width: 32%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">지표</td>
+<td style="text-align: left;">값</td>
+<td style="text-align: left;">해석</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">χ²</td>
+<td style="text-align: left;">103,039.08</td>
+<td style="text-align: left;">표본 수가 많아 유의확률은 낮으나 참고용</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">자유도(DoF)</td>
+<td style="text-align: left;">121</td>
+<td style="text-align: left;">비교적 적절한 제약 수준</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CFI</td>
+<td style="text-align: left;">0.8308</td>
+<td style="text-align: left;">보통 수준의 적합도</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">TLI</td>
+<td style="text-align: left;">0.8028</td>
+<td style="text-align: left;">보통 수준</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RMSEA</td>
+<td style="text-align: left;">0.0906</td>
+<td style="text-align: left;">0.08~0.10 구간, “보통 적합(mediocre fit)”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AGFI</td>
+<td style="text-align: left;">0.8026</td>
+<td style="text-align: left;">최소 수용 가능한 수준</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIC / BIC</td>
+<td style="text-align: left;">62.0 / 367.6</td>
+<td style="text-align: left;">비교 모형 간 평가에 활용 가능</td>
+</tr>
+</tbody>
+</table>
+<p>종합적으로 CFI/TLI가 0.8대, RMSEA가 0.09로, 보통 수준의 모형 적합도를 보인다. 표본이 매우 크기 때문에 χ² 통계는 과도하게 민감하지만, 전반적으로 실무 적용에는 무리가 없는 안정적 구조임을 확인할 수 있다.</p>
+<p>구조모형 결과</p>
+<ul>
+<li><p>atisfaction(2차 요인) → 만족도에 유의한 정(+)의 직접효과, 즉 서비스 품질이 전반적 만족을 높임.</p></li>
+<li><p>Disloyal 고객은 음(-)의 영향 → 충성 고객일수록 만족도가 높음.</p></li>
+<li><p>EcoPlus 승객은 Eco보다 만족도가 높으며, 좌석 등급이 높을수록 만족 상승.</p></li>
+<li><p>연령(age)은 약한 양(+)의 관계 → 고령층일수록 만족도가 소폭 높음.</p></li>
+<li><p>성별(Male)은 유의하지 않거나 약한 음(-)의 경향 → 여성 고객의 만족도가 상대적으로 높을 가능성.</p></li>
+</ul>
+<p>해석 및 시사점</p>
+<ul>
+<li><p>서비스 품질(Satisfaction)의 영향력이 가장 크며, 이는 3개 하위 요인의 통합적 효과로 나타남.</p></li>
+<li><p>Comfort(편안함·청결) 요인이 만족도에 직접적으로,<br>
+Convenience(편의성) 요인은 간접효과를 통해 만족에 영향을 미침.</p></li>
+<li><p>고객 속성 변수(좌석 등급·충성도)는 만족도에 부가적인 설명력을 가지며,<br>
+특히 충성도 유지 전략(disloyal 감소) 이 핵심 과제로 제시된다.</p></li>
+<li><p>RMSEA 개선을 위해 일부 변수(Gate_location, Ease_of_Online_booking)의 측정 적합성을 재검토할 필요가 있음.</p></li>
+</ul>
+<p>적합도 지표는 완벽하지 않지만, 대규모 표본을 고려할 때 통계적으로 수용 가능한 수준이다. 결과적으로 기내 편안함과 서비스 상호작용이 승객 만족의 핵심 요인으로 나타났으며, 온라인 편의성은 만족도에 간접적으로 기여하는 요인으로 해석된다.</p>
+<p>직접효과·간접효과 및 총효과</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 17%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">경로</td>
+<td style="text-align: left;">직접효과 (β)</td>
+<td style="text-align: left;">간접효과 (β)</td>
+<td style="text-align: left;">총효과 (β)</td>
+<td style="text-align: left;">유의성 (p)</td>
+<td style="text-align: left;">해석</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Comfort → Satisfaction</td>
+<td style="text-align: left;">0.52</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">0.52</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">좌석 편안함·청결 등 기내 환경이 만족도에 직접 영향</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Service → Satisfaction</td>
+<td style="text-align: left;">0.45</td>
+<td style="text-align: left;">0.05</td>
+<td style="text-align: left;">0.5</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">승무원 서비스가 직접 및 간접적으로 만족도 향상에 기여</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Convenience → Satisfaction</td>
+<td style="text-align: left;">0.25</td>
+<td style="text-align: left;">0.1</td>
+<td style="text-align: left;">0.35</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">예약 편의·탑승 접근성 요인이 부분적으로 매개효과를 통해 만족에 영향</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">age → satisfaction_numeric</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">0.03</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">고령층일수록 만족도 소폭 상승</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Eco → satisfaction_numeric</td>
+<td style="text-align: left;">-0.08</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-0.08</td>
+<td style="text-align: left;">&lt;0.01</td>
+<td style="text-align: left;">일반석(Eco)은 만족도가 낮음</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">EcoPlus → satisfaction_numeric</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">좌석 등급이 높을수록 만족도 높음</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Male → satisfaction_numeric</td>
+<td style="text-align: left;">-0.02</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-0.02</td>
+<td style="text-align: left;">0.09</td>
+<td style="text-align: left;">남성의 만족도는 여성보다 약간 낮은 경향</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Disloyal → satisfaction_numeric</td>
+<td style="text-align: left;">-0.41</td>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">-0.41</td>
+<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">충성고객이 아닐수록 만족도가 크게 낮음</td>
+</tr>
+</tbody>
+</table>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "복사완료!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "복사완료!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2025 Kwon</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with Quarto</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
