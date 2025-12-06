@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -346,7 +381,38 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#chapter-1.-판별분석-개요" id="toc-chapter-1.-판별분석-개요" class="nav-link active" data-scroll-target="#chapter-1.-판별분석-개요">Chapter 1. 판별분석 개요</a></li>
+  <li><a href="#chapter-1.-판별분석-개요" id="toc-chapter-1.-판별분석-개요" class="nav-link active" data-scroll-target="#chapter-1.-판별분석-개요">Chapter 1. 판별분석 개요</a>
+  <ul>
+  <li><a href="#다변량-분석-비교" id="toc-다변량-분석-비교" class="nav-link" data-scroll-target="#다변량-분석-비교">1. 다변량 분석 비교</a></li>
+  <li><a href="#군집분석과-판별분석-차이" id="toc-군집분석과-판별분석-차이" class="nav-link" data-scroll-target="#군집분석과-판별분석-차이">2. 군집분석과 판별분석 차이</a></li>
+  <li><a href="#판별규칙" id="toc-판별규칙" class="nav-link" data-scroll-target="#판별규칙">3. 판별규칙</a></li>
+  <li><a href="#오분류-misclassification-ratio" id="toc-오분류-misclassification-ratio" class="nav-link" data-scroll-target="#오분류-misclassification-ratio">4. 오분류 misclassification ratio</a></li>
+  <li><a href="#오분류-추정방법" id="toc-오분류-추정방법" class="nav-link" data-scroll-target="#오분류-추정방법">5. 오분류 추정방법</a></li>
+  <li><a href="#분석-사례-데이터" id="toc-분석-사례-데이터" class="nav-link" data-scroll-target="#분석-사례-데이터">6. 분석 사례 데이터</a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-모집단이-2개-집단인-경우-판별분석" id="toc-chapter-2.-모집단이-2개-집단인-경우-판별분석" class="nav-link" data-scroll-target="#chapter-2.-모집단이-2개-집단인-경우-판별분석">Chapter 2. 모집단이 2개 집단인 경우 판별분석</a>
+  <ul>
+  <li><a href="#정의" id="toc-정의" class="nav-link" data-scroll-target="#정의">1. 정의</a></li>
+  <li><a href="#판별규칙-1" id="toc-판별규칙-1" class="nav-link" data-scroll-target="#판별규칙-1">2. 판별규칙</a></li>
+  <li><a href="#fisher-판별분석" id="toc-fisher-판별분석" class="nav-link" data-scroll-target="#fisher-판별분석">3. Fisher 판별분석</a></li>
+  <li><a href="#등분산-검정" id="toc-등분산-검정" class="nav-link" data-scroll-target="#등분산-검정">(2) 등분산 검정</a></li>
+  <li><a href="#판별모형-도출-및-혼동행렬-산정" id="toc-판별모형-도출-및-혼동행렬-산정" class="nav-link" data-scroll-target="#판별모형-도출-및-혼동행렬-산정">(3) 판별모형 도출 및 혼동행렬 산정</a></li>
+  <li><a href="#판별결과-활용1-새로운-개체-판별" id="toc-판별결과-활용1-새로운-개체-판별" class="nav-link" data-scroll-target="#판별결과-활용1-새로운-개체-판별">(4) 판별결과 활용(1) 새로운 개체 판별</a></li>
+  <li><a href="#판별결과-활용2-주성분-분삭-활용-판별-시각화" id="toc-판별결과-활용2-주성분-분삭-활용-판별-시각화" class="nav-link" data-scroll-target="#판별결과-활용2-주성분-분삭-활용-판별-시각화">(5) 판별결과 활용(2) 주성분 분삭 활용 판별 시각화</a></li>
+  <li><a href="#로지스틱-판별분석" id="toc-로지스틱-판별분석" class="nav-link" data-scroll-target="#로지스틱-판별분석">4. 로지스틱 판별분석</a></li>
+  <li><a href="#roc-곡선" id="toc-roc-곡선" class="nav-link" data-scroll-target="#roc-곡선">(2) ROC 곡선</a></li>
+  <li><a href="#youden-지표" id="toc-youden-지표" class="nav-link" data-scroll-target="#youden-지표">(3) YOUDEN 지표</a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-모집단이-3개-이상인-경우-판별분석" id="toc-chapter-3.-모집단이-3개-이상인-경우-판별분석" class="nav-link" data-scroll-target="#chapter-3.-모집단이-3개-이상인-경우-판별분석">Chapter 3. 모집단이 3개 이상인 경우 판별분석</a>
+  <ul>
+  <li><a href="#판별규칙-2" id="toc-판별규칙-2" class="nav-link" data-scroll-target="#판별규칙-2">1. 판별규칙</a></li>
+  <li><a href="#bayes-규칙bayes-classification-rule" id="toc-bayes-규칙bayes-classification-rule" class="nav-link" data-scroll-target="#bayes-규칙bayes-classification-rule">(1) Bayes 규칙(Bayes Classification Rule)</a></li>
+  <li><a href="#map-규칙maximum-a-posteriori-rule" id="toc-map-규칙maximum-a-posteriori-rule" class="nav-link" data-scroll-target="#map-규칙maximum-a-posteriori-rule">(2) MAP 규칙(Maximum A Posteriori Rule)</a></li>
+  <li><a href="#ecm-규칙extended-classification-maximum-rule" id="toc-ecm-규칙extended-classification-maximum-rule" class="nav-link" data-scroll-target="#ecm-규칙extended-classification-maximum-rule">(3) ECM 규칙(Extended Classification Maximum Rule)</a></li>
+  <li><a href="#lda와-qda-bayes-규칙을-정규모형에-적용한-판별방법" id="toc-lda와-qda-bayes-규칙을-정규모형에-적용한-판별방법" class="nav-link" data-scroll-target="#lda와-qda-bayes-규칙을-정규모형에-적용한-판별방법">(4) LDA와 QDA: Bayes 규칙을 정규모형에 적용한 판별방법</a></li>
+  <li><a href="#다항-로지스틱-판별모형" id="toc-다항-로지스틱-판별모형" class="nav-link" data-scroll-target="#다항-로지스틱-판별모형">2. 다항 로지스틱 판별모형</a></li>
+  <li><a href="#사례분석" id="toc-사례분석" class="nav-link" data-scroll-target="#사례분석">3. 사례분석</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -378,13 +444,16 @@ window.Quarto = {
 
 <section id="chapter-1.-판별분석-개요" class="level3">
 <h3 class="anchored" data-anchor-id="chapter-1.-판별분석-개요">Chapter 1. 판별분석 개요</h3>
-<p>1. 다변량 분석 비교</p>
+<section id="다변량-분석-비교" class="level4">
+<h4 class="anchored" data-anchor-id="다변량-분석-비교">1. 다변량 분석 비교</h4>
 <p>판별분석(Discriminant Analysis)은 군집분석(Clustering Analysis)과 함께 개체 유도 기법(Individual-directed Techniques) 에 속한다. 이들은 개체별로 측정된 여러 특성(변수) 값을 이용하여 개체 간의 유사성 또는 집단 소속을 판별하는 방법이다.</p>
 <p>판별분석은 사전에 집단이 알려져 있는 경우, 각 집단의 특성을 반영하는 판별함수를 추정하여 새로운 개체가 어느 집단에 속하는지를 예측하는 분석 방법이다. 반면 군집분석은 집단의 구분이 알려져 있지 않은 상태에서 개체 간 유사성을 기준으로 자연스러운 집단(Cluster) 을 형성하는 탐색적 분석 방법이다.</p>
 <p>이에 대응되는 또 다른 축의 분석 범주는 변수 유도 기법(Variable-directed Techniques) 이다. 이 기법은 <span class="math inline">\(p\)</span>개의 원변수 간 상관관계(공분산 행렬 또는 상관계수 행렬)를 이용하여 변수 구조를 축약하거나 잠재 요인을 도출하는 방법이다. 변수 유도 기법에는 다음과 같은 두 가지 대표적 방법이 있다.</p>
 <p>주성분분석(Principal Component Analysis, PCA)은 원변수들의 선형결합을 통해 새로운 주성분 변수를 도출하며, 전체 분산의 약 80% 이상을 설명하는 몇 개(보통 2~4개)의 주성분으로 차원을 축소한다.</p>
 <p>요인분석(Factor Analysis)은 변수들 간의 상관구조를 분석하여 이들을 서로 상호배타적인 잠재 요인(Factor)으로 묶는 방법이다. 각 요인은 변수들 간의 공통된 변동(공통분산, Communality)을 설명한다.</p>
-<p>2. 군집분석과 판별분석 차이</p>
+</section>
+<section id="군집분석과-판별분석-차이" class="level4">
+<h4 class="anchored" data-anchor-id="군집분석과-판별분석-차이">2. 군집분석과 판별분석 차이</h4>
 <p>판별분석은 사전에 집단이 이미 정의되어 있을 때, 개체의 여러 특성값(변수)을 이용하여 집단 간 차이를 설명하고 새로운 개체가 어느 집단에 속할지를 예측하는 지도학습(supervised learning) 기법이다. 즉, 집단 정보가 주어진 상태에서 개체를 구분하는 판별함수를 추정하는 것이 목적이다.</p>
 <p>반면 군집분석은 집단이 알려져 있지 않은 상태에서, 개체 간의 유사성(Similarity) 또는 거리(Distance) 를 기준으로 자연스럽게 형성되는 집단을 찾아내는 비지도학습(unsupervised learning) 기법이다. 즉, 집단 정보를 모르는 상태에서 개체들을 유사한 속성을 지닌 그룹으로 묶는 과정이다.</p>
 <p>H대학교 비즈니스통계학과 졸업생을 대상으로, 취업 여부에 영향을 미칠 것으로 예상되는 다음 7개 변수를 측정했다고 하자. 평점 (학업성취도), 비만도 (= 키/몸무게: 외모척도), 영어 성적, 자격증 개수, 원서 지원 회수, 가족 총 연소득 (재정능력), 친구 수 (사교력)이다.</p>
@@ -392,10 +461,7 @@ window.Quarto = {
 <p><span class="math inline">\(D = a + b_{1}X_{1} + b_{2}X_{2} + \cdots + b_{7}X_{7}\)</span>, 여기서 D의 값이 기준치보다 크면 <span dir="rtl">”</span>취업 가능”, 작으면 <span dir="rtl">”</span>미취업”으로 분류된다. 새로운 졸업예정자에게 7개 변수를 측정하면, 위의 판별식을 통해취업 가능성을 확률적으로 예측할 수 있다. → 즉, 판별분석은 집단 정보(취업 여부)가 사전에 주어진 상태에서 개체를 분류하는 모형이다.</p>
 <p>【군분석】 이번에는 같은 학과 졸업예정자 전체를 대상으로 위의 7개 변수를 측정했다고 하자. 이때 취업 여부는 아직 알 수 없다. 따라서 각 학생 간의 유사성을 유클리드 거리로 계산한 뒤, 유사성이 높은 학생끼리 묶어 군집(Cluster) 을 형성한다.</p>
 <p>군집분석의 핵심 단계는 개체 간 유사성 계산 → 유사성에 따라 집단을 형성하는 기준 설정 (계층적 또는 비계층적 방법) → 군집의 수 결정 → 각 군집의 해석 및 명명 순이다. 이렇게 형성된 군집은 예를 들어 다음과 같이 해석할 수 있다.</p>
-<p>군집 1: 높은 평점과 영어성적, 자격증 보유 — “취업 유망형”</p>
-<p>군집 2: 낮은 영어성적과 지원회수 — “취업 소극형”</p>
-<p>군집 3: 높은 사교력과 재정능력 — “취업 네트워크형”</p>
-<p>→ 즉, 군집분석은 집단 정보가 없는 상태에서 개체 간 유사성을 바탕으로 자연스러운 집단 구조를 탐색하는 방법이다.</p>
+<p>군집 1: 높은 평점과 영어성적, 자격증 보유 — “취업 유망형” <br> 군집 2: 낮은 영어성적과 지원회수 — “취업 소극형” <br> 군집 3: 높은 사교력과 재정능력 — “취업 네트워크형” <br> → 즉, 군집분석은 집단 정보가 없는 상태에서 개체 간 유사성을 바탕으로 자연스러운 집단 구조를 탐색하는 방법이다.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 20%">
@@ -443,42 +509,40 @@ window.Quarto = {
 <p>판별분석은 자료 수집 단계에서 이미 그룹이 구분되어 있는 경우, 이들 집단을 가장 잘 구분하는 판별규칙을 도출하여, 새로운 개체가 어느 집단에 속할지를 예측하는 방법이다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image3.png" style="width:4.5in;height:2.93861in" class="figure-img"></p>
+<p><img src="images/da_lda.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 <p>군집분석은 개체의 그룹 정보가 사전에 주어지지 않은 상태에서 출발한다. 즉, 처음에는 모든 개체가 구분 표시가 없이 동일한 상태이며, 분석을 통해 유사성이 가까운 개체들끼리 묶이면서 군집이 형성된다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image4.png" style="width:4.5in;height:2.93861in" class="figure-img"></p>
+<p><img src="images/da_kmeans.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>3. 판별규칙</p>
+</section>
+<section id="판별규칙" class="level4">
+<h4 class="anchored" data-anchor-id="판별규칙">3. 판별규칙</h4>
 <p>판별규칙은 모집단에 속한 개체들을 가능한 한 정확하게 구분하기 위한 판별함수의 형태로 설정된다. 즉, 두 개 이상의 모집단이 있을 때, 각 모집단의 특성을 반영하는 변수들의 선형결합 또는 비선형결합을 통해 새로운 개체가 어느 모집단에 속하는지를 오분류 확률이 최소가 되도록 분류하는 규칙을 찾는 것이다.</p>
 <p>아래 그림은 두 모집단 A와 B가 두 개의 판별변수 (y, z)로 표현된 예이다. 점선으로 표시된 직선은 두 집단을 구분하는 선형 판별규칙이다. 직선 판별선 아래쪽의 히스토그램은 각 집단의 판별점수 분포를 나타내며, 빗금친 부분이 오분류 확률을 의미한다.</p>
-<p>(B 모집단의 왼쪽 빗금 부분): 실제로는 B집단에 속하지만, 판별규칙에 의해 A집단으로 잘못 분류된 비율.</p>
-<p>(A 모집단의 오른쪽 빗금 부분): 실제로는 A집단에 속하지만, 판별규칙에 의해 B집단으로 잘못 분류된 비율.</p>
+<p>(B 모집단의 왼쪽 빗금 부분): 실제로는 B집단에 속하지만, 판별규칙에 의해 A집단으로 잘못 분류된 비율. <br> (A 모집단의 오른쪽 빗금 부분): 실제로는 A집단에 속하지만, 판별규칙에 의해 B집단으로 잘못 분류된 비율.</p>
 <p>이 두 오분류 확률의 합이 전체 분류 오류율이며, 판별규칙은 이 오류율을 최소화하도록 설정된다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>pasted-image.tiff</figcaption>
-<p><img src="media/image1.tif" style="width:2.04964in;height:2.51034in" class="figure-img"></p>
+<p><img src="images/da_concept.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
 </figure>
 </div>
 <p>다음 그림은 두 가지 형태의 판별경계를 보여준다. 왼쪽은 직선 형태의 판별규칙, 오른쪽은 다항식 형태의 판별규칙이다. 산점도를 보면, 다항식 형태의 곡선 판별선이 두 집단을 더 잘 구분하여 오분류가 적어 보이지만, 실제 분석에서는 이차 함수 형태까지만 안정적으로 추정이 가능하다. 그 이상의 고차식 판별규칙은 과적합(overfitting) 문제가 발생하거나 모수 추정이 불안정해지는 경우가 많기 때문이다.</p>
 <p>따라서 실제 분석에서는 단순히 시각적으로 구분이 잘 되는 곡선을 선택하기보다, 오분류율의 검정 결과와 예측 정확도를 함께 고려하여 최적의 판별규칙 형태(선형 또는 이차)를 선택한다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>pasted-image.tiff</figcaption>
-<p><img src="media/image2.tif" style="width:4.4316in;height:2.0155in" class="figure-img"></p>
+<p><img src="images/da_ldaqda.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>4. 오분류 misclassification ratio</p>
-<p>마취과 의사가 마취 양을 결정할 때 (나이, 혈압, 맥박, 몸무게)가 영향을 준다고 하여 4개 변수로 마취안전여부를 판단하는 판별규칙을 만들었다고 하자.</p>
-<p>confusion matrix 혼동행렬</p>
-<p>양성 positive ={마취 안전한 하다고 판단}</p>
-<p>음성 negative ={마취 불안전하다고 판단}</p>
+</section>
+<section id="오분류-misclassification-ratio" class="level4">
+<h4 class="anchored" data-anchor-id="오분류-misclassification-ratio">4. 오분류 misclassification ratio</h4>
+<section id="confusion-matrix-혼동행렬" class="level5">
+<h5 class="anchored" data-anchor-id="confusion-matrix-혼동행렬">(1) confusion matrix 혼동행렬</h5>
+<p>마취과 의사가 마취 양을 결정할 때 (나이, 혈압, 맥박, 몸무게)가 영향을 준다고 하여 4개 변수로 마취안전여부를 판단하는 판별규칙을 만들었다고 하자. <br> 양성 positive ={마취 안전한 하다고 판단} <br> 음성 negative ={마취 불안전하다고 판단}</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 32%">
@@ -562,40 +626,45 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>Reciever Operating Curve</p>
-<p>아래 그림은 진단 모형의 성능을 평가하기 위해 x축을 (1 − 특이도),</p>
-<p>y축을 민감도로 하여 나타낸 이차원 곡선(ROC Curve) 이다. 이 그래프는 양성과 음성을 가장 정확하게 구분하기 위한 기준값(cut-off value) 을 결정하는 데 활용되며, 의학 및 생명과학 분야에서 진단검사의 정확도를 비교하는 표준적인 도구로 사용된다.</p>
+</section>
+<section id="reciever-operating-curve" class="level5">
+<h5 class="anchored" data-anchor-id="reciever-operating-curve">(2) Reciever Operating Curve</h5>
+<p>아래 그림은 진단 모형의 성능을 평가하기 위해 x축을 (1 − 특이도), y축을 민감도로 하여 나타낸 이차원 곡선(ROC Curve) 이다. 이 그래프는 양성과 음성을 가장 정확하게 구분하기 위한 기준값(cut-off value) 을 결정하는 데 활용되며, 의학 및 생명과학 분야에서 진단검사의 정확도를 비교하는 표준적인 도구로 사용된다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>pasted-image.pdf</figcaption>
-<p><img src="media/image5.png" style="width:3.12435in;height:2.53461in" class="figure-img"></p>
+<p><img src="images/da_roc.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<p>① 축의 의미</p>
+<p><strong>축의 의미</strong></p>
 <p>x축 (1 − Specificity) : 실제 음성 환자를 양성으로 잘못 분류할 확률(위양성율, False Positive Rate)</p>
 <p>y축 (Sensitivity) : 실제 양성 환자를 양성으로 올바르게 분류할 확률(True Positive Rate)</p>
 <p>원점 (0,0)은 민감도 0, 특이도 1, 즉 <span dir="rtl">”</span>모두 음성으로 판단하는 완전한 보수적 진단”을 의미한다. 반대로 (1,0)은 민감도 1, 특이도 0으로, <span dir="rtl">”</span>모두 양성으로 판단하는 진단”을 뜻한다. (1,1)은 민감도와 특이도 모두 1인 이상적인 완벽 진단을 의미한다.</p>
-<p>② AUC (Area Under the Curve)</p>
+<p><strong>AUC (Area Under the Curve)</strong></p>
 <p>ROC 곡선 아래의 면적을 AUC(Area Under the Curve) 라고 하며,</p>
 <p>이 값은 진단 모형의 전반적인 구분 능력을 정량적으로 평가하는 지표이다.</p>
 <p>AUC = 1.0 → 완벽한 판별 (perfect discrimination)</p>
 <p>AUC = 0.5 → 무작위(random) 판별, 즉 45° 대각선 수준</p>
 <p>AUC &lt; 0.5 → 무작위보다 못한 진단</p>
 <p>따라서, AUC는 0.5보다 커야 의미 있는 진단방법이며, AUC 값이 가장 큰 모형이 가장 적절한 진단방법으로 간주된다. 그림에서 곡선이 다른 곡선보다 AUC가 넓다면, 그 진단방법이 우수하다.</p>
-<p>③ 기준값(Cut-off value)의 결정</p>
+<p><strong>기준값(Cut-off value)의 결정</strong></p>
 <p>ROC 곡선에서 양성과 음성을 구분하는 기준값(c) 을 선택하는 가장 일반적인 방법은 Youden의 J 통계량(Youden<span dir="rtl">’</span>s Index) 을 활용하는 것이다.</p>
 <p><span class="math display">\[J = \text{Sensitivity} + \text{Specificity} - 1\]</span></p>
 <p>이 값이 가장 큰 지점이 곧 최적 기준값(c*) 에 해당하며, 그 지점이 바로 그림 속 원으로 표시된 c이다. 즉, Youden J가 최대가 되는 점에서 민감도와 특이도의 균형이 가장 잘 맞아 양성과 음성을 가장 효율적으로 구분할 수 있다.</p>
 <p>요약하면, ROC 곡선은 진단검사의 판별력을 시각적으로 표현한 그래프이며, AUC는 진단력의 크기를, Youden J는 최적 기준값을 결정하기 위한 통계량으로 사용된다.</p>
-<p>5. 오분류 추정방법</p>
-<p>Re-substitution 규칙</p>
+</section>
+</section>
+<section id="오분류-추정방법" class="level4">
+<h4 class="anchored" data-anchor-id="오분류-추정방법">5. 오분류 추정방법</h4>
+<p><strong>Re-substitution 규칙</strong></p>
 <p>수집된 데이터로부터 얻은 판별식을 원 데이터에 적용하여 개체를 분류하여 오분류 비율을 구하는 것으로 정분류 비율이 높게 추정될(overestimate) 가능성이 있어 거의 사용하지 않는다. 그러나 대부분의 소프트웨어는 이를 사용한다. 빅데이터에서는 train(학습), test(감증) 데이터로 나누어 판별규칙 검증한다.</p>
-<p>테스트 데이터 이용</p>
+<p><strong>테스트 데이터 이용</strong></p>
 <p>데이터를 양분하여 한 개체 그룹으로부터 판별식을 유도하고, 이 판별식을 사용하여 다른 그룹의 개체를 분류하여 오분류 비율을 추정한다. 표본 자료의 1/2만 사용하여 판별식을 구하므로 모집단 분류에 적합한 판별식을 얻을 가능성이 낮고 데이터를 많이 수집해야 한다는 단점으로 인하여 이 방법 역시 사용 빈도가 낮았지만 빅데이터에서는 가능하다. 가장 많이 사용.</p>
-<p>Cross-validation 추정법</p>
+<p><strong>Cross-validation 추정법</strong></p>
 <p>Lachenbrush(1968)가 제안한 방법으로 가장 널리 사용된다. 첫 번째 개체 하나를 제외하고 판별식을 구하여 그 개체를 분류하고, 첫 번째 개체를 다시 넣고 두 번째 개체를 제외하고 판별식을 구한 후 두 번째 개체를 분류하고…… 이렇게 하여 오분류 비율을 추정한다. 이 방법을 Jackknife 방법이라고도 한다.</p>
-<p>6. 분석 사례 데이터</p>
-<p>모집단 그룹 2개: titanic 데이터</p>
+</section>
+<section id="분석-사례-데이터" class="level4">
+<h4 class="anchored" data-anchor-id="분석-사례-데이터">6. 분석 사례 데이터</h4>
+<p><strong>모집단 그룹 2개: titanic 데이터</strong></p>
 <p>타이타닉호(Titanic) 는 1912년 4월 10일 영국 사우샘프턴(Southampton)을 출발해 뉴욕으로 향하던 초호화 여객선이었습니다.</p>
 <p>1912년 4월 15일 새벽, 북대서양에서 빙산과 충돌해 침몰하면서 약 2,224명 중 1,500명 이상이 사망한 비극적인 사고로 기록되었다.</p>
 <p>당시 타이타닉은 <span dir="rtl">”</span>절대 침몰하지 않는 배(The unsinkable ship)” 로 알려졌지만, 부족한 구명보트, 계급(객실등급)에 따른 대피 우선순위, 성별·연령에 따른 생존 차이 등 사회적 요인이 생존율에 크게 작용하였다. 이 사건은 단순한 해상 사고를 넘어, 사회 계층, 성별, 나이, 경제력이 생존 확률에 어떤 영향을 주었는지를 보여주는 대표적 사회통계 데이터로 평가되고 있다.</p>
@@ -683,12 +752,11 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>모집단 그룹 3개: IRIS 데이터</p>
+<p><strong>모집단 그룹 3개: Penguins 데이터</strong></p>
 <p>Palmer Penguins 데이터는 Kristen M. Gorman 연구팀이 2007–2009년 사이 남극 Palmer Station 주변 세 섬(Biscoe, Dream, Torgersen)에서 수행한 장기 생태 모니터링 프로그램의 실측 자료를 기반으로 한다. 본 자료는 이후 교육과 연구 활용을 위해 palmerpenguins 패키지 형태로 정리·공개되었다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image6.png" style="width:4.5in;height:2.35279in" class="figure-img"></p>
+<p><img src="images/da_penguin.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 <p>개체의 형태적 특징을 나타내는 대표적 변수들은 bill_length_mm(부리 길이), bill_depth_mm(부리 깊이), flipper_length_mm(지느러미 길이), body_mass_g(몸무게) 등이 있다. 부리 길이와 깊이는 먹이 습성과 종별 형태적 차이를 반영하며, 지느러미 길이와 몸무게는 개체의 크기나 생태적 적응성을 파악하는 데 유용하다. 또한 sex 변수는 개체의 성별을 나타내며, male 또는 female로 기록된다. 일부 종에서는 암수 간 신체 치수가 일정 부분 차이를 보이므로, 성별은 형태 분석이나 생존 전략 연구에서 중요한 보조 변수 역할을 한다.</p>
@@ -756,8 +824,12 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>Chapter 2. 모집단이 2개 집단인 경우 판별분석</p>
-<p>1. 정의</p>
+</section>
+</section>
+<section id="chapter-2.-모집단이-2개-집단인-경우-판별분석" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-모집단이-2개-집단인-경우-판별분석">Chapter 2. 모집단이 2개 집단인 경우 판별분석</h3>
+<section id="정의" class="level4">
+<h4 class="anchored" data-anchor-id="정의">1. 정의</h4>
 <p>데이터 벡터, 모집단 분포</p>
 <p>판별 측정변수 벡터 : <span class="math inline">\(\mathbf{x} = \left( \begin{array}{r}
 x_{1} \\
@@ -768,15 +840,14 @@ x_{p}
 <p>모집단 1: <span class="math inline">\(\pi_{1} \sim f_{1}(\mathbf{x}) \sim MN(\mathbf{\mu}_{1},\mathbf{\Sigma}_{1})\)</span>,</p>
 <p>모집단 2: <span class="math inline">\(\pi_{2} \sim f_{2}(\mathbf{x}) \sim MN(\mathbf{\mu}_{2},\mathbf{\Sigma}_{2})\)</span></p>
 <p>각 모집단으로부터 <span class="math inline">\((n_{1},n_{2})\)</span> 크기의 표본 개체를 추출하여 판별 측정변수의 관측값을 조사했다고 하자. 각 표본의 평균벡터를 <span class="math inline">\(\overline{\mathbf{x}} = ({\overline{x}}_{1},{\overline{x}}_{2})\)</span>, 공분산행렬을 <span class="math inline">\((S_{1}^{2},S_{2}^{2})\)</span>이라 하자.</p>
-<p>기호 notation</p>
+<p><strong>기호 notation</strong></p>
 <p>사전확률 Prior Probability: <span class="math inline">\(P(\pi_{i}) = \pi_{i},\pi_{1} + \pi_{2} = 1\)</span>, 여기서 <span class="math inline">\(\pi_{i}\)</span>는 모집단 i에 속할 확률 (사전정보)</p>
 <p>조건부 분류확률 Conditional Probability of Classification: <span class="math inline">\(P(X \in R_{i} \mid \pi_{j})\)</span>, 모집단 j에 속한 개체가 판별식에 의해 모집단 i로 분류될 확률, <span class="math inline">\(i = j\)</span> → 정분류이고 <span class="math inline">\(i \neq j\)</span> → 오분류이다.</p>
 <p>분류비용 ost of Misclassification: <span class="math inline">\(c(j \mid i)\)</span>, 모집단 i에 속한 개체를 모집단 j 로 판별했을 때 발생하는 비용으로 <span class="math inline">\(i = j\)</span>이면 <span class="math inline">\(c(j \mid i) = 0\)</span> 정분류 → 비용 없음이고, <span class="math inline">\(i \neq j\)</span> 이면 <span class="math inline">\(c(j \mid i) &gt; 0\)</span> 오분류 비용이 존재한다.</p>
 <p>전체 오분류확률 Total Probability of Misclassification: <span class="math inline">\(P(\text{error}) = P(\pi_{1})P(X \in R_{2} \mid \pi_{1}) + P(\pi_{2})P(X \in R_{1} \mid \pi_{2})\)</span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>pasted-image.pdf</figcaption>
-<p><img src="media/image7.png" style="width:2.66024in;height:1.37938in" class="figure-img"></p>
+<p><img src="images/da_classify.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%"></p>
 </figure>
 </div>
 <table class="caption-top table">
@@ -818,8 +889,10 @@ x_{p}
 </tr>
 </tbody>
 </table>
-<p>2. 판별규칙</p>
-<p>오분류 기대비용 ECM 최소화</p>
+</section>
+<section id="판별규칙-1" class="level4">
+<h4 class="anchored" data-anchor-id="판별규칙-1">2. 판별규칙</h4>
+<p><strong>오분류 기대비용 ECM 최소화</strong></p>
 <p>분류 기대비용 최소화는 베이즈 접근의 핵심 개념으로, 오분류 확률뿐 아니라 오분류로 인한 손실까지 고려한 <span dir="rtl">”</span>경제적 판별기준”을 제공한다.</p>
 <p>이로부터 우도비 검정 형태의 판별식이 유도되며, Fisher의 선형판별식은 그 특수한 형태(등비용·등분산의 경우)에 해당한다.</p>
 <p>두 모집단을 각각 <span class="math inline">\(\pi_{1},\pi_{2}\)</span>라 하고, 사전확률을 <span class="math inline">\(p_{1} = P(\pi_{1}),p_{2} = P(\pi_{2})\)</span>라 하자. 또한, 모집단 1의 개체를 잘못 2로 분류할 때의 비용을 <span class="math inline">\(c(2|1)\)</span>, 모집단 2의 개체를 잘못 1로 분류할 때의 비용을 <span class="math inline">\(c(1|2)\)</span> 라고 하자. 이때 전체 기대비용은 다음과 같이 표현된다.</p>
@@ -829,10 +902,10 @@ x_{p}
 <p><span class="math inline">\(R_{1}:\frac{f_{1}(x)}{f_{2}(x)} \geq \frac{p_{2}}{p_{1}} \cdot \frac{c(1|2)}{c(2|1)}\)</span>, <span class="math inline">\(R_{2}:\frac{f_{2}(x)}{f_{1}(x)} \geq \frac{p_{1}}{p_{2}} \cdot \frac{c(2|1)}{c(1|2)}\)</span>, 여기서 <span class="math inline">\(f_{i}(x)\)</span>은 모집단 i의 확률밀도함수, <span class="math inline">\(\frac{f_{1}(x)}{f_{2}(x)}\)</span>은 우도비, <span class="math inline">\(\frac{p_{2}}{p_{1}}\)</span>은 사전확률비, 그리고 <span class="math inline">\(\frac{c(1|2)}{c(2|1)}\)</span>은 비용비를 의미한다. 따라서,</p>
 <p>새로운 관측치 x에 대하여 <span class="math inline">\(\frac{f_{1}(x)}{f_{2}(x)}\)</span>가 오른쪽 항보다 크면 모집단 1로,</p>
 <p>작으면 모집단 2로 분류한다.</p>
-<p>우도함수 likelihood ratio (다변량 정규분포)</p>
+<p><strong>우도함수 likelihood ratio (다변량 정규분포)</strong></p>
 <p>모집단이 다변량정규분포(<span class="math inline">\(\mathbf{x} \mid \pi_{i} \sim N_{p}(\mathbf{\mu}_{i},\mathbf{\Sigma}_{i}),i = 1,2\)</span>)를 따른다면, 새로운 개체 <span class="math inline">\(\mathbf{x}_{0}\)</span>에 대하여 <span class="math inline">\(L(\mathbf{x}_{0};\mathbf{\mu}_{1},\mathbf{\Sigma}_{1}) \geq L(\mathbf{x}_{0};\mathbf{\mu}_{2},\mathbf{\Sigma}_{2})\)</span>이 성립하면 모집단 1로 그렇지 않으면 모집단 2로 판별한다.</p>
 <p>즉, 우도비 판별은 베이즈 의사결정이론의 핵심 원리로, 두 모집단의 확률밀도함수를 비교하여 가장 <span dir="rtl">”</span>가능성이 높은” 모집단으로 새로운 개체를 분류하는 방법이다.</p>
-<p>Fisher 선형 linear 판별</p>
+<p><strong>Fisher 선형 linear 판별</strong></p>
 <p>다변량 정규분포의 두 모집단이 동일한 공분산(<span class="math inline">\(\mathbf{\Sigma}_{1} = \mathbf{\Sigma}_{2} = \mathbf{\Sigma}\)</span>)을 갖는다면 다음과 같이 통합분산에 의해 추정된다.</p>
 <p>통합 공분산 : <span class="math inline">\(\widehat{\mathbf{\Sigma}} = \frac{(n_{1} - 1)\mathbf{S}_{1} + (n_{2} - 1)\mathbf{S}_{2}}{n_{1} + n_{2} - 2}\)</span></p>
 <p>그리고 우도함수식은 다음의 판별규칙으로 간편화 된다.</p>
@@ -843,11 +916,10 @@ x_{p}
 <p>요약하자면 Fisher의 선형판별함수는 두 집단 간 평균의 차이를 공분산행렬로 표준화하여 개체의 위치를 선형결합 형태로 비교하는 판별식이다. 동일 공분산 가정 하에서 판별경계는 선형이 되며, 이는 오분류율을 최소화하는 베이즈 판별규칙의 특수한 경우로 해석된다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>5__#$!@%!#__pastedGraphic.pdf</figcaption>
-<p><img src="media/image8.png" style="width:4.49986in;height:2.64156in" class="figure-img"></p>
+<p><img src="images/da_ldaconcept.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>두 모집단의 이분산 경우 Fisher는 Quadratic 판별규칙</p>
+<p><strong>두 모집단의 이분산 경우 Fisher는 Quadratic 판별규칙</strong></p>
 <p>앞에서 다룬 Fisher의 선형판별식은 두 모집단의 공분산행렬이 동일하다는 가정하에서만 유효하였다. 그러나 실제 데이터에서는 모집단별로 변동성이 서로 다른 경우가 많으며, 이때는 공분산이 서로 다름을 인정하고 다음과 같이 일반화한다.</p>
 <p><span class="math inline">\(\mathbf{x} \mid \pi_{i} \sim N_{p}(\mathbf{\mu}_{i},\mathbf{\Sigma}_{i}),i = 1,2\)</span>. 즉, 각 모집단은 서로 다른 평균벡터와 공분산행렬을 갖는 다변량 정규분포를 따른다고 가정한다.</p>
 <p>각 모집단의 확률밀도함수는 다음과 같다.</p>
@@ -858,18 +930,17 @@ x_{p}
 <p><span class="math display">\[\text{집단 1로 분류:}g_{1}(\mathbf{x}_{0}) &gt; g_{2}(\mathbf{x}_{0}),\text{집단 2로 분류:}g_{2}(\mathbf{x}_{0}) &gt; g_{1}(\mathbf{x}_{0})\]</span></p>
 <p>이때 두 함수 <span class="math inline">\(g_{i}(\mathbf{x})\)</span>는 <span class="math inline">\(\mathbf{x}\)</span>의 제곱항을 포함하므로 결정경계는 이차곡면이 된다.</p>
 <p>DA는 LDA를 일반화한 형태로, 집단 간 공분산이 서로 다를 때 적용하는 판별기법이다. LDA의 선형경계가 하나의 평면이라면, QDA는 공분산 차이에 따라 곡면 형태의 결정경계를 형성한다. 표본수가 충분히 많고 각 집단의 분산 구조가 뚜렷이 다를 때 QDA는 LDA보다 더 정교한 분류 성능을 보인다.</p>
-<blockquote class="blockquote">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>pasted-image.tiff</figcaption>
-<p><img src="media/image3.tif" style="width:4.30301in;height:3.22726in" class="figure-img"></p>
+<p><img src="images/da_qdaconcept.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-</blockquote>
-<p>3. Fisher 판별분석</p>
+</section>
+<section id="fisher-판별분석" class="level4">
+<h4 class="anchored" data-anchor-id="fisher-판별분석">3. Fisher 판별분석</h4>
 <p>Fisher의 선형판별모형은 각 판별변수가 다변량 정규분포를 따른다는 전제하에 평균과 공분산 구조를 이용하여 판별축을 구하므로, 범주형 변수(예: 성별, 직업, 지역 등)를 직접 포함하는 것은 여러 통계적 한계를 가진다. 범주형 변수는 본질적으로 이산(discrete) 자료이기 때문에 평균과 분산의 개념이 연속형 변수와 다르며, 예를 들어 성별 변수(Sex = {0, 1})처럼 두 값만 존재하는 자료를 정규분포로 근사하는 것은 분포적 가정을 위배한다.</p>
 <p>또한 이러한 0/1 변수는 다른 연속형 변수와의 공분산이 매우 작거나 특정 집단에서 분산이 0이 되어 공분산행렬이 비가역(singular) 형태로 나타나며, 이는 <span class="math inline">\(\mathbf{\Sigma}^{- 1}\)</span>계산 단계에서 수치적 불안정성을 초래한다. 더 나아가 LDA는 평균 간 거리와 군집 내 분산의 비율을 통해 최적의 판별축을 찾는 기법인데, 범주형 변수의 경우 <span dir="rtl">’</span>거리<span dir="rtl">’</span> 개념이 정의되지 않기 때문에 남성(0)과 여성(1)의 차이를 단순히 1이라는 수치로 간주하면 실제 의미 없는 기호적 차이를 동일한 수량적 거리로 취급하는 왜곡이 발생한다.</p>
-<p>사례 데이터 불러오기</p>
+<p><strong>사례 데이터 불러오기</strong></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 24%">
@@ -916,89 +987,53 @@ x_{p}
 </tr>
 </tbody>
 </table>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><p># tatanic data</p>
-<p>import pandas as pd</p>
-<p>url = "/content/drive/MyDrive/eBook publish/titanic.xlsx"</p>
-<p>df = pd.read_excel(url)</p>
-<p># 결측치 제거</p>
-<p>df[['age','survived','fare']].dropna(inplace=True)</p>
-<p><a href="http://df.info"><u>df.info</u></a>()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tatanic data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://by-sekwon.github.io/api/titanic.xlsx"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_excel(url)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측치 제거</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">'age'</span>,<span class="st">'survived'</span>,<span class="st">'fare'</span>]].dropna(inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Data columns (total 14 columns):</p>
-<p># Column Non-Null Count Dtype</p>
-<p>--- ------ -------------- -----</p>
-<p>0 survived 1309 non-null int64</p>
-<p>1 name 1309 non-null object</p>
-<p>2 sex 1309 non-null object</p>
-<p>3 age 1046 non-null float64</p>
-<p>4 sibsp 1309 non-null int64</p>
-<p>5 parch 1309 non-null int64</p>
-<p>6 pclass 1309 non-null int64</p>
-<p>7 ticket 1309 non-null object</p>
-<p>8 fare 1308 non-null float64</p>
-<p>9 cabin 295 non-null object</p>
-<p>10 embarked 1307 non-null object</p>
-<p>11 boat 486 non-null object</p>
-<p>12 body 121 non-null float64</p>
-<p>13 home.dest 745 non-null object</p>
-<p>사전분석</p>
-<p>모집단 그룹별 판별변수 분포</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import seaborn as sns</p>
-<p>import matplotlib.pyplot as plt</p>
-<p># 변수 선택</p>
-<p>cols = ['age', 'sibsp', 'parch', 'fare', 'survived']</p>
-<p>df_plot = df[cols].dropna()</p>
-<p># 산점도 행렬 (집단별 색상)</p>
-<p>sns.pairplot(</p>
-<p>data=df_plot,</p>
-<p>vars=['age', 'sibsp', 'parch', 'fare'],</p>
-<p>hue='survived',</p>
-<p>diag_kind='kde',</p>
-<p>palette='Set1',</p>
-<p>plot_kws={'alpha': 0.7, 's': 40, 'edgecolor': 'k'}</p>
-<p>)</p>
-<p>plt.suptitle("Scatter Matrix by Survival", y=1.02, fontsize=13)</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+<p>0 survived 1309 non-null int64 <br> 1 name 1309 non-null object <br> 2 sex 1309 non-null object <br> 3 age 1046 non-null float64 <br> 4 sibsp 1309 non-null int64 <br> 5 parch 1309 non-null int64 <br> 6 pclass 1309 non-null int64 <br> 7 ticket 1309 non-null object <br> 8 fare 1308 non-null float64 <br> 9 cabin 295 non-null object <br> 10 embarked 1307 non-null object <br> 11 boat 486 non-null object <br> 12 body 121 non-null float64 <br> 13 home.dest 745 non-null object</p>
+<section id="사전분석" class="level5">
+<h5 class="anchored" data-anchor-id="사전분석">(1) 사전분석</h5>
+<p><strong>모집단 그룹별 판별변수 분포</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 변수 선택</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>, <span class="st">'survived'</span>]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>df_plot <span class="op">=</span> df[cols].dropna()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 산점도 행렬 (집단별 색상)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>sns.pairplot(</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>df_plot,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">vars</span><span class="op">=</span>[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>],</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">'survived'</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    diag_kind<span class="op">=</span><span class="st">'kde'</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    palette<span class="op">=</span><span class="st">'Set1'</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    plot_kws<span class="op">=</span>{<span class="st">'alpha'</span>: <span class="fl">0.7</span>, <span class="st">'s'</span>: <span class="dv">40</span>, <span class="st">'edgecolor'</span>: <span class="st">'k'</span>}</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>plt.suptitle(<span class="st">"Scatter Matrix by Survival"</span>, y<span class="op">=</span><span class="fl">1.02</span>, fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>사망자(0) 집단의 평균 나이는 약 30.5세, 생존자(1) 집단의 평균 나이는 약 28.9세로, 생존자의 연령이 약간 더 낮게 나타났다. 표준편차는 두 집단 모두 약 14~15로 비슷하여, 연령 분포의 폭에는 큰 차이가 없다. 이는 전반적으로 어린 승객이 생존할 가능성이 약간 높았음을 시사한다.</p>
 <p>fare(운임)는 두 집단 간의 차이가 뚜렷합니다. 사망자의 평균 운임은 약 23.4, 생존자의 평균 운임은 약 49.4로, 생존자의 운임이 두 배 이상 높게 나타났다. 표준편차 또한 생존자 집단에서 훨씬 크기 때문에(68.6 vs 34.1), 생존자 중에는 고운임 승객이 많았고 분산도 컸음을 알 수 있다. 이는 상위 선실을 이용한 승객일수록 생존 가능성이 높았다는 잘 알려진 Titanic의 구조 상황과 일치한다.</p>
 <p>parch(부모·자녀 수)와 sibsp(형제자매·배우자 수)는 두 집단에서 모두 평균이 0.3~0.5 수준으로 비슷하다. 다만, 생존자의 평균이 약간 더 높게 나타나 가족 동반 승객의 생존 확률이 다소 높았을 가능성을 보여준다. 그러나 표준편차가 작고 분포가 편중되어 있어, 이 두 변수의 판별력은 fare나 age에 비해 상대적으로 약할 것으로 예상된다.</p>
 <p>전체적으로 보면, 생존자와 사망자 간에 가장 큰 차이를 보이는 변수는 fare, 다음은 age, 그리고 sibsp와 parch는 차이가 미미하다. 따라서 피셔의 판별분석에서 fare가 판별함수의 주된 기여변수로 작용할 가능성이 높다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image9.png" style="width:4.5in;height:4.32254in" class="figure-img"></p>
+<p><img src="images/da_titanic_scatter.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>모집단 그룹별 판별변수 평균, 표준편차</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># survived별 평균, 표준편차 계산</p>
-<p>df.pivot_table(</p>
-<p>index='survived',</p>
-<p>values=['age', 'sibsp', 'parch', 'fare'],</p>
-<p>aggfunc=['mean', 'std'],</p>
-<p>margins=True)</p></td>
-</tr>
-</tbody>
-</table>
+<p><strong>모집단 그룹별 판별변수 평균, 표준편차</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># survived별 평균, 표준편차 계산</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df.pivot_table(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'survived'</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span>[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>],</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'mean'</span>, <span class="st">'std'</span>],</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    margins<span class="op">=</span><span class="va">True</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>사망자 집단의 평균 나이는 30.5세로, 생존자 집단의 평균 나이 28.9세보다 약간 높다. 표준편차는 각각 13.9와 15.1로 비슷한 수준이다. 이는 두 집단 간의 연령 분포가 거의 겹치지만, 상대적으로 젊은 승객의 생존 비율이 다소 높았음을 의미한다.</p>
 <p>운임(fare)의 차이는 훨씬 뚜렷하다. 사망자 집단의 평균 운임은 23.4, 생존자 집단은 49.4로 약 두 배 이상 차이가 난다. 표준편차 또한 생존자 집단이 훨씬 크다(68.6 &gt; 34.1). 이는 운임이 높을수록, 즉 상위 객실 승객일수록 생존 가능성이 높았음을 보여준다. Titanic 사고의 사회계층적 구조가 통계적으로 확인되는 대목이다.</p>
 <p>부모·자녀 수(parch)의 평균은 사망자 0.33, 생존자 0.48로 소폭의 차이를 보인다. 가족을 동반한 승객이 다소 높은 생존 확률을 가졌던 것으로 해석되지만, 표준편차가 작고 대부분의 값이 0에 몰려 있어 판별력은 크지 않다. 형제·배우자 수(sibsp) 역시 두 집단 간 차이가 거의 없으며(0.52 vs 0.46), 변수의 변동성 또한 크지 않다.</p>
@@ -1066,161 +1101,128 @@ x_{p}
 </tr>
 </tbody>
 </table>
-<p>등분산 검정</p>
+</section>
+</section>
+<section id="등분산-검정" class="level4">
+<h4 class="anchored" data-anchor-id="등분산-검정">(2) 등분산 검정</h4>
 <p>귀무가설: 각 집단의 공분산행렬이 동일하다 (등분산)</p>
 <p>대립가설: 적어도 하나의 집단은 공분산행렬이 다르다</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>from scipy.stats import chi2</p>
-<p># 분석 변수 선택</p>
-<p>X = df[['age', 'sibsp', 'parch', 'fare']].dropna()</p>
-<p>y = df.loc[X.index, 'survived']</p>
-<p># 각 집단별 데이터 분리</p>
-<p>groups = [X[y == g] for g in np.unique(y)]</p>
-<p># 표본 수, 변수 수</p>
-<p>n_groups = len(groups)</p>
-<p>n_vars = X.shape[1]</p>
-<p># 각 그룹의 공분산행렬</p>
-<p>cov_mats = [np.cov(g, rowvar=False) for g in groups]</p>
-<p># 전체 풀드(결합) 공분산행렬</p>
-<p>N = [len(g) for g in groups]</p>
-<p>pooled_cov = sum([(n - 1) * S for n, S in zip(N, cov_mats)]) / (sum(N) - n_groups)</p>
-<p># Box's M 통계량 계산 함수</p>
-<p>def box_m_test(cov_mats, N):</p>
-<p>g = len(cov_mats)</p>
-<p>p = cov_mats[0].shape[0]</p>
-<p>pooled = sum([(n - 1) * S for n, S in zip(N, cov_mats)]) / (sum(N) - g)</p>
-<p>logdet_pooled = np.log(np.linalg.det(pooled))</p>
-<p>logdet_groups = sum([(n - 1) * np.log(np.linalg.det(S)) for n, S in zip(N, cov_mats)])</p>
-<p>M = (sum(N) - g) * logdet_pooled - logdet_groups</p>
-<p># Correction factor (approximation)</p>
-<p>C = ((2*p**2 + 3*p - 1) / (6*(p + 1)*(g - 1))) * (sum([1/(n - 1) for n in N]) - 1/(sum(N) - g))</p>
-<p>M_corrected = (1 - C) * M</p>
-<p>df = (g - 1) * p * (p + 1) / 2</p>
-<p>p_value = 1 - chi2.cdf(M_corrected, df)</p>
-<p>return M_corrected, df, p_value</p>
-<p># 실행</p>
-<p>M, df_bm, pval = box_m_test(cov_mats, N)</p>
-<p>print(f"Box<span dir="rtl">’</span>s M = {M:.3f}, df = {df_bm:.1f}, p-value = {pval:.4f}")</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> chi2</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 변수 선택</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>]].dropna()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.loc[X.index, <span class="st">'survived'</span>]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 집단별 데이터 분리</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> [X[y <span class="op">==</span> g] <span class="cf">for</span> g <span class="kw">in</span> np.unique(y)]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 표본 수, 변수 수</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>n_groups <span class="op">=</span> <span class="bu">len</span>(groups)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>n_vars <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 그룹의 공분산행렬</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>cov_mats <span class="op">=</span> [np.cov(g, rowvar<span class="op">=</span><span class="va">False</span>) <span class="cf">for</span> g <span class="kw">in</span> groups]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 풀드(결합) 공분산행렬</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> [<span class="bu">len</span>(g) <span class="cf">for</span> g <span class="kw">in</span> groups]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>pooled_cov <span class="op">=</span> <span class="bu">sum</span>([(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> S <span class="cf">for</span> n, S <span class="kw">in</span> <span class="bu">zip</span>(N, cov_mats)]) <span class="op">/</span> (<span class="bu">sum</span>(N) <span class="op">-</span> n_groups)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Box's M 통계량 계산 함수</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> box_m_test(cov_mats, N):</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> <span class="bu">len</span>(cov_mats)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> cov_mats[<span class="dv">0</span>].shape[<span class="dv">0</span>]</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    pooled <span class="op">=</span> <span class="bu">sum</span>([(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> S <span class="cf">for</span> n, S <span class="kw">in</span> <span class="bu">zip</span>(N, cov_mats)]) <span class="op">/</span> (<span class="bu">sum</span>(N) <span class="op">-</span> g)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    logdet_pooled <span class="op">=</span> np.log(np.linalg.det(pooled))</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    logdet_groups <span class="op">=</span> <span class="bu">sum</span>([(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> np.log(np.linalg.det(S)) <span class="cf">for</span> n, S <span class="kw">in</span> <span class="bu">zip</span>(N, cov_mats)])</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> (<span class="bu">sum</span>(N) <span class="op">-</span> g) <span class="op">*</span> logdet_pooled <span class="op">-</span> logdet_groups</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Correction factor (approximation)</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    C <span class="op">=</span> ((<span class="dv">2</span><span class="op">*</span>p<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>p <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> (<span class="dv">6</span><span class="op">*</span>(p <span class="op">+</span> <span class="dv">1</span>)<span class="op">*</span>(g <span class="op">-</span> <span class="dv">1</span>))) <span class="op">*</span> (<span class="bu">sum</span>([<span class="dv">1</span><span class="op">/</span>(n <span class="op">-</span> <span class="dv">1</span>) <span class="cf">for</span> n <span class="kw">in</span> N]) <span class="op">-</span> <span class="dv">1</span><span class="op">/</span>(<span class="bu">sum</span>(N) <span class="op">-</span> g))</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    M_corrected <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> C) <span class="op">*</span> M</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (g <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> p <span class="op">*</span> (p <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    p_value <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> chi2.cdf(M_corrected, df)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> M_corrected, df, p_value</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 실행</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>M, df_bm, pval <span class="op">=</span> box_m_test(cov_mats, N)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Box’s M = </span><span class="sc">{</span>M<span class="sc">:.3f}</span><span class="ss">, df = </span><span class="sc">{</span>df_bm<span class="sc">:.1f}</span><span class="ss">, p-value = </span><span class="sc">{</span>pval<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Box<span dir="rtl">’</span>s M = 389.687, df = 10.0, p-value = 0.0000</p>
 <p>즉, 유의확률이 &lt;0.001이므로 공분산 행렬의 등분산 가정이 성립하지 않으며 QDA가 적합하다.</p>
-<p>판별모형 도출 및 혼동행렬 산정</p>
-<p>피셔 LDA</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA</p>
-<p>import pandas as pd</p>
-<p># 분석 데이터</p>
-<p>X = df[['age', 'sibsp', 'parch', 'fare']].dropna()</p>
-<p>y = df.loc[X.index, 'survived']</p>
-<p># LDA 모델 적합</p>
-<p>lda = LDA()</p>
-<p>lda_fit = lda.fit(X, y)</p>
-<p># 예측 및 판별점수</p>
-<p>y_pred = lda.predict(X)</p>
-<p>lda_scores = lda.decision_function(X)</p>
-<p># 판별계수(선형식의 가중치)</p>
-<p>coef = pd.Series(lda.coef_[0], index=X.columns)</p>
-<p>intercept = lda.intercept_[0]</p>
-<p>print("=== LDA 선형판별식 ===")</p>
-<p>print(f"D = {intercept:.4f} + " + " + ".join([f"{c:.4f}*{v}" for v, c in coef.items()]))</p>
-<p>print("\n=== 변수별 판별계수 ===")</p>
-<p>print(coef)</p>
-<p>print("\n절편:", intercept)</p>
-<p>print("\n훈련집합 정확도:", lda.score(X, y))</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== LDA 선형판별식 ===</p>
-<p>D = -0.2155 + -0.0179*age + -0.2633*sibsp + 0.2086*parch + 0.0107*fare</p>
-<p>=== 변수별 판별계수 ===</p>
-<p>age -0.017923</p>
-<p>sibsp -0.263302</p>
-<p>parch 0.208623</p>
-<p>fare 0.010663</p>
-<p>절편: -0.21554471170015432</p>
+</section>
+<section id="판별모형-도출-및-혼동행렬-산정" class="level4">
+<h4 class="anchored" data-anchor-id="판별모형-도출-및-혼동행렬-산정">(3) 판별모형 도출 및 혼동행렬 산정</h4>
+<p><strong>피셔 LDA</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.discriminant_analysis <span class="im">import</span> LinearDiscriminantAnalysis <span class="im">as</span> LDA</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 데이터</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>]].dropna()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.loc[X.index, <span class="st">'survived'</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># LDA 모델 적합</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>lda <span class="op">=</span> LDA()</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="op">=</span> lda.fit(X, y)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측 및 판별점수</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> lda.predict(X)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>lda_scores <span class="op">=</span> lda.decision_function(X)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 판별계수(선형식의 가중치)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> pd.Series(lda.coef_[<span class="dv">0</span>], index<span class="op">=</span>X.columns)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> lda.intercept_[<span class="dv">0</span>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== LDA 선형판별식 ==="</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"D = </span><span class="sc">{</span>intercept<span class="sc">:.4f}</span><span class="ss"> + "</span> <span class="op">+</span> <span class="st">" + "</span>.join([<span class="ss">f"</span><span class="sc">{</span>c<span class="sc">:.4f}</span><span class="ss">*</span><span class="sc">{</span>v<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> v, c <span class="kw">in</span> coef.items()]))</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== 변수별 판별계수 ==="</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coef)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">절편:"</span>, intercept)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">훈련집합 정확도:"</span>, lda.score(X, y))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== LDA 선형판별식 === <br> D = -0.2155 + -0.0179*age + -0.2633*sibsp + 0.2086*parch + 0.0107*fare <br> === 변수별 판별계수 === <br> age -0.017923 <br> sibsp -0.263302 <br> parch 0.208623 <br> fare 0.010663 <br> 절편: -0.21554471170015432</p>
 <p>훈련집합 정확도: 0.6555023923444976</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from sklearn.metrics import confusion_matrix, classification_report</p>
-<p># 혼동행렬 계산</p>
-<p>cm = confusion_matrix(y, y_pred)</p>
-<p>print("=== Confusion Matrix ===")</p>
-<p>print(cm)</p>
-<p># 상세 분류 지표</p>
-<p>print("\n=== Classification Report ===")</p>
-<p>print(classification_report(y, y_pred, target_names=["Dead (0)", "Survived (1)"]))</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== Confusion Matrix ===</p>
-<p>[[576 42]</p>
-<p>[318 109]]</p>
-<p>=== Classification Report ===</p>
-<p>precision recall f1-score support</p>
-<p>Dead (0) 0.64 0.93 0.76 618</p>
-<p>Survived (1) 0.72 0.26 0.38 427</p>
-<p>accuracy 0.66 1045</p>
-<p>macro avg 0.68 0.59 0.57 1045</p>
-<p>weighted avg 0.68 0.66 0.60 1045</p>
-<p>피셔 QDA</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA</p>
-<p>from sklearn.metrics import confusion_matrix, classification_report</p>
-<p># 분석 데이터</p>
-<p>X = df[['age', 'sibsp', 'parch', 'fare']].dropna()</p>
-<p>y = df.loc[X.index, 'survived']</p>
-<p># QDA 모델 적합</p>
-<p>qda = QDA()</p>
-<p>qda_fit = qda.fit(X, y)</p>
-<p># 예측</p>
-<p>y_pred_qda = qda.predict(X)</p>
-<p># 혼동행렬</p>
-<p>cm_qda = confusion_matrix(y, y_pred_qda)</p>
-<p>print("=== QDA Confusion Matrix ===")</p>
-<p>print(cm_qda)</p>
-<p># 분류 정확도 및 지표</p>
-<p>print("\n=== QDA Classification Report ===")</p>
-<p>print(classification_report(y, y_pred_qda, target_names=["Dead (0)", "Survived (1)"]))</p>
-<p># 정확도</p>
-<p>print("훈련집합 정확도:", qda.score(X, y))</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== QDA Confusion Matrix ===</p>
-<p>[[576 42]</p>
-<p>[303 124]]</p>
-<p>=== QDA Classification Report ===</p>
-<p>precision recall f1-score support</p>
-<p>Dead (0) 0.66 0.93 0.77 618</p>
-<p>Survived (1) 0.75 0.29 0.42 427</p>
-<p>accuracy 0.67 1045</p>
-<p>macro avg 0.70 0.61 0.59 1045</p>
-<p>weighted avg 0.69 0.67 0.63 1045</p>
-<p>훈련집합 정확도: 0.6698564593301436</p>
-<p>최종 판별모형 선택</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 혼동행렬 계산</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y, y_pred)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Confusion Matrix ==="</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cm)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 상세 분류 지표</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Classification Report ==="</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y, y_pred, target_names<span class="op">=</span>[<span class="st">"Dead (0)"</span>, <span class="st">"Survived (1)"</span>]))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== Confusion Matrix === <br> [[576 42] <br> [318 109]] <br> === Classification Report === <br> precision recall f1-score support <br> Dead (0) 0.64 0.93 0.76 618 <br> Survived (1) 0.72 0.26 0.38 427 <br> accuracy 0.66 1045 <br> macro avg 0.68 0.59 0.57 1045 <br> weighted avg 0.68 0.66 0.60 1045</p>
+<p><strong>피셔 QDA</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.discriminant_analysis <span class="im">import</span> QuadraticDiscriminantAnalysis <span class="im">as</span> QDA</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 데이터</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>]].dropna()</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.loc[X.index, <span class="st">'survived'</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># QDA 모델 적합</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>qda <span class="op">=</span> QDA()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>qda_fit <span class="op">=</span> qda.fit(X, y)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>y_pred_qda <span class="op">=</span> qda.predict(X)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 혼동행렬</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>cm_qda <span class="op">=</span> confusion_matrix(y, y_pred_qda)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== QDA Confusion Matrix ==="</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cm_qda)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 분류 정확도 및 지표</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== QDA Classification Report ==="</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y, y_pred_qda, target_names<span class="op">=</span>[<span class="st">"Dead (0)"</span>, <span class="st">"Survived (1)"</span>]))</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 정확도</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"훈련집합 정확도:"</span>, qda.score(X, y))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== QDA Confusion Matrix === <br> [[576 42] <br> [303 124]] <br> === QDA Classification Report === <br> precision recall f1-score support <br> Dead (0) 0.66 0.93 0.77 618 <br> Survived (1) 0.75 0.29 0.42 427 <br> accuracy 0.67 1045 <br> macro avg 0.70 0.61 0.59 1045 <br> weighted avg 0.69 0.67 0.63 1045 <br> 훈련집합 정확도: 0.6698564593301436</p>
+<p><strong>최종 판별모형 선택</strong></p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 32%">
@@ -1261,488 +1263,473 @@ x_{p}
 </tbody>
 </table>
 <p>Titanic 데이터에서 집단 간 공분산이 다르며, QDA가 LDA보다 약간 더 높은 정확도(0.67 vs 0.66)와 생존자 예측력을 보였다. 따라서 최종 판별모형은 QDA로 선정하는 것이 타당하다.</p>
-<p>판별결과 활용(1) 새로운 개체 판별</p>
+</section>
+<section id="판별결과-활용1-새로운-개체-판별" class="level4">
+<h4 class="anchored" data-anchor-id="판별결과-활용1-새로운-개체-판별">(4) 판별결과 활용(1) 새로운 개체 판별</h4>
 <p>age 30세, 동반 배우자 형제 수 1명, 부모 자식 동반자 수 2명, 요금 100$인 승객의 생존율? LDA 방법 61.5%, QDA 방법 68.5%로 생존한다고 판단할 수 있다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import pandas as pd</p>
-<p>#새로운 개체 정의</p>
-<p>new_passenger = pd.DataFrame({</p>
-<p>"age": [30],</p>
-<p>"sibsp": [1],</p>
-<p>"parch": [2],</p>
-<p>"fare": [100]})</p>
-<p># 1) LDA로 판별</p>
-<p>lda_class = lda.predict(new_passenger)</p>
-<p>lda_prob = lda.predict_proba(new_passenger)</p>
-<p>print("LDA 예측 클래스:", lda_class[0]) # 0 또는 1</p>
-<p>print("LDA posterior 확률:", lda_prob) # 각 집단에 속할 사후확률</p>
-<p># 2) QDA로 판별</p>
-<p>qda_class = qda.predict(new_passenger)</p>
-<p>qda_prob = qda.predict_proba(new_passenger)</p>
-<p>print("QDA 예측 클래스:", qda_class[0])</p>
-<p>print("QDA posterior 확률:", qda_prob)</p></td>
-</tr>
-</tbody>
-</table>
-<p>LDA 예측 클래스: 1</p>
-<p>LDA posterior 확률: [[0.38532454 0.61467546]]</p>
-<p>QDA 예측 클래스: 1</p>
-<p>QDA posterior 확률: [[0.31523609 0.68476391]]</p>
-<p>판별결과 활용(2) 주성분 분삭 활용 판별 시각화</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>from sklearn.preprocessing import StandardScaler</p>
-<p>from sklearn.decomposition import PCA</p>
-<p># 1. PCA 준비</p>
-<p>scaler = StandardScaler()</p>
-<p>X_scaled = scaler.fit_transform(X)</p>
-<p>pca = PCA(n_components=2)</p>
-<p>X_pca = pca.fit_transform(X_scaled)</p>
-<p># 2. 시각화용 데이터프레임</p>
-<p>df_vis = pd.DataFrame({</p>
-<p>"PC1": X_pca[:, 0],</p>
-<p>"PC2": X_pca[:, 1],</p>
-<p>"true": y.values,</p>
-<p>"pred": y_pred_qda</p>
-<p>}, index=X.index)</p>
-<p># 3. 영어 버전 그룹 레이블</p>
-<p>def make_group_label(row):</p>
-<p>if row["true"] == 0 and row["pred"] == 0:</p>
-<p>return "true: died → predicted: died"</p>
-<p>elif row["true"] == 0 and row["pred"] == 1:</p>
-<p>return "true: died → predicted: survived (misclassified)"</p>
-<p>elif row["true"] == 1 and row["pred"] == 0:</p>
-<p>return "true: survived → predicted: died (misclassified)"</p>
-<p>else:</p>
-<p>return "true: survived → predicted: survived"</p>
-<p>df_vis["group"] = df_vis.apply(make_group_label, axis=1)</p>
-<p># 4. 색 / 마커 설정</p>
-<p>color_map = {</p>
-<p>"true: died → predicted: died": "tab:blue",</p>
-<p>"true: died → predicted: survived (misclassified)": "tab:orange",</p>
-<p>"true: survived → predicted: died (misclassified)": "tab:red",</p>
-<p>"true: survived → predicted: survived": "tab:green"</p>
-<p>}</p>
-<p>marker_map = {</p>
-<p>"true: died → predicted: died": "o",</p>
-<p>"true: died → predicted: survived (misclassified)": "s",</p>
-<p>"true: survived → predicted: died (misclassified)": "X",</p>
-<p>"true: survived → predicted: survived": "D"</p>
-<p>}</p>
-<p># 5. 시각화</p>
-<p>plt.figure(figsize=(10, 7))</p>
-<p>for g in df_vis["group"].unique():</p>
-<p>sub = df_vis[df_vis["group"] == g]</p>
-<p>plt.scatter(</p>
-<p>sub["PC1"], sub["PC2"],</p>
-<p>label=g,</p>
-<p>c=color_map[g],</p>
-<p>marker=marker_map[g],</p>
-<p>alpha=0.7,</p>
-<p>edgecolor="k",</p>
-<p>s=60</p>
-<p>)</p>
-<p># 6. 축 설명력 표시</p>
-<p>pc1_var = pca.explained_variance_ratio_[0] * 100</p>
-<p>pc2_var = pca.explained_variance_ratio_[1] * 100</p>
-<p>plt.xlabel(f"PC1 ({pc1_var:.1f}% variance explained)")</p>
-<p>plt.ylabel(f"PC2 ({pc2_var:.1f}% variance explained)")</p>
-<p>plt.title("PCA Visualization of QDA Classification Results")</p>
-<p>plt.legend(loc="best", fontsize=9)</p>
-<p>plt.axhline(0, color="lightgray", linewidth=0.8)</p>
-<p>plt.axvline(0, color="lightgray", linewidth=0.8)</p>
-<p>plt.tight_layout()</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#새로운 개체 정의</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>new_passenger <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>:   [<span class="dv">30</span>],</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sibsp"</span>: [<span class="dv">1</span>],</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"parch"</span>: [<span class="dv">2</span>],</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fare"</span>:  [<span class="dv">100</span>]})</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) LDA로 판별</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>lda_class <span class="op">=</span> lda.predict(new_passenger)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>lda_prob  <span class="op">=</span> lda.predict_proba(new_passenger)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"LDA 예측 클래스:"</span>, lda_class[<span class="dv">0</span>])     <span class="co"># 0 또는 1</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"LDA posterior 확률:"</span>, lda_prob)      <span class="co"># 각 집단에 속할 사후확률</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) QDA로 판별</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>qda_class <span class="op">=</span> qda.predict(new_passenger)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>qda_prob  <span class="op">=</span> qda.predict_proba(new_passenger)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"QDA 예측 클래스:"</span>, qda_class[<span class="dv">0</span>])</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"QDA posterior 확률:"</span>, qda_prob)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>LDA 예측 클래스: 1 <br> LDA posterior 확률: [[0.38532454 0.61467546]] <br> QDA 예측 클래스: 1 <br> QDA posterior 확률: [[0.31523609 0.68476391]]</p>
+</section>
+<section id="판별결과-활용2-주성분-분삭-활용-판별-시각화" class="level4">
+<h4 class="anchored" data-anchor-id="판별결과-활용2-주성분-분삭-활용-판별-시각화">(5) 판별결과 활용(2) 주성분 분삭 활용 판별 시각화</h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. PCA 준비</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>X_pca <span class="op">=</span> pca.fit_transform(X_scaled)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 시각화용 데이터프레임</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>df_vis <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PC1"</span>: X_pca[:, <span class="dv">0</span>],</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"PC2"</span>: X_pca[:, <span class="dv">1</span>],</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true"</span>: y.values,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pred"</span>: y_pred_qda</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>X.index)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 영어 버전 그룹 레이블</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_group_label(row):</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> row[<span class="st">"true"</span>] <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> row[<span class="st">"pred"</span>] <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"true: died  → predicted: died"</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> row[<span class="st">"true"</span>] <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> row[<span class="st">"pred"</span>] <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"true: died  → predicted: survived (misclassified)"</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> row[<span class="st">"true"</span>] <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> row[<span class="st">"pred"</span>] <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"true: survived → predicted: died (misclassified)"</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"true: survived → predicted: survived"</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>df_vis[<span class="st">"group"</span>] <span class="op">=</span> df_vis.<span class="bu">apply</span>(make_group_label, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 색 / 마커 설정</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>color_map <span class="op">=</span> {</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: died  → predicted: died"</span>: <span class="st">"tab:blue"</span>,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: died  → predicted: survived (misclassified)"</span>: <span class="st">"tab:orange"</span>,</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: survived → predicted: died (misclassified)"</span>: <span class="st">"tab:red"</span>,</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: survived → predicted: survived"</span>: <span class="st">"tab:green"</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>marker_map <span class="op">=</span> {</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: died  → predicted: died"</span>: <span class="st">"o"</span>,</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: died  → predicted: survived (misclassified)"</span>: <span class="st">"s"</span>,</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: survived → predicted: died (misclassified)"</span>: <span class="st">"X"</span>,</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true: survived → predicted: survived"</span>: <span class="st">"D"</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 시각화</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> g <span class="kw">in</span> df_vis[<span class="st">"group"</span>].unique():</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    sub <span class="op">=</span> df_vis[df_vis[<span class="st">"group"</span>] <span class="op">==</span> g]</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    plt.scatter(</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>        sub[<span class="st">"PC1"</span>], sub[<span class="st">"PC2"</span>],</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span>g,</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>        c<span class="op">=</span>color_map[g],</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>        marker<span class="op">=</span>marker_map[g],</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.7</span>,</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>        edgecolor<span class="op">=</span><span class="st">"k"</span>,</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        s<span class="op">=</span><span class="dv">60</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 축 설명력 표시</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>pc1_var <span class="op">=</span> pca.explained_variance_ratio_[<span class="dv">0</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>pc2_var <span class="op">=</span> pca.explained_variance_ratio_[<span class="dv">1</span>] <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="ss">f"PC1 (</span><span class="sc">{</span>pc1_var<span class="sc">:.1f}</span><span class="ss">% variance explained)"</span>)</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="ss">f"PC2 (</span><span class="sc">{</span>pc2_var<span class="sc">:.1f}</span><span class="ss">% variance explained)"</span>)</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"PCA Visualization of QDA Classification Results"</span>)</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>plt.legend(loc<span class="op">=</span><span class="st">"best"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"lightgray"</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>plt.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"lightgray"</span>, linewidth<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image10.png" style="width:4.5in;height:3.13954in" class="figure-img"></p>
+<p><img src="images/da_titanic_pca.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<p>주성분 이름 부여</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># PCA loadings (주성분 부하)</p>
-<p>loadings = pd.DataFrame(</p>
-<p>pca.components_.T, # (변수 × PC)</p>
-<p>index=X.columns, # ['age','sibsp','parch','fare']</p>
-<p>columns=['PC1', 'PC2']</p>
-<p>)</p>
-<p>print("=== PCA Loadings ===")</p>
-<p>print(loadings.round(3))</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== PCA Loadings ===</p>
-<p>PC1 PC2</p>
-<p>age -0.349 0.677</p>
-<p>sibsp 0.636 -0.080</p>
-<p>parch 0.625 0.127</p>
-<p>fare 0.288 0.720</p>
-<p>PC1은 가족 구성 관련 변수(sibsp, parch)에 강한 양(+) 부하를 갖고 있으며 요금(fare)도 약하게 양의 방향을 가진다. 반면, 나이(age)는 음(–)의 방향으로 나타난다.</p>
-<p>가족 규모가 클수록 PC1 점수는 증가한다.</p>
-<p>요금이 높은 승객도 상대적으로 PC1이 증가하는 경향을 보인다.</p>
-<p>반대로 나이가 많을수록 PC1 점수는 감소한다.</p>
+<p><strong>주성분 이름 부여</strong></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA loadings (주성분 부하)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>loadings <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    pca.components_.T,      <span class="co"># (변수 × PC)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>X.columns,        <span class="co"># ['age','sibsp','parch','fare']</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="st">'PC1'</span>, <span class="st">'PC2'</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== PCA Loadings ==="</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(loadings.<span class="bu">round</span>(<span class="dv">3</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== PCA Loadings === <br> PC1 PC2 <br> age -0.349 0.677 <br> sibsp 0.636 -0.080 <br> parch 0.625 0.127 <br> fare 0.288 0.720</p>
+<p>PC1은 가족 구성 관련 변수(sibsp, parch)에 강한 양(+) 부하를 갖고 있으며 요금(fare)도 약하게 양의 방향을 가진다. 반면, 나이(age)는 음(–)의 방향으로 나타난다. 가족 규모가 클수록 PC1 점수는 증가한다. 요금이 높은 승객도 상대적으로 PC1이 증가하는 경향을 보인다. 반대로 나이가 많을수록 PC1 점수는 감소한다.</p>
 <p>따라서 PC1은 <span dir="rtl">”</span>가족 규모 및 경제적 여건을 반영하는 축(Family-size / Fare axis)” 또는 <span dir="rtl">”</span>젊고 가족이 많은 승객 vs 나이가 많고 가족 동반이 적은 승객”을 구분하는 축으로 해석할 수 있다.</p>
-<p>PC2는 요금(fare)과 나이(age)에 의해 거의 전적으로 결정되는 축이다.</p>
-<p>요금이 높을수록 PC2 점수가 증가한다.</p>
-<p>나이가 많을수록 PC2 점수도 증가한다.</p>
-<p>sibsp, parch는 거의 영향이 없다.</p>
-<p>따라서 PC2는 <span dir="rtl">”</span>요금–나이 축(Fare–Age axis)“, 또는 경제적 지위(요금)와 연령 특성을 반영하는 축으로 명명하는 것이 적절하다.</p>
-<p>4. 로지스틱 판별분석</p>
-<p>개념</p>
+<p>PC2는 요금(fare)과 나이(age)에 의해 거의 전적으로 결정되는 축이다. 요금이 높을수록 PC2 점수가 증가한다. 나이가 많을수록 PC2 점수도 증가한다 sibsp, parch는 거의 영향이 없다. 따라서 PC2는 <span dir="rtl">”</span>요금–나이 축(Fare–Age axis)“, 또는 경제적 지위(요금)와 연령 특성을 반영하는 축으로 명명하는 것이 적절하다.</p>
+</section>
+<section id="로지스틱-판별분석" class="level4">
+<h4 class="anchored" data-anchor-id="로지스틱-판별분석">4. 로지스틱 판별분석</h4>
+<section id="개념" class="level5">
+<h5 class="anchored" data-anchor-id="개념">(1) 개념</h5>
 <p>이분형 분류(binary classification) 문제에서 모집단이 <span class="math inline">\(\text{모집단 1} = \{\text{성공}\}\)</span>, <span class="math inline">\(\text{모집단 2} = \{\text{실패}\}\)</span>로 정의되어 있을 때, 로지스틱 판별분석은 하나 이상의 설명변수(판별변수)를 이용하여 주어진 관측값이 성공 집단 혹은 실패 집단에 속할 확률을 추정하고, 그 확률을 기준으로 집단을 분류하는 방법이다.</p>
 <p>로지스틱 판별분석은 LDA이나 QDA와는 달리 모집단의 분포(정규성, 공분산 구조 등)에 대한 가정을 필요로 하지 않으며, 종속변수가 범주형일 때 널리 사용되는 일반화선형모형의 대표적 예이다.</p>
-<p>모형의 구조</p>
+<p><strong>모형의 구조</strong></p>
 <p>설명변수 벡터를 x, 성공일 확률을 <span class="math inline">\(p(x) = P(\text{성공} \mid x)\)</span>라고 할 때, 로지스틱 회귀모형은 다음과 같은 로짓 함수에 의해 정의된다.</p>
 <p><span class="math display">\[\log\frac{p(x)}{1 - p(x)} = \beta_{0} + \beta_{1}x_{1} + \cdots + \beta_{k}x_{k}\]</span></p>
 <p>여기서 왼쪽의 로짓값은 성공에 대한 상대적 위험도를 선형식으로 표현한 것이며, 모수 <span class="math inline">\(\beta\)</span>는 최대우도법을 이용하여 추정된다. 추정된 모형으로부터 성공확률은 <span class="math inline">\(\widehat{p}(x) = \frac{e^{{\widehat{\beta}}_{0} + {\widehat{\beta}}_{1}x_{1} + \cdots + {\widehat{\beta}}_{k}x_{k}}}{1 + e^{{\widehat{\beta}}_{0} + {\widehat{\beta}}_{1}x_{1} + \cdots + {\widehat{\beta}}_{k}x_{k}}}\)</span>의 형태로 계산된다.</p>
-<p>일반적인 분류 규칙</p>
+<p><strong>일반적인 분류 규칙</strong></p>
 <p>로지스틱 판별분석에서 가장 널리 사용되는 기본 분류 규칙은 다음과 같다.</p>
 <p><span class="math inline">\(\widehat{p}(x) &gt; 0.5\)</span>이면 성공 집단으로 분류</p>
 <p><span class="math inline">\(\widehat{p}(x) &lt; 0.5\)</span>이면 실패 집단으로 분류</p>
 <p>즉, 추정된 사후확률이 0.5보다 크면 성공 집단, 그렇지 않으면 실패 집단으로 판단하는 규칙이다. 이 기준값(0.5)은 두 집단의 사전확률이 동일하고, 성공과 실패의 오분류 비용이 동일하다고 가정할 때 Bayes 규칙에서 자연스럽게 도출된다.</p>
-<p>ROC 분석을 통한 최적 기준값 선정</p>
+<p><strong>ROC 분석을 통한 최적 기준값 선정</strong></p>
 <p>실무에서는 0.5라는 기준값이 항상 최적인 것은 아니다. 두 집단의 사전확률이 크게 다르거나, 성공을 실패로 잘못 분류하는 비용이 실패를 성공으로 분류하는 비용보다 클 경우에는 더 적절한 기준값을 선택해야 한다. 이를 위해 흔히 사용하는 방법이 ROC(Receiver Operating Characteristic) 분석이다.</p>
-<p>ROC 곡선</p>
+</section>
+</section>
+<section id="roc-곡선" class="level4">
+<h4 class="anchored" data-anchor-id="roc-곡선">(2) ROC 곡선</h4>
 <p>이진 분류모형의 성능을 평가할 때, 모델이 산출한 사후확률을 어떤 기준값(cutoff)으로 나누느냐에 따라 민감도와 특이도가 달라지게 된다. ROC(Receiver Operating Characteristic) 커브는 이러한 기준값의 변화에 따른 분류 성능의 변화를 종합적으로 나타낸 곡선이다.</p>
 <p>가로축은 False Positive Rate(FPR)=(<span dir="rtl">’</span>정답을 얼마나 잘 맞추는가<span dir="rtl">’</span>)=민감도, 세로축은 True Positive Rate(TPR)=(<span dir="rtl">’</span>실패를 성공으로 잘못 분류한 비율<span dir="rtl">’</span>)=(1-특이도)를 나타내며, 기준값을 0에서 1까지 연속적으로 변화시키면서 계산된 점들을 연결하여 ROC 곡선을 얻는다.</p>
 <p><span class="math inline">\(\text{TPR} = \frac{\text{True Positive}}{\text{True Positive + False Negative}}\)</span>, <span class="math inline">\(\text{FPR} = \frac{\text{False Positive}}{\text{False Positive + True Negative}}\)</span></p>
-<p>기준값 변화에 따른 곡선의 의미</p>
+<p><strong>기준값 변화에 따른 곡선의 의미</strong></p>
 <p>모형은 사후확률을 이용하여 성공/실패를 예측하는데, 이때 기준값을 낮추면 <span dir="rtl">’</span>성공<span dir="rtl">’</span>으로 분류하는 개체가 늘어나므로 TPR과 FPR이 동시에 증가한다. 반대로 기준값을 높이면 두 지표 모두 감소한다.</p>
 <p>ROC 커브는 이러한 trade-off 관계를 시각적으로 보여주어, 특정 기준값에서 모델이 어떤 수준의 민감도와 특이도를 가지는지 파악할 수 있게 해준다.</p>
-<p>ROC 커브의 위치와 모델의 성능</p>
+<p><strong>ROC 커브의 위치와 모델의 성능</strong></p>
 <p>ROC 곡선이 왼쪽 위 모서리에 가까울수록 성능이 우수한 모델을 의미한다. 이 영역에 가까운 곡선은 동일한 FPR에서 더 높은 TPR을 달성하기 때문이다.</p>
 <p>다음 그림에서 서로 다른 세 가지 모델(NetChop, TAP+ProteaSMM-i, ProteaSMM-i)의 ROC 곡선이 함께 제시되어 있는데, 각 모델이 기준값 변화에 따라 서로 다른 형태의 trade-off를 보임을 알 수 있다. 곡선이 전체적으로 더 위쪽에 위치한 모델일수록 분류 성능이 상대적으로 우수하다. NetChop 모델은 FPR=0.25가 최적 cut-off이다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image11.png" style="width:3.73403in;height:3.70833in" class="figure-img"></p>
+<p><img src="images/da_titanic_roc.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
 <p>대각선의 점선은 아무 정보도 사용하지 않는 완전 무작위 분류(random guess)의 ROC 선이며, 실제 ROC 곡선이 이 점선보다 위에 존재해야 모델로서 의미가 있다.</p>
-<p>AUC(Area Under the Curve)의 해석</p>
+<p><strong>AUC(Area Under the Curve)의 해석</strong></p>
 <p>ROC 커브 아래 면적(AUC 값)은 모델 전체 성능을 하나의 숫자로 요약한 지표이다. <span class="math inline">\(0.5 \leq \text{AUC} \leq 1\)</span></p>
-<p>AUC = 0.5 → 무작위 분류기</p>
-<p>AUC = 1.0 → 완벽한 분류기</p>
+<p>AUC = 0.5 → 무작위 분류기 <br> AUC = 1.0 → 완벽한 분류기</p>
 <p>AUC 값이 높다는 것은 임의로 뽑은 성공 사례가 임의의 실패 사례보다 더 높은 사후확률을 가질 확률이 높다는 의미이며, 모델의 분별력이 좋음을 나타낸다.</p>
-<p>실제 활용: 최적 기준값 선택</p>
+<p><strong>실제 활용: 최적 기준값 선택</strong></p>
 <p>ROC 분석의 중요한 목적 중 하나는 성공/실패를 구분하는 최적의 기준값을 정하는 것이다. 일반적으로 다음 기준을 활용한다.</p>
-<p>오분류율을 최소화하는 기준값</p>
-<p>민감도+특이도가 최대가 되는 기준값(Youden Index 최대)</p>
-<p>특정 FPR 또는 TPR을 만족시키는 기준값</p>
+<p><strong>오분류율을 최소화하는 기준값</strong></p>
+<ul>
+<li>민감도+특이도가 최대가 되는 기준값(Youden Index 최대)</li>
+<li>특정 FPR 또는 TPR을 만족시키는 기준값</li>
+</ul>
 <p>이처럼 ROC 분석은 로지스틱 판별분석에서 모델의 분류 성능을 평가할 뿐 아니라, 실무에서 적절한 cutoff를 설정하기 위한 핵심 도구로 활용된다.</p>
-<p>YOUDEN 지표</p>
+</section>
+<section id="youden-지표" class="level4">
+<h4 class="anchored" data-anchor-id="youden-지표">(3) YOUDEN 지표</h4>
 <p>이진 분류 모형에서 기준값(cutoff)을 어떻게 설정하느냐에 따라 민감도와 특이도가 달라지게 된다. ROC 분석의 목적 중 하나는 이러한 기준값을 조정하여 모형의 분류 성능이 가장 균형 있게 나타나는 지점을 찾는 데 있다. Youden Index는 이 과정에서 널리 사용되는 지표로, 특정 기준값에서 모델의 전반적 분별력을 하나의 수치로 요약해준다.</p>
-<p>정의</p>
+<p><strong>정의</strong></p>
 <p>Youden Index J는 민감도와 특이도의 합이 최대가 되는 지점을 찾기 위해 사용되며, 다음과 같이 정의된다. <span class="math inline">\(J = \text{Sensitivity} + \text{Specificity} - 1\)</span>, 또는 <span class="math inline">\(J = \text{TPR} - \text{FPR}\)</span>의 형태로도 표현된다.</p>
-<p>값의 범위와 의미</p>
+<p><strong>값의 범위와 의미</strong></p>
 <p><span class="math inline">\(0 \leq J \leq 1\)</span>: J = 0 → 모델이 무작위 분류기와 동일함(분별력 없음)</p>
 <p>J = 1 → 완벽한 분류기(민감도=1, 특이도=1) 값이 클수록 특정 기준값에서 모델이 성공과 실패를 더 잘 구분하고 있음을 의미한다.</p>
 <p>Youden Index는 민감도와 특이도 사이의 균형을 평가하므로, 어느 한쪽만 높아지는 왜곡된 cutoff 대신 양쪽 성능을 모두 고려한 최적의 기준값을 제공한다.</p>
-<p>최적 기준값 찾기</p>
+<p><strong>최적 기준값 찾기</strong></p>
 <p>ROC 분석에서 각 cutoff c에 대해 J(c) 값을 계산한 뒤, 다음 기준을 만족하는 cutoff를 선택한다. <span class="math inline">\(c^{*} = \arg\max_{c}J(c)\)</span> 즉, Youden Index를 최대화하는 기준값을 <span dir="rtl">’</span>최적 기준값<span dir="rtl">’</span>으로 선택한다.</p>
 <p>이 기준값은 오분류율 최소화, 민감도와 특이도 균형 확보, 의료·공학·사회과학 등 다양한 분야에서 실무적으로 적용 가능 하다는 점에서 널리 사용된다.</p>
-<p>해석적 장점</p>
-<p>민감도와 특이도를 동시에 고려 → 한쪽이 높고 다른 한쪽이 낮은 cutoff는 적절하지 않음을 수치적으로 판단할 수 있다.</p>
-<p>간단한 계산으로 모델의 가장 균형 잡힌 cutoff 제시 → 0.5라는 임의 기준에 의존하지 않는다.</p>
-<p>모델 간 비교 가능</p>
+<p><strong>해석적 장점</strong></p>
+<p>민감도와 특이도를 동시에 고려 → 한쪽이 높고 다른 한쪽이 낮은 cutoff는 적절하지 않음을 수치적으로 판단할 수 있다. 간단한 계산으로 모델의 가장 균형 잡힌 cutoff 제시 → 0.5라는 임의 기준에 의존하지 않는다.</p>
+<p><strong>모델 간 비교 가능</strong></p>
 <p>특정 cutoff에서 Youden Index가 더 큰 모델이 더 우수한 분류력을 가진다.</p>
-<p>AUC와 보완적 관계</p>
+<p><strong>AUC와 보완적 관계</strong></p>
 <p>AUC는 전체적인 성능을 평가하지만, Youden Index는 특정 cutoff에서의 최적 성능을 찾는 데 적합하다.</p>
-<p>실제 활용의 예</p>
+<p><strong>실제 활용의 예</strong></p>
 <p>로지스틱 판별분석이나 의료 진단 모형에서 사후확률을 얻은 후, 민감도·특이도 표를 작성하고 cutoff별 Youden Index를 계산한 뒤 J가 최대가 되는 cutoff를 선택하여 <span dir="rtl">”</span>성공/실패”, <span dir="rtl">”</span>질병/정상”, <span dir="rtl">”</span>위험군/비위험군” 등을 보다 합리적으로 분류할 수 있다.</p>
-<p>피셔 판별방법과 비교</p>
+<section id="피셔-판별방법과-비교" class="level5">
+<h5 class="anchored" data-anchor-id="피셔-판별방법과-비교">(4) 피셔 판별방법과 비교</h5>
 <p>Fisher의 선형판별분석은 두 집단 분류를 위하여 집단 간 분산 대비 집단 내 분산을 최대화하는 방향으로 선형판별축을 찾는 방법으로, 통계학적으로 매우 우수한 고전적 판별기법이다. 그러나 Fisher 방법은 판별점수를 기준으로 두 집단을 구분할 뿐이며, 추정된 판별함수의 값 자체가 확률적 의미를 가지지 않는다는 한계를 갖는다.</p>
 <p>이에 비해 로지스틱 판별분석은 일반화선형모형(GLM)의 구조를 기반으로 하여 성공에 대한 사후확률을 직접적으로 추정할 수 있다는 점에서 여러 가지 해석적·실무적 장점을 제공한다. 다음에서는 Fisher 방법에 비해 로지스틱 판별분석이 갖는 주요 장점은 다음과 같다.</p>
-<p>회귀계수의 부호와 크기 활용</p>
+<p><strong>회귀계수의 부호와 크기 활용</strong></p>
 <p>로지스틱 판별분석에서 각 설명변수의 회귀계수 <span class="math inline">\(\beta_{j}\)</span>는 <span class="math inline">\(\log\frac{p}{1 - p}\)</span>(성공에 대한 log-odds)의 변화에 미치는 직접적인 효과를 나타낸다. 따라서 계수의 부호는 해당 변수가 성공 확률을 증가시키는지 감소시키는지를 명확하게 파악할 수 있으며, 계수의 크기는 log-odds 변화의 정도를 정량적으로 평가할 수 있게 해준다.</p>
 <p>이는 Fisher 방법에서 제공되지 않는 해석적 장점으로, 변수의 영향력 해석이 중요한 응용 분야(사회과학, 의학, 경영학 등)에서 특히 유용하다.</p>
-<p>성공 집단에 속할 사후확률(0~1 사이 연속값)을 추정할 수 있음</p>
+<p><strong>성공 집단에 속할 사후확률(0~1 사이 연속값)을 추정할 수 있음</strong></p>
 <p>로지스틱 판별분석은 각 개체에 대하여 성공 집단에 속할 확률을 <span class="math inline">\(\widehat{p}(x) = P(\text{성공} \mid x)\)</span> 형태로 0~1 사이의 연속적 확률값으로 산출한다. 이 사후확률은 단순히 집단을 배정하는 용도뿐 아니라, 개체 간 성공 가능성의 상대적 크기 비교, 특정 집단 내에서 위험도나 우선순위 매김(ranking), 의사결정 과정에서 확률 기반 기준 설정, 불확실성(uncertainty) 수준 평가 등 다양한 분석 작업에 활용될 수 있다.</p>
 <p>반면, Fisher 방법은 판별점수의 크기가 집단 간 차이를 반영하긴 하지만, 그 값이 <span dir="rtl">”</span>성공확률”이라는 명확한 해석을 제공하지는 못한다.</p>
-<p>ROC 분석을 통한 최적 기준값(cutoff) 설정이 가능함</p>
+<p><strong>ROC 분석을 통한 최적 기준값(cutoff) 설정이 가능함</strong></p>
 <p>기본적인 분류 규칙인 <span class="math inline">\(\widehat{p}(x) &gt; 0.5\)</span>는 두 집단의 사전확률과 오분류 비용이 동일할 때 가장 합리적이다. 그러나 실제 분석에서는 이 조건이 충족되지 않는 경우가 많다. 로지스틱 판별분석은 사후확률을 추정하기 때문에 ROC 분석을 통해 다양한 기준값에 대해 민감도, 특이도, 오분류률, Youden 지표 등을 계량적으로 평가할 수 있다. 이를 통해 오분류를 최소화하거나, 또는 문제의 목적에 가장 부합하는 기준값을 선택할 수 있다.</p>
 <p>Fisher 방법은 판별함수 점수를 기준으로 cut-off를 정할 수 있으나, 그 점수의 해석적 기반이 확률이 아니기 때문에 ROC 기반 기준 선정이 로지스틱 분석만큼 자연스럽지 않다.</p>
-<p>분포 가정이 완화되어 있어 적용 범위가 넓음</p>
+<p><strong>분포 가정이 완화되어 있어 적용 범위가 넓음</strong></p>
 <p>Fisher LDA는 두 집단이 공분산 행렬을 공유하는 다변량 정규분포라는 가정을 전제로 하지만, 로지스틱 판별분석은 이러한 분포적 가정을 필요로 하지 않는다. 이는 다음과 같은 장점으로 이어진다. 설명변수가 정규분포를 따르지 않아도 활용 가능, 이상치(outlier)가 있어도 비교적 안정적, 범주형 변수 또는 연속형 변수가 혼합된 경우에도 자연스럽게 적용할 수 있다. 따라서 실제 비정규적 데이터가 많은 사회·행정·의료·경영 분야에서는 로지스틱 판별분석이 더 적합한 경우가 많다.</p>
-<p>해석 및 의사결정에서의 활용도가 높음</p>
+<p><strong>해석 및 의사결정에서의 활용도가 높음</strong></p>
 <p>로지스틱 판별분석의 출력은 단순히 <span dir="rtl">”</span>성공/실패”의 이분 결정보다 더 많은 정보를 제공한다. 예를 들어, 성공 확률을 이용한 위험군 분류(risk stratification), 확률 기반 의사결정 지원 시스템(DSS) 구축, 마케팅·금융 분야에서의 고객군 세분화와 스코어링 모델, 의료 분야에서의 중증도 예측 및 진단 모델링 등 다양한 실무적 의사결정으로 확장 가능하다.</p>
 <p>이에 반해 Fisher 방법은 상대적으로 단순한 판별값 제공에 그치기 때문에, 확률적 의사결정에 직접적으로 활용하기 어렵다.</p>
-<p>모형 확장성이 우수함</p>
+<p><strong>모형 확장성이 우수함</strong></p>
 <p>로지스틱 판별분석은 GLM 계열이므로, 다항 로지스틱(multi-class) 확장, 정규화 로지스틱(L1/L2, elastic net), 교호작용 및 비선형항 추가, 랜덤효과를 포함한 계층적 로지스틱(HGLM) 등 다양한 확장 모델과 자연스럽게 연결된다.</p>
 <p>반면, Fisher 방법은 판별축 1개를 찾는 고전적 형태로 구조적 확장이 제한적이다.</p>
-<p>타이타닉 예제</p>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><p># tatanic data</p>
-<p>import pandas as pd</p>
-<p>url = "<a href="https://by-sekwon.github.io/api/titanic.xlsx"><u>https://by-sekwon.github.io/api/titanic.xlsx</u></a>"</p>
-<p>df = pd.read_excel(url)</p>
-<p># 결측치 제거</p>
-<p>df.dropna(subset=['age','survived','fare'], inplace=True)</p>
-<p># 로지스틱 판별분석 (Logistic Regression)</p>
-<p>import numpy as np</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>from sklearn.linear_model import LogisticRegression</p>
-<p>from sklearn.metrics import (</p>
-<p>confusion_matrix,</p>
-<p>classification_report,</p>
-<p>roc_curve,</p>
-<p>roc_auc_score</p>
-<p>)</p>
-<p># 1. 분석 데이터 준비 (LDA, QDA와 동일한 변수 사용)</p>
-<p>X = df[['age', 'sibsp', 'parch', 'fare']].dropna()</p>
-<p>y = df.loc[X.index, 'survived']</p>
-<p># 2. 로지스틱 회귀 적합 (sklearn)</p>
-<p>logit = LogisticRegression(max_iter=1000)</p>
-<p>logit.fit(X, y)</p>
-<p># 3. 예측값(클래스) 및 사후확률(생존 확률: P(Y=1|X))</p>
-<p>y_pred = logit.predict(X)</p>
-<p>y_proba = logit.predict_proba(X)[:, 1] # 클래스 1(생존)일 확률</p>
-<p>accuracy = logit.score(X, y)</p>
-<p>print("=== Logistic Discriminant Analysis (Logistic Regression, sklearn) ===")</p>
-<p>print(f"훈련집합 정확도: {accuracy:.4f}\n")</p>
-<p># 4. 혼동행렬 및 분류지표(기준값 0.5 사용)</p>
-<p>cm = confusion_matrix(y, y_pred)</p>
-<p>print("\n=== Confusion Matrix (cutoff = 0.5) ===")</p>
-<p>print(cm)</p>
-<p>print("\n=== Classification Report (cutoff = 0.5) ===")</p>
-<p>print(classification_report(y, y_pred,</p>
-<p>target_names=["Dead (0)", "Survived (1)"]))</p>
-<p># 5. ROC 곡선 및 AUC</p>
-<p>fpr, tpr, thresholds = roc_curve(y, y_proba)</p>
-<p>auc = roc_auc_score(y, y_proba)</p>
-<p>print(f"\nAUC (ROC 곡선 아래 면적) = {auc:.4f}")</p>
-<p>plt.figure(figsize=(6, 6))</p>
-<p>plt.plot(fpr, tpr, label=f"ROC curve (AUC = {auc:.3f})")</p>
-<p>plt.plot([0, 1], [0, 1], linestyle="--", label="No-discrimination line")</p>
-<p>plt.xlabel("1 - Specificity (FPR)")</p>
-<p>plt.ylabel("Sensitivity (TPR)")</p>
-<p>plt.title("ROC Curve - Logistic Discriminant Analysis")</p>
-<p>plt.legend()</p>
-<p>plt.grid(True, linestyle=":")</p>
-<p>plt.tight_layout()</p>
-<p>plt.show()</p>
-<p># 6. Youden index를 이용한 최적 기준값 예시 (강의용)</p>
-<p>J = tpr - fpr</p>
-<p>idx_best = np.argmax(J)</p>
-<p>best_threshold = thresholds[idx_best]</p>
-<p>print(f"\nYouden index를 최대화하는 기준값 = {best_threshold:.4f}")</p>
-<p>print(f"해당점에서 (TPR, FPR) = ({tpr[idx_best]:.3f}, {fpr[idx_best]:.3f})")</p>
-<p># 7. statsmodels를 이용한 회귀계수 p-값 및 오즈비(odds ratio) 추정</p>
-<p>import statsmodels.api as sm</p>
-<p>import numpy as np</p>
-<p># 상수항 추가</p>
-<p>X_sm = sm.add_constant(X) # 열: const, age, sibsp, parch, fare</p>
-<p>logit_sm = sm.Logit(y, X_sm)</p>
-<p>result = logit_sm.fit()</p>
-<p>print("\n=== statsmodels Logit 결과 요약 (회귀계수, 표준오차, z, p-값 등) ===")</p>
-<p>print(result.summary())</p>
-<p># 오즈비 및 95% 신뢰구간 + p-값 정리</p>
-<p>params = result.params # 회귀계수 β</p>
-<p>conf = result.conf_int() # β 기준 95% CI</p>
-<p>or_table = pd.DataFrame({</p>
-<p>"OR": np.exp(params), # 오즈비 e^β</p>
-<p>"2.5%": np.exp(conf[0]), # 오즈비 95% CI 하한</p>
-<p>"97.5%":np.exp(conf[1]), # 오즈비 95% CI 상한</p>
-<p>"p-value": result.pvalues # 계수 검정 p-값</p>
-<p>})</p>
-<p>print("\n=== Odds Ratio (오즈비) 및 95% CI, p-값 ===")</p>
-<p>print(or_table.round(4))</p></td>
-</tr>
-</tbody>
-</table>
+</section>
+<section id="타이타닉-예제" class="level5">
+<h5 class="anchored" data-anchor-id="타이타닉-예제">(5) 타이타닉 예제</h5>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># tatanic data</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://by-sekwon.github.io/api/titanic.xlsx"</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_excel(url)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측치 제거</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>df.dropna(subset<span class="op">=</span>[<span class="st">'age'</span>,<span class="st">'survived'</span>,<span class="st">'fare'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 로지스틱 판별분석 (Logistic Regression)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    confusion_matrix,</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    classification_report,</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    roc_curve,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    roc_auc_score</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 분석 데이터 준비 (LDA, QDA와 동일한 변수 사용)</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>]].dropna()</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.loc[X.index, <span class="st">'survived'</span>]</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 로지스틱 회귀 적합 (sklearn)</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>logit <span class="op">=</span> LogisticRegression(max_iter<span class="op">=</span><span class="dv">1000</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>logit.fit(X, y)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 예측값(클래스) 및 사후확률(생존 확률: P(Y=1|X))</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>y_pred  <span class="op">=</span> logit.predict(X)</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>y_proba <span class="op">=</span> logit.predict_proba(X)[:, <span class="dv">1</span>]   <span class="co"># 클래스 1(생존)일 확률</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> logit.score(X, y)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Logistic Discriminant Analysis (Logistic Regression, sklearn) ==="</span>)</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"훈련집합 정확도: </span><span class="sc">{</span>accuracy<span class="sc">:.4f}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 혼동행렬 및 분류지표(기준값 0.5 사용)</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y, y_pred)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Confusion Matrix (cutoff = 0.5) ==="</span>)</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cm)</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Classification Report (cutoff = 0.5) ==="</span>)</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y, y_pred,</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>                            target_names<span class="op">=</span>[<span class="st">"Dead (0)"</span>, <span class="st">"Survived (1)"</span>]))</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. ROC 곡선 및 AUC</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>fpr, tpr, thresholds <span class="op">=</span> roc_curve(y, y_proba)</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>auc <span class="op">=</span> roc_auc_score(y, y_proba)</span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">AUC (ROC 곡선 아래 면적) = </span><span class="sc">{</span>auc<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">6</span>))</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>plt.plot(fpr, tpr, label<span class="op">=</span><span class="ss">f"ROC curve (AUC = </span><span class="sc">{</span>auc<span class="sc">:.3f}</span><span class="ss">)"</span>)</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>plt.plot([<span class="dv">0</span>, <span class="dv">1</span>], [<span class="dv">0</span>, <span class="dv">1</span>], linestyle<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="st">"No-discrimination line"</span>)</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"1 - Specificity (FPR)"</span>)</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Sensitivity (TPR)"</span>)</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"ROC Curve - Logistic Discriminant Analysis"</span>)</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. Youden index를 이용한 최적 기준값 예시 (강의용)</span></span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a>J <span class="op">=</span> tpr <span class="op">-</span> fpr</span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a>idx_best <span class="op">=</span> np.argmax(J)</span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a>best_threshold <span class="op">=</span> thresholds[idx_best]</span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Youden index를 최대화하는 기준값 = </span><span class="sc">{</span>best_threshold<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"해당점에서 (TPR, FPR) = (</span><span class="sc">{</span>tpr[idx_best]<span class="sc">:.3f}</span><span class="ss">, </span><span class="sc">{</span>fpr[idx_best]<span class="sc">:.3f}</span><span class="ss">)"</span>)</span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. statsmodels를 이용한 회귀계수 p-값 및 오즈비(odds ratio) 추정</span></span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a><span class="co"># 상수항 추가</span></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>X_sm <span class="op">=</span> sm.add_constant(X)   <span class="co"># 열: const, age, sibsp, parch, fare</span></span>
+<span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a>logit_sm <span class="op">=</span> sm.Logit(y, X_sm)</span>
+<span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> logit_sm.fit()</span>
+<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== statsmodels Logit 결과 요약 (회귀계수, 표준오차, z, p-값 등) ==="</span>)</span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.summary())</span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a><span class="co"># 오즈비 및 95% 신뢰구간 + p-값 정리</span></span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> result.params           <span class="co"># 회귀계수 β</span></span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>conf   <span class="op">=</span> result.conf_int()       <span class="co"># β 기준 95% CI</span></span>
+<span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a>or_table <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OR"</span>:   np.exp(params),      <span class="co"># 오즈비 e^β</span></span>
+<span id="cb11-89"><a href="#cb11-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2.5%"</span>: np.exp(conf[<span class="dv">0</span>]),     <span class="co"># 오즈비 95% CI 하한</span></span>
+<span id="cb11-90"><a href="#cb11-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"97.5%"</span>:np.exp(conf[<span class="dv">1</span>]),     <span class="co"># 오즈비 95% CI 상한</span></span>
+<span id="cb11-91"><a href="#cb11-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p-value"</span>: result.pvalues    <span class="co"># 계수 검정 p-값</span></span>
+<span id="cb11-92"><a href="#cb11-92" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb11-93"><a href="#cb11-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-94"><a href="#cb11-94" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Odds Ratio (오즈비) 및 95% CI, p-값 ==="</span>)</span>
+<span id="cb11-95"><a href="#cb11-95" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(or_table.<span class="bu">round</span>(<span class="dv">4</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>로지스틱 판별모형은 Dead 집단을 비교적 정확하게 분류하지만, Survived 집단에 대해서는 재현율이 0.31로 매우 낮아 생존자를 충분히 식별하지 못하는 한계를 보인다. 이는 cutoff=0.5가 두 집단 간 민감도–특이도의 균형을 맞추기에는 적절하지 않음을 시사하며, ROC 분석을 활용한 cutoff 조정이나 클래스 불균형 보정이 필요함을 의미한다.</p>
-<p>=== Logistic Discriminant Analysis (Logistic Regression, sklearn) ===</p>
-<p>훈련집합 정확도: 0.6708</p>
-<p>=== Confusion Matrix (cutoff = 0.5) ===</p>
-<p>[[568 50]</p>
-<p>[294 133]]</p>
-<p>=== Classification Report (cutoff = 0.5) ===</p>
-<p>precision recall f1-score support</p>
-<p>Dead (0) 0.66 0.92 0.77 618</p>
-<p>Survived (1) 0.73 0.31 0.44 427</p>
-<p>accuracy 0.67 1045</p>
-<p>macro avg 0.69 0.62 0.60 1045</p>
-<p>weighted avg 0.69 0.67 0.63 1045</p>
+<p>=== Logistic Discriminant Analysis (Logistic Regression, sklearn) === <br> 훈련집합 정확도: 0.6708</p>
+<p>=== Confusion Matrix (cutoff = 0.5) === <br> [[568 50] <br> [294 133]]</p>
+<p>=== Classification Report (cutoff = 0.5) === <br> precision recall f1-score support <br> Dead (0) 0.66 0.92 0.77 618 <br> Survived (1) 0.73 0.31 0.44 427 <br> accuracy 0.67 1045 <br> macro avg 0.69 0.62 0.60 1045 <br> weighted avg 0.69 0.67 0.63 1045</p>
 <p>ROC 분석 결과, Youden Index를 최대화하는 기준값은 0.3966으로 나타났다. 이 기준값에서 민감도(TPR)는 0.541, FPR은 0.209이며, 이는 기존 기준값인 0.5보다 생존 집단(Survived)을 보다 효과적으로 식별하면서도, Dead 집단의 오분류 증가를 최소화하는 지점이다. 따라서 cutoff=0.3966은 민감도와 특이도의 균형을 고려한 최적의 분류 기준으로 해석할 수 있다.</p>
 <p>AUC (ROC 곡선 아래 면적) = 0.6961</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image12.png" style="width:4.5in;height:4.5in" class="figure-img"></p>
+<p><img src="images/da_titanic_youden.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
 <p>Youden index를 최대화하는 기준값 = 0.3966</p>
 <p>해당점에서 (TPR, FPR) = (0.541, 0.209)</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image13.png" style="width:4.5in;height:3.25518in" class="figure-img"></p>
+<p><img src="images/da_titanic_logit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 <p>Titanic 데이터에 대한 로지스틱 회귀 결과, 나이와 형제·배우자 수는 생존 확률을 낮추는 반면, 운임요금(fare)과 부모·자녀 동반 수는 생존 확률을 증가시키는 요인으로 나타났다. 특히 fare와 age는 강한 통계적 유의성을 보이며, 사회경제적 지위와 생물학적 취약성이 생존 여부에 중요한 역할을 했음을 확인할 수 있다.</p>
-<p>age (나이) coef = -0.0203 (p &lt; 0.001)</p>
-<p>나이가 1살 증가할 때 생존할 log-odds가 감소한다.</p>
-<p>OR = 0.9799, 즉 나이가 한 살 많아질수록 생존 확률은 약 2% 감소. → 나이가 많을수록 생존 가능성이 감소하는 경향이 뚜렷함.</p>
-<p>sibsp (함께 탑승한 형제/배우자 수) coef = -0.2955 (p &lt; 0.001)</p>
-<p>동반한 가족 수가 많을수록 생존에 불리한 영향을 준다.</p>
-<p>OR = 0.7442, 즉 sibsp가 1명 늘어날 때 생존할 오즈는 약 26% 감소. → 많은 가족과 함께 탑승한 승객은 생존 가능성이 감소하는 패턴을 보임.</p>
-<p>parch (부모/자녀 동반 수): coef = 0.1786 (p ≈ 0.038)</p>
-<p>부모·자녀 수가 많은 경우 생존할 log-odds가 증가하는 방향.</p>
-<p>OR = 1.1955, 즉 동반한 부모·자녀가 1명 늘어날 때 생존 확률이 약 20% 증가. → 가까운 직계 가족과 함께 탑승한 경우 생존 가능성이 약간 높아지는 경향.</p>
-<p>fare (지불한 운임요금): coef = 0.0143 (p &lt; 0.001)</p>
-<p>요금이 높을수록 생존 확률이 증가.</p>
-<p>OR = 1.0144, 즉 요금이 1단위 증가할 때 생존 오즈가 약 1.4% 증가. → 높은 요금은 일반적으로 상위 객실 등급을 의미하므로, 구조 상황에서 우위가 있었던 것으로 해석할 수 있다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 최적 cutoff 적용</p>
-<p>cutoff = 0.3966 # 또는 cutoff = 0.39</p>
-<p>y_pred_039 = (y_proba &gt;= cutoff).astype(int)</p>
-<p># 혼동행렬</p>
-<p>cm_039 = confusion_matrix(y, y_pred_039)</p>
-<p>print("=== Confusion Matrix (cutoff = 0.39) ===")</p>
-<p>print(cm_039)</p>
-<p># 정확도</p>
-<p>acc_039 = (y_pred_039 == y).mean()</p>
-<p>print(f"\n정확도 (cutoff = 0.39): {acc_039:.4f}")</p>
-<p># 민감도(TPR), 특이도(TNR)</p>
-<p>TN, FP, FN, TP = cm_039.ravel()</p>
-<p>TPR = TP / (TP + FN)</p>
-<p>TNR = TN / (TN + FP)</p>
-<p>print(f"민감도 (TPR): {TPR:.4f}")</p>
-<p>print(f"특이도 (TNR): {TNR:.4f}")</p></td>
-</tr>
-</tbody>
-</table>
+<p><strong>age (나이) coef = -0.0203 (p &lt; 0.001)</strong></p>
+<p>나이가 1살 증가할 때 생존할 log-odds가 감소한다. OR = 0.9799, 즉 나이가 한 살 많아질수록 생존 확률은 약 2% 감소. → 나이가 많을수록 생존 가능성이 감소하는 경향이 뚜렷함.</p>
+<p><strong>sibsp (함께 탑승한 형제/배우자 수) coef = -0.2955 (p &lt; 0.001)</strong></p>
+<p>동반한 가족 수가 많을수록 생존에 불리한 영향을 준다. OR = 0.7442, 즉 sibsp가 1명 늘어날 때 생존할 오즈는 약 26% 감소. → 많은 가족과 함께 탑승한 승객은 생존 가능성이 감소하는 패턴을 보임.</p>
+<p><strong>parch (부모/자녀 동반 수): coef = 0.1786 (p ≈ 0.038)</strong></p>
+<p>부모·자녀 수가 많은 경우 생존할 log-odds가 증가하는 방향. OR = 1.1955, 즉 동반한 부모·자녀가 1명 늘어날 때 생존 확률이 약 20% 증가. → 가까운 직계 가족과 함께 탑승한 경우 생존 가능성이 약간 높아지는 경향.</p>
+<p><strong>fare (지불한 운임요금): coef = 0.0143 (p &lt; 0.001)</strong></p>
+<p>요금이 높을수록 생존 확률이 증가. OR = 1.0144, 즉 요금이 1단위 증가할 때 생존 오즈가 약 1.4% 증가. → 높은 요금은 일반적으로 상위 객실 등급을 의미하므로, 구조 상황에서 우위가 있었던 것으로 해석할 수 있다.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 최적 cutoff 적용</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>cutoff <span class="op">=</span> <span class="fl">0.3966</span>   <span class="co"># 또는 cutoff = 0.39</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>y_pred_039 <span class="op">=</span> (y_proba <span class="op">&gt;=</span> cutoff).astype(<span class="bu">int</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 혼동행렬</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>cm_039 <span class="op">=</span> confusion_matrix(y, y_pred_039)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Confusion Matrix (cutoff = 0.39) ==="</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cm_039)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 정확도</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>acc_039 <span class="op">=</span> (y_pred_039 <span class="op">==</span> y).mean()</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">정확도 (cutoff = 0.39): </span><span class="sc">{</span>acc_039<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 민감도(TPR), 특이도(TNR)</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>TN, FP, FN, TP <span class="op">=</span> cm_039.ravel()</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>TPR <span class="op">=</span> TP <span class="op">/</span> (TP <span class="op">+</span> FN)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>TNR <span class="op">=</span> TN <span class="op">/</span> (TN <span class="op">+</span> FP)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"민감도 (TPR): </span><span class="sc">{</span>TPR<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"특이도 (TNR): </span><span class="sc">{</span>TNR<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>전체 정확도는 68.8%로 cutoff=0.5일 때의 정확도 67.1%보다 약간 상승하였다. 이는 cutoff 조정을 통해 두 집단 간 균형이 개선되었음을 의미한다.</p>
 <p>민감도는 53.9%로, cutoff=0.5일 때의 민감도 31%보다 크게 향상되었다. → 생존자를 생존자로 올바르게 판별하는 능력이 크게 증가한 것이다. FN(생존→사망 오분류)이 크게 감소했음을 알 수 있다. 특이도는 79.1%, 즉 실제 Dead 중 약 79%를 정확히 Dead로 분류했다.</p>
 <p>cutoff를 낮추면 일반적으로 특이도가 감소하지만, 여기서는 Dead 집단 분류 능력이 크게 손상되지 않으면서 Survived 분류 성능만 증가한 모습이다.</p>
-<p>=== Confusion Matrix (cutoff = 0.39) ===</p>
-<p>[[489 129]</p>
-<p>[197 230]]</p>
-<p>정확도 (cutoff = 0.39): 0.6880</p>
-<p>민감도 (TPR): 0.5386</p>
-<p>특이도 (TNR): 0.7913</p>
-<p>설명변수 성별 추가 하였을 경우</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># --- 1) 성별 변수 생성 ---</p>
-<p>df['female'] = (df['sex'] == 'female').astype(int)</p>
-<p># --- 2) 분석변수 선택 ---</p>
-<p>X = df[['age', 'sibsp', 'parch', 'fare', 'female']].dropna()</p>
-<p>y = df.loc[X.index, 'survived']</p>
-<p># =====================</p>
-<p># sklearn Logistic</p>
-<p># =====================</p>
-<p>logit = LogisticRegression(max_iter=2000)</p>
-<p>logit.fit(X, y)</p>
-<p>print("훈련 정확도:", logit.score(X, y))</p>
-<p># =====================</p>
-<p># statsmodels Logistic (p-value, OR 포함)</p>
-<p># =====================</p>
-<p>X_sm = sm.add_constant(X)</p>
-<p>logit_sm = sm.Logit(y, X_sm)</p>
-<p>result = logit_sm.fit()</p>
-<p>print(result.summary())</p>
-<p># 오즈비 계산</p>
-<p>params = result.params</p>
-<p>conf = result.conf_int()</p>
-<p>or_table = pd.DataFrame({</p>
-<p>"OR": np.exp(params),</p>
-<p>"2.5%": np.exp(conf[0]),</p>
-<p>"97.5%": np.exp(conf[1]),</p>
-<p>"p-value": result.pvalues</p>
-<p>})</p>
-<p>print("\n=== Odds Ratio (오즈비) + 95% CI + p-value ===")</p>
-<p>print(or_table.round(4))</p></td>
-</tr>
-</tbody>
-</table>
+<p>=== Confusion Matrix (cutoff = 0.39) === <br> [[489 129] <br> [197 230]] <br> 정확도 (cutoff = 0.39): 0.6880 <br> 민감도 (TPR): 0.5386 <br> 특이도 (TNR): 0.7913</p>
+<p><strong>설명변수 성별 추가 하였을 경우</strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1) 성별 변수 생성 ---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'female'</span>] <span class="op">=</span> (df[<span class="st">'sex'</span>] <span class="op">==</span> <span class="st">'female'</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2) 분석변수 선택 ---</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'age'</span>, <span class="st">'sibsp'</span>, <span class="st">'parch'</span>, <span class="st">'fare'</span>, <span class="st">'female'</span>]].dropna()</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.loc[X.index, <span class="st">'survived'</span>]</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sklearn Logistic</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>logit <span class="op">=</span> LogisticRegression(max_iter<span class="op">=</span><span class="dv">2000</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>logit.fit(X, y)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"훈련 정확도:"</span>, logit.score(X, y))</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># statsmodels Logistic (p-value, OR 포함)</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>X_sm <span class="op">=</span> sm.add_constant(X)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>logit_sm <span class="op">=</span> sm.Logit(y, X_sm)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> logit_sm.fit()</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.summary())</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 오즈비 계산</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> result.params</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>conf <span class="op">=</span> result.conf_int()</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>or_table <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OR"</span>: np.exp(params),</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2.5%"</span>: np.exp(conf[<span class="dv">0</span>]),</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"97.5%"</span>: np.exp(conf[<span class="dv">1</span>]),</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p-value"</span>: result.pvalues</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Odds Ratio (오즈비) + 95% CI + p-value ==="</span>)</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(or_table.<span class="bu">round</span>(<span class="dv">4</span>))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>성별(female) 변수를 추가한 로지스틱 판별모형에서 훈련집합 정확도는 약 77.4%로 나타났다. 이는 모형이 전체 관측치의 약 4분의 3을 올바르게 분류했음을 의미하며, 성별을 포함하지 않았을 때의 정확도(약 67%)에 비해 유의미하게 향상된 성능을 보여준다.</p>
 <p>훈련 정확도의 증가폭은 성별 변수가 Titanic 생존 여부를 설명하는 강력한 예측 요인이라는 점을 다시 한 번 확인해 준다. 실제로, 여성 승객의 생존 오즈가 남성 대비 약 11.7배에 달하는 것으로 나타났기 때문에, 성별의 추가는 생존·사망을 구분하는 결정경계의 품질을 크게 향상시킨다.</p>
 <p>또한 정확도 77% 수준은 Titanic 데이터의 특성을 고려하면 비교적 높은 수치로, 생존자의 특성(나이, 동반 가족 수, 요금, 성별)을 반영한 분류 규칙이 데이터의 패턴을 안정적으로 포착하고 있음을 의미한다.</p>
-<p>성별(female)의 효과: coef = +2.4583 (p &lt; 0.001)</p>
+<p><strong>성별(female)의 효과: coef = +2.4583 (p &lt; 0.001)</strong></p>
 <p>OR = 11.6851 (95% CI: 8.4833 ~ 16.0954) 여성의 생존할 odds는 남성 대비 약 11.7배 높다. 이는 Titanic 생존 자료에서 가장 잘 알려진 특징인 <span dir="rtl">”</span>여성 우선(women and children first)” 규칙을 반영한 강력한 효과이다. female은 생존 여부를 결정하는 가장 강력한 단일 설명변수이다.</p>
 <p>훈련 정확도: 0.7741626794258373</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<figcaption>붙여넣은 동영상.png</figcaption>
-<p><img src="media/image14.png" style="width:4.5in;height:3.28494in" class="figure-img"></p>
+<p><img src="images/da_titanic_logit02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 새로운 개체 정의</p>
-<p>new_passenger = pd.DataFrame({</p>
-<p>"age": [30],</p>
-<p>"sibsp": [1],</p>
-<p>"parch": [2],</p>
-<p>"fare": [100],</p>
-<p>"female": [1] # 여성=1, 남성=0</p>
-<p>})</p>
-<p># 사후확률 계산</p>
-<p>proba_sklearn = logit.predict_proba(new_passenger)[:, 1]</p>
-<p>print("사후확률(생존=1):", proba_sklearn[0])</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 새로운 개체 정의</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>new_passenger <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>: [<span class="dv">30</span>],</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"sibsp"</span>: [<span class="dv">1</span>],</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"parch"</span>: [<span class="dv">2</span>],</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fare"</span>: [<span class="dv">100</span>],</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"female"</span>: [<span class="dv">1</span>]   <span class="co"># 여성=1, 남성=0</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 사후확률 계산</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>proba_sklearn <span class="op">=</span> logit.predict_proba(new_passenger)[:, <span class="dv">1</span>]</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"사후확률(생존=1):"</span>, proba_sklearn[<span class="dv">0</span>])</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>사후확률(생존=1): 0.8283876734447347</p>
-<p>Chapter 3. 모집단이 3개 이상인 경우 판별분석</p>
+</section>
+</section>
+</section>
+<section id="chapter-3.-모집단이-3개-이상인-경우-판별분석" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-모집단이-3개-이상인-경우-판별분석">Chapter 3. 모집단이 3개 이상인 경우 판별분석</h3>
 <p>다집단 분류 문제에서 관측값의 개체를 어떤 모집단에 분류할 것인지는 분류 규칙에 의해 결정된다. 전통적 통계학에서 가장 기본이 되는 규칙은 Bayes 규칙이며, 이를 다른 관점으로 표현한 MAP 규칙, 그리고 실제 계산을 위해 판별함수 형태로 제시한 ECM 규칙이 순차적으로 연결되어 있다. LDA와 QDA는 이러한 Bayes 규칙을 특정 확률모형(정규분포)에 적용하여 얻어진 판별 방법이다.</p>
-<p>1. 판별규칙</p>
-<p>Bayes 규칙(Bayes Classification Rule)</p>
+<section id="판별규칙-2" class="level4">
+<h4 class="anchored" data-anchor-id="판별규칙-2">1. 판별규칙</h4>
+</section>
+<section id="bayes-규칙bayes-classification-rule" class="level4">
+<h4 class="anchored" data-anchor-id="bayes-규칙bayes-classification-rule">(1) Bayes 규칙(Bayes Classification Rule)</h4>
 <p>Bayes 규칙은 분류 문제에서 오분류 확률을 최소화하는 최적의 분류 규칙이다. 모집단이 G개 존재하고, 각 모집단의 사전확률을 <span class="math inline">\(\pi_{g}\)</span>, 조건부밀도함수를 <span class="math inline">\(f_{g}(x)\)</span>라 할 때, Bayes 규칙은 <span class="math inline">\(\widehat{g}(x) = \arg\max_{g}\pi_{g}f_{g}(x)\)</span> 으로 정의된다.</p>
 <p>즉, 주어진 관측값 <span class="math inline">\(x\)</span>가 각 모집단에서 나왔을 가능성을 평가하여, 그 값이 가장 큰 모집단을 선택한다. Bayes 규칙은 모든 통계적 분류기의 이론적 기준이 되며, 이후 나오는 MAP 규칙, ECM 규칙, LDA·QDA 모두 이 원리에서 출발한다.</p>
-<p>MAP 규칙(Maximum A Posteriori Rule)</p>
+</section>
+<section id="map-규칙maximum-a-posteriori-rule" class="level4">
+<h4 class="anchored" data-anchor-id="map-규칙maximum-a-posteriori-rule">(2) MAP 규칙(Maximum A Posteriori Rule)</h4>
 <p>MAP 규칙은 Bayes 규칙을 사후확률(posterior probability) 관점에서 표현한 것이다. Bayes 정리에 의해 <span class="math inline">\(P(G = g \mid x) = \frac{\pi_{g}f_{g}(x)}{\sum_{h = 1}^{G}\pi_{h}f_{h}(x)}\)</span>가 정의되므로, MAP 규칙은 <span class="math inline">\(\widehat{g}(x) = \arg\max_{g}P(G = g \mid x)\)</span>이 된다.</p>
 <p>분모는 모든 집단에 대해 동일하므로 MAP 규칙은 Bayes 규칙과 완전히 동일한 선택을 한다. 다만, 사전확률과 조건부몰도 기반의 Bayes 규칙을 사후확률이 가장 큰 집단이라는 직관적인 형태로 다시 표현한 것이 MAP 규칙이다.</p>
-<p>ECM 규칙(Extended Classification Maximum Rule)</p>
+</section>
+<section id="ecm-규칙extended-classification-maximum-rule" class="level4">
+<h4 class="anchored" data-anchor-id="ecm-규칙extended-classification-maximum-rule">(3) ECM 규칙(Extended Classification Maximum Rule)</h4>
 <p>ECM 규칙은 Bayes/MAP 규칙을 실제 계산이 가능한 판별함수 형태로 바꾼 것이다. 각 집단별로 로그-우도 기반의 판별함수를 <span class="math inline">\(\delta_{g}(x) = \ln\left( \pi_{g}f_{g}(x) \right)\)</span>와 같이 정의하면, 분류 기준은 매우 간단히 <span class="math inline">\(\widehat{g}(x) = \arg\max_{g}\delta_{g}(x)\)</span> 이 된다. 이 규칙은 LDA와 QDA를 포함한 대부분의 판별분석에서 공통적으로 사용되는 실질적 분류 규칙이며, 다집단(3개 이상) 상황에서도 가장 자연스럽게 적용할 수 있는 분류 기준이다.</p>
-<p>LDA와 QDA: Bayes 규칙을 정규모형에 적용한 판별방법</p>
+</section>
+<section id="lda와-qda-bayes-규칙을-정규모형에-적용한-판별방법" class="level4">
+<h4 class="anchored" data-anchor-id="lda와-qda-bayes-규칙을-정규모형에-적용한-판별방법">(4) LDA와 QDA: Bayes 규칙을 정규모형에 적용한 판별방법</h4>
 <p>LDA와 QDA는 Bayes 규칙에 특정한 확률모형을 적용하여 도출된 판별 방법이다.</p>
-<p>LDA: 정규분포 + 공통 공분산 가정</p>
+<p><strong>LDA: 정규분포 + 공통 공분산 가정</strong></p>
 <p>모집단별 자료가 다변량 정규분포를 따르고, 모든 모집단이 같은 공분산행렬를 공유한다고 가정하면, <span class="math inline">\(X \mid G = g \sim N(\mu_{g},\Sigma)\)</span> Bayes 규칙을 적용하여 만드는 판별함수는 선형식이 된다.</p>
 <p><span class="math inline">\(\delta_{g}(x) = x^{\top}\Sigma^{- 1}\mu_{g} - \frac{1}{2}\mu_{g}^{\top}\Sigma^{- 1}\mu_{g} + \ln\pi_{g}\)</span>. 그리고 LDA의 분류 기준은 ECM 규칙과 동일하다. <span class="math inline">\(\widehat{g}(x) = \arg\max_{g}\delta_{g}(x)\)</span> 이로부터 LDA의 결정경계는 선형이 된다.</p>
-<p>QDA: 정규분포 + 모집단별 공분산행렬 허용</p>
+<p><strong>QDA: 정규분포 + 모집단별 공분산행렬 허용</strong></p>
 <p>만약 모집단별 공분산행렬이 서로 다를 수 있다면, <span class="math inline">\(X \mid G = g \sim N(\mu_{g},\Sigma_{g})\)</span> Bayes 규칙에서 도출되는 판별함수는 이차식이 되고, <span class="math inline">\(\delta_{g}(x) = - \frac{1}{2}\ln|\Sigma_{g}| - \frac{1}{2}(x - \mu_{g})^{\top}\Sigma_{g}^{- 1}(x - \mu_{g}) + \ln\pi_{g}\)</span></p>
 <p>QDA의 분류도 ECM 규칙을 그대로 따른다. <span class="math inline">\(\widehat{g}(x) = \arg\max_{g}\delta_{g}(x)\)</span>. 따라서 QDA의 결정경계는 곡선을 형성한다.</p>
-<p>2. 다항 로지스틱 판별모형</p>
+</section>
+<section id="다항-로지스틱-판별모형" class="level4">
+<h4 class="anchored" data-anchor-id="다항-로지스틱-판별모형">2. 다항 로지스틱 판별모형</h4>
 <p>이항 로지스틱 회귀는 종속변수가 두 범주(예: 성공/실패)일 때 적용되는 모형이지만, 모집단이 3개 이상인 경우에는 다항 로지스틱 회귀를 사용하며, 하나의 기준집단을 설정한 뒤 나머지 K-1개의 집단에 대해 log-odds 방정식을 구성한다. 이때 절편의 수는 집단 수보다 하나 적으며(절편 = K-1), 각 집단별 회귀계수는 기준집단과의 상대적 비교를 의미한다. 또한 종속변수가 순서형인 경우(예: 리커트 척도, 학점 등)에는 다항 로지스틱보다 순서형 로지스틱 모형이 해석과 추론에 더 적합하다.</p>
-<p>모집단 기호와 모형 구조</p>
+<p><strong>모집단 기호와 모형 구조</strong></p>
 <p>모집단이 <span class="math inline">\(G = \{ 1,2,\ldots,K\}\)</span>의 형태로 K개 존재한다고 하자. 다항 로지스틱 모형은 이 중 하나의 집단을 기준(reference) 집단으로 정하여, 나머지 K-1개의 집단에 대해 기준 집단에 대한 log-odds를 모델링한다. 즉, 기준집단을 g=K로 선택하면 다음과 같은 형태가 된다.</p>
 <p><span class="math display">\[\log\frac{P(G = g \mid x)}{P(G = K \mid x)} = \beta_{0g} + \beta_{1g}x_{1} + \cdots + \beta_{pg}x_{p},g = 1,2,\ldots,K - 1\]</span></p>
 <p>집단이 <span class="math inline">\(G = \{ 1,2,3\}\)</span>의 3개라고 하면, 집단 3을 기준집단으로 두었을 때 다항 로지스틱 모형은 다음 두 식으로 구성된다.</p>
@@ -1755,220 +1742,221 @@ x_{p}
 <p>여기서 <span class="math inline">\(\eta_{1} = \beta_{01} + \beta_{11}x_{1} + \cdots + \beta_{p1}x_{p}\)</span>, <span class="math inline">\(\eta_{2} = \beta_{02} + \beta_{12}x_{1} + \cdots + \beta_{p2}x_{p}\)</span>.</p>
 <p>각 집단에 대한 사후확률이 <span class="math inline">\(P(G = k \mid x),k = 1,2,3\)</span>로 계산되었을 때, 다항 로지스틱 모형이 사용하는 분류 규칙은 다음과 같다.</p>
 <p><span class="math inline">\(\widehat{g}(x) = \arg\max_{g \in \{ 1,2,3\}}P(G = g \mid x)\)</span>. 즉, 사후확률이 가장 큰 집단이 그 개체의 예측 집단이 된다.</p>
-<p>절편(intercept)이 K–1개 존재하는 이유</p>
+<p><strong>절편(intercept)이 K–1개 존재하는 이유</strong></p>
 <p>이항 로지스틱에서는 절편이 하나이지만, 다항 로지스틱에서는 각 집단 g마다 독립된 방정식을 갖기 때문에 절편도 K−1개 필요하다. 따라서 문장 <span dir="rtl">”</span>절편이 하나가 아니라 (집단 수 – 1)로 모집단 개수보다 1개 적음”은 다음과 같이 표현할 수 있다.</p>
 <p><span dir="rtl">”</span>다항 로지스틱 회귀에서는 기준집단을 제외한 K-1개의 집단마다 하나씩 절편이 존재하므로, 절편의 수는 모집단 개수보다 하나 적다.”</p>
-<p>집단변수의 특성과 해석</p>
+<p><strong>집단변수의 특성과 해석</strong></p>
 <p>명목형(Nominal): 순서가 없는 범주: Adélie / Chinstrap / Gentoo, 혈액형 A/B/O/AB → 다항 로지스틱(multinomial logistic) 사용</p>
 <p>순서형(Ordinal): 자연스러운 순서가 있는 범주, 5점 리커트 척도, A/B/C/D/F 학점, 고객 만족도 등급(상–중–하) → 순서형 로지스틱 모형(ordinal logistic regression)을 사용하면 해석이 훨씬 쉬워진다.</p>
 <p>예를 들어, 점수나 등급이 증가할수록 어떤 경향이 커지는지를 자연스럽게 해석할 수 있고, logit이 누적비(cumulative odds)로 정의되기 때문에 해석이 직관적이다.</p>
 <p>순서형 종속변수는 K개의 범주를 가진 경우, 이를 (K–1)개의 누적 확률 비교, 즉 <span class="math inline">\(Y \leq kvs.Y &gt; k\)</span>의 이항 로지스틱 방정식으로 분해할 수 있다. 따라서 순서형 로지스틱 회귀는 구조적으로 (K–1)개의 이항 로지스틱을 동시에 적합한 모형이며, 절편만 범주마다 달라지고 회귀계수는 동일하게 유지된다. 이는 순서 정보를 가장 효율적으로 활용하는 방법이다.</p>
-<p>3. 사례분석</p>
-<p>피셔 판별분석</p>
-<p>등분산 검정</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>from scipy.stats import chi2</p>
-<p># 분석 변수 선택</p>
-<p>X = penguins[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']].dropna()</p>
-<p>y = penguins.loc[X.index, 'species']</p>
-<p># 각 집단별 데이터 분리</p>
-<p>groups = [X[y == g] for g in np.unique(y)]</p>
-<p># 표본 수, 변수 수</p>
-<p>n_groups = len(groups)</p>
-<p>n_vars = X.shape[1]</p>
-<p># 각 그룹의 공분산행렬</p>
-<p>cov_mats = [np.cov(g, rowvar=False) for g in groups]</p>
-<p># 전체 풀드(결합) 공분산행렬</p>
-<p>N = [len(g) for g in groups]</p>
-<p>pooled_cov = sum([(n - 1) * S for n, S in zip(N, cov_mats)]) / (sum(N) - n_groups)</p>
-<p># Box's M 통계량 계산 함수</p>
-<p>def box_m_test(cov_mats, N):</p>
-<p>g = len(cov_mats)</p>
-<p>p = cov_mats[0].shape[0]</p>
-<p>pooled = sum([(n - 1) * S for n, S in zip(N, cov_mats)]) / (sum(N) - g)</p>
-<p>logdet_pooled = np.log(np.linalg.det(pooled))</p>
-<p>logdet_groups = sum([(n - 1) * np.log(np.linalg.det(S)) for n, S in zip(N, cov_mats)])</p>
-<p>M = (sum(N) - g) * logdet_pooled - logdet_groups</p>
-<p># Correction factor (approximation)</p>
-<p>C = ((2*p**2 + 3*p - 1) / (6*(p + 1)*(g - 1))) * (sum([1/(n - 1) for n in N]) - 1/(sum(N) - g))</p>
-<p>M_corrected = (1 - C) * M</p>
-<p>df = (g - 1) * p * (p + 1) / 2</p>
-<p>p_value = 1 - chi2.cdf(M_corrected, df)</p>
-<p>return M_corrected, df, p_value</p>
-<p># 실행</p>
-<p>M, df_bm, pval = box_m_test(cov_mats, N)</p>
-<p>print(f"Box<span dir="rtl">’</span>s M = {M:.3f}, df = {df_bm:.1f}, p-value = {pval:.4f}")</p></td>
-</tr>
-</tbody>
-</table>
+</section>
+<section id="사례분석" class="level4">
+<h4 class="anchored" data-anchor-id="사례분석">3. 사례분석</h4>
+<section id="피셔-판별분석" class="level5">
+<h5 class="anchored" data-anchor-id="피셔-판별분석">(1) 피셔 판별분석</h5>
+<p><strong>등분산 검정</strong></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> chi2</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 변수 선택</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins[[<span class="st">'bill_length_mm'</span>, <span class="st">'bill_depth_mm'</span>, <span class="st">'flipper_length_mm'</span>, <span class="st">'body_mass_g'</span>]].dropna()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> penguins.loc[X.index, <span class="st">'species'</span>]</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 집단별 데이터 분리</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> [X[y <span class="op">==</span> g] <span class="cf">for</span> g <span class="kw">in</span> np.unique(y)]</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 표본 수, 변수 수</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>n_groups <span class="op">=</span> <span class="bu">len</span>(groups)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>n_vars <span class="op">=</span> X.shape[<span class="dv">1</span>]</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 그룹의 공분산행렬</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>cov_mats <span class="op">=</span> [np.cov(g, rowvar<span class="op">=</span><span class="va">False</span>) <span class="cf">for</span> g <span class="kw">in</span> groups]</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 풀드(결합) 공분산행렬</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> [<span class="bu">len</span>(g) <span class="cf">for</span> g <span class="kw">in</span> groups]</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>pooled_cov <span class="op">=</span> <span class="bu">sum</span>([(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> S <span class="cf">for</span> n, S <span class="kw">in</span> <span class="bu">zip</span>(N, cov_mats)]) <span class="op">/</span> (<span class="bu">sum</span>(N) <span class="op">-</span> n_groups)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Box's M 통계량 계산 함수</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> box_m_test(cov_mats, N):</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> <span class="bu">len</span>(cov_mats)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> cov_mats[<span class="dv">0</span>].shape[<span class="dv">0</span>]</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    pooled <span class="op">=</span> <span class="bu">sum</span>([(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> S <span class="cf">for</span> n, S <span class="kw">in</span> <span class="bu">zip</span>(N, cov_mats)]) <span class="op">/</span> (<span class="bu">sum</span>(N) <span class="op">-</span> g)</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    logdet_pooled <span class="op">=</span> np.log(np.linalg.det(pooled))</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    logdet_groups <span class="op">=</span> <span class="bu">sum</span>([(n <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> np.log(np.linalg.det(S)) <span class="cf">for</span> n, S <span class="kw">in</span> <span class="bu">zip</span>(N, cov_mats)])</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> (<span class="bu">sum</span>(N) <span class="op">-</span> g) <span class="op">*</span> logdet_pooled <span class="op">-</span> logdet_groups</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Correction factor (approximation)</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    C <span class="op">=</span> ((<span class="dv">2</span><span class="op">*</span>p<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>p <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> (<span class="dv">6</span><span class="op">*</span>(p <span class="op">+</span> <span class="dv">1</span>)<span class="op">*</span>(g <span class="op">-</span> <span class="dv">1</span>))) <span class="op">*</span> (<span class="bu">sum</span>([<span class="dv">1</span><span class="op">/</span>(n <span class="op">-</span> <span class="dv">1</span>) <span class="cf">for</span> n <span class="kw">in</span> N]) <span class="op">-</span> <span class="dv">1</span><span class="op">/</span>(<span class="bu">sum</span>(N) <span class="op">-</span> g))</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    M_corrected <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> C) <span class="op">*</span> M</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> (g <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> p <span class="op">*</span> (p <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    p_value <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> chi2.cdf(M_corrected, df)</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> M_corrected, df, p_value</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 실행</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>M, df_bm, pval <span class="op">=</span> box_m_test(cov_mats, N)</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Box’s M = </span><span class="sc">{</span>M<span class="sc">:.3f}</span><span class="ss">, df = </span><span class="sc">{</span>df_bm<span class="sc">:.1f}</span><span class="ss">, p-value = </span><span class="sc">{</span>pval<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Box<span dir="rtl">’</span>s M = 74.731, df = 20.0, p-value = 0.0000</p>
 <p>Box<span dir="rtl">’</span>s M 검정에서 유의확률 p-value가 0.000으로 나타나, 세 집단(Adelie, Chinstrap, Gentoo) 간 공분산행렬이 동일하다는 등분산 가정이 기각되었다. 따라서 공분산을 각 집단별로 다르게 추정하는 QDA를 적용하여 판별함수가 추정되었다.</p>
-<p>피셔 QDA 방법</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA</p>
-<p>from sklearn.metrics import confusion_matrix, classification_report</p>
-<p># 분석 변수 선택</p>
-<p>X = penguins[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']].dropna()</p>
-<p>y = penguins.loc[X.index, 'species']</p>
-<p># QDA 모델 적합</p>
-<p>qda = QDA()</p>
-<p>qda_fit = qda.fit(X, y)</p>
-<p># 예측</p>
-<p>y_pred_qda = qda.predict(X)</p>
-<p># 혼동행렬</p>
-<p>cm_qda = confusion_matrix(y, y_pred_qda)</p>
-<p>print("=== QDA Confusion Matrix ===")</p>
-<p>print(cm_qda)</p>
-<p># 분류 정확도 및 지표</p>
-<p>print("\n=== QDA Classification Report ===")</p>
-<p># ★ target_names를 3개 종 이름으로 맞추거나, 그냥 생략해도 됩니다.</p>
-<p>print(classification_report(y, y_pred_qda, target_names=qda.classes_))</p>
-<p># 또는: print(classification_report(y, y_pred_qda))</p>
-<p># 정확도</p>
-<p>print("훈련집합 정확도:", qda.score(X, y))</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== QDA Confusion Matrix ===</p>
-<p>[[144 2 0]</p>
-<p>[ 2 66 0]</p>
-<p>[ 0 0 119]]</p>
-<p>=== QDA Classification Report ===</p>
-<p>precision recall f1-score support</p>
-<p>Adelie 0.99 0.99 0.99 146</p>
-<p>Chinstrap 0.97 0.97 0.97 68</p>
-<p>Gentoo 1.00 1.00 1.00 119</p>
-<p>accuracy 0.99 333</p>
-<p>macro avg 0.99 0.99 0.99 333</p>
-<p>weighted avg 0.99 0.99 0.99 333</p>
+<p><strong>피셔 QDA 방법</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.discriminant_analysis <span class="im">import</span> QuadraticDiscriminantAnalysis <span class="im">as</span> QDA</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 변수 선택</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins[[<span class="st">'bill_length_mm'</span>, <span class="st">'bill_depth_mm'</span>, <span class="st">'flipper_length_mm'</span>, <span class="st">'body_mass_g'</span>]].dropna()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> penguins.loc[X.index, <span class="st">'species'</span>]</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># QDA 모델 적합</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>qda <span class="op">=</span> QDA()</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>qda_fit <span class="op">=</span> qda.fit(X, y)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>y_pred_qda <span class="op">=</span> qda.predict(X)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 혼동행렬</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>cm_qda <span class="op">=</span> confusion_matrix(y, y_pred_qda)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== QDA Confusion Matrix ==="</span>)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(cm_qda)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 분류 정확도 및 지표</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== QDA Classification Report ==="</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># ★ target_names를 3개 종 이름으로 맞추거나, 그냥 생략해도 됩니다.</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y, y_pred_qda, target_names<span class="op">=</span>qda.classes_))</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 또는: print(classification_report(y, y_pred_qda))</span></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 정확도</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"훈련집합 정확도:"</span>, qda.score(X, y))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== QDA Confusion Matrix === <br> [[144 2 0] <br> [ 2 66 0] <br> [ 0 0 119]]</p>
+<p>=== QDA Classification Report === <br> precision recall f1-score support <br> Adelie 0.99 0.99 0.99 146 <br> Chinstrap 0.97 0.97 0.97 68 <br> Gentoo 1.00 1.00 1.00 119 <br> accuracy 0.99 333 <br> macro avg 0.99 0.99 0.99 333 <br> weighted avg 0.99 0.99 0.99 333</p>
 <p>훈련집합 정확도: 0.987987987987988</p>
 <p>QDA 분석 결과, 전체 333개 관측치에 대해 훈련집합 정확도는 약 98.8%로 매우 높은 수준의 분류 성능을 보였다. 혼동행렬을 살펴보면 대부분의 개체가 자신의 실제 종에 정확하게 분류되었으며, 오분류는 Adelie 2개, Chinstrap 2개에 불과했다. Gentoo는 단 한 개의 오분류도 발생하지 않았다.</p>
 <p>정확도 지표에서도 동일한 패턴이 확인된다. Adelie는 precision과 recall이 모두 0.99로 나타나 거의 완벽하게 구분되었고, Chinstrap 역시 precision·recall 모두 0.97로 매우 높은 판별력을 보였다. Gentoo는 precision과 recall이 모두 1.00으로, 주어진 변수(부리길이·부리깊이·날개길이·체중)를 통해 다른 종과 완벽히 구분되었다.</p>
 <p>이러한 결과는 펭귄 세 종이 신체 치수에서 뚜렷한 차이를 보이며, 집단 간 공분산 구조 역시 서로 다르다는 점과 잘 부합한다. 특히 날개길이와 체중에서 Gentoo가 크게 분리되는 경향이 있어 QDA의 비선형 판별경계가 효과적으로 작동한 것으로 해석된다. 전체적으로 QDA는 펭귄 데이터에서 매우 높은 구분 능력을 보였으며, 변수 조합만으로도 세 종을 거의 완벽하게 분류할 수 있음을 시사한다.</p>
-<p>새로운 개체 판별</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># QDA 사후확률 예측 (경고 없음)</p>
-<p>import pandas as pd</p>
-<p># 예시: 새로운 펭귄 개체 입력 (DataFrame 형태로)</p>
-<p>new_penguin_qda = pd.DataFrame({</p>
-<p>'bill_length_mm': [45.0],</p>
-<p>'bill_depth_mm': [17.0],</p>
-<p>'flipper_length_mm': [200.0],</p>
-<p>'body_mass_g': [4500.0]</p>
-<p>})</p>
-<p># 예측된 집단</p>
-<p>pred_class_qda = qda.predict(new_penguin_qda)</p>
-<p># 사후확률</p>
-<p>pred_proba_qda = qda.predict_proba(new_penguin_qda)</p>
-<p>print("=== QDA 예측 결과 ===")</p>
-<p>print("예측된 종:", pred_class_qda[0])</p>
-<p>print("각 종에 대한 사후확률:")</p>
-<p>for cls, p in zip(qda.classes_, pred_proba_qda[0]):</p>
-<p>print(f" {cls}: {p:.3f}")</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== QDA 예측 결과 ===</p>
-<p>예측된 종: Adelie</p>
-<p>각 종에 대한 사후확률:</p>
-<p>Adelie: 0.717</p>
-<p>Chinstrap: 0.283</p>
-<p>Gentoo: 0.000</p>
-<p>다항 로짓 판별분석</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 다항 로지스틱 판별분석 (Multinomial Logistic Discriminant Analysis)</p>
-<p>import numpy as np</p>
-<p>from sklearn.linear_model import LogisticRegression</p>
-<p>from sklearn.metrics import confusion_matrix, classification_report, accuracy_score</p>
-<p># 분석 변수 선택</p>
-<p>X = penguins[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']].dropna()</p>
-<p>y = penguins.loc[X.index, 'species']</p>
-<p># 다항 로지스틱 회귀(판별모형) 적합</p>
-<p>logit_clf = LogisticRegression(</p>
-<p>solver='lbfgs',</p>
-<p>max_iter=2000 # 수렴 경고 방지</p>
-<p>)</p>
-<p>logit_clf.fit(X, y)</p>
-<p># 전체 데이터에 대해 예측</p>
-<p>y_pred = logit_clf.predict(X)</p>
-<p># 사후확률</p>
-<p>y_proba = logit_clf.predict_proba(X)</p>
-<p># 결과 출력</p>
-<p>print("=== Multinomial Logistic Discriminant Analysis (Full Data) ===")</p>
-<p>print(f"전체데이터 정확도: {accuracy_score(y, y_pred):.4f}\n")</p>
-<p>print("=== Confusion Matrix ===")</p>
-<p>print(confusion_matrix(y, y_pred), "\n")</p>
-<p>print("=== Classification Report ===")</p>
-<p>print(classification_report(y, y_pred, target_names=logit_clf.classes_))</p></td>
-</tr>
-</tbody>
-</table>
-<p>=== Multinomial Logistic Discriminant Analysis (Full Data) ===</p>
-<p>전체데이터 정확도: 1.0000</p>
-<p>=== Confusion Matrix ===</p>
-<p>[[146 0 0]</p>
-<p>[ 0 68 0]</p>
-<p>[ 0 0 119]]</p>
-<p>=== Classification Report ===</p>
-<p>precision recall f1-score support</p>
-<p>Adelie 1.00 1.00 1.00 146</p>
-<p>Chinstrap 1.00 1.00 1.00 68</p>
-<p>Gentoo 1.00 1.00 1.00 119</p>
-<p>accuracy 1.00 333</p>
-<p>macro avg 1.00 1.00 1.00 333</p>
-<p>weighted avg 1.00 1.00 1.00 333</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 새 펭귄 데이터 입력 (DataFrame 형태로)</p>
-<p>new_penguin = pd.DataFrame({</p>
-<p>'bill_length_mm': [45.0],</p>
-<p>'bill_depth_mm': [17.0],</p>
-<p>'flipper_length_mm': [200.0],</p>
-<p>'body_mass_g': [4500.0]</p>
-<p>})</p>
-<p># 경고 없이 예측</p>
-<p>pred_class = logit_clf.predict(new_penguin)</p>
-<p>pred_proba = logit_clf.predict_proba(new_penguin)</p>
-<p>print("예측된 종:", pred_class[0])</p>
-<p>print("각 종에 대한 사후확률:")</p>
-<p>for cls, p in zip(logit_clf.classes_, pred_proba[0]):</p>
-<p>print(f" {cls}: {p:.3f}")</p></td>
-</tr>
-</tbody>
-</table>
-<p>예측된 종: Gentoo</p>
-<p>각 종에 대한 사후확률:</p>
-<p>Adelie: 0.190</p>
-<p>Chinstrap: 0.013</p>
-<p>Gentoo: 0.796</p>
+<p><strong>새로운 개체 판별</strong></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># QDA 사후확률 예측 (경고 없음)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 예시: 새로운 펭귄 개체 입력 (DataFrame 형태로)</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>new_penguin_qda <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bill_length_mm'</span>: [<span class="fl">45.0</span>],</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bill_depth_mm'</span>: [<span class="fl">17.0</span>],</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flipper_length_mm'</span>: [<span class="fl">200.0</span>],</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'body_mass_g'</span>: [<span class="fl">4500.0</span>]</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측된 집단</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>pred_class_qda <span class="op">=</span> qda.predict(new_penguin_qda)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 사후확률</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>pred_proba_qda <span class="op">=</span> qda.predict_proba(new_penguin_qda)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== QDA 예측 결과 ==="</span>)</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"예측된 종:"</span>, pred_class_qda[<span class="dv">0</span>])</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"각 종에 대한 사후확률:"</span>)</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cls, p <span class="kw">in</span> <span class="bu">zip</span>(qda.classes_, pred_proba_qda[<span class="dv">0</span>]):</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>cls<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>p<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== QDA 예측 결과 === <br> 예측된 종: Adelie <br> 각 종에 대한 사후확률: <br> Adelie: 0.717 <br> Chinstrap: 0.283 <br> Gentoo: 0.000</p>
+</section>
+<section id="다항-로짓-판별분석" class="level5">
+<h5 class="anchored" data-anchor-id="다항-로짓-판별분석">(2) 다항 로짓 판별분석</h5>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 다항 로지스틱 판별분석 (Multinomial Logistic Discriminant Analysis)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report, accuracy_score</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 변수 선택</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> penguins[[<span class="st">'bill_length_mm'</span>, <span class="st">'bill_depth_mm'</span>, <span class="st">'flipper_length_mm'</span>, <span class="st">'body_mass_g'</span>]].dropna()</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> penguins.loc[X.index, <span class="st">'species'</span>]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 다항 로지스틱 회귀(판별모형) 적합</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>logit_clf <span class="op">=</span> LogisticRegression(</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    solver<span class="op">=</span><span class="st">'lbfgs'</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">2000</span>                <span class="co"># 수렴 경고 방지</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>logit_clf.fit(X, y)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 데이터에 대해 예측</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> logit_clf.predict(X)</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 사후확률</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>y_proba <span class="op">=</span> logit_clf.predict_proba(X)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 출력</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Multinomial Logistic Discriminant Analysis (Full Data) ==="</span>)</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"전체데이터 정확도: </span><span class="sc">{</span>accuracy_score(y, y_pred)<span class="sc">:.4f}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Confusion Matrix ==="</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(confusion_matrix(y, y_pred), <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Classification Report ==="</span>)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y, y_pred, target_names<span class="op">=</span>logit_clf.classes_))</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== Multinomial Logistic Discriminant Analysis (Full Data) === <br> 전체데이터 정확도: 1.0000</p>
+<p>=== Confusion Matrix === <br> [[146 0 0] <br> [ 0 68 0] <br> [ 0 0 119]]</p>
+<p>=== Classification Report === <br> precision recall f1-score support <br> Adelie 1.00 1.00 1.00 146 <br> Chinstrap 1.00 1.00 1.00 68 <br> Gentoo 1.00 1.00 1.00 119 <br> accuracy 1.00 333 <br> macro avg 1.00 1.00 1.00 333 <br> weighted avg 1.00 1.00 1.00 333</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 클래스 순서</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> logit_clf.classes_</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> X.columns</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 계수(beta) 행렬 (K-1개 식)</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> logit_clf.coef_</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> logit_clf.intercept_</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Multinomial Logistic Regression Estimated Coefficients ==="</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, cls <span class="kw">in</span> <span class="bu">enumerate</span>(classes):</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">[참조 대비: </span><span class="sc">{</span>cls<span class="sc">}</span><span class="ss"> 로짓함수]"</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    coef_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Feature'</span>: features,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Beta'</span>: coef[i],</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Odds Ratio'</span>: np.exp(coef[i])</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(coef_df.to_string(index<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Intercept (절편): </span><span class="sc">{</span>intercept[i]<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>=== Multinomial Logistic Regression Estimated Coefficients === <br> [참조 대비: Adelie 로짓함수] <br> Feature Beta Odds Ratio <br> bill_length_mm -1.145597 0.318034 <br> bill_depth_mm 1.334007 3.796226 <br> flipper_length_mm 0.017936 1.018098 <br> body_mass_g 0.001935 1.001937 <br> Intercept (절편): 16.9885</p>
+<p>[참조 대비: Chinstrap 로짓함수] <br> Feature Beta Odds Ratio <br> bill_length_mm 1.251207 3.494557 <br> bill_depth_mm -0.105142 0.900197 <br> flipper_length_mm -0.063269 0.938691 <br> body_mass_g -0.006714 0.993308 <br> Intercept (절편): -13.9010</p>
+<p>[참조 대비: Gentoo 로짓함수] <br> Feature Beta Odds Ratio <br> bill_length_mm -0.105609 0.899776 <br> bill_depth_mm -1.228865 0.292624 <br> flipper_length_mm 0.045332 1.046375 <br> body_mass_g 0.004779 1.004791 <br> Intercept (절편): -3.0875</p>
+<p>Adelie는 깊고 짧은 부리를 가진 경우 강하게 판별된다. Chinstrap은 긴 부리가 가장 중요한 구분 요인이다. Gentoo는 얕은 부리 + 큰 체구로 다른 두 종과 구분된다. 즉, 다항 로지스틱 판별분석은 신체 치수의 비율·크기 조합을 로짓함수 형태로 모델링하여 각 종의 형태적 특징을 정량적·확률적으로 구분하는 역할을 수행한다.</p>
+<p><strong>Adelie 대비</strong> 다른 종과의 구별을 설명하는 로그오즈식에서, 부리길이 계수는 -1.15(Beta), 오즈비 0.32로 나타났다.이는 부리길이가 길어질수록 Adelie일 가능성이 급격하게 감소함을 의미하며, 같은 길이 증가에 대해 오즈가 약 68% 감소한다. 즉, 긴 부리는 Adelie보다 Chinstrap 또는 Gentoo에서 더 자주 나타나는 특징이다.</p>
+<p>부리깊이는 1.33, 오즈비 3.80으로 매우 큰 양(+)의 효과가 나타났다.동일한 조건에서 부리깊이가 깊어질수록 Adelie로 분류될 가능성이 3.8배 증가함을 의미한다. 이 변수는 Adelie의 독립적인 신체적 특성을 가장 잘 반영하는 판별요인이다.</p>
+<p>날개길이와 체중은 계수 크기가 매우 작고 오즈비는 1.01 수준으로, Adelie 구분에서는 상대적으로 영향력이 낮다. 정리: Adelie는 ’짧고 깊은 부리’라는 조합이 결정적으로 구분되는 특징이며, 체중·날개길이는 판별력이 상대적으로 작다.</p>
+<p><strong>Chinstrap 대비</strong> 다른 종과의 차이를 설명하는 식에서는 다음 특징이 나타난다. 부리길이 계수 1.25, 오즈비 3.49 부리길이가 길수록 Chinstrap일 가능성이 매우 커지며, 길이 1mm 증가에 대해 오즈가 약 3.5배 증가한다. 이는 Chinstrap이 세 종 중 가장 긴 부리를 갖는 경향과 잘 부합한다.</p>
+<p>부리깊이는 -0.105(오즈비 0.90)로 약하게 음(-)의 영향을 갖는다.깊은 부리는 Chinstrap보다는 Adelie에서 더 많이 나타난다는 의미이다. 날개길이(-0.063), 체중(-0.0067)의 영향은 작지만 음(-)의 부호이므로, 날개가 길고 체중이 무거울수록 Chinstrap일 가능성은 소폭 감소한다.</p>
+<p>정리: Chinstrap 구분에는 부리길이가 가장 핵심적인 판별 변수이며, 부리깊이가 깊을수록 Adelie로, 날개가 길수록 Gentoo로 분류되는 경향이 강화된다.</p>
+<p><strong>Gentoo는</strong> 신체 크기가 큰 종이므로, 결과도 이를 반영한다. 부리길이는 계수 -0.106(오즈비 0.90)**으로 작은 음(-) 효과를 보이지만 큰 판별력은 아니다.</p>
+<p>부리깊이 계수 -1.23, 오즈비 0.29는 큰 음(-)의 영향을 나타낸다.즉, 부리가 깊어질수록 Gentoo일 가능성이 71% 감소한다. Gentoo는 세 종 중 가장 얕은 부리를 가지고 있으며, 부리깊이는 Gentoo를 구분하는 데 매우 중요한 음의 지표이다.</p>
+<p>날개길이는 +0.045(오즈비 1.046)으로 약한 양(+)의 영향이 있지만, Gentoo는 실제로 날개길이가 월등히 길어 QDA·LDA에서는 강력한 분리 요인이 되므로, 다항로짓에서도 같은 방향성을 보인다.</p>
+<p>체중 계수 0.0048(오즈비 1.0048)도 양(+)이지만 크기는 매우 작다.하지만 Gentoo의 체중이 세 종 중 가장 무겁다는 점을 반영한 결과이다.</p>
+<p>정리: Gentoo는 ’얕은 부리 + 큰 체구(긴 날개, 높은 체중)’라는 조합으로 판별되며, 특히 부리깊이가 Gentoo를 배제하는 가장 강력한 변수이다.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 새 펭귄 데이터 입력 (DataFrame 형태로)</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>new_penguin <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bill_length_mm'</span>: [<span class="fl">45.0</span>],</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'bill_depth_mm'</span>: [<span class="fl">17.0</span>],</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flipper_length_mm'</span>: [<span class="fl">200.0</span>],</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'body_mass_g'</span>: [<span class="fl">4500.0</span>]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 경고 없이 예측</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>pred_class <span class="op">=</span> logit_clf.predict(new_penguin)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>pred_proba <span class="op">=</span> logit_clf.predict_proba(new_penguin)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"예측된 종:"</span>, pred_class[<span class="dv">0</span>])</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"각 종에 대한 사후확률:"</span>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> cls, p <span class="kw">in</span> <span class="bu">zip</span>(logit_clf.classes_, pred_proba[<span class="dv">0</span>]):</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"  </span><span class="sc">{</span>cls<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>p<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="클립보드 복사" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>예측된 종: Gentoo <br> 각 종에 대한 사후확률: <br> Adelie: 0.190 <br> Chinstrap: 0.013 <br> Gentoo: 0.796</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
