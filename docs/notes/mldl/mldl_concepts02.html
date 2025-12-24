@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL AI 통계학 part02 – 세상 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-1b3e43c72e8be34557c75123b0b69e0d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-302e6895c9654fb97c48ad8f826d3f42.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색",
+    "search-label": "검색"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="검색"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="탐색 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">기초수학</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math/function.html">
+ <span class="dropdown-text">함수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/derivate_integral.html">
+ <span class="dropdown-text">미분적분</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/vector.html">
+ <span class="dropdown-text">벡터</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math/matrix.html">
+ <span class="dropdown-text">행렬</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">수리통계</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--1">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/probability.html">
+ <span class="dropdown-text">확률</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_variable.html">
+ <span class="dropdown-text">확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/famous_distribution.html">
+ <span class="dropdown-text">유명한분포</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/multi_variate.html">
+ <span class="dropdown-text">다변량확률변수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/random_sample.html">
+ <span class="dropdown-text">확률표본_난수생성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/estimation.html">
+ <span class="dropdown-text">추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/hypothesis_testing.html">
+ <span class="dropdown-text">가설검정_신뢰구간</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--2" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">일변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--2">    
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/concept_of_stat.html">
+ <span class="dropdown-text">일변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/data.html">
+ <span class="dropdown-text">데이터와 통계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/univariate.html">
+ <span class="dropdown-text">일변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/crosstab.html">
+ <span class="dropdown-text">교차표분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/goodness_of_fits.html">
+ <span class="dropdown-text">적합성검정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/normality.html">
+ <span class="dropdown-text">정규변환</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/correlation.html">
+ <span class="dropdown-text">상관분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/anova.html">
+ <span class="dropdown-text">실험설계 분산분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/time_series.html">
+ <span class="dropdown-text">시계열분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--3" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">조사방법론</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--3">    
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_intro.html">
+ <span class="dropdown-text">조사방법 기초</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/sample_design.html">
+ <span class="dropdown-text">표본설계</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/questionnaire.html">
+ <span class="dropdown-text">설문지</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/nonresponse.html">
+ <span class="dropdown-text">무응답 대체</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/data_process.html">
+ <span class="dropdown-text">데이터 처리</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/survey_scale.html">
+ <span class="dropdown-text">조사지 척도</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/delphi_ahp_conjoint.html">
+ <span class="dropdown-text">델파이_AHP_컨조인트</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/survey/psm.html">
+ <span class="dropdown-text">PSM 성향점수매칭</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--4" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">회귀분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--4">    
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_concept.html">
+ <span class="dropdown-text">회귀분석 개념&amp;추정</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_selection.html">
+ <span class="dropdown-text">변수선택</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_multicolin.html">
+ <span class="dropdown-text">다중공선성</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_diagnosis.html">
+ <span class="dropdown-text">회귀진단</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/linear_model/lm_logistic.html">
+ <span class="dropdown-text">로지스틱회귀</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--5" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">다변량분석</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--5">    
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_concepts.html">
+ <span class="dropdown-text">다변량분석 개념</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwon.github.io/notes/intro_stat/correlation.html#chapter-3.-%EB%8B%A4%EB%B3%80%EB%9F%89-%EC%83%81%EA%B4%80%EA%B3%84%EC%88%98">
+ <span class="dropdown-text">다변량 상관계수</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_pca.html">
+ <span class="dropdown-text">주성분분석 svd</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_factor.html">
+ <span class="dropdown-text">요인분석 구조방정식</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_discriminant.html">
+ <span class="dropdown-text">판별분석 Fisher|Logistic</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_cluster.html">
+ <span class="dropdown-text">군집분석 계층적|비계층적방법</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_mds_ca.html">
+ <span class="dropdown-text">다차원척도법|대응분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mda/mda_cancorr_manova.html">
+ <span class="dropdown-text">정준상관분석|다변량분산분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-mldl-wgpt" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">MLDL w/GPT</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-mldl-wgpt">    
+        <li>
+    <a class="dropdown-item" href="../../notes/mldl/mldl_concepts01.html">
+ <span class="dropdown-text">MLDL AI 통계 01</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mldl/mldl_concepts02.html">
+ <span class="dropdown-text">MLDL AI 통계 02</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mldl/mldl_concepts.html">
+ <span class="dropdown-text">머신러닝 통계적사고</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu--6" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">📡스트리밍</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu--6">    
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-esqshnv7wueapp4da6jrizn.streamlit.app" target="_blank">
+ <span class="dropdown-text">실시간주가[5대종목]</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="https://by-sekwonappio-k5e5n7wasvj3kveyqbwmgc.streamlit.app/" target="_blank">
+ <span class="dropdown-text">대전유성구 일기예보</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-7.-전통적-통계-vs-머신러닝-방법론-비교" id="toc-chapter-7.-전통적-통계-vs-머신러닝-방법론-비교" class="nav-link active" data-scroll-target="#chapter-7.-전통적-통계-vs-머신러닝-방법론-비교">Chapter 7. 전통적 통계 vs 머신러닝: 방법론 비교</a>
+  <ul>
+  <li><a href="#추론과-예측의-목적-차이" id="toc-추론과-예측의-목적-차이" class="nav-link" data-scroll-target="#추론과-예측의-목적-차이">1. 추론과 예측의 목적 차이</a></li>
+  <li><a href="#가정-기반-모델-vs-데이터-기반-모델" id="toc-가정-기반-모델-vs-데이터-기반-모델" class="nav-link" data-scroll-target="#가정-기반-모델-vs-데이터-기반-모델">2. 가정 기반 모델 vs 데이터 기반 모델</a></li>
+  <li><a href="#해석-가능성과-성능-중심-접근" id="toc-해석-가능성과-성능-중심-접근" class="nav-link" data-scroll-target="#해석-가능성과-성능-중심-접근">3. 해석 가능성과 성능 중심 접근</a></li>
+  <li><a href="#소표본-환경과-대용량-데이터-환경" id="toc-소표본-환경과-대용량-데이터-환경" class="nav-link" data-scroll-target="#소표본-환경과-대용량-데이터-환경">4. 소표본 환경과 대용량 데이터 환경</a></li>
+  <li><a href="#재현성-검정-불확실성-표현의-차이" id="toc-재현성-검정-불확실성-표현의-차이" class="nav-link" data-scroll-target="#재현성-검정-불확실성-표현의-차이">5. 재현성, 검정, 불확실성 표현의 차이</a></li>
+  </ul></li>
+  <li><a href="#chapter-8.-통계학-관점에서-본-ai-모델-평가" id="toc-chapter-8.-통계학-관점에서-본-ai-모델-평가" class="nav-link" data-scroll-target="#chapter-8.-통계학-관점에서-본-ai-모델-평가">Chapter 8. 통계학 관점에서 본 AI 모델 평가</a>
+  <ul>
+  <li><a href="#학습-성능과-일반화-성능" id="toc-학습-성능과-일반화-성능" class="nav-link" data-scroll-target="#학습-성능과-일반화-성능">1. 학습 성능과 일반화 성능</a></li>
+  <li><a href="#교차검증과-재표본추출-방법" id="toc-교차검증과-재표본추출-방법" class="nav-link" data-scroll-target="#교차검증과-재표본추출-방법">2. 교차검증과 재표본추출 방법</a></li>
+  <li><a href="#성능지표의-통계적-해석" id="toc-성능지표의-통계적-해석" class="nav-link" data-scroll-target="#성능지표의-통계적-해석">3. 성능지표의 통계적 해석</a></li>
+  <li><a href="#과적합-진단과-모델-비교" id="toc-과적합-진단과-모델-비교" class="nav-link" data-scroll-target="#과적합-진단과-모델-비교">4. 과적합 진단과 모델 비교</a></li>
+  <li><a href="#편향-공정성-데이터-누락-문제" id="toc-편향-공정성-데이터-누락-문제" class="nav-link" data-scroll-target="#편향-공정성-데이터-누락-문제">5. 편향, 공정성, 데이터 누락 문제</a></li>
+  </ul></li>
+  <li><a href="#chapter-9.-통계방법론의-aiml-확장-사례" id="toc-chapter-9.-통계방법론의-aiml-확장-사례" class="nav-link" data-scroll-target="#chapter-9.-통계방법론의-aiml-확장-사례">Chapter 9. 통계방법론의 AI·ML 확장 사례</a>
+  <ul>
+  <li><a href="#회귀분석에서-lasso-ridge-elastic-net으로의-확장" id="toc-회귀분석에서-lasso-ridge-elastic-net으로의-확장" class="nav-link" data-scroll-target="#회귀분석에서-lasso-ridge-elastic-net으로의-확장">1. 회귀분석에서 Lasso, Ridge, Elastic Net으로의 확장</a></li>
+  <li><a href="#분류모형에서-로지스틱-회귀와-신경망으로의-확장" id="toc-분류모형에서-로지스틱-회귀와-신경망으로의-확장" class="nav-link" data-scroll-target="#분류모형에서-로지스틱-회귀와-신경망으로의-확장">2. 분류모형에서 로지스틱 회귀와 신경망으로의 확장</a></li>
+  <li><a href="#차원축소에서-pca와-오토인코더로의-확장" id="toc-차원축소에서-pca와-오토인코더로의-확장" class="nav-link" data-scroll-target="#차원축소에서-pca와-오토인코더로의-확장">3. 차원축소에서 PCA와 오토인코더로의 확장</a></li>
+  <li><a href="#군집분석에서-k-means와-표현-기반-군집으로의-확장" id="toc-군집분석에서-k-means와-표현-기반-군집으로의-확장" class="nav-link" data-scroll-target="#군집분석에서-k-means와-표현-기반-군집으로의-확장">4. 군집분석에서 k-means와 표현 기반 군집으로의 확장</a></li>
+  <li><a href="#시계열-분석과-딥러닝-모델의-접점" id="toc-시계열-분석과-딥러닝-모델의-접점" class="nav-link" data-scroll-target="#시계열-분석과-딥러닝-모델의-접점">5. 시계열 분석과 딥러닝 모델의 접점</a></li>
+  </ul></li>
+  <li><a href="#chapter-10.-책임-있는-ai와-통계적-검증" id="toc-chapter-10.-책임-있는-ai와-통계적-검증" class="nav-link" data-scroll-target="#chapter-10.-책임-있는-ai와-통계적-검증">Chapter 10. 책임 있는 AI와 통계적 검증</a>
+  <ul>
+  <li><a href="#책임-있는-ai의-개념과-필요성" id="toc-책임-있는-ai의-개념과-필요성" class="nav-link" data-scroll-target="#책임-있는-ai의-개념과-필요성">1. 책임 있는 AI의 개념과 필요성</a></li>
+  <li><a href="#성능-중심-평가의-한계와-통계적-검증의-역할" id="toc-성능-중심-평가의-한계와-통계적-검증의-역할" class="nav-link" data-scroll-target="#성능-중심-평가의-한계와-통계적-검증의-역할">2. 성능 중심 평가의 한계와 통계적 검증의 역할</a></li>
+  <li><a href="#편향과-공정성-문제에-대한-통계학적-시각" id="toc-편향과-공정성-문제에-대한-통계학적-시각" class="nav-link" data-scroll-target="#편향과-공정성-문제에-대한-통계학적-시각">3. 편향과 공정성 문제에 대한 통계학적 시각</a></li>
+  <li><a href="#불확실성-표현과-의사결정-책임" id="toc-불확실성-표현과-의사결정-책임" class="nav-link" data-scroll-target="#불확실성-표현과-의사결정-책임">4. 불확실성 표현과 의사결정 책임</a></li>
+  <li><a href="#재현성과-검증-가능성" id="toc-재현성과-검증-가능성" class="nav-link" data-scroll-target="#재현성과-검증-가능성">5. 재현성과 검증 가능성</a></li>
+  </ul></li>
+  <li><a href="#chapter-11.-통합적-시각-통계학과-ai의-공존" id="toc-chapter-11.-통합적-시각-통계학과-ai의-공존" class="nav-link" data-scroll-target="#chapter-11.-통합적-시각-통계학과-ai의-공존">Chapter 11. 통합적 시각: 통계학과 AI의 공존</a>
+  <ul>
+  <li><a href="#통계학은-ai의-기초인가-대안인가" id="toc-통계학은-ai의-기초인가-대안인가" class="nav-link" data-scroll-target="#통계학은-ai의-기초인가-대안인가">1. 통계학은 AI의 기초인가, 대안인가</a></li>
+  <li><a href="#ai-시대의-통계적-사고" id="toc-ai-시대의-통계적-사고" class="nav-link" data-scroll-target="#ai-시대의-통계적-사고">2. AI 시대의 통계적 사고</a></li>
+  <li><a href="#방법론-통합을-위한-교육-방향" id="toc-방법론-통합을-위한-교육-방향" class="nav-link" data-scroll-target="#방법론-통합을-위한-교육-방향">3. 방법론 통합을 위한 교육 방향</a></li>
+  <li><a href="#책임-있는-ai와-통계적-검증" id="toc-책임-있는-ai와-통계적-검증" class="nav-link" data-scroll-target="#책임-있는-ai와-통계적-검증">4. 책임 있는 AI와 통계적 검증</a></li>
+  <li><a href="#향후-데이터-과학자의-핵심-역량" id="toc-향후-데이터-과학자의-핵심-역량" class="nav-link" data-scroll-target="#향후-데이터-과학자의-핵심-역량">5. 향후 데이터 과학자의 핵심 역량</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL AI 통계학 part02</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-7.-전통적-통계-vs-머신러닝-방법론-비교" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-7.-전통적-통계-vs-머신러닝-방법론-비교">Chapter 7. 전통적 통계 vs 머신러닝: 방법론 비교</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 32%">
+<col style="width: 32%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">구분</td>
+<td style="text-align: center;">전통적 통계방법론</td>
+<td style="text-align: center;">머신러닝</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">핵심 목적</td>
+<td style="text-align: center;">추론, 설명</td>
+<td style="text-align: center;">예측, 성능</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">출발점</td>
+<td style="text-align: center;">확률모형과 가정</td>
+<td style="text-align: center;">데이터와 손실함수</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">해석 가능성</td>
+<td style="text-align: center;">높음</td>
+<td style="text-align: center;">제한적</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">데이터 규모</td>
+<td style="text-align: center;">소표본에 강함</td>
+<td style="text-align: center;">대용량에 강함</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">불확실성 표현</td>
+<td style="text-align: center;">신뢰구간, 검정</td>
+<td style="text-align: center;">성능 기반 간접 평가</td>
+</tr>
+</tbody>
+</table>
+<section id="추론과-예측의-목적-차이" class="level4">
+<h4 class="anchored" data-anchor-id="추론과-예측의-목적-차이">1. 추론과 예측의 목적 차이</h4>
+<p>전통적 통계방법론의 1차적 목적은 추론이다. 제한된 표본 자료로부터 모집단의 특성, 즉 모수의 값이나 변수 간의 관계를 추론하고, 그 추론 결과가 어느 정도의 불확실성을 가지는지를 함께 제시하는 것이 핵심이다. 이에 따라 통계학적 분석에서 던지는 질문은 모집단 평균은 얼마인가, 특정 요인의 효과는 존재하는가, 그 효과는 어느 범위 내에서 신뢰할 수 있는가와 같은 형태를 띤다.</p>
+<p>반면 머신러닝의 핵심 목적은 예측 성능에 있다. 모델이 왜 그러한 결과를 산출하는지보다는, 새로운 데이터에 대해 얼마나 정확한 예측을 수행하는지가 우선적인 관심사가 된다. 분석의 질문 역시 다음 관측값을 얼마나 정확히 맞출 수 있는가, 예측 오차를 최소화하는 함수는 무엇인가로 전환된다.</p>
+<p>이러한 목적의 차이는 방법론의 철학을 규정한다. 전통적 통계학은 설명 가능하고 해석 가능한 결론을 중시하는 반면, 머신러닝은 실용적 정확도와 성능을 중심에 둔다.</p>
+</section>
+<section id="가정-기반-모델-vs-데이터-기반-모델" class="level4">
+<h4 class="anchored" data-anchor-id="가정-기반-모델-vs-데이터-기반-모델">2. 가정 기반 모델 vs 데이터 기반 모델</h4>
+<p>전통적 통계학은 확률모형과 가정을 분석의 출발점으로 삼는다. 정규성, 독립성, 동일분포와 같은 가정은 현실을 단순화한 것이지만, 분석 결과를 해석하고 모집단으로 일반화할 수 있는 이론적 기반을 제공한다. 통계학에서 가정은 숨겨진 약점이 아니라, 결과 해석의 전제 조건으로 명시된다.</p>
+<p>이에 비해 머신러닝은 가정을 최소화하고, 데이터로부터 직접 규칙을 학습하는 접근을 취한다. 특정 분포를 가정하기보다는 손실함수와 검증 성능을 기준으로 모델의 적절성을 판단한다. 이 차이는 다음과 같이 요약할 수 있다. 통계학은 가정이 명시적이며 그 가정 위에서 결과를 해석하고, 머신러닝은 가정이 암묵적으로 모델 구조와 학습 과정에 내재되어 있으며 성능을 통해 결과를 평가한다.</p>
+<p>즉, 머신러닝은 가정이 없는 방법론이 아니라, 가정을 다른 방식으로 표현하는 방법론이라 할 수 있다.</p>
+</section>
+<section id="해석-가능성과-성능-중심-접근" class="level4">
+<h4 class="anchored" data-anchor-id="해석-가능성과-성능-중심-접근">3. 해석 가능성과 성능 중심 접근</h4>
+<p>전통적 통계모형은 해석 가능성을 핵심 가치로 둔다. 회귀계수의 부호와 크기, 신뢰구간, 가설검정 결과는 모두 변수의 역할과 효과를 설명하기 위한 장치이다. 이러한 해석 구조는 과학적 설명이나 정책적 의사결정에서 중요한 역할을 한다.</p>
+<p>머신러닝은 성능 중심 접근을 취한다. 비선형 모델이나 앙상블 기법, 딥러닝 모델은 해석이 어렵지만, 복잡한 패턴을 포착하여 예측 정확도를 크게 향상시킬 수 있다. 이로 인해 해석 가능성과 성능 사이의 긴장이 발생한다. 통계학은 해석은 명확하지만 복잡한 구조를 포착하는 데 한계가 있으며, 머신러닝은 성능은 뛰어나지만 결과 해석이 제한적이다.</p>
+<p>최근의 설명가능한 AI 연구는 이러한 간극을 줄이기 위한 시도로 이해할 수 있다.</p>
+</section>
+<section id="소표본-환경과-대용량-데이터-환경" class="level4">
+<h4 class="anchored" data-anchor-id="소표본-환경과-대용량-데이터-환경">4. 소표본 환경과 대용량 데이터 환경</h4>
+<p>전통적 통계방법론은 소표본 환경에서도 안정적인 추론이 가능하도록 발전해 왔다. 제한된 데이터에서 효율적인 추정량과 검정 이론을 통해 의미 있는 결론을 도출하는 데 강점을 가진다.</p>
+<p>반면 머신러닝은 대용량 데이터 환경에서 진가를 발휘한다. 데이터의 양이 증가할수록 복잡한 모델의 일반화 성능이 개선되며, 개별 가정의 중요성은 상대적으로 감소한다. 이 차이는 실제 적용에서 중요한 선택 기준이 된다. 데이터가 적고 해석이 중요한 경우에는 통계학적 접근이 적합하며, 데이터가 많고 예측 정확도가 중요한 경우에는 머신러닝 접근이 효과적이다.</p>
+</section>
+<section id="재현성-검정-불확실성-표현의-차이" class="level4">
+<h4 class="anchored" data-anchor-id="재현성-검정-불확실성-표현의-차이">5. 재현성, 검정, 불확실성 표현의 차이</h4>
+<p>전통적 통계학은 분석 결과의 재현성과 검증 가능성을 중시한다. 동일한 가정과 절차를 적용하면 유사한 결론에 도달해야 하며, 유의확률과 신뢰구간은 불확실성을 공식적으로 표현하는 도구로 사용된다.</p>
+<p>머신러닝에서는 재현성이 데이터 분할 방식, 초기값 설정, 학습 알고리즘의 확률성에 의해 영향을 받는 경우가 많다. 또한 불확실성은 명시적으로 제공되지 않는 경우가 일반적이며, 주로 성능 지표의 평균이나 분산을 통해 간접적으로 평가된다. 최근에는 예측 불확실성을 정량화하려는 다양한 시도가 이루어지고 있으나, 이는 여전히 전통적 통계학이 강점을 가지는 영역으로 남아 있다.</p>
+</section>
+</section>
+<section id="chapter-8.-통계학-관점에서-본-ai-모델-평가" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-8.-통계학-관점에서-본-ai-모델-평가">Chapter 8. 통계학 관점에서 본 AI 모델 평가</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 48%">
+<col style="width: 48%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">평가 관점</td>
+<td style="text-align: center;">핵심 질문</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">일반화</td>
+<td style="text-align: center;">새로운 데이터에서도 성능이 유지되는가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">변동성</td>
+<td style="text-align: center;">성능의 분산은 어느 정도인가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">비교</td>
+<td style="text-align: center;">차이가 통계적으로 의미 있는가</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">단순성</td>
+<td style="text-align: center;">더 단순한 모델로 대체 가능한가</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">공정성</td>
+<td style="text-align: center;">특정 집단에 체계적 불이익이 있는가</td>
+</tr>
+</tbody>
+</table>
+<section id="학습-성능과-일반화-성능" class="level4">
+<h4 class="anchored" data-anchor-id="학습-성능과-일반화-성능">1. 학습 성능과 일반화 성능</h4>
+<p>머신러닝과 딥러닝 모델의 성능은 일반적으로 학습 성능과 일반화 성능으로 구분된다. 학습 성능은 학습 데이터에서 모델이 얼마나 잘 적합되는지를 나타내며, 일반화 성능은 학습에 사용되지 않은 새로운 데이터에서의 예측 능력을 의미한다.</p>
+<p>통계학적 관점에서 중요한 것은 학습 성능이 아니라 일반화 성능이다. 학습 데이터에서의 높은 적합도는 단순히 표본을 잘 설명했다는 의미에 불과하며, 모집단에 대한 타당한 추론이나 예측을 보장하지 않는다. 학습 성능이 높음에도 불구하고 일반화 성능이 낮다면, 이는 표본의 우연적 특성을 과도하게 학습한 결과로 해석할 수 있다.</p>
+<p>이러한 의미에서 일반화 성능은 통계학에서 말하는 외삽 가능성, 즉 표본에서 얻은 결과를 모집단이나 미래 상황으로 확장할 수 있는지 여부와 직접적으로 연결된다. AI 모델 평가의 핵심은 결국 새로운 데이터에 대해 얼마나 안정적인 성능을 보이는가에 있다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mlda_concepts_overfit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="교차검증과-재표본추출-방법" class="level4">
+<h4 class="anchored" data-anchor-id="교차검증과-재표본추출-방법">2. 교차검증과 재표본추출 방법</h4>
+<p>통계학은 오래전부터 표본 변동성을 이해하고 추정의 안정성을 평가하기 위해 재표본추출 기법을 발전시켜 왔다. 머신러닝에서 널리 사용되는 교차검증은 이러한 통계적 아이디어의 직접적인 확장이라 할 수 있다.</p>
+<p>대표적인 방법으로는 데이터를 여러 부분으로 나누어 반복적으로 학습과 평가를 수행하는 k-겹 교차검증이 있다. 또한 표본을 복원추출하여 통계량의 분포를 평가하는 부트스트랩 기법은 성능 지표의 변동성을 이해하는 데 유용하다. 반복 교차검증은 데이터 분할에 따른 우연성을 줄이고, 보다 안정적인 성능 평가를 가능하게 한다.</p>
+<p>통계학적 관점에서 교차검증의 중요성은 단일한 성능 값이 아니라 성능의 분포를 관찰할 수 있다는 데 있다. 이는 성능 평가를 하나의 숫자로 고정하는 것이 아니라, 불확실성을 포함한 추론 문제로 다루게 해 준다. 결국 교차검증은 AI 모델 평가에서 통계학의 핵심 원리인 변동성 인식을 구현하는 장치라 할 수 있다.</p>
+</section>
+<section id="성능지표의-통계적-해석" class="level4">
+<h4 class="anchored" data-anchor-id="성능지표의-통계적-해석">3. 성능지표의 통계적 해석</h4>
+<p>AI 모델의 성능은 정확도, 평균제곱근오차, AUC 등 다양한 지표로 요약된다. 그러나 통계학적으로 더 중요한 질문은 성능 지표의 크기 자체가 아니라, 관측된 성능 차이가 우연에 의한 것인지 아니면 체계적인 차이인지를 판단하는 것이다.</p>
+<p>예를 들어 두 모델의 정확도가 각각 0.92와 0.93이라 하더라도, 표본 크기가 작거나 데이터 변동성이 크다면 이 차이는 통계적으로 의미가 없을 수 있다. 따라서 성능지표는 점추정치로만 해석되어서는 안 되며, 반복 평가를 통한 분산, 신뢰구간, 그리고 모델 간 성능 비교 검정과 함께 해석되어야 한다.</p>
+<p>이는 전통적 통계학의 <span dir="rtl">”</span>추정값과 불확실성은 함께 제시되어야 한다”는 원칙이 AI 모델 평가에도 그대로 적용됨을 의미한다. 성능 지표를 절대적인 기준으로 받아들이는 것은 통계적 사고에 반하는 접근이다.</p>
+</section>
+<section id="과적합-진단과-모델-비교" class="level4">
+<h4 class="anchored" data-anchor-id="과적합-진단과-모델-비교">4. 과적합 진단과 모델 비교</h4>
+<p>과적합은 통계학과 머신러닝을 관통하는 공통된 문제이다. 통계학에서는 이를 모형의 복잡도와 표본 크기 사이의 불균형 문제로 해석해 왔다. 머신러닝에서도 과적합은 동일한 구조를 가지며, 학습 성능과 일반화 성능의 괴리로 나타난다.</p>
+<p>과적합을 의심할 수 있는 대표적인 신호로는 학습 데이터에서는 높은 성능을 보이지만 검증 데이터에서는 성능이 크게 저하되는 경우, 그리고 모델의 복잡도가 증가할수록 성능의 변동성이 확대되는 경우가 있다. 이러한 상황에서는 모델이 데이터의 구조를 학습한 것이 아니라, 우연적 잡음을 학습했을 가능성이 크다.</p>
+<p>모델 비교 역시 단순히 가장 높은 성능을 보이는 모델을 선택하는 문제로 접근해서는 안 된다. 동일한 조건에서의 반복 평가, 성능 차이의 안정성, 그리고 더 단순한 기준 모델과의 비교를 통해 판단해야 한다. 통계학적 시각에서 볼 때, 조금 더 복잡한 모델은 항상 추가적인 검증이 요구되는 의심의 대상이다.</p>
+</section>
+<section id="편향-공정성-데이터-누락-문제" class="level4">
+<h4 class="anchored" data-anchor-id="편향-공정성-데이터-누락-문제">5. 편향, 공정성, 데이터 누락 문제</h4>
+<p>AI 모델 평가는 기술적 성능에 국한되지 않으며, 사회적·통계적 타당성까지 포함한다. 특히 편향, 공정성, 데이터 누락 문제는 통계학의 전통적인 핵심 관심사이자, 현대 AI 평가에서 더욱 중요한 이슈로 부각되고 있다.</p>
+<p>편향은 표본이 모집단을 제대로 대표하지 못할 때 발생하며, 이는 높은 예측 성능에도 불구하고 체계적으로 왜곡된 결과를 낳을 수 있다. 공정성 문제는 특정 집단에 대해 예측 오류가 불균등하게 발생하는 구조를 의미하며, 평균적인 성능 지표만으로는 포착되지 않는 경우가 많다. 또한 비무작위 결측에 따른 데이터 누락은 모델 학습 과정에서 심각한 왜곡을 초래할 수 있다.</p>
+<p>통계학은 이러한 문제를 표본설계, 가중치 조정, 결측 메커니즘 분석 등을 통해 체계적으로 다뤄 왔다. AI 모델 역시 이러한 점검 없이 적용될 경우, <span dir="rtl">”</span>정확하지만 불공정한 모델”이 될 위험을 안고 있다. 이 점에서 통계학적 사고는 AI 모델 평가에서 선택이 아니라 필수적인 기준이라 할 수 있다.</p>
+</section>
+</section>
+<section id="chapter-9.-통계방법론의-aiml-확장-사례" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-9.-통계방법론의-aiml-확장-사례">Chapter 9. 통계방법론의 AI·ML 확장 사례</h3>
+<section id="회귀분석에서-lasso-ridge-elastic-net으로의-확장" class="level4">
+<h4 class="anchored" data-anchor-id="회귀분석에서-lasso-ridge-elastic-net으로의-확장">1. 회귀분석에서 Lasso, Ridge, Elastic Net으로의 확장</h4>
+<p>전통적 선형회귀는 다음과 같은 최소제곱 문제로 표현된다.</p>
+<p><span class="math display">\[\widehat{\beta} = \arg\min_{\beta}\overset{n}{\sum_{i = 1}}(y_{i} - x_{i}^{\top}\beta)^{2}\]</span></p>
+<p>이 추정량은 설명과 추론에 강점을 가지지만, 설명변수의 수가 많거나 다중공선성이 존재하는 고차원 환경에서는 분산이 크게 증가하여 불안정해질 수 있다.</p>
+<p>이를 보완하기 위해 정규화가 도입되었다. Ridge 회귀는 계수의 제곱합에 패널티를 부과한다.</p>
+<p><span class="math display">\[{\widehat{\beta}}_{\text{Ridge}} = \arg\min_{\beta}\left\{ \overset{n}{\sum_{i = 1}}(y_{i} - x_{i}^{\top}\beta)^{2} + \lambda\overset{p}{\sum_{j = 1}}\beta_{j}^{2} \right\}\]</span></p>
+<p>이는 모든 계수를 전반적으로 축소하여 분산을 감소시키는 효과를 가진다.</p>
+<p>Lasso 회귀는 절댓값 패널티를 사용한다.</p>
+<p><span class="math display">\[{\widehat{\beta}}_{\text{Lasso}} = \arg\min_{\beta}\left\{ \overset{n}{\sum_{i = 1}}(y_{i} - x_{i}^{\top}\beta)^{2} + \lambda\overset{p}{\sum_{j = 1}}|\beta_{j}| \right\}\]</span></p>
+<p>이 경우 일부 계수가 정확히 0이 되어 변수 선택 효과가 발생한다.</p>
+<p>Elastic Net은 두 패널티를 결합한다.</p>
+<p><span class="math display">\[{\widehat{\beta}}_{\text{EN}} = \arg\min_{\beta}\left\{ \overset{n}{\sum_{i = 1}}(y_{i} - x_{i}^{\top}\beta)^{2} + \lambda_{1}\sum_{j}|\beta_{j}| + \lambda_{2}\sum_{j}\beta_{j}^{2} \right\}\]</span></p>
+<p>통계학적으로 이들 방법은 편향을 허용하는 대신 분산을 줄이는 벌점화 추정이며, 머신러닝에서는 고차원 예측 문제의 표준적 해결책으로 활용된다. 즉, 회귀분석은 AI 시대에도 여전히 핵심이며, 정규화가 그 확장 장치이다.</p>
+</section>
+<section id="분류모형에서-로지스틱-회귀와-신경망으로의-확장" class="level4">
+<h4 class="anchored" data-anchor-id="분류모형에서-로지스틱-회귀와-신경망으로의-확장">2. 분류모형에서 로지스틱 회귀와 신경망으로의 확장</h4>
+<p>로지스틱 회귀는 이진 반응변수 <span class="math inline">\(Y \in \{ 0,1\}\)</span>에 대해 다음과 같은 확률모형을 가정한다.</p>
+<p><span class="math display">\[P(Y = 1 \mid x) = \sigma(x^{\top}\beta) = \frac{1}{1 + \exp( - x^{\top}\beta)}\]</span></p>
+<p>이는 명확한 확률 해석을 제공하는 판별형 모델이다.</p>
+<p>최대우도추정은 교차엔트로피 손실 최소화 문제와 동치이다.</p>
+<p><span class="math display">\[\widehat{\beta} = \arg\min_{\beta}\overset{n}{\sum_{i = 1}}\left\lbrack y_{i}\log p_{i} + (1 - y_{i})\log(1 - p_{i}) \right\rbrack\]</span></p>
+<p>신경망 분류기는 이 구조를 다층으로 일반화한다.</p>
+<p><span class="math display">\[h^{(l)} = \phi(W^{(l)}h^{(l - 1)} + b^{(l)}),p = \text{softmax}(W^{(L)}h^{(L - 1)})\]</span></p>
+<p>중요한 점은 출력층의 소프트맥스 구조와 교차엔트로피 손실이 로지스틱 회귀와 동일한 확률적 해석을 유지한다는 사실이다. 차이는 표현력에 있으며, 신경망은 복잡한 비선형 결정경계를 학습하는 대신 해석 가능성은 감소한다.</p>
+</section>
+<section id="차원축소에서-pca와-오토인코더로의-확장" class="level4">
+<h4 class="anchored" data-anchor-id="차원축소에서-pca와-오토인코더로의-확장">3. 차원축소에서 PCA와 오토인코더로의 확장</h4>
+<p>주성분분석은 다음 최적화 문제로 정의된다.</p>
+<p><span class="math display">\[\max_{W^{\top}W = I}Var(XW) \leftrightarrow \min_{W} \parallel X - XWW^{\top} \parallel_{F}^{2}\]</span></p>
+<p>이는 분산을 최대한 보존하는 선형 투영이다.</p>
+<p>오토인코더는 이를 비선형으로 확장한다.</p>
+<p><span class="math display">\[z = f_{\theta}(x),\widehat{x} = g_{\phi}(z)\min_{\theta,\phi}\overset{n}{\sum_{i = 1}} \parallel x_{i} - {\widehat{x}}_{i} \parallel^{2}\]</span></p>
+<p>통계학적으로 오토인코더는 비선형 PCA로 해석할 수 있으며, 선형 가정으로 설명하기 어려운 고차원·비선형 구조를 효과적으로 요약한다. 다만 잠재공간의 해석은 PCA에 비해 상대적으로 어렵다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mlda_concepts_autoencode.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="군집분석에서-k-means와-표현-기반-군집으로의-확장" class="level4">
+<h4 class="anchored" data-anchor-id="군집분석에서-k-means와-표현-기반-군집으로의-확장">4. 군집분석에서 k-means와 표현 기반 군집으로의 확장</h4>
+<p>k-means는 다음 목적함수를 최소화한다.</p>
+<p><span class="math display">\[\min_{\{ C_{k}\}}\overset{K}{\sum_{k = 1}}\sum_{i \in C_{k}} \parallel x_{i} - \mu_{k} \parallel^{2}\]</span></p>
+<p>이는 거리 기반, 저차원 가정에 효과적인 방법이다.</p>
+<p>AI·ML 환경에서는 군집 이전에 표현학습을 결합한다.</p>
+<p><span class="math display">\[z_{i} = f_{\theta}(x_{i}),\text{cluster}(z_{i})\]</span></p>
+<p>또는 오토인코더의 잠재공간에서 군집을 수행한다.</p>
+<p>이는 군집이 단순히 거리의 문제가 아니라, 어떤 표현 공간에서 거리를 정의할 것인가의 문제로 확장되었음을 의미한다. 군집의 본질은 유지되되, 표현학습이 핵심 전처리 단계로 결합된다.</p>
+</section>
+<section id="시계열-분석과-딥러닝-모델의-접점" class="level4">
+<h4 class="anchored" data-anchor-id="시계열-분석과-딥러닝-모델의-접점">5. 시계열 분석과 딥러닝 모델의 접점</h4>
+<p>전통적 시계열 분석은 자기회귀 구조를 명시적으로 가정한다.</p>
+<p><span class="math display">\[y_{t} = \phi_{1}y_{t - 1} + \cdots + \phi_{p}y_{t - p} + \varepsilon_{t}\]</span></p>
+<p>이는 해석과 추론에 강점을 가진다.</p>
+<p>딥러닝 기반 시계열 모델은 이를 비선형·고차원으로 확장한다.</p>
+<p><span class="math display">\[h_{t} = f(h_{t - 1},x_{t}),y_{t} = g(h_{t})\]</span></p>
+<p>이 구조는 장기 의존성, 다변량 입력, 비정상성, 외생 변수 효과를 자연스럽게 통합한다.</p>
+<p>통계학적으로 이는 자기회귀 구조의 비선형 일반화로 해석할 수 있다. 예측 성능은 향상될 수 있으나, 모형 해석과 불확실성 표현은 별도의 장치가 필요하다.</p>
+</section>
+</section>
+<section id="chapter-10.-책임-있는-ai와-통계적-검증" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-10.-책임-있는-ai와-통계적-검증">Chapter 10. 책임 있는 AI와 통계적 검증</h3>
+<p>책임 있는 AI는 기술적 성능의 문제가 아니라, 통계적 사고의 문제이다. AI 모델을 평가하고 활용하는 과정에서 통계학이 제공하는 추론, 불확실성, 검증, 편향 점검의 원리는 여전히 중심적인 역할을 수행한다. 통계학은 AI의 한계를 드러내는 비판자가 아니라, AI가 사회적으로 신뢰받을 수 있도록 만드는 이론적 기반이다.</p>
+<p>결국 AI 시대에 요구되는 핵심 역량은 새로운 알고리즘을 아는 것이 아니라, 그 알고리즘의 결과를 어디까지 믿을 수 있는지를 판단할 수 있는 통계적 검증 능력이라 할 수 있다.</p>
+<section id="책임-있는-ai의-개념과-필요성" class="level4">
+<h4 class="anchored" data-anchor-id="책임-있는-ai의-개념과-필요성">1. 책임 있는 AI의 개념과 필요성</h4>
+<p>AI 시스템이 사회 전반에 광범위하게 적용되면서, 단순히 성능이 높은 모델을 넘어 책임 있는 AI의 필요성이 강조되고 있다. 책임 있는 AI란 예측 정확도나 효율성뿐 아니라, 공정성, 투명성, 재현성, 그리고 사회적 영향까지 함께 고려하는 AI 시스템을 의미한다.</p>
+<p>특히 정책 결정, 행정 서비스, 금융·의료 분야와 같이 개인과 집단의 삶에 직접적인 영향을 미치는 영역에서는, AI의 판단이 정당하고 검증 가능해야 한다. 이때 <span dir="rtl">”</span>모델이 잘 맞는다”는 사실만으로는 충분하지 않으며, 그 결과가 얼마나 신뢰할 수 있는지, 어떤 조건에서 유효한지, 누구에게 불리하게 작동할 가능성은 없는지에 대한 점검이 필수적이다.</p>
+<p>이러한 요구는 본질적으로 통계학이 오랫동안 다뤄 온 문제들과 맞닿아 있다.</p>
+</section>
+<section id="성능-중심-평가의-한계와-통계적-검증의-역할" class="level4">
+<h4 class="anchored" data-anchor-id="성능-중심-평가의-한계와-통계적-검증의-역할">2. 성능 중심 평가의 한계와 통계적 검증의 역할</h4>
+<p>머신러닝과 딥러닝에서는 종종 단일 성능 지표의 개선이 모델 우수성의 근거로 제시된다. 그러나 통계학적 관점에서 볼 때, 단일 수치의 성능은 항상 표본 변동성과 우연성을 내포하고 있다. 성능 향상이 관측되었다 하더라도, 그것이 우연에 의한 결과인지 체계적인 개선인지는 별도의 검증 없이는 판단할 수 없다.</p>
+<p>통계적 검증은 이러한 문제에 대한 해답을 제공한다. 반복 실험, 교차검증, 재표본추출을 통해 성능의 분포를 평가하고, 성능 차이에 대한 불확실성을 함께 제시함으로써 모델 평가를 추론의 문제로 다룬다. 이는 AI 모델의 성능을 절대적인 진리로 받아들이는 대신, 제한된 데이터에서 관측된 결과로 해석하도록 만든다.</p>
+<p>책임 있는 AI란 결국 <span dir="rtl">”</span>성능 수치에 겸손한 AI”라고도 볼 수 있다.</p>
+</section>
+<section id="편향과-공정성-문제에-대한-통계학적-시각" class="level4">
+<h4 class="anchored" data-anchor-id="편향과-공정성-문제에-대한-통계학적-시각">3. 편향과 공정성 문제에 대한 통계학적 시각</h4>
+<p>AI 모델의 편향과 공정성 문제는 기술적 오류라기보다 데이터와 추론 구조의 문제로 이해하는 것이 적절하다. 특정 집단에 대한 예측 오류가 체계적으로 다르게 나타난다면, 이는 표본 설계, 데이터 누락, 혹은 모델 구조에서 비롯된 통계적 문제일 가능성이 높다.</p>
+<p>통계학은 이러한 문제를 오래전부터 다뤄 왔다. 표본이 모집단을 대표하지 못할 때 발생하는 편향, 비무작위 결측에 따른 추정 왜곡, 하위 집단 분석에서의 불안정성 등은 모두 전통적인 통계적 주제이다. AI 모델 역시 이러한 점검 없이 사용될 경우, 평균적으로는 정확하지만 특정 집단에는 구조적으로 불리한 결과를 초래할 수 있다.</p>
+<p>따라서 책임 있는 AI는 공정성 지표의 계산을 넘어, 데이터 생성 과정과 표본 구조에 대한 통계적 검토를 포함해야 한다.</p>
+</section>
+<section id="불확실성-표현과-의사결정-책임" class="level4">
+<h4 class="anchored" data-anchor-id="불확실성-표현과-의사결정-책임">4. 불확실성 표현과 의사결정 책임</h4>
+<p>전통적 통계학의 중요한 특징 중 하나는 불확실성을 숨기지 않는다는 점이다. 신뢰구간, 분산, 유의확률은 분석 결과가 어디까지 신뢰 가능한지를 함께 제시한다. 이는 분석 결과를 의사결정의 보조 자료로 사용할 때 중요한 안전장치로 작동한다.</p>
+<p>반면 많은 AI 모델은 점 예측이나 단일 분류 결과만을 제공하며, 그 결과의 불확실성은 명시적으로 드러나지 않는 경우가 많다. 이러한 상황에서 AI의 판단이 절대적인 것으로 받아들여질 위험이 커진다.</p>
+<p>통계적 검증과 불확실성 표현은 AI 결과를 <span dir="rtl">”</span>결정”이 아닌 <span dir="rtl">”</span>근거 있는 제안”으로 위치시키는 역할을 한다. 이는 책임 있는 의사결정을 가능하게 하는 핵심 요소이다.</p>
+</section>
+<section id="재현성과-검증-가능성" class="level4">
+<h4 class="anchored" data-anchor-id="재현성과-검증-가능성">5. 재현성과 검증 가능성</h4>
+<p>책임 있는 AI에서 또 하나 중요한 요소는 재현성이다. 동일한 데이터와 절차를 사용했을 때 유사한 결과가 도출되어야 하며, 모델의 성능과 판단 과정은 외부에서 검증 가능해야 한다.</p>
+<p>통계학은 분석 절차의 명시, 가정의 공개, 검증 방법의 표준화를 통해 재현성을 확보해 왔다. AI 모델 역시 데이터 분할 방식, 학습 과정의 무작위성, 하이퍼파라미터 선택 기준 등을 투명하게 공개하지 않는다면, 그 결과를 신뢰하기 어렵다.</p>
+<p>이 점에서 통계적 검증은 책임 있는 AI의 사후 점검 도구가 아니라, 설계 단계부터 내재되어야 할 핵심 원리라 할 수 있다.</p>
+</section>
+</section>
+<section id="chapter-11.-통합적-시각-통계학과-ai의-공존" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-11.-통합적-시각-통계학과-ai의-공존">Chapter 11. 통합적 시각: 통계학과 AI의 공존</h3>
+<section id="통계학은-ai의-기초인가-대안인가" class="level4">
+<h4 class="anchored" data-anchor-id="통계학은-ai의-기초인가-대안인가">1. 통계학은 AI의 기초인가, 대안인가</h4>
+<p>통계학을 인공지능의 기초 학문으로만 이해하는 것은 충분하지 않다. 확률, 추정, 최적화, 일반화 이론이 AI 알고리즘의 수학적 토대를 이루고 있음은 분명하지만, 통계학의 역할은 그에 그치지 않는다. 통계학은 AI를 만들어내는 기반인 동시에, AI의 결과를 평가하고 통제하는 독립적인 방법론이다.</p>
+<p>기초로서의 통계학은 손실함수와 확률모형의 대응 관계, 학습과 추정의 동형성, 일반화 이론과 표본 이론의 연결을 통해 AI 알고리즘의 수학적 정합성을 제공한다. 반면 대안으로서의 통계학은 설명과 추론이 요구되는 문제, 소표본 환경에서의 고신뢰 분석, 정책·공공 의사결정과 같이 책임성과 검증이 중요한 영역에서 여전히 우선적인 선택지가 된다.</p>
+<p>따라서 통계학은 AI의 전 단계에 위치한 과거의 학문이 아니라, AI와 병렬적으로 공존하며 상호 보완적인 역할을 수행하는 분석 패러다임이다.</p>
+</section>
+<section id="ai-시대의-통계적-사고" class="level4">
+<h4 class="anchored" data-anchor-id="ai-시대의-통계적-사고">2. AI 시대의 통계적 사고</h4>
+<p>AI 시대에 통계적 사고의 중요성은 오히려 더욱 커졌다. 모델은 점점 복잡해지고, 데이터는 대규모화되며, 알고리즘은 자동화되고 있지만, 다음과 같은 질문은 여전히 인간의 판단을 요구한다.</p>
+<p>이 데이터는 무엇을 대표하는가.</p>
+<p>이 성능은 얼마나 안정적인가.</p>
+<p>이 결과는 우연에 의해 나타났을 가능성이 있는가.</p>
+<p>다른 집단이나 상황에서도 동일하게 작동하는가.</p>
+<p>이 질문들은 모두 전통적 통계학이 오랫동안 다뤄온 핵심 문제들이다. 이는 통계적 사고가 특정 알고리즘에 종속된 기술이 아니라, 알고리즘 이전에 존재하는 사고 체계임을 보여준다. AI는 이러한 사고를 계산적으로 구현하는 도구일 뿐이며, 통계적 판단을 대체하는 존재가 아니다.</p>
+</section>
+<section id="방법론-통합을-위한-교육-방향" class="level4">
+<h4 class="anchored" data-anchor-id="방법론-통합을-위한-교육-방향">3. 방법론 통합을 위한 교육 방향</h4>
+<p>AI 시대의 통계 교육은 단순히 머신러닝 과목을 추가하는 방식으로는 충분하지 않다. 필요한 것은 교육 구조 자체의 재설계이다. 통계 이론과 머신러닝 알고리즘을 분리하여 가르치기보다는, 두 방법론의 대응 관계와 공통 수학적 기반을 함께 제시해야 한다.</p>
+<p>이를 위해 추정과 검정을 학습과 검증의 관점에서 재해석하고, 수식 중심의 이론 교육과 계산 실험 기반의 교육을 병행할 필요가 있다. 특히 중요한 것은 학생들이 특정 방법을 기계적으로 적용하는 것이 아니라, 주어진 문제에 대해 왜 통계적 접근이 필요한지, 언제 머신러닝이나 딥러닝이 더 적절한지를 스스로 판단할 수 있도록 훈련하는 것이다.</p>
+<p>통계 교육의 목표는 알고리즘 숙련이 아니라 분석 판단 능력의 함양에 있어야 한다.</p>
+</section>
+<section id="책임-있는-ai와-통계적-검증" class="level4">
+<h4 class="anchored" data-anchor-id="책임-있는-ai와-통계적-검증">4. 책임 있는 AI와 통계적 검증</h4>
+<p>AI의 사회적 영향력이 커질수록, 그 책임은 기술 자체가 아니라 이를 설계하고 사용하는 인간에게 귀속된다. 이때 통계학은 책임 있는 AI를 구현하는 데 필요한 핵심 언어와 도구를 제공한다.</p>
+<p>통계학은 성능의 불확실성을 정량화하고, 편향과 공정성을 측정하며, 데이터 누락과 대표성 문제를 진단하고, 모델 비교의 정당성을 검증하는 체계를 이미 갖추고 있다. 이러한 검증 절차 없이는 AI 모델은 높은 정확도를 가지더라도 사회적으로 신뢰받기 어렵다.</p>
+<p>즉, 책임 있는 AI란 단순히 정확한 AI가 아니라, 검증 가능하고 설명 가능한 AI이며, 그 검증의 언어가 바로 통계학이다.</p>
+</section>
+<section id="향후-데이터-과학자의-핵심-역량" class="level4">
+<h4 class="anchored" data-anchor-id="향후-데이터-과학자의-핵심-역량">5. 향후 데이터 과학자의 핵심 역량</h4>
+<p>미래의 데이터 과학자에게 요구되는 핵심 역량은 특정 알고리즘에 대한 숙련도가 아니다. 중요한 것은 다음과 같은 판단 능력이다.</p>
+<p>첫째, 문제 정의 능력이다. 이는 분석 문제를 확률적·통계적 질문으로 재정의할 수 있는 능력을 의미한다.</p>
+<p>둘째, 방법 선택 판단력이다. 통계학, 머신러닝, 딥러닝 중 무엇이 목적에 부합하는지를 구분할 수 있어야 한다.</p>
+<p>셋째, 검증과 평가 설계 능력이다. 일반화, 비교, 불확실성을 함께 고려한 평가가 가능해야 한다.</p>
+<p>넷째, 윤리와 공정성에 대한 감수성이다. 편향과 책임 문제를 기술 외부의 문제가 아니라 분석의 일부로 인식해야 한다.</p>
+<p>다섯째, 통합적 사고력이다. 이론, 계산, 응용을 분절하지 않고 하나의 분석 흐름으로 연결할 수 있어야 한다.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "복사완료!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "복사완료!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2025 Kwon</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with Quarto</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
