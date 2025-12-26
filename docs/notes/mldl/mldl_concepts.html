@@ -517,22 +517,30 @@ window.Quarto = {
 <section id="예측-prediction-추론-inference" class="level5">
 <h5 class="anchored" data-anchor-id="예측-prediction-추론-inference">(2) 예측 prediction 추론 inference</h5>
 <p>우리가 함수 f를 추정하고자 하는 데에는 두 가지 주요한 이유가 있다. 하나는 예측이고, 다른 하나는 추론이다. 여기서는 이 두 가지를 차례로 살펴본다.</p>
-<p><strong>예측 (Prediction)</strong></p>
+</section>
+<section id="예측-prediction" class="level5">
+<h5 class="anchored" data-anchor-id="예측-prediction">예측 (Prediction)</h5>
 <p>많은 상황에서 입력 변수 X는 비교적 쉽게 관측할 수 있지만, 출력 변수 Y는 쉽게 얻기 어렵다. 이러한 경우, 오차항의 평균이 0이라고 가정할 수 있다면, 우리는 다음과 같이 Y를 예측할 수 있다.</p>
 <p><span class="math inline">\(\widehat{Y} = \widehat{f}(X)\)</span>, 여기서 <span class="math inline">\(\widehat{f}\)</span>는 미지의 함수 f에 대한 우리의 추정치를 의미하며, <span class="math inline">\(\widehat{Y}\)</span>는 그로부터 얻어진 예측값이다. 이와 같은 설정에서 <span class="math inline">\(\widehat{f}\)</span>는 종종 블랙박스로 취급된다. 즉, <span class="math inline">\(\widehat{f}\)</span>의 정확한 형태가 무엇인지는 크게 중요하지 않으며, 출력 Y를 얼마나 정확하게 예측하는가가 핵심적인 관심사가 된다.</p>
 <p>예를 들어, <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>가 실험실에서 쉽게 측정할 수 있는 환자의 혈액 샘플 특성들이고, <span class="math inline">\(Y\)</span>가 특정 약물에 대해 환자가 심각한 부작용을 겪을 위험도를 나타내는 변수라고 가정하자. 이 경우 X를 이용해 Y를 예측할 수 있다면, 부작용 위험이 높은 환자에게 해당 약물을 투여하지 않음으로써 위험을 피할 수 있다.</p>
-<p><strong>예측 오차의 두 가지 구성 요소</strong></p>
-<p>예측값 <span class="math inline">\(\widehat{Y}\)</span>가 실제 값 <span class="math inline">\(Y\)</span>를 얼마나 잘 예측하는지는 두 가지 요인에 의해 결정되며, 이를 각각 감소 가능한 오차와 감소 불가능한 오차(라고 부른다.</p>
+</section>
+<section id="예측-오차의-두-가지-구성-요소" class="level5">
+<h5 class="anchored" data-anchor-id="예측-오차의-두-가지-구성-요소">예측 오차의 두 가지 구성 요소</h5>
+<p>예측값 <span class="math inline">\(\widehat{Y}\)</span>가 실제 값 <span class="math inline">\(Y\)</span>를 얼마나 잘 예측하는지는 두 가지 요인에 의해 결정되며, 이를 각각 감소 가능한 오차와 감소 불가능한 오차라고 부른다.</p>
 <p>일반적으로 <span class="math inline">\(\widehat{f}\)</span>는 f의 완전한 추정치가 될 수 없으며, 이로 인해 예측에는 필연적으로 오차가 발생한다. 이러한 오차는 감소 가능한데, 이는 더 적절한 통계적 학습 기법을 사용함으로써 <span class="math inline">\(\widehat{f}\)</span>의 정확도를 개선할 수 있기 때문이다.</p>
 <p>그러나 설령 우리가 완벽하게 <span class="math inline">\(f\)</span>를 추정하여 <span class="math inline">\(\widehat{Y} = f(X)\)</span>라는 형태의 예측을 할 수 있다고 하더라도, 예측 오차는 여전히 0이 되지 않는다. 이는 <span class="math inline">\(Y\)</span>가 오차항 <span class="math inline">\(\varepsilon\)</span>에도 의존하기 때문이다. 오차항 <span class="math inline">\(\varepsilon\)</span>은 정의상 X로부터 예측할 수 없으므로, 이로 인해 발생하는 변동성은 예측 정확도에 항상 영향을 미친다. 이러한 오차를 감소 불가능한 오차라고 한다.</p>
 <p>감소 불가능한 오차는 왜 0이 될 수 없는가? 감소 불가능한 오차가 0보다 큰 이유는 여러 가지가 있다. 오차항 <span class="math inline">\(\varepsilon\)</span>에는 <span class="math inline">\(Y\)</span>를 예측하는 데 유용하지만 우리가 측정하지 못한 변수들이 포함될 수 있다. 이러한 변수들이 관측되지 않는 한, 함수 f는 이를 이용해 예측할 수 없다.</p>
 <p>또한 <span class="math inline">\(\varepsilon\)</span>에는 본질적으로 측정 불가능한 무작위 변동도 포함될 수 있다. 예를 들어, 특정 환자가 어떤 날에 약물에 대해 보이는 부작용 위험은 약물 자체의 미세한 제조 차이나, 그날 환자의 전반적인 컨디션과 같은 요인에 따라 달라질 수 있다.</p>
-<p><strong>예측 오차의 분해</strong></p>
+</section>
+<section id="예측-오차의-분해" class="level5">
+<h5 class="anchored" data-anchor-id="예측-오차의-분해">예측 오차의 분해</h5>
 <p>이제 하나의 추정된 함수 \hat{f}와 설명변수 집합 X가 주어져 있고, 이를 통해 \hat{Y} = \hat{f}(X)라는 예측을 한다고 가정하자. 이때 \hat{f}와 X는 고정되어 있으며, 오직 변동성은 오차항 \varepsilon에서만 발생한다고 가정하면, 다음과 같은 결과를 쉽게 도출할 수 있다.</p>
 <p><span class="math display">\[\mathbb{E}(Y - \widehat{Y})^{2} = \mathbb{E}\lbrack f(X) + \varepsilon - \widehat{f}(X)\rbrack^{2} = \underset{\text{감소 가능한 오차}}{\underbrace{\lbrack f(X) - \widehat{f}(X)\rbrack^{2}}} + \underset{\text{감소 불가능한 오차}}{\underbrace{Var(\varepsilon)}}\]</span></p>
 <p>여기서 <span class="math inline">\(\mathbb{E}(Y - \widehat{Y})^{2}\)</span>는 예측값과 실제 값 사이의 제곱 오차의 기댓값을 의미하며, <span class="math inline">\(Var(\varepsilon)\)</span>는 오차항 <span class="math inline">\(\varepsilon\)</span>에 수반된 분산을 나타낸다.</p>
 <p>ML 방법론의 초점은 함수 <span class="math inline">\(f\)</span>를 추정하는 다양한 기법을 통해 감소 가능한 오차를 최소화하는 것에 있다. 다만, 감소 불가능한 오차는 예측 정확도가 도달할 수 있는 상한선을 항상 결정한다는 점을 기억해야 한다. 이 상한선은 실제 문제에서는 거의 항상 알려져 있지 않다.</p>
-<p><strong>추론 (Inference)</strong></p>
+</section>
+<section id="추론-inference" class="level5">
+<h5 class="anchored" data-anchor-id="추론-inference">추론 (Inference)</h5>
 <p>우리는 종종 반응변수 <span class="math inline">\(Y\)</span>와 설명변수 <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>사이의 연관성을 이해하는 데 관심을 가진다. 이러한 상황에서도 함수 <span class="math inline">\(f\)</span>를 추정하고자 하지만, 우리의 목적은 반드시 <span class="math inline">\(Y\)</span>를 예측하는 데 있는 것은 아니다. 이 경우에는 <span class="math inline">\(\widehat{f}\)</span>를 더 이상 블랙박스로 취급할 수 없는데, 그 이유는 함수의 정확한 형태 자체를 이해할 필요가 있기 때문이다. 이러한 설정에서 우리는 다음과 같은 질문들에 관심을 갖게 된다.</p>
 <p>어떤 설명변수들이 반응변수와 연관되어 있는가? 많은 경우, 사용 가능한 설명변수들 중 실제로 <span class="math inline">\(Y\)</span>와 실질적인 연관성을 가지는 변수는 소수에 불과하다. 가능한 변수들이 매우 많은 상황에서, 그중 중요한 변수들을 식별하는 일은 응용 분야에 따라 매우 유용할 수 있다.</p>
 <p>각 설명변수와 반응변수 사이의 관계는 어떠한가? 어떤 설명변수는 값이 증가할수록 <span class="math inline">\(Y\)</span>도 증가하는 양의 관계를 가질 수 있으며, 다른 변수는 그 반대의 관계를 가질 수도 있다. 또한 함수 <span class="math inline">\(f\)</span>의 복잡성에 따라, 특정 설명변수와 <span class="math inline">\(Y\)</span> 사이의 관계는 다른 설명변수들의 값에 의존할 수도 있다.</p>
@@ -584,7 +592,7 @@ window.Quarto = {
 <p>관측되지 않은 변수의 영향을 포함한다.</p>
 <p>표본 크기는 유한하다.</p>
 <p>이로 인해 학습 데이터에서 잘 작동하는 모델이 진짜 데이터 생성 과정을 잘 반영한다고 보장할 수는 없다. 다시 말해,</p>
-<p>학습 데이터에 잘 맞는 모델 <strong>≠</strong> 데이터 생성 과정을 잘 반영한 모델</p>
+<p>학습 데이터에 잘 맞는 모델 ##### ≠##### 데이터 생성 과정을 잘 반영한 모델</p>
 <p>이러한 불완전성 때문에 머신러닝에서는 일반화 성능이 핵심 평가 기준이 된다. 교차검증, 정규화, 앙상블 기법 등은 모두 DGP를 직접 알 수 없는 상황에서, 그 영향을 간접적으로 통제하기 위한 장치라고 볼 수 있다.</p>
 </section>
 </section>
@@ -593,14 +601,17 @@ window.Quarto = {
 <p>머신러닝과 통계학을 연결하는 가장 중요한 개념 중 하나는 편향–분산(Bias–Variance)의 구분이다. 이 개념은 단순히 오차를 분해하는 기술적 장치가 아니라, 일반화 성능이 왜 제한될 수밖에 없는지를 설명해 주는 핵심 논리이다. 이 장에서는 편향과 분산을 전통적인 정의에서 벗어나, 데이터 생성 관점과 일반화 관점에서 다시 해석한다.</p>
 <section id="편향과-분산" class="level4">
 <h4 class="anchored" data-anchor-id="편향과-분산">1. 편향과 분산</h4>
-<p><strong>편향과 분산 정의</strong></p>
+<section id="편향과-분산-정의" class="level5">
+<h5 class="anchored" data-anchor-id="편향과-분산-정의">편향과 분산 정의</h5>
 <p>어떤 입력값 <span class="math inline">\(X = x\)</span>에 대해 반응변수 <span class="math inline">\(Y\)</span>가 생성된다고 하자. 우리는 이를 다음과 같이 표현해 왔다.</p>
 <p><span class="math inline">\(Y = f(x) + \varepsilon\)</span>, 여기서 <span class="math inline">\(f(x)\)</span>는 데이터 생성 과정에 내재된 참 함수이며, <span class="math inline">\(\varepsilon\)</span>는 평균이 0인 확률적 오차항이다. 이제 동일한 데이터 생성 과정을 여러 번 반복하여, 서로 다른 학습 데이터셋을 얻고, 그로부터 예측 함수 <span class="math inline">\(\widehat{f}(x)\)</span>를 추정한다고 가정하자.</p>
 <p>이때 예측 오차의 기댓값은 다음과 같이 분해될 수 있다.</p>
 <p><span class="math display">\[\mathbb{E}\lbrack(Y - \widehat{f}(x))^{2}\rbrack = \underset{\text{편향(Bias)}^{2}}{\underbrace{(\mathbb{E}\lbrack\widehat{f}(x)\rbrack - f(x))^{2}}} + \underset{\text{분산(Variance)}}{\underbrace{\mathbb{E}\lbrack(\widehat{f}(x) - \mathbb{E}\lbrack\widehat{f}(x)\rbrack)^{2}\rbrack}} + \underset{\text{감소 불가능한 오차}}{\underbrace{Var(\varepsilon)}}\]</span></p>
 <p>이 분해는 중요한 사실을 보여준다. 예측 오차는 단일한 원인으로 발생하는 것이 아니라, 모형의 평균적 오차(편향), 데이터 샘플에 대한 민감도(분산), 그리고 본질적으로 제거할 수 없는 변동성의 결합으로 나타난다.</p>
 <p>통계학에서 편향은 주로 <span dir="rtl">”</span>추정량이 참값을 평균적으로 얼마나 잘 맞추는가”의 문제로 이해된다. 반면 머신러닝에서는 편향이 모형이 데이터 생성 구조를 얼마나 단순화해서 가정하는가를 반영한다.</p>
-<p><strong>편향–분산 상충관계</strong></p>
+</section>
+<section id="편향분산-상충관계" class="level5">
+<h5 class="anchored" data-anchor-id="편향분산-상충관계">편향–분산 상충관계</h5>
 <p>테스트 MSE(Mean Squared Error, 평균제곱오차) <span class="math inline">\(\mathbb{E}(y_{0} - \widehat{f}(x_{0}))^{2}\)</span>는 점 <span class="math inline">\(x_{0}\)</span>에서의 기대 테스트 MSE를 의미하며, 이는 서로 다른 훈련 데이터 집합을 사용해 반복적으로 <span class="math inline">\(f\)</span>를 추정하고, 각각을 <span class="math inline">\(x_{0}\)</span>에서 평가했을 때 얻어지는 테스트 MSE의 평균을 뜻한다. 전체 기대 MSE는 테스트 집합에 포함된 모든 가능한 <span class="math inline">\(x_{0}\)</span>값에 대해 이 값을 평균함으로써 계산할 수 있다.</p>
 <p>기대 테스트 오차를 최소화하기 위해서는 낮은 분산과 낮은 편향을 동시에 달성하는 통계적 학습 방법을 선택해야 함을 알려준다. 그렇다면 통계적 학습 방법에서 말하는 분산과 편향이란 무엇인가?</p>
 <p>분산은 서로 다른 훈련 데이터 집합을 사용해 <span class="math inline">\(\widehat{f}\)</span>를 추정했을 때, 그 추정치가 얼마나 크게 변하는지를 의미한다. 훈련 데이터는 학습 방법을 적합시키는 데 사용되므로, 훈련 데이터가 달라지면 서로 다른 <span class="math inline">\(\widehat{f}\)</span>가 생성된다. 이상적으로는 훈련 데이터가 달라지더라도 f의 추정치는 크게 변하지 않아야 한다. 그러나 어떤 방법이 높은 분산을 가진다면, 훈련 데이터의 작은 변화가 <span class="math inline">\(\widehat{f}\)</span>에 큰 변화를 초래할 수 있다.</p>
@@ -609,20 +620,26 @@ window.Quarto = {
 <p>일반적인 규칙으로, 더 유연한 방법을 사용할수록 분산은 증가하고 편향은 감소한다. 이 두 양이 변화하는 상대적인 속도에 따라 테스트 MSE가 증가할지 감소할지가 결정된다. 방법의 유연성이 증가함에 따라 초기에는 편향이 분산보다 더 빠르게 감소하므로, 기대 테스트 MSE는 감소한다. 그러나 어느 시점 이후에는 유연성을 더 높여도 편향은 거의 줄지 않는 반면, 분산은 급격히 증가하기 시작한다. 이 경우 테스트 MSE는 다시 증가한다.</p>
 <p>편향–분산–테스트 MSE 간의 관계를 편향–분산 상충관계라고 부른다. 통계적 학습 방법에서 좋은 테스트 성능을 얻기 위해서는 낮은 분산과 낮은 제곱 편향이 모두 필요하다. 이를 상충관계라 부르는 이유는, 매우 낮은 편향과 높은 분산을 가진 방법(예: 모든 훈련 데이터를 정확히 통과하는 곡선)이나, 매우 낮은 분산과 높은 편향을 가진 방법(예: 수평선 적합)은 쉽게 얻을 수 있기 때문이다. 진정한 어려움은 편향과 분산이 모두 낮은 방법을 찾는 데 있다.</p>
 <p>현실에서는 참함수 <span class="math inline">\(f\)</span>가 관측되지 않으므로, 특정 학습 방법에 대한 테스트 MSE, 편향, 분산을 명시적으로 계산하는 것은 일반적으로 불가능하다. 그럼에도 불구하고, 분석 과정 전반에서 편향–분산 상충관계를 항상 염두에 두어야 한다. 본서에서는 편향을 거의 제거할 수 있을 정도로 매우 유연한 방법들도 다루지만, 이러한 방법이 항상 단순한 선형회귀보다 우수한 성능을 보장하는 것은 아니다. 예를 들어 참함수 <span class="math inline">\(f\)</span>가 실제로 선형이라면, 선형회귀는 편향이 0이 되므로 더 유연한 방법이 이를 능가하기는 매우 어렵다. 반대로 참함수 <span class="math inline">\(f\)</span>가 강하게 비선형이고 충분한 훈련 데이터가 주어진다면, 매우 유연한 방법이 더 나은 성능을 보일 수 있다.</p>
-<p><strong>유연한 학습방법이란?</strong></p>
+</section>
+<section id="유연한-학습방법이란" class="level5">
+<h5 class="anchored" data-anchor-id="유연한-학습방법이란">유연한 학습방법이란?</h5>
 <p>데이터가 보여주는 형태에 맞추어 함수 f의 모양을 자유롭게 변화시킬 수 있는 정도가 큰 학습 방법을 유연한 학습 방법이라 한다. 이는 단순히 <span dir="rtl">”</span>복잡한 모델”이라는 뜻이 아니라, 함수 공간에서 허용되는 자유도의 크기를 가리키는 개념이다.</p>
 <p>통계적 학습에서 방법의 유연성(flexibility) 이란 훈련 데이터의 작은 변화에도 추정된 함수 <span class="math inline">\(\widehat{f}\)</span>가 얼마나 크게 변할 수 있는가, 또는 <span class="math inline">\(\widehat{f}\)</span>가 가질 수 있는 형태의 범위가 얼마나 넓은가를 의미한다.</p>
 <p>즉, 유연한 방법일수록 다양한 비선형 구조를 표현할 수 있고, 데이터에 더 밀착된 적합이 가능하다.</p>
 <p>비유연한 방법은 함수 형태가 강하게 제한되고 데이터의 전체적인 경향만 반영되며 편향은 크고, 분산은 작다. 예를 들면, 단순 평균 모델, 선형회귀, 낮은 차수의 다항회귀 등 이다.</p>
 <p>유연한 방법은 함수 형태에 대한 제약이 약하며, 국소적 패턴까지 포착 가능하며 편향은 작고, 분산은 크다. 예를 들면, 고차 다항회귀, k-NN, 스플라인(자유도 큰 경우), 결정트리(깊은 트리), 신경망(은닉층·노드 많을수록)</p>
-<p><strong>유연성과 편향-분산의 연결</strong></p>
+</section>
+<section id="유연성과-편향-분산의-연결" class="level5">
+<h5 class="anchored" data-anchor-id="유연성과-편향-분산의-연결">유연성과 편향-분산의 연결</h5>
 <p>유연성 ↑ → Bias ↓ (참함수에 더 가까워질 수 있음) → Variance ↑ (데이터 변화에 민감)</p>
 <p>유연성 ↓ → Bias ↑ → Variance ↓</p>
 <p>따라서 유연한 방법은 <span dir="rtl">”</span>잘 맞출 수 있지만, 불안정할 수 있는 방법” 이라고 요약할 수 있다.</p>
 </section>
+</section>
 <section id="ml-모델-선택" class="level4">
 <h4 class="anchored" data-anchor-id="ml-모델-선택">2. ML 모델 선택</h4>
-<p><strong>유연성과 복잡도 개념</strong></p>
+<section id="유연성과-복잡도-개념" class="level5">
+<h5 class="anchored" data-anchor-id="유연성과-복잡도-개념">유연성과 복잡도 개념</h5>
 <p>통계적 학습에서 흔히 유연성과 복잡도를 같은 의미로 사용하지만, 엄밀히 말하면 두 개념은 동일하지 않다. 복잡도는 모형의 구조적 특성을 설명하는 개념인 반면, 유연성은 그 구조가 데이터에 어떻게 반응하는가를 설명하는 개념이다. 즉, 복잡도는 모형의 설계 차원에 속하고, 유연성은 학습 결과의 행동 차원에 속한다.</p>
 <p>복잡도는 모형이 사전에 허용하는 구조의 크기나 풍부함을 의미한다. 이는 보통 모형이 갖는 형식적 자유도로 표현된다. 예를 들어 모수의 개수, 다항식의 차수, 결정트리의 깊이, 신경망의 층 수와 노드 수와 같은 요소들은 모두 모형의 복잡도를 증가시킨다. 복잡도는 모델을 설계하는 단계에서 비교적 명확하게 정의할 수 있으며, 데이터와 무관하게 기술되는 경우가 많다.</p>
 <p>이 관점에서 복잡도는 <span dir="rtl">”</span>이 모형이 이론적으로 얼마나 복잡한 함수를 표현할 수 있는가”를 나타낸다.</p>
@@ -631,11 +648,15 @@ window.Quarto = {
 <p>복잡도 → *<span dir="rtl">”</span>얼마나 복잡한 모형을 설계했는가”*에 대한 개념이다.</p>
 <p>유연성 → *<span dir="rtl">”</span>그 모형이 데이터에 얼마나 민감하게 반응하는가”*에 대한 개념이다.</p>
 <p>복잡도는 유연성의 잠재적 상한선을 제공하지만, 유연성 그 자체는 아니다.</p>
-<p><strong>과적합과 과소적합의 본질</strong></p>
+</section>
+<section id="과적합과-과소적합의-본질" class="level5">
+<h5 class="anchored" data-anchor-id="과적합과-과소적합의-본질">과적합과 과소적합의 본질</h5>
 <p>편향과 분산의 관점에서 보면, 과소적합(underfitting)과 과적합(overfitting)은 매우 명확하게 구분된다. 과소적합은 모형이 지나치게 단순하여 데이터 생성 과정의 구조를 충분히 포착하지 못하는 경우이다. 이때 모형은 높은 편향을 가지며, 학습 데이터와 테스트 데이터 모두에서 성능이 좋지 않다.</p>
 <p>반대로 과적합은 모형이 학습 데이터의 우연적 변동까지 학습해 버린 경우이다. 이때 모형은 편향은 작을 수 있으나, 분산이 매우 커진다. 학습 데이터에서는 성능이 우수하지만, 새로운 데이터에서는 성능이 급격히 저하된다.</p>
 <p>중요한 점은 과적합이 <span dir="rtl">”</span>모형이 너무 복잡하다”는 직관적 설명만으로는 충분히 이해되지 않는다는 것이다. 보다 정확히 말하면, 과적합은 모형의 복잡도와 데이터 생성 과정의 불확실성 사이의 불균형에서 발생한다.</p>
-<p><strong>모델 복잡도와 일반화 성능</strong></p>
+</section>
+<section id="모델-복잡도와-일반화-성능" class="level5">
+<h5 class="anchored" data-anchor-id="모델-복잡도와-일반화-성능">모델 복잡도와 일반화 성능</h5>
 <p>모형의 복잡도가 증가하면 일반적으로 편향은 감소하고, 분산은 증가한다. 이는 거의 모든 학습 방법에서 관측되는 현상이다. 따라서 일반화 성능은 다음과 같은 절충의 결과로 결정된다.</p>
 <ul>
 <li>단순한 모형: 높은 편향, 낮은 분산</li>
@@ -643,7 +664,9 @@ window.Quarto = {
 </ul>
 <p>이 관계는 <span dir="rtl">”</span>복잡한 모델이 항상 나쁘다”거나 <span dir="rtl">”</span>단순한 모델이 항상 좋다”는 식의 결론을 허용하지 않는다. 중요한 것은 데이터 생성 과정의 복잡도에 비해 모형이 얼마나 적절한가이다.</p>
 <p>데이터 생성 과정 관점에서 보면, 최적의 모델 복잡도란 참 함수 <span class="math inline">\(f\)</span>의 구조와 표본 크기, 그리고 오차항의 분산이 결합된 결과이다. 즉, 데이터가 적거나 노이즈가 큰 상황에서는 복잡한 모형이 오히려 일반화 성능을 악화시킬 수 있다.</p>
-<p><strong>ML 모델 선택의 통계적 기준</strong></p>
+</section>
+<section id="ml-모델-선택의-통계적-기준" class="level5">
+<h5 class="anchored" data-anchor-id="ml-모델-선택의-통계적-기준">ML 모델 선택의 통계적 기준</h5>
 <p>머신러닝에서 모델 선택은 흔히 <span dir="rtl">”</span>어떤 모델이 가장 정확한가”라는 질문으로 요약된다. 그러나 이 정확도는 반드시 일반화 성능을 기준으로 평가되어야 한다.</p>
 <p>통계적 관점에서 보면, 모델 선택이란 결국 편향과 분산 사이의 균형점을 찾는 문제이다. 교차검증은 바로 이 균형을 데이터로부터 추정하기 위한 도구이며, 정규화는 분산을 인위적으로 제어하는 장치이다.</p>
 <p>이러한 맥락에서 머신러닝의 다양한 기법들은 서로 다른 방식으로 동일한 문제를 해결하고 있다고 볼 수 있다.</p>
@@ -653,6 +676,7 @@ window.Quarto = {
 <li>조기 종료: 학습 과정에서 과적합을 사전에 차단</li>
 </ul>
 <p>즉, ML 모델 선택은 단순한 알고리즘 경쟁이 아니라, 통계적 오차 구조에 대한 선택이다.</p>
+</section>
 </section>
 <section id="우리는-함수-f를-어떻게-추정하는가" class="level4">
 <h4 class="anchored" data-anchor-id="우리는-함수-f를-어떻게-추정하는가">3. 우리는 함수 <span class="math inline">\(f\)</span>를 어떻게 추정하는가?</h4>
@@ -676,15 +700,21 @@ window.Quarto = {
 <p>함수 <span class="math inline">\(f\)</span>에 대해 모수적 형태를 가정하면, 완전히 임의적인 함수 <span class="math inline">\(f\)</span> 전체를 적합시키는 것보다 <span class="math inline">\(\beta_{0},\beta_{1},\ldots,\beta_{p}\)</span>와 같은 모수들의 집합을 추정하는 것이 일반적으로 훨씬 쉽기 때문에, <span class="math inline">\(f\)</span>의 추정 문제가 크게 단순화된다.</p>
 <p>하지만 모수적 접근법의 잠재적인 단점은, 우리가 선택한 모형이 실제로 존재하는 미지의 참함수 f의 형태와 대부분 일치하지 않는다는 점이다. 만약 선택한 모형이 참함수 <span class="math inline">\(f\)</span>와 크게 다르다면, 그에 따른 추정 결과 역시 부정확해질 수밖에 없다.</p>
 <p>이 문제를 완화하기 위한 한 가지 방법은, <span class="math inline">\(f\)</span>의 다양한 가능한 함수 형태를 잘 적합할 수 있는 유연한 모형을 선택하는 것이다. 그러나 일반적으로 더 유연한 모형을 적합시키기 위해서는 더 많은 수의 모수를 추정해야 한다. 이러한 복잡한 모형들은 종종 과적합 이라 불리는 현상을 초래하는데, 이는 본질적으로 모형이 데이터에 포함된 오차, 즉 잡음을 지나치게 충실히 따라가게 된다는 것을 의미한다.</p>
-<p><strong>비모수적 방법 정의</strong></p>
+</section>
+<section id="비모수적-방법-정의" class="level5">
+<h5 class="anchored" data-anchor-id="비모수적-방법-정의">비모수적 방법 정의</h5>
 <p><span class="math inline">\(Y = f(X) + \varepsilon\)</span>에서 <span class="math inline">\(f\)</span>의 형태(선형, 다항식 등)를 사전에 규정하지 않는다. 대신 관측된 데이터에 최대한 가깝게 적합하면서도, 지나치게 요동치지 않도록 제약을 두어 <span class="math inline">\(f\)</span>를 추정한다.</p>
 <p>즉, 문제를 <span dir="rtl">”</span>몇 개의 모수 <span class="math inline">\(\beta\)</span>를 추정한다”로 바꾸지 않고, <span dir="rtl">”</span>함수 <span class="math inline">\(f\)</span> 자체를 데이터로부터 학습한다”는 관점에서 접근한다.</p>
-<p><strong>비모수적 방법 특징</strong></p>
+</section>
+<section id="비모수적-방법-특징" class="level5">
+<h5 class="anchored" data-anchor-id="비모수적-방법-특징">비모수적 방법 특징</h5>
 <p>1. 함수 형태에 대한 가정이 없다. → 선형성, 특정 다항 차수 등 모형 가정을 두지 않으며 다양한 곡률과 비선형 구조를 자연스럽게 표현할 수 있다.</p>
 <p>2. 유연성이 매우 높다. → 데이터가 보여주는 구조를 그대로 반영할 수 있고 참함수 <span class="math inline">\(f\)</span>가 복잡한 형태일수록 장점이 커진다.</p>
 <p>3. 많은 데이터가 필요하다. → 소수의 모수로 요약되지 않기 때문에 안정적인 추정을 위해 관측치 수가 충분히 커야 한다.</p>
 <p>4. 과적합 위험이 존재한다. → 유연성이 큰 만큼, 잡음까지 학습할 가능성이 있고 매끄러움, 이웃 크기, 규제가 핵심이다.</p>
-<p><strong>대표적인 비모수적 방법 예시</strong></p>
+</section>
+<section id="대표적인-비모수적-방법-예시" class="level5">
+<h5 class="anchored" data-anchor-id="대표적인-비모수적-방법-예시">대표적인 비모수적 방법 예시</h5>
 <ul>
 <li>커널 회귀(Kernel Regression)</li>
 <li>k-최근접 이웃(k-NN)</li>
@@ -739,15 +769,21 @@ window.Quarto = {
 </tbody>
 </table>
 <p>지도학습은 반응변수가 존재하는 상황에서 예측과 추론을 수행하는 방법이며, 비지도학습은 반응변수가 없는 상황에서 데이터의 구조를 탐색하는 방법이다. 준지도학습은 이 두 접근법의 중간 영역으로, 제한된 라벨 정보를 최대한 활용하려는 현실적인 학습 전략이라 할 수 있다.</p>
-<p><strong>지도학습 (Supervised Learning)</strong></p>
+<section id="지도학습-supervised-learning" class="level5">
+<h5 class="anchored" data-anchor-id="지도학습-supervised-learning">지도학습 (Supervised Learning)</h5>
 <p>각 관측치마다 설명변수 <span class="math inline">\(X\)</span>와 이에 대응하는 반응변수 <span class="math inline">\(Y\)</span>가 함께 주어진 상황을 다룬다. 이 경우 분석의 목적은 새로운 관측치에 대한 반응변수를 정확하게 예측하거나, 설명변수와 반응변수 사이의 관계를 해석하는 데 있다. 다시 말해, 지도학습은 <span dir="rtl">”</span>입력이 주어졌을 때 출력은 무엇인가”라는 질문에 답하고자 한다. 선형회귀와 로지스틱 회귀와 같은 전통적인 통계 모형뿐 아니라, 일반화 가법모형(GAM), 부스팅, 서포트 벡터 머신 등 대부분의 현대적 예측 방법들 역시 지도학습의 범주에 속한다.</p>
-<p><strong>비지도학습 (Unsupervised Learning)</strong></p>
+</section>
+<section id="비지도학습-unsupervised-learning" class="level5">
+<h5 class="anchored" data-anchor-id="비지도학습-unsupervised-learning">비지도학습 (Unsupervised Learning)</h5>
 <p>각 관측치에 대해 설명변수 <span class="math inline">\(X\)</span>만 관측되고, 반응변수 <span class="math inline">\(Y\)</span>는 존재하지 않는 경우를 다룬다. 예측해야 할 대상이 없기 때문에 회귀나 분류와 같은 지도학습 모형을 적용할 수 없으며, 분석의 목표 또한 다르다. 비지도학습의 목적은 데이터에 내재된 구조를 탐색하고, 변수들 간 또는 관측치들 간의 관계를 이해하는 데 있다. 이 과정은 분석을 지도해 줄 반응변수가 없다는 점에서 본질적으로 더 어렵다.</p>
 <p>비지도학습의 대표적인 예가 군집분석이다. 군집분석은 관측된 변수들을 바탕으로 관측치들이 몇 개의 서로 구별되는 그룹으로 나뉘는지를 규명하는 것을 목표로 한다. 예를 들어 시장 세분화 연구에서는 고객의 소득, 거주 지역, 소비 성향과 같은 여러 특성을 관측할 수 있지만, 각 고객이 어떤 유형의 소비자에 속하는지는 사전에 알 수 없는 경우가 많다. 이때 군집분석을 통해 유사한 특성을 가진 고객들을 하나의 그룹으로 묶음으로써, 잠재적인 고객 유형을 식별할 수 있다. 이러한 그룹화는 이후 마케팅 전략이나 정책 설계의 기초 자료로 활용될 수 있다.</p>
 <p>비지도학습 문제는 변수의 수가 많아질수록 더욱 복잡해진다. 변수가 두 개일 경우에는 산점도를 통해 직관적으로 구조를 파악할 수 있지만, 실제 데이터에서는 수십 개 이상의 변수가 포함되는 경우가 일반적이다. 이 경우 가능한 산점도의 수는 급격히 증가하며, 시각적 탐색만으로는 구조를 파악하기 어렵다. 따라서 자동화된 군집화 기법과 차원축소 방법이 비지도학습에서 중요한 역할을 한다.</p>
-<p><strong>준지도학습 (Semi-Supervised Learning)</strong></p>
+</section>
+<section id="준지도학습-semi-supervised-learning" class="level5">
+<h5 class="anchored" data-anchor-id="준지도학습-semi-supervised-learning">준지도학습 (Semi-Supervised Learning)</h5>
 <p>현실의 데이터 분석에서는 지도학습과 비지도학습이 명확히 구분되지 않는 경우도 존재한다. 예를 들어 전체 관측치 중 일부에 대해서만 반응변수가 관측되고, 나머지 관측치에는 설명변수만 존재하는 상황을 생각해 볼 수 있다. 이러한 상황은 설명변수는 비교적 저렴하게 측정할 수 있지만, 반응변수는 비용이나 시간 문제로 인해 제한적으로만 수집 가능한 경우에 자주 발생한다.</p>
 <p>이와 같은 설정을 준지도학습이라 한다. 준지도학습의 목적은 반응변수가 관측된 소수의 데이터와, 반응변수가 없는 다수의 데이터를 동시에 활용하여 학습 성능을 향상시키는 데 있다. 즉, 지도학습의 정보와 비지도학습의 구조 정보를 결합하여 보다 효율적인 학습을 수행하고자 하는 접근법이다.</p>
+</section>
 </section>
 <section id="지도학습에서의-예측과-추론" class="level4">
 <h4 class="anchored" data-anchor-id="지도학습에서의-예측과-추론">4. 지도학습에서의 예측과 추론</h4>
