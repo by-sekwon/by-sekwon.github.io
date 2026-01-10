@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 예측방법. 3.규제 회귀분석 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2757cfadcc89ddbfb9e61569f8c3689f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math/index.html"> 
+<span class="menu-text">기초수학</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/survey/index.html"> 
+<span class="menu-text">조사방법론</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mda/index.html"> 
+<span class="menu-text">다변량분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl/index.html"> 
+<span class="menu-text">머신·딥러닝 개념 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/mldl_method/index.html" aria-current="page"> 
+<span class="menu-text">머신·딥러닝 방법론 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_method/mldlmethod_prediction_regulation.html">📄 1.예측방법: 규제회귀분석</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【HOME】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 0.MLDL 방법론 소개</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 1.예측방법: 서론</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_reg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 1.예측방법: 회귀분석</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_regulation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 1.예측방법: 규제회귀분석</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">contents</h2>
+   
+  <ul>
+  <li><a href="#chapter-3.-규제회귀분석" id="toc-chapter-3.-규제회귀분석" class="nav-link active" data-scroll-target="#chapter-3.-규제회귀분석">Chapter 3. 규제회귀분석</a>
+  <ul>
+  <li><a href="#규제-회귀개념" id="toc-규제-회귀개념" class="nav-link" data-scroll-target="#규제-회귀개념">1. 규제 회귀개념</a></li>
+  <li><a href="#ridge-회귀-l2-규제" id="toc-ridge-회귀-l2-규제" class="nav-link" data-scroll-target="#ridge-회귀-l2-규제">2. Ridge 회귀 (L2 규제)</a></li>
+  <li><a href="#lasso-회귀-l1-규제" id="toc-lasso-회귀-l1-규제" class="nav-link" data-scroll-target="#lasso-회귀-l1-규제">3. Lasso 회귀 (L1 규제)</a></li>
+  <li><a href="#elastic-net혼합-규제" id="toc-elastic-net혼합-규제" class="nav-link" data-scroll-target="#elastic-net혼합-규제">4. Elastic Net(혼합 규제)</a></li>
+  <li><a href="#사례분석" id="toc-사례분석" class="nav-link" data-scroll-target="#사례분석">5. 사례분석</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 예측방법. 3.규제 회귀분석</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-3.-규제회귀분석" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-규제회귀분석">Chapter 3. 규제회귀분석</h3>
+<section id="규제-회귀개념" class="level4">
+<h4 class="anchored" data-anchor-id="규제-회귀개념">1. 규제 회귀개념</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_regulation_concept.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<p>변수선택 방법은 전체 설명변수들 중 일부만 포함한 선형모형을 최소제곱으로 적합하는 방식이다. 이에 대한 대안으로, p개의 모든 설명변수를 포함하되 계수 추정치에 제약 또는 규제를 가해, 계수들을 0 쪽으로 수축 시키는 방법을 사용할 수 있다.</p>
+<p>처음에는 왜 이런 제약이 적합을 개선하는지 직관적으로 분명하지 않을 수 있으나, 계수를 0 방향으로 수축시키면 계수 추정 분산을 크게 줄일 수 있음이 알려져 있다. 0으로 수축시키는 대표적 방법이 Ridge 회귀와 Lasso이다.</p>
+<section id="ols-한계" class="level5">
+<h5 class="anchored" data-anchor-id="ols-한계">OLS 한계</h5>
+<p>선형회귀는 잔차제곱합(SSE)을 최소화하는 계수 <span class="math inline">\(\beta_{0},\beta_{1},\ldots,\beta_{p}\)</span>를 선택하는 방법이다.</p>
+<p><span class="math inline">\(SSE = \overset{n}{\sum_{i = 1}}\left( y_{i} - \beta_{0} - \overset{p}{\sum_{j = 1}}\beta_{j}x_{ij} \right)^{2}\)</span>. OLS는 단순하고 해석이 용이하지만, 다음 상황에서 예측이 불안정해지기 쉽다.</p>
+<p>다중공선성이 큰 경우: <span class="math inline">\(X^{\top}X\)</span>가 불안정해져 계수 추정 분산이 커지기 쉽다.</p>
+<p>고차원(p가 크거나 <span class="math inline">\(p \geq n\)</span>)인 경우: OLS가 불안정하거나 해가 유일하지 않을 수 있다.</p>
+<p>과적합이 발생하기 쉬운 경우: 훈련 데이터에는 잘 맞지만 새 데이터에서 오차가 커질 수 있다.</p>
+<p>규제 회귀는 <span dir="rtl">”</span>데이터 적합도”에 더해 <span dir="rtl">”</span>계수의 복잡도”에 벌점(penalty)을 부여하여, 계수를 0 방향으로 수축시키는 방식이다. 일반형은 다음과 같다.</p>
+<p><span class="math inline">\(\widehat{\beta}(\lambda) = \arg\min_{\beta} \parallel y - X\beta \parallel^{2} + \lambda P(\beta),\lambda \geq 0\)</span>, 여기서 <span class="math inline">\(P(\beta)\)</span>는 패널티 함수, <span class="math inline">\(\lambda\)</span>는 규제 강도(tuning parameter)이다. <span class="math inline">\(\lambda\)</span>가 커질수록 계수는 더 강하게 0 방향으로 수축되어 모형 복잡도가 줄어든다.</p>
+</section>
+<section id="biasvariance-trade-off-관점" class="level5">
+<h5 class="anchored" data-anchor-id="biasvariance-trade-off-관점">Bias–Variance trade-off 관점</h5>
+<p>규제의 핵심 목적은 분산(variance)을 줄이기 위해 편향(bias)을 일부 허용하는 데 있다. 일반적으로 <span class="math inline">\(\lambda\)</span>를 증가시키면 분산은 감소하는 경향이 있고 편향은 증가하는 경향이 있다.</p>
+<p>따라서 테스트 오차(예: MSE)는 <span class="math inline">\(\lambda\)</span>에 대해 대개 <span dir="rtl">”</span>그릇(U) 모양”을 보이며, 최적의 <span class="math inline">\(\lambda\)</span>가 존재한다. 작은 <span class="math inline">\(\lambda\)</span> 구간에서는 분산이 빠르게 줄어 테스트 오차가 감소할 수 있고, 너무 큰 <span class="math inline">\(\lambda\)</span>에서는 편향이 커져 테스트 오차가 다시 증가한다는 그림(교재의 전형적 설명)이 이를 직관적으로 보여준다.</p>
+</section>
+</section>
+<section id="ridge-회귀-l2-규제" class="level4">
+<h4 class="anchored" data-anchor-id="ridge-회귀-l2-규제">2. Ridge 회귀 (L2 규제)</h4>
+<section id="패널티-함수-정의" class="level5">
+<h5 class="anchored" data-anchor-id="패널티-함수-정의">패널티 함수 정의</h5>
+<p>Ridge 회귀는 최소제곱과 매우 유사하지만, 계수는 SSE가 아니라 다음 양을 최소화하여 구한다.</p>
+<p><span class="math inline">\(\overset{n}{\sum_{i = 1}}\left( y_{i} - \beta_{0} - \overset{p}{\sum_{j = 1}}\beta_{j}x_{ij} \right)^{2} + \lambda\overset{p}{\sum_{j = 1}}\beta_{j}^{2} = SSE + \lambda\overset{p}{\sum_{j = 1}}\beta_{j}^{2}\)</span>, 여기서 <span class="math inline">\(\lambda \geq 0\)</span>는 튜닝 파라미터이다. 첫 항은 OLS와 마찬가지로 SSE를 작게 만들어 데이터를 잘 맞추려는 것이고, 둘째 항 <span class="math inline">\(\lambda\sum_{j}\beta_{j}^{2}\)</span>는 수축 패널티로서 <span class="math inline">\(\beta_{1},\ldots,\beta_{p}\)</span>가 0에 가까울수록 작아진다. 따라서 이 항은 <span class="math inline">\(\beta_{j}\)</span>들이 0 쪽으로 수축되도록 만든다.</p>
+<p><span class="math inline">\(\lambda\)</span>는 두 항의 상대적 영향력을 조절한다. <span class="math inline">\(\lambda = 0\)</span>이면 패널티가 없어져 Ridge는 OLS와 같아지고, <span class="math inline">\(\lambda \rightarrow \infty\)</span>이면 패널티 영향이 커져 Ridge 계수들은 0에 가까워진다. OLS가 단 하나의 계수해만 주는 것과 달리, Ridge는 <span class="math inline">\(\lambda\)</span> 값마다 서로 다른 계수해 <span class="math inline">\({\widehat{\beta}}_{\lambda}^{R}\)</span>를 낳는다. 그러므로 좋은 <span class="math inline">\(\lambda\)</span>선택이 핵심이다.</p>
+</section>
+<section id="절편-beta_0는-왜-벌점에서-제외하는가" class="level5">
+<h5 class="anchored" data-anchor-id="절편-beta_0는-왜-벌점에서-제외하는가">절편 <span class="math inline">\(\beta_{0}\)</span>는 왜 벌점에서 제외하는가</h5>
+<p>패널티는 <span class="math inline">\(\beta_{1},\ldots,\beta_{p}\)</span>에 적용되며 절편 <span class="math inline">\(\beta_{0}\)</span>에는 적용되지 않는다. 관심은 각 설명변수와 반응변수 사이의 연관(기울기)을 수축하는 것이지, <span dir="rtl">”</span>모든 <span class="math inline">\(x_{ij} = 0\)</span>“일 때의 평균 수준을 나타내는 절편까지 수축하고 싶지는 않기 때문이다.</p>
+<p>설명변수들이 Ridge 적용 전에 평균 0이 되도록 중심화(centered)되어 있다고 가정하면, 절편 추정치는 <span class="math inline">\({\widehat{\beta}}_{0} = \overline{y} = \sum_{i}y_{i}/n\)</span>형태가 된다.</p>
+</section>
+<section id="동치-제약식constrained-form" class="level5">
+<h5 class="anchored" data-anchor-id="동치-제약식constrained-form">동치 제약식(constrained form)</h5>
+<p>Ridge는 다음 제약식 문제와 동치이다.</p>
+<p><span class="math inline">\(\min_{\beta} \parallel y - X\beta \parallel^{2}\text{s.t.}\overset{p}{\sum_{j = 1}}\beta_{j}^{2} \leq s\)</span>. 어떤 <span class="math inline">\(\lambda\)</span>에 대해 대응하는 s가 존재하여 같은 해를 준다. 이 관점에서 s는 <span dir="rtl">”</span>계수 크기에 대한 예산”이며, Ridge는 L2-예산 안에서 SSE를 최소화하는 방법으로 해석된다.</p>
+</section>
+<section id="표준화scaling가-필수인-이유" class="level5">
+<h5 class="anchored" data-anchor-id="표준화scaling가-필수인-이유">표준화(Scaling)가 필수인 이유</h5>
+<p>OLS 계수는 스케일 등변성(scale equivariant) 을 가진다. 즉 어떤 예측변수 <span class="math inline">\(X_{j}\)</span>를 상수 c배로 스케일링하면 OLS 계수 <span class="math inline">\({\widehat{\beta}}_{j}\)</span>는 1/c 배로 변해, <span class="math inline">\(X_{j}{\widehat{\beta}}_{j}\)</span>는 동일하게 유지된다는 성질이다.</p>
+<p>하지만 Ridge는 <span class="math inline">\(\sum\beta_{j}^{2}\)</span>항 때문에, 어떤 변수의 스케일을 바꾸면 계수해가 단순히 1/c로만 바뀌지 않고, <span class="math inline">\(X_{j}{\widehat{\beta}}_{j,\lambda}^{R}\)</span> 자체가 <span class="math inline">\(\lambda\)</span>뿐 아니라 변수들의 스케일에도 의존하게 된다. 심지어 다른 예측변수들의 스케일까지 영향을 줄 수 있다고 말한다.</p>
+<p>그래서 Ridge는 예측변수들을 표준화한 뒤 적용하는 것이 좋다.</p>
+<p><span class="math display">\[{\overset{˜}{x}}_{ij} = \frac{x_{ij}}{\sqrt{\frac{1}{n}\sum_{i = 1}^{n}(x_{ij} - {\overline{x}}_{j})^{2}}}\]</span></p>
+<p>분모는 j번째 예측변수의 (표본)표준편차이므로 표준화된 예측변수들은 표준편차가 1이 된다. 그 결과 최종 적합은 예측변수 측정 단위(스케일)에 의존하지 않게 된다.</p>
+</section>
+<section id="ridge가-ols보다-나아질-수-있는-이유" class="level5">
+<h5 class="anchored" data-anchor-id="ridge가-ols보다-나아질-수-있는-이유">Ridge가 OLS보다 나아질 수 있는 이유</h5>
+<p>Ridge의 장점은 편향–분산 트레이드오프에서 나온다. <span class="math inline">\(\lambda\)</span>가 커질수록 Ridge 적합의 유연성은 감소하여 분산은 감소하고 편향은 증가한다.</p>
+<ul>
+<li><span class="math inline">\(\lambda = 0\)</span>: (OLS에 해당)에서는 편향은 없지만 분산이 크다.</li>
+<li><span class="math inline">\(\lambda\)</span>를 증가시키면 계수 수축으로 예측의 분산이 크게 줄어들고, 편향은 약간 증가한다.</li>
+<li>테스트 MSE는 대략 <span dir="rtl">”</span>분산 + 편향제곱”과 관련되므로, <span class="math inline">\(\lambda\)</span>가 0에서 10 정도까지는 분산이 빠르게 줄고 편향 증가는 작아서 MSE가 크게 감소한다.</li>
+<li>더 큰 \lambda에서는 분산 감소가 둔화되는 반면, 계수들이 과도하게 과소추정되어 편향이 크게 증가하고 MSE가 다시 커진다. 예시에서는 \lambda\approx 30에서 MSE가 최소가 된다고 설명한다.</li>
+<li>흥미롭게도, \lambda=0일 때(OLS)의 높은 분산 때문에 테스트 MSE가, \lambda=\infty인 영모형(null model)의 MSE와 거의 비슷할 정도로 커질 수 있다고 언급한다. 그러나 중간 정도 \lambda에서는 MSE가 훨씬 낮아질 수 있다는 점을 강조한다.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_regulation_ridge.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="lasso-회귀-l1-규제" class="level4">
+<h4 class="anchored" data-anchor-id="lasso-회귀-l1-규제">3. Lasso 회귀 (L1 규제)</h4>
+<section id="ridge의-단점-변수-선택을-못함" class="level5">
+<h5 class="anchored" data-anchor-id="ridge의-단점-변수-선택을-못함">Ridge의 단점: 변수 선택을 못함</h5>
+<p>Ridge의 분명한 단점은, best subset/전진·후진 선택처럼 보통 일부 변수만 포함하는 모형을 선택하지 않고 항상 p개 모든 변수를 포함한다는 점이다. <span class="math inline">\(\lambda\sum\beta_{j}^{2}\)</span> 패널티는 계수를 0 쪽으로 줄이지만, <span class="math inline">\(\lambda = \infty\)</span>가 아닌 한 계수를 정확히 0으로 만들지는 못한다. 예측 정확도에는 문제가 없을 수 있지만, p가 큰 경우에는 해석이 어려워질 수 있다.</p>
+<p>중요한 변수처럼 보이는 설명변수들만으로 모형을 만들고 싶을 수 있지만, Ridge는 고려한 전체 설명변수를 모두 포함한 모형만을 만들 수 있다.</p>
+</section>
+<section id="패널티-함수-정의-1" class="level5">
+<h5 class="anchored" data-anchor-id="패널티-함수-정의-1">패널티 함수 정의</h5>
+<p>Lasso는 이 단점을 보완하는 비교적 최근의 대안으로 계수의 절댓값 합에 벌점을 주는 방법이다. Lasso 계수 <span class="math inline">\({\widehat{\beta}}_{\lambda}^{L}\)</span>는 다음을 최소화한다.</p>
+<p><span class="math display">\[\overset{n}{\sum_{i = 1}}\left( y_{i} - \beta_{0} - \overset{p}{\sum_{j = 1}}\beta_{j}x_{ij} \right)^{2} + \lambda\overset{p}{\sum_{j = 1}}|\beta_{j}| = SSE + \lambda\overset{p}{\sum_{j = 1}}|\beta_{j}|\]</span></p>
+</section>
+<section id="동치-제약식" class="level5">
+<h5 class="anchored" data-anchor-id="동치-제약식">동치 제약식</h5>
+<p>Lasso는 다음 제약식 문제와 동치이다.</p>
+<p><span class="math inline">\(\min_{\beta} \parallel y - X\beta \parallel^{2}\text{s.t.}\overset{p}{\sum_{j = 1}}|\beta_{j}| \leq s\)</span>, 여기서 <span class="math inline">\(\lambda\)</span>와 s는 1:1로 대응하며 같은 해를 준다. 이 또한 <span dir="rtl">”</span>L1-예산 안에서 RSS 최소화”라는 직관을 제공한다.</p>
+</section>
+<section id="계수를-정확히-0으로-만들어-변수-선택-수행" class="level5">
+<h5 class="anchored" data-anchor-id="계수를-정확히-0으로-만들어-변수-선택-수행">계수를 정확히 0으로 만들어 변수 선택 수행</h5>
+<p>Lasso도 계수를 0 쪽으로 수축하지만, L1 패널티는 <span class="math inline">\(\lambda\)</span>가 충분히 크면 일부 계수들을 정확히 0으로 강제한다. 따라서 Lasso는 best subset selection처럼 변수 선택을 수행한다. 그 결과 Lasso가 만드는 모형은 Ridge보다 일반적으로 해석이 쉽다.</p>
+</section>
+<section id="부분집합-선택과의-연결l0-제약" class="level5">
+<h5 class="anchored" data-anchor-id="부분집합-선택과의-연결l0-제약">부분집합 선택과의 연결(L0 제약)</h5>
+<p><span dir="rtl">”</span>0이 아닌 계수 개수”를 직접 제한하는 제약 <span class="math inline">\(\overset{p}{\sum_{j = 1}}I(\beta_{j} \neq 0) \leq s\)</span>은 최적 변수선택과 사실상 같은 문제이다. 다만 이는 조합적 탐색을 요구하므로 p가 크면 계산이 급격히 어려워진다. Ridge/Lasso는 이 난문제를 풀기 쉬운 L2/L1 제약으로 바꾼 <span dir="rtl">”</span>계산 가능한 대안”으로 이해할 수 있다. 특히 Lasso는 계수를 0으로 만들므로 subset selection과 더 가깝다.</p>
+</section>
+<section id="왜-lasso는-0을-만드는가-기하학적-직관" class="level5">
+<h5 class="anchored" data-anchor-id="왜-lasso는-0을-만드는가-기하학적-직관">왜 Lasso는 0을 만드는가: 기하학적 직관</h5>
+<p>제약식 관점에서 Ridge의 제약영역은 원(구) 형태로 <span dir="rtl">”</span>모서리”가 없다. 반면 Lasso의 제약영역은 마름모(다면체) 형태로 축 방향에 뾰족한 꼭짓점(corner)이 존재한다. RSS의 등고선(타원)이 제약영역과 접하는 점이 꼭짓점에 걸릴 가능성이 커서, 그 결과 \beta_j=0이 쉽게 발생한다는 것이 표준 직관이다.</p>
+</section>
+<section id="간단한-특수-경우에서의-수축-형태-ridge-vs-lasso" class="level5">
+<h5 class="anchored" data-anchor-id="간단한-특수-경우에서의-수축-형태-ridge-vs-lasso">간단한 특수 경우에서의 수축 형태: Ridge vs Lasso</h5>
+<p>서로 직교하는 매우 단순한 상황에서(교재의 <span dir="rtl">”</span>simple special case”), Ridge와 Lasso의 수축 방식 차이가 식으로 명확해진다.</p>
+<ul>
+<li>Ridge는 계수를 비율로 연속적으로 줄이는 형태를 갖는다(예: <span class="math inline">\(1/(1 + \lambda)\)</span>꼴).</li>
+<li>Lasso는 계수를 <span class="math inline">\(\frac{\lambda}{2}\)</span>만큼 당기고, 절댓값이 작으면 0으로 만드는 soft-thresholding 형태를 갖는다.</li>
+</ul>
+<p><span class="math display">\[{\widehat{\beta}}_{j}^{L} = \{\begin{matrix}
+y_{j} - \lambda/2 &amp; (y_{j} &gt; \lambda/2) \\
+y_{j} + \lambda/2 &amp; (y_{j} &lt; - \lambda/2) \\
+0 &amp; (|y_{j}| \leq \lambda/2)
+\end{matrix}\]</span></p>
+<p>이 식은 <span dir="rtl">”</span>Lasso가 왜 0을 만드는가”를 수식으로도 설명해준다.</p>
+</section>
+</section>
+<section id="elastic-net혼합-규제" class="level4">
+<h4 class="anchored" data-anchor-id="elastic-net혼합-규제">4. Elastic Net(혼합 규제)</h4>
+<section id="elastic-net을-쓰는-이유-ridge와-lasso의-빈틈-메우기" class="level5">
+<h5 class="anchored" data-anchor-id="elastic-net을-쓰는-이유-ridge와-lasso의-빈틈-메우기">Elastic Net을 쓰는 이유: Ridge와 Lasso의 빈틈 메우기</h5>
+<p>Elastic Net은 <span dir="rtl">”</span>희소성(sparsity)“과 <span dir="rtl">”</span>안정성(stability)”을 동시에 노리는 절충안이다. Ridge는 계수를 부드럽게 줄여 분산을 낮추지만, 보통 계수가 정확히 0이 되지 않아 변수 선택이 어렵다.</p>
+<p>Lasso는 계수를 0으로 만들어 변수 선택이 가능하지만, 설명변수 간 상관이 강하면 선택이 불안정해질 수 있다(데이터 분할에 따라 다른 변수 하나가 선택되는 현상).</p>
+<p>Elastic Net은 L1로 희소성을 만들면서, L2 성분으로 상관된 변수군을 <span dir="rtl">”</span>묶어서” 유지하는 경향(그룹 효과)을 강화해 선택 불안정을 완화한다.</p>
+</section>
+<section id="패널티-함수-정의-2" class="level5">
+<h5 class="anchored" data-anchor-id="패널티-함수-정의-2">패널티 함수 정의</h5>
+<p>Elastic Net은 Ridge(L2)와 Lasso(L1)를 혼합한다.</p>
+<p><span class="math display">\[\min_{\beta} \parallel y - X\beta \parallel^{2} + \lambda((1 - \alpha) \parallel \beta \parallel_{2}^{2} + \alpha \parallel \beta \parallel_{1})\]</span></p>
+<ul>
+<li><span class="math inline">\(\lambda\)</span>: 전체 규제의 <span dir="rtl">”</span>세기”를 조절하는 노브이다. 클수록 더 강하게 수축한다.</li>
+<li><span class="math inline">\(\alpha\)</span>: <span dir="rtl">”</span>희소성 vs 안정성”의 비율을 정하는 노브이다.</li>
+<li><span class="math inline">\(\alpha \uparrow\)</span>: Lasso 성향 증가(더 희소, 더 공격적 선택)</li>
+<li><span class="math inline">\(\alpha \downarrow\)</span>: Ridge 성향 증가(더 안정적, 덜 희소)</li>
+</ul>
+<p>실무적으로는 <span class="math inline">\(\alpha\)</span>를 몇 개 후보로 두고(예: 0.1, 0.3, 0.5, 0.7, 0.9), 각 <span class="math inline">\(\alpha\)</span>마다 최적 <span class="math inline">\(\lambda\)</span>를 CV로 찾는 방식이 일반적이다.</p>
+</section>
+<section id="lambdaalpha-선택-교차검증cv-표준-절차" class="level5">
+<h5 class="anchored" data-anchor-id="lambdaalpha-선택-교차검증cv-표준-절차"><span class="math inline">\(\lambda,\alpha\)</span> 선택: 교차검증(CV) 표준 절차</h5>
+<p>Elastic Net은 튜닝 파라미터가 하나가 아니라 <span class="math inline">\((\lambda,\alpha)\)</span> 두 개이다. 따라서 다음 절차가 깔끔하다.</p>
+<p>1. 표준화: 규제 회귀는 스케일에 민감하므로 X는 평균 0, 분산 1로 표준화하는 것이 원칙이다(절편은 패널티 제외).</p>
+<p>2. <span class="math inline">\(\alpha\)</span> 후보 그리드 설정: \alpha\in\{0.1,0.3,0.5,0.7,0.9\} 등.</p>
+<p>3. 각 <span class="math inline">\(\alpha\)</span>에 대해 <span class="math inline">\(\lambda\)</span> 그리드(보통 로그 스케일)를 두고 K-fold CV 수행.</p>
+<p>4. 전체 후보 중 CV 오차가 최소인 (<span class="math inline">\(\widehat{\alpha},\widehat{\lambda}\)</span>)를 선택.</p>
+<p>5. 선택된 값으로 전체 훈련 데이터에 재적합 하여 최종모형을 얻는다.</p>
+<p>보고할 때는 보통 <span class="math inline">\(\lambda_{\min}\)</span>(CV 최소)와 <span class="math inline">\(\lambda_{1\text{SE}}\)</span>(1-SE 규칙) 중 무엇을 택했는지도 함께 적는다. <span class="math inline">\(\lambda_{1\text{SE}}\)</span>는 성능 손실을 거의 늘리지 않으면서 더 단순한 모형(더 강한 규제)을 주는 경우가 많다.</p>
+</section>
+<section id="해석-및-주의사항" class="level5">
+<h5 class="anchored" data-anchor-id="해석-및-주의사항">해석 및 주의사항</h5>
+<p>Elastic Net 계수는 <span dir="rtl">”</span>예측을 위한 최적화 결과”이며, OLS처럼 표준오차/유의확률 해석을 그대로 붙이기 어렵다.</p>
+<p>해석은 보통 선택된 변수(0이 아닌 계수), 계수의 상대적 크기와 방향, 예측 성능(CV/테스트 성능) 중심으로 수행하는 것이 안전하다.</p>
+<p>변수 선택의 안정성이 중요하면, 반복 CV(또는 여러 seed)로 <span dir="rtl">”</span>선택 빈도”를 함께 점검하는 것이 도움이 된다.</p>
+</section>
+<section id="언제-elastic-net을-기본값으로-쓰는가" class="level5">
+<h5 class="anchored" data-anchor-id="언제-elastic-net을-기본값으로-쓰는가">언제 Elastic Net을 기본값으로 쓰는가</h5>
+<p>다음 조건 중 하나라도 강하면, Lasso 단독보다 Elastic Net이 기본 선택이 되기 쉽다.</p>
+<ul>
+<li>설명변수들 간 상관이 강한 경우(변수군 존재)</li>
+<li>원-핫 인코딩 등으로 유사 더미변수 집합이 큰 경우</li>
+<li>p가 크고(고차원) <span dir="rtl">”</span>희소성 + 안정성”을 동시에 원할 때</li>
+<li>Lasso가 fold마다 선택 변수가 크게 흔들릴 때</li>
+</ul>
+</section>
+</section>
+<section id="사례분석" class="level4">
+<h4 class="anchored" data-anchor-id="사례분석">5. 사례분석</h4>
+<section id="데이터-개요" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-개요">데이터 개요</h5>
+<p>연비 mpg(연속형)를 예측하는 회귀 문제로 mpg는 값이 클수록 연비가 좋다는 것을 의미한다.</p>
+<p>크기와 구조: 392개 관측치 × 9개 변수, 이는 df = df.dropna()로 결측이 있는 행을 제거한 결과</p>
+<p>반응변수(Y): mpg</p>
+<p>설명변수(X): cylinders, displacement, horsepower, weight, acceleration, model_year, origin, (name)</p>
+<p>더미설명변수: cyl_group: cyl_34-203, cyl_8 -103, cyl_56-86 | origin: usa-245, japan-79, europe-68</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 불러오기 (가장 간단)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"mpg"</span>)   <span class="co"># Auto MPG (Seaborn 내장 데이터)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 필요시 결측 제거(특히 horsepower에 결측이 있는 경우가 흔함)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) cylinders -&gt; 3개 그룹</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"cyl_group"</span>] <span class="op">=</span> np.select(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"cylinders"</span>].isin([<span class="dv">3</span>, <span class="dv">4</span>]),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"cylinders"</span>].isin([<span class="dv">5</span>, <span class="dv">6</span>]),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">"cylinders"</span>].eq(<span class="dv">8</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"cyl_34"</span>, <span class="st">"cyl_56"</span>, <span class="st">"cyl_8"</span>],</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    default<span class="op">=</span><span class="st">"other"</span>   <span class="co"># 문자열로 통일(에러 방지)</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 혹시 other가 있으면 확인(필요 시 제거)</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (df[<span class="st">"cyl_group"</span>] <span class="op">==</span> <span class="st">"other"</span>).<span class="bu">any</span>():</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"⚠️ 그룹에 안 들어간 cylinders 값:"</span>, <span class="bu">sorted</span>(df.loc[df[<span class="st">"cyl_group"</span>]<span class="op">==</span><span class="st">"other"</span>,<span class="st">"cylinders"</span>].unique()))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 필요하면 다음 줄로 제거</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># df = df.loc[df["cyl_group"] != "other"].copy()</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) origin 값 정리(혹시 1/2/3 코드인 경우 대비)</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>origin_map <span class="op">=</span> {<span class="dv">1</span>: <span class="st">"usa"</span>, <span class="dv">2</span>: <span class="st">"europe"</span>, <span class="dv">3</span>: <span class="st">"japan"</span>}</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>tmp <span class="op">=</span> pd.to_numeric(df[<span class="st">"origin"</span>], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> tmp.notna().<span class="bu">all</span>():  <span class="co"># 전부 숫자로 변환되면(=1/2/3 코딩)</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">"origin"</span>] <span class="op">=</span> tmp.astype(<span class="bu">int</span>).<span class="bu">map</span>(origin_map).astype(<span class="st">"object"</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 더미변수(0/1) 생성 후 df에 붙이기</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>cyl_dum <span class="op">=</span> pd.get_dummies(df[<span class="st">"cyl_group"</span>], dtype<span class="op">=</span><span class="bu">int</span>).drop(columns<span class="op">=</span>[<span class="st">"other"</span>], errors<span class="op">=</span><span class="st">"ignore"</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>origin_dum <span class="op">=</span> pd.get_dummies(df[<span class="st">"origin"</span>], prefix<span class="op">=</span><span class="st">"origin"</span>, dtype<span class="op">=</span><span class="bu">int</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([df, cyl_dum, origin_dum], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.info())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>&lt;class 'pandas.core.frame.DataFrame'&gt; <br> Index: 392 entries, 0 to 397 <br> Data columns (total 16 columns): <br> 0 mpg 392 non-null float64 <br> 1 cylinders 392 non-null int64 <br> 2 displacement 392 non-null float64 <br> 3 horsepower 392 non-null float64 <br> 4 weight 392 non-null int64 <br> 5 acceleration 392 non-null float64 <br> 6 model_year 392 non-null int64 <br> 7 origin 392 non-null object <br> 8 name 392 non-null object <br> 9 cyl_group 392 non-null object <br> 10 cyl_34 392 non-null int64 <br> 11 cyl_56 392 non-null int64 <br> 12 cyl_8 392 non-null int64 <br> 13 origin_europe 392 non-null int64 <br> 14 origin_japan 392 non-null int64 <br> 15 origin_usa 392 non-null int64</p>
+</section>
+<section id="ridge-규제" class="level5">
+<h5 class="anchored" data-anchor-id="ridge-규제">(1) RIDGE 규제</h5>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold, train_test_split</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> RidgeCV, Ridge</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, r2_score</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) y, X 구성</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 연속형(필요시 추가/삭제)</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> [<span class="st">"displacement"</span>, <span class="st">"horsepower"</span>, <span class="st">"weight"</span>, <span class="st">"acceleration"</span>, <span class="st">"model_year"</span>]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 더미(현재 df에 붙여둔 컬럼 기준)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>cyl_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">"cyl_56"</span>, <span class="st">"cyl_8"</span>] <span class="cf">if</span> c <span class="kw">in</span> df.columns]</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>origin_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c.startswith(<span class="st">"origin_"</span>) <span class="kw">and</span> c <span class="op">!=</span> “origin_usa”]</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>feature_cols <span class="op">=</span> num_cols <span class="op">+</span> cyl_dummy_cols <span class="op">+</span> origin_dummy_cols</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[feature_cols].values</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) RidgeCV: alpha(=lambda) 선택</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">200</span>)   <span class="co"># lambda 후보(로그스케일)</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>ridge_cv <span class="op">=</span> Pipeline([</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),                 <span class="co"># 규제회귀는 스케일에 민감 → 표준화</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"ridge"</span>, RidgeCV(alphas<span class="op">=</span>alphas, cv<span class="op">=</span>cv))</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>ridge_cv.fit(X, y)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>best_alpha <span class="op">=</span> ridge_cv.named_steps[<span class="st">"ridge"</span>].alpha_</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ Best alpha (lambda):"</span>, best_alpha)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 계수 확인(절댓값 큰 순)</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> ridge_cv.named_steps[<span class="st">"ridge"</span>].coef_</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>coef_s <span class="op">=</span> pd.Series(coef, index<span class="op">=</span>feature_cols).sort_values(key<span class="op">=</span>np.<span class="bu">abs</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Ridge Coefficients (sorted by |coef|) ==="</span>)</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coef_s)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) (선택) 홀드아웃 테스트 성능 확인</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>ridge_final <span class="op">=</span> Pipeline([</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"ridge"</span>, Ridge(alpha<span class="op">=</span>best_alpha))</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>ridge_final.fit(X_train, y_train)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> ridge_final.predict(X_test)</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ RMSE 계산(버전 호환)</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> mean_squared_error(y_test, pred)</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(mse)</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="co"># R^2</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> r2_score(y_test, pred)</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Hold-out Test Performance ==="</span>)</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"RMSE:"</span>, rmse)</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"R^2 :"</span>, r2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Best alpha (lambda) = 1.1098 의 의미</strong></p>
+<p>RidgeCV가 10-fold CV로 검증오차가 가장 작아지는 규제 강도 <span class="math inline">\(\lambda\)</span>를 고른 값이다.</p>
+<p><span class="math inline">\(\lambda\)</span>가 0이면 OLS(규제 없음), 값이 커질수록 계수 수축이 강해져 분산이 줄고(안정화), 편향이 늘 수 있다.</p>
+<p>1.11 정도는 <span dir="rtl">”</span>과도하게 크지도, 0에 가깝지도 않은” 중간 수준 규제로 보는 게 자연스럽다.</p>
+<p><strong>Ridge 계수 해석(중요: 표준화된 계수)</strong></p>
+<p>현재 파이프라인에 StandardScaler()가 들어가 있으므로, 계수 크기는 <span dir="rtl">”</span>원 단위”가 아니라 표준화된 단위(1 표준편차 변화) 기준이다. 따라서 절댓값이 큰 계수일수록 상대적으로 영향력이 큰 변수로 해석하는 게 적절하다.</p>
+<ul>
+<li>weight = -5.0235 → 가장 큰 영향 변수이다. 다른 조건이 같을 때 차량 무게가 증가하면 mpg가 크게 감소하는 방향이다. 연비는 무게에 매우 민감하다는 결과이다.</li>
+<li>model_year = +2.7744 → 연식이 최신일수록 mpg가 증가하는 방향이다. 기술발전/규제 강화로 연비가 개선되는 경향과 일치하는 결과이다.</li>
+<li>displacement = +2.1763, horsepower = -1.4274 → 배기량은 양(+)인데 마력은 음(-)으로 나온다. 이 조합이 <span dir="rtl">”</span>이상”인 것은 아니다. 배기량·마력·무게·실린더는 서로 강하게 상관된 변수들이고, Ridge는 상관된 변수들 사이에서 계수 크기를 분산시켜 안정화한다. 따라서 이 계수들은 <span dir="rtl">”</span>단독 인과효과”라기보다 다른 변수들을 통제한 조건부 효과로 해석하는 것이 안전하다.</li>
+<li>acceleration = +0.1980 → 영향이 상대적으로 작다. 예측에 기여는 하지만 핵심 변수는 아니다.</li>
+<li>cyl_34가 기준범주(reference) 로 설정된 상태이다.</li>
+<li>cyl_56 = -1.2844 → 같은 조건에서 5~6기통 차량은 (3~4기통 기준 대비) mpg가 낮아지는 방향이다.</li>
+<li>cyl_8 = -0.5720 → 같은 조건에서 8기통은 (3~4기통 기준 대비) mpg가 낮아지는 방향이다.</li>
+<li>해석상 <span dir="rtl">”</span>기통이 커질수록 연비가 나빠진다”는 전형적 패턴과 부합한다.</li>
+<li>origin_usa가 기준범주이다. 따라서 아래 계수는 모두 <span dir="rtl">”</span>미국 대비 차이”로 해석된다.</li>
+<li>origin_japan = +0.9764 → 같은 조건에서 일본 차량은 미국 차량보다 mpg가 높아지는 경향이다.</li>
+<li>origin_europe = +0.7943 → 같은 조건에서 유럽 차량은 미국 차량보다 mpg가 높아지는 경향이다. -즉, 원산지 효과는 <span dir="rtl">”</span>일본 &gt; 유럽 &gt; 미국(기준)” 순으로 연비가 높게 나타난다는 결론이다(조건부 비교).</li>
+</ul>
+<p><strong>홀드아웃 테스트 성능 해석</strong></p>
+<ul>
+<li>RMSE = 3.0714 → 테스트셋에서 평균적으로 약 3.07 mpg 정도의 예측오차가 발생한다는 뜻이다.</li>
+<li><span class="math inline">\(R^{2} = 0.8152\)</span> → 테스트셋 mpg 변동의 약 81.5%를 설명하는 성능이다. 이 데이터에서는 꽤 양호한 예측력이다.</li>
+</ul>
+<p><strong>종합 결론</strong></p>
+<p>교차검증으로 선택된 Ridge(<span class="math inline">\(\lambda \approx 1.11\)</span>)는 과도한 과적합 없이 안정적 예측을 제공하는 설정이다. 표준화 계수 기준으로 무게(weight)가 연비를 가장 강하게 저하시켰고, 연식(model_year)은 연비를 유의미하게 향상시키는 방향이다. 범주형 변수는 기준범주 대비로 해석되며, (3~4기통 대비) 5~6기통과 8기통은 연비를 낮추고, 미국 대비 일본/유럽 원산지가 연비를 높이는 경향이 나타난다. 테스트 성능은</p>
+<p><span class="math inline">\(R^{2} \approx 0.82\)</span>, <span class="math inline">\(RMSE \approx 3.07\)</span>로 양호한 수준이다.</p>
+<p>✅ Best alpha (lambda): 1.1097524964120722</p>
+<p>=== Ridge Coefficients (sorted by |coef|) === <br> weight -5.023513 <br> model_year 2.774390 <br> displacement 2.176345 <br> horsepower -1.427419 <br> cyl_56 -1.284396 <br> origin_japan 0.976411 <br> origin_europe 0.794321 <br> cyl_8 -0.571972 <br> acceleration 0.198026</p>
+<p>=== Hold-out Test Performance ===</p>
+<p>RMSE: 3.0714161568847045 <br> R^2 : 0.8151745805011831</p>
+</section>
+<section id="lasso-규제" class="level5">
+<h5 class="anchored" data-anchor-id="lasso-규제">(2) LASSO 규제</h5>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold, train_test_split</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LassoCV, Lasso</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, r2_score</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) y, X 구성</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> [<span class="st">"displacement"</span>, <span class="st">"horsepower"</span>, <span class="st">"weight"</span>, <span class="st">"acceleration"</span>, <span class="st">"model_year"</span>]</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 더미(현재 df에 붙여둔 컬럼 기준) - 현재 노트북과 동일</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>cyl_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">"cyl_56"</span>, <span class="st">"cyl_8"</span>] <span class="cf">if</span> c <span class="kw">in</span> df.columns]</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>origin_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c.startswith(<span class="st">"origin_"</span>) <span class="kw">and</span> c <span class="op">!=</span> <span class="st">"origin_usa"</span>]</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>feature_cols <span class="op">=</span> num_cols <span class="op">+</span> cyl_dummy_cols <span class="op">+</span> origin_dummy_cols</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[feature_cols].values</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) LassoCV: alpha(=lambda) 선택</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">200</span>)  <span class="co"># Lasso는 너무 큰 alpha면 전부 0 될 수 있어 범위 좁게 시작(필요시 조정)</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>lasso_cv <span class="op">=</span> Pipeline([</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"lasso"</span>, LassoCV(alphas<span class="op">=</span>alphas, cv<span class="op">=</span>cv, max_iter<span class="op">=</span><span class="dv">20000</span>))</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>lasso_cv.fit(X, y)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>best_alpha <span class="op">=</span> lasso_cv.named_steps[<span class="st">"lasso"</span>].alpha_</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ Best alpha (lambda):"</span>, best_alpha)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 계수 확인(절댓값 큰 순) + 0 아닌 변수 개수</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> lasso_cv.named_steps[<span class="st">"lasso"</span>].coef_</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>coef_s <span class="op">=</span> pd.Series(coef, index<span class="op">=</span>feature_cols).sort_values(key<span class="op">=</span>np.<span class="bu">abs</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Lasso Coefficients (sorted by |coef|) ==="</span>)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coef_s)</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>nz <span class="op">=</span> np.<span class="bu">sum</span>(coef <span class="op">!=</span> <span class="dv">0</span>)</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">✅ Non-zero coefficients: </span><span class="sc">{</span>nz<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span><span class="bu">len</span>(coef)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) (선택) 홀드아웃 테스트 성능 확인</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>lasso_final <span class="op">=</span> Pipeline([</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"lasso"</span>, Lasso(alpha<span class="op">=</span>best_alpha, max_iter<span class="op">=</span><span class="dv">20000</span>))</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>lasso_final.fit(X_train, y_train)</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> lasso_final.predict(X_test)</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> mean_squared_error(y_test, pred)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(mse)</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> r2_score(y_test, pred)</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Hold-out Test Performance ==="</span>)</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"RMSE:"</span>, rmse)</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"R^2 :"</span>, r2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong><span class="math inline">\(\lambda = 0.001\)</span> 의미</strong></p>
+<p>교차검증이 선택한 <span class="math inline">\(\lambda\)</span>가 그리드의 최솟값(0.001) 이다. 이는 <span dir="rtl">”</span>규제를 거의 걸지 않는 쪽(OLS에 가까운 쪽)“이 검증오차를 가장 줄였다는 뜻이다.</p>
+<p>즉, 현재 데이터/변수구성에서는 강한 희소화(변수 제거)가 도움이 되지 않았다는 신호이다.</p>
+<p><strong>Non-zero coefficients: 9 / 9 해석(중요)</strong></p>
+<p>Lasso의 특징은 계수를 0으로 만들며 변수선택을 한다는 점인데, 여기서는 9개 계수가 전부 0이 아니다. 따라서 이번 적합은 변수선택이 발생하지 않은 Lasso이며, 사실상 OLS/Ridge(약한 규제)와 매우 비슷한 해이다.</p>
+<p><strong>계수의 방향과 상대적 중요도(표준화 기준)</strong></p>
+<p>StandardScaler()가 들어가 있으므로 계수는 표준화된 입력(1 표준편차 증가) 기준이다.</p>
+<ul>
+<li>weight = -5.19 : 가장 지배적인 변수이며, 무게가 증가하면 mpg가 크게 감소하는 방향이다.</li>
+<li>model_year = +2.79 : 연식이 최신일수록 mpg가 증가하는 방향이다.</li>
+<li>displacement = +2.41, horsepower = -1.42 : 강한 상관(다중공선성) 속에서 조건부 효과로 추정된 값이므로, 단일 계수의 인과 해석은 주의가 필요하다.</li>
+<li>cyl_56 = -1.30, cyl_8 = -0.62 : 기준범주(보통 cyl_34) 대비 연비가 낮아지는 방향이다.</li>
+<li>origin_japan = +0.99, origin_europe = +0.82 : 기준범주(USA) 대비 연비가 높아지는 방향이다.</li>
+<li>acceleration = +0.23 : 영향은 상대적으로 작다.</li>
+</ul>
+<p><strong>예측 성능 해석 + Ridge와 비교</strong></p>
+<p>RMSE ≈ 3.063, <span class="math inline">\(R^{2} \approx 0.816\)</span> Ridge 결과(RMSE≈3.071, <span class="math inline">\(R^{2} \approx 0.815\)</span>와 거의 동일하다. 결론적으로, 이 데이터/변수셋에서는 Lasso가 <span dir="rtl">”</span>단순화(변수 제거)“라는 추가 이점을 주지 못했고, 예측도 Ridge와 비슷한 수준이다.</p>
+<p><strong>Lasso에서 <span dir="rtl">”</span>진짜 변수선택”이 나오는지 확인하는 방법</strong></p>
+<p>현재는 <span class="math inline">\(\lambda\)</span>가 너무 작게 선택되어 희소화가 안 된 상태이므로, 아래 중 하나를 해보면 교육적으로도 좋다. <span class="math inline">\(\lambda\)</span> 범위를 더 넓히기(특히 더 크게): alphas = np.logspace(-4, 1, 400) 또는 np.logspace(-3, 2, 400) 또는 LassoCV(alphas=None)로 두고 sklearn이 자체 그리드를 잡게 하기</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LassoCV, lasso_path</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) y, X 구성 (현재 노트북과 동일한 피처 구성)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> [<span class="st">"displacement"</span>, <span class="st">"horsepower"</span>, <span class="st">"weight"</span>, <span class="st">"acceleration"</span>, <span class="st">"model_year"</span>]</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>cyl_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">"cyl_56"</span>, <span class="st">"cyl_8"</span>] <span class="cf">if</span> c <span class="kw">in</span> df.columns]</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>origin_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c.startswith(<span class="st">"origin_"</span>) <span class="kw">and</span> c <span class="op">!=</span> <span class="st">"origin_usa"</span>]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>feature_cols <span class="op">=</span> num_cols <span class="op">+</span> cyl_dummy_cols <span class="op">+</span> origin_dummy_cols</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[feature_cols].values</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 표준화 (계수/경로는 표준화 스케일 기준으로 해석됨)</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>Xs <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) (1) CV 곡선: LassoCV 적합</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>alphas_grid <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">300</span>)  <span class="co"># 필요시 범위 조정</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>lasso_cv <span class="op">=</span> LassoCV(</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    alphas<span class="op">=</span>alphas_grid,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>cv,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">50000</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>lasso_cv.fit(Xs, y)</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>alphas_cv <span class="op">=</span> lasso_cv.alphas_              <span class="co"># 보통 큰 값 -&gt; 작은 값(내림차순)</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>mse_path <span class="op">=</span> lasso_cv.mse_path_             <span class="co"># (n_alphas, n_folds)</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>mean_mse <span class="op">=</span> mse_path.mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>std_mse  <span class="op">=</span> mse_path.std(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>se_mse   <span class="op">=</span> std_mse <span class="op">/</span> np.sqrt(mse_path.shape[<span class="dv">1</span>])</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>alpha_min <span class="op">=</span> lasso_cv.alpha_</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 1-SE 규칙(선택): 최소 MSE + 1SE 이내 중 가장 큰 alpha</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>idx_min <span class="op">=</span> np.argmin(mean_mse)</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>mse_1se <span class="op">=</span> mean_mse[idx_min] <span class="op">+</span> se_mse[idx_min]</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>cand <span class="op">=</span> np.where(mean_mse <span class="op">&lt;=</span> mse_1se)[<span class="dv">0</span>]</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>idx_1se <span class="op">=</span> cand[<span class="dv">0</span>]  <span class="co"># alphas_cv가 내림차순이므로 첫 번째가 가장 큰 alpha</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>alpha_1se <span class="op">=</span> alphas_cv[idx_1se]</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ alpha_min (CV 최소):"</span>, alpha_min)</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ alpha_1se (1-SE 규칙):"</span>, alpha_1se)</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) (2) 계수 경로(path): lasso_path로 전체 경로 계산</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="co">#    (y를 평균 0으로 중심화하면 path가 더 안정적)</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>alphas_path <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">300</span>)[::<span class="op">-</span><span class="dv">1</span>]  <span class="co"># 내림차순(큰 alpha -&gt; 작은 alpha)</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>y_centered <span class="op">=</span> y <span class="op">-</span> y.mean()</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>alphas_out, coefs, dual_gaps <span class="op">=</span> lasso_path(</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>    Xs, y_centered,</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>    alphas<span class="op">=</span>alphas_path,</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">50000</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="co"># coefs: (n_features, n_alphas)</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>nz_counts <span class="op">=</span> (coefs <span class="op">!=</span> <span class="dv">0</span>).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)  <span class="co"># alpha별 non-zero 개수</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Plot (1) CV curve</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>plt.plot(np.log10(alphas_cv), mean_mse)</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>plt.fill_between(np.log10(alphas_cv), mean_mse <span class="op">-</span> se_mse, mean_mse <span class="op">+</span> se_mse, alpha<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>plt.axvline(np.log10(alpha_min), linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>plt.axvline(np.log10(alpha_1se), linestyle<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"log10(alpha)"</span>)</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"CV MSE (mean ± SE)"</span>)</span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"LassoCV: CV Curve"</span>)</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) Plot (2) Coefficient path</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j, name <span class="kw">in</span> <span class="bu">enumerate</span>(feature_cols):</span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a>    plt.plot(np.log10(alphas_out), coefs[j, :], label<span class="op">=</span>name)</span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>plt.axvline(np.log10(alpha_min), linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a>plt.axvline(np.log10(alpha_1se), linestyle<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"log10(alpha)"</span>)</span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Coefficient (standardized X)"</span>)</span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Lasso: Coefficient Path"</span>)</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>plt.legend(bbox_to_anchor<span class="op">=</span>(<span class="fl">1.02</span>, <span class="dv">1</span>), loc<span class="op">=</span><span class="st">"upper left"</span>)</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) Plot (3) Non-zero count vs alpha</span></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>plt.plot(np.log10(alphas_out), nz_counts)</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>plt.axvline(np.log10(alpha_min), linestyle<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>plt.axvline(np.log10(alpha_1se), linestyle<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"log10(alpha)"</span>)</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"# Non-zero coefficients"</span>)</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Lasso: Sparsity (#non-zero) vs alpha"</span>)</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>CV 곡선 해석: 최적점이 <span dir="rtl">”</span>거의 규제 없음” 쪽에 붙어있음</strong></p>
+<p>alpha_min=0.0001은 현재 탐색한 그리드에서 가장 작은 alpha(가장 약한 규제) 이다. 즉, 이 데이터/변수구성에서는 규제를 거의 안 거는 것이 CV MSE를 가장 낮게 만든다는 결과이다. 보통 이런 형태는 <span dir="rtl">”</span>Lasso로 변수를 적극적으로 제거해도 예측이 좋아지지 않는다” 또는 <span dir="rtl">”</span>이미 변수 수가 적고(9개) 과적합 위험이 크지 않다”는 신호로 해석하는 것이 자연스럽다.</p>
+<p>또 하나 중요한 포인트는 CV 곡선이 최저점 근처에서 꽤 평평해 보인다는 점이다. 이런 경우는 <span dir="rtl">”</span>정확도는 거의 비슷한데, 더 단순한 모델을 고를 여지”가 존재한다.</p>
+<p><strong>alpha_1se(=0.5359)의 의미: <span dir="rtl">”</span>거의 같은 성능이면 더 단순하게”</strong></p>
+<p>1-SE 규칙은 <span dir="rtl">”</span>최소 CV 오차 + 1 표준오차(SE) 이내”에서 가장 큰 alpha(가장 강한 규제) 를 택한다는 원칙이다. 따라서 alpha_1se=0.5359는, CV 오차는 alpha_min과 통계적으로 큰 차이가 없을 정도로 비슷하지만, 계수는 훨씬 더 강하게 수축되어 모델이 더 단순해질 가능성이 큰 선택이다.</p>
+<p>정리하면, 예측 최우선이면 alpha_min 해석/단순성 최우선이면 alpha_1se가 표준적인 결론이다.</p>
+<p>alpha_min (CV 최소): 0.0001 <br> ✅ alpha_1se (1-SE 규칙): 0.5359163290848514</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_regulation_lasso.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p><strong>계수경로(path) 해석</strong></p>
+<p>alpha가 커질수록 계수들이 0으로 <span dir="rtl">”</span>붙는다” 계수경로는 x축이 log10(alpha) 이므로, 왼쪽(더 큰 규제) → 계수들이 0에 붙고 오른쪽(더 약한 규제) → 계수들이 0에서 떨어져 나오며 더 많은 변수가 활성화된다.</p>
+<p>그래프에서 수직선 두 개는 다음을 뜻한다.</p>
+<ul>
+<li>점선(--): alpha_min(0.0001) → 거의 규제 없음에 가까운 지점이라 대부분(혹은 전부)의 변수가 살아남는 구간이다.</li>
+<li>점선(:): alpha_1se(0.5359) → 더 강한 규제 구간이라 몇몇 변수는 0으로 떨어지고, 핵심 변수만 남는 쪽으로 간다.</li>
+</ul>
+<p>즉, 경로 그림은 <span dir="rtl">”</span>어떤 변수가 먼저 살아남고(끝까지 남고), 어떤 변수가 먼저 0이 되는가”를 보여주는 도구이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_regulation_lasso02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>non-zero 개수 vs alpha 해석</strong></p>
+<p>sparsity(희소성)의 정량적 그림으로 이 그래프는 alpha가 커질수록 0이 아닌 계수 개수(#non-zero) 가 줄어드는 모습을 보여준다. 특히 alpha_1se는 일반적으로 alpha_min보다 훨씬 적은 변수만 남기는 경우가 많다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_regulation_lasso03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Lasso</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a, tag <span class="kw">in</span> [(alpha_min, <span class="st">"alpha_min"</span>), (alpha_1se, <span class="st">"alpha_1se"</span>)]:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> Lasso(alpha<span class="op">=</span>a, max_iter<span class="op">=</span><span class="dv">50000</span>).fit(Xs, y_centered)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    nz <span class="op">=</span> pd.Series(m.coef_, index<span class="op">=</span>feature_cols)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(tag, <span class="st">"alpha="</span>, a, <span class="st">"| non-zero ="</span>, (nz<span class="op">!=</span><span class="dv">0</span>).<span class="bu">sum</span>())</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(nz[nz<span class="op">!=</span><span class="dv">0</span>].sort_values(key<span class="op">=</span>np.<span class="bu">abs</span>, ascending<span class="op">=</span><span class="va">False</span>), <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>alpha_min alpha= 0.0001 | non-zero = 9 <br> weight -5.202691 <br> model_year 2.796189 <br> displacement 2.458370 <br> horsepower -1.423673 <br> cyl_56 -1.315360 <br> origin_japan 0.995173 <br> origin_europe 0.823919 <br> cyl_8 -0.648314 <br> acceleration 0.227063 <br> alpha_1se alpha= 0.5359163290848514 | non-zero = 5 <br> weight -4.557961 <br> model_year 2.298237 <br> horsepower -0.601496 <br> cyl_56 -0.561371 <br> origin_japan 0.190865</p>
+</section>
+<section id="elastic-net-규제" class="level5">
+<h5 class="anchored" data-anchor-id="elastic-net-규제">(3) Elastic Net 규제</h5>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> ElasticNetCV, ElasticNet</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) y, X 구성 (현재 노트북과 동일)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> [<span class="st">"displacement"</span>, <span class="st">"horsepower"</span>, <span class="st">"weight"</span>, <span class="st">"acceleration"</span>, <span class="st">"model_year"</span>]</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>cyl_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">"cyl_56"</span>, <span class="st">"cyl_8"</span>] <span class="cf">if</span> c <span class="kw">in</span> df.columns]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>origin_dummy_cols <span class="op">=</span> [c <span class="cf">for</span> c <span class="kw">in</span> df.columns <span class="cf">if</span> c.startswith(<span class="st">"origin_"</span>) <span class="kw">and</span> c <span class="op">!=</span> <span class="st">"origin_usa"</span>]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>feature_cols <span class="op">=</span> num_cols <span class="op">+</span> cyl_dummy_cols <span class="op">+</span> origin_dummy_cols</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[feature_cols].values</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 표준화 + y 중심화 (path/CV와 일관)</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>Xs <span class="op">=</span> scaler.fit_transform(X)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>y_centered <span class="op">=</span> y <span class="op">-</span> y.mean()</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) ElasticNetCV로 (alpha, l1_ratio) 선택</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>l1_ratios <span class="op">=</span> [<span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.9</span>, <span class="fl">1.0</span>]</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>alphas_grid <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">300</span>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>enet_cv <span class="op">=</span> ElasticNetCV(</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    l1_ratio<span class="op">=</span>l1_ratios,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    alphas<span class="op">=</span>alphas_grid,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span>cv,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">100000</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    fit_intercept<span class="op">=</span><span class="va">False</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>enet_cv.fit(Xs, y_centered)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>alpha_min <span class="op">=</span> <span class="bu">float</span>(enet_cv.alpha_)       <span class="co"># CV 최소</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>best_l1 <span class="op">=</span> <span class="bu">float</span>(enet_cv.l1_ratio_)      <span class="co"># 최적 mixing</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- alpha_1se 계산(최적 l1_ratio 곡선에서) ----</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>mse_path <span class="op">=</span> enet_cv.mse_path_  <span class="co"># (n_l1_ratio, n_alphas, n_folds)</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>mean_mse <span class="op">=</span> mse_path.mean(axis<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>se_mse <span class="op">=</span> mse_path.std(axis<span class="op">=</span><span class="dv">2</span>) <span class="op">/</span> np.sqrt(mse_path.shape[<span class="dv">2</span>])</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>l1_arr <span class="op">=</span> np.array(l1_ratios, dtype<span class="op">=</span><span class="bu">float</span>)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>idx_best_l1 <span class="op">=</span> <span class="bu">int</span>(np.argmin(np.<span class="bu">abs</span>(l1_arr <span class="op">-</span> best_l1)))</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>curve <span class="op">=</span> mean_mse[idx_best_l1]</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>curve_se <span class="op">=</span> se_mse[idx_best_l1]</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>idx_min <span class="op">=</span> <span class="bu">int</span>(np.argmin(curve))</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>mse_1se <span class="op">=</span> curve[idx_min] <span class="op">+</span> curve_se[idx_min]</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="co"># alphas_grid는 보통 큰값 -&gt; 작은값(내림차순)으로 저장됨</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>cand <span class="op">=</span> np.where(curve <span class="op">&lt;=</span> mse_1se)[<span class="dv">0</span>]</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>idx_1se <span class="op">=</span> <span class="bu">int</span>(cand[<span class="dv">0</span>])  <span class="co"># 가장 큰 alpha(가장 왼쪽)</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>alpha_1se <span class="op">=</span> <span class="bu">float</span>(enet_cv.alphas_[idx_1se])</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ best l1_ratio:"</span>, best_l1)</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ alpha_min (CV 최소):"</span>, alpha_min)</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"✅ alpha_1se (1-SE 규칙):"</span>, alpha_1se)</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Lasso처럼 출력: alpha_min, alpha_1se에서 non-zero 및 계수</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_enet(a, tag, tol<span class="op">=</span><span class="fl">1e-10</span>):</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> ElasticNet(alpha<span class="op">=</span>a, l1_ratio<span class="op">=</span>best_l1, fit_intercept<span class="op">=</span><span class="va">False</span>, max_iter<span class="op">=</span><span class="dv">100000</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    m.fit(Xs, y_centered)</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> pd.Series(m.coef_, index<span class="op">=</span>feature_cols)</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    nz <span class="op">=</span> s[np.<span class="bu">abs</span>(s) <span class="op">&gt;</span> tol].sort_values(key<span class="op">=</span>np.<span class="bu">abs</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>tag<span class="sc">}</span><span class="ss"> alpha= </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss"> | non-zero = </span><span class="sc">{</span><span class="bu">len</span>(nz)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(nz, <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>print_enet(alpha_min, <span class="st">"alpha_min"</span>)</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>print_enet(alpha_1se, <span class="st">"alpha_1se"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>최적 <span class="math inline">\(l1\_ ratio = 0.1\)</span> 해석</strong></p>
+<p>l1_ratio=0.1이면 패널티의 대부분이 L2(Ridge)이고, L1(Lasso)은 10%만 섞인 형태이다. 따라서 이 Elastic Net은 본질적으로 Ridge에 가깝고, 변수 선택(계수=0)을 강하게 만들기 어렵다. 즉 <span dir="rtl">”</span>예측 안정성(분산 감소)“을 우선한 조합으로 선택된 결과이다.</p>
+<p><strong>alpha_min vs alpha_1se에서 <span dir="rtl">”</span>변수 개수”는 얼마나 줄었나</strong></p>
+<ul>
+<li>alpha_min = 0.003199… (CV 최소) non-zero = 9 이다. 즉, 최적 CV 오차를 기준으로 선택하면 변수 제거가 전혀 발생하지 않는다는 뜻이다. 이 결과는 Elastic Net이 Ridge 성향(0.1)인 점과도 일관적이다.</li>
+<li>alpha_1se = 0.221045… (1-SE 규칙) non-zero = 8 이다. 즉, 1-SE 규칙을 적용하면 9개 → 8개로 1개 변수만 제거된다. 출력 목록을 보면 alpha_1se에서 빠진 변수는 acceleration 이다(목록에 없으므로 계수=0으로 떨어진 상태이다).</li>
+</ul>
+<p>정리하면, 현재 Elastic Net 설정에서는 변수 수가 거의 줄지 않는다는 결론이다.</p>
+<p><strong>계수의 방향 변화(특히 displacement 부호 변화) 해석</strong></p>
+<p>alpha_min에서는 displacement가 +2.156 (양수)이다. alpha_1se에서는 displacement가 -0.824 (음수)로 바뀐다. 이 부호 변화는 <span dir="rtl">”</span>모형이 틀렸다”는 신호가 아니라, 다음 상황에서 흔히 나타나는 현상이다.</p>
+<p>weight, horsepower, displacement, cyl_*는 서로 강한 상관을 가지는 변수군이다. 규제가 강해지면(여기서는 alpha_1se) 계수들이 단독효과를 반영하기보다, 상관된 변수들 사이에서 예측력을 유지하는 방식으로 재분배되면서 부호가 바뀔 수 있다. 따라서 특히 displacement처럼 다른 변수들과 묶여 움직이는 변수는 인과적 방향으로 해석하면 위험하고, <span dir="rtl">”</span>조건부 효과가 규제 강도에 따라 재배치된다”로 해석하는 것이 안전하다.</p>
+<p><strong>Lasso와 비교하면 왜 Elastic Net이 덜 줄었나</strong></p>
+<p>Lasso에서는 alpha_1se에서 non-zero = 5까지 줄었는데, 이번 Elastic Net은 alpha_1se에서도 non-zero = 8로 거의 줄지 않는다.</p>
+<p>가장 큰 이유는 딱 하나이다. best l1_ratio가 0.1이라서 Ridge 성향이 매우 강하기 때문이다. Ridge 성향이 강하면 계수는 <span dir="rtl">”</span>작아지기”는 하지만 0이 되기 어렵다.</p>
+<p><strong>변수 개수를 더 줄이고 싶다면(Elastic Net에서)</strong></p>
+<p>Elastic Net에서도 Lasso처럼 더 줄이려면 다음 중 하나를 하면 된다. l1_ratios 후보를 더 Lasso 쪽으로 두기 (예) [0.5, 0.7, 0.9, 1.0] 또는 np.linspace(0.5, 1.0, 6)</p>
+<p>혹은 <span dir="rtl">”</span>예측 최적” 대신 alpha_1se를 기본 선택으로 삼기(지금처럼)또는 목표 non-zero 개수(예: 5개)를 정해서 그에 맞는 alpha를 고르는 방식(희소성 제약식 관점)도 가능하다.</p>
+<p>✅ best l1_ratio: 0.1 <br> ✅ alpha_min (CV 최소): 0.003199018284775064 <br> ✅ alpha_1se (1-SE 규칙): 0.22104546299710215</p>
+<p>alpha_min alpha= 0.003199018284775064 | non-zero = 9 <br> weight -5.016785 <br> model_year 2.773368 <br> displacement 2.156478 <br> horsepower -1.424833 <br> cyl_56 -1.280335 <br> origin_japan 0.974307 <br> origin_europe 0.791970 <br> cyl_8 -0.563083 <br> acceleration 0.196877</p>
+<p>alpha_1se alpha= 0.22104546299710215 | non-zero = 8 <br> weight -2.363937 <br> model_year 2.173566 <br> horsepower -1.380997 <br> cyl_56 -1.094836 <br> displacement -0.823616 <br> origin_japan 0.802154 <br> cyl_8 -0.458266 <br> origin_europe 0.407270</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
