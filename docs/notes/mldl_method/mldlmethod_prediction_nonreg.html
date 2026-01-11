@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 예측방법. 5.비선형회귀 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2757cfadcc89ddbfb9e61569f8c3689f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math/index.html"> 
+<span class="menu-text">기초수학</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/survey/index.html"> 
+<span class="menu-text">조사방법론</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mda/index.html"> 
+<span class="menu-text">다변량분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl/index.html"> 
+<span class="menu-text">머신·딥러닝 개념 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/mldl_method/index.html" aria-current="page"> 
+<span class="menu-text">머신·딥러닝 방법론 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_method/mldlmethod_prediction_nonreg.html">📄 1.예측방법: 비선형회귀</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【HOME】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 0.MLDL 방법론 소개</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 1.예측방법: 서론</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_reg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 1.예측방법: 회귀분석</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_regulation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 1.예측방법: 규제회귀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_dimension.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 1.예측방법: 차원축소</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_method/mldlmethod_prediction_nonreg.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 1.예측방법: 비선형회귀</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 예측방법. 5.비선형회귀</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-3.-비선형-회귀" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-비선형-회귀">Chapter 3. 비선형 회귀</h3>
+<p>선형회귀는 <span dir="rtl">”</span>계수에 대해 선형”인 모형이라는 점에서 매우 강력하지만, 반응변수 Y와 설명변수 X 사이의 실제 관계가 비선형일 때는 체계적인 편향이 발생한다. 이 장의 핵심은 모형을 비선형로 바꾸는 것이 아니라, 입력 X를 적절한 함수로 변환하여(특징공간을 확장하여) 여전히 선형회귀 프레임 안에서 비선형성을 표현하는 방법을 정리하는 것이다. 즉, 다음과 같은 형태를 공통 골격으로 둔다.</p>
+<p><span class="math inline">\(Y = \beta_{0} + \overset{p}{\sum_{j = 1}}f_{j}(X_{j}) + \varepsilon,\mathbb{E}\lbrack\varepsilon\rbrack = 0\)</span>, 여기서 <span class="math inline">\(f_{j}( \cdot )\)</span>를 어떻게 잡느냐가 방법론을 갈라놓는다. 복잡도를 키우면 훈련오차는 줄지만 과적합 위험이 커지므로, 검증오차(교차검증)나 정보기준, 혹은 규제(패널티)를 통해 복잡도를 통제하는 것이 일관된 원칙이다.</p>
+<section id="다항회귀polynomial-regression" class="level4">
+<h4 class="anchored" data-anchor-id="다항회귀polynomial-regression">1. 다항회귀(Polynomial Regression)</h4>
+<section id="왜-다항회귀가-필요한가" class="level5">
+<h5 class="anchored" data-anchor-id="왜-다항회귀가-필요한가">왜 다항회귀가 필요한가</h5>
+<p>선형회귀는 조건부 평균을 <span class="math inline">\(\mathbb{E}\lbrack Y \mid X\rbrack = \beta_{0} + \beta_{1}X\)</span>처럼 직선 형태로 근사한다. 그러나 실제 데이터에서는 X와 Y의 관계가 곡선 형태(가속/포화/굽음)를 보이는 경우가 많다. 이때 <span dir="rtl">”</span>모형을 비선형으로 바꾸는” 가장 간단한 방법이 입력변수의 다항식 변환이다.</p>
+<p>핵심은 다음 한 문장이다. 다항회귀는 X에는 비선형이지만, <span class="math inline">\(\beta\)</span>에는 선형인(=선형회귀의) 모형이다. 즉, 추정과 해석(최소제곱, t-검정, F-검정, AIC/BIC 등)의 틀은 선형회귀와 동일하게 유지되면서, 표현력만 확장한다.</p>
+</section>
+<section id="다항회귀-장점" class="level5">
+<h5 class="anchored" data-anchor-id="다항회귀-장점">다항회귀 장점</h5>
+<p>다항회귀의 장점은 구현이 쉽고, 저차에서는 해석이 직관적이며 계산이 빠르다는 점이다. 그러나 차수 d가 커질수록 여러 문제가 동시에 커진다. 먼저 다항식은 구간의 끝부분에서 곡선이 과도하게 흔들리는 경향이 있어 경계에서 요동(런지 현상)이 나타나기 쉽다. 또한 <span class="math inline">\(X,X^{2},\ldots,X^{d}\)</span> 항들은 서로 강하게 상관되어 다중공선성이 심해지고, 그 결과 추정된 계수의 분산이 커져 추론과 해석이 불안정해진다. 더불어 학습 구간 밖으로 조금만 벗어나도 예측값이 급격히 발산할 수 있어 외삽(extrapolation)에서 불안정성이 크게 증가한다.</p>
+<p>따라서 실무에서는 차수 d를 개별 계수의 유의성에 기대어 선택하기보다, 교차검증을 통해 예측오차가 최소가 되는 수준으로 결정하는 것이 안전하다. 특히 다변량 상황에서 여러 설명변수에 높은 차수를 동시에 부여하면 생성되는 항의 수가 급격히 증가하여 차원이 폭발적으로 커지므로, 낮은 차수에서 시작해 필요할 때만 제한적으로 확장하는 접근이 바람직하다.</p>
+</section>
+<section id="단일-설명변수-다항회귀" class="level5">
+<h5 class="anchored" data-anchor-id="단일-설명변수-다항회귀">단일 설명변수 다항회귀</h5>
+<p>다항회귀는 가장 단순한 비선형 확장이다. 단일 설명변수 X에 대해</p>
+<p><span class="math inline">\(Y = \beta_{0} + \beta_{1}X + \beta_{2}X^{2} + \cdots + \beta_{d}X^{d} + \varepsilon\)</span> 로 두면, 곡선 형태의 관계를 표현할 수 있다. 중요한 점은 이 모형이 X에 대해서는 비선형이지만 <span class="math inline">\(\beta\)</span>에 대해서는 선형이므로, 최소제곱추정/해석/진단의 기본 도구를 그대로 유지한다는 것이다.</p>
+<p>행렬 형태로 쓰면, <span class="math inline">\(\mathbf{y} = \mathbf{X}_{d}\mathbf{\beta} + \mathbf{\varepsilon}\)</span>, 여기서 <span class="math inline">\(\mathbf{X}_{d}\)</span>는 <span class="math inline">\(\lbrack 1,X,X^{2},\ldots,X^{d}\rbrack\)</span>열들을 가진 설계행렬이다.</p>
+</section>
+<section id="추정ols과-해석-포인트" class="level5">
+<h5 class="anchored" data-anchor-id="추정ols과-해석-포인트">추정(OLS)과 해석 포인트</h5>
+<p>추정은 선형회귀와 동일하게 최소제곱으로 한다:</p>
+<p><span class="math display">\[\widehat{\mathbf{\beta}} = \arg\min_{\mathbf{\beta}} \parallel \mathbf{y} - \mathbf{X}_{d}\mathbf{\beta} \parallel^{2}\]</span></p>
+<p>주의할 점은 계수 해석이 <span dir="rtl">”</span>기울기” 하나로 끝나지 않는다는 것이다. 다항회귀에서 X의 국소적 효과(미분)는 <span class="math inline">\(\frac{d}{dx}\mathbb{E}\lbrack Y \mid X = x\rbrack = \beta_{1} + 2\beta_{2}x + \cdots + d\beta_{d}x^{d - 1}\)</span>처럼 x에 따라 달라진다. 따라서 <span dir="rtl">”</span><span class="math inline">\(\beta_{2}\)</span>가 양수면 위로 굽는다” 같은 정성적 해석은 가능하지만, 단일 계수만으로 효과를 단정하기보다는 예측곡선 자체를 그려 확인하는 것이 안전하다.</p>
+</section>
+<section id="차수-선택과-과적합" class="level5">
+<h5 class="anchored" data-anchor-id="차수-선택과-과적합">차수 선택과 과적합</h5>
+<p>다항 차수 d는 모형 복잡도를 직접 올린다. d가 작으면 표현력이 부족해 과소적합, d가 크면 훈련오차는 줄어도 새 데이터에서 과적합 가능이 높아진다. 따라서 d는 보통 아래 기준으로 선택한다.</p>
+<p>1. 검증오차/교차검증 오차 최소화(CV-RMSE, CV-MAE 등) <br> 2. 목적이 추론/간결성이라면 AIC/BIC 보조 활용 <br> 3. <span dir="rtl">”</span>해석 가능성”이 중요하면 지나치게 큰 d는 피함</p>
+</section>
+<section id="다항-차수와-설명변수-개수-결정" class="level5">
+<h5 class="anchored" data-anchor-id="다항-차수와-설명변수-개수-결정">다항 차수와 설명변수 개수 결정</h5>
+<p>다항회귀를 설계할 때 가장 중요한 결정은 다항 차수 d를 어디까지 올릴 것인가와, 어떤 설명변수들을 다항 확장에 포함할 것인가(사실상 다항 확장에 들어가는 변수 수를 얼마나 크게 할 것인가)이다. 이 두 선택은 단순히 <span dir="rtl">”</span>모형을 조금 더 유연하게 만든다”는 수준을 넘어, 특징공간의 크기와 복잡도를 결정하고 과적합 위험, 다중공선성, 계산비용까지 함께 좌우한다.</p>
+<p>먼저 다항항의 개수가 어떻게 증가하는지를 이해해야 한다. 설명변수가 p개일 때 최대 차수 d까지의 전체 다항항(상호작용 포함, 절편 포함)을 구성하면 항의 총개수는 <span class="math inline">\(m(p,d) = \binom{p + d}{d}\)</span>로 주어진다. 이 값은 p나 d가 조금만 커져도 매우 빠르게 커진다. 특히 d=2만 되어도 항의 수가 대략 <span class="math inline">\(O(p^{2})\)</span>로 늘어나고, d=3에서는 <span class="math inline">\(O(p^{3})\)</span>수준으로 증가한다. 따라서 <span dir="rtl">”</span>차수를 조금만 더 올려보자” 혹은 <span dir="rtl">”</span>변수를 모두 다항으로 확장하자”는 선택은 곧바로 항의 폭증으로 이어질 수 있으며, 표본 크기 n에 비해 항의 수가 커지는 순간 일반화 성능이 불안정해지기 쉽다.</p>
+<p>이런 이유로 다항 차수 d는 훈련오차를 기준으로 정하는 것이 아니라, 검증오차(또는 교차검증 오차)를 기준으로 선택하는 것이 원칙이다. 실제 절차에서는 <span class="math inline">\(d = 1,2,3,\ldots\)</span>과 같이 작은 차수부터 후보를 두고, 각 차수별로 교차검증을 통해 CV-RMSE나 CV-MAE 같은 검증 성능을 계산한 뒤 그 값이 가장 작은 차수를 택한다. 다만 검증오차가 최소가 되는 지점이 뾰족하지 않고 넓게 평평한 경우가 많으므로, 오차가 비슷하다면 더 작은 차수를 선택해 단순성을 확보하는 편이 일반적으로 안정적이다. 해석이 목적일 때는 이 경향이 더 강해져서, 곡선성이 존재하는지 확인하는 수준에서는 보통 d=2 또는 d=3 정도가 충분한 경우가 많다. 반대로 d를 크게 올려야만 성능이 좋아지는 상황이라면, 다항식 자체가 적절한 표현방식인지(예: 스플라인이나 트리 기반 모델이 더 자연스러운지)도 함께 점검하는 것이 좋다.</p>
+<p>설명변수 개수의 결정은 단순히 <span dir="rtl">”</span>원래 변수 p를 얼마나 넣을 것인가”라기보다, 실제로는 <span dir="rtl">”</span>그중 몇 개를 다항 확장 대상 변수로 삼을 것인가”라는 문제로 이해하는 것이 실무적으로 더 적절하다. 모든 변수를 동일하게 다항 확장하는 방식은 항의 수를 폭발적으로 늘리기 쉽고, 불필요한 복잡도를 초래할 가능성이 높다. 따라서 일반적으로는 비선형 관계가 의심되는 연속형 변수 몇 개를 중심으로 다항항을 추가하고, 나머지 변수들은 1차 선형항으로 유지하는 방식이 더 안정적이다. 어떤 변수를 확장할지는 도메인 지식과 탐색적 진단(예: 잔차 플롯, 부분잔차 플롯, 변수별 비선형 패턴 확인)을 결합해 선정하는 것이 좋으며, 실제 선택은 <span dir="rtl">”</span>추가했을 때 검증오차가 의미 있게 감소하는가”를 기준으로 결정한다. 예를 들어 기본 선형모형으로 시작한 뒤, 비선형이 의심되는 변수에 대해 <span class="math inline">\(X^{2}\)</span>를 추가하고 교차검증 오차가 줄어드는지를 보고, 필요하면 <span class="math inline">\(X^{3}\)</span>까지 확장하되 개선이 멈추면 중단하는 식의 보수적 확장 전략이 흔히 사용된다.</p>
+</section>
+<section id="다중공선성과-수치-안정성-중심화스케일링직교기저" class="level5">
+<h5 class="anchored" data-anchor-id="다중공선성과-수치-안정성-중심화스케일링직교기저">다중공선성과 수치 안정성: 중심화·스케일링·직교기저</h5>
+<p>다항항들은 서로 강한 상관을 만들기 쉽다(예: X와 <span class="math inline">\(X^{2}\)</span>는 대개 강하게 연관). 그 결과 <span class="math inline">\(\widehat{\beta}\)</span>가 불안정해지고(표준오차 증가), 계수 부호/크기가 표본에 민감해지며 추론이 흔들릴 수 있다. 이를 완화하는 대표적 방법은 다음과 같다.</p>
+<p>(1) 중심화(centering): <span class="math inline">\(X_{c} = X - \overline{X},X_{c}^{2},X_{c}^{3},\ldots\)</span>처럼 평균을 빼서 다항항을 만들면, 특히 절편과 저차항 해석이 좋아지고 공선성이 완화되는 경우가 많다.</p>
+<p>(2) 스케일링(scaling): 다항항은 스케일이 급격히 커지므로 표준화(예: z-score) 후 다항항을 만들면 수치적으로 안정적이다.</p>
+<p>(3) 직교 다항식(orthogonal polynomials): 소프트웨어에 따라 직교기저를 사용하면(예: R의 poly()), 다중공선성을 크게 줄이면서 같은 곡선공간을 표현할 수 있다. 단, 이때 계수 해석은 덜 직관적일 수 있다(예측곡선 중심으로 해석 권장)</p>
+</section>
+</section>
+<section id="계단함수step-functions" class="level4">
+<h4 class="anchored" data-anchor-id="계단함수step-functions">2. 계단함수(Step Functions)</h4>
+<section id="개념" class="level5">
+<h5 class="anchored" data-anchor-id="개념">개념</h5>
+<p>특징(설명변수)의 다항함수를 선형모형의 예측변수로 사용하면, X의 비선형 함수 형태에 전 구간에 걸친(global) 구조를 강제로 부여하게 된다. 우리는 이러한 전역 구조를 강제하지 않기 위해, 대신 계단함수(step functions)를 사용할 수 있다. 여기서는 X의 범위를 여러 개의 구간(bin)으로 나누고, 각 구간마다 서로 다른 상수를 적합한다. 이는 연속형 변수를 순서가 있는 범주형 변수(ordered categorical variable)로 변환하는 것과 같다.</p>
+</section>
+<section id="모형" class="level5">
+<h5 class="anchored" data-anchor-id="모형">모형</h5>
+<p>좀 더 구체적으로, X의 범위 안에 절단점(cutpoint) <span class="math inline">\(c_{1},c_{2},\ldots,c_{K}\)</span>를 만들고, 그 다음 K+1개의 새로운 변수를 다음과 같이 구성한다.</p>
+<p><span class="math display">\[\begin{matrix}
+C_{0}(X) &amp; = I(X &lt; c_{1}), \\
+C_{1}(X) &amp; = I(c_{1} \leq X &lt; c_{2}), \\
+C_{2}(X) &amp; = I(c_{2} \leq X &lt; c_{3}), \\
+&amp; \vdots \\
+C_{K - 1}(X) &amp; = I(c_{K - 1} \leq X &lt; c_{K}), \\
+C_{K}(X) &amp; = I(c_{K} \leq X),
+\end{matrix}\]</span></p>
+<p>여기서 <span class="math inline">\(I( \cdot )\)</span>는 조건이 참이면 1을, 그렇지 않으면 0을 반환하는 지시함수(indicator)이다. 예를 들어 <span class="math inline">\(I(c_{K} \leq X)\)</span>는 <span class="math inline">\(c_{K} \leq X\)</span>이면 1이고, 그렇지 않으면 0이다. 이러한 변수들은 때때로 더미 변수라고도 불린다.</p>
+</section>
+<section id="추정" class="level5">
+<h5 class="anchored" data-anchor-id="추정">추정</h5>
+<p>어떤 X 값에 대해서도 X는 K+1개의 구간 중 정확히 하나에 속해야 하므로, <span class="math inline">\(C_{0}(X) + C_{1}(X) + \cdots + C_{K}(X) = 1\)</span>이 성립한다는 점에 주목하라. 그런 다음 <span class="math inline">\(C_{1}(X),C_{2}(X),\ldots,C_{K}(X)\)</span>를 예측변수로 사용하여 최소제곱으로 선형모형을 적합한다.</p>
+<p><span class="math display">\[y_{i} = \beta_{0} + \beta_{1}C_{1}(x_{i}) + \beta_{2}C_{2}(x_{i}) + \cdots + \beta_{K}C_{K}(x_{i}) + \varepsilon_{i}\]</span></p>
+<p>주어진 X 값에 대해 <span class="math inline">\(C_{1},C_{2},\ldots,C_{K}\)</span>중에서 0이 아닌 값은 많아야 하나뿐이다. 또한 <span class="math inline">\(X &lt; c_{1}\)</span>이면 모든 예측변수가 0이 되므로, <span class="math inline">\(\beta_{0}\)</span>는 <span class="math inline">\(X &lt; c_{1}\)</span>일 때의 Y 평균값으로 해석될 수 있다. 반면 <span class="math inline">\(c_{j} \leq X &lt; c_{j + 1}\)</span>일 때 반응을 <span class="math inline">\(\beta_{0} + \beta_{j}\)</span>로 예측하므로, <span class="math inline">\(\beta_{j}\text{는}X &lt; c_{1}\)</span>인 경우에 비해 <span class="math inline">\(c_{j} \leq X &lt; c_{j + 1}\)</span> 구간에서 반응이 평균적으로 얼마나 증가하는지를 나타낸다.</p>
+<p>계단함수 모형은 연속형 설명변수 X의 범위를 여러 구간으로 나누고, 각 구간에서 반응변수 Y의 평균을 서로 다른 상수로 추정하는 방식이다. 따라서 결과는 본질적으로 <span dir="rtl">”</span>구간별 평균이 얼마나 다른가”로 해석되며, 각 구간을 나타내는 지시함수 I(\cdot)를 만들면 구조가 범주형 더미변수를 사용하는 선형모형과 거의 동일해진다.</p>
+<p>이 접근의 장점은 형태 가정이 매우 약하다는 점이다. 각 구간에서 상수만 추정하므로 구현이 단순하고, 이상치나 약한 비선형성에 대해 비교적 강건하며, 특정 기준을 기준으로 상태가 달라지는 임계값(threshold) 개념이 있는 문제에서 특히 직관적으로 작동한다. 반면 추정된 함수는 구간 경계에서 값이 갑자기 변하는 불연속 형태가 되므로 실제 관계가 매끈하게 변하는 상황에서는 중요한 추세를 놓칠 수 있다. 또한 절단점의 위치와 절단점 개수에 따라 적합 결과가 크게 달라질 수 있어 민감성이 존재한다.</p>
+<p>따라서 실무에서는 절단점 개수 K를 임의로 정하기보다, 교차검증을 통해 일반화 오차가 가장 작은 수준으로 선택하는 것이 원칙이다.</p>
+</section>
+</section>
+<section id="기저함수basis-functions" class="level4">
+<h4 class="anchored" data-anchor-id="기저함수basis-functions">3. 기저함수(Basis Functions)</h4>
+<p>다항회귀와 구간별 상수(piecewise-constant) 회귀 모형은 사실 기저함수(basis function) 접근의 특수한 경우이다. 핵심 아이디어는 어떤 변수 X에 적용할 수 있는 함수(또는 변환)들의 집합 <span class="math inline">\(b_{1}(X),b_{2}(X),\ldots,b_{K}(X)\)</span>를 미리 준비해 두는 것이다. 그리고 X 자체에 대해 선형모형을 적합하는 대신, 다음 모형을 적합한다.</p>
+<p><span class="math display">\[y_{i} = \beta_{0} + \beta_{1}b_{1}(x_{i}) + \beta_{2}b_{2}(x_{i}) + \beta_{3}b_{3}(x_{i}) + \cdots + \beta_{K}b_{K}(x_{i}) + \varepsilon_{i}\]</span></p>
+<p>여기서 기저함수 <span class="math inline">\(b_{1}( \cdot ),b_{2}( \cdot ),\ldots,b_{K}( \cdot )\)</span>는 고정되어 있고 알려진(known) 함수들이다. 즉, 우리는 이 함수들을 사전에 선택한다. 다항회귀의 경우 기저함수는 <span class="math inline">\(b_{j}(x_{i}) = x_{i}^{j}\)</span>이고, 구간별 상수 함수의 경우 기저함수는 <span class="math inline">\(b_{j}(x_{i}) = I(c_{j} \leq x_{i} &lt; c_{j + 1})\)</span>이다. 예측변수가 <span class="math inline">\(b_{1}(x_{i}),b_{2}(x_{i}),\ldots,b_{K}(x_{i})\)</span>인 표준 선형모형으로 볼 수 있다. 따라서 (7.7)의 미지 회귀계수는 최소제곱으로 추정할 수 있다. 중요한 점은, 이 설정에서도 3장에서 논의한 선형모형의 모든 추론 도구—예를 들어 계수추정치의 표준오차, 모형 전체 유의성에 대한 F-통계량—를 그대로 사용할 수 있다는 것이다.</p>
+<p>지금까지는 기저함수로 다항함수와 구간별 상수 함수를 사용했지만, 가능한 선택지는 훨씬 많다. 예컨대 웨이블릿(wavelets)이나 푸리에 급수(Fourier series)를 이용해 기저함수를 구성할 수도 있다. 다음 절에서는 기저함수의 매우 흔한 선택인 회귀 스플라인(regression splines)을 살펴본다.</p>
+</section>
+<section id="회귀-스플라인regression-splines" class="level4">
+<h4 class="anchored" data-anchor-id="회귀-스플라인regression-splines">4. 회귀 스플라인(Regression Splines)</h4>
+<section id="조각다항식piecewise-polynomials" class="level5">
+<h5 class="anchored" data-anchor-id="조각다항식piecewise-polynomials">조각다항식(Piecewise Polynomials)</h5>
+<p>X의 전체 구간에 대해 고차 다항식을 하나 적합하는 대신, 조각다항 회귀는 X의 서로 다른 구간마다 낮은 차수의 다항식을 각각 적합하는 방식이다. 예를 들어 조각별 3차 다항은 다음 형태의 3차 회귀모형을 적합하는 방식으로 작동한다.</p>
+<p><span class="math display">\[y_{i} = \beta_{0} + \beta_{1}x_{i} + \beta_{2}x_{i}^{2} + \beta_{3}x_{i}^{3} + \varepsilon_{i}\]</span></p>
+<p>단, 계수 <span class="math inline">\(\beta_{0},\beta_{1},\beta_{2},\beta_{3}\)</span>는 X 범위의 서로 다른 부분에서 서로 다른 값을 갖는다. 계수가 바뀌는 지점을 매듭(knot)이라고 부른다.</p>
+<p>예를 들어 매듭이 하나도 없는 조각별 3차는 d=3인 표준 3차 다항식과 동일하다. 한 점 c에 매듭이 하나 있는 조각별 3차 다항식은 다음과 같은 형태가 된다.</p>
+<p><span class="math display">\[y_{i} = \{\begin{matrix}
+\beta_{01} + \beta_{11}x_{i} + \beta_{21}x_{i}^{2} + \beta_{31}x_{i}^{3} + \varepsilon_{i}, &amp; x_{i} &lt; c \\
+\beta_{02} + \beta_{12}x_{i} + \beta_{22}x_{i}^{2} + \beta_{32}x_{i}^{3} + \varepsilon_{i}, &amp; x_{i} \geq c
+\end{matrix}\]</span></p>
+<p>즉, <span class="math inline">\(x_{i} &lt; c\)</span>인 관측치 부분집합에는 하나의 다항함수를, <span class="math inline">\(x_{i} \geq c\)</span>인 관측치 부분집합에는 또 다른 다항함수를 적합하는 것이다. 첫 번째 다항함수의 계수는 <span class="math inline">\(\beta_{01},\beta_{11},\beta_{21},\beta_{31}\)</span>이고, 두 번째 다항함수의 계수는 <span class="math inline">\(\beta_{02},\beta_{12},\beta_{22},\beta_{32}\)</span>이다. 각각의 다항함수는 원래 예측변수의 단순한 함수들에 대해 최소제곱을 적용하여 적합할 수 있다.</p>
+<p>매듭을 더 많이 둘수록 조각다항식은 더 유연해진다. 일반적으로 X의 범위 전체에 K개의 서로 다른 매듭을 놓으면, 결국 K+1개의 서로 다른 3차 다항식을 적합하게 된다. 또한 반드시 3차를 쓸 필요는 없다. 예컨대 조각별 선형(piecewise linear)도 적합할 수 있다. 실제로 7.2절의 구간별 상수 함수는 차수가 0인 조각다항식이다.</p>
+</section>
+<section id="제약과-스플라인constraints-and-splines" class="level5">
+<h5 class="anchored" data-anchor-id="제약과-스플라인constraints-and-splines">제약과 스플라인(Constraints and Splines)</h5>
+<p>매듭(knot)을 c=50에 둔다. 조각별 3차 다항식 모형은 다음과 같이 쓸 수 있고 관측치는 <span class="math inline">\(Y_{i} = f(X_{i}) + \varepsilon_{i}\)</span>로 본다.</p>
+<p><span class="math display">\[f(X) = \{\begin{matrix}
+f_{1}(X) = \beta_{01} + \beta_{11}X + \beta_{21}X^{2} + \beta_{31}X^{3}, &amp; X &lt; c, \\
+f_{2}(X) = \beta_{02} + \beta_{12}X + \beta_{22}X^{2} + \beta_{32}X^{3}, &amp; X \geq c,
+\end{matrix}\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_splines.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>(왼쪽 위)</strong> 조각별 3차: 제약 없음 (Unconstrained) 이 경우에는 매듭에서 어떤 조건도 강제하지 않으므로 <span class="math inline">\(f_{1}(c) \neq f_{2}(c)\)</span>가 허용된다. 즉 X=c에서 점프(jump)가 생길 수 있어 연결부가 부자연스러워질 수 있다. 계수는 양쪽에 4개씩 총 8개이므로(매듭 c는 고정) 자유도는 8로 볼 수 있다.</p>
+<p><strong>(오른쪽 위)</strong> 조각별 3차: 연속 제약 <span class="math inline">\(C^{0}\)</span> (Continuous Piecewise Cubic) 점프를 금지하려면 함수값 연속 조건 <span class="math inline">\(f_{1}(c) = f_{2}(c)\)</span>을 부과한다.</p>
+<p>이를 계수로 쓰면 <span class="math inline">\(\beta_{01} + \beta_{11}c + \beta_{21}c^{2} + \beta_{31}c^{3} = \beta_{02} + \beta_{12}c + \beta_{22}c^{2} + \beta_{32}c^{3}\)</span></p>
+<p>이 제약은 1개이므로 자유도는 8-1=7로 줄어든다. 다만 <span class="math inline">\(C^{0}\)</span>만으로는 기울기 연속이 보장되지 않으므로 <span class="math inline">\(f_{1}'(c) \neq f_{2}'(c)\)</span>가 가능하고, 그 결과 매듭에서 V자 형태의 꺾임(kink)이 나타날 수 있다.</p>
+<p><strong>(왼쪽 아래)</strong> 3차 스플라인: C^2 제약 (Cubic Spline) 더 매끈한 연결을 위해 매듭에서 함수값뿐 아니라 1차·2차 도함수도 연속이 되도록 한다. <span class="math inline">\(f_{1}(c) = f_{2}(c),f_{1}'(c) = f_{2}'(c),f_{1}^{''}(c) = f_{2}^{''}(c)\)</span>.</p>
+<p>도함수는 <span class="math inline">\(f_{1}'(X) = \beta_{11} + 2\beta_{21}X + 3\beta_{31}X^{2},f_{2}'(X) = \beta_{12} + 2\beta_{22}X + 3\beta_{32}X^{2},f_{1}^{''}(X) = 2\beta_{21} + 6\beta_{31}X,f_{2}^{''}(X) = 2\beta_{22} + 6\beta_{32}X\)</span></p>
+<p>이므로, 제약은 다음 3개의 선형식으로 정리된다.</p>
+<p><span class="math display">\[\beta_{01} + \beta_{11}c + \beta_{21}c^{2} + \beta_{31}c^{3} = \beta_{02} + \beta_{12}c + \beta_{22}c^{2} + \beta_{32}c^{3},\beta_{11} + 2\beta_{21}c + 3\beta_{31}c^{2} = \beta_{12} + 2\beta_{22}c + 3\beta_{32}c^{2},2\beta_{21} + 6\beta_{31}c = 2\beta_{22} + 6\beta_{32}c\]</span></p>
+<p>제약이 3개이므로 자유도는 8-3=5가 되며, 이때의 조각별 3차를 3차 스플라인(cubic spline)이라 한다. 일반적으로 내부 매듭이 K개이면, 3차 스플라인의 자유도는 K+4가 된다.</p>
+<p><strong>(오른쪽 아래)</strong> 선형 스플라인: d=1, C^0 제약 (Linear Spline) 선형 스플라인은 각 구간에서 1차식(직선)을 적합하되, 매듭에서 연속만 강제한다.</p>
+<p><span class="math display">\[f(X) = \{\begin{matrix}
+a_{1} + b_{1}X, &amp; X &lt; c, \\
+a_{2} + b_{2}X, &amp; X \geq c,
+\end{matrix}\text{with}a_{1} + b_{1}c = a_{2} + b_{2}c\]</span></p>
+<p>즉 <span class="math inline">\(f(c^{-}) = f(c^{+})\)</span>는 만족하지만, <span class="math inline">\(f'(c^{-}) = b_{1},f'(c^{+}) = b_{2}\)</span>이므로 일반적으로 b_1\neq b_2이고 매듭에서 꺾임이 생긴다. 차수 d의 스플라인은 <span dir="rtl">”</span>차수 d의 조각다항식이며 각 매듭에서 d-1차까지의 도함수가 연속”인 함수이므로, d=1에서는 d-1=0에 해당하는 함수값 연속만 요구하는 경우가 된다.</p>
+</section>
+<section id="스플라인의-기저-표현" class="level5">
+<h5 class="anchored" data-anchor-id="스플라인의-기저-표현">스플라인의 기저 표현</h5>
+<p>앞 절에서 본 회귀 스플라인은 다소 복잡해 보일 수 있다. 즉 <span dir="rtl">”</span>조각별 차수 d 다항식을, (그리고 가능하다면 그 1차부터 d-1차까지의 도함수까지) 연속이 되도록 하는 제약 하에서 어떻게 적합하는가?“라는 질문이 생긴다. 그런데 회귀 스플라인은 기저모형 (7.7)을 이용해 표현할 수 있다. K개의 매듭을 가진 3차 스플라인은 적절한 기저함수 <span class="math inline">\(b_{1},b_{2},\ldots,b_{K + 3}\)</span>를 택하면 다음과 같이 모형화할 수 있다.</p>
+<p><span class="math display">\[y_{i} = \beta_{0} + \beta_{1}b_{1}(x_{i}) + \beta_{2}b_{2}(x_{i}) + \cdots + \beta_{K + 3}b_{K + 3}(x_{i}) + \varepsilon_{i}\]</span></p>
+<p>그리고 이를 최소제곱으로 적합할 수 있다.</p>
+<p>다항식을 표현하는 방식이 여러 가지였던 것처럼, 3차 스플라인도 기저함수를 다르게 선택함으로써 여러 동등한 방식으로 표현할 수 있다. 위의 식을 이용해 3차 스플라인을 가장 직접적으로 표현하는 방법은, 먼저 3차 다항식의 기저—즉 <span class="math inline">\(x,x^{2},x^{3}\)</span>—로 시작한 뒤, 매듭마다 하나씩 절단된 거듭제곱 기저함수(truncated power basis function)를 추가하는 것이다. 절단된 거듭제곱 기저함수는 다음과 같이 정의된다.</p>
+<p><span class="math display">\[h(x,\xi) = (x - \xi)_{+}^{3} = \{\begin{matrix}
+(x - \xi)^{3}, &amp; x &gt; \xi \\
+0, &amp; \text{그 외}
+\end{matrix}\]</span></p>
+<p>여기서 <span class="math inline">\(\xi\)</span>는 매듭이다. 3차 다항모형에 <span class="math inline">\(\beta_{4}h(x,\xi)\)</span>형태의 항을 추가하면, <span class="math inline">\(\xi\)</span>에서 3차 도함수에서만 불연속이 생기고, 함수 자체는 연속이며 각 매듭에서 1차 및 2차 도함수도 연속임을 보일 수 있다.</p>
+<p>즉 K개의 매듭을 가진 3차 스플라인을 적합하려면, 절편과 함께 3+K개의 예측변수 <span class="math inline">\(X,X^{2},X^{3},h(X,\xi_{1}),h(X,\xi_{2}),\ldots,h(X,\xi_{K})\)</span>에 대해 최소제곱 회귀를 수행하면 된다(<span class="math inline">\(\xi_{1},\ldots,\xi_{K}\)</span>는 매듭). 이는 총 K+4개의 회귀계수를 추정하는 것과 같으므로, K개의 매듭을 가진 3차 스플라인은 K+4개의 자유도를 사용한다.</p>
+</section>
+<section id="매듭의-개수와-위치-선택" class="level5">
+<h5 class="anchored" data-anchor-id="매듭의-개수와-위치-선택">매듭의 개수와 위치 선택</h5>
+<p>스플라인을 적합할 때 매듭을 어디에 두어야 하는가? 회귀 스플라인은 매듭이 많이 포함된 구간에서 가장 유연해진다. 왜냐하면 그 구간에서는 다항식 계수가 빠르게 변할 수 있기 때문이다. 따라서 한 가지 방법은 함수 f가 가장 급격히 변할 것 같은 곳에 더 많은 매듭을 두고, 더 안정적으로 보이는 구간에는 매듭을 적게 두는 것이다. 이 방법은 잘 작동할 수 있지만, 실제로는 매듭을 균등한 방식으로 두는 것이 흔하다. 그 한 방법은 원하는 자유도를 지정한 뒤, 소프트웨어가 해당 자유도에 대응하는 매듭 개수를 데이터의 균등 분위수 위치에 자동으로 배치하도록 하는 것이다.</p>
+<p>그렇다면 매듭을 몇 개 써야 하는가, 또는 동등하게 말해 스플라인의 자유도를 얼마로 해야 하는가? 한 가지 방법은 서로 다른 매듭 개수를 시도해 보고 가장 그럴듯한 곡선을 고르는 것이다. 좀 더 객관적인 접근은 앞에서 논의한 교차검증을 사용하는 것이다. 이 방법에서는 데이터의 일부(예: 10%)를 제거하고, 남은 데이터에 특정 매듭 개수 K를 가진 스플라인을 적합한 다음, 제외해 둔 부분에 대한 예측을 수행한다. 이 과정을 각 관측치가 한 번씩 제외되도록 여러 번 반복한 뒤, 전체 교차검증 SSE를 계산한다. 이 과정을 서로 다른 K 값에 대해 반복할 수 있으며, 그 중 SSE가 가장 작은 K를 선택한다.</p>
+</section>
+<section id="다항회귀와의-비교" class="level5">
+<h5 class="anchored" data-anchor-id="다항회귀와의-비교">다항회귀와의 비교</h5>
+<p>다항회귀와 자연 3차 스플라인을 비교하면, 두 방법은 모두 비선형 관계를 표현할 수 있지만 유연성을 확보하는 방식이 다르다. d차 다항회귀는 <span class="math inline">\(f(x) = \beta_{0} + \beta_{1}x + \cdots + \beta_{d}x^{d}\)</span>처럼 전체 구간에 하나의 전역 다항식을 적합하므로, 유연성을 높이려면 d를 크게 해야 한다. 그러나 d가 커질수록 곡선이 데이터의 양끝(경계)에서 과도하게 요동하거나 발산하는 경향이 나타나기 쉽고, 이는 경계에서 예측이 비현실적으로 변하는 형태로 이어질 수 있다. 즉, 전역 다항식은 한 구간에서 필요한 굴곡을 만들기 위해 전체 구간에서 동시에 형태가 흔들릴 수 있다는 구조적 한계를 가진다.</p>
+<p>반면 회귀 스플라인은 차수(보통 3차)를 고정한 채 x축을 여러 구간으로 나누고, 각 구간에서 낮은 차수의 다항식을 연결하여 <span class="math inline">\(f(x) = \overset{M}{\sum_{m = 1}}\theta_{m}b_{m}(x)\)</span>의 형태로 적합한다. 이때 유연성은 최고차 항의 차수를 키우는 대신, 매듭(knot)의 개수 K를 늘려 확보된다. 특히 자연 3차 스플라인은 경계에서 추가 제약을 두어 바깥 구간에서 함수가 선형이 되도록 만들기 때문에, 경계에서의 불안정성이 상대적으로 줄어들고 추정이 더 안정적으로 나타나는 경향이 있다. 따라서 같은 수준의 <span dir="rtl">”</span>복잡도(자유도)“를 부여하더라도, 다항회귀는 경계에서 과도한 흔들림이 나타날 수 있는 반면 스플라인은 보다 합리적인 형태를 유지하는 경우가 많다.</p>
+<p>또한 스플라인은 매듭 위치를 조절함으로써 유연성을 국소적으로 배분할 수 있다는 장점이 있다. 함수 f가 빠르게 변하는 구간에는 매듭을 촘촘히 두어 더 유연하게 만들고, 변화가 완만한 구간에는 매듭을 적게 두어 불필요한 요동을 억제하는 설계가 가능하다. 이런 이유로 회귀 스플라인은 많은 상황에서 고차 다항회귀보다 더 안정적인 추정과 더 나은 예측 성능을 제공하는 방법으로 활용된다.</p>
+</section>
+</section>
+<section id="스무딩-스플라인smoothing-splines" class="level4">
+<h4 class="anchored" data-anchor-id="스무딩-스플라인smoothing-splines">5. 스무딩 스플라인(Smoothing Splines)</h4>
+<section id="스무딩-스플라인-개요" class="level5">
+<h5 class="anchored" data-anchor-id="스무딩-스플라인-개요">스무딩 스플라인 개요</h5>
+<p>데이터에 매끈한 곡선을 적합할 때 중요한 것은 관측된 데이터를 잘 맞추는 어떤 함수 g(x)를 찾는 것이다. 즉, <span class="math inline">\(SSE = \overset{n}{\sum_{i = 1}}(y_{i} - g(x_{i}))^{2}\)</span>가 작아지기를 원한다. 그러나 이 접근에는 문제가 있다. <span class="math inline">\(g(x_{i})\)</span>에 아무 제약도 두지 않으면, 모든 y_i를 정확히 통과하도록 g를 선택함으로써 언제든지 SSE를 0으로 만들 수 있다. 하지만 그런 함수는 데이터에 심각하게 과적합(overfit)되며, 지나치게 유연한 함수가 된다. 여기서 원하는 것은 SSE를 작게 만들면서도 매끈한(smooth) 함수 g이다.</p>
+<p>그렇다면 g가 매끈하도록 어떻게 보장할 수 있는가? 이를 위한 방법은 여러 가지가 있는데, 자연스러운 접근은 다음을 최소화하는 함수 g를 찾는 것이다.</p>
+<p><span class="math inline">\(\overset{n}{\sum_{i = 1}}(y_{i} - g(x_{i}))^{2} + \lambda\int(g^{''}(t))^{2}dt\)</span>, 여기서 <span class="math inline">\(\lambda\)</span>는 0 이상인 튜닝 파라미터(tuning parameter)이다. 이를 최소화하는 함수 g를 스무딩 스플라인(smoothing spline)이라 한다.</p>
+<p>위의 식은 무엇을 의미하는가? 앞에서 살펴 보았던 릿지 회귀와 라쏘의 맥락에서 보았던 <span dir="rtl">”</span>손실+패널티(loss+penalty)” 형태를 취한다. <span class="math inline">\(\overset{n}{\sum_{i = 1}}(y_{i} - g(x_{i}))^{2}\)</span>항은 g가 데이터를 잘 맞추도록 유도하는 손실함수이고, <span class="math inline">\(\lambda\int(g^{''}(t))^{2}dt\)</span> 항은 g의 변동성을 벌점으로 주는 패널티 항이다. g''(t)는 g의 2차 도함수를 뜻한다. 1차 도함수 g'(t)는 t에서의 기울기를 측정하고, 2차 도함수는 그 기울기가 얼마나 변하는지를 나타낸다. 따라서 넓게 말해 함수의 2차 도함수는 함수의 거칠기를 측정하는 지표로 볼 수 있다. g(t)가 t 근처에서 심하게 요동치면 g''(t)의 절댓값이 커지고, 그렇지 않으면 0에 가깝다. (직선의 2차 도함수는 0이며, 직선은 완전히 매끈하다.)</p>
+<p><span class="math inline">\(\int(g^{''}(t))^{2}dt\)</span>는 함수 g'(t)가 전체 구간에서 얼마나 많이 변하는지를 측정하는 값이다. g가 매우 매끈하다면 g'(t)는 거의 상수에 가까워지고, <span class="math inline">\(\int(g^{''}(t))^{2}dt\)</span>는 작은 값을 갖는다. 반대로 g가 들쭉날쭉하고 변동이 크면 g'(t)는 크게 변하며, <span class="math inline">\(\int(g^{''}(t))^{2}dt\)</span>는 큰 값을 갖는다. 따라서 위의 식에서 <span class="math inline">\(\int(g^{''}(t))^{2}dt\)</span>항은 g가 매끈해지도록 유도한다. <span class="math inline">\(\lambda\)</span>값이 클수록 g는 더 매끈해진다.</p>
+<p><span class="math inline">\(\lambda = 0\)</span>이면 패널티 항은 아무 영향이 없으므로, 함수 g는 매우 요동치며 훈련 관측치를 정확히 보간(interpolate)하게 된다. 반대로 <span class="math inline">\(\lambda \rightarrow \infty\)</span>이면 g는 완전히 매끈해지는데, 이때 g는 훈련점들을 가능한 한 가깝게 지나가는 직선이 된다. 실제로 이 경우 g는 선형 최소제곱 직선이 된다. 왜냐하면 손실항이 잔차제곱합을 최소화하는 것과 같기 때문이다. <span class="math inline">\(\lambda\)</span>가 중간 값이면 g는 훈련 관측치를 어느 정도 따라가되 동시에 매끈함을 유지한다. 즉 <span class="math inline">\(\lambda\)</span>는 스무딩 스플라인의 편향–분산 절충을 조절한다.</p>
+<p><span class="math inline">\(\overset{n}{\sum_{i = 1}}(y_{i} - g(x_{i}))^{2} + \lambda\int(g^{''}(t))^{2}dt\)</span>을 최소화하는 함수 g(x)는 몇 가지 특별한 성질을 갖는다고 보일 수 있다. 그것은 <span class="math inline">\(x_{1},\ldots,x_{n}\)</span>의 서로 다른 값들에 매듭을 가진 조각별 3차 다항식이며, 각 매듭에서 1차 및 2차 도함수가 연속이다. 더 나아가 가장 바깥쪽 매듭들(extreme knots) 바깥의 구간에서는 선형이다. 다시 말해, 최소화하는 g(x)는 <span class="math inline">\(x_{1},\ldots,x_{n}\)</span>에 매듭을 둔 자연 3차 스플라인(natural cubic spline)이다.</p>
+</section>
+<section id="스무딩-파라미터-lambda-선택" class="level5">
+<h5 class="anchored" data-anchor-id="스무딩-파라미터-lambda-선택">스무딩 파라미터 <span class="math inline">\(\lambda\)</span> 선택</h5>
+<p>스무딩 스플라인은 각 관측점 x_i마다 매듭을 둔 자연 3차 스플라인으로 볼 수 있지만, 실제 유연성은 튜닝 파라미터 <span class="math inline">\(\lambda\)</span>가 <span dir="rtl">”</span>거칠기”를 벌점으로 제어하면서 결정된다. <span class="math inline">\(\lambda\)</span>가 <span class="math inline">\(0 \rightarrow \infty\)</span>로 커질수록 스플라인은 점점 더 매끈해지고, 유효 자유도 <span class="math inline">\(df_{\lambda}:n \rightarrow 2\)</span>로 감소한다.</p>
+<p>스무딩 스플라인은 명목상 n개의 모수를 가지지만, 이 모수들이 강하게 수축되므로 단순한 자유도 대신 유효 자유도를 유연성의 척도로 사용한다. 적합값 벡터는 <span class="math inline">\({\widehat{\mathbf{g}}}_{\lambda} = \mathbf{S}_{\lambda}\mathbf{y}\)</span>로 쓸 수 있고, 유효 자유도는 <span class="math inline">\(df_{\lambda} = \overset{n}{\sum_{i = 1}}\{\mathbf{S}_{\lambda}\}_{ii}\)</span>. 즉 <span class="math inline">\(\mathbf{S}_{\lambda}\)</span> 대각합으로 정의된다.</p>
+<p>매듭의 개수·위치를 고를 필요는 없고, 대신 <span class="math inline">\(\lambda\)</span>를 선택해야 한다. 이는 보통 교차검증으로 정하며, 스무딩 스플라인에서는 LOOCV를 다음처럼 매우 효율적으로 계산할 수 있다.</p>
+<p><span class="math inline">\(SSE_{cv}(\lambda) = \overset{n}{\sum_{i = 1}}\left\lbrack \frac{y_{i} - {\widehat{g}}_{\lambda}(x_{i})}{1 - \{\mathbf{S}_{\lambda}\}_{ii}} \right\rbrack^{2}\)</span>. 실무적으로는 LOOCV(또는 GCV)로 <span class="math inline">\(\lambda\)</span>를 정해 얻은 <span class="math inline">\(df_{\lambda}\)</span>가 과도하게 크지 않으면서 예측 성능이 좋은 해를 선택하며, 두 적합이 비슷하면 더 단순한(작은 <span class="math inline">\(df_{\lambda}\)</span>) 쪽을 택하는 것이 일반적이다.</p>
+</section>
+</section>
+<section id="국소회귀local-regression" class="level4">
+<h4 class="anchored" data-anchor-id="국소회귀local-regression">6. 국소회귀(Local Regression)</h4>
+<p>국소회귀는 유연한 비선형 함수를 적합하기 위한 또 다른 접근이다. 이 방법은 목표점 <span class="math inline">\(x_{0}\)</span>에서의 적합값을 계산할 때, 전체 훈련 관측치를 사용하는 대신 <span class="math inline">\(x_{0}\)</span> 근처의 훈련 관측치들만을 사용한다.</p>
+<p>이래 그림은 국소회귀가 <span dir="rtl">”</span>한 점 <span class="math inline">\(x_{0}\)</span>“에서 예측값 <span class="math inline">\(\widehat{f}(x_{0})\)</span>를 만들 때, 무엇을 선택해야 하는지를 한 번에 보여준다. 핵심은 (1) 어떤 국소 모형을 쓸지, (2) 근처 점들에 어떤 가중치를 줄지이다.</p>
+<ul>
+<li>세로 주황선이 목표점 <span class="math inline">\(x_{0}\)</span>이다. 이 점에서의 <span class="math inline">\(\widehat{f}(x_{0})\)</span>를 구하고 싶다.</li>
+<li><span class="math inline">\(x_{0}\)</span> 근처의 점들이 주황색으로 강조되어 있고(<span dir="rtl">”</span>이웃”), 멀리 있는 점들은 회색으로 보인다.</li>
+<li>노란 종(bell) 모양은 가중치가 거리와 함께 감소함을 나타낸다. <span class="math inline">\(x_{0}\)</span>에서 가까울수록 가중치가 크고, 멀어질수록 0에 가까워진다.</li>
+</ul>
+<p>이렇게 가중치를 준 뒤, <span class="math inline">\(x_{0}\)</span> 주변에서만 작은 회귀모형을 적합해 <span class="math inline">\(\widehat{f}(x_{0})\)</span>를 얻는다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_localreg.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>국소회귀는 목표점 <span class="math inline">\(x_{0}\)</span>에서의 예측값 <span class="math inline">\(\widehat{f}(x_{0})\)</span>를 구할 때, 전체 데이터를 한 번에 적합하는 대신 <span class="math inline">\(x_{0}\)</span> 근처의 관측치들만을 활용하여 국소적으로 모형을 적합하는 방법이다. 그림에서 주황색 수직선이 <span class="math inline">\(x_{0}\)</span>를 나타내며, 주황색으로 표시된 점들은 <span class="math inline">\(x_{0}\)</span> 주변의 <span dir="rtl">”</span>이웃” 관측치들이다. 노란 종 모양은 각 관측치에 부여되는 가중치가 <span class="math inline">\(x_{0}\)</span>로부터의 거리와 함께 감소함을 의미한다. 즉 <span class="math inline">\(x_{0}\)</span>에 가까운 점일수록 큰 가중치를 받아 적합에 더 크게 기여하고, 멀어질수록 가중치가 0에 가까워져 영향이 거의 사라진다.</p>
+<p>이 과정은 다음과 같은 가중 최소제곱 문제로 정리된다.</p>
+<p><span class="math inline">\(\widehat{\beta}(x_{0}) = \arg\min_{\beta}\overset{n}{\sum_{i = 1}}K\left( \frac{x_{i} - x_{0}}{h} \right)(y_{i} - m(x_{i};\beta))^{2},\widehat{f}(x_{0}) = m(x_{0};\widehat{\beta}(x_{0}))\)</span>, 여기서 <span class="math inline">\(m(x;\beta)\)</span>는 <span class="math inline">\(x_{0}\)</span> 주변에서 적합할 국소 모형의 형태이고, <span class="math inline">\(K( \cdot )\)</span>는 거리 기반의 가중치 커널(kernel)이며, h(또는 span)는 <span dir="rtl">”</span>얼마나 넓게 이웃을 볼 것인가”를 결정하는 대역폭이다.</p>
+<p>첫 번째 선택(Choice 1)은 국소 모형의 차수이다. 국소 선형회귀는 <span class="math inline">\(m(x;\beta) = \beta_{0} + \beta_{1}x\)</span>처럼 직선을 적합하고, 국소 2차/3차 회귀는 각각 <span class="math inline">\(m(x;\beta) = \beta_{0} + \beta_{1}x + \beta_{2}x^{2}\)</span>, <span class="math inline">\(m(x;\beta) = \beta_{0} + \beta_{1}x + \beta_{2}x^{2} + \beta_{3}x^{3}\)</span>처럼 더 높은 차수의 다항식을 적합한다. 차수가 올라갈수록 <span class="math inline">\(x_{0}\)</span> 주변의 굴곡을 더 잘 따라갈 수 있어 편향은 줄 수 있지만, 데이터가 충분하지 않거나 잡음이 크면 분산이 커져 국소 적합이 요동칠 수 있다.</p>
+<p>두 번째 선택(Choice 2)은 가중치 부여 방식이다. 그림의 노란 종 모양은 정규분포 형태처럼 <span class="math inline">\(x_{0}\)</span>에서 멀어질수록 부드럽게 가중치가 감소하는 예를 나타내며, 이 외에도 tri-cube, Epanechnikov 등 다양한 커널을 사용할 수 있다. 커널은 <span dir="rtl">”</span>거리 증가에 따라 영향이 얼마나 빠르게 줄어드는가”를 결정하며, 실무에서는 커널의 종류 자체보다도 h 또는 span이 국소회귀의 유연성을 더 크게 좌우하는 경우가 많다. span이 작으면 매우 국소적이고 요동치는 적합이 되고, span이 크면 더 전역적이고 매끈한 적합이 된다.</p>
+<p>요약하면, 국소회귀는 (1) <span class="math inline">\(x_{0}\)</span> 주변의 이웃을 정하고(span/대역폭), (2) 거리 기반 가중치 K를 부여한 뒤, (3) 선택한 국소 모형(선형/2차/3차)을 가중 최소제곱으로 적합하여 <span class="math inline">\(\widehat{f}(x_{0})\)</span>를 얻는 절차이다.</p>
+<section id="x-x_0에서의-국소회귀-알고리즘" class="level5">
+<h5 class="anchored" data-anchor-id="x-x_0에서의-국소회귀-알고리즘"><span class="math inline">\(X = x_{0}\)</span>에서의 국소회귀 알고리즘</h5>
+<p>1. <span class="math inline">\(x_{0}\)</span>에 가장 가까운 x_i를 갖는 훈련점들 중에서 비율 <span class="math inline">\(s = k/n\)</span>에 해당하는 점들을 모은다. <br> 2. 이 근방의 각 점에 가중치 <span class="math inline">\(K_{i0} = K(x_{i},x_{0})\)</span>를 부여한다. 이때 <span class="math inline">\(x_{0}\)</span>에서 가장 먼 점은 가중치가 0이 되며, 가장 가까운 점이 가장 큰 가중치를 갖는다. 이 k개의 최근접 이웃을 제외한 나머지 점들은 가중치 0을 갖는다. <br> 3. 위 가중치들을 사용하여 <span class="math inline">\(y_{i}\)</span>를 <span class="math inline">\(x_{i}\)</span>에 회귀시키는 가중 최소제곱 회귀를 적합한다. 즉, 다음을 최소화하는 <span class="math inline">\({\widehat{\beta}}_{0},{\widehat{\beta}}_{1}\)</span>을 찾는다.</p>
+<p><span class="math display">\[\overset{n}{\sum_{i = 1}}K_{i0}(y_{i} - \beta_{0} - \beta_{1}x_{i})^{2}\]</span> <br> 4. <span class="math inline">\(x_{0}\)</span>에서의 적합값은 <span class="math inline">\(\widehat{f}(x_{0}) = {\widehat{\beta}}_{0} + {\widehat{\beta}}_{1}x_{0}\)</span>로 주어진다.</p>
+<p>국소회귀의 아이디어는 여러 방식으로 일반화할 수 있다. 설명변수가 여러 개인 <span class="math inline">\(X_{1},X_{2},\ldots,X_{p}\)</span>상황에서 유용한 일반화 중 하나는, 어떤 변수들에 대해서는 전역적으로, 다른 한 변수(예: 시간)에는 국소적으로 작동하는 다중선형회귀 모형을 적합하는 것이다. 이러한 가변계수 모형(varying coefficient models)은 가장 최근에 수집된 데이터에 맞추어 모형을 적응시키는 유용한 방법이다.</p>
+<p>또한 국소회귀는 하나의 변수에 대해 국소적으로 적합하는 대신, 두 변수 <span class="math inline">\(X_{1},X_{2}\)</span>의 쌍에 대해 국소적으로 적합하고자 할 때도 자연스럽게 일반화된다. 이 경우 2차원 근방을 사용하고, 2차원 공간에서 각 목표점 근처의 관측치들을 이용해 이변량 선형회귀를 적합하면 된다. 이론적으로는 같은 접근을 더 높은 차원으로도 확장할 수 있으며, p차원 근방에 대해 선형회귀를 적합하는 방식으로 구현할 수 있다. 그러나 p가 대략 3 또는 4보다 훨씬 커지면, 일반적으로 x_0에 가까운 훈련 관측치가 매우 적어지므로 국소회귀의 성능이 나빠질 수 있다.</p>
+</section>
+</section>
+<section id="일반화-가법모형-gams" class="level4">
+<h4 class="anchored" data-anchor-id="일반화-가법모형-gams">7. 일반화 가법모형 GAMs</h4>
+<p>앞에서는 단일 설명변수 X를 바탕으로 반응변수 Y를 유연하게 예측하기 위한 여러 접근을 제시했다. 이러한 접근들은 단순 선형회귀의 확장으로 볼 수 있다. 이제 우리는 여러 설명변수 <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>를 바탕으로 Y를 유연하게 예측하는 문제를 살펴본다. 이는 다중선형회귀의 확장에 해당한다.</p>
+<p>일반화 가법모형(generalized additive models, GAMs)은 가법성을 유지하면서 각 변수에 대한 비선형 함수를 허용함으로써, 표준 선형모형을 확장하는 일반적 틀을 제공한다. 선형모형과 마찬가지로 GAM은 연속형(quantitative) 반응변수와 범주형(qualitative) 반응변수 모두에 적용할 수 있다.</p>
+<section id="회귀-문제의-gamgams-for-regression-problems" class="level5">
+<h5 class="anchored" data-anchor-id="회귀-문제의-gamgams-for-regression-problems">회귀 문제의 GAM(GAMs for Regression Problems)</h5>
+<p>다중선형회귀 모형 <span class="math inline">\(y_{i} = \beta_{0} + \beta_{1}x_{i1} + \beta_{2}x_{i2} + \cdots + \beta_{p}x_{ip} + \varepsilon_{i}\)</span>을 자연스럽게 확장하여 각 특징과 반응 사이의 비선형 관계를 허용하는 방법은, 각 선형 성분 <span class="math inline">\(\beta_{j}x_{ij}\)</span>를 (매끈한) 비선형 함수 <span class="math inline">\(f_{j}(x_{ij})\)</span>로 대체하는 것이다. 그러면 모형은 다음과 같이 쓸 수 있다.</p>
+<p><span class="math inline">\(y_{i} = \beta_{0} + \overset{p}{\sum_{j = 1}}f_{j}(x_{ij}) + \varepsilon_{i} = \beta_{0} + f_{1}(x_{i1}) + f_{2}(x_{i2}) + \cdots + f_{p}(x_{ip}) + \varepsilon_{i}\)</span>이는 GAM의 한 예이다. 각 <span class="math inline">\(X_{j}\)</span>에 대해 별도의 <span class="math inline">\(f_{j}\)</span>를 계산하고, 그 기여를 모두 더해 반응을 설명하기 때문에 이를 가법모형이라 부른다.</p>
+</section>
+<section id="gam의-장단점pros-and-cons-of-gams" class="level5">
+<h5 class="anchored" data-anchor-id="gam의-장단점pros-and-cons-of-gams">GAM의 장단점(Pros and Cons of GAMs)</h5>
+<p>GAM은 각 <span class="math inline">\(X_{j}\)</span>에 대해 비선형 함수 <span class="math inline">\(f_{j}\)</span>를 적합할 수 있으므로, 표준 선형회귀가 놓칠 수 있는 비선형 관계를 자동으로 모형화할 수 있다. 이는 각 변수를 하나씩 따로 두고 여러 변환을 일일이 시도할 필요가 없다는 뜻이다.</p>
+<p>비선형 적합은 반응변수 Y에 대해 잠재적으로 더 정확한 예측을 만들 수 있다.</p>
+<p>모형이 가법적이므로, 다른 변수들을 고정한 채 각 <span class="math inline">\(X_{j}\)</span>가 Y에 미치는 효과를 개별적으로 살펴볼 수 있다.</p>
+<p>변수 <span class="math inline">\(X_{j}\)</span>에 대한 함수 <span class="math inline">\(f_{j}\)</span>의 매끈함은 자유도로 요약될 수 있다.</p>
+<p>GAM의 주요 한계는 모형이 가법 구조로 제한된다는 점이다. 변수가 많을 때 중요한 상호작용을 놓칠 수 있다. 다만 선형회귀에서와 마찬가지로, <span class="math inline">\(X_{j} \times X_{k}\)</span> 형태의 추가 예측변수를 포함시켜 상호작용 항을 수동으로 GAM에 추가할 수 있다. 또한 <span class="math inline">\(f_{jk}(X_{j},X_{k})\)</span> 형태의 저차원 상호작용 함수를 모형에 추가할 수도 있는데, 이런 항들은 국소회귀 같은 2차원 평활기(smoother)나 2차원 스플라인(여기서는 다루지 않음)으로 적합할 수 있다.</p>
+<p>완전히 일반적인 모형을 원한다면 랜덤 포레스트(random forests)나 부스팅(boosting)처럼 더 유연한 접근이 필요하다. GAM은 선형모형과 완전한 비모수 모형 사이에서 유용한 절충안을 제공한다.</p>
+</section>
+<section id="분류-문제의-gamgams-for-classification-problems" class="level5">
+<h5 class="anchored" data-anchor-id="분류-문제의-gamgams-for-classification-problems">분류 문제의 GAM(GAMs for Classification Problems)</h5>
+<p>GAM은 Y가 범주형인 경우에도 사용할 수 있다. 단순화를 위해 여기서는 Y가 0 또는 1의 값을 갖는다고 가정하고, <span class="math inline">\(p(X) = \Pr(Y = 1 \mid X)\)</span>를 (예측변수가 주어졌을 때) 반응이 1이 될 조건부확률로 두자. 로지스틱 회귀모형을 상기하면 다음과 같다.</p>
+<p><span class="math display">\[\log\left( \frac{p(X)}{1 - p(X)} \right) = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{p}X_{p}\]</span></p>
+<p>비선형 관계를 허용하는 자연스러운 방법은 다음 모형을 사용하는 것이다.</p>
+<p><span class="math display">\[\log\left( \frac{p(X)}{1 - p(X)} \right) = \beta_{0} + f_{1}(X_{1}) + f_{2}(X_{2}) + \cdots + f_{p}(X_{p})\]</span></p>
+<p>이 식은 로지스틱 회귀 GAM이다. 이는 연속형 반응변수에 대해 앞 절에서 논의한 것과 동일한 장단점을 갖는다.</p>
+</section>
+</section>
+<section id="사례분석" class="level4">
+<h4 class="anchored" data-anchor-id="사례분석">8. 사례분석</h4>
+<p>MPG 예제 데이터에서 설명변수를 HORSEPOWER, 종속변수를 MPG로 사용하였다.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 불러오기 (가장 간단)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> sns.load_dataset(<span class="st">"mpg"</span>)   <span class="co"># Auto MPG (Seaborn 내장 데이터)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 필요시 결측 제거(특히 horsepower에 결측이 있는 경우가 흔함)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.anova <span class="im">import</span> anova_lm</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 회귀식: cylinders, origin → 더미 변수 사용</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>formula <span class="op">=</span> <span class="st">"""</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="st">mpg ~ horsepower</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="st">"""</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(formula, data<span class="op">=</span>df).fit()</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 회귀결과 요약</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>mpg ~ horsepower(선형 회귀) 결정계수 R-squared = 0.606</p>
+<section id="다항회귀-d-8r2-0.69" class="level5">
+<h5 class="anchored" data-anchor-id="다항회귀-d-8r2-0.69">(1) 다항회귀 <span class="math inline">\(d = 8,R^{2} = 0.69\)</span></h5>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PolynomialFeatures</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold, cross_val_score</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) X, y 준비 (mpg ~ horsepower)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">'horsepower'</span>]].values</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">'mpg'</span>].values</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 차수별 K-fold CV로 최적 차수 선택</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#    (MSE 기준: 낮을수록 좋음)</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>degrees <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">11</span>)  <span class="co"># 1차~10차 (원하면 범위 조절)</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>cv_mse <span class="op">=</span> []</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> degrees:</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> Pipeline([</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"poly"</span>, PolynomialFeatures(degree<span class="op">=</span>d, include_bias<span class="op">=</span><span class="va">False</span>)),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"lr"</span>, LinearRegression())</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sklearn은 "높을수록 좋음" 점수를 쓰므로 -MSE로 계산</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    scores <span class="op">=</span> cross_val_score(model, X, y, cv<span class="op">=</span>cv, scoring<span class="op">=</span><span class="st">"neg_mean_squared_error"</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    cv_mse.append(<span class="op">-</span>scores.mean())</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>best_degree <span class="op">=</span> degrees[<span class="bu">int</span>(np.argmin(cv_mse))]</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CV MSE by degree:"</span>, <span class="bu">dict</span>(<span class="bu">zip</span>(degrees, np.<span class="bu">round</span>(cv_mse, <span class="dv">3</span>))))</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best degree:"</span>, best_degree)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 최적 차수로 최종 적합</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> Pipeline([</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"poly"</span>, PolynomialFeatures(degree<span class="op">=</span>best_degree, include_bias<span class="op">=</span><span class="va">False</span>)),</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"lr"</span>, LinearRegression())</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>best_model.fit(X, y)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 시각화: 산점도 + 적합 곡선</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(X.<span class="bu">min</span>(), X.<span class="bu">max</span>(), <span class="dv">300</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> best_model.predict(x_grid)</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>,<span class="dv">5</span>))</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, y, alpha<span class="op">=</span><span class="fl">0.6</span>)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>plt.plot(x_grid, y_pred, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Polynomial Regression: mpg ~ horsepower (degree=</span><span class="sc">{</span>best_degree<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 추정 회귀식 계수 추출</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> best_model.named_steps[<span class="st">"lr"</span>].coef_</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> best_model.named_steps[<span class="st">"lr"</span>].intercept_</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Estimated regression equation:</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"mpg = </span><span class="sc">{</span>intercept<span class="sc">:.8f}</span><span class="ss">"</span>, end<span class="op">=</span><span class="st">""</span>)</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, c <span class="kw">in</span> <span class="bu">enumerate</span>(coef, start<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f" + (</span><span class="sc">{</span>c<span class="sc">:.16f}</span><span class="ss">) * horsepower^</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span>, end<span class="op">=</span><span class="st">""</span>)</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 결정계수(R^2) 출력: Train + 10-fold CV</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>train_r2 <span class="op">=</span> best_model.score(X, y)</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Train R^2 = </span><span class="sc">{</span>train_r2<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>cv_r2_scores <span class="op">=</span> cross_val_score(best_model, X, y, cv<span class="op">=</span>cv, scoring<span class="op">=</span><span class="st">"r2"</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CV R^2 mean = </span><span class="sc">{</span>cv_r2_scores<span class="sc">.</span>mean()<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CV R^2 std  = </span><span class="sc">{</span>cv_r2_scores<span class="sc">.</span>std()<span class="sc">:.6f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>CV MSE by degree: {1: np.float64(24.2), 2: np.float64(19.229), 3: np.float64(19.266), 4: np.float64(19.351), 5: np.float64(19.023), 6: np.float64(19.127), 7: np.float64(19.099), 8: np.float64(19.022), 9: np.float64(19.203), 10: np.float64(19.918)} <br> Best degree: 8</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_polyreg.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>Estimated regression equation:</p>
+<p>mpg = 40.09030692 + (-0.0000000000079295) * horsepower^1 + (-0.0000000007439536) * horsepower^2 + (-0.0000000491973501) * horsepower^3 + (-0.0000016857494302) * horsepower^4 + (0.0000000304883809) * horsepower^5 + (-0.0000000002144473) * horsepower^6 + (0.0000000000006833) * horsepower^7 + (-0.0000000000000008) * horsepower^8 <br> Train R^2 = 0.694092 <br> CV R^2 mean = 0.673022 <br> CV R^2 std = 0.098363</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> PolynomialFeatures</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 1차~best_degree 곡선을 한 그림에 겹쳐 그리기</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>max_degree <span class="op">=</span> best_degree   <span class="co"># CV로 고른 차수까지</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(X.<span class="bu">min</span>(), X.<span class="bu">max</span>(), <span class="dv">400</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 산점도 (원자료)</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, y, alpha<span class="op">=</span><span class="fl">0.45</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 차수별 곡선</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, max_degree <span class="op">+</span> <span class="dv">1</span>):</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    model_d <span class="op">=</span> Pipeline([</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"poly"</span>, PolynomialFeatures(degree<span class="op">=</span>d, include_bias<span class="op">=</span><span class="va">False</span>)),</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"lr"</span>, LinearRegression())</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    ])</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    model_d.fit(X, y)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> model_d.predict(x_grid)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    plt.plot(x_grid, y_hat, linewidth<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f"degree </span><span class="sc">{</span>d<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Polynomial fits: degree 1 to </span><span class="sc">{</span>max_degree<span class="sc">}</span><span class="ss"> (mpg ~ horsepower)"</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_polyreg02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="계단함수-5binsr2-0.6610binsr2-0.697" class="level5">
+<h5 class="anchored" data-anchor-id="계단함수-5binsr2-0.6610binsr2-0.697">(2) 계단함수 <span class="math inline">\(5bins:R^{2} = 0.66,10bins:R^{2} = 0.697\)</span></h5>
+<p>왜 계단함수에서는 일반적으로 5구간을 사용하는가?</p>
+<p>계단함수 회귀에서 구간 수는 모형의 자유도를 직접적으로 결정하는 핵심 요소이다. 구간 수가 너무 적으면 설명변수의 변화에 따른 반응의 구조를 충분히 포착하지 못해 높은 편향을 유발하고, 반대로 구간 수가 너무 많으면 각 구간에 포함되는 관측치 수가 줄어들어 추정된 구간 평균의 분산이 급격히 증가한다.</p>
+<p>이러한 편향–분산 균형을 고려할 때, 실무와 교재에서는 경험적으로 5개 구간을 기본 설정으로 사용하는 경우가 많다. 5구간은 전체 추세를 지나치게 단순화하지 않으면서도 각 구간에 충분한 표본을 확보할 수 있는 최소한의 복잡도를 제공한다. 특히 분위수 기준으로 구간을 나누면 각 구간에 유사한 수의 관측치가 배정되어 회귀계수 추정의 안정성이 확보된다.</p>
+<p>또한 5구간 계단함수는 자유도 측면에서 4–5차 다항회귀나 소수의 매듭을 갖는 회귀 스플라인과 유사한 복잡도를 가지므로, 다양한 비선형 회귀 기법 간의 비교를 수행하기에 적절한 기준점 역할을 한다. 이러한 이유로 5구간은 계단함수 회귀에서 관례적으로 사용되는 기본 선택이며, 이후 보다 유연한 방법으로 확장하기 위한 출발점으로 활용된다.</p>
+<p>그러나 계단함수는 구간 경계에서 불연속성이 발생하므로, 보다 매끄러운 근사를 위해 회귀 스플라인이 도입된다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 복사</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>df_step <span class="op">=</span> df.copy()</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># horsepower를 5개 구간으로 분할 (분위수 기준)</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>df_step[<span class="st">"hp_bin"</span>] <span class="op">=</span> pd.qcut(df_step[<span class="st">"horsepower"</span>], q<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_step[[<span class="st">"horsepower"</span>, <span class="st">"hp_bin"</span>]].head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>horsepower hp_bin <br> 0 130.0 (100.0, 140.0] <br> 1 165.0 (140.0, 230.0] <br> 2 150.0 (140.0, 230.0] <br> 3 150.0 (140.0, 230.0] <br> 4 140.0 (100.0, 140.0]</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 계단함수 회귀 (범주형으로 처리)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>step_model <span class="op">=</span> smf.ols(<span class="st">"mpg ~ C(hp_bin)"</span>, data<span class="op">=</span>df_step).fit()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(step_model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_stepreg.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 구간별 평균 mpg</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>bin_means <span class="op">=</span> df_step.groupby(<span class="st">"hp_bin"</span>, observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    hp_mean<span class="op">=</span>(<span class="st">"horsepower"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    mpg_mean<span class="op">=</span>(<span class="st">"mpg"</span>, <span class="st">"mean"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 산점도</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>plt.scatter(df_step[<span class="st">"horsepower"</span>], df_step[<span class="st">"mpg"</span>], alpha<span class="op">=</span><span class="fl">0.4</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 계단함수 (구간 평균)</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.step(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    bin_means[<span class="st">"hp_mean"</span>],</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    bin_means[<span class="st">"mpg_mean"</span>],</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    where<span class="op">=</span><span class="st">"mid"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    linewidth<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Step Function Regression: mpg ~ horsepower"</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_stepreg02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 5구간 / 10구간 생성</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>df_step5 <span class="op">=</span> df.copy()</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>df_step10 <span class="op">=</span> df.copy()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>df_step5[<span class="st">"hp_bin"</span>]  <span class="op">=</span> pd.qcut(df_step5[<span class="st">"horsepower"</span>], q<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>df_step10[<span class="st">"hp_bin"</span>] <span class="op">=</span> pd.qcut(df_step10[<span class="st">"horsepower"</span>], q<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 각 구간별 step-function OLS 적합 및 R^2 계산</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>m5  <span class="op">=</span> smf.ols(<span class="st">"mpg ~ C(hp_bin)"</span>, data<span class="op">=</span>df_step5).fit()</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>m10 <span class="op">=</span> smf.ols(<span class="st">"mpg ~ C(hp_bin)"</span>, data<span class="op">=</span>df_step10).fit()</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[5 bins]  R^2 = </span><span class="sc">{</span>m5<span class="sc">.</span>rsquared<span class="sc">:.6f}</span><span class="ss">   Adj R^2 = </span><span class="sc">{</span>m5<span class="sc">.</span>rsquared_adj<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[10 bins] R^2 = </span><span class="sc">{</span>m10<span class="sc">.</span>rsquared<span class="sc">:.6f}</span><span class="ss">  Adj R^2 = </span><span class="sc">{</span>m10<span class="sc">.</span>rsquared_adj<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 구간별 평균(계단) 계산</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>mean5 <span class="op">=</span> df_step5.groupby(<span class="st">"hp_bin"</span>, observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    hp_mean<span class="op">=</span>(<span class="st">"horsepower"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    mpg_mean<span class="op">=</span>(<span class="st">"mpg"</span>, <span class="st">"mean"</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>mean10 <span class="op">=</span> df_step10.groupby(<span class="st">"hp_bin"</span>, observed<span class="op">=</span><span class="va">True</span>).agg(</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    hp_mean<span class="op">=</span>(<span class="st">"horsepower"</span>, <span class="st">"mean"</span>),</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    mpg_mean<span class="op">=</span>(<span class="st">"mpg"</span>, <span class="st">"mean"</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 그림 비교 (제목에 R^2 포함)</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 5구간 ---</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(df[<span class="st">"horsepower"</span>], df[<span class="st">"mpg"</span>], alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].step(mean5[<span class="st">"hp_mean"</span>], mean5[<span class="st">"mpg_mean"</span>], where<span class="op">=</span><span class="st">"mid"</span>, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="ss">f"Step Function (5 bins)  |  R^2=</span><span class="sc">{</span>m5<span class="sc">.</span>rsquared<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 10구간 ---</span></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(df[<span class="st">"horsepower"</span>], df[<span class="st">"mpg"</span>], alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].step(mean10[<span class="st">"hp_mean"</span>], mean10[<span class="st">"mpg_mean"</span>], where<span class="op">=</span><span class="st">"mid"</span>, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="ss">f"Step Function (10 bins) |  R^2=</span><span class="sc">{</span>m10<span class="sc">.</span>rsquared<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[5 bins] R^2 = 0.660351 Adj R^2 = 0.656840 <br> [10 bins] R^2 = 0.697005 Adj R^2 = 0.689866</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_stepreg03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="기저함수-knots-5r2-0.700" class="level5">
+<h5 class="anchored" data-anchor-id="기저함수-knots-5r2-0.700">(3) 기저함수 <span class="math inline">\(knots = 5,R^{2} = 0.700\)</span></h5>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 준비</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> df[<span class="st">"horsepower"</span>].values</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># knot(절점) 지정</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>knots <span class="op">=</span> [<span class="dv">80</span>, <span class="dv">100</span>, <span class="dv">120</span>, <span class="dv">150</span>]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 기저함수 행렬 생성</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>X_basis <span class="op">=</span> [x]  <span class="co"># 선형항 포함</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> knots:</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    X_basis.append(np.maximum(<span class="dv">0</span>, x <span class="op">-</span> c))</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>X_basis <span class="op">=</span> np.column_stack(X_basis)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>X_basis <span class="op">=</span> sm.add_constant(X_basis)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 기저함수 회귀 적합</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>model_basis <span class="op">=</span> sm.OLS(y, X_basis).fit()</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model_basis.summary())</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co"># (이미 계산되어 있으면 생략 가능)</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(x.<span class="bu">min</span>(), x.<span class="bu">max</span>(), <span class="dv">400</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co"># yhat이 이미 있으면 그대로 사용, 없다면 아래처럼 예측 생성</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co"># yhat = model_basis.predict(Xg)</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>plt.plot(x_grid, yhat, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a><span class="co"># --- knot 표시 (수직선) ---</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> knots:</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    plt.axvline(c, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    plt.text(c, plt.ylim()[<span class="dv">1</span>], <span class="ss">f"  knot=</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>, rotation<span class="op">=</span><span class="dv">90</span>, va<span class="op">=</span><span class="st">"top"</span>)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Basis Function Regression (Hinge) with knots"</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_basereg.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_basereg02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="회귀-스플라인-df-11r2-0.708" class="level5">
+<h5 class="anchored" data-anchor-id="회귀-스플라인-df-11r2-0.708">(4) 회귀 스플라인 <span class="math inline">\(df = 11,R^{2} = 0.708\)</span></h5>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> patsy <span class="im">import</span> dmatrix</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> df[<span class="st">"horsepower"</span>].values</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>df_grid <span class="op">=</span> <span class="bu">range</span>(<span class="dv">3</span>, <span class="dv">16</span>)  <span class="co"># 후보 df: 3~15 (원하면 조정)</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>kf <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>cv_mse <span class="op">=</span> []</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> df_s <span class="kw">in</span> df_grid:</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    mse_folds <span class="op">=</span> []</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tr, te <span class="kw">in</span> kf.split(x):</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        x_tr, x_te <span class="op">=</span> x[tr], x[te]</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        y_tr, y_te <span class="op">=</span> y[tr], y[te]</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>        X_tr <span class="op">=</span> dmatrix(<span class="ss">f"bs(x, df=</span><span class="sc">{</span>df_s<span class="sc">}</span><span class="ss">, degree=3, include_intercept=False)"</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                       {<span class="st">"x"</span>: x_tr}, return_type<span class="op">=</span><span class="st">"dataframe"</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        X_te <span class="op">=</span> dmatrix(<span class="ss">f"bs(x, df=</span><span class="sc">{</span>df_s<span class="sc">}</span><span class="ss">, degree=3, include_intercept=False)"</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>                       {<span class="st">"x"</span>: x_te}, return_type<span class="op">=</span><span class="st">"dataframe"</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> sm.OLS(y_tr, X_tr).fit()</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> m.predict(X_te)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        mse_folds.append(np.mean((y_te <span class="op">-</span> pred)<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    cv_mse.append(np.mean(mse_folds))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>best_df <span class="op">=</span> <span class="bu">list</span>(df_grid)[<span class="bu">int</span>(np.argmin(cv_mse))]</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CV MSE by df:"</span>, <span class="bu">dict</span>(<span class="bu">zip</span>(df_grid, np.<span class="bu">round</span>(cv_mse, <span class="dv">3</span>))))</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best df:"</span>, best_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>CV MSE by df: {3: np.float64(25.0), 4: np.float64(22.538), 5: np.float64(21.629), 6: np.float64(22.265), 7: np.float64(21.315), 8: np.float64(21.519), 9: np.float64(21.408), 10: np.float64(21.266), 11: np.float64(20.875), 12: np.float64(21.873), 13: np.float64(21.875), 14: np.float64(22.571), 15: np.float64(22.548)} <br> Best df: 11</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> patsy <span class="im">import</span> dmatrix</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) x, y 준비</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> df[<span class="st">"horsepower"</span>].values</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(x.<span class="bu">min</span>(), x.<span class="bu">max</span>(), <span class="dv">400</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) df=5 스플라인 적합 (B-spline basis)</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>X_bs5 <span class="op">=</span> dmatrix(<span class="st">"bs(x, df=5, degree=3, include_intercept=False)"</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                {<span class="st">"x"</span>: x}, return_type<span class="op">=</span><span class="st">"dataframe"</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>m_bs5 <span class="op">=</span> sm.OLS(y, X_bs5).fit()</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>Xg_bs5 <span class="op">=</span> dmatrix(<span class="st">"bs(x, df=5, degree=3, include_intercept=False)"</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                 {<span class="st">"x"</span>: x_grid}, return_type<span class="op">=</span><span class="st">"dataframe"</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>yhat5 <span class="op">=</span> m_bs5.predict(Xg_bs5)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) df=11 스플라인 적합 (최적)</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>X_bs11 <span class="op">=</span> dmatrix(<span class="st">"bs(x, df=11, degree=3, include_intercept=False)"</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                 {<span class="st">"x"</span>: x}, return_type<span class="op">=</span><span class="st">"dataframe"</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>m_bs11 <span class="op">=</span> sm.OLS(y, X_bs11).fit()</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>Xg_bs11 <span class="op">=</span> dmatrix(<span class="st">"bs(x, df=11, degree=3, include_intercept=False)"</span>,</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>                  {<span class="st">"x"</span>: x_grid}, return_type<span class="op">=</span><span class="st">"dataframe"</span>)</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>yhat11 <span class="op">=</span> m_bs11.predict(Xg_bs11)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) R^2 출력</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[Spline df=5]  R^2 = </span><span class="sc">{</span>m_bs5<span class="sc">.</span>rsquared<span class="sc">:.6f}</span><span class="ss">   Adj R^2 = </span><span class="sc">{</span>m_bs5<span class="sc">.</span>rsquared_adj<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[Spline df=11] R^2 = </span><span class="sc">{</span>m_bs11<span class="sc">.</span>rsquared<span class="sc">:.6f}</span><span class="ss">  Adj R^2 = </span><span class="sc">{</span>m_bs11<span class="sc">.</span>rsquared_adj<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 그림 비교</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">5</span>), sharey<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].scatter(x, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].plot(x_grid, yhat5, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="ss">f"Regression Spline (df=5)  |  R^2=</span><span class="sc">{</span>m_bs5<span class="sc">.</span>rsquared<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].scatter(x, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].plot(x_grid, yhat11, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="ss">f"Regression Spline (df=11) |  R^2=</span><span class="sc">{</span>m_bs11<span class="sc">.</span>rsquared<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[Spline df=5] R^2 = 0.701715 Adj R^2 = 0.697851 <br> [Spline df=11] R^2 = 0.708392 Adj R^2 = 0.699950</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_splinereg.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="스무딩-스플라인-s-1200r2-0.802" class="level5">
+<h5 class="anchored" data-anchor-id="스무딩-스플라인-s-1200r2-0.802">(5) 스무딩 스플라인 <span class="math inline">\(s = 1200,R^{2} = 0.802\)</span></h5>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.interpolate <span class="im">import</span> UnivariateSpline</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 준비 (s=0 대비: x 중복 제거)</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>tmp <span class="op">=</span> (df[[<span class="st">"horsepower"</span>, <span class="st">"mpg"</span>]]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>       .groupby(<span class="st">"horsepower"</span>, as_index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>       .mean()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>       .sort_values(<span class="st">"horsepower"</span>))</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> tmp[<span class="st">"horsepower"</span>].values</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> tmp[<span class="st">"mpg"</span>].values</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(x.<span class="bu">min</span>(), x.<span class="bu">max</span>(), <span class="dv">400</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) s 후보들</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>s_list <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">200</span>, <span class="dv">800</span>, <span class="dv">2000</span>]</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> s <span class="kw">in</span> s_list:</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    spl <span class="op">=</span> UnivariateSpline(x, y, k<span class="op">=</span><span class="dv">3</span>, s<span class="op">=</span>s)</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    yhat_grid <span class="op">=</span> spl(x_grid)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>    yhat_train <span class="op">=</span> spl(x)</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> r2_score(y, yhat_train)</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    plt.plot(x_grid, yhat_grid, linewidth<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="ss">f"s=</span><span class="sc">{</span>s<span class="sc">}</span><span class="ss"> | R^2=</span><span class="sc">{</span>r2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Smoothing Spline: mpg ~ horsepower (varying s)"</span>)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_smoothing.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>s_grid <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">800</span>, <span class="dv">1200</span>, <span class="dv">2000</span>]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>kf <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cv_mse <span class="op">=</span> []</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> s <span class="kw">in</span> s_grid:</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    mse_folds <span class="op">=</span> []</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> tr, te <span class="kw">in</span> kf.split(x):</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>        x_tr, x_te <span class="op">=</span> x[tr], x[te]</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        y_tr, y_te <span class="op">=</span> y[tr], y[te]</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        spl <span class="op">=</span> UnivariateSpline(x_tr, y_tr, k<span class="op">=</span><span class="dv">3</span>, s<span class="op">=</span>s)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> spl(x_te)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>        mse_folds.append(np.mean((y_te <span class="op">-</span> pred)<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    cv_mse.append(np.mean(mse_folds))</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>best_s <span class="op">=</span> s_grid[<span class="bu">int</span>(np.argmin(cv_mse))]</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"CV MSE by s:"</span>, <span class="bu">dict</span>(<span class="bu">zip</span>(s_grid, np.<span class="bu">round</span>(cv_mse, <span class="dv">3</span>))))</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best s:"</span>, best_s)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>CV MSE by s: {0: np.float64(178.159), 20: np.float64(176.428), 50: np.float64(171.178), 100: np.float64(168.566), 200: np.float64(168.222), 400: np.float64(134.353), 800: np.float64(17.116), 1200: np.float64(13.03), 2000: np.float64(13.03)}</p>
+<p>Best s: 1200</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>spl_best <span class="op">=</span> UnivariateSpline(x, y, k<span class="op">=</span><span class="dv">3</span>, s<span class="op">=</span>best_s)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>yhat_grid <span class="op">=</span> spl_best(x_grid)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>train_r2 <span class="op">=</span> r2_score(y, spl_best(x))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>plt.plot(x_grid, yhat_grid, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"Smoothing Spline (best s=</span><span class="sc">{</span>best_s<span class="sc">}</span><span class="ss">) | Train R^2=</span><span class="sc">{</span>train_r2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_smoothing02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="국소회귀-frac-0.1r2-0.711" class="level5">
+<h5 class="anchored" data-anchor-id="국소회귀-frac-0.1r2-0.711">(6) 국소회귀 <span class="math inline">\(frac = 0.1,R^{2} = 0.711\)</span></h5>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.interpolate <span class="im">import</span> UnivariateSpline</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 준비 (s=0 대비: x 중복 제거)</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>tmp <span class="op">=</span> (df[[<span class="st">"horsepower"</span>, <span class="st">"mpg"</span>]]</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>       .groupby(<span class="st">"horsepower"</span>, as_index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>       .mean()</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>       .sort_values(<span class="st">"horsepower"</span>))</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> tmp[<span class="st">"horsepower"</span>].values</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> tmp[<span class="st">"mpg"</span>].values</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>x_grid <span class="op">=</span> np.linspace(x.<span class="bu">min</span>(), x.<span class="bu">max</span>(), <span class="dv">400</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) s 후보들</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>s_list <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">200</span>, <span class="dv">800</span>, <span class="dv">2000</span>]</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>plt.scatter(x, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> s <span class="kw">in</span> s_list:</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    spl <span class="op">=</span> UnivariateSpline(x, y, k<span class="op">=</span><span class="dv">3</span>, s<span class="op">=</span>s)</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    yhat_grid <span class="op">=</span> spl(x_grid)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    yhat_train <span class="op">=</span> spl(x)</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> r2_score(y, yhat_train)</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    plt.plot(x_grid, yhat_grid, linewidth<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="ss">f"s=</span><span class="sc">{</span>s<span class="sc">}</span><span class="ss"> | R^2=</span><span class="sc">{</span>r2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Smoothing Spline: mpg ~ horsepower (varying s)"</span>)</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_localreg02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="일반화-가법모형-gams-r2-0.707" class="level5">
+<h5 class="anchored" data-anchor-id="일반화-가법모형-gams-r2-0.707">(7) 일반화 가법모형 GAMs <span class="math inline">\(R^{2} = 0.707\)</span></h5>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pygam</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygam <span class="im">import</span> LinearGAM, s</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 준비</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[[<span class="st">"horsepower"</span>]].values</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) GAM 적합</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>gam <span class="op">=</span> LinearGAM(s(<span class="dv">0</span>)).fit(X, y)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측용 grid</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>X_grid <span class="op">=</span> np.linspace(X.<span class="bu">min</span>(), X.<span class="bu">max</span>(), <span class="dv">400</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>yhat <span class="op">=</span> gam.predict(X_grid)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 결정계수</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>train_r2 <span class="op">=</span> r2_score(y, gam.predict(X))</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"GAM Train R^2 = </span><span class="sc">{</span>train_r2<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 시각화</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>plt.plot(X_grid, yhat, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"GAM: mpg ~ s(horsepower) | Train R^2=</span><span class="sc">{</span>train_r2<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_gams.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 자동 스무딩 파라미터 선택 (GridSearch)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>gam_cv <span class="op">=</span> LinearGAM(s(<span class="dv">0</span>)).gridsearch(X, y)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>yhat_cv <span class="op">=</span> gam_cv.predict(X_grid)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>train_r2_cv <span class="op">=</span> r2_score(y, gam_cv.predict(X))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"GAM (CV-selected) Train R^2 = </span><span class="sc">{</span>train_r2_cv<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>plt.scatter(X, y, alpha<span class="op">=</span><span class="fl">0.35</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>plt.plot(X_grid, yhat_cv, linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"mpg"</span>)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f"GAM with CV: mpg ~ s(horsepower) | R^2=</span><span class="sc">{</span>train_r2_cv<span class="sc">:.3f}</span><span class="ss">"</span>)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>100% (11 of 11) |########################| Elapsed Time: 0:00:00 Time: 0:00:00</p>
+<p>GAM (CV-selected) Train R^2 = 0.699651</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_gams02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p><strong>MPG ~ horsepower + weight</strong></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygam <span class="im">import</span> LinearGAM, s</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> KFold</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 데이터 준비 (2개 설명변수)</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>X2 <span class="op">=</span> df[[<span class="st">"horsepower"</span>, <span class="st">"weight"</span>]].values</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>y  <span class="op">=</span> df[<span class="st">"mpg"</span>].values</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) GAM 적합 (스무딩 파라미터 자동 선택: gridsearch)</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>gam2 <span class="op">=</span> LinearGAM(s(<span class="dv">0</span>) <span class="op">+</span> s(<span class="dv">1</span>)).gridsearch(X2, y)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 결정계수 (Train + 10-fold CV)</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>train_r2 <span class="op">=</span> r2_score(y, gam2.predict(X2))</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"GAM2 Train R^2 = </span><span class="sc">{</span>train_r2<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> KFold(n_splits<span class="op">=</span><span class="dv">10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>cv_r2 <span class="op">=</span> []</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tr, te <span class="kw">in</span> cv.split(X2):</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> LinearGAM(s(<span class="dv">0</span>) <span class="op">+</span> s(<span class="dv">1</span>)).gridsearch(X2[tr], y[tr])</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    cv_r2.append(r2_score(y[te], m.predict(X2[te])))</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"GAM2 CV R^2 mean = </span><span class="sc">{</span>np<span class="sc">.</span>mean(cv_r2)<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"GAM2 CV R^2 std  = </span><span class="sc">{</span>np<span class="sc">.</span>std(cv_r2)<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 부분효과(Partial dependence) 플롯</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">5</span>))</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a><span class="co"># s(horsepower)</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>XX0 <span class="op">=</span> gam2.generate_X_grid(term<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].plot(XX0[:, <span class="dv">0</span>], gam2.partial_dependence(term<span class="op">=</span><span class="dv">0</span>, X<span class="op">=</span>XX0), linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_xlabel(<span class="st">"horsepower"</span>)</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_ylabel(<span class="st">"partial effect"</span>)</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"GAM partial effect: s(horsepower)"</span>)</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a><span class="co"># s(weight)</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>XX1 <span class="op">=</span> gam2.generate_X_grid(term<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].plot(XX1[:, <span class="dv">1</span>], gam2.partial_dependence(term<span class="op">=</span><span class="dv">1</span>, X<span class="op">=</span>XX1), linewidth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_xlabel(<span class="st">"weight"</span>)</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_ylabel(<span class="st">"partial effect"</span>)</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"GAM partial effect: s(weight)"</span>)</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>GAM2 Train R^2 = 0.757923 <br> GAM2 CV R^2 mean = 0.736438 <br> GAM2 CV R^2 std = 0.074145</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prediction_nonreg_gams03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
