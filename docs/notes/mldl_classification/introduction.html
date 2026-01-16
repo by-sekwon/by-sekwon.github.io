@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>AI·ML 방법론: 분류문제 – 세상의 모든 통계 이야기</title>
+<title>introduction – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -132,7 +161,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_classification/index.html">【머신·딥러닝 분류문제】</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_classification/introduction.html">📄 분류문제: 정의</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -146,13 +175,13 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notes/mldl_classification/index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../notes/mldl_classification/index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">【머신·딥러닝 분류문제】</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notes/mldl_classification/introduction.html" class="sidebar-item-text sidebar-link">
+  <a href="../../notes/mldl_classification/introduction.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📄 분류문제: 정의</span></a>
   </div>
 </li>
@@ -161,36 +190,118 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-분류문제-정의" id="toc-chapter-1.-분류문제-정의" class="nav-link active" data-scroll-target="#chapter-1.-분류문제-정의">Chapter 1. 분류문제 정의</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">AI·ML 방법론: 분류문제</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
+<section id="chapter-1.-분류문제-정의" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-분류문제-정의">Chapter 1. 분류문제 정의</h3>
+<section id="분류문제란" class="level5">
+<h5 class="anchored" data-anchor-id="분류문제란">분류문제란?</h5>
+<p>분류(Classification)는 입력변수 X를 관측했을 때, 반응변수 Y가 어떤 범주(class)에 속하는지를 예측하는 문제다. 회귀(regression)가 연속형 값을 맞추는 문제라면, 분류는 <span dir="rtl">”</span>라벨(label)“이라는 이산적 의사결정을 수행한다.</p>
+<p>분류 문제는 매우 자주 발생하며, 아마도 회귀(regression) 문제보다 더 흔할 수도 있다. 예를 들면 다음과 같다.</p>
+<p>1. 어떤 사람이 응급실에 도착했는데, 그가 보이는 증상은 세 가지 의학적 상태 중 하나로 설명될 수 있다고 하자. 이 사람은 세 가지 상태 중 어느 것을 가지고 있는가?</p>
+<p>2. 온라인 뱅킹 서비스는 사이트에서 수행되는 어떤 거래가 사기 거래인지 아닌지를 판별할 수 있어야 한다. 이를 위해 사용자의 IP 주소, 과거 거래 이력 등과 같은 정보를 근거로 판단해야 한다.</p>
+<p>3. 어떤 질병이 있는 환자들과 없는 환자들 여러 명의 DNA 서열 데이터가 주어졌을 때, 생물학자는 어떤 DNA 변이가 해로운(질병을 유발하는) 변이인지, 그리고 어떤 변이는 그렇지 않은지를 밝혀내고자 한다.</p>
+<p>회귀의 경우와 마찬가지로, 분류 상황에서도 우리는 <span class="math inline">\((x_{1},y_{1}),\ldots,(x_{n},y_{n})\)</span>과 같은 훈련 관측치(training observations)의 집합을 가지고 있으며, 이를 이용해 분류기(classifier)를 구축할 수 있다. 우리가 원하는 것은, 이 분류기가 훈련 데이터에서만 잘 작동하는 것이 아니라, 분류기를 학습시키는 데 사용되지 않았던 테스트 관측치(test observations)에 대해서도 좋은 성능을 보이는 것이다.</p>
+</section>
+<section id="반응변수의-형태와-문제-유형" class="level5">
+<h5 class="anchored" data-anchor-id="반응변수의-형태와-문제-유형">반응변수의 형태와 문제 유형</h5>
+<p>분류 문제에서 반응변수 Y는 범주형이며, 일반적으로 다음과 같이 표현한다.</p>
+<p>이진분류 (Binary Classification): <span class="math inline">\(Y \in \{ 0,1\}\)</span>. 예: 스팸/정상, 합격/불합격, 질병 유/무</p>
+<p>다중분류 (Multiclass Classification): <span class="math inline">\(Y \in \{ 1,2,\ldots,K\}\)</span>. 예: 붓꽃(Iris) 3종 분류, 상품 카테고리 분류</p>
+<p>다중라벨 (Multi-label): 한 관측치가 여러 라벨을 동시에 가질 수 있음(엄밀히는 위의 <span dir="rtl">”</span>다중분류”와 다름). 예: 영화 장르(액션+코미디), 이미지 태그(사람+자전거+도로)</p>
+</section>
+<section id="왜-선형회귀linear-regression는-안-되는가" class="level5">
+<h5 class="anchored" data-anchor-id="왜-선형회귀linear-regression는-안-되는가">왜 선형회귀(Linear Regression)는 안 되는가?</h5>
+<p>우리는 질적(범주형) 반응변수의 경우에는 선형회귀가 적절하지 않다고 말했다. 그렇다면 왜 적절하지 않은가?</p>
+<p>응급실에 온 한 환자의 증상을 바탕으로 그 환자의 의학적 상태(진단)를 예측하려 한다고 하자. 이 단순화된 예시에서는 가능한 진단이 세 가지라고 가정한다: 뇌졸중(stroke), 약물 과다복용(drug overdose), 간질 발작(epileptic seizure). 우리는 이 값들을 다음과 같이 수치형 반응변수 Y로 코딩(부호화)하는 것을 고려할 수도 있다.</p>
+<p><span class="math display">\[Y = \{\begin{matrix}
+1 &amp; \text{if stroke;} \\
+2 &amp; \text{if drug overdose;} \\
+3 &amp; \text{if epileptic seizure.}
+\end{matrix}\]</span></p>
+<p>이러한 코딩을 사용하면, 최소제곱법(least squares)을 이용해 예측변수 <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>를 바탕으로 Y를 예측하는 선형회귀모형을 적합할 수 있을 것이다. 그러나 불행히도, 이런 코딩은 결과들 사이에 순서(order)가 존재한다는 뜻을 암묵적으로 포함한다. 즉, 약물 과다복용을 뇌졸중과 간질 발작 <span dir="rtl">”</span>사이”에 놓아버리고, 또한 뇌졸중과 약물 과다복용의 차이가 약물 과다복용과 간질 발작의 차이와 동일하다고 <span dir="rtl">”</span>요구”하게 된다. 하지만 실제로는 이것이 반드시 성립해야 할 어떤 특별한 이유가 없다.</p>
+<p>만약 반응변수의 값들이 자연스러운 순서(natural ordering)를 실제로 가지고 있다면 상황은 달라진다. 예를 들어 mild(경증), moderate(중등증), severe(중증)처럼 순서가 있고, 또한 경증과 중등증 사이의 <span dir="rtl">”</span>간격”이 중등증과 중증 사이의 <span dir="rtl">”</span>간격”과 비슷하다고 생각할 수 있다면, 1,2,3 코딩은 합리적일 수 있다. 그러나 일반적으로는, 두 개를 초과하는 수준(level)을 갖는 질적(범주형) 반응변수를 선형회귀에 바로 넣기 위해 자연스럽고(임의성이 없는) 보편적인 방식으로 수치형 반응으로 바꾸는 방법은 존재하지 않는다.</p>
+<p>이진(two level) 질적 반응변수의 경우에는 상황이 더 낫다. 예를 들어 환자의 의학적 상태가 두 가지 가능성만 가진다고 해 보자: 뇌졸중(stroke) 또는 약물 과다복용(drug overdose). 이 경우에는 반응변수를 다음과 같이 코딩할 수 있다.</p>
+<p><span class="math display">\[Y = \{\begin{matrix}
+0 &amp; \text{if stroke;} \\
+1 &amp; \text{if drug overdose.}
+\end{matrix}\]</span></p>
+<p>그런 다음 이 이진 반응변수에 대해 선형회귀를 적합하고, <span class="math inline">\(\widehat{Y} &gt; 0.5\)</span>이면 약물 과다복용으로, 그렇지 않으면 뇌졸중으로 예측할 수 있다. 또한 이진의 경우에는, 위의 코딩을 뒤집더라도(0과 1을 바꾸더라도) 선형회귀가 동일한 최종 분류 결과를 낸다는 것을 보이는 것은 어렵지 않다.</p>
+<p><strong>(0/1 코딩에 대한 선형회귀의 <span dir="rtl">”</span>부분적 타당성”과 한계)</strong></p>
+<p>0/1로 코딩된 이진 반응에 대해 최소제곱 회귀를 적용하는 것이 완전히 비합리적이라고만 말할 수는 없다. 이 특별한 경우에는, 선형회귀로부터 얻는 <span class="math inline">\(X\widehat{\beta}\)</span>가 실제로는 <span class="math inline">\(\Pr(\text{drug overdose} \mid X)\)</span>의 추정치임을 보일 수 있다.</p>
+<p>하지만 선형회귀를 사용하면, 어떤 추정값들은 [0,1] 구간 밖에 위치할 수 있다. 즉, 추정된 <span dir="rtl">”</span>확률”이 음수가 되거나 1보다 커질 수 있어, 확률로 해석하기가 어렵다! 그럼에도 불구하고, 이러한 예측값들은 관측치들에 대한 순서를 제공하며, 거친 확률 추정치로 해석될 여지는 있다. 선형회귀로 이진 반응을 예측할 때 얻는 분류 결과는 선형판별분석(LDA)을 사용했을 때의 분류 결과와 동일하다는 사실이 알려져 있다.</p>
+</section>
+<section id="목표-라벨-예측이-아니라-조건부-확률-추정" class="level5">
+<h5 class="anchored" data-anchor-id="목표-라벨-예측이-아니라-조건부-확률-추정">목표: <span dir="rtl">”</span>라벨 예측”이 아니라 <span dir="rtl">”</span>조건부 확률” 추정</h5>
+<p>분류에서 가장 핵심적인 대상은 다음의 조건부 확률(conditional probability)이다.</p>
+<p>이진분류: <span class="math inline">\(p(x) = P(Y = 1 \mid X = x)\)</span></p>
+<p>다중분류: <span class="math inline">\(p_{k}(x) = P(Y = k \mid X = x),k = 1,\ldots,K\)</span>. 단, 반드시 <span class="math inline">\(p_{k}(x) \geq 0,\overset{K}{\sum_{k = 1}}p_{k}(x) = 1\)</span>을 만족해야 한다.</p>
+<p>결정규칙(0–1 손실 기준): <span class="math inline">\(\widehat{y}(x) = \arg\max_{k}{\widehat{p}}_{k}(x)(\text{이진이면}\mathbf{1}\{\widehat{p}(x) \geq t\})\)</span></p>
+</section>
+<section id="왜-분류를-라벨-예측이-아니라-확률-추정으로" class="level5">
+<h5 class="anchored" data-anchor-id="왜-분류를-라벨-예측이-아니라-확률-추정으로">왜 분류를 <span dir="rtl">”</span>라벨 예측”이 아니라 <span dir="rtl">”</span>확률 추정”으로</h5>
+<p>보는가?</p>
+<p>1. 임계값(threshold)을 상황에 맞게 바꿀 수 있다. 예를 들어 <span class="math inline">\(p(x) = 0.6\)</span>인 사람을 양성으로 볼지(치료), 음성으로 볼지(추가검사) 결정은 비용 구조에 따라 달라진다.</p>
+<p>2. 불확실성을 표현할 수 있다. <span class="math inline">\(\widehat{p}(x) = 0.51\)</span>과 <span class="math inline">\(\widehat{p}(x) = 0.99\)</span>는 둘 다 <span dir="rtl">”</span>1로 분류”될 수 있지만 의미는 전혀 다르다.</p>
+<p>3. 평가/보정(calibration) 및 위험 기반 의사결정이 가능하다. 확률이 정확해야 기대손실 최소화, 보험요율, 리스크 컷오프 같은 작업이 가능해진다.</p>
+</section>
+<section id="분류기의-출력-확률-점수-결정decision" class="level5">
+<h5 class="anchored" data-anchor-id="분류기의-출력-확률-점수-결정decision">분류기의 출력: 확률, 점수, 결정(Decision)</h5>
+<p>대부분의 분류기는 다음 세 가지 중 하나(혹은 조합)를 출력한다.</p>
+<p>1. 점수(score): 실수값 <span class="math inline">\(s(x) \in \mathbb{R}\)</span>. (예) SVM의 decision function, 신경망의 logit 등</p>
+<p>2. 확률(probability): <span class="math inline">\(p_{k}(x)\)</span> (예) 로지스틱 회귀, 소프트맥스 출력 등</p>
+<p>3. 최종 클래스(label): <span class="math inline">\(\widehat{y}(x) = \arg\max_{k}{\widehat{p}}_{k}(x)\)</span> 또는 이진분류의 경우 <span class="math inline">\(\widehat{y}(x) = \mathbf{1}\{\widehat{p}(x) \geq t\}\)</span>, 여기서 t는 임계값(threshold)이다(기본값으로 t=0.5를 쓰는 경우가 많지만, 최선은 아니다)이다.</p>
+</section>
+<section id="분류는-손실-최소화-문제로-정식화된다" class="level5">
+<h5 class="anchored" data-anchor-id="분류는-손실-최소화-문제로-정식화된다">분류는 <span dir="rtl">”</span>손실 최소화 문제”로 정식화된다</h5>
+<p>분류모형은 본질적으로 기대손실을 최소화하는 규칙을 찾는 문제로 볼 수 있다. 관측 (X,Y)가 어떤 분포 P에서 생성된다고 할 때, 예측 규칙(분류기) <span class="math inline">\(\delta(x)\)</span>의 성능은 다음과 같이 정의된다.</p>
+<p><span class="math display">\[R(\delta) = \mathbb{E}\lbrack L(Y,\delta(X))\rbrack\]</span></p>
+<p>(1) 0–1 손실 (오분류 손실)</p>
+<p><span class="math display">\[L(Y,\widehat{Y}) = \{\begin{matrix}
+0, &amp; Y = \widehat{Y} \\
+1, &amp; Y \neq \widehat{Y}
+\end{matrix}\]</span></p>
+<p>이 손실에서 기대손실 최소화(베이즈 최적 분류기)는 다음 규칙을 준다.</p>
+<p>다중분류 베이즈 분류기(Bayes classifier): <span class="math inline">\(\delta^{*}(x) = \arg\max_{k}P(Y = k \mid X = x)\)</span>. 즉, 조건부 확률이 가장 큰 클래스를 고르는 것이 0–1 손실 하에서 최적이다.</p>
+<p>(2) 비용 민감 분류 (Cost-sensitive classification)</p>
+<p>현실에서는 FP와 FN의 비용이 다르다. 예: 암 진단(놓치면 치명적)에서는 FN이 훨씬 더 큰 비용.</p>
+<p>이진분류에서 비용을 FP 비용을 <span class="math inline">\(C_{FP}\)</span>, FN 비용을 <span class="math inline">\(C_{FN}\)</span>으로 두면, 기대비용 최소화 규칙은 임계값을 바꾼다. 결과적으로 <span dir="rtl">”</span>0.5”가 아니라 <span class="math inline">\(\text{양성으로 분류} \Longleftrightarrow p(x) \geq \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>. 같은 형태의 임계값이 등장한다(정확한 형태는 비용 정의 방식에 따라 조금 달라질 수 있으나, 핵심은 비용비율에 의해 임계값이 이동한다는 점).</p>
+<p>데이터 관점: 학습 표본과 목표</p>
+<p>실제로는 분포 P(X,Y)를 모르며, 다음과 같은 i.i.d. 표본을 관측한다고 가정한다.</p>
+<p><span class="math display">\[\{(x_{i},y_{i})\}_{i = 1}^{n}\overset{i.i.d.}{\sim}P(X,Y)\]</span></p>
+<p>학습의 목표는, 관측된 데이터에서 분류 규칙 \hat{\delta} 또는 확률추정기 \hat{p}_k(x)를 구축해, 새로운 관측치 (X_{new},Y_{new})에 대해 일반화 성능이 좋도록 하는 것이다.</p>
+<p>여기서 중요한 개념이 두 가지 있다.</p>
+<ul>
+<li>훈련오차(training error): 훈련데이터에서의 성능</li>
+<li>일반화오차(generalization error): 보지 못한 데이터에서의 성능(진짜 목표)</li>
+</ul>
+<p>분류에서는 특히 <span dir="rtl">”</span>훈련 정확도만 높은 모형”이 과적합(overfitting)일 가능성이 크므로, 검증/테스트 분리나 교차검증이 사실상 필수다.</p>
+</section>
+<section id="결정경계decision-boundary라는-시각" class="level5">
+<h5 class="anchored" data-anchor-id="결정경계decision-boundary라는-시각">결정경계(Decision Boundary)라는 시각</h5>
+<p>이진분류에서 확률모형 <span class="math inline">\(p(x) = P(Y = 1|X = x)\)</span>가 주어지고 임계값 t를 정하면, 분류기는 <span class="math inline">\(\widehat{y}(x) = \mathbf{1}\{ p(x) \geq t\}\)</span>로 표현된다. 이때 p(x)=t를 만족하는 x들의 집합이 결정경계(decision boundary)이다.</p>
+<ul>
+<li>로지스틱 회귀는 p(x)가 시그모이드이므로, <span class="math inline">\(p(x) = 0.5\)</span> 경계는 <span class="math inline">\(\beta_{0} + \beta^{\top}x = 0\)</span>형태의 선형 경계</li>
+<li>트리/랜덤포레스트는 공간을 직사각형으로 쪼개는 계단형 경계</li>
+<li>커널 SVM이나 신경망은 매우 복잡한 비선형 경계</li>
+</ul>
+<p>즉 <span dir="rtl">”</span>분류모형의 차이”는 상당 부분 <span dir="rtl">”</span>결정경계를 어떤 형태로 표현할 수 있느냐”의 차이로 이해해도 좋다.</p>
 
 
-</header>
-
-
-<section id="머신딥러닝-예측방법-섹션-메인aiml-분류문제-방법론" class="level5">
-<h5 class="anchored" data-anchor-id="머신딥러닝-예측방법-섹션-메인aiml-분류문제-방법론">[머신·딥러닝 예측방법] 섹션 메인(AI·ML 분류문제 방법론)</h5>
-<p>이 섹션에서는 머신러닝·딥러닝을 분류문제 방법론의 확장으로 이해하는 관점을 다룬다.</p>
-
-
+</section>
 </section>
 
 </main> <!-- /main -->
