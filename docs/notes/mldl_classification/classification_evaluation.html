@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 머신러닝 분류 - 모델평가 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2757cfadcc89ddbfb9e61569f8c3689f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl/index.html"> 
+<span class="menu-text">MLDL개념 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/mldl_classification/index.html" aria-current="page"> 
+<span class="menu-text">MLDL분류 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_classification/classification_evaluation.html">📄 분류모델 평가</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【머신·딥러닝 분류문제】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 분류문제: 정의</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/lm_logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 [전통] 로지스틱회귀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/mda_discriminant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 [전통] 판별분석</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/prediction_treebase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 트리기반 예측</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 kNN SVM</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_evaluation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 분류모델 평가</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-분류모델-평가" id="toc-chapter-1.-분류모델-평가" class="nav-link active" data-scroll-target="#chapter-1.-분류모델-평가">Chapter 1. 분류모델 평가</a>
+  <ul>
+  <li><a href="#분류모델-평가-개념" id="toc-분류모델-평가-개념" class="nav-link" data-scroll-target="#분류모델-평가-개념">1. 분류모델 평가 개념</a></li>
+  <li><a href="#분류모델-평가척도" id="toc-분류모델-평가척도" class="nav-link" data-scroll-target="#분류모델-평가척도">2. 분류모델 평가척도</a></li>
+  <li><a href="#예측모델회귀-평가척도와-비교" id="toc-예측모델회귀-평가척도와-비교" class="nav-link" data-scroll-target="#예측모델회귀-평가척도와-비교">3. 예측모델(회귀) 평가척도와 비교</a></li>
+  <li><a href="#분류모델-평가-프로토콜-trainvalidationtest-cv-누수-방지" id="toc-분류모델-평가-프로토콜-trainvalidationtest-cv-누수-방지" class="nav-link" data-scroll-target="#분류모델-평가-프로토콜-trainvalidationtest-cv-누수-방지">4. 분류모델 평가 프로토콜 (Train/Validation/Test, CV, 누수 방지)</a></li>
+  <li><a href="#불균형-데이터-대응-resampling-class-weight-threshold-moving" id="toc-불균형-데이터-대응-resampling-class-weight-threshold-moving" class="nav-link" data-scroll-target="#불균형-데이터-대응-resampling-class-weight-threshold-moving">5. 불균형 데이터 대응 (Resampling, Class Weight, Threshold Moving,</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 머신러닝 분류 - 모델평가</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-1.-분류모델-평가" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-분류모델-평가">Chapter 1. 분류모델 평가</h3>
+<section id="분류모델-평가-개념" class="level4">
+<h4 class="anchored" data-anchor-id="분류모델-평가-개념">1. 분류모델 평가 개념</h4>
+<p>분류모델(classifier)의 평가는 단순히 <span dir="rtl">”</span>정답을 맞혔는가?“를 확인하는 작업을 넘어, 오류의 형태와 비용(cost)을 반영하여 모델의 의사결정 품질을 검증하는 과정이다. 분류 문제의 출력은 이진형 Y\in\{0,1\} 또는 다중범주형 Y\in\{1,\dots,K\}이므로, 회귀처럼 하나의 연속형 오차(예: MSE)로 자연스럽게 요약하기 어렵다. 특히 다음 세 가지 질문에 답할 수 있어야 한다.</p>
+<p>1. 어떤 오류를 얼마나 내는가? 위양성(FP, 오경보)과 위음성(FN, 놓침)의 비대칭성(업무 손실이 서로 다름)</p>
+<p>2. 운영 임계값(threshold)을 어떻게 정할 것인가? 확률/점수 \to 라벨로 변환하는 운영점(operating point) 선택 문제</p>
+<p>3. 예측 확률이 믿을 만한가? 순위는 잘 매기더라도 확률이 과대/과소추정이면 정책 해석이 무너지므로 보정(calibration), probability quality 평가 필요</p>
+<p>정리하면, 분류모델 평가는 (i) 오류 구조(FP vs FN), (ii) 임계값 선택, (iii) 확률의 신뢰성까지 포함하는 다층적 평가이다.</p>
+<section id="평가-대상-점수확률-예측과-최종-라벨-예측" class="level5">
+<h5 class="anchored" data-anchor-id="평가-대상-점수확률-예측과-최종-라벨-예측">(1) 평가 대상: <span dir="rtl">”</span>점수/확률 예측”과 <span dir="rtl">”</span>최종 라벨 예측”</h5>
+<p>분류모델은 대체로 두 종류의 출력을 제공하며, 평가도 이에 맞추어 구분된다.</p>
+<p><strong>점수/확률 예측 (score / probability output)</strong></p>
+<p>이진분류: <span class="math inline">\(\widehat{p}(x) = P(Y = 1 \mid X = x)\)</span></p>
+<p>다중분류: <span class="math inline">\(\begin{matrix}
+{\widehat{p}}_{k}(x) &amp; = P(Y = k \mid X = x),k = 1,\ldots,K,\overset{K}{\sum_{k = 1}}{\widehat{p}}_{k}(x) = 1.
+\end{matrix}\)</span></p>
+<p>이때 <span class="math inline">\(\widehat{p}(x)\)</span> 또는 <span class="math inline">\({\widehat{p}}_{k}(x)\)</span>는 임계값을 정하기 전의 연속적인 위험도(risk score)로 해석할 수 있다. 점수/확률 출력은 다음 두 관점에서 평가된다.</p>
+<ul>
+<li>분리능력(discrimination): <span dir="rtl">”</span>양성이 음성보다 더 높은 점수(확률)를 받는가?” (ROC/PR 곡선, AUC/AP 등)</li>
+<li>보정(calibration): <span dir="rtl">”</span>예측확률이 실제 발생확률과 맞는가? (LogLoss/Brier, reliability diagram 등)</li>
+</ul>
+<p>즉, 확률 출력의 평가는 <span dir="rtl">”</span>맞혔는가?“보다 순위(분리)와 확률의 신뢰성(보정)이 핵심이다.</p>
+<p><strong>최종 라벨 예측 (final decision rule)</strong></p>
+<p>점수/확률은 그대로 <span dir="rtl">”</span>결정”이 아니며, 의사결정 규칙을 통해 라벨로 변환된다.</p>
+<ul>
+<li>이진분류: 임계값 t에 의한 결정: <span class="math inline">\(\widehat{y}(x;t) = \mathbf{1}(\widehat{p}(x) \geq t)\)</span></li>
+<li>다중분류: 최대확률 규칙(기본): <span class="math inline">\(\widehat{y}(x) = \arg\max_{k}{\widehat{p}}_{k}(x)\)</span> (단, 비용 비대칭이 있으면 클래스별 임계값 또는 비용행렬 기반 규칙을 사용)</li>
+</ul>
+<p>(중요) Accuracy/Precision/Recall 등 라벨 기반 지표는 임계값 t에 따라 값이 달라진다. 따라서 라벨 평가는 본질적으로 <span dir="rtl">”</span>모델 + 운영규칙(임계값/정책)“의 성능이다.</p>
+</section>
+<section id="비용민감-의사결정과-최적-임계값" class="level5">
+<h5 class="anchored" data-anchor-id="비용민감-의사결정과-최적-임계값">(2) 비용민감 의사결정과 최적 임계값</h5>
+<p>이진분류에서 FP(오경보) 비용을 <span class="math inline">\(C_{FP}\)</span>, FN(놓침) 비용을 <span class="math inline">\(C_{FN}\)</span>이라 하자(정확 예측의 비용은 0으로 둔다). 관측치 x에서의 조건부 위험(기대비용)은 다음과 같이 쓸 수 있다. 여기서 <span class="math inline">\(p(x) = P(Y = 1 \mid x)\)</span>로 표기한다.</p>
+<ul>
+<li><span class="math inline">\(\widehat{y} = 1\)</span> (양성 판정)의 기대비용: <span class="math inline">\(R(1 \mid x) = C_{FP} \cdot P(Y = 0 \mid x) = C_{FP}(1 - p(x))\)</span></li>
+<li><span class="math inline">\(\widehat{y} = 0\)</span> (음성 판정)의 기대비용: <span class="math inline">\(R(0 \mid x) = C_{FN} \cdot P(Y = 1 \mid x) = C_{FN}p(x)\)</span></li>
+</ul>
+<p>따라서 양성 판정을 선택하는 조건은 <span class="math inline">\(R(1 \mid x) \leq R(0 \mid x) \Longleftrightarrow C_{FP}(1 - p(x)) \leq C_{FN}p(x)\)</span>이고, 이를 정리하면 <span class="math inline">\(p(x) \geq \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>이다. 즉, 비용민감 최적 임계값은 <span class="math inline">\(t^{*} = \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>이다.</p>
+<ul>
+<li><span class="math inline">\(C_{FN}\)</span>이 클수록(놓치면 치명적) 분모가 커져 <span class="math inline">\(t^{*} \downarrow\)</span>낮아진다. 즉. 더 낮은 임계값으로도 양성 판정을 내리게 된다(놓침 감소, Recall 증가 방향).</li>
+<li><span class="math inline">\(C_{FP}\)</span>가 클수록(오경보가 치명적) <span class="math inline">\(t^{*} \uparrow\)</span> 올라간다. 즉, 양성 판정을 더 보수적으로 하게 된다(FP 감소, Precision/Specificity 개선 방향).</li>
+</ul>
+<p>(결론) 임계값은 <span dir="rtl">”</span>0.5가 기본”이 아니라, 오류비용 구조에 의해 결정되는 운영 파라미터이다(확률이 잘 보정되어 있을수록 더 타당).</p>
+</section>
+</section>
+<section id="분류모델-평가척도" class="level4">
+<h4 class="anchored" data-anchor-id="분류모델-평가척도">2. 분류모델 평가척도</h4>
+<p>분류 성능은 크게 (i) 혼동행렬 기반 지표, (ii) 임계값 변화 곡선(ROC/PR), (iii) 확률 기반 손실과 보정으로 정리할 수 있다.</p>
+<section id="혼동행렬confusion-matrix" class="level5">
+<h5 class="anchored" data-anchor-id="혼동행렬confusion-matrix">(1) 혼동행렬(Confusion Matrix)</h5>
+<p>이진분류에서 혼동행렬은 다음과 같다.</p>
+<p><span class="math display">\[\begin{matrix}
+&amp; \widehat{y} = 1 &amp; \widehat{y} = 0 \\
+Y = 1 &amp; TP &amp; FN \\
+Y = 0 &amp; FP &amp; TN
+\end{matrix}\]</span></p>
+<p><span class="math display">\[n = TP + FP + FN + TN\]</span></p>
+<ul>
+<li>TP (True Positive, 진양성): 실제 Y=1 (양성)인 관측치를 모델이 \hat{Y}=1로 예측한 경우 → <span dir="rtl">”</span>양성을 양성으로 맞춤”</li>
+<li>FP (False Positive, 위양성): 실제 Y=0 (음성)인데 모델이 \hat{Y}=1로 예측한 경우 → <span dir="rtl">”</span>음성을 양성으로 잘못 경보(오경보)”</li>
+<li>FN (False Negative, 위음성): 실제 Y=1 (양성)인데 모델이 \hat{Y}=0으로 예측한 경우 → <span dir="rtl">”</span>양성을 음성으로 놓침(미탐)”</li>
+<li>TN (True Negative, 진음성): 실제 Y=0 (음성)인 관측치를 모델이 \hat{Y}=0으로 예측한 경우 → <span dir="rtl">”</span>음성을 음성으로 맞춤”</li>
+</ul>
+<p><span class="math display">\[\begin{matrix}
+TP &amp; = \#\{ i:Y_{i} = 1,{\widehat{Y}}_{i} = 1\} \\
+FP &amp; = \#\{ i:Y_{i} = 0,{\widehat{Y}}_{i} = 1\} \\
+FN &amp; = \#\{ i:Y_{i} = 1,{\widehat{Y}}_{i} = 0\} \\
+TN &amp; = \#\{ i:Y_{i} = 0,{\widehat{Y}}_{i} = 0\}
+\end{matrix}\]</span></p>
+</section>
+<section id="혼동행렬-기반-대표-지표" class="level5">
+<h5 class="anchored" data-anchor-id="혼동행렬-기반-대표-지표">(2) 혼동행렬 기반 대표 지표</h5>
+<p><strong>정확도 Accuracy / 오류율 Error rate</strong></p>
+<p><span class="math display">\[Accuracy = \frac{TP + TN}{n},Error = \frac{FP + FN}{n}\]</span></p>
+<ul>
+<li>Accuracy가 높다: 전체적으로 맞춘 비율이 높다.</li>
+<li>Error가 낮다: 전체적으로 틀린 비율이 낮다.</li>
+</ul>
+<p>Accuracy는 다음 조건에서 해석이 비교적 명확하다. (1) 클래스 비율이 대체로 균형인 경우(예: 50:50 또는 크게 치우치지 않음) (2)FP와 FN의 비용이 대칭적인 경우(둘 다 <span dir="rtl">”</span>비슷하게 나쁜” 오류). 이때는 Accuracy만으로도 모델 비교가 어느 정도 가능하다.</p>
+<p>왜 클래스 불균형에서 과대평가될 수 있나? 양성 비율이 <span class="math inline">\(\pi = P(Y = 1)\)</span>로 매우 작다고 하자(희귀 양성). 예를 들어 <span class="math inline">\(\pi = 0.01\)</span>이면, 모든 관측치를 음성(0)으로 예측하는 단순 모델도 <span class="math inline">\(TP = 0,FN = n\pi,FP = 0,TN = n(1 - \pi)\)</span>이므로 <span class="math inline">\(Accuracy = \frac{TN}{n} = 1 - \pi = 0.99\)</span>가 된다.</p>
+<p>하지만 이 모델은 양성을 하나도 잡지 못하므로 <span class="math inline">\(Recall = \frac{TP}{TP + FN} = 0\)</span>이며 목적(희귀 사건 탐지)을 완전히 실패한다.</p>
+<p>따라서 불균형 문제에서 Accuracy는 <span dir="rtl">”</span>모델이 다수 클래스를 잘 맞추는가”만 반영하기 쉽고, 소수 클래스 탐지 성능을 거의 반영하지 못한다.</p>
+<p><strong>민감도 Sensitivity(=재현율 Recall TPR)</strong></p>
+<p><span class="math display">\[Sensitivity = \frac{TP}{TP + FN}\]</span></p>
+<p><span dir="rtl">”</span>실제 양성 중에서 모델이 양성으로 올바르게 잡아낸 비율”을 의미한다. 직관적 의미는 <span dir="rtl">”</span>놓침(FN)을 얼마나 줄였나”이다.</p>
+<p>Recall을 FN 관점에서 보면, FN이 많아질수록 TP/(TP+FN)이 작아져 Recall이 떨어진다. 따라서 Recall은 놓침(미탐) 최소화가 중요한 문제에서 핵심 지표다. 즉, Recall이 높다는 것은 <span dir="rtl">”</span>양성을 최대한 놓치지 않는다”는 뜻이다.</p>
+<p>Recall은 다음과 같은 상황에서 우선순위가 높다.</p>
+<ul>
+<li>의료 선별검사: 환자를 놓치면 치명적(FN 비용 큼)</li>
+<li>안전/결함 탐지: 결함을 놓치면 사고 위험(FN 비용 큼)</li>
+<li>사기/침입 탐지(1차 필터): 의심 사례를 최대한 많이 잡아내고, 이후 2차 검증으로 거르는 구조</li>
+</ul>
+<p>이런 문제에서는 <span dir="rtl">”</span>일단 잡고 보자”가 전략이므로 Recall을 일정 기준 이상으로 맞추는 운영을 자주 한다.</p>
+<p>모델이 확률 <span class="math inline">\(\widehat{p}\)</span>를 내고 임계값 t로 분류할 때 <span class="math inline">\(\widehat{y}(t) = \mathbf{1}(\widehat{p} \geq t)\)</span>에서 t를 낮추면 양성 판정이 늘어 TP가 증가하기 쉬워 Recall이 올라간다. 하지만 동시에 FP도 증가하기 쉬워 Precision이 떨어질 수 있다.</p>
+<p>즉, Recall만 단독으로 높이는 것은 <span dir="rtl">”</span>오경보(FP)” 증가를 동반할 수 있으므로, 보통은 Recall을 제약으로 두고 Precision 최대화, 또는 PR 곡선에서 운영점 선택 같은 방식으로 균형을 잡는다.</p>
+<p><span class="math display">\[t^{\star} = \arg\max_{t}Precision(t)\text{s.t.}Recall(t) \geq r_{0}\]</span></p>
+<p>불균형(양성 희귀) 문제에서 Accuracy가 무의미해질 수 있는 반면, Recall은 <span dir="rtl">”</span>희귀한 양성을 실제로 잡아냈는가?“를 직접 측정하므로 훨씬 유용하다.</p>
+<p>다만 Recall만 높이고 FP를 과도하게 늘리면 실무적으로 감당이 안 될 수 있으므로, Precision 또는 FPR 제약과 함께 해석해야 한다.</p>
+<p><strong>특이도 Specificity(=TNR 진음성율) 및 FPR</strong></p>
+<p><span class="math display">\[Specificity = \frac{TN}{TN + FP},FPR = \frac{FP}{FP + TN} = 1 - Specificity\]</span></p>
+<p>특이도는 <span dir="rtl">”</span>실제 음성 중에서 모델이 음성으로 올바르게 걸러낸 비율”, 위양성률(FPR, False Positive Rate)은 <span dir="rtl">”</span>실제 음성 중에서 양성이라고 잘못 경보한 비율(오경보율)“이다.</p>
+<p>직관적 의미는 <span dir="rtl">”</span>오경보(FP)를 얼마나 줄였나”이며 Specificity는 FP에 민감하다. FP가 증가하면 <span class="math inline">\(TN/(TN + FP)\)</span>가 감소하여 Specificity 하락하고 동시에 <span class="math inline">\(FPR = FP/(FP + TN)\)</span>는 상승한다. 따라서 오경보 최소화가 중요한 문제에서는 Specificity를 높게 유지하거나, 더 직접적으로는 FPR을 매우 낮게 제한하는 방식으로 운영한다.</p>
+<p>Specificity(또는 낮은 FPR)는 다음 상황에서 핵심이다.</p>
+<ul>
+<li>스팸 필터/이상탐지(차단형 시스템): 정상 사용자를 차단하면 큰 손실(FP 비용 큼)</li>
+<li>의료 확진 이전의 자동 판정: 잘못 양성 판정 시 불필요한 검사/불안/비용 발생</li>
+<li>신용/사기탐지에서의 강한 제재: 정상 고객을 사기로 오인하면 민원·이탈·법적 리스크</li>
+</ul>
+<p>이처럼 FP 비용이 큰 문제에서는 <span dir="rtl">”</span>잡는 것”보다 <span dir="rtl">”</span>정상은 정상으로 통과시키는 것”이 더 중요해질 수 있다.</p>
+<p>확률 <span class="math inline">\(\widehat{p}\)</span>에 대해 <span class="math inline">\(\widehat{y}(t) = \mathbf{1}(\widehat{p} \geq t)\)</span>를 사용하면, t를 높이면 양성 판정이 어려워져 FP가 줄기 쉽다(<span class="math inline">\(\Rightarrow Specificity \uparrow ,FPR \downarrow\)</span>). 그러나 동시에 양성을 놓칠 가능성이 커져 FN이 늘 수 있다(<span class="math inline">\(\Rightarrow Recall( = TPR) \downarrow\)</span>).</p>
+<p>즉 Specificity(또는 낮은 FPR)를 지나치게 강조하면 Recall 저하를 동반할 수 있으므로, ROC 상에서 운영점 선택이 본질적으로 <span dir="rtl">”</span>TPR–FPR의 교환(trade-off)” 문제임을 이해해야 한다.</p>
+<p>예를 들면 <span dir="rtl">”</span><span class="math inline">\(FPR \leq 0.001\)</span>” 제약 하에서 TPR 최대 <span class="math inline">\(t^{\star} = \arg\max_{t}TPR(t)\text{s.t.}FPR(t) \leq 0.001\)</span>이다.</p>
+<p>불균형(양성 희귀) 상황에서는 음성(Y=0)이 매우 많다. 이때 FPR이 아주 작아도 음성의 규모가 커서 FP의 절대 개수가 크게 늘 수 있다. 예를 들어 음성이 1,000,000개인데 <span class="math inline">\(FPR = 0.001(0.1\%)\)</span>이면 <span class="math inline">\(FP \approx 1000\)</span>이 되어 운영 비용(검토 인력, 사용자 불만)이 커질 수 있다.</p>
+<p>따라서 희귀양성 문제에서는 <span dir="rtl">”</span>FPR을 매우 작게 유지”하는 것이 실무적으로 중요한 제약이 되는 경우가 많다.</p>
+<p><strong>정밀도 Precision(=양성예측도 PPV)</strong></p>
+<p><span class="math display">\[Precision = \frac{TP}{TP + FP}\]</span></p>
+<p>분모 TP+FP는 모델이 <span dir="rtl">”</span>양성(1)“이라고 판정한 전체 개수이므로, Precision은 <span dir="rtl">”</span>양성이라고 예측한 것들 중에서 실제로 양성인 비율”을 의미한다. 즉, Precision은 양성 판정의 신뢰도(혹은 <span dir="rtl">”</span>양성 라벨의 정확도”)를 나타낸다.</p>
+<p>직관적 의미는 <span dir="rtl">”</span>오경보(FP)를 얼마나 줄였나”이다. FP가 늘면 <span class="math inline">\(TP/(TP + FP)\)</span>가 작아져 Precision이 하락한다. 따라서 Precision을 높인다는 것은 <span dir="rtl">”</span>양성 판정을 더 신중하게 해서 오경보를 줄인다”는 의미가 된다.</p>
+<p>Precision은 다음과 같은 상황에서 핵심 지표가 된다.</p>
+<ul>
+<li>스팸/사기/침입 탐지에서 <span dir="rtl">’</span>차단<span dir="rtl">’</span>이나 <span dir="rtl">’</span>제재<span dir="rtl">’</span>가 뒤따르는 경우 (정상 사용자를 잘못 제재하면 비용이 큼 → FP 비용 큼)</li>
+<li>양성으로 판정된 사례를 사람이 직접 검토해야 하는 경우 (검토 자원이 제한 → <span dir="rtl">”</span>잡아낸 것 중 진짜” 비율이 높아야 함)</li>
+<li>희귀 양성 문제에서 양성 판정의 신뢰도가 매우 중요할 때 (작은 FPR이라도 음성이 많으면 FP가 크게 늘어 Precision이 급격히 악화)</li>
+</ul>
+<p>확률 <span class="math inline">\(\widehat{p}\)</span>에 대해 임계값 t로 분류하면 <span class="math inline">\(\widehat{y}(t) = \mathbf{1}(\widehat{p} \geq t)\)</span>에서 t를 높이면 양성 판정이 줄어 FP가 감소하기 쉬워 Precision↑ (대신 TP도 줄 수 있어 Recall↓ 가능), 만약 t를 낮추면 양성 판정이 늘어 Recall이 상승하기 쉬우나 FP도 늘어 Precision↓ 가능해 진다.</p>
+<p>즉 Precision과 Recall은 일반적으로 동시에 최대화되기 어렵고, PR 곡선은 이 trade-off를 임계값 전 범위에서 보여준다. 실무에서는 보통 Precision을 일정 수준 이상 유지하면서 Recall을 최대화하거나, Recall을 일정 수준 이상 확보하면서 Precision을 최대화하는 방식으로 운영점을 정한다.</p>
+<p>예를 들면, <span dir="rtl">”</span><span class="math inline">\(Precision \geq 0.9\)</span>” 제약 하에서 Recall 최대 <span class="math inline">\(t^{\star} = \arg\max_{t}Recall(t)\text{s.t.}Precision(t) \geq 0.9\)</span>이다.</p>
+<p>양성이 희귀할수록 Precision은 매우 민감해진다. 예를 들어 음성이 매우 많으면, 아주 작은 FPR도 FP의 절대 개수를 크게 만들어 Precision을 급격히 떨어뜨릴 수 있다.</p>
+<p>음성 10,000개에서 <span class="math inline">\(FPR = 0.001\)</span>이면 <span class="math inline">\(FP \approx 1000\)</span></p>
+<p>양성 10,000개에서Recall이 0.8이라 TP=8000이라 해도 <span class="math inline">\(Precision = \frac{8000}{8000 + 1000} \approx 0.889\)</span>처럼 <span dir="rtl">”</span>오경보가 조금만 있어도” Precision이 크게 흔들린다.</p>
+<p>따라서 희귀 사건 탐지(사기/부도/결함)에서는 PR/AP와 함께 Precision을 주요 지표로 삼는 경우가 많다.</p>
+<p><strong>F1 점수 F1 score 및 <span class="math inline">\(F_{\beta}\)</span></strong></p>
+<p><span class="math display">\[F_{1} = \frac{2 \cdot Precision \cdot Recall}{Precision + Recall}\]</span></p>
+<p>분류에서 Precision과 Recall은 보통 임계값 t 변화에 따라 서로 반대 방향으로 움직이는 경향이 있다(Precision–Recall trade-off). 따라서 두 지표를 하나로 요약하는 대표적인 척도가 F-score이다.</p>
+<p>F1 스코어는 정밀도와 재현율의 조화평균으로 Precision도 좋고 Recall도 좋아야 높은 점수”를 주는 척도로 한쪽이 극단적으로 낮은 모델을 강하게 벌준다.</p>
+<p><span class="math display">\[F_{\beta} = (1 + \beta^{2})\frac{Precision \cdot Recall}{\beta^{2}Precision + Recall}\]</span></p>
+<p><span class="math inline">\(F_{\beta}\)</span>는 Precision과 Recall의 상대적 중요도를 조절한다.</p>
+<ul>
+<li><span class="math inline">\(\beta &gt; 1\)</span>: Recall 가중 (놓침 비용 FN이 큼)</li>
+<li><span class="math inline">\(\beta &lt; 1\)</span>: Precision 가중 (오경보 비용 FP이 큼)</li>
+<li><span class="math inline">\(\beta = 1\)</span>: Precision과 Recall을 동일 가중 → <span class="math inline">\(F_{1}\)</span></li>
+</ul>
+<p>직관적으로 <span class="math inline">\(\beta\)</span>는 <span dir="rtl">”</span>Recall을 Precision보다 \beta배 더 중요하게 본다”는 방향의 조절장치로 이해할 수 있다(정확한 가중 구조는 식에서 <span class="math inline">\(\beta^{2}\)</span>로 반영).</p>
+<p><strong>(1) Accuracy가 부적절한 상황(특히 불균형)</strong>: 희귀 양성 문제에서 Accuracy는 다수 클래스 덕분에 높게 나올 수 있다. 이때 <span class="math inline">\(F_{1}\)</span>은 양성 탐지의 품질(Precision/Recall)을 동시에 고려하므로 더 적절한 요약 척도가 된다.</p>
+<p><strong>(2) <span dir="rtl">”</span>운영 목표가 한 숫자로 필요”할 때</strong>: 모델 후보가 많고, 운영 관점에서 Precision과 Recall을 동시에 어느 정도 확보해야 한다면 <span class="math inline">\(F_{1}\)</span>은 간단한 선택 기준이 될 수 있다.</p>
+<p><span class="math inline">\(F_{\beta}\)</span>는 <span dir="rtl">”</span>비용”을 직접 넣는 비용함수는 아니고, Precision–Recall 중 무엇을 더 중시할지의 <span dir="rtl">’</span>평가 기준<span dir="rtl">’</span>을 정하는 방법이다. 따라서 운영에서 <span dir="rtl">”</span><span class="math inline">\(FPR \leq 0.001\)</span>” 같은 명시적 제약이 있으면 <span class="math inline">\(F_{\beta}\)</span> 최대화만으로는 부족하고, 제약 기반 threshold 선택을 병행해야 한다.</p>
+<ul>
+<li>FN 비용이 크면: <span class="math inline">\(\beta &gt; 1\)</span></li>
+<li>FP 비용이 크면: <span class="math inline">\(\beta &lt; 1\)</span></li>
+<li>FP/FN이 비슷하면: <span class="math inline">\(\beta = 1(F_{1})\)</span></li>
+</ul>
+<p>Precision과 Recall은 임계값 t의 함수이므로 <span class="math inline">\(F_{1},F_{\beta}\)</span> 역시 임계값에 의존한다. <span class="math inline">\(\widehat{y}(t) = \mathbf{1}(\widehat{p} \geq t),P(t),R(t) \Rightarrow F_{\beta}(t)\)</span>. 따라서 실무에서는 종종 다음과 같이 임계값을 선택한다.</p>
+<p><span class="math inline">\(t^{\star} = \arg\max_{t}F_{\beta}(t)\)</span>. 단, 이는 <span dir="rtl">”</span><span class="math inline">\(F_{\beta}\)</span>를 목적함수로 둔 운영”일 때 정당화된다. 예를 들어 실제 목적이 <span dir="rtl">”</span>FPR ≤ 0.001” 같은 제약이라면 단순 <span class="math inline">\(F_{\beta}\)</span> 최대화는 운영 제약을 위반할 수 있으므로, 제약 조건을 함께 두어야 한다.</p>
+<p><span class="math inline">\(F_{1}\)</span>은 TN을 직접 반영하지 않는다. 즉 <span dir="rtl">”</span>음성을 얼마나 잘 걸렀는가(Specificity)“보다 <span dir="rtl">”</span>양성 탐지 품질”에 초점이 있다. → 정상(음성) 관리가 핵심이라면 FPR/Specificity도 함께 봐야 한다.</p>
+<p><span class="math inline">\(F_{1}\)</span> 하나만 보고 모델을 선택하면, 운영 상황에 따라 FP가 과도해질 수 있다. → 희귀 양성에서는 PR/AP + 운영점(임계값)에서의 Precision/Recall/FPR을 함께 보고하는 것이 안전하다.</p>
+<p><strong>사례 박스: 어떤 지표를 선택할까? (혼동행렬 기반)</strong></p>
+<p>암 조기 선별: 목표: FN 최소화(놓치면 치명적), 선택: Recall(민감도) 최우선, 그 다음 Precision, 운영: <span dir="rtl">”</span>Recall ≥ 0.98” 같은 제약으로 임계값 선택</p>
+<p>스팸 필터: 목표: FP 최소화(정상메일을 스팸으로 분류하면 손실), 선택: Precision 또는 Specificity 우선, 운영: <span dir="rtl">”</span>FPR ≤ 0.001” 제약 하에서 최대 Recall</p>
+<p>제조 결함 탐지(희귀 결함): 목표: 결함 놓침이 큰 비용 + 결함이 매우 희귀, 선택: PR 곡선/AP + Recall 제약 기반 운영점, 정확도는 거의 의미 없음(대부분 정상)</p>
+</section>
+<section id="roc-곡선과-auc" class="level5">
+<h5 class="anchored" data-anchor-id="roc-곡선과-auc">(3) ROC 곡선과 AUC</h5>
+<p>임계값 t를 변화시키면 <span class="math inline">\(TPR(t) = \frac{TP(t)}{TP(t) + FN(t)},FPR(t) = \frac{FP(t)}{FP(t) + TN(t)}\)</span>에서 ROC는 <span class="math inline">\((FPR(t),TPR(t))\)</span>의 궤적이다.</p>
+<p>AUC는 ROC 아래 면적이며, <span class="math inline">\(AUC = P(s(X^{+}) &gt; s(X^{-}))\)</span>로 해석된다(양성이 음성보다 높은 점수를 받을 확률).</p>
+<ul>
+<li>장점: 임계값에 덜 의존, 모델의 <span dir="rtl">”</span>분리력”을 요약한다.</li>
+<li>한계: 희귀 양성에서 실제로 중요한 Precision을 직접 반영하지 못한다.</li>
+</ul>
+</section>
+<section id="precisionrecallpr-곡선과-ap" class="level5">
+<h5 class="anchored" data-anchor-id="precisionrecallpr-곡선과-ap">(4) Precision–Recall(PR) 곡선과 AP</h5>
+<p>분류모델이 각 관측치에 대해 점수 s(x) 또는 예측확률 <span class="math inline">\(\widehat{p}(x)\)</span>를 산출하면, 임계값 t를 변화시키면서 정밀도(Precision)와 재현율(Recall)의 관계를 관찰할 수 있다. 이를 시각화한 것이 PR(Precision–Recall) 곡선이다.</p>
+<p>임계값 t가 주어졌을 때 혼동행렬 요소 TP(t),FP(t),FN(t),TN(t)를 이용하면 <span class="math inline">\(Precision(t) = \frac{TP(t)}{TP(t) + FP(t)},Recall(t) = \frac{TP(t)}{TP(t) + FN(t)}\)</span>로 정의된다.</p>
+<p>임계값 t를 낮추면(양성 판정이 쉬워지면) 일반적으로 TP(t)가 증가하여 Recall이 상승하는 반면, FP(t)도 증가하기 쉬워 Precision이 감소할 수 있다. 반대로 t를 높이면 Precision은 증가하는 경향이 있으나 Recall은 감소할 수 있다. PR 곡선은 이러한 Precision–Recall trade-off를 임계값 전 범위에 걸쳐 요약한다.</p>
+<p><strong>PR 곡선에서의 기준선(baseline)과 유병률(prevalence)</strong></p>
+<p>양성 비율(유병률)을 <span class="math inline">\(\pi = P(Y = 1) \approx \frac{TP + FN}{n}\)</span>이라 하자. 무작위로 양성을 예측하는 분류기(점수 정보가 없는 경우)의 기대 Precision은 대략 <span class="math inline">\(\pi\)</span>가 된다. 따라서 PR 곡선에서는 기준선이 <span class="math inline">\(\pi\)</span>이며, 모델의 성능은 <span dir="rtl">”</span><span class="math inline">\(\pi\)</span> 대비 Precision이 얼마나 개선되는가”라는 관점에서 해석하는 것이 자연스럽다.</p>
+<p>특히 <span class="math inline">\(\pi\)</span>가 매우 작은 희귀 양성 문제에서는, 작은 오경보(FP) 증가도 Precision을 크게 떨어뜨릴 수 있으므로 PR 곡선이 모델 간 차이를 더 민감하게 드러내는 경우가 많다.</p>
+<p><strong>AP(Average Precision) 평균 정밀도</strong></p>
+<p>PR 곡선은 임계값 전체에서의 관계를 보여주지만, 모델 비교를 위해 한 개의 숫자로 요약할 필요가 있다. 이때 널리 사용하는 요약 값이 AP(Average Precision) 이다.</p>
+<p>AP는 (구현 방식에 따라 계단 적분 형태로) PR 곡선 아래 면적을 근사하여 계산하며, 직관적으로는 <span dir="rtl">”</span>Recall 수준 전반에서의 Precision을 평균적으로 얼마나 유지하는가”를 나타낸다.</p>
+<p>즉 AP가 클수록, 다양한 임계값에서 높은 Precision을 유지하면서 Recall을 확장할 수 있는 모델로 해석한다.</p>
+<p><strong>사례 박스: ROC vs PR 선택(운영 관점)</strong></p>
+<ul>
+<li>양성이 희귀한 문제(예: 부도, 결함, 사기탐지) → PR/AP가 모델 차이를 더 잘 드러내는 경우가 많다. (희귀 양성에서는 Precision이 특히 민감하며, PR의 기준선이 \pi이므로 개선 정도를 직접적으로 확인 가능)</li>
+<li>클래스가 비교적 균형인 문제(예: 정상/비정상 비율이 크게 치우치지 않음) → ROC/AUC도 모델의 분리능력을 요약하는 데 충분히 유용하다.</li>
+<li>운영 목표가 <span dir="rtl">”</span>양성으로 잡은 것의 신뢰도(=후보의 품질)“인 경우 → Precision 중심의 PR 관점이 적합하다. (예: 양성 판정 후 인력 검토가 필요하거나, 양성 판정이 곧 차단/제재로 이어지는 시스템)</li>
+</ul>
+<p><strong>운영점(임계값) 선택: PR 관점의 최적화 문제</strong></p>
+<p>실제 운영에서는 PR 곡선 자체보다 <span dir="rtl">”</span>어느 임계값에서 운영할 것인가”가 핵심이다. 운영 목표가 <span dir="rtl">”</span>양성으로 잡은 것의 신뢰도(Precision)를 일정 수준 이상 확보”하는 것이라면, 다음과 같은 제약 최적화 형태로 임계값을 선택할 수 있다.</p>
+<p>1) Precision을 보장하면서 Recall을 최대화</p>
+<p><span class="math display">\[t^{\star} = \arg\max_{t}Recall(t)\text{s.t.}Precision(t) \geq p_{0}\]</span></p>
+<p>의미: <span dir="rtl">”</span>양성 판정의 신뢰도(Precision)를 p_0 이상 유지한 채, 가능한 한 많이(Recall 최대) 잡는다.”</p>
+<p>예: 사기탐지에서 <span dir="rtl">”</span>검토 인력 한정 → Precision 최소 0.8 이상” 같은 운영 조건.</p>
+<p>2) Recall을 보장하면서 Precision을 최대화</p>
+<p><span class="math display">\[t^{\star} = \arg\max_{t}Precision(t)\text{s.t.}Recall(t) \geq r_{0}\]</span></p>
+<p>의미: <span dir="rtl">”</span>놓치면 안 되는 수준(Recall r_0)을 확보한 채, 오경보를 최소화(Precision 최대)한다.”</p>
+<p>예: 의료 선별에서 <span dir="rtl">”</span>민감도 0.98 이상”을 만족시키면서 불필요 양성 판정을 줄이는 경우.</p>
+<p>이처럼 PR 곡선은 단순한 성능 시각화가 아니라, 정책/자원 제약을 반영한 운영점 선택 도구로 해석할 수 있다.</p>
+</section>
+<section id="확률-기반-평가-logloss-brier-calibration" class="level5">
+<h5 class="anchored" data-anchor-id="확률-기반-평가-logloss-brier-calibration">(5) 확률 기반 평가: LogLoss, Brier, Calibration</h5>
+<p>분류모델이 단순히 라벨 <span class="math inline">\(\widehat{y}\)</span>만 내는 것이 아니라, 각 관측치에 대해 양성일 확률 <span class="math inline">\({\widehat{p}}_{i} = P(Y = 1 \mid X = x_{i})\)</span>와 같은 예측 확률을 제공한다면, 평가는 <span dir="rtl">”</span>맞혔는가”에서 더 나아가 확률 자체가 얼마나 믿을 만한가를 점검해야 한다.</p>
+<p>특히 동일한 ROC-AUC를 가진 두 모델이라도, 한 모델은 확률을 과도하게 확신(과대추정)하는 반면 다른 모델은 실제 빈도와 잘 맞는 확률을 제공할 수 있다. 따라서 확률을 정책과 의사결정에 직접 사용한다면,*확률 품질을 평가하는 지표가 필수적이다.</p>
+<p>대표적인 척도로는 LogLoss(교차엔트로피), Brier score, 그리고 보정(calibration) 개념이 있다.</p>
+<p><strong>LogLoss(교차엔트로피, Negative Log-Likelihood)</strong></p>
+<p>이진분류에서 관측치 i의 실제 라벨을<span class="math inline">\(y_{i} \in \{ 0,1\}\)</span>, 모델의 예측확률을 <span class="math inline">\({\widehat{p}}_{i} \in (0,1)\)</span>라 하면 LogLoss는 <span class="math inline">\(LogLoss = - \frac{1}{n}\overset{n}{\sum_{i = 1}}\lbrack y_{i}\log{\widehat{p}}_{i} + (1 - y_{i})\log(1 - {\widehat{p}}_{i})\rbrack\)</span>로 정의된다. LogLoss의 핵심 특징은 <span dir="rtl">”</span>확신한 오답”을 매우 강하게 벌한다는 점이다.</p>
+<p>예를 들어 실제 <span class="math inline">\(y_{i} = 1\)</span>인데 <span class="math inline">\({\widehat{p}}_{i}\)</span>를 0에 가깝게 예측하면 <span class="math inline">\(\log{\widehat{p}}_{i}\)</span>가 큰 음수가 되어 손실이 급격히 커진다. 반대로 확률이 실제 결과와 잘 맞도록(즉, 불확실할 때는 0.5 근처, 확실할 때는 0 또는 1 근처) 예측할수록 LogLoss가 작아진다.</p>
+<p>따라서 LogLoss는 단순 분류 정확도보다 확률 예측의 품질에 민감하며, 확률모형의 최대우도추정과 직접 연결되는 지표이다.</p>
+<p><strong>Brier score: 확률 오차의 제곱평균</strong></p>
+<p>Brier score는 예측확률과 실제 라벨 사이의 제곱오차를 평균낸 값으로, <span class="math inline">\(BS = \frac{1}{n}\overset{n}{\sum_{i = 1}}(y_{i} - {\widehat{p}}_{i})^{2}\)</span>로 정의된다. 형태가 회귀의 MSE와 동일하지만, 여기서의 <span class="math inline">\({\widehat{p}}_{i}\)</span>는 연속형 예측값이 아니라 확률이므로 <span dir="rtl">”</span>확률오차의 제곱평균”이라는 의미를 가진다.</p>
+<p>Brier score는 LogLoss에 비해 극단적인 패널티가 덜하여 직관적이며, 확률이 전반적으로 실제 빈도에 얼마나 잘 맞는지를 평가하는 데 유용하다. 즉, Brier score가 작을수록 예측확률이 실제 라벨과 잘 일치한다.</p>
+<p><strong>Calibration(보정): 확률이 <span dir="rtl">’</span>진짜 확률<span dir="rtl">’</span>인가?</strong></p>
+<p>확률 기반 평가에서 가장 중요한 개념 중 하나가 보정(calibration) 이다. 보정이 이상적이라는 것은, 모델이 <span class="math inline">\(\widehat{p} = 0.7\)</span>이라고 예측한 관측치들을 모았을 때 실제로 그 집단에서 Y=1이 약 70% 발생해야 함을 뜻한다. 개념적으로는 다음 조건이 성립하는 상태를 말한다.</p>
+<p><span class="math inline">\(P(Y = 1 \mid \widehat{p}(X) = q) = q,\forall q \in \lbrack 0,1\rbrack\)</span>. 즉 예측확률이 <span dir="rtl">”</span>숫자 그대로” 해석 가능한 확률이 되려면, 확률값이 실제 빈도와 정합해야 한다. 보정을 점검하는 대표적인 방법이 reliability diagram(=calibration plot)이다.</p>
+<p>예측확률을 여러 구간(bin)으로 나눈 후, 각 구간에서 (i) 평균 예측확률과 (ii) 실제 양성 비율을 비교하여, 두 값이 y=x 직선에 가까운지 확인한다. 만약 예측확률이 실제보다 체계적으로 크면(과대추정) 모델은 과도하게 확신하는 것이고, 실제보다 체계적으로 작으면(과소추정) 모델이 보수적으로 예측하는 것이다.</p>
+<p><strong>확률 평가가 특히 중요한 경우(사례)</strong></p>
+<p>첫째, 신용 리스크/보험료 산정처럼 확률값 자체가 가격, 승인, 한도 정책에 직접 들어가는 문제에서는 확률의 해석 가능성이 결정적으로 중요하다. 이 경우 AUC가 높더라도 확률이 과대/과소추정되어 있으면 정책이 왜곡되므로, AUC만으로는 충분하지 않으며 LogLoss/Brier와 calibration 점검을 함께 수행해야 한다.</p>
+<p>둘째, 의사결정 임계값을 비용 공식으로 정하는 경우에도 확률 품질이 중요하다. 예를 들어 FP 비용을 C_{FP}, FN 비용을 C_{FN}이라 할 때 비용민감 최적 임계값은 <span class="math inline">\(t^{*} = \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>로 주어지는데, 이 규칙은 <span class="math inline">\(\widehat{p}(x)\)</span>가 실제 조건부확률 <span class="math inline">\(P(Y = 1 \mid x)\)</span>에 가까울수록(보정이 좋을수록) 타당해진다.</p>
+<p>반대로 확률이 체계적으로 왜곡되어 있다면, 같은 비용 구조에서도 임계값 기반 의사결정이 비효율적일 수 있다. 따라서 확률을 직접 사용하는 문제에서는 분리능력(ROC/PR) + 확률 손실(LogLoss/Brier) + 보정(calibration)을 함께 평가하는 것이 원칙이다.</p>
+</section>
+</section>
+<section id="예측모델회귀-평가척도와-비교" class="level4">
+<h4 class="anchored" data-anchor-id="예측모델회귀-평가척도와-비교">3. 예측모델(회귀) 평가척도와 비교</h4>
+<p>분류와 회귀는 모두 <span dir="rtl">”</span>주어진 입력 X로부터 출력 Y를 예측하는 함수 <span class="math inline">\(\widehat{f}\)</span>를 학습한다는 점에서 공통적이며, 궁극적으로는 일반화 성능(즉, 보지 못한 데이터에서 얼마나 잘 맞추는가을 평가한다.</p>
+<p>그러나 두 문제는 출력 공간이 본질적으로 다르며, 그 결과 <span dir="rtl">”</span>틀림”을 정의하는 방식과 표준 평가척도가 달라진다. 요컨대, 회귀는 오차의 크기를 재는 평가가 자연스럽고, 분류는 오류의 유형과 운영 규칙(threshold)이 성능을 좌우한다.</p>
+<section id="출력공간과-손실함수-오차의-정의-가능성" class="level5">
+<h5 class="anchored" data-anchor-id="출력공간과-손실함수-오차의-정의-가능성">(1) 출력공간과 손실함수: <span dir="rtl">”</span>오차”의 정의 가능성</h5>
+<p><strong>회귀: 연속형 출력과 자연스러운 잔차(residual)</strong></p>
+<p>회귀에서는 예측값이 실수값을 가지며, <span class="math inline">\(\widehat{y} \in \mathbb{R}\)</span>이므로 관측치별 잔차(residual) <span class="math inline">\(e = y - \widehat{y}\)</span>가 자연스럽게 정의된다. 또한 잔차의 절댓값 |e| 또는 제곱 e^2는 <span dir="rtl">”</span>얼마나 멀리 틀렸는가”를 정량적으로 나타내므로, 회귀 평가는 오차의 크기를 직접 측정하는 손실이 표준이 된다.</p>
+<p>대표적으로, 제곱오차 손실, <span class="math inline">\(L(y,\widehat{y}) = (y - \widehat{y})^{2}\)</span>, 절댓값오차 손실, <span class="math inline">\(L(y,\widehat{y}) = |y - \widehat{y}|\)</span>처럼 오차의 크기를 직접 재는 형태가 자연스럽다.</p>
+<p><strong>분류: 범주형 출력과 <span dir="rtl">’</span>거리<span dir="rtl">’</span>의 부재</strong></p>
+<p>반면 분류에서는 예측값이 범주형이며, <span class="math inline">\(\widehat{y} \in \{ 0,1,\ldots,K\}\)</span>, 이때 <span dir="rtl">”</span>A를 B로 잘못 분류한 것이 A를 C로 잘못 분류한 것보다 얼마나 더 나쁜가?” 같은 **오류의 크기(거리)**가 기본적으로 정의되지 않는다(물론 비용행렬을 따로 정의하면 가능).</p>
+<p>따라서 분류에서 가장 기본적인 손실은 단순히 <span dir="rtl">”</span>틀렸는가”만 보는 0–1 손실이다. <span class="math inline">\(L_{0 - 1}(y,\widehat{y}) = \mathbf{1}(y \neq \widehat{y})\)</span>이 손실은 회귀의 MSE처럼 <span dir="rtl">’</span>오차 크기<span dir="rtl">’</span>를 반영하지 못하므로, 분류 평가는 곧 오류의 구조(특히 FP와 FN), 그리고 확률을 라벨로 바꾸는 **운영 규칙(임계값)**의 영향을 강하게 받는다.</p>
+</section>
+<section id="회귀의-대표-지표와-해석" class="level5">
+<h5 class="anchored" data-anchor-id="회귀의-대표-지표와-해석">(2) 회귀의 대표 지표와 해석</h5>
+<p>회귀의 대표 평가지표는 다음과 같다(표본 n).</p>
+<p><strong>MSE / RMSE</strong> <span class="math inline">\(MSE = \frac{1}{n}\overset{n}{\sum_{i = 1}}(y_{i} - {\widehat{y}}_{i})^{2},RMSE = \sqrt{MSE}\)</span></p>
+<p>MSE는 큰 오차를 제곱으로 크게 벌하므로 **이상치(outlier)**에 민감하고, RMSE는 y와 동일한 단위를 갖기 때문에 해석이 직관적이다(예: <span dir="rtl">”</span>평균적으로 약 2.3 단위 정도 틀림”).</p>
+<p><strong>MAE</strong> <span class="math inline">\(MAE = \frac{1}{n}\overset{n}{\sum_{i = 1}}|y_{i} - {\widehat{y}}_{i}|\)</span></p>
+<p>MAE는 오차를 선형으로 벌하여 MSE보다 이상치에 덜 민감하고, <span dir="rtl">”</span>중앙값적(robust) 성격”을 가지므로 데이터가 두터운 꼬리(heavy tail)를 가지거나 이상치가 많을 때 유리하다.</p>
+<p><strong><span class="math inline">\(R^{2}\)</span> (결정계수)</strong> <span class="math inline">\(R^{2} = 1 - \frac{\sum_{i}(y_{i} - {\widehat{y}}_{i})^{2}}{\sum_{i}(y_{i} - \overline{y})^{2}}\)</span></p>
+<p><span class="math inline">\(R^{2}\)</span>는 <span dir="rtl">”</span>평균값 예측(<span class="math inline">\(\widehat{y} = \overline{y}\)</span>)” 대비 제곱오차가 얼마나 줄었는지(설명력/개선 정도)를 나타낸다. 단, 예측 성능의 모든 측면을 대변하지는 않으며, 데이터 분할과 문제 맥락에 따라 해석이 달라질 수 있다.</p>
+<p>요약하면, 회귀 평가는 <span dir="rtl">”</span>얼마나 멀리 틀렸는가”가 핵심이므로 MSE/MAE/RMSE가 직접적이며, R^2는 기준모형 대비 개선 정도를 보여준다.</p>
+</section>
+<section id="분류의-01-손실과-회귀-지표와의-차이" class="level5">
+<h5 class="anchored" data-anchor-id="분류의-01-손실과-회귀-지표와의-차이">(3) 분류의 0–1 손실과 회귀 지표와의 차이</h5>
+<p>분류에서도 단일 숫자 지표를 만들 수는 있으나, 그 가장 기본이 되는 것이 0–1 손실(오분류율)이다. <span class="math inline">\(Error = \frac{1}{n}\overset{n}{\sum_{i = 1}}\mathbf{1}(y_{i} \neq {\widehat{y}}_{i}) \leftrightarrow Accuracy = 1 - Error\)</span>그러나 0–1 손실은 <span dir="rtl">”</span>틀렸는가”만 반영하고, FP(오경보)와 FN(놓침)의 상대적 중요도(비용 비대칭)를 구분하지 못한다.</p>
+<p>이 때문에 분류에서는 혼동행렬 기반 지표(Precision/Recall/Specificity/F1), 곡선 기반 지표(ROC/PR), 확률 기반 지표(LogLoss/Brier) 등 여러 관점의 평가가 필수가 된다.</p>
+<p>또한 분류모델이 확률 <span class="math inline">\(\widehat{p}(x)\)</span>를 제공하는 경우, 라벨은 임계값 t로 결정되므로 <span class="math inline">\(\widehat{y}(t) = \mathbf{1}(\widehat{p} \geq t)\)</span>이다. 라벨 기반 성능은 t에 따라 달라진다. 즉, 분류의 평가는 <span dir="rtl">”</span>모델”뿐 아니라 <span dir="rtl">”</span>운영점 선택”을 포함한다는 점에서 회귀보다 운영 설계 요소가 강하다.</p>
+</section>
+<section id="공통-기반-기대손실-최소화statistical-decision-theory" class="level5">
+<h5 class="anchored" data-anchor-id="공통-기반-기대손실-최소화statistical-decision-theory">(4) 공통 기반: 기대손실 최소화(Statistical decision theory)</h5>
+<p>비록 표준 지표는 다르지만, 회귀와 분류는 모두 다음의 일반 틀로 통일할 수 있다. <span class="math inline">\(\min_{\widehat{f}}\mathbb{E}\lbrack L(Y,\widehat{f}(X))\rbrack\)</span>. 즉 목표는 <span dir="rtl">”</span>기대손실”을 최소화하는 것이다. 차이는 손실함수 L의 형태에 있다.</p>
+<ul>
+<li>회귀 대표 손실: <span class="math inline">\(L(y,\widehat{y}) = (y - \widehat{y})^{2}\text{(또는}|y - \widehat{y}|\text{)}\)</span></li>
+<li>분류(확률예측) 대표 손실(교차엔트로피, LogLoss): <span class="math inline">\(L(y,\widehat{p}) = - (y\log\widehat{p} + (1 - y)\log(1 - \widehat{p}))\)</span></li>
+</ul>
+<p>따라서 <span dir="rtl">”</span>평가의 원리”는 공통(기대손실)이나, 출력 구조에 맞는 손실/지표를 선택하는 것이 필수이다.</p>
+</section>
+<section id="불확실성uncertainty-평가의-대응-회귀-vs-분류" class="level5">
+<h5 class="anchored" data-anchor-id="불확실성uncertainty-평가의-대응-회귀-vs-분류">(5) 불확실성(uncertainty) 평가의 대응: 회귀 vs 분류</h5>
+<p>현대 예측에서는 점추정만 보는 것이 아니라, 불확실성의 질까지 평가하는 것이 중요하다. 이 관점에서도 회귀와 분류는 대응 관계가 있다.</p>
+<ul>
+<li>회귀: 예측구간 <span class="math inline">\(\lbrack L(x),U(x)\rbrack\)</span>의 평가</li>
+<li>포함률(coverage): <span class="math inline">\(P(L(x) \leq Y \leq U(x))\)</span>가 목표 수준(예: 95%)에 가까운가?</li>
+<li>폭(width): 구간이 불필요하게 넓지 않은가</li>
+<li>분류: 확률 예측의 보정(calibration)과 확률 손실</li>
+<li>LogLoss/Brier: 확률 품질</li>
+<li>calibration plot: <span dir="rtl">”</span>\hat p=0.7이면 실제도 0.7인가?”</li>
+</ul>
+<p>즉 둘 다 <span dir="rtl">”</span>불확실성을 함께 제공하고, 그 품질을 평가”한다는 점에서 구조적으로 유사하다.</p>
+</section>
+<section id="사례-박스-회귀-vs-분류-지표-선택의-사고방식상세" class="level5">
+<h5 class="anchored" data-anchor-id="사례-박스-회귀-vs-분류-지표-선택의-사고방식상세">(6) 사례 박스: 회귀 vs 분류 지표 선택의 사고방식(상세)</h5>
+<p><strong>수요예측(회귀)</strong></p>
+<p>과대예측(재고 과잉)과 과소예측(품절) 비용이 다르면, MSE(대칭·제곱 페널티)만으로는 목적을 반영하기 어렵다. 이 경우 MAE처럼 강건한 손실을 쓰거나, 비용 비대칭을 직접 반영하는 분위수(quantile) 손실을 고려한다.</p>
+<p>분위수 손실(예: <span class="math inline">\(\tau\)</span>-분위수): <span class="math inline">\(\rho_{\tau}(u) = u(\tau - \mathbf{1}(u &lt; 0)),u = y - \widehat{y}\)</span> 이를 최소화하면 <span dir="rtl">”</span>과소/과대 비용 비대칭”을 모델에 반영할 수 있다.</p>
+<p><strong>사기탐지(분류)</strong></p>
+<p>양성이 희귀하고, 운영상 오경보(FP)가 과도하면 검토 비용이 폭증한다. 따라서 accuracy보다 PR/AP가 유용하며, 임계값은 <span dir="rtl">”</span><span class="math inline">\(Precision \geq p_{0}\)</span>” 또는 <span dir="rtl">”</span><span class="math inline">\(FPR \leq \alpha\)</span>” 같은 운영 제약 하에서 결정하는 것이 일반적이다.</p>
+<p><strong>신용평가(분류-확률)</strong></p>
+<p>승인 정책이나 가격(금리)이 확률에 의존한다면, 단순 분리(AUC)만으로는 부족하다. 확률이 실제 빈도와 맞는지(보정)가 중요하므로 LogLoss/Brier 및 calibration 점검이 필수다. 특히 비용 기반 임계값 <span class="math inline">\(t^{*} = \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>을 사용할 때는 \hat p가 <span dir="rtl">”</span>진짜 확률”에 가까울수록 의사결정 규칙의 타당성이 커진다.</p>
+</section>
+</section>
+<section id="분류모델-평가-프로토콜-trainvalidationtest-cv-누수-방지" class="level4">
+<h4 class="anchored" data-anchor-id="분류모델-평가-프로토콜-trainvalidationtest-cv-누수-방지">4. 분류모델 평가 프로토콜 (Train/Validation/Test, CV, 누수 방지)</h4>
+<p>분류모델의 성능평가에서 <span dir="rtl">”</span>어떤 지표를 썼는가”만큼 중요한 것이 <span dir="rtl">”</span>어떻게 검증했는가”이다. 동일한 모델이라도 데이터 분할과 검증 절차가 부적절하면 성능이 쉽게 과대평가된다. 특히 분류 문제는 (i) 클래스 불균형, (ii) 임계값(threshold) 선택, (iii) 하이퍼파라미터 튜닝 및 모델 선택 과정이 평가 데이터에 반복적으로 노출되기 쉽다는 특성 때문에, 평가가 오염되기 쉽다. 이 절에서는 분류모델 평가의 표준적 절차와 주의점을 <span dir="rtl">”</span>일반화 성능 추정”이라는 관점에서 정리한다.</p>
+<section id="데이터-분할의-목적-일반화-성능기대손실-추정" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-분할의-목적-일반화-성능기대손실-추정">(1) 데이터 분할의 목적: 일반화 성능(기대손실) 추정</h5>
+<p>관측치 <span class="math inline">\((x_{i},y_{i})\)</span>에 대해 훈련 데이터에서 성능이 높다고 해서, 미래 데이터에서도 성능이 높다고 단정할 수는 없다. 우리가 궁극적으로 알고 싶은 것은 <span dir="rtl">”</span>미지의 데이터 분포에서의 기대손실”, 즉 일반화 위험이다. 이를 <span class="math inline">\(\mathcal{R} = \mathbb{E}\lbrack L(Y,\widehat{f}(X))\rbrack\)</span>로 표기하면, 평가의 목표는 <span class="math inline">\(\mathcal{R}\)</span>을 가능한 한 편향 없이 추정하는 것이다. 이를 위해 데이터를 역할별로 나눈다.</p>
+<ul>
+<li>훈련 Train set: 모델 학습(파라미터 추정)</li>
+<li>검증 Validation set: 하이퍼파라미터 선택, 모델 비교, 임계값 선택(운영점 결정)</li>
+<li>테스트 Test set: 최종 성능을 1회 보고(개발 과정에서 사용 금지)</li>
+</ul>
+<p>여기서 핵심 원칙은 다음 한 문장으로 요약된다. Test set은 <span dir="rtl">”</span>한 번만 열어보는” 최종 시험지이며, 모델 개발 과정의 어떤 선택에도 쓰이면 안 된다.</p>
+</section>
+<section id="hold-out-평가단일-분할-간단하지만-분산이-큰-추정" class="level5">
+<h5 class="anchored" data-anchor-id="hold-out-평가단일-분할-간단하지만-분산이-큰-추정">(2) Hold-out 평가(단일 분할): 간단하지만 분산이 큰 추정</h5>
+<p>가장 단순한 방식은 데이터를 훈련/검증/테스트로 한 번 나누는 것이다(예: 60/20/20). 이 방식은 구현이 쉽고 데이터가 매우 클 때 실용적이다. 그러나 단일 분할은 분할 결과가 우연에 크게 좌우될 수 있다.</p>
+<p>특히 데이터가 작을수록 <span dir="rtl">”</span>운이 좋은 분할”에서는 성능이 높고, <span dir="rtl">”</span>운이 나쁜 분할”에서는 성능이 낮게 나오는 등 성능 추정의 분산이 커진다.</p>
+<p>또한 분류에서는 분할마다 클래스 비율이 달라지면(양성이 어떤 세트에 몰리는 등) Precision/Recall/PR 같은 지표가 크게 요동한다. 따라서 단일 분할에서도 층화(stratification)가 사실상 필수적이다.</p>
+</section>
+<section id="stratified-split-stratified-cv-클래스-비율을-유지하는-분할" class="level5">
+<h5 class="anchored" data-anchor-id="stratified-split-stratified-cv-클래스-비율을-유지하는-분할">(3) Stratified split / Stratified CV: 클래스 비율을 유지하는 분할</h5>
+<p>이진분류에서 양성 비율을 <span class="math inline">\(\pi = P(Y = 1)\)</span>라 하자. <span class="math inline">\(\pi\)</span>가 작은 희귀 양성 문제에서는 무작위 분할만 수행하면 어떤 fold에는 양성이 거의 없을 수 있다.</p>
+<p>그러면 Recall, PR 곡선, AP 등 핵심 지표가 정의는 되더라도 추정이 불안정해지거나, 운영점 선택이 왜곡될 수 있다. 이를 막기 위해 분할 시 각 데이터셋(또는 각 fold)에서 클래스 비율이 전체와 유사하게 유지되도록 한다.</p>
+<ul>
+<li>Stratified split: train/val/test 각각이 전체와 유사한 양성/음성 비율을 갖도록 분할</li>
+<li>Stratified K-fold CV: 각 fold가 유사한 클래스 비율을 갖도록 하여 교차검증의 안정성을 높임</li>
+</ul>
+<p>요약하면, 분류에서 <span dir="rtl">”</span>층화”는 단순 옵션이 아니라 평가의 안정성을 위한 기본 장치이다.</p>
+</section>
+<section id="교차검증cross-validation과-모델-선택" class="level5">
+<h5 class="anchored" data-anchor-id="교차검증cross-validation과-모델-선택">(4) 교차검증(Cross-Validation)과 모델 선택</h5>
+<p><strong>K-fold CV의 목적</strong></p>
+<p>K-fold 교차검증은 데이터를 K개 fold로 나누고, 각 fold를 한 번씩 검증셋으로 사용하여 성능을 평균내는 방법이다.</p>
+<p><span class="math display">\[{\widehat{Perf}}_{CV} = \frac{1}{K}\overset{K}{\sum_{k = 1}}{Perf}^{(k)}\]</span></p>
+<p>교차검증의 장점은 (i) 데이터가 작을 때 데이터를 효율적으로 사용하면서, (ii) 단일 분할보다 성능 추정의 변동(분산)을 줄일 수 있다는 점이다. 다만 교차검증은 계산량이 증가하며, 여전히 <span dir="rtl">”</span>튜닝/선택 과정에서 검증 데이터에 맞추는 위험”이 존재한다.</p>
+<p><strong>튜닝/선택의 원칙: 검증 데이터에 <span dir="rtl">’</span>맞추는<span dir="rtl">’</span> 과정임을 인식</strong></p>
+<p>CV에서 하이퍼파라미터(예: SVM의 C, 트리 깊이)를 선택하거나 모델을 비교하는 과정은, 본질적으로 검증 성능을 최대화하도록 선택하는 과정이다. 즉, 검증 데이터에 대한 <span dir="rtl">”</span>적합”이 발생한다. 이 때문에 최종 성능 보고는 튜닝에 전혀 사용되지 않은 test set에서 해야 한다.</p>
+<p><strong>Nested CV(중첩 교차검증): 선택 과정까지 포함한 엄밀한 성능 추정</strong></p>
+<p>모델을 선택/튜닝한 뒤 성능을 보고할 때, 선택 과정에서 생기는 낙관적 편향을 최소화하려면 Nested CV가 가장 원칙적이다. Nested CV는 두 겹의 루프를 사용한다.</p>
+<ul>
+<li>Outer loop: 최종 성능 평가(테스트 역할)</li>
+<li>Inner loop: 하이퍼파라미터 튜닝(검증 역할)</li>
+</ul>
+<p>중요한 점은 outer fold의 테스트 데이터가 inner 튜닝에 절대 노출되지 않는다는 것이다. 데이터가 작고 <span dir="rtl">”</span>보고 성능의 신뢰성”이 매우 중요할 때(논문/보고서/공식 성능 발표) Nested CV가 권장된다.</p>
+<p><strong>임계값(threshold) 선택은 어디서 해야 하나?</strong></p>
+<p>이진분류에서 임계값 t는 Precision/Recall/F1 등 라벨 기반 지표에 직접 영향을 준다. 따라서 임계값을 고르는 행위 자체가 튜닝이다. 이 때문에 임계값은 반드시 validation set(또는 inner CV)에서 선택하고, test set에서는 고정된 임계값으로 최종 성능만 산출해야 한다.</p>
+<p>예를 들어 <span dir="rtl">”</span>Recall을 0.95 이상 확보하면서 Precision이 최대가 되게” 운영하고 싶다면 임계값은 <span class="math inline">\(t^{*} = \arg\max_{t}Precision(t)\text{s.t.}Recall(t) \geq 0.95\)</span>처럼 제약 최적화 관점으로 정할 수 있다. 이 선택을 test에서 수행하면 test에 맞춘 것이 되어 성능이 과대평가된다.</p>
+<p>다시 말해, 임계값 선택은 <span dir="rtl">’</span>모델 개발<span dir="rtl">’</span>의 일부이고, test는 개발이 끝난 후 1회만 쓰는 평가용 데이터다.</p>
+<p><strong>데이터 누수(Data Leakage) 방지: 과대평가의 가장 흔한 원인</strong></p>
+<p>분류 성능이 <span dir="rtl">”</span>비정상적으로 높게” 나오는 가장 흔한 원인은 데이터 누수이다. 누수는 검증/테스트의 정보가 직·간접적으로 학습에 섞여 들어가는 현상이며, 대표 패턴은 다음과 같다.</p>
+<p>1. 전처리를 전체 데이터에 대해 먼저 수행한다. 예: 전체 데이터로 표준화(평균/표준편차 계산) 후 분할 → 검증/테스트 정보가 훈련 단계에 유입된다. (원칙) 표준화/결측치 대치/인코딩 등 모든 전처리는 train에서만 fit, val/test에는 transform만 적용.</p>
+<p>2. 특징 선택(feature selection) 또는 차원축소(PCA)를 전체로 수행 → 선택/축소 과정에 검증/테스트 정보가 섞여 과대평가 가능성 존재한다. (원칙) feature selection, PCA도 train에서만 학습 후 적용.</p>
+<p>3. 시간/그룹 구조를 무시한 분할 → 미래 정보가 섞이거나, 동일 개인(환자/사용자)의 데이터가 train/test에 동시에 존재 → 사실상 <span dir="rtl">”</span>같은 대상을 다시 보는” 평가가 되어 과대평가</p>
+<p><strong>시간/그룹 구조가 있는 분류 평가</strong></p>
+<p>시계열 분류: 시간 순서를 무시한 랜덤 분할은 미래 정보 누수 위험이 있다. 따라서 원칙적으로 과거→미래 방향으로 분할한다(rolling window, expanding window). 운영 시점과 평가 시점의 시간적 인과관계가 유지되어야 한다.</p>
+<p>그룹 단위 데이터(환자/사용자/상품 등): 동일 그룹(예: 같은 환자)의 레코드가 train과 test에 섞이면 모델이 <span dir="rtl">”</span>개인 고유 특성”을 외워서 맞추게 되고, 이는 실전 일반화 성능을 반영하지 못한다. 이 경우 GroupKFold 등 그룹 분할을 사용해, 한 그룹이 한쪽에만 들어가도록 해야 한다.</p>
+<p><strong>불균형 데이터에서의 평가 보고 방식</strong></p>
+<p>불균형이 심한 문제에서는 accuracy만 보고하면 성능이 왜곡될 수 있으므로, 최소한 다음을 함께 제시하는 것이 바람직하다.</p>
+<ul>
+<li>PR/AP 또는 Precision/Recall/F1 (희귀 양성에서 핵심)</li>
+<li>혼동행렬 (선택된 운영 임계값에서)</li>
+<li>ROC-AUC (보조적으로, 분리능력 요약)</li>
+<li>확률 사용 시 LogLoss/Brier + calibration 점검 (확률 품질)</li>
+</ul>
+<p>또한 다중분류에서는 macro/micro 평균 중 무엇을 보고했는지 반드시 명시해야 한다. macro는 소수 클래스를 드러내는 데 유리하고, micro는 표본이 많은 클래스 영향이 커진다.</p>
+</section>
+</section>
+<section id="불균형-데이터-대응-resampling-class-weight-threshold-moving" class="level4">
+<h4 class="anchored" data-anchor-id="불균형-데이터-대응-resampling-class-weight-threshold-moving">5. 불균형 데이터 대응 (Resampling, Class Weight, Threshold Moving,</h4>
+<p>Metric 선택)</p>
+<p>분류문제에서 클래스 불균형 이란 양성 비율 <span class="math inline">\(\pi = P(Y = 1)\)</span>이 매우 작거나(희귀 양성) 특정 클래스의 비중이 과도하게 큰 상황을 뜻한다. 사기탐지, 결함검출, 질병 선별, 부도예측 등은 대체로 <span class="math inline">\(\pi \ll 0.1\)</span>인 전형적인 불균형 문제이다.</p>
+<p>이때 모델은 <span dir="rtl">”</span>대부분이 음성”이라는 사실만 이용해도 높은 정확도를 얻을 수 있으므로, 학습이 다수 클래스에 편향되기 쉽고 평가 또한 쉽게 왜곡된다.</p>
+<p>따라서 불균형 문제에서는 단일 처방이 아니라, **(i) 데이터 수준(리샘플링), (ii) 알고리즘 수준(가중치/비용민감), (iii) 의사결정 수준(임계값 조정), (iv) 평가 지표 수준(metric 선택)**을 함께 설계해야 한다.</p>
+<section id="왜-불균형이-문제인가-정확도의-함정" class="level5">
+<h5 class="anchored" data-anchor-id="왜-불균형이-문제인가-정확도의-함정">(1) 왜 불균형이 문제인가? (정확도의 함정)</h5>
+<p>양성 비율이 <span class="math inline">\(\pi = P(Y = 1) = 0.01\)</span>이라고 하자. 모든 관측치를 음성(0)으로 예측하는 <span dir="rtl">”</span>무지 모델”도 <span class="math inline">\(Accuracy = 0.99\)</span>를 얻는다. 그러나 이 모델은 TP=0이므로 <span class="math inline">\(Recall = \frac{TP}{TP + FN} = 0\)</span>이며, 희귀 양성 탐지라는 목표를 전혀 달성하지 못한다.</p>
+<p>즉, 불균형 문제에서 accuracy는 다수 클래스에 대한 맞춤 정도를 과도하게 반영하고, 소수 클래스 탐지 성능을 가리기 쉽다.</p>
+<p>무지 모델(naive model)“은 말 그대로 입력 X를 전혀 보지 않고, 가장 쉬운 규칙 하나로 예측하는 베이스라인(baseline) 분류기를 뜻한다.</p>
+<p>따라서 불균형 문제에서는 accuracy 중심 평가를 피하고, 양성 탐지 성능(Recall/Precision/PR)과 운영 제약(FPR 제한, 검토량 제한)을 중심으로 접근하는 것이 원칙이다.</p>
+</section>
+<section id="리샘플링resampling-학습-데이터-분포를-조정하는-방법" class="level5">
+<h5 class="anchored" data-anchor-id="리샘플링resampling-학습-데이터-분포를-조정하는-방법">(2) 리샘플링(Resampling): 학습 데이터 분포를 조정하는 방법</h5>
+<p>리샘플링은 학습 데이터에서 클래스 비율을 인위적으로 조정하여 모델이 소수 클래스를 충분히 학습하도록 만드는 방법이다. 가장 중요한 원칙은 다음이다.</p>
+<p>리샘플링은 오직 훈련 데이터(또는 CV의 train fold)에서만 수행한다. 검증/테스트에 적용하면 분포가 왜곡되어 성능이 과대평가된다.</p>
+<p><strong>언더샘플링(Undersampling): 다수 클래스 축소</strong></p>
+<p>다수 클래스(예: Y=0)에서 일부 표본을 제거하여 균형을 맞춘다. 표본 수를 <span class="math inline">\(n_{0} \rightarrow n_{0}'\)</span>로 줄이면 학습에서의 양성비율은 <span class="math inline">\(\pi' = \frac{n_{1}}{n_{0}' + n_{1}}\)</span>로 증가한다.</p>
+<ul>
+<li>장점: 학습 속도 증가, 다수 클래스 지배 완화</li>
+<li>단점: 정보 손실(특히 다수 클래스 내부 구조/경계 정보가 사라질 수 있음)</li>
+</ul>
+<p>따라서 언더샘플링은 데이터가 매우 크고 다수 클래스가 중복 정보가 많을 때 유리하나, 데이터가 작을 때는 성능 저하 위험이 있다.</p>
+<p><strong>오버샘플링(Oversampling): 소수 클래스 증강</strong></p>
+<p>소수 클래스(예: Y=1) 표본을 복제하여 비율을 높인다.</p>
+<ul>
+<li>장점: 다수 클래스 정보를 버리지 않음(정보 손실 없음)</li>
+<li>단점: 단순 복제는 과적합 위험(특히 트리/최근접 기반 모델에서 동일 샘플을 외울 수 있음)</li>
+</ul>
+<p>따라서 오버샘플링은 <span dir="rtl">”</span>표본 수가 매우 부족한 소수 클래스”에서 도움이 되지만, 반드시 검증 절차와 함께 과적합 여부를 확인해야 한다.</p>
+<p><strong>합성 샘플 생성(SMOTE 등): 소수 클래스의 보간</strong></p>
+<p>SMOTE류 방법은 소수 클래스 내에서 근접 이웃을 이용해 새로운 합성 샘플을 생성한다. 개념적으로 <span class="math inline">\(x_{\text{new}} = x_{i} + \lambda(x_{nn} - x_{i}),\lambda \in (0,1)\)</span>처럼 소수 클래스 샘플 x_i와 이웃 x_{nn} 사이를 선형 보간하여 표본을 추가한다.</p>
+<ul>
+<li>장점: 단순 복제보다 과적합 완화 가능</li>
+<li>단점: 클래스 경계 주변에서 잘못된 합성(노이즈 증폭) 가능, 범주형 변수 처리 주의</li>
+</ul>
+<p>실무적으로는 <span dir="rtl">”</span>리샘플링만으로 해결”하기보다, 아래의 가중치 학습 + 임계값 조정과 함께 조합하는 경우가 많다.</p>
+</section>
+<section id="class-weight-cost-sensitive-learning-손실함수에-가중치-부여" class="level5">
+<h5 class="anchored" data-anchor-id="class-weight-cost-sensitive-learning-손실함수에-가중치-부여">(3) Class Weight / Cost-sensitive Learning: 손실함수에 가중치 부여</h5>
+<p>리샘플링은 데이터를 바꾸는 접근이라면, class weight는 데이터를 바꾸지 않고 손실함수에 가중치를 주는 접근이다. 이진분류에서 로그손실(교차엔트로피) <span class="math inline">\(\ell_{i}({\widehat{p}}_{i}) = - \lbrack y_{i}\log{\widehat{p}}_{i} + (1 - y_{i})\log(1 - {\widehat{p}}_{i})\rbrack\)</span>에 양성 가중치 <span class="math inline">\(w_{1}\)</span>, 음성 가중치 <span class="math inline">\(w_{0}\)</span>를 적용하면 <span class="math inline">\(\ell_{i}^{(w)}({\widehat{p}}_{i}) = - \lbrack w_{1}y_{i}\log{\widehat{p}}_{i} + w_{0}(1 - y_{i})\log(1 - {\widehat{p}}_{i})\rbrack\)</span>가 된다.</p>
+<p>이를 최소화하면 소수 클래스의 오차(특히 FN)에 더 큰 패널티가 부여되어, 결정경계가 소수 클래스를 더 포착하는 방향으로 이동한다.</p>
+<p>가중치의 대표적 설정은 빈도 역수 형태 <span class="math inline">\(w_{k} \propto \frac{1}{n_{k}},w_{1} = \frac{n}{2n_{1}},w_{0} = \frac{n}{2n_{0}}\)</span>이다.</p>
+<ul>
+<li>장점: 데이터 조작 없이 비용민감 학습 가능, 로지스틱 회귀/SVM/트리/부스팅 등 다양한 모델에서 지원</li>
+<li>주의: <span class="math inline">\(w_{1}\)</span>을 크게 하면 Recall은 증가하기 쉬우나 FP도 늘어 Precision이 떨어질 수 있음 → 임계값 조정과 함께 설계하는 것이 안전</li>
+</ul>
+</section>
+<section id="threshold-moving-학습과-별개로-운영-임계값을-조정" class="level5">
+<h5 class="anchored" data-anchor-id="threshold-moving-학습과-별개로-운영-임계값을-조정">(4) Threshold Moving: 학습과 별개로 운영 임계값을 조정</h5>
+<p>불균형 문제에서 <span class="math inline">\(\widehat{p}(x)\)</span>를 얻은 뒤 임계값을 0.5로 두면 소수 클래스를 거의 잡지 못하는 경우가 많다. 따라서 학습이 끝난 후에도 운영 목적에 맞게 임계값 t를 조정한다. <span class="math inline">\(\widehat{y}(x;t) = \mathbf{1}(\widehat{p}(x) \geq t)\)</span></p>
+<ul>
+<li><span class="math inline">\(t \downarrow\)</span>: 양성 판정 증가 \Rightarrow Recall↑, FP↑(Precision↓ 가능)</li>
+<li><span class="math inline">\(t \uparrow\)</span>: 양성 판정 감소 \Rightarrow Precision↑ 가능, FN↑(Recall↓)</li>
+</ul>
+<p><strong>비용 기반 임계값</strong></p>
+<p>FP 비용을 C_{FP}, FN 비용을 C_{FN}이라 하면, 비용민감 최적 임계값은 <span class="math inline">\(t^{*} = \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>이며, 확률이 잘 보정되어 있을수록(<span dir="rtl">”</span>진짜 확률”에 가까울수록) 이 규칙의 타당성이 커진다.</p>
+<p><strong>제약 기반 임계값(운영 제약 반영)</strong></p>
+<p>실무에서는 비용을 숫자로 정하기 어렵거나 <span dir="rtl">”</span>제약”이 더 직접적인 경우가 많다. 예를 들어</p>
+<p><span dir="rtl">”</span>Recall 0.95 이상이면서 Precision 최대” <span class="math inline">\(t^{*} = \arg\max_{t}Precision(t)\text{s.t.}Recall(t) \geq 0.95\)</span></p>
+<p><span dir="rtl">”</span>FPR 0.1% 이하에서 TPR 최대” <span class="math inline">\(t^{*} = \arg\max_{t}TPR(t)\text{s.t.}FPR(t) \leq 0.001\)</span></p>
+<p>프로토콜 원칙: 임계값 선택은 튜닝이므로 validation(또는 inner CV)에서 결정하고, test에서는 고정된 t^\*로 성능을 보고해야 한다.</p>
+</section>
+<section id="metric-선택-불균형에서-무엇을-최적화보고할-것인가" class="level5">
+<h5 class="anchored" data-anchor-id="metric-선택-불균형에서-무엇을-최적화보고할-것인가">(5) Metric 선택: 불균형에서 <span dir="rtl">”</span>무엇을 최적화/보고”할 것인가</h5>
+<p>불균형 문제에서 metric 선택은 단순한 <span dir="rtl">”</span>보고 형식”이 아니라, 모델 튜닝의 방향을 사실상 결정한다. 따라서 accuracy 대신 무엇을 볼지 명확히 해야 한다.</p>
+<p><strong>Accuracy 대신 고려할 지표</strong></p>
+<ul>
+<li>Recall/Precision/F1: 혼동행렬 기반, 운영 목적에 직접 연결</li>
+<li>PR 곡선 및 AP: 희귀 양성에서 모델 차이를 잘 드러냄(후보 품질 중심)</li>
+<li>ROC-AUC: 분리능력 요약에는 유용하나, 희귀 양성에서는 PR보다 덜 민감할 수 있음</li>
+<li>확률 사용 시: LogLoss/Brier + calibration(보정)</li>
+</ul>
+<p><strong>왜 PR/AP가 희귀 양성에서 중요한가?</strong></p>
+<p>Precision은 <span class="math inline">\(Precision = \frac{TP}{TP + FP}\)</span>이므로, 양성이 희귀할수록 작은 FP 증가도 Precision을 크게 떨어뜨린다. 따라서 <span dir="rtl">”</span>양성으로 잡은 것의 신뢰도(후보 품질)“가 핵심인 문제(사기, 스팸, 결함)에서는 PR/AP가 실무적으로 매우 중요한 지표가 된다.</p>
+<p><strong>다중분류 불균형: Macro vs Micro</strong></p>
+<p>다중분류에서 평균 방식도 성능 해석을 크게 바꾼다.</p>
+<ul>
+<li>Macro 평균: 클래스별 지표를 동일 가중으로 평균 → 소수 클래스 성능을 드러내기 좋음</li>
+<li>Micro 평균: 전체 표본수 가중으로 합쳐 계산 → 다수 클래스에 지배되기 쉬움</li>
+</ul>
+<p>따라서 <span dir="rtl">”</span>소수 클래스가 중요한가?“가 macro/micro 선택의 핵심 기준이 된다.</p>
+</section>
+<section id="실전-전략-무엇을-언제-쓰나" class="level5">
+<h5 class="anchored" data-anchor-id="실전-전략-무엇을-언제-쓰나">(6) 실전 전략: 무엇을 언제 쓰나?</h5>
+<p>불균형 데이터 대응은 <span dir="rtl">”</span>기법을 많이 쓰는 것”이 목표가 아니라, 업무 목적과 운영 제약을 만족시키는 의사결정 규칙을 설계하는 것이 목표다.</p>
+<p>같은 불균형 문제라도 (i) 놓침(FN)이 더 치명적인지, (ii) 오경보(FP)가 더 치명적인지, (iii) 확률값 자체가 정책에 직접 사용되는지에 따라 학습 방법과 임계값 선택, 그리고 보고해야 할 평가 지표가 달라진다.</p>
+<p>따라서 실무에서는 먼저 <span dir="rtl">”</span>어떤 오류가 더 비싼가?“와 <span dir="rtl">”</span>운영상 감당 가능한 경보량/오경보율은 얼마인가?”를 정한 뒤, 그에 맞춰 학습–운영–평가를 일관되게 설계한다.</p>
+<p><strong>(A) 소수 클래스 탐지가 최우선인 경우: 놓치면 치명적(FN 비용이 매우 큼)</strong></p>
+<p>암 선별검사, 안전 결함 탐지처럼 양성을 놓치는 것(FN)이 큰 피해로 이어지는 문제에서는, 모델의 1차 목표가 <span dir="rtl">”</span>양성을 최대한 놓치지 않는 것”이 된다. 이때는 단순히 accuracy를 높이는 것보다 **Recall(민감도)**을 일정 수준 이상 확보하는 것이 운영의 핵심 제약이 된다.</p>
+<p>학습 단계에서는 소수 클래스를 더 잘 학습하도록 **class weight(양성 가중치 증가)**를 주거나, 데이터가 매우 부족한 경우 일부 오버샘플링을 병행해 소수 클래스 신호를 강화한다.</p>
+<p>운영 단계에서는 기본 임계값 t=0.5를 그대로 쓰기보다 임계값을 낮추어 양성 판정을 더 쉽게 하거나, 아예 <span dir="rtl">”</span>Recall이 기준 이상이 되도록” 임계값을 선택한다. 예를 들어 <span dir="rtl">”</span><span class="math inline">\(Recall \geq r_{0}\)</span>“라는 제약을 만족하는 임계값 중에서 Precision을 최대화하는 방식이 대표적이다.</p>
+<p>평가 보고 역시 Recall 중심으로 구성한다. 특히 놓침의 정도를 직접 보여주기 위해 <span class="math inline">\(FNR = \frac{FN}{TP + FN} = 1 - Recall\)</span>같은 지표를 함께 제시하면, <span dir="rtl">”</span>치명적 놓침이 얼마나 남아 있는가”를 직관적으로 전달할 수 있다.</p>
+<p>또한 희귀 양성일수록 PR/AP를 함께 보고하여, 높은 Recall을 확보하는 과정에서 FP가 얼마나 늘어났는지도 같이 확인하는 것이 바람직하다.</p>
+<p><strong>(B) 오경보가 치명적인 경우: 양성 판정의 신뢰도가 핵심(FP 비용이 매우 큼)</strong></p>
+<p>스팸 필터나 사용자 차단 비용이 큰 사기탐지처럼, **정상(음성)을 잘못 양성으로 판단(FP)**하면 사용자 경험과 운영 비용이 크게 악화되는 문제에서는 <span dir="rtl">”</span>양성으로 잡았을 때 그게 진짜일 확률”, 즉 **Precision(정밀도)**이 핵심 KPI가 된다. 이 경우 모델이 양성을 많이 잡는 것보다, 잡는 건 적어도 <span dir="rtl">’</span>맞게<span dir="rtl">’</span> 잡는 것이 더 중요하다.</p>
+<p>학습 단계에서 class weight를 쓰더라도 매우 신중해야 한다. 양성 가중치를 과도하게 올리면 Recall은 쉽게 올라가지만 FP가 늘어 Precision이 악화될 수 있기 때문이다.</p>
+<p>따라서 운영 단계에서는 임계값을 높여 양성 판정을 보수적으로 하거나, <span dir="rtl">”</span>FPR이 특정 상한 이하가 되도록” 임계값을 선택하는 방식이 실무적으로 흔하다. 즉, 운영은 종종 <span dir="rtl">”</span>오경보율(FPR)을 제한한 상태에서 성능을 최대화”하는 문제로 정식화된다.</p>
+<p>평가에서는 Precision과 PR/AP를 중심으로 보고하되, 특히 <span dir="rtl">”</span>운영 제약이 걸린 상태에서의 성능”을 보여주는 것이 중요하다. 예를 들어 <span dir="rtl">”</span><span class="math inline">\(FPR \leq \alpha\)</span>” 조건에서의 <span class="math inline">\(TPR( = Recall)\)</span>을 제시하면, 실제 운영점에서 <span dir="rtl">”</span>오경보를 이 정도로 억제했을 때 얼마나 잡아낼 수 있는가”를 명확히 전달할 수 있다.</p>
+<p><strong>(C) 확률값 자체가 의사결정에 들어가는 경우: 확률 기반 정책(Probability-driven decision)</strong></p>
+<p>신용/보험 리스크처럼 모델의 출력 확률이 승인 정책이나 가격 결정에 직접 쓰이는 문제에서는 <span dir="rtl">”</span>라벨을 맞히는 것”보다 확률이 실제 확률에 가까운가가 매우 중요해진다. 즉, 분리능력(AUC)이 좋아도 확률이 과대/과소추정되어 있다면 정책이 왜곡될 수 있으므로, 확률 품질 평가가 필수다.</p>
+<p>학습 단계에서는 LogLoss(교차엔트로피)처럼 확률 예측을 직접 최적화하는 손실을 기본으로 사용하고, 필요하면 class weight를 추가해 불균형을 보정한다. 동시에 운영 전에는 반드시 **calibration(보정)**을 점검해야 한다. 대표적으로 LogLoss/Brier score를 보고하고, reliability diagram을 통해 <span dir="rtl">”</span>예측확률 0.7이 실제로도 70% 수준인가”를 확인한다.</p>
+<p>운영 단계에서는 비용 기반 규칙이나 정책 기준에 맞춰 임계값을 설정한다. 예컨대 FP 비용과 FN 비용이 명시된다면 <span class="math inline">\(t^{*} = \frac{C_{FP}}{C_{FP} + C_{FN}}\)</span>같은 비용 기반 임계값을 사용할 수 있는데, 이 규칙은 예측확률이 잘 보정되어 있을수록(<span dir="rtl">’</span>진짜 확률<span dir="rtl">’</span>에 가까울수록) 타당성이 커진다.</p>
+<p>평가 보고는 세 축을 함께 제시하는 것이 바람직하다. (i) AUC로 분리능력을 확인하고, (ii) LogLoss/Brier 및 calibration으로 확률 품질을 점검하며, (iii) 실제 운영 임계값에서의 confusion matrix로 정책 적용 시 발생하는 FP/FN 규모를 구체적으로 제시한다. 이렇게 해야 <span dir="rtl">”</span>점수는 좋다”가 아니라 <span dir="rtl">”</span>정책에 넣었을 때 실제로 어떤 결과가 나는가”까지 일관되게 설명할 수 있다.</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
