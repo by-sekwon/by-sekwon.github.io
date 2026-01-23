@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 딥러닝이란? – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-2757cfadcc89ddbfb9e61569f8c3689f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/mldl_intro/index.html" aria-current="page"> 
+<span class="menu-text">MLDL개념 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_classification/index.html"> 
+<span class="menu-text">MLDL분류 w/GPT</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_intro/mldl_deep_concepts.html">📄 딥러닝방법론 기초</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【머신·딥러닝 개념】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_concepts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 개요</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_concepts01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 MLDL 개념 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_concepts02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 MLDL 개념 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_supervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 지도학습</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 비지도학습</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 MLDL 평가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_uncertainty.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 불확실성</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/method_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 MLDL방법 기초</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 딥러닝이란?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_deep_concepts.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 딥러닝방법론 기초</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-딥러닝-기초" id="toc-chapter-1.-딥러닝-기초" class="nav-link active" data-scroll-target="#chapter-1.-딥러닝-기초">Chapter 1. 딥러닝 기초</a></li>
+  <li><a href="#딥러닝-모형의-기본-형태-함수-근사-관점" id="toc-딥러닝-모형의-기본-형태-함수-근사-관점" class="nav-link" data-scroll-target="#딥러닝-모형의-기본-형태-함수-근사-관점">1. 딥러닝 모형의 기본 형태: 함수 근사 관점</a></li>
+  <li><a href="#단일-은닉층-신경망-single-layer-neural-networks" id="toc-단일-은닉층-신경망-single-layer-neural-networks" class="nav-link" data-scroll-target="#단일-은닉층-신경망-single-layer-neural-networks">2. 단일 은닉층 신경망 (Single Layer Neural Networks)</a></li>
+  <li><a href="#다층-신경망-multilayer-neural-networks" id="toc-다층-신경망-multilayer-neural-networks" class="nav-link" data-scroll-target="#다층-신경망-multilayer-neural-networks">3. 다층 신경망 (Multilayer Neural Networks)</a></li>
+  <li><a href="#딥러닝을-언제-사용할-것인가" id="toc-딥러닝을-언제-사용할-것인가" class="nav-link" data-scroll-target="#딥러닝을-언제-사용할-것인가">5. 딥러닝을 언제 사용할 것인가?</a></li>
+  <li><a href="#보간interpolation과-이중-하강double-descent" id="toc-보간interpolation과-이중-하강double-descent" class="nav-link" data-scroll-target="#보간interpolation과-이중-하강double-descent">7. 보간(Interpolation)과 이중 하강(Double Descent)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 딥러닝이란?</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-1.-딥러닝-기초" class="level4">
+<h4 class="anchored" data-anchor-id="chapter-1.-딥러닝-기초">Chapter 1. 딥러닝 기초</h4>
+</section>
+<section id="딥러닝-모형의-기본-형태-함수-근사-관점" class="level4">
+<h4 class="anchored" data-anchor-id="딥러닝-모형의-기본-형태-함수-근사-관점">1. 딥러닝 모형의 기본 형태: 함수 근사 관점</h4>
+<p>딥러닝(deep learning)은 관측된 데이터 <span class="math inline">\((x_{i},y_{i})\)</span>로부터 입력 x 를 출력 y 로 매핑하는 미지의 관계를 하나의 함수로 근사하는 방법이다. 즉, 실제 세계의 생성 메커니즘을 <span class="math inline">\(y = f^{*}(x) + \varepsilon\)</span>와 같이 생각하면, 여기서 <span class="math inline">\(f^{*}\)</span>는 우리가 알지 못하는 <span dir="rtl">”</span>진짜 함수”이고 <span class="math inline">\(\varepsilon\)</span>는 측정오차·잡음·설명되지 않는 변동을 나타낸다.</p>
+<p>딥러닝의 목적은 유한한 표본만을 사용하여 <span class="math inline">\(f^{*}\)</span>를 직접 추정하기 어렵기 때문에, 파라미터를 갖는 함수족 <span class="math inline">\(\{ f_{\theta}\}\)</span> 안에서 이를 잘 근사하는 <span class="math inline">\(f_{\theta}\)</span>를 찾는 것이다.</p>
+<p>딥러닝 모형은 일반적으로 다음과 같은 파라미터화된 함수로 표현된다. <span class="math inline">\(\widehat{y} = f_{\theta}(x)\)</span>, 여기서 <span class="math inline">\(x \in \mathbb{R}^{p}\)</span>는 입력(특징 벡터, 이미지/텍스트 등도 벡터로 표현)이고, <span class="math inline">\(\widehat{y}\)</span>는 모형의 예측값(연속값, 확률, 클래스 점수 등)이고 <span class="math inline">\(\theta\)</span>는 가중치(weights)와 편향(biases)을 포함하는 전체 파라미터 집합이다.</p>
+<p>여기서 <span dir="rtl">”</span>학습(training)“이란 <span class="math inline">\(\theta\)</span>를 데이터에 맞게 조정하여 <span class="math inline">\(f_{\theta}\)</span>가 관측된 y를 잘 맞추도록 만드는 과정이다.</p>
+</section>
+<section id="단일-은닉층-신경망-single-layer-neural-networks" class="level4">
+<h4 class="anchored" data-anchor-id="단일-은닉층-신경망-single-layer-neural-networks">2. 단일 은닉층 신경망 (Single Layer Neural Networks)</h4>
+<p>신경망은 p개의 변수로 이루어진 입력벡터 <span class="math inline">\(X = (X_{1},X_{2},\ldots,X_{p})\)</span>를 받아, 반응변수 Y를 예측하기 위한 비선형 함수 <span class="math inline">\(f(X)\)</span>를 구성한다. 트리, 부스팅, 일반화 가법모형 등을 이용해 비선형 예측모형을 다루고 있으나 신경망이 이러한 방법들과 구별되는 점은 모형이 갖는 특정한 구조에 있다.</p>
+<p>다음은 p=4개의 예측변수를 사용하여 연속형(정량) 반응을 모델링하는 단순한 순전파(feed-forward) 신경망을 보여준다. 신경망 용어로는 네 개의 특성 <span class="math inline">\(X_{1},\ldots,X_{4}\)</span>가 입력층의 유닛을 이룬다. 화살표는 입력층의 각 입력이 K개의 은닉 유닛 각각으로 전달됨을 의미한다(K는 우리가 선택하며, 여기서는 5로 두었다).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mldlintro_deep_single.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>이 신경망 모형은 다음 형태를 갖는다. <span class="math inline">\(f(X) = \beta_{0} + \overset{K}{\sum_{k = 1}}\beta_{k}h_{k}(X) = \beta_{0} + \overset{K}{\sum_{k = 1}}\beta_{k}g\left( w_{k0} + \overset{p}{\sum_{j = 1}}w_{kj}X_{j} \right)\)</span>, 여기서는 두 단계로 구성된다. 먼저 은닉층에서 K개의 활성값 <span class="math inline">\(A_{k}(k = 1,\ldots,K)\)</span>를 입력 특성 <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>의 함수로 계산한다.</p>
+<p><span class="math inline">\(A_{k} = h_{k}(X) = g\left( w_{k0} + \overset{p}{\sum_{j = 1}}w_{kj}X_{j} \right)\)</span>, 여기서 <span class="math inline">\(g(z)\)</span>는 미리 지정하는 비선형 활성함수이다.</p>
+<p>각 <span class="math inline">\(A_{k}\)</span>는 원래 특성의 서로 다른 변환 <span class="math inline">\(h_{k}(X)\)</span>로 볼 수 있는데, 이는 기저함수(basis function)와 유사한 관점이다. 이렇게 얻은 은닉층의 K개 활성값은 출력층으로 전달되어 다음을 만든다.</p>
+<p><span class="math inline">\(f(X) = \beta_{0} + \overset{K}{\sum_{k = 1}}\beta_{k}A_{k} - (1)\)</span>. 즉, K=5개의 활성값을 설명변수로 하는 선형회귀모형이다. 모든 파라미터 <span class="math inline">\(\beta_{0},\ldots,\beta_{K},w_{10},\ldots,w_{Kp}\)</span>는 데이터로부터 추정되어야 한다.</p>
+<p>위 그림은 은닉층이 하나인 신경망. 은닉층은 입력 <span class="math inline">\(X_{1},X_{2},\ldots,X_{p}\)</span>의 선형결합에 비선형 변환을 적용하여 활성값 <span class="math inline">\(A_{k} = h_{k}(X)\)</span>를 계산한다. 따라서 <span class="math inline">\(A_{k}\)</span>는 직접 관측되는 값이 아니다.</p>
+<p>함수 <span class="math inline">\(h_{k}( \cdot )\)</span>는 미리 고정되어 있는 것이 아니라, 신경망을 학습하는 과정에서 함께 학습된다. 출력층은 이 활성값 <span class="math inline">\(A_{k}\)</span>들을 입력으로 사용하는 선형모형이며, 그 결과 함수 f(X)가 만들어진다.</p>
+<p>신경망의 초기 사례에서는 시그모이드(sigmoid) 활성함수가 선호되었다. <span class="math inline">\(g(z) = \frac{e^{z}}{1 + e^{z}} = \frac{1}{1 + e^{- z}}\)</span>. 이는 로지스틱 회귀에서 선형함수를 0과 1 사이의 확률로 변환할 때 사용하는 함수와 동일하다.</p>
+<p>현대 신경망에서 더 선호되는 선택은 ReLU(rectified linear unit) 활성함수로, 다음과 같은 형태를 갖는다. <span class="math inline">\(g(z) = (z)_{+} = \{\begin{matrix}
+0, &amp; z &lt; 0, \\
+z, &amp; \text{그 외}.
+\end{matrix}\)</span></p>
+<p>ReLU 활성함수는 시그모이드보다 계산 및 저장이 더 효율적이다. ReLU는 0에서 임계(threshold)를 갖지만, 선형함수에 적용되므로 상수항 <span class="math inline">\(w_{k0}\)</span>가 이 꺾이는 지점(임계점)을 이동시킨다.</p>
+<p>말로 풀면, 위 그림 모형은 X의 서로 다른 5개의 선형결합을 먼저 계산한 뒤, 각각에 활성함수 <span class="math inline">\(g( \cdot )\)</span>를 적용하여 <span dir="rtl">”</span>눌러(squash)” 변환함으로써 5개의 새로운 특징을 만든다. 최종 모형은 이렇게 만들어진 변수들에 대해 선형이다.</p>
+<p><span dir="rtl">’</span>신경망<span dir="rtl">’</span>이라는 이름은 원래 은닉 유닛을 뇌의 뉴런에 비유한 데서 나왔다. 즉(시그모이드 활성함수를 쓰는 경우) <span class="math inline">\(A_{k} = h_{k}(X)\)</span> 값이 1에 가까우면 뉴런이 발화(firing) 하는 것으로, 0에 가까우면 침묵(silent) 하는 것으로 해석하였다.</p>
+<section id="활성함수의-비선형성은-왜-필수인가" class="level5">
+<h5 class="anchored" data-anchor-id="활성함수의-비선형성은-왜-필수인가">활성함수의 비선형성은 왜 필수인가?</h5>
+<p>활성함수 <span class="math inline">\(g( \cdot )\)</span>의 비선형성은 필수적이다. 이것이 없으면 (10.1)의 모형 <span class="math inline">\(f(X)\)</span>는 결국 <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>에 대한 단순한 선형모형으로 붕괴한다. 또한 비선형 활성함수는 모형이 복잡한 비선형성과 상호작용 효과를 포착할 수 있게 한다.</p>
+<p>예를 들어 입력변수가 p=2개 <span class="math inline">\(X = (X_{1},X_{2})\)</span>이고, 은닉 유닛이 K=2개 <span class="math inline">\(h_{1}(X),h_{2}(X)\)</span>이며, 활성함수가 <span class="math inline">\(g(z) = z^{2}\)</span>라고 하자. 다른 파라미터를 다음과 같이 두면 <span class="math inline">\(\begin{matrix}
+\beta_{0} &amp; = 0, &amp; \beta_{1} &amp; = \frac{1}{4}, &amp; \beta_{2} &amp; = - \frac{1}{4}, \\
+w_{10} &amp; = 0, &amp; w_{11} &amp; = 1, &amp; w_{12} &amp; = 1, \\
+w_{20} &amp; = 0, &amp; w_{21} &amp; = 1, &amp; w_{22} &amp; = - 1.
+\end{matrix}\)</span>.</p>
+<p>식 (1)로부터 <span class="math inline">\(\begin{array}{r}
+h_{1}(X) = (0 + X_{1} + X_{2})^{2}, \\
+h_{2}(X) = (0 + X_{1} - X_{2})^{2}
+\end{array}\)</span>이다. 이를 대입하면</p>
+<p><span class="math inline">\(\begin{matrix}
+f(X) &amp; = 0 + \frac{1}{4}(0 + X_{1} + X_{2})^{2} - \frac{1}{4}(0 + X_{1} - X_{2})^{2} \\
+&amp; = \frac{1}{4}\lbrack(X_{1} + X_{2})^{2} - (X_{1} - X_{2})^{2}\rbrack \\
+&amp; = X_{1}X_{2}.
+\end{matrix}\)</span>이다.</p>
+<p>즉, 선형함수에 대한 두 개의 비선형 변환을 합하면 상호작용항을 만들어낼 수 있다. 다만 실제로는 <span class="math inline">\(g(z) = z^{2}\)</span> 같은 이차함수 활성함수는 잘 쓰지 않는데, 그렇게 하면 원래 좌표 <span class="math inline">\(X_{1},\ldots,X_{p}\)</span>에서 항상 2차 다항식만 얻게 되기 때문이다. 반면 시그모이드나 ReLU 활성함수는 이러한 한계를 갖지 않는다.</p>
+</section>
+<section id="신경망-적합학습과-손실함수" class="level5">
+<h5 class="anchored" data-anchor-id="신경망-적합학습과-손실함수">신경망 적합(학습)과 손실함수</h5>
+<p>신경망을 적합한다는 것은 식 (1)의 미지 파라미터들을 추정하는 것을 뜻한다. 연속형 반응변수의 경우 보통 제곱오차 손실을 사용하며, 파라미터는 다음을 최소화하도록 선택된다. <span class="math inline">\(\overset{n}{\sum_{i = 1}}(y_{i} - f(x_{i}))^{2}\)</span>.</p>
+</section>
+</section>
+<section id="다층-신경망-multilayer-neural-networks" class="level4">
+<h4 class="anchored" data-anchor-id="다층-신경망-multilayer-neural-networks">3. 다층 신경망 (Multilayer Neural Networks)</h4>
+<p>현대의 신경망은 보통 하나 이상의 은닉층(hidden layer) 을 가지며, 각 층에는 종종 많은 유닛(unit)이 존재한다. 이론적으로는 유닛 수가 매우 많은 단일 은닉층만으로도 대부분의 함수를 근사할 수 있다. 그러나 좋은 해(해결책)를 찾아내는 학습 과제는, 각 층의 크기가 적당한 여러 개의 층(multiple layers) 을 사용하는 쪽이 훨씬 쉬워진다.</p>
+<p>널리 알려져 있고 공개적으로 이용 가능한 MNIST 손글씨 숫자 데이터셋을 이용하여 큰 규모의 조밀(dense) 네트워크를 설명할 수 있다. 다음 그림은 이러한 숫자들의 예시를 보여준다. 여기서 목표는 이미지를 올바른 숫자 클래스 <span class="math inline">\(0 \sim 9\)</span>로 분류하는 모형을 만드는 것이다. 각 이미지는 <span class="math inline">\(p = 28 \times 28 = 784\)</span>개의 픽셀을 가지며, 각 픽셀은 0과 255 사이의 8비트 회색조 값으로서 해당 작은 정사각형 영역에 숫자가 얼마나 <span dir="rtl">”</span>써져 있는지”의 상대적 정도를 나타낸다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mldlintro_deep_mnist.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>이러한 픽셀들은 (예: 열 우선 순서로) 입력벡터 X에 저장된다. 출력은 클래스 레이블이며, 이는 10개의 더미변수로 이루어진 벡터 <span class="math inline">\(Y = (Y_{0},Y_{1},\ldots,Y_{9})\)</span>로 표현한다. 즉, 정답 레이블에 해당하는 위치는 1이고 나머지는 0이다. 머신러닝 분야에서는 이를 원-핫 인코딩(one-hot encoding) 이라고 부른다. 학습 이미지는 60,000장이고, 테스트 이미지는 10,000장이다.</p>
+<p>역사적으로 보면, 숫자 인식 문제는 1980년대 후반 AT&amp;T 벨 연구소 등에서 신경망 기술 발전을 가속시킨 촉매였다. 이와 같은 패턴 인식 과제는 인간에게는 비교적 단순하다. 우리의 시각 시스템은 뇌의 큰 부분을 차지하며, 좋은 인식 능력은 생존을 위한 진화적 동력이기도 하다. 그러나 이런 과제는 기계에게는 그리 단순하지 않으며, 인간 수준의 성능에 도달하도록 신경망 구조를 정교화하는 데 30년이 넘는 시간이 걸렸다.</p>
+<p>다음 그림은 숫자 분류 과제를 잘 해결하는 다층 신경망 구조를 보여준다. 이는 단일 은익층 신경망과 다음과 같은 점에서 다르다.</p>
+<ul>
+<li>은닉층이 하나가 아니라 두 개이다. <span class="math inline">\(L_{1}\)</span> (256개 유닛)과 <span class="math inline">\(L_{2}\)</span> (128개 유닛)을 갖는다. 이후에는 은닉층이 7개인 네트워크도 보게 될 것이다.</li>
+<li>출력변수가 하나가 아니라 10개이다. 여기서 10개의 변수는 사실상 하나의 범주형 변수를 표현하므로 서로 강하게 의존적이다. (명확성을 위해 클래스 인덱스를 1–10이 아니라 0–9로 매겼다.) 더 일반적으로, 멀티태스크 학습에서는 하나의 네트워크로 서로 다른 반응변수를 동시에 예측할 수 있으며, 이들은 은닉층 형성에 모두 영향을 미친다.</li>
+<li>네트워크를 학습시키는 데 사용하는 손실함수가 다중 클래스 분류 과제에 맞게 설계된다.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mldlintro_deep_multiple.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>첫 번째 은닉층은 식 (1)과 동일하게 다음과 같이 정의된다.</p>
+<p><span class="math inline">\(A_{k}^{(1)} = h_{k}^{(1)}(X) = g\left( w_{k0}^{(1)} + \overset{p}{\sum_{j = 1}}w_{kj}^{(1)}X_{j} \right)\)</span>.</p>
+<p><span class="math inline">\(k = 1,\ldots,K_{1}\)</span>에 대하여. 두 번째 은닉층은 첫 번째 은닉층의 활성값 <span class="math inline">\(A_{k}^{(1)}\)</span>을 입력으로 받아 새로운 활성값을 계산한다.</p>
+<p><span class="math inline">\(A_{\ell}^{(2)} = h_{\ell}^{(2)}(X) = g\left( w_{\ell 0}^{(2)} + \overset{K_{1}}{\sum_{k = 1}}w_{\ell k}^{(2)}A_{k}^{(1)} \right)\)</span>.</p>
+<p><span class="math inline">\(\ell = 1,\ldots,K_{2}\)</span>에 대하여. 두 번째 층의 각 활성값 <span class="math inline">\(A_{\ell}^{(2)} = h_{\ell}^{(2)}(X)\)</span> 역시 입력벡터 X의 함수임에 주목하자. 이는 겉으로는 1층 활성값 <span class="math inline">\(A_{k}^{(1)}\)</span>의 함수이지만, <span class="math inline">\(A_{k}^{(1)}\)</span> 자체가 다시 X의 함수이기 때문이다.</p>
+<p>은닉층이 더 많아도 마찬가지다. 따라서 이러한 변환의 사슬을 통해 네트워크는 X의 꽤 복잡한 변환을 구축하고, 그 결과가 출력층으로 <span dir="rtl">”</span>특징(feature)“처럼 입력된다.</p>
+<p>또한 <span class="math inline">\(h_{\ell}^{(2)}(X),w_{kj}^{(1)},w_{\ell k}^{(2)}\)</span>처럼 위첨자 표기를 추가로 도입했는데, 이는 활성값과 가중치(계수)가 어느 층에 속하는지를 나타내기 위해서이다(여기서는 2층). <span class="math inline">\(W_{1}\)</span>은 입력층에서 첫 번째 은닉층 <span class="math inline">\(L_{1}\)</span>로 연결되는 전체 가중치 행렬을 뜻한다. 이 행렬은 <span class="math inline">\(785 \times 256 = 200,960\)</span>개의 원소를 갖는데, 절편(또는 바이어스) 항을 포함해야 하므로 784가 아니라 785가 된다.</p>
+<section id="출력층과-소프트맥스softmax" class="level5">
+<h5 class="anchored" data-anchor-id="출력층과-소프트맥스softmax">출력층과 소프트맥스(softmax)</h5>
+<p>첫 번째 은닉층의 각 원소 <span class="math inline">\(A_{k}^{(1)}\)</span>는 <span class="math inline">\(W_{2}\)</span> 가중치 행렬을 통해 두 번째 은닉층 <span class="math inline">\(L_{2}\)</span>로 전달되며, <span class="math inline">\(W_{2}\)</span>의 차원은 <span class="math inline">\(257 \times 128 = 32,896\)</span>이다.</p>
+<p>이제 출력층에서는 하나가 아니라 10개의 반응을 갖는다. 첫 단계는 단일 모델 (10.1)과 유사하게 10개의 선형모형을 계산하는 것이다.</p>
+<p><span class="math inline">\(Z_{m} = \beta_{m0} + \overset{K_{2}}{\sum_{\ell = 1}}\beta_{m\ell}h_{\ell}^{(2)}(X) = \beta_{m0} + \overset{K_{2}}{\sum_{\ell = 1}}\beta_{m\ell}A_{\ell}^{(2)}\)</span>, <span class="math inline">\(m = 0,1,\ldots,9\)</span>. 행렬 B는 이러한 가중치 <span class="math inline">\(129 \times 10 = 1,290\)</span>개를 저장한다.</p>
+<p>머신러닝에서는 식 (1)의 절편 <span class="math inline">\(w_{k0}\)</span> 같은 항을 bias, 계수들을 weights라고 부르는 것이 흔하다. 이는 다른 곳에서 말하는 <span dir="rtl">”</span>bias–variance”의 bias와 혼동하면 안 된다.</p>
+<p>만약 이 10개가 서로 독립적인 정량 반응변수라면, 단순히 <span class="math inline">\(f_{m}(X) = Z_{m}\)</span>로 두면 된다. 그러나 여기서는 다중 클래스 확률 <span class="math inline">\(f_{m}(X) = \Pr(Y = m \mid X)\)</span>을 추정하고 싶다. 그래서 특수한 softmax 활성함수를 사용한다.</p>
+<p><span class="math inline">\(f_{m}(X) = \Pr(Y = m \mid X) = \frac{e^{Z_{m}}}{\sum_{\ell = 0}^{9}e^{Z_{\ell}}}\)</span>, <span class="math inline">\(m = 0,1,\ldots,9\)</span>.</p>
+<p>이는 10개의 값이 확률처럼(음이 아니고 합이 1) 동작하도록 보장한다. 비록 목표는 분류기(classifier)를 만드는 것이지만, 모형은 실제로 10개 클래스 각각에 대한 확률을 추정한다. 그리고 분류기는 가장 큰 확률을 갖는 클래스로 이미지를 할당한다.</p>
+<p>이 네트워크를 학습시키기 위해(반응이 범주형이므로) 음의 다항 로그우도(negative multinomial log-likelihood) 를 최소화한다.</p>
+<p><span class="math inline">\(- \overset{n}{\sum_{i = 1}}\overset{9}{\sum_{m = 0}}y_{im}\log(f_{m}(x_{i}))\)</span>.</p>
+<p>이는 교차엔트로피(cross-entropy) 라고도 불린다. 이는 이진 로지스틱 회귀의 기준식(4.5)을 일반화한 것이다.</p>
+</section>
+</section>
+<section id="딥러닝을-언제-사용할-것인가" class="level4">
+<h4 class="anchored" data-anchor-id="딥러닝을-언제-사용할-것인가">5. 딥러닝을 언제 사용할 것인가?</h4>
+<p>딥러닝은 숫자 분류 문제를 훌륭하게 해결했고, 심층 CNN은 이미지 분류를 사실상 혁신적으로 바꾸어 놓았다. 우리는 딥러닝의 새로운 성공 사례를 매일 접한다.</p>
+<p>그중 많은 사례는 이미지 분류 과제와 관련되어 있는데, 예를 들어 유방촬영이나 디지털 X-ray 영상에서의 기계 진단, 안과 검사 이미지, MRI 스캔의 주석 작업 등이 그러하다. 마찬가지로 RNN은 음성 및 언어 번역, 예측, 문서 모델링에서 수많은 성공 사례를 보였다.</p>
+<p>그렇다면 자연스럽게 이런 질문이 나온다. <span dir="rtl">”</span>우리의 기존 도구들을 모두 버리고, 데이터가 있는 모든 문제에 딥러닝을 써야 하는가?” 이 질문에 답하기 위해, Hitters 데이터셋을 활용해 보자.</p>
+<p>회귀 문제이며, 목표는 1986년의 성적 통계를 사용해 1987년 야구 선수의 연봉을 예측하는 것이다. 반응변수가 결측인 선수를 제거한 뒤, 263명의 선수와 19개의 변수가 남는다.</p>
+<p>우리는 데이터를 무작위로 학습용 176명(약 2/3)과 테스트용 87명(약 1/3)으로 분할한다. 이 데이터에 대해 세 가지 방법으로 회귀모형을 적합하였다.</p>
+<ul>
+<li>선형모형(Linear model) 을 학습 데이터에 적합하고, 테스트 데이터에 대한 예측을 수행했다. 이 모형은 파라미터 20개를 갖는다.</li>
+<li>동일한 선형모형에 라쏘 정규화(lasso regularization) 를 적용해 적합했다. 튜닝 파라미터는 학습 데이터에서 10-겹 교차검증으로 선택했다. 그 결과 계수가 0이 아닌 변수 12개를 포함하는 모형이 선택되었다.</li>
+<li>은닉층 1개, 그 안에 ReLU 유닛 64개로 이루어진 신경망을 적합했다. 이 모형은 파라미터가 1,409개이다.</li>
+</ul>
+<p>세 모형의 성능은 비슷하게 나타난다. 우리는 테스트 데이터에서의 평균절대오차(mean absolute error) 와 각 방법의 테스트 <span class="math inline">\(R^{2}\)</span>를 보고하는데, 세 값 모두 준수하다.</p>
+<p>이 결과를 얻기 위해 신경망의 구조/설정 파라미터를 조정하느라 꽤 많은 시간을 썼다. 더 많은 시간을 들이고 정규화의 형태와 강도를 <span dir="rtl">”</span>딱 맞게” 찾는다면, 선형회귀나 라쏘와 비슷하거나 심지어 더 좋은 성능을 얻을 수도 있다.</p>
+<p>그러나 매우 손쉽게 잘 작동하는 선형모형을 얻을 수 있었고, 선형모형은 본질적으로 블랙박스에 가까운 신경망보다 제시하고 이해시키기도 훨씬 쉽다. 라쏘는 예측에 19개 변수 중 12개를 선택했다. 따라서 이런 경우에는 오컴의 면도날(Occam<span dir="rtl">’</span>s razor) 원칙—여러 방법이 대략 비슷한 성능을 낸다면 가장 단순한 것을 택하라—을 따르는 편이 훨씬 낫다.</p>
+<p>라쏘 모형을 조금 더 탐색한 뒤, 우리는 4개의 변수만 쓰는 더 단순한 모형을 찾았다. 그리고 이 4개 변수로 학습 데이터에 선형모형을 다시 적합했는데(소위 relaxed lasso), 테스트 평균절대오차 224.8을 달성하여 전체에서 가장 좋은 결과를 얻었다.</p>
+<p>이 적합 결과의 요약표를 제시하고 싶을 수도 있는데, 왜냐하면 계수와 p-value를 볼 수 있기 때문이다. 그러나 이 모형은 학습 데이터에서 선택되었으므로, 그 결과를 그대로 보고하면 선택 편향(selection bias) 이 생긴다.</p>
+<p>우리는 신경망, 랜덤포레스트, 부스팅, 서포트 벡터 머신, 일반화 가법모형 등 매우 강력한 도구들을 많이 갖고 있다. 그리고 선형모형과 그 단순 변형들도 있다. 새로운 데이터 모델링 및 예측 문제를 맞닥뜨리면, 유행하는 새로운 방법을 항상 쓰고 싶은 유혹을 받기 쉽다. 특히 데이터셋이 매우 크고, 고차원 비선형 모형의 적합을 뒷받침할 수 있을 때, 이런 방법들은 종종 극적으로 인상적인 결과를 준다.</p>
+<p>하지만 더 단순한 도구로도 같은 수준의 성능을 낼 수 있다면, 단순한 도구는 보통 적합도 더 쉽고 해석도 더 쉽고, 복잡한 접근법보다 잠재적으로 덜 취약(하다. 가능하다면 단순한 모형도 함께 시도해보고, 성능과 복잡도 사이의 절충에 기반해 선택하는 것이 타당하다.</p>
+<p>일반적으로 우리는 학습 데이터의 표본 크기가 극도로 크고, 모형의 해석가능성이 높은 우선순위가 아닐 때 딥러닝이 매력적인 선택지가 될 것으로 예상한다.</p>
+<section id="신경망-적합fitting-a-neural-network" class="level5">
+<h5 class="anchored" data-anchor-id="신경망-적합fitting-a-neural-network">6. 신경망 적합(Fitting a Neural Network)</h5>
+<p>신경망을 적합하는 일은 다소 복잡하며, 여기서는 간단한 개요를 제시한다. 이 내용을 어렵게 느끼는 독자는 건너뛰어도 무방하다. 다행히도, 장 끝의 실습(lab)에서 보듯이 신경망 모형을 비교적 자동화된 방식으로 적합해주는 좋은 소프트웨어가 존재하므로, 모형 적합 절차의 기술적 세부사항을 크게 걱정하지 않아도 된다.</p>
+<p><span class="math inline">\(f(X) = \beta_{0} + \overset{K}{\sum_{k = 1}}\beta_{k}h_{k}(X) = \beta_{0} + \overset{K}{\sum_{k = 1}}\beta_{k}g\left( w_{k0} + \overset{p}{\sum_{j = 1}}w_{kj}X_{j} \right)\)</span>에서 파라미터는 <span class="math inline">\(\beta = (\beta_{0},\beta_{1},\ldots,\beta_{K})\)</span>와 더불어 각 <span class="math inline">\(w_{k} = (w_{k0},w_{k1},\ldots,w_{kp}),k = 1,\ldots,K\)</span>로 구성된다.</p>
+<p>관측치 <span class="math inline">\((x_{i},y_{i}),i = 1,\ldots,n\)</span>가 주어졌다고 하자. 그러면 우리는 다음의 비선형 최소제곱 문제를 풀어 모형을 적합할 수 있다.</p>
+<p><span class="math inline">\(\min_{\{ w_{k}\}_{1}^{K},\beta}\frac{1}{2}\overset{n}{\sum_{i = 1}}(y_{i} - f(x_{i}))^{2}\)</span>, 여기서 <span class="math inline">\(f(x_{i}) = \beta_{0} + \overset{K}{\sum_{k = 1}}\beta_{k}g\left( w_{k0} + \overset{p}{\sum_{j = 1}}w_{kj}x_{ij} \right)\)</span>이다.</p>
+<p>목적함수는 겉보기엔 단순하지만, 파라미터들이 중첩되어 나타나고 은닉 유닛들의 대칭성도 존재하기 때문에 최소화가 쉽지 않다. 이 문제는 파라미터에 대해 비볼록(nonconvex) 이며, 따라서 해가 여러 개 존재할 수 있다.</p>
+<p>해가 여러 개 존재하는 문제들 일부를 완화하고 과적합(overfitting)을 방지하기 위해, 신경망 적합 시 일반적으로 다음 두 전략을 사용한다.</p>
+<ul>
+<li>느린 학습(Slow Learning): 경사하강법(gradient descent)을 사용해 다소 느린 반복적 방식으로 모형을 적합한다. 그리고 과적합이 감지되면 적합 과정을 중단한다.</li>
+<li>정규화(Regularization): 라쏘나 릿지처럼, 파라미터에 벌점(penalty)을 부과한다.</li>
+</ul>
+<p>모든 파라미터를 하나의 긴 벡터 <span class="math inline">\(\theta\)</span>로 나타낸다고 하자. 그러면 목적함수를 다음처럼 쓸 수 있다. <span class="math inline">\(R(\theta) = \frac{1}{2}\overset{n}{\sum_{i = 1}}(y_{i} - f_{\theta}(x_{i}))^{2}\)</span>, 여기서 <span class="math inline">\(f\)</span>가 파라미터 <span class="math inline">\(\theta\)</span>에 의존함을 명시했다. 경사하강법의 아이디어는 매우 단순하다.</p>
+</section>
+<section id="경사하강법-절차-요약" class="level5">
+<h5 class="anchored" data-anchor-id="경사하강법-절차-요약">경사하강법 절차 요약</h5>
+<p>1. <span class="math inline">\(\theta\)</span>의 모든 파라미터에 대해 초기값 <span class="math inline">\(\theta^{0}\)</span>를 정하고, t=0으로 둔다.</p>
+<p>2. 목적함수가 더 이상 감소하지 않을 때까지 반복한다. (a) <span class="math inline">\(\theta\)</span>의 작은 변화 <span class="math inline">\(\delta\)</span>를 찾아 <span class="math inline">\(\theta^{t + 1} = \theta^{t} + \delta\)</span>가 목적함수를 감소시키게 한다. 즉 <span class="math inline">\(R(\theta^{t + 1}) &lt; R(\theta^{t})\)</span>가 되게 한다. (b) <span class="math inline">\(t \leftarrow t + 1\)</span>.</p>
+<p>그림처럼 산악 지형에 서 있다고 상상할 수 있고, 목표는 여러 번의 발걸음을 통해 바닥으로 내려가는 것이다. 각 발걸음이 내려가기만 하면 결국 바닥에 도달한다. 이 경우 우리는 운이 좋았는데, 시작값 <span class="math inline">\(\theta^{0}\)</span>에서 출발해 전역 최소로 끝났기 때문이다. 일반적으로는 (좋은) 국소 최소에 도달하기를 기대한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/mldlintro_deep_double.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="역전파backpropagation" class="level5">
+<h5 class="anchored" data-anchor-id="역전파backpropagation">역전파(Backpropagation)</h5>
+<p>목적함수 를 감소시키는 방향을 어떻게 찾을까? 현재 값 <span class="math inline">\(\theta = \theta^{m}\)</span>에서의 <span class="math inline">\(R(\theta)\)</span>의 기울기는 그 지점에서의 편미분으로 이루어진 벡터다.</p>
+<p><span class="math inline">\(\nabla R(\theta^{m}) = {\frac{\partial R(\theta)}{\partial\theta}|}_{\theta = \theta^{m}}\)</span>. 아래첨자 <span class="math inline">\(\theta = \theta^{m}\)</span>는, 편미분 벡터를 계산한 뒤 현재 추정값 <span class="math inline">\(\theta^{m}\)</span>에서 평가한다는 뜻이다. 이는 <span class="math inline">\(\theta\)</span>-공간에서 <span class="math inline">\(R(\theta)\)</span>가 가장 빠르게 증가하는 방향을 준다. 경사하강법은 <span dir="rtl">”</span>내리막”으로 가고 싶으므로 그 반대 방향으로 조금 이동한다.</p>
+<p><span class="math inline">\(\theta^{m + 1} \leftarrow \theta^{m} - \rho\nabla R(\theta^{m})\)</span>.</p>
+<p>학습률(learning rate) <span class="math inline">\(\rho\)</span>가 충분히 작다면 이 단계는 목적함수 <span class="math inline">\(R(\theta)\)</span>를 감소시킨다. 즉 <span class="math inline">\(R(\theta^{m + 1}) &lt; R(\theta^{m})\)</span>. 만약 기울기 벡터가 0이라면 목적함수의 최소점에 도달했을 수 있다.</p>
+<p>그렇다면 <span class="math inline">\(\nabla R(\theta^{m}) = {\frac{\partial R(\theta)}{\partial\theta}|}_{\theta = \theta^{m}}\)</span> 계산은 얼마나 복잡할까? 여기서는 상당히 단순하고, 더 복잡한 신경망에서도 미분의 연쇄법칙 덕분에 여전히 단순한 형태로 유지된다.</p>
+<p><span class="math inline">\(R(\theta) = \overset{n}{\sum_{i = 1}}R_{i}(\theta),R_{i}(\theta) = \frac{1}{2}(y_{i} - f_{\theta}(x_{i}))^{2}\)</span>는 합 형태이므로, 그 기울기도 n개의 관측치에 대한 합이다. 따라서 여기서는 한 항만 살펴보자.</p>
+<p><span class="math inline">\(R_{i}(\theta) = \frac{1}{2}\left( y_{i} - \beta_{0} - \overset{K}{\sum_{k = 1}}\beta_{k}g\left( w_{k0} + \overset{p}{\sum_{j = 1}}w_{kj}x_{ij} \right) \right)^{2}\)</span>.</p>
+<p>표현을 단순화하기 위해 <span class="math inline">\(z_{ik} = w_{k0} + \overset{p}{\sum_{j = 1}}w_{kj}x_{ij}\)</span>라고 쓰자.</p>
+<p>먼저 <span class="math inline">\(\beta_{k}\)</span>에 대해 미분하면, <span class="math inline">\(\frac{\partial R_{i}(\theta)}{\partial\beta_{k}} = \frac{\partial R_{i}(\theta)}{\partial f_{\theta}(x_{i})} \cdot \frac{\partial f_{\theta}(x_{i})}{\partial\beta_{k}} = - (y_{i} - f_{\theta}(x_{i})) \cdot g(z_{ik}) - (*)\)</span>이다.</p>
+<p>이제 <span class="math inline">\(w_{kj}\)</span>에 대해 미분하면, <span class="math inline">\(\frac{\partial R_{i}(\theta)}{\partial w_{kj}} = \frac{\partial R_{i}(\theta)}{\partial f_{\theta}(x_{i})} \cdot \frac{\partial f_{\theta}(x_{i})}{\partial g(z_{ik})} \cdot \frac{\partial g(z_{ik})}{\partial z_{ik}} \cdot \frac{\partial z_{ik}}{\partial w_{kj}} = - (y_{i} - f_{\theta}(x_{i})) \cdot \beta_{k} \cdot g'(z_{ik}) \cdot x_{ij} - (**)\)</span>.</p>
+<p>두 식 모두 잔차 <span class="math inline">\(y_{i} - f_{\theta}(x_{i})\)</span>를 포함한다는 점에 주목하자. 식(*)에서는 잔차의 일부가 <span class="math inline">\(g(z_{ik})\)</span> 값에 따라 각 은닉 유닛으로 <span dir="rtl">”</span>배분”되는 것으로 볼 수 있고, 비슷하게 식(**)에서는 은닉 유닛 k를 매개로 입력 j로 기여가 배분되는 모습을 볼 수 있다. 즉, 미분은 연쇄법칙을 통해 잔차의 일부를 각 파라미터에 할당하는데, 신경망 문헌에서는 이 과정을 역전파(backpropagation) 라고 부른다.</p>
+</section>
+<section id="정규화와-확률적-경사하강법regularization-and-stochastic-gradient" class="level5">
+<h5 class="anchored" data-anchor-id="정규화와-확률적-경사하강법regularization-and-stochastic-gradient">정규화와 확률적 경사하강법(Regularization and Stochastic Gradient</h5>
+<p>Descent)</p>
+<p><strong>왜 SGD가 필요한가: 큰 n에서의 계산 문제</strong></p>
+<p>신경망 학습은 보통 손실함수(목적함수) <span class="math inline">\(R(\theta)\)</span>를 최소화하는 문제로 정리된다. 예를 들어 회귀에서는 <span class="math inline">\(R(\theta) = \frac{1}{2}\overset{n}{\sum_{i = 1}}(y_{i} - f_{\theta}(x_{i}))^{2}\)</span>, 분류(softmax)에서는 교차엔트로피 형태의 <span class="math inline">\(R(\theta) = - \overset{n}{\sum_{i = 1}}\overset{9}{\sum_{m = 0}}y_{im}\log f_{m}(x_{i})\)</span>를 최소화한다.</p>
+<p><strong>경사하강법(gradient descent)</strong></p>
+<p>경사하강법(gradient descent)은 다음 갱신으로 진행된다.</p>
+<p><span class="math inline">\(\theta^{(t + 1)} = \theta^{(t)} - \rho\nabla R(\theta^{(t)})\)</span>, 여기서 <span class="math inline">\(\rho\)</span>는 학습률(learning rate)이다. 문제는 n이 클 때 <span class="math inline">\(\nabla R(\theta)\)</span> 계산이 매 단계마다 모든 관측치에 대한 합을 요구한다는 점이다.</p>
+<p><span class="math display">\[\nabla R(\theta) = \overset{n}{\sum_{i = 1}}\nabla R_{i}(\theta)\]</span></p>
+<p>따라서 한 번의 업데이트가 매우 비싸고, 수천~수만 번 반복해야 하는 신경망 학습에서는 계산 부담이 커진다. 예를 들면, 단일 관측치 기준 기울기 식 <span class="math inline">\(\frac{\partial R_{i}}{\partial\beta_{k}},\frac{\partial R_{i}}{\partial w_{kj}}\)</span> 같은 항들을 <span class="math inline">\(i = 1,\ldots,n\)</span>에 대해 합쳐야 전체 기울기가 된다.</p>
+<p><strong>확률적 경사하강법(SGD)과 미니배치(minibatch)</strong></p>
+<p>이 계산을 줄이기 위해, 매 반복마다 전체 데이터 대신 일부 표본만 뽑아(샘플링) 기울기를 근사한다. 이를 확률적 경사하강법(Stochastic Gradient Descent, SGD) 이라 한다.</p>
+<p>미니배치 <span class="math inline">\(B_{t} \subset \{ 1,\ldots,n\},|B_{t}| = b\)</span>를 뽑고, 전체 기울기 대신 미니배치 기울기를 사용한다. <span class="math inline">\(\nabla R(\theta) \approx \frac{n}{b}\sum_{i \in B_{t}}\nabla R_{i}(\theta)\)</span></p>
+<p>또는, 평균 손실을 쓰는 구현에서는 <span class="math inline">\(\nabla R(\theta) \approx \frac{1}{b}\sum_{i \in B_{t}}\nabla R_{i}(\theta)\)</span>로 사용한다(스케일은 학습률에 흡수 가능).</p>
+<p>따라서 업데이트는 <span class="math inline">\(\theta^{(t + 1)} = \theta^{(t)} - \rho \cdot \widehat{\nabla R}(\theta^{(t)})\)</span>형태가 된다.</p>
+<p>핵심 장점은 다음과 같다.</p>
+<ul>
+<li>한 번의 업데이트가 빠르다(계산량 <span class="math inline">\(\propto b\)</span>).</li>
+<li>잡음이 섞인 기울기 덕분에 국소 최소/평탄 영역에서 벗어나는 데 도움을 줄 수 있다.</li>
+<li>대규모 데이터에서 사실상 표준 학습 방법이다.</li>
+</ul>
+<p><strong>정규화(Regularization): 과적합을 막는 목적함수 수정</strong></p>
+<p>신경망은 파라미터 수가 매우 많아(예: MNIST 예시에서 20만~수십만 개) 훈련 데이터에 과도하게 맞추기 쉽다. 따라서 목적함수에 벌점항을 추가하거나, 학습 절차 자체에 제약을 걸어 일반화 성능을 확보한다.</p>
+<p>(1) 릿지(가중치 감쇠, weight decay)</p>
+<p>대표적인 정규화는 <span class="math inline">\(\ell_{2}\)</span> 벌점: <span class="math inline">\(R(\theta;\lambda) = R(\theta) + \lambda\sum_{j}\theta_{j}^{2}\)</span>. 분류의 경우 교차엔트로피에 <span class="math inline">\(\lambda\sum_{j}\theta_{j}^{2}\)</span>를 더한다.</p>
+<p><span class="math inline">\(\lambda\)</span>가 클수록 파라미터가 작아지며(노름 축소), 해가 매끄러워져 과적합이 줄어든다. 실무에서는 층별로 <span class="math inline">\(\lambda\)</span>를 다르게 주기도 한다(예: <span class="math inline">\(W_{1}\)</span>, <span class="math inline">\(W_{2}\)</span>에는 적용, 출력층 B에는 미적용 등).</p>
+<p>(2) 조기 종료(Early stopping)</p>
+<p>검증 오차가 더 이상 줄지 않는 시점에서 학습을 중단한다. 결과적으로 <span dir="rtl">”</span>너무 복잡한 해”로 가기 전에 멈추게 되어 정규화 효과를 낸다. SGD 학습 곡선에서 훈련 손실은 계속 감소하지만 검증 손실이 상승하기 시작하면 과적합 신호로 본다.</p>
+</section>
+<section id="드롭아웃-학습dropout-learning" class="level5">
+<h5 class="anchored" data-anchor-id="드롭아웃-학습dropout-learning">드롭아웃 학습(Dropout Learning)</h5>
+<p><strong>정의와 직관</strong></p>
+<p>드롭아웃은 비교적 새롭고 효율적인 정규화 방법으로, 랜덤포레스트의 <span dir="rtl">”</span>랜덤화” 아이디어와 유사한 측면이 있다. 학습 시 각 층의 유닛 중 일부를 무작위로 제거(drop)하여, 특정 유닛들끼리만 맞물려 과도하게 특화(over-specialize)되는 것을 방지한다.</p>
+<p><strong>구현 방식(가장 표준: inverted dropout)</strong></p>
+<p>학습 시 각 유닛(또는 활성값)에 대해 마스크 m을 곱한다. <span class="math inline">\(m \sim Bernoulli(1 - \phi)\)</span>, 여기서 <span class="math inline">\(\phi\)</span>는 드롭아웃 비율(dropout rate), 제거될 확률이고 <span class="math inline">\(1 - \phi\)</span>는 유지 확률(keep probability)이다.</p>
+<p>활성값 a에 대해 <span class="math inline">\(\overset{˜}{a} = \frac{m}{1 - \phi} = a\)</span>로 두면, 기대값이 유지된다.<span class="math inline">\(\mathbb{E}\lbrack\overset{˜}{a}\rbrack = a\)</span></p>
+<p>즉, 학습 중에는 일부 유닛을 0으로 만들되, 남은 유닛을 <span class="math inline">\(\frac{1}{1 - \phi}\)</span>만큼 스케일업하여 평균 규모를 맞춘다. 테스트 시에는 드롭아웃을 적용하지 않고 그대로 사용한다(학습 때 이미 스케일을 반영했기 때문).</p>
+</section>
+<section id="네트워크-튜닝network-tuning" class="level5">
+<h5 class="anchored" data-anchor-id="네트워크-튜닝network-tuning">네트워크 튜닝(Network Tuning)</h5>
+<p>네트워크 튜닝(Network Tuning)은 신경망을 <span dir="rtl">”</span>어떤 구조로 만들고”, <span dir="rtl">”</span>어떤 제약(정규화) 아래에서”, <span dir="rtl">”</span>어떤 방식으로 학습(최적화)할 것인지”를 함께 결정하는 과정이다.</p>
+<p>겉보기에는 몇 개 층을 쌓고 유닛 수를 정하는 단순한 선택처럼 보이지만, 실제 성능은 이 선택들의 조합에 의해 크게 달라진다. 결국 튜닝의 본질은 표현력(복잡도) 을 충분히 확보하면서도, 학습이 불안정해지거나 과적합으로 무너지는 것을 막아 일반화 성능을 최대화하는 균형 문제라고 볼 수 있다.</p>
+<p>첫째, 구조(architecture)는 신경망이 어떤 형태의 함수를 표현할 수 있는지를 결정한다. 은닉층의 수(depth)는 층을 거치며 특징이 단계적으로 변환되는 정도를 좌우하며, 복잡한 계층적 패턴(예: 이미지, 언어, 비선형 상호작용)을 포착하는 데 유리하다.</p>
+<p>반면 층별 유닛 수(width)는 각 층에서 동시에 표현할 수 있는 특징의 <span dir="rtl">”</span>용량(capacity)“을 크게 만든다. 전통적으로는 깊이나 폭을 과도하게 키우면 과적합이 심해진다고 보았지만, 현대 딥러닝에서는 폭/깊이를 비교적 크게 잡더라도 드롭아웃, 가중치 감쇠, 조기 종료, 데이터 증강과 같은 장치를 함께 쓰면 과적합을 충분히 제어할 수 있다는 관점이 널리 받아들여진다.</p>
+<p>따라서 구조 설계는 단독으로 결정되기보다, 뒤에서 설명할 정규화와 최적화 설정과 함께 조합으로 판단하는 것이 현실적이다.</p>
+<p>둘째, 정규화 하이퍼파라미터는 모델이 훈련 데이터를 <span dir="rtl">”</span>너무 정확히” 외우지 않도록 제약을 걸어 일반화 성능을 지키는 역할을 한다. 대표적으로 드롭아웃 비율 <span class="math inline">\(\phi\)</span>는 학습 과정에서 일부 유닛을 확률적으로 비활성화하여 특정 유닛들 사이의 공적응(co-adaptation)을 억제하고, 과도한 특화(over-specialization)를 막는다.</p>
+<p>릿지(가중치 감쇠) 강도 <span class="math inline">\(\lambda\)</span>는 파라미터 노름을 줄이는 방향으로 학습을 유도하여 함수를 더 매끄럽게 만들고, 잡음에 민감한 해를 피하게 한다. 필요에 따라 라쏘와 같은 다른 벌점을 고려할 수도 있다. 실무에서는 층마다 역할과 파라미터 규모가 다르므로, 동일한 <span class="math inline">\(\phi\)</span>나 <span class="math inline">\(\lambda\)</span>를 전 층에 일괄 적용하기보다 층별로 다르게 설정하는 경우도 흔하다(예: 초기 층은 약하게, 후반 층은 강하게 등).</p>
+</section>
+</section>
+<section id="보간interpolation과-이중-하강double-descent" class="level4">
+<h4 class="anchored" data-anchor-id="보간interpolation과-이중-하강double-descent">7. 보간(Interpolation)과 이중 하강(Double Descent)</h4>
+<section id="설정-학습테스트-오차와-보간의-의미" class="level5">
+<h5 class="anchored" data-anchor-id="설정-학습테스트-오차와-보간의-의미">설정: 학습·테스트 오차와 보간의 의미</h5>
+<p>데이터 <span class="math inline">\(\{(x_{i},y_{i})\}_{i = 1}^{n}\)</span>가 있고, 어떤 함수족(모형) <span class="math inline">\(\mathcal{F}_{d}\)</span>를 복잡도(예: 자유도) d로 매개변수화한다고 하자. 적합된 예측함수를 <span class="math inline">\({\widehat{f}}_{d}\)</span>라 하면,</p>
+<p>훈련 오차(Training error): <span class="math inline">\({Err}_{train}(d) = \frac{1}{n}\overset{n}{\sum_{i = 1}}(y_{i} - {\widehat{f}}_{d}(x_{i}))^{2}\)</span></p>
+<p>테스트 오차(Test error): <span class="math inline">\({Err}_{test}(d) = \mathbb{E}_{(X,Y) \sim P}\lbrack(Y - {\widehat{f}}_{d}(X))^{2}\rbrack\)</span> (실제론 유한한 테스트셋 평균으로 근사한다)</p>
+<p>보간(interpolation) 이란 <span class="math inline">\({\widehat{f}}_{d}(x_{i}) = y_{i}(i = 1,\ldots,n)\)</span>. 즉, <span class="math inline">\({Err}_{train}(d) = 0\)</span>이 되는 상태를 말한다.</p>
+</section>
+<section id="편향분산-절충의-전형적-그림" class="level5">
+<h5 class="anchored" data-anchor-id="편향분산-절충의-전형적-그림">편향–분산 절충의 <span dir="rtl">”</span>전형적” 그림</h5>
+<p>모형의 유연성이 증가하면 보통 훈련오차는 감소한다.</p>
+<p><span class="math display">\[{Err}_{train}(d) \downarrow \text{as}d \uparrow\]</span></p>
+<p>반면, 테스트 오차는 대체로 U자 형태를 보인다(전형적 기대).</p>
+<p><span class="math display">\[{Err}_{test}(d) \approx \text{U-shape}\]</span></p>
+<p>이 관점에서 <span dir="rtl">”</span>훈련 오차 0(보간)“을 무리하게 달성하면 분산이 커져 테스트 오차가 증가하기 쉽다.</p>
+</section>
+<section id="자연-스플라인-예-보간-임계점-dn" class="level5">
+<h5 class="anchored" data-anchor-id="자연-스플라인-예-보간-임계점-dn">자연 스플라인 예: 보간 임계점 d=n</h5>
+<p>자연 스플라인을 d개의 기저함수로 표현하면 <span class="math inline">\(f_{d}(x) = \overset{d}{\sum_{j = 1}}\beta_{j}b_{j}(x)\)</span>이고, 설계행렬(design matrix) <span class="math inline">\(B \in \mathbb{R}^{n \times d}\)</span>를 <span class="math inline">\(B_{ij} = b_{j}(x_{i})\)</span>로 두면, 최소제곱은 <span class="math inline">\(\widehat{\beta} = \arg\min_{\beta \in \mathbb{R}^{d}} \parallel y - B\beta \parallel_{2}^{2}\)</span>이다.</p>
+<ul>
+<li><span class="math inline">\(d &lt; n\)</span>: 보통 <span class="math inline">\(rank(B) = d\)</span>이면 해가 유일하며, 일반적으로 <span class="math inline">\({Err}_{train}(d) &gt; 0\)</span>.</li>
+<li><span class="math inline">\(d = n\)</span>: 일반 위치에서는 B가 가역(또는 full rank)인 경우가 많아, <span class="math inline">\(B\widehat{\beta} = y \Rightarrow {Err}_{train}(d) = 0\)</span>. 즉, 보간이 <span dir="rtl">”</span>딱 가능해지는” 임계점이 된다. 이를 보간 임계점(interpolation threshold) 이라 부르며, 이 예에서 d=n이 바로 그 지점이다.</li>
+<li><span class="math inline">\(d &gt; n\)</span>: 미지수 d가 방정식 n개보다 많아 해가 비유일. 보간해가 무한히 많다.</li>
+</ul>
+</section>
+<section id="과매개변수화-영역-dn과-최소-노름-해minimum-norm-solution" class="level5">
+<h5 class="anchored" data-anchor-id="과매개변수화-영역-dn과-최소-노름-해minimum-norm-solution">과매개변수화 영역 d&gt;n과 최소-노름 해(minimum-norm solution)</h5>
+<p>d&gt;n이고 B가 행랭크 <span class="math inline">\(rank(B) = n\)</span>이면(즉, 모든 훈련점을 보간할 수 있으면), 보간 조건은 <span class="math inline">\(B\beta = y\)</span>를 만족하는 해들로 이루어진 아핀 공간(무한히 많음)이다. 이때 대표적으로 선택되는 해가 최소-노름 해이다.</p>
+<p><strong>정의(최소-노름 보간해)</strong></p>
+<p><span class="math inline">\({\widehat{\beta}}_{\min} = \arg\min_{\beta \in \mathbb{R}^{d}} \parallel \beta \parallel_{2}\text{s.t.}B\beta = y\)</span>. 이는 <span dir="rtl">”</span>훈련 데이터를 맞추는 해들 중에서 계수의 <span class="math inline">\(\ell_{2}\)</span> 노름이 가장 작은 해”로, 많은 경우 더 매끄러운(smooth) 적합을 유도하여 분산을 줄인다.</p>
+<p><strong>닫힌형(행랭크 n 가정)</strong></p>
+<p>이 해는 무어-펜로즈 의사역행렬(pseudoinverse)로 <span class="math inline">\({\widehat{\beta}}_{\min} = B^{\top}(BB^{\top})^{- 1}y\)</span>로 쓸 수 있다. (이는 <span class="math inline">\(B^{+}y\)</span>와 동일)</p>
+<p>이중 하강의 정식 설명: 보간 임계점 근처 폭발 + 이후 재하강</p>
+<p>이제 d를 증가시키며 <span class="math inline">\({\widehat{f}}_{d}\)</span>를 적합할 때 관찰되는 전형적 패턴은 다음과 같다.</p>
+<p>1. <span class="math inline">\(d &lt; n\)</span>: 기존의 편향–분산 절충처럼 <span class="math inline">\({Err}_{test}(d)\)</span>가 감소했다가 U자형 증가</p>
+<p>2. <span class="math inline">\(d \approx n\)</span>(보간 임계점): 해가 <span dir="rtl">”</span>하나로 결정되는” 경계에서 적합이 불안정해져 테스트 오차가 크게 튈 수 있음.</p>
+<p>3. <span class="math inline">\(d &gt; n\)</span>: 보간해가 무한히 많아지며, 알고리즘이 그중 최소-노름/매끄러운 해를 선택할 경우 <span class="math inline">\({Err}_{test}(d)\)</span>가 다시 감소하는 구간이 나타날 수 있다(두 번째 하강).</p>
+<p>즉, 훈련오차는 <span class="math inline">\(d \geq n\)</span>에서 0으로 고정될 수 있지만, <span class="math inline">\({Err}_{train}(d) = 0(d \geq n)\)</span> 테스트 오차는 d=n 근처에서 크게 악화되었다가 d&gt;n에서 다시 좋아질 수 있다.</p>
+</section>
+<section id="편향분산-절충과-훈련오차-0의-일반적-위험" class="level5">
+<h5 class="anchored" data-anchor-id="편향분산-절충과-훈련오차-0의-일반적-위험">편향–분산 절충과 <span dir="rtl">”</span>훈련오차 0”의 일반적 위험</h5>
+<p>편향–분산 절충은 모형 복잡도가 증가할 때 일반화 성능이 어떻게 변하는지를 설명하는 기본 원리이다. 보통 모형이 단순하면 편향이 커서 언더피팅이 발생하고, 반대로 모형이 너무 복잡하면 분산이 커져 오버피팅이 발생한다.</p>
+<p>따라서 테스트 오차는 대체로 중간 복잡도에서 최소가 되는 경향이 있다. 이를 직관적으로 나타내기 위해 x축에 모형의 <span dir="rtl">”</span>유연성(flexibility)“을, y축에 오차를 두고 그리면 훈련 오차(training error)는 복잡도 증가에 따라 대개 단조 감소하고, 테스트 오차(test error) 는 흔히 U자 형태를 보인다.</p>
+<p>이 관점에서 중요한 함의는 다음과 같다. 많은 상황에서 훈련 데이터를 완벽히 맞추어(훈련 오차 0) 즉 <span dir="rtl">”</span>보간(interpolation)“을 달성하는 것은 테스트 오차를 크게 악화시킬 수 있으므로 일반적으로 바람직하지 않다.</p>
+</section>
+<section id="그런데-왜-보간이-때때로-잘-작동하는가-이중-하강" class="level5">
+<h5 class="anchored" data-anchor-id="그런데-왜-보간이-때때로-잘-작동하는가-이중-하강">그런데 왜 <span dir="rtl">”</span>보간”이 때때로 잘 작동하는가? — 이중 하강</h5>
+<p>흥미롭게도 특정한 설정에서는 훈련 데이터를 보간하는 방법이 오히려 잘 작동할 수 있고, 때로는 보간하지 않는 약간 덜 복잡한 모형보다 더 낮은 테스트 오차를 보이기도 한다. 이 현상이 바로 이중 하강(double descent) 이다.</p>
+<p>이중 하강의 핵심 형태는 다음과 같다.</p>
+<p>1. 보간 임계점(interpolation threshold) 이전: 기존의 편향–분산 관점처럼 테스트 오차가 U자 형태를 보인다.</p>
+<p>2. 보간 임계점 근처: 훈련 오차가 0에 도달하는 지점에서 테스트 오차가 급격히 커질 수 있다(불안정/요동).</p>
+<p>3. 보간 임계점 이후(과매개변수화 영역): 모형이 더 복잡해져도 테스트 오차가 다시 감소하는 구간이 나타날 수 있다. 이것이 <span dir="rtl">”</span>두 번째 하강”이며, 이 때문에 double descent라는 이름이 붙었다.</p>
+<p>여기서 보간 임계점은 흔히 <span dir="rtl">”</span>모형이 훈련 데이터를 정확히 통과할 수 있게 되는 복잡도 수준”을 의미한다(예: 스플라인에서 d=n, 또는 신경망에서 파라미터 수가 매우 큰 경우 등).</p>
+</section>
+<section id="이중-하강은-편향분산-절충과-모순인가" class="level5">
+<h5 class="anchored" data-anchor-id="이중-하강은-편향분산-절충과-모순인가">이중 하강은 편향–분산 절충과 모순인가?</h5>
+<p>이중 하강은 편향–분산 절충을 <span dir="rtl">”</span>부정”하는 현상이 아니다. 오히려 많은 경우, 우리가 x축으로 사용하는 복잡도 지표(예: 스플라인의 자유도/기저함수 수, 파라미터 수) 가 실제 <span dir="rtl">”</span>유연성”을 완전히 대변하지 못하기 때문에 이런 모양이 나타난다.</p>
+<p>특히 보간 임계점 이후에는 해가 비유일해지고(해가 여러 개 존재), 학습 알고리즘은 그중 특정한 해를 선택한다. 예를 들어 선형 최소제곱의 과매개변수화 영역에서는 최소-노름 해(minimum-norm solution) 같은 <span dir="rtl">”</span>매끄러운(smooth)” 해가 선택될 수 있으며, 이런 선택 규칙이 결과적으로 분산을 줄여 테스트 성능을 개선하는 역할을 하기도 한다. 즉, <span dir="rtl">”</span>복잡도(파라미터 수)는 커졌지만”, <span dir="rtl">”</span>알고리즘이 선택하는 해는 더 매끄럽고(효과적으로 덜 흔들리고)” <span dir="rtl">”</span>따라서 테스트 오차가 다시 내려갈 수 있다”라는 구조로 이해하는 것이 자연스럽다.</p>
+</section>
+<section id="왜-대부분의-전통적-방법에서는-잘-안-보이나" class="level5">
+<h5 class="anchored" data-anchor-id="왜-대부분의-전통적-방법에서는-잘-안-보이나">왜 대부분의 전통적 방법에서는 잘 안 보이나?</h5>
+<p>통계적 학습 방법들은 이중 하강을 뚜렷하게 보이지 않는다. 대표적으로 정규화(regularization) 를 쓰면 보통 훈련 데이터를 완전히 보간하지 않으며, 따라서 보간 임계점 주변의 <span dir="rtl">”</span>폭발 구간” 자체가 약해지거나 사라진다. 이는 정규화의 단점이 아니라, 데이터를 보간하지 않고도 일반화 성능을 확보하는 안정적인 전략이기 때문이다.</p>
+</section>
+<section id="svm최대마진과의-연결-매끄러운-해-선택" class="level5">
+<h5 class="anchored" data-anchor-id="svm최대마진과의-연결-매끄러운-해-선택">SVM/최대마진과의 연결: <span dir="rtl">”</span>매끄러운 해” 선택</h5>
+<p>최대 마진 분류기(maximal margin classifier) 및 훈련 오차가 0인 SVM이 종종 매우 좋은 테스트 성능을 보이는 것은, 이들이 단순히 <span dir="rtl">”</span>훈련을 다 맞추는 것”이 아니라 그중에서도 마진을 최대화하는 해(매끄러운 해, 최소-노름 해와 유사한 성질) 를 선택하기 때문이다.</p>
+<p>이는 보간이 가능해도 <span dir="rtl">”</span>아무 보간 해나” 쓰는 것이 아니라, 특정 기준(마진/노름 최소/매끄러움) 으로 선택된 보간 해가 일반화를 잘할 수 있음을 시사한다.</p>
+</section>
+<section id="딥러닝과의-연결-과매개변수화-sgd의-암묵적-편향" class="level5">
+<h5 class="anchored" data-anchor-id="딥러닝과의-연결-과매개변수화-sgd의-암묵적-편향">딥러닝과의 연결: 과매개변수화, SGD의 암묵적 편향</h5>
+<p>머신러닝 커뮤니티에서는 이중 하강을, 과매개변수화(over-parameterized) 된 신경망(층/유닛/파라미터가 매우 큼)이 훈련 오차를 0까지 낮추면서도 실무에서 좋은 성능을 내는 현상을 설명하는 하나의 관점으로 활용해 왔다. 다만 다음 점이 중요하다.</p>
+<ul>
+<li>훈련 오차를 0으로 만드는 것이 항상 최적은 아니다.</li>
+<li>보간이 유리할지 여부는 신호-대-잡음비(SNR) 에 크게 좌우된다.</li>
+<li>실제 딥러닝에서는 정규화(가중치 감쇠/드롭아웃), 조기 종료(early stopping) 등이 보간을 억제하거나 완화하여 더 안정적인 일반화를 유도한다.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

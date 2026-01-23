@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -204,6 +233,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">📄 딥러닝이란?</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_intro/mldl_deep_concepts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 딥러닝방법론 기초</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -259,8 +294,14 @@ ul.task-list li input[type="checkbox"] {
 <p>[머신·딥러닝 개념] 불확실성</p>
 <p>같은 예측값이라도 그 예측이 얼마나 믿을 만한지(불확실성)는 별도의 문제다. 데이터 잡음(aleatoric)과 모형 불확실성(epistemic)을 구분하고, 예측구간/신뢰구간, 부트스트랩, 앙상블, 분위수 회귀 등 대표 접근을 소개한다.</p>
 <p>⸻</p>
-<p>[머신·딥러닝 개념] 딥러닝</p>
+<p>[머신·딥러닝 예측방법] MLDL 방법론 소개</p>
+<p>AI·ML 방법론은 “데이터 → 모형 → 평가 → 개선”의 반복 과정으로 성능을 높인다. 문제 정의(목표/지표), 데이터 분할, 파이프라인 구성, 하이퍼파라미터 튜닝의 전체 흐름을 개관한다. 또한 예측 중심 접근이 통계적 추론과 어떻게 연결되는지 큰 그림을 제시한다.</p>
+<p>⸻</p>
+<p>[머신·딥러닝 개념] 딥러닝이란?</p>
 <p>딥러닝은 다층 신경망을 사용해 복잡한 비선형 패턴을 학습하는 방법이다. 층(layer), 활성화함수, 손실함수, 역전파와 경사하강법을 통해 학습이 이루어진다. 정규화(드롭아웃, 배치정규화), 초기화, 학습률 스케줄링 등 실무적 안정화 기법도 함께 다룬다.</p>
+<p>⸻</p>
+<p>[머신·딥러닝 개념] 딥러닝방법론 기초</p>
+<p>딥러닝은 다층 신경망을 사용해 입력 X로부터 출력 Y를 예측하는 함수 <span class="math inline">\(f_\theta(X)\)</span> 를 학습하는 방법이다. 층(layer)을 쌓아 특징을 단계적으로 변환하고, 활성화함수로 비선형성을 도입해 복잡한 패턴을 표현한다. 학습은 손실함수(회귀: MSE, 분류: cross-entropy)를 최소화하도록 역전파(backpropagation)로 기울기를 계산하고, 경사하강법/확률적 경사하강법(SGD)으로 파라미터를 갱신하는 과정으로 이루어진다. 실무에서는 과적합과 학습 불안정을 줄이기 위해 정규화(드롭아웃, 가중치 감쇠), 정규화·안정화 기법(배치정규화), 초기화, 학습률 스케줄링, 조기 종료 등의 설정을 함께 조정한다.</p>
 
 
 </section>
