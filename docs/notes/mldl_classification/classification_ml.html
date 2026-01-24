@@ -242,9 +242,9 @@ window.Quarto = {
   <li><a href="#전통적-분류방법과-차이" id="toc-전통적-분류방법과-차이" class="nav-link" data-scroll-target="#전통적-분류방법과-차이">1. 전통적 분류방법과 차이</a></li>
   <li><a href="#규칙-기반k-nn" id="toc-규칙-기반k-nn" class="nav-link" data-scroll-target="#규칙-기반k-nn">2. 규칙 기반(k-NN)</a></li>
   <li><a href="#마진-기반svm" id="toc-마진-기반svm" class="nav-link" data-scroll-target="#마진-기반svm">3. 마진 기반(SVM)</a></li>
-  <li><a href="#분할-기반tree-분류-예측모형-강의노트-참고" id="toc-분할-기반tree-분류-예측모형-강의노트-참고" class="nav-link" data-scroll-target="#분할-기반tree-분류-예측모형-강의노트-참고">4. 분할 기반(Tree) 분류 [예측모형 강의노트 참고]</a></li>
-  <li><a href="#결합-기반ensemble-분류-예측모형-강의노트-참고" id="toc-결합-기반ensemble-분류-예측모형-강의노트-참고" class="nav-link" data-scroll-target="#결합-기반ensemble-분류-예측모형-강의노트-참고">5. 결합 기반(Ensemble) 분류 [예측모형 강의노트 참고]</a></li>
-  <li><a href="#사례분석이진분류" id="toc-사례분석이진분류" class="nav-link" data-scroll-target="#사례분석이진분류">5. 사례분석(이진분류)</a></li>
+  <li><a href="#분할-기반tree-분류-상세-내용-예측모형-강의노트-참고" id="toc-분할-기반tree-분류-상세-내용-예측모형-강의노트-참고" class="nav-link" data-scroll-target="#분할-기반tree-분류-상세-내용-예측모형-강의노트-참고">4. 분할 기반(Tree) 분류 — 상세 내용: 예측모형 강의노트 참고</a></li>
+  <li><a href="#결합-기반ensemble-분류-상세-내용-예측모형-강의노트-참고" id="toc-결합-기반ensemble-분류-상세-내용-예측모형-강의노트-참고" class="nav-link" data-scroll-target="#결합-기반ensemble-분류-상세-내용-예측모형-강의노트-참고">5. 결합 기반(Ensemble) 분류 — 상세 내용: 예측모형 강의노트 참고</a></li>
+  <li><a href="#사례분석이진분류" id="toc-사례분석이진분류" class="nav-link" data-scroll-target="#사례분석이진분류">6. 사례분석(이진분류)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -637,8 +637,8 @@ x_{np}
 <p>로지스틱 회귀나 이 책에서 다룬 다른 분류 방법들에도 비선형 커널을 적용해 특성공간을 확장하는 것을 충분히 할 수 있으며, 이는 비선형 방법들과 밀접한 관련이 있다. 다만 역사적 이유로, 비선형 커널은 로지스틱 회귀나 다른 방법들보다 SVM 맥락에서 훨씬 더 널리 사용되어 왔다.</p>
 </section>
 </section>
-<section id="분할-기반tree-분류-예측모형-강의노트-참고" class="level4">
-<h4 class="anchored" data-anchor-id="분할-기반tree-분류-예측모형-강의노트-참고">4. 분할 기반(Tree) 분류 [예측모형 강의노트 참고]</h4>
+<section id="분할-기반tree-분류-상세-내용-예측모형-강의노트-참고" class="level4">
+<h4 class="anchored" data-anchor-id="분할-기반tree-분류-상세-내용-예측모형-강의노트-참고">4. 분할 기반(Tree) 분류 — <a href="../../notes/mldl_prediction/prediction_treebase.html">상세 내용: 예측모형 강의노트 참고</a></h4>
 <p>분할 기반 분류모형(분류나무, Classification Tree)은 입력공간을 여러 개의 영역으로 나누고, 각 영역에서 가장 우세한 클래스를 예측하는 방식이다. 핵심 아이디어는 <span dir="rtl">”</span>어떤 변수의 임계값(또는 범주)으로 데이터를 반복적으로 쪼개면, 클래스가 비교적 균질한 구간을 만들 수 있다”는 것이다. 즉, 트리는 선형 결합으로 하나의 경계를 만드는 대신, 규칙의 조합으로 비선형·상호작용 구조를 자연스럽게 포착한다.</p>
 <p>방법론적으로는 예측(회귀)나무와 동일한 절차를 따르되, 분할 기준만 <span dir="rtl">”</span>연속형 오차(MSE)“가 아니라 <span dir="rtl">”</span>분류 순도”를 개선하는 방향으로 바뀐다. 대표적으로 노드 t에서 클래스 비율을 <span class="math inline">\(p_{k}(t)\)</span>라 할 때,</p>
 <p><strong>지니 불순도(Gini)</strong>: <span class="math inline">\(G(t) = \overset{K}{\sum_{k = 1}}p_{k}(t)(1 - p_{k}(t)) = 1 - \overset{K}{\sum_{k = 1}}p_{k}(t)^{2}\)</span></p>
@@ -647,8 +647,8 @@ x_{np}
 <p>최종 예측은 새 관측치 x가 도달한 말단노드(leaf)에서의 다수결(또는 클래스 확률 <span class="math inline">\({\widehat{p}}_{k}\)</span>)로 결정된다. 과적합을 막기 위해 최대 깊이 제한, 최소 노드 크기, 비용-복잡도 가지치기(pruning) 등의 규제는 회귀나무와 동일한 논리로 적용된다.</p>
 <p>정리하면, 분할 기반(Tree) 분류는 예측모형(트리 기반 예측)에서 다룬 트리 방법론과 구조·학습 절차는 동일하며, 손실/분할 기준만 분류용 불순도 척도로 바뀐다는 점만 강조하면 된다.</p>
 </section>
-<section id="결합-기반ensemble-분류-예측모형-강의노트-참고" class="level4">
-<h4 class="anchored" data-anchor-id="결합-기반ensemble-분류-예측모형-강의노트-참고">5. 결합 기반(Ensemble) 분류 [예측모형 강의노트 참고]</h4>
+<section id="결합-기반ensemble-분류-상세-내용-예측모형-강의노트-참고" class="level4">
+<h4 class="anchored" data-anchor-id="결합-기반ensemble-분류-상세-내용-예측모형-강의노트-참고">5. 결합 기반(Ensemble) 분류 — <a href="../../notes/mldl_prediction/prediction_treebase.html">상세 내용: 예측모형 강의노트 참고</a></h4>
 <p>결합 기반 분류모형(앙상블, Ensemble)은 단일 분류나무(또는 약한 학습기)의 불안정성(분산 큼)과 한계를 보완하기 위해, 여러 개의 모형을 학습한 뒤 결합하여 예측 성능과 안정성을 높이는 방법이다. 기본 철학은 <span dir="rtl">”</span>여러 개의 다소 불완전한 분류기를 적절히 합치면, 단일 모델보다 일반화 성능이 좋아진다”는 것이다.</p>
 <p>예측(회귀)에서의 앙상블과 동일하게, 분류에서도 대표적으로 다음 두 흐름이 핵심이다.</p>
 <section id="배깅랜덤포레스트baggingrandom-forest" class="level5">
@@ -663,7 +663,7 @@ x_{np}
 </section>
 </section>
 <section id="사례분석이진분류" class="level4">
-<h4 class="anchored" data-anchor-id="사례분석이진분류">5. 사례분석(이진분류)</h4>
+<h4 class="anchored" data-anchor-id="사례분석이진분류">6. 사례분석(이진분류)</h4>
 <section id="데이터" class="level5">
 <h5 class="anchored" data-anchor-id="데이터">(1) 데이터</h5>
 </section>
