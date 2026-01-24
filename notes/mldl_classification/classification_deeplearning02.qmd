@@ -1,10 +1,11 @@
-Chapter 2. 딥러닝 분류
+---
+title: "MLDL 딥러닝 분류 - 파트2"
+format: html
+---
 
-권세혁교수 통계 사전 【딥러닝 분류②】
+### Chapter 2. 딥러닝 분류 (파트2)
 
-s[[https://sites.google.com/view/wolfpack61]{.underline}](https://sites.google.com/view/wolfpack61)
-
-1\. 과신(Overconfidence)과 일반화 개선
+#### 1\. 과신(Overconfidence)과 일반화 개선
 
 딥러닝 분류 모델은 종종 ["]{dir="rtl"}정확도는 괜찮은데 확률이 지나치게
 확신적"인 출력을 만든다. 예를 들어 틀린 예측인데도 p=0.99처럼 매우 높은
@@ -14,12 +15,12 @@ s[[https://sites.google.com/view/wolfpack61]{.underline}](https://sites.google.c
 크게 왜곡시킨다. 따라서 분류 모델의 품질은 정답률뿐 아니라 확률의
 신뢰도까지 함께 점검해야 한다.
 
-딥러닝 확률의 과신 원인(softmax, 데이터 편향, OOD 등)
+##### \(1) 딥러닝 확률의 과신 원인(softmax, 데이터 편향, OOD 등)
 
 과신은 단일 원인이라기보다 ["]{dir="rtl"}확률 출력이 만들어지는 구조 +
 데이터/학습 환경"이 결합된 결과로 보는 것이 정확하다.
 
-Softmax 구조 자체가 만드는 경쟁과 ["]{dir="rtl"}확신"
+**Softmax 구조 자체가 만드는 경쟁과 ["]{dir="rtl"}확신"**
 
 다중분류에서
 $p_{k} = \frac{e^{z_{k}}}{\sum_{j = 1}^{K}e^{z_{j}}}$이므로, 로짓 차이
@@ -32,14 +33,14 @@ $\mathcal{L} = - \log p_{y}$이다. 이 손실은 $p_{y} \rightarrow 1$로
 밀어붙이는 성격이 있어(특히 데이터가 쉽게 분리되거나 모델이 과대용량일
 때) 과신이 강화될 수 있다.
 
-데이터 편향과 라벨 노이즈
+**데이터 편향과 라벨 노이즈**
 
 훈련 데이터가 현실 운영 분포를 충분히 대표하지 못하면(표본 편향), 모델은
 ["]{dir="rtl"}보지 못한 경우"를 만나도 여전히 높은 확률을 낼 수 있다.
 라벨 노이즈가 존재해도 cross-entropy는 틀린 라벨을 맞추려는 방향으로
 강하게 학습되므로, 일부 영역에서 불필요한 확신이 쌓일 수 있다.
 
-OOD(Out-of-Distribution) 입력
+**OOD(Out-of-Distribution) 입력**
 
 훈련 분포 밖 입력 $x \sim P_{\text{OOD}}$에 대해서도 softmax는 어떤
 클래스로든 확률을 ["]{dir="rtl"}합이 1이 되게" 배분해야 한다. 이 때문에
@@ -47,12 +48,12 @@ OOD(Out-of-Distribution) 입력
 흔하다. 즉 OOD에서의 과신은 softmax 기반 분류기의 구조적 취약점으로 자주
 지적된다.
 
-Calibration curve / ECE / Brier score
+##### \(2) Calibration curve / ECE / Brier score
 
 확률의 신뢰도를 평가하는 핵심은 다음 질문이다. ["]{dir="rtl"}모델이
 0.8이라고 말한 사례들은 실제로 약 80%가 맞는가?"
 
-Calibration curve (Reliability diagram)
+**Calibration curve (Reliability diagram)**
 
 확률 예측 ${\widehat{p}}_{i}$를 구간(bin)으로 나눈 뒤, 각 구간에서 평균
 예측 확률은 $conf(b)$. 실제 정확도(양성 비율 또는 정답률) $acc(b)$를
@@ -63,7 +64,7 @@ $acc(b) = \frac{1}{|B_{b}|}\sum_{i \in B_{b}}y_{i},conf(b) = \frac{1}{|B_{b}|}\s
 
 완전 보정이면 $acc(b) \approx conf(b)$가 되어 대각선에 놓인다.
 
-ECE (Expected Calibration Error)
+**ECE (Expected Calibration Error)**
 
 ECE는 구간별 차이의 가중 평균이다.
 $ECE = \overset{B}{\sum_{b = 1}}\frac{|B_{b}|}{n}|acc(b) - conf(b)|$
@@ -71,7 +72,7 @@ $ECE = \overset{B}{\sum_{b = 1}}\frac{|B_{b}|}{n}|acc(b) - conf(b)|$
 작을수록 보정이 잘 되고 구간 개수 B 및 binning 방식에 민감할 수
 있다(평가 세팅 명시 필요).
 
-Brier score
+**Brier score**
 
 Brier score는 ["]{dir="rtl"}확률 예측의 제곱오차"로, calibration과
 sharpness(확률의 분별력)를 함께 반영한다.
@@ -82,33 +83,32 @@ $BS = \frac{1}{n}\overset{n}{\sum_{i = 1}}({\widehat{p}}_{i} - y_{i})^{2}$,
 $BS = \frac{1}{n}\overset{n}{\sum_{i = 1}}\overset{K}{\sum_{k = 1}}(p_{ik} - y_{ik})^{2}$
 작을수록 좋다.
 
-보정 방법: Temperature scaling / Platt / Isotonic
+##### \(3) 보정 방법: Temperature scaling / Platt / Isotonic
 
 보정(calibration)은 보통 ["]{dir="rtl"}모델을 다시 학습"하기보다, 학습된
 모델의 출력 점수(logit 또는 score)를 사후 변환하는 방식이 실무적으로
 안정적이다. 핵심은 ["]{dir="rtl"}검증셋(또는 별도 calibration set)"을
 사용해 변환 파라미터를 추정하는 것이다.
 
-Temperature scaling (softmax logits 보정)
+**Temperature scaling (softmax logits 보정)**
 
 다중분류에서 로짓 $\mathbf{z}$에 대해
 $\mathbf{p}^{(T)} = softmax\left( \frac{\mathbf{z}}{T} \right),T > 0$
 
-T\>1: 로짓을 나눠 softmax를 ["]{dir="rtl"}평평하게" 만들어 과신을 완화
-
-T\<1: 더 뾰족하게(과소신 보정일 때)
+- T\>1: 로짓을 나눠 softmax를 ["]{dir="rtl"}평평하게" 만들어 과신을 완화
+- T\<1: 더 뾰족하게(과소신 보정일 때)
 
 T는 보통 calibration set에서 NLL을 최소화하도록 하나의 스칼라로
 추정한다. 장점은 순위(Top-1 클래스)는 거의 유지되며, 확률만 부드럽게
 조정되어 운영 임계값 설계가 쉬워진다는 점이다.
 
-Platt scaling (주로 이진분류, score → sigmoid)
+**Platt scaling (주로 이진분류, score → sigmoid)**
 
 SVM 등에서 유래했으며, 어떤 점수 s(x)에 대해
 $\widehat{p}(x) = \sigma(as(x) + b)$ 형태로 a, b를 calibration set에서
 추정한다. 딥러닝에서도 로짓 z에 적용 가능하다.
 
-Isotonic regression (비모수 단조 보정)
+**Isotonic regression (비모수 단조 보정)**
 
 확률을 단조 함수 $g( \cdot )$로 보정한다. $\widehat{p}(x) = g(s(x))$.
 장점은 형태 가정이 약해 유연하다는 것이고 단점은 데이터가 적으면 과적합
@@ -117,58 +117,55 @@ Isotonic regression (비모수 단조 보정)
 실무적으로는 데이터가 충분하면 isotonic, 그렇지 않으
 temperature/Platt처럼 파라미터 수가 적은 방법이 안전한 편이다.
 
-일반화 개선 연결: 증강·전이학습·정규화가 과신에 미치는 영향
+##### \(4) 일반화 개선 연결: 증강·전이학습·정규화가 과신에 미치는 영향
 
 과신은 ["]{dir="rtl"}확률 출력부" 문제처럼 보이지만, 실제로는 일반화와
 깊게 연결된다. 일반화가 좋아지면 보통 과신도 함께 완화되지만, 항상
 자동으로 해결되지는 않기 때문에 ["]{dir="rtl"}학습 개선 + 사후 보정"을
 함께 고려한다.
 
-데이터 증강(augmentation)
+**데이터 증강(augmentation)**
 
 증강은 입력 변형을 통해 모델이 더 넓은 데이터 다양성을 보게 만들어, 특정
 패턴에 대한 과도한 확신을 줄이는 경향이 있다. 특히 강한 증강은
 결정경계를 부드럽게 만들어 calibration이 개선되는 경우가 많다(다만
 과도하면 정확도 자체가 손해 볼 수 있어 균형이 필요).
 
-전이학습(transfer learning)
+**전이학습(transfer learning)**
 
 사전학습된 표현을 사용하면 적은 데이터에서도 과적합이 줄고, 결과적으로
 과신이 완화될 수 있다. 반대로 도메인 차이가 큰데 억지로 가져오면 OOD에서
 과신이 더 심해질 수도 있으므로, 도메인 적합성이 중요하다.
 
-정규화(regularization): weight decay, dropout, label smoothing
+**정규화(regularization): weight decay, dropout, label smoothing**
 
 정규화는 과도한 결정경계 ["]{dir="rtl"}날카로움"을 완화하는 역할을 한다.
 
-weight decay: $\lambda \parallel \theta \parallel_{2}^{2}$로 복잡도 억제
-
-dropout: 표현의 공적응을 줄여 과적합 완화
-
-label smoothing:
+- weight decay: $\lambda \parallel \theta \parallel_{2}^{2}$로 복잡도 억제
+- dropout: 표현의 공적응을 줄여 과적합 완화
+- label smoothing:
 ${\overset{˜}{y}}_{k} = (1 - \varepsilon)y_{k} + \frac{\varepsilon}{K}$
 
 정답을 약간 부드럽게 만들어 ["]{dir="rtl"}확률 1에 대한 강박"을 줄여
 과신 완화에 직접적으로 도움이 되는 경우가 많다.
 
-Calibration 운영 체크리스트(4단계)
+##### \(5) Calibration 운영 체크리스트(4단계)
 
-Calibration curve(신뢰도 다이어그램)로 ["]{dir="rtl"}과신/과소신"을 먼저
-확인
+**Calibration curve(신뢰도 다이어그램)로 ["]{dir="rtl"}과신/과소신"을 먼저
+확인**
 
 모델이 출력한 확률 \\hat p를 구간(bin)으로 나누고, 각 구간에서 평균 예측
 확률(신뢰도) $conf(b)$, 실제 정답 비율(정확도) $acc(b)$을 비교한다.
 
 완전 보정이면 $acc(b) \approx conf(b)$가 되어 대각선 근처에 놓인다.
 
-과신(overconfident): $conf(b) > acc(b)$ (모델이 말한 확률이 실제보다 큼)
-
-과소신(underconfident): $conf(b) < acc(b)$
+- 과신(overconfident): $conf(b) > acc(b)$ (모델이 말한 확률이 실제보다 큼)
+- 과소신(underconfident): $conf(b) < acc(b)$
 
 이 단계는 ["]{dir="rtl"}지표 숫자"보다도, 어느 확률 구간에서 문제가
 큰지(0.6\~0.8? 0.9 이상?)를 보는 데 의미가 있다.
 
-ECE / Brier score로 수치화해서 비교·추적한다.
+**ECE / Brier score로 수치화해서 비교·추적한다.**
 
 ECE (Expected Calibration Error) 구간별 불일치의 가중평균
 $ECE = \overset{B}{\sum_{b = 1}}\frac{|B_{b}|}{n}|acc(b) - conf(b)|$이다.
@@ -182,14 +179,13 @@ $BS = \frac{1}{n}\overset{n}{\sum_{i = 1}}({\widehat{p}}_{i} - y_{i})^{2}$이다
 ECE + Brier를 함께 기록해 ["]{dir="rtl"}확률 품질이 시간에 따라
 악화되는지"까지 모니터링한다.
 
-Temperature scaling으로 확률을 보정한다(모델은 고정)
+**Temperature scaling으로 확률을 보정한다(모델은 고정)**
 
 다중분류에서 로짓 $\mathbf{z}$가 있을 때, softmax 앞에 온도 T\>0를 둔다.
 $\mathbf{p}^{(T)} = softmax\left( \frac{\mathbf{z}}{T} \right)$
 
-보통 과신이면 T\>1로 확률을 평평하게 만들어 과신을 완화한다.
-
-T는 검증용 calibration set에서 NLL(=CE)을 최소화하도록 추정한다.
+- 보통 과신이면 T\>1로 확률을 평평하게 만들어 과신을 완화한다.
+- T는 검증용 calibration set에서 NLL(=CE)을 최소화하도록 추정한다.
 $T^{*} = \arg\min_{T}\overset{n}{\sum_{i = 1}}( - \log p_{i,y_{i}}^{(T)})$
 
 장점은 모델 재학습 없이 ["]{dir="rtl"}출력 확률만" 수정하고 분류
@@ -198,7 +194,7 @@ $T^{*} = \arg\min_{T}\overset{n}{\sum_{i = 1}}( - \log p_{i,y_{i}}^{(T)})$
 보정 후에 다시 위의 작업을 반복해 calibration curve가 개선되고
 ECE/Brier가 내려가는지 확인한다.
 
-보정된 확률로 임계값(Threshold)을 재튜닝한다
+**보정된 확률로 임계값(Threshold)을 재튜닝한다.**
 
 보정 전에는 $\widehat{p}$였고, 보정 후에는 \\hat p\^{(T)}이므로 운영
 결정도 이를 기준으로 다시 설정해야 한다.
@@ -206,14 +202,12 @@ ECE/Brier가 내려가는지 확인한다.
 이진분류 기준은 $\widehat{y} = 1\{{\widehat{p}}^{(T)} \geq t\}$이다.
 임계값 t는 검증셋에서 아래 중 운영 목적에 맞는 규칙으로 선택한다.
 
-F1 최적화: $t = \arg\max_{t}F1(t)$
-
-제약 기반: $FPR(t) \leq \alpha$ 또는 검토량 \\le K를 만족하는 t
-
-비용 기반(가능하면): $t^{*} = \frac{c_{FP}}{c_{FP} + c_{FN}}$ (확률이 잘
+- F1 최적화: $t = \arg\max_{t}F1(t)$
+- 제약 기반: $FPR(t) \leq \alpha$ 또는 검토량 \\le K를 만족하는 t
+- 비용 기반(가능하면): $t^{*} = \frac{c_{FP}}{c_{FP} + c_{FN}}$ (확률이 잘
 보정되어 있을수록 의미가 커짐)
 
-2\. 대규모 클래스 분류(Large K)의 계산 이슈
+#### 2\. 대규모 클래스 분류(Large K)의 계산 이슈
 
 클래스 수 K가 수만\~수백만으로 커지는 문제(예: 상품/문서/광고 ID 예측,
 추천, 검색 쿼리-문서 매칭)에서는 ["]{dir="rtl"}모델이 무엇을
@@ -223,21 +217,21 @@ F1 최적화: $t = \arg\max_{t}F1(t)$
 때문이다. 따라서 Large-K 분류는 (i) softmax 근사, (ii) 샘플링 기반 학습,
 (iii) 검색(retrieval) 기반 2-stage 구조로 실무 해법이 갈린다.
 
-softmax 계산 병목과 메모리 이슈
+##### \(1) softmax 계산 병목과 메모리 이슈
 
 다중분류에서 로짓 $\mathbf{z} \in \mathbb{R}^{K}$에 대해
 $p_{k} = \frac{e^{z_{k}}}{\sum_{j = 1}^{K}e^{z_{j}}}$를 계산하려면 분모
 $\sum_{j = 1}^{K}e^{z_{j}}$가 필요하므로, 모든 클래스 로짓을 한 번은
 계산해야 한다. 여기서 병목이 두 가지로 나타난다.
 
-시간 복잡도: O(K) softmax + loss
+**시간 복잡도: O(K) softmax + loss**
 
 정답이 y일 때 cross-entropy는
 $\mathcal{L} = - \log p_{y} = - z_{y} + \log\overset{K}{\sum_{j = 1}}e^{z_{j}}$
 이므로 $\log\overset{K}{\sum_{j = 1}}e^{z_{j}}$ 계산이 곧 비용이다. K가
 크면 한 배치에서 이 항을 계산하는 비용이 압도적이 된다.
 
-출력층 파라미터의 메모리: O(Kd)
+**출력층 파라미터의 메모리: O(Kd)**
 
 마지막 선형층이 보통 $z_{k} = \mathbf{w}_{k}^{\top}\mathbf{h} + b_{k}$
 ($\mathbf{h} \in \mathbb{R}^{d}$: 마지막 은닉표현) 형태이므로, 출력층
@@ -245,13 +239,13 @@ $\mathcal{L} = - \log p_{y} = - z_{y} + \log\overset{K}{\sum_{j = 1}}e^{z_{j}}$
 $Kd(\text{+}K\text{bias})$로 증가한다. K가 수백만이면 이 층만으로도 GPU
 메모리가 한계에 부딪히며, 분산 학습/샤딩이 필요해진다.
 
-sampled softmax / negative sampling 개념
+##### \(2) sampled softmax / negative sampling 개념
 
 Large-K에서 대표적 아이디어는 ["]{dir="rtl"}정답 클래스 1개 + 일부 음성
 클래스만"을 사용해 학습 신호를 만들고, 전체 K에 대한 softmax 계산을
 피하는 것이다.
 
-Sampled Softmax (근사된 분모)
+**Sampled Softmax (근사된 분모)**
 
 기본 CE는 분모가 전체 K를 요구한다. Sampled softmax는 각 샘플마다 정답
 클래스 y, 음성 샘플 집합
@@ -266,7 +260,7 @@ $\log\overset{K}{\sum_{j = 1}}e^{z_{j}} \approx \log(e^{z_{y}} + \sum_{j \in S}e
 학습 시 클래스 연산이 K에서 m으로 감소 → 비용이 O(m). 단, 근사이므로
 샘플링 전략과 보정 방식이 품질에 영향을 준다.
 
-Negative Sampling (대조 학습/랭킹 관점)
+**Negative Sampling (대조 학습/랭킹 관점)**
 
 negative sampling은 ["]{dir="rtl"}정답 vs 음성"을 이진 분류(또는 랭킹)
 문제로 바꾸는 관점이 강하다. 예를 들어 점수 $s(x,k) = z_{k}$에 대해,
@@ -278,7 +272,7 @@ $\mathcal{L} = - \log\sigma(s(x,y)) - \sum_{j \in S}\log\sigma( - s(x,j))$
 negative sampling은 softmax 분모를 직접 근사하기보다, 순위(ranking)
 품질을 직접 최적화 하는 느낌이 강하며, 추천/검색에서 특히 자주 쓰인다.
 
-샘플링의 핵심: 음성을 어떻게 뽑을 것인가
+**샘플링의 핵심: 음성을 어떻게 뽑을 것인가?**
 
 무작위 음성은 너무 쉽고 학습 신호가 약할 수 있다. 그래서 자주 쓰는
 전략은 빈도 기반(자주 나오는 클래스에 더 많이), 모델 기반 hard
@@ -286,14 +280,14 @@ negative(현재 모델이 헷갈리는 클래스), in-batch negative(같은 배�
 다른 정답들을 음성으로 활용)등이다. Large-K에서 성능 차이는 종종
 ["]{dir="rtl"}모델 구조"보다 ["]{dir="rtl"}negative 구성"에서 크게 난다.
 
-retrieval + rerank(근사/2-stage) 관점
+##### \(3) retrieval + rerank(근사/2-stage) 관점
 
 Large-K 문제를 ["]{dir="rtl"}분류"로만 보면 softmax가 병목이지만, 관점을
 바꾸면 본질은 종종 Top-N 후보를 잘 찾는 문제다. 즉 전체 클래스 중
 ["]{dir="rtl"}상위 몇 개"만 정확하면 되는 경우가 많다. 이때 표준 해법이
 2-stage 구조다.
 
-Stage 1: Retrieval (후보 생성)
+**Stage 1: Retrieval (후보 생성)**
 
 입력 x를 임베딩 $\mathbf{h}(x) \in \mathbb{R}^{d}$로 만들고, 클래스(또는
 아이템)도 임베딩 $\mathbf{e}_{k} \in \mathbb{R}^{d}$로 두어 유사도로
@@ -303,13 +297,13 @@ Stage 1: Retrieval (후보 생성)
 Top-N 후보를 빠르게 가져온다. 이 단계는 ["]{dir="rtl"}정확도"보다
 ["]{dir="rtl"}빠르게 후보를 넓게 회수(recall)"하는 것이 목적이다.
 
-Stage 2: Rerank (정밀 재정렬)
+**Stage 2: Rerank (정밀 재정렬)**
 
 1단계 후보 N개(예: 100\~1000개)만 놓고, 더 무거운 모델(딥 네트워크,
 cross-attention 등)로 정교하게 점수화하여 최종 Top-k를 결정한다.
 $\widehat{y} \in \text{Top-}k\text{of}\{\text{rerank\_score}(x,c):c \in \mathcal{C}_{N}\}$
 
-왜 2-stage가 강력한가
+**왜 2-stage가 강력한가?**
 
 전체 K에 대해 매번 계산하지 않아도 됨 → 추론 비용 대폭 감소하고,
 모델링이 ["]{dir="rtl"}정규화된 확률"이 아니라 ["]{dir="rtl"}랭킹"
@@ -320,12 +314,12 @@ Large-K에서는 ["]{dir="rtl"}확률의 정확한 정규화"보다 ["]{dir="rtl
 후보를 얼마나 잘/빠르게 찾는가"가 더 중요해져, 분류가 검색(retrieval)
 문제로 재정식화되는 경우가 많다.
 
-무엇을 언제 쓰나?
+##### \(4) 무엇을 언제 쓰나?
 
 Large-K 분류에서 핵심 선택지는 ["]{dir="rtl"}끝까지 분류(softmax 계열)로
 갈 것인가" vs ["]{dir="rtl"}문제를 검색로 재정식화할 것인가"이다
 
-Sampled softmax / negative sampling을 우선 고려하는 경우
+**Sampled softmax / negative sampling을 우선 고려하는 경우**
 
 \(A\) 목표가 [']{dir="rtl"}정규화된 확률[']{dir="rtl"}에 가깝다
 
@@ -353,7 +347,7 @@ CE 기반 학습은 top-1 분류 성격과 결이 잘 맞는다.
 확률모형을 유지하고 싶은 경우 또는 분류 파이프라인을 크게 바꾸기 어려운
 경우에 sampled softmax/negative sampling이 현실적이다.
 
-Retrieval + Rerank(2-stage)를 우선 고려하는 경우
+**Retrieval + Rerank(2-stage)를 우선 고려하는 경우**
 
 \(A\) 목표가 Top-k 추천/검색이며, 전체 확률이 필요 없다
 
@@ -382,8 +376,8 @@ NDCG, MAP, Recall@k 중심의 경우 2-stage는 1단계가
 분류로 억지로 풀기보다 retrieval+rerank가 운영/성능/지연 모두에서 이점이
 크다.
 
-Negative sampling은 ["]{dir="rtl"}분류"라기보다 ["]{dir="rtl"}랭킹"에
-가깝게 쓰는 경우가 많다
+**Negative sampling은 ["]{dir="rtl"}분류"라기보다 ["]{dir="rtl"}랭킹"에
+가깝게 쓰는 경우가 많다.**
 
 sampled softmax: CE를 유지하되 분모 계산을 샘플로 근사(분류 프레임 유지)
 
@@ -396,7 +390,7 @@ $- \log\sigma(s(x,y)) - \sum_{j \in S}\log\sigma( - s(x,j))$ → 운영
 sampled softmax 쪽, Top-k 품질이 핵심이면 negative sampling/2-stage
 쪽으로 기운다.
 
-최종 의사결정 체크리스트
+**최종 의사결정 체크리스트**
 
 1\. 출력이 확률분포($\sum p_{k} = 1$)로 꼭 필요? Yes → sampled
 softmax(또는 계층 softmax 등) 우선, No → retrieval+rerank 우선
@@ -410,7 +404,7 @@ softmax(또는 계층 softmax 등) 우선, No → retrieval+rerank 우선
 4\. 목표 지표가 accuracy보다 Recall@k / NDCG / MAP? Yes → 랭킹
 관점(negative sampling + 2-stage)로 설계
 
-3\. 거리학습 기반 분류: Metric Learning
+#### 3\. 거리학습 기반 분류: Metric Learning
 
 Large-K나 오픈셋(open-set) 환경에서는 ["]{dir="rtl"}클래스마다 하나의
 고정 출력 뉴런"을 두는 방식이 비효율적이거나 불가능해진다. 이때 분류를
@@ -421,9 +415,9 @@ Large-K나 오픈셋(open-set) 환경에서는 ["]{dir="rtl"}클래스마다 하
 보내고, 같은 클래스는 가깝게, 다른 클래스는 멀게 배치하여
 ["]{dir="rtl"}가까운 것이 정답"이 되도록 학습하는 것이다.
 
-임베딩과 유사도 기반 분류(최근접/프로토타입)
+##### \(1) 임베딩과 유사도 기반 분류(최근접/프로토타입)
 
-임베딩 표현
+**임베딩 표현**
 
 신경망은 입력을 d차원 임베딩으로 변환한다.
 $\mathbf{h} = f_{\theta}(x) \in \mathbb{R}^{d}$
@@ -433,7 +427,7 @@ $\mathbf{h} = f_{\theta}(x) \in \mathbb{R}^{d}$
 $\parallel \mathbf{h} - \mathbf{c} \parallel_{2}$, 코사인 유사도
 $\cos(\mathbf{h},\mathbf{c}) = \frac{\mathbf{h}^{\top}\mathbf{c}}{\parallel \mathbf{h} \parallel \parallel \mathbf{c} \parallel}$이다.
 
-최근접(Nearest Neighbor) 분류
+**최근접(Nearest Neighbor) 분류**
 
 각 클래스의 대표(또는 학습 샘플) 임베딩 $\{\mathbf{c}_{k}\}$가 있을 때
 $\widehat{y} = \arg\min_{k}d(\mathbf{h},\mathbf{c}_{k})$ 또는
@@ -443,7 +437,7 @@ s는 유사도다.
 이 방식은 ["]{dir="rtl"}출력층이 K개"일 필요가 없어, 클래스가 커지거나
 새 클래스를 추가할 때도 유연하다(임베딩만 추가하면 됨).
 
-프로토타입(Prototype) 기반 분류
+**프로토타입(Prototype) 기반 분류**
 
 각 클래스 k에 대해 support set(대표 샘플) 임베딩의 평균을 프로토타입으로
 둔다.
@@ -457,13 +451,13 @@ metric learning 분류는 ["]{dir="rtl"}확률 분포를 직접 출력"하기보
 ["]{dir="rtl"}임베딩 공간에서 가까운 클래스가 정답"이라는 규칙을
 학습한다.
 
-contrastive / triplet loss
+##### \(2) contrastive / triplet loss
 
 임베딩 공간을 원하는 모양으로 만들려면, ["]{dir="rtl"}어떤 쌍/삼쌍은
 가깝게, 어떤 것은 멀게"라는 학습 신호가 필요하다. 대표 손실이
 contrastive loss와 triplet loss다.
 
-Contrastive loss (쌍(pair) 기반)
+**Contrastive loss (쌍(pair) 기반)**
 
 두 샘플 $(x_{i},x_{j})$에 대해 같은 클래스면 $y_{ij} = 1$, 다르면
 $y_{ij} = 0$이라 두고,
@@ -478,7 +472,7 @@ $\mathcal{L} = y_{ij}D_{ij}^{2} + (1 - y_{ij})\lbrack\max(0,m - D_{ij})\rbrack^{
 핵심은 ["]{dir="rtl"}음성 쌍은 일정 거리 이상이면 더 밀 필요가 없다"는
 margin 개념이다.
 
-Triplet loss (삼쌍(triplet) 기반)
+**Triplet loss (삼쌍(triplet) 기반)**
 
 anchor a, positive p(같은 클래스), negative n(다른 클래스)을 구성한다.
 $D(a,p) = \parallel f(a) - f(p) \parallel_{2},D(a,n) = \parallel f(a) - f(n) \parallel_{2}$
@@ -494,9 +488,9 @@ negative mining)에 크게 달려 있다. 너무 쉬운 negative는 학습 신�
 contrastive는 ["]{dir="rtl"}쌍을 맞추는 문제", triplet은
 ["]{dir="rtl"}순위(가까움의 상대 비교)를 맞추는 문제"에 가깝다.
 
-few-shot, 오픈셋과 연결
+##### \(3) few-shot, 오픈셋과 연결
 
-Few-shot 학습과의 연결
+**Few-shot 학습과의 연결**
 
 few-shot은 클래스당 샘플이 매우 적은 상황이다. 일반 softmax 분류는
 클래스별 파라미터를 충분히 학습하기 어렵지만, metric learning은
@@ -507,7 +501,7 @@ few-shot은 클래스당 샘플이 매우 적은 상황이다. 일반 softmax �
 $\mathbf{c}_{k}$를 만든 뒤 최근접 분류로 끝나기 때문이다. 새로운
 클래스가 와도 ["]{dir="rtl"}프로토타입만 계산"하면 바로 동작한다.
 
-오픈셋(open-set)과 OOD 탐지
+**오픈셋(open-set)과 OOD 탐지**
 
 오픈셋에서는 ["]{dir="rtl"}학습에 없던 클래스"가 들어올 수 있다.
 softmax는 항상 $\sum_{k}p_{k} = 1$이므로 무엇이든 기존 클래스 중 하나로
@@ -520,20 +514,20 @@ softmax는 항상 $\sum_{k}p_{k} = 1$이므로 무엇이든 기존 클래스 중
 $\min_{k}d(\mathbf{h},\mathbf{c}_{k}) > \tau \Rightarrow \text{unknown}$또는
 유사도가 일정 이하이면 unknown 처리한다.
 
-2-stage(retrieval+rerank)와의 연결
+**2-stage(retrieval+rerank)와의 연결**
 
 metric learning은 retrieval 단계와 궁합이 좋다. 임베딩을 만들고 ANN으로
 후보를 회수한 뒤, rerank 모델로 정밀 점수화를 하는 구조는 8장에서 본
 2-stage와 자연스럽게 연결된다. 즉 Large-K 문제에서 metric learning은
 ["]{dir="rtl"}분류를 검색으로 바꾸는" 핵심 도구로도 쓰인다.
 
-무엇을 언제 쓰나? (Softmax 분류 vs Metric Learning 선택 기준)
+##### \(4) 무엇을 언제 쓰나? (Softmax 분류 vs Metric Learning 선택 기준)
 
 둘 다 ["]{dir="rtl"}분류"지만 전제가 다릅니다. softmax 분류는
 폐집합(closed-set), metric learning은 확장/검색/오픈셋에 강합니다. 아래
 체크리스트로 고르면 됩니다.
 
-Softmax(+CE)를 우선 선택하는 경우
+**Softmax(+CE)를 우선 선택하는 경우**
 
 클래스가 고정되고(폐집합), 학습/운영에서 동일한 클래스 집합을 쓴다.
 $\Rightarrow$ ["]{dir="rtl"}정답은 K 중 하나"가 확실한 전형적 분류이다.
@@ -548,15 +542,15 @@ $\Rightarrow$ 출력층 파라미터가 안정적으로 추정된다.
 목표가 Top-1 정확도 중심이며, ["]{dir="rtl"}거절(unknown)"이 운영 요구가
 아니다.
 
-Metric Learning을 우선 선택하는 경우
+**Metric Learning을 우선 선택하는 경우**
 
 새 클래스가 자주 추가/변경되거나, 학습 시점에 모든 클래스를 다 보지
-못한다. $\Rightarrow$ softmax 출력층(K\\times d)을 계속 재학습하기
+못한다. $\Rightarrow$ softmax 출력층($K \times d$)을 계속 재학습하기
 어렵다.
 
 few-shot(클래스당 샘플이 매우 적음)에서 ["]{dir="rtl"}빠르게 적응"해야
-한다. $\Rightarrow$ 프로토타입 \\mathbf{c}\_k=\\frac{1}{\|S_k\|}\\sum
-f(x) + 최근접 분류가 강력하다.
+한다. $\Rightarrow$ 프로토타입 $\mathbf{c}_k= \frac{1}{\|S_k\|}\\sum
+f(x)$ + 최근접 분류가 강력하다.
 
 오픈셋/unknown 거절이 중요하다. $\Rightarrow$
 $\min_{k}d(\mathbf{h},\mathbf{c}_{k}) > \tau$ 같은 규칙으로 자연스럽게
@@ -565,7 +559,7 @@ $\min_{k}d(\mathbf{h},\mathbf{c}_{k}) > \tau$ 같은 규칙으로 자연스럽�
 검색/추천/유사도 질의(retrieval)가 문제의 본질이다(Top-k, 랭킹 지표
 중심). $\Rightarrow$ 임베딩 + ANN + rerank(2-stage)로 확장성이 좋다.
 
-실무 결론
+**실무 결론**
 
 폐집합 분류 + 확률 필요: softmax(+CE)로 가고, calibration/threshold
 정책까지 함께 설계
@@ -576,7 +570,7 @@ retrieval+rerank로 운영
 하이브리드도 흔함: 임베딩 기반 retrieval로 후보를 줄이고 후보에 대해
 softmax(또는 pairwise scoring)로 rerank/확률화
 
-4\. 자기지도/대조학습 후 분류기(현대적 파이프라인)
+#### 4\. 자기지도/대조학습 후 분류기(현대적 파이프라인)
 
 현대 딥러닝 분류는 ["]{dir="rtl"}처음부터 끝까지 supervised 학습"만으로
 설명되기 어렵다. 특히 이미지·텍스트 모두에서 (i) 강한 데이터 증강, (ii)
@@ -588,7 +582,7 @@ softmax(또는 pairwise scoring)로 rerank/확률화
 전이학습이 왜 일반화와 calibration에까지 영향을 주는지, 그리고 문서
 분류에서의 전형적 파이프라인을 함께 연결한다.
 
-CNN(합성곱) 기반 딥러닝 분류
+##### \(1) CNN(합성곱) 기반 딥러닝 분류
 
 신경망은 2010년 무렵 이미지 분류에서 큰 성공을 거두면서 다시 주목받기
 시작했다. 그 당시에는 라벨이 붙은 이미지로 이루어진 대규모
@@ -599,8 +593,7 @@ CNN(합성곱) 기반 딥러닝 분류
 이미지로 구성되며, 각 상위 범주마다 5개의 클래스(예: 비버, 돌고래, 수달,
 물개, 고래)가 있다.
 
-![붙여넣은 동영상.png](media/image3.png){width="3.59538823272091in"
-height="2.446347331583552in"}
+![](images/classification_deep_cnn.png){fig-align="center" width="40%"}
 
 각 이미지는 32×32 픽셀의 해상도를 가지며, 각 픽셀은 빨강(red),
 초록(green), 파랑(blue)을 나타내는 8비트 숫자 3개로 표현된다. 각
@@ -621,7 +614,7 @@ $X \in \mathbb{R}^{H \times W \times C}$에 대해, CNN은 국소 영역을 공�
 완전연결(FC)보다 파라미터 효율이 높고, 위치 변화에 더 강건한 표현을
 학습하게 한다.
 
-Convolutional Layers (합성곱 층)
+**Convolutional Layers (합성곱 층)**
 
 합성곱 층은 많은 수의 합성곱 필터로 구성된다. 각 필터는 이미지 안에
 특정한 국소 특징이 존재하는지를 판별하는 템플릿 역할을 한다. 합성곱
@@ -668,8 +661,7 @@ $\ell_{1},\ell_{2}$ 는 (반드시 같을 필요는 없는) 작은 양의 정수
 합성곱하면, 필터와 유사한(즉 세로/가로 줄무늬나 에지를 가진) 영역에는 큰
 값이 부여되고, 해당 특징과 닮지 않은 영역에는 작은 값이 부여된다.
 
-![붙여넣은 동영상.png](media/image4.png){width="2.6518405511811025in"
-height="1.8573622047244094in"}
+![](images/classification_deep_cnn02.png){fig-align="center" width="40%"}
 
 합성곱 필터는 에지(edge)나 작은 모양처럼 이미지의 국소 특징을 찾아낸다.
 왼쪽의 호랑이 이미지에 가운데의 두 개 작은 합성곱 필터를 적용한다.
@@ -718,7 +710,7 @@ height="1.8573622047244094in"}
 별도 층으로 간주되며, 그런 경우 detector layer(검출기 층)라고 부르기도
 한다.
 
-Pooling Layers
+**Pooling Layers**
 
 풀링 층(pooling layer)은 큰 이미지를 더 작은 요약 이미지로
 압축(condense)하는 방법을 제공한다. 풀링에는 여러 방식이 가능하지만,
@@ -742,7 +734,7 @@ $$\text{Max pool}\begin{bmatrix}
 2 & 4
 \end{bmatrix}$$
 
-CNN Architecture
+**CNN Architecture**
 
 지금까지 우리는 하나의 합성곱 층을 정의했다. 각 필터는 새로운 2차원
 특징맵 하나를 만든다. 합성곱 층에서 필터의 개수는, 완전연결 신경망에서
@@ -757,8 +749,7 @@ CNN Architecture
 사이에 $2 \times 2$ 맥스풀 층이 끼워져 있으며, 맥스풀은 두 공간 차원
 모두에서 크기를 2배씩 줄인다.
 
-![붙여넣은 동영상.png](media/image5.png){width="4.5in"
-height="1.0086209536307962in"}
+![](images/classification_deep_cnn03.png){fig-align="center" width="80%"}
 
 입력층에서는 컬러 이미지의 3차원 특징맵을 보게 되는데, 여기서 채널 축은
 각 색을 $32 \times 32$의 2차원 픽셀 특징맵으로 나타낸다.
@@ -800,54 +791,49 @@ height="1.0086209536307962in"}
 이미지를 만든다. 이러한 왜곡은 사람을 속이지 않으며, CNN을 적합할 때
 정규화(regularization)의 한 형태로 작동한다.
 
-![붙여넣은 동영상.png](media/image6.png){width="4.5in"
-height="0.8867005686789151in"}
+![](images/classification_deep_cnn04.png){fig-align="center" width="80%"}
 
-Data Augmentation
+##### \(2) Data Augmentation
 
 데이터 증강은 ["]{dir="rtl"}라벨을 유지하는 변환으로 학습 데이터를
 확장"하여 일반화 성능을 높이는 핵심 기법이다. 증강은 단순히 데이터 수를
 늘리는 것 이상으로, 모델에게 불변성(invariance) 또는 평활한 결정경계를
 학습시키는 역할을 한다.
 
-기본 증강(flip/crop/rotate/color jitter)
+**기본 증강(flip/crop/rotate/color jitter)**
 
-flip: 좌우 반전 (대칭성이 있는 문제에서 유효)
-
-random crop / resize: 위치/스케일 변화에 강건
-
-rotate: 회전 불변성이 있는 경우 유효(과도한 회전은 라벨 의미를 바꿀 수
+- flip: 좌우 반전 (대칭성이 있는 문제에서 유효)
+- random crop / resize: 위치/스케일 변화에 강건
+- rotate: 회전 불변성이 있는 경우 유효(과도한 회전은 라벨 의미를 바꿀 수
 있음)
-
-color jitter: 밝기/대비/채도 변형으로 조명 변화에 강건
+- color jitter: 밝기/대비/채도 변형으로 조명 변화에 강건
 
 증강의 본질은 ["]{dir="rtl"}입력 공간에서 같은 라벨을 갖는 영역을 넓혀"
 과적합을 줄이는 것이다.
 
-강한 증강/혼합(mixup/cutmix 등, 선택)
+**강한 증강/혼합(mixup/cutmix 등, 선택)**
 
 강한 증강은 일반화를 크게 올릴 수 있지만, 과하면 학습이 어려워지거나
 과소적합을 유발할 수 있어 데이터/도메인에 맞춰 조절한다.
 
-mixup: 두 샘플과 라벨을 선형 결합
+- mixup: 두 샘플과 라벨을 선형 결합
 $\overset{˜}{x} = \lambda x_{i} + (1 - \lambda)x_{j},\overset{˜}{y} = \lambda y_{i} + (1 - \lambda)y_{j}$
 이는 결정경계를 더 선형/평활하게 만들어 과신을 줄이고(calibration 개선
 사례 많음), 노이즈에 강해질 수 있다.
-
-cutmix: 한 이미지의 일부 패치를 다른 이미지로 교체하고, 면적 비율로
+- cutmix: 한 이미지의 일부 패치를 다른 이미지로 교체하고, 면적 비율로
 라벨을 혼합
 
 라벨 혼합이 ["]{dir="rtl"}공간적 부분"과 대응하므로 이미지 분류에서
 효과가 좋은 경우가 많다.
 
-Pretrained Model & Transfer Learning(전이학습)
+##### \(3) Pretrained Model & Transfer Learning(전이학습)
 
 사전학습 모델은 대규모 데이터로 학습된 표현을 제공하며, 작은
 데이터에서도 강력한 출발점을 만든다. 특히 CNN/Transformer 모두에서
 ["]{dir="rtl"}표현 학습은 대규모로, 과제별 분류기는 소규모로"가 표준이
 되었다.
 
-feature extraction vs fine-tuning
+**feature extraction vs fine-tuning**
 
 Feature extraction(특징 추출): backbone g\_\\theta는 고정하고, head만
 학습
@@ -861,7 +847,7 @@ $\min_{\theta,W}\sum_{i}\mathcal{L}(y_{i},softmax(Wg_{\theta}(x_{i})))$
 장점은 도메인 적응력이 커서 최종 성능이 더 좋아지기 쉽고 단점으로는
 데이터가 작으면 과적합/과신이 커질 수 있어 정규화/증강이 중요하다.
 
-작은 데이터에서의 실무 절차(동결→점진적 unfreeze)
+**작은 데이터에서의 실무 절차(동결→점진적 unfreeze)**
 
 작은 데이터에서 흔히 쓰는 안정적 절차는 다음이다.
 
@@ -877,25 +863,24 @@ $\eta_{\text{backbone}} \ll \eta_{\text{head}}$)
 5\. 필요 시 calibration(temperature scaling)과 임계값 재튜닝까지 묶어서
 운영 성능 정리
 
-Document Classification(문서 분류)
+##### \(4) Document Classification(문서 분류)
 
 문서 분류는 ["]{dir="rtl"}텍스트를 어떤 표현으로 바꾸고, 그 위에
 분류기를 얹는다"는 점에서 이미지와 동일한 구조를 가진다. 다만 표현
 방식이 BoW/TF-IDF 같은 고전적 희소 벡터에서, Transformer 기반 문맥
 임베딩으로 이동했다.
 
-TF-IDF/BoW + 선형분류(개념 요약)
+**TF-IDF/BoW + 선형분류(개념 요약)**
 
-BoW/TF-IDF로 문서를 벡터화: \\mathbf{x}\\in\\mathbb{R}\^p (희소)
-
-선형 분류기(로지스틱 회귀, 선형 SVM 등):
+- BoW/TF-IDF로 문서를 벡터화: \\mathbf{x}\\in\\mathbb{R}\^p (희소)
+- 선형 분류기(로지스틱 회귀, 선형 SVM 등):
 $z = \mathbf{w}^{\top}\mathbf{x} + b,p = \sigma(z)$(이진) 또는 다중분류
 softmax를 사용한다.
 
 장점은 빠르고 강력한 베이스라인, 데이터가 적어도 안정적인 반면, 한계로는
 단어 순서/문맥 정보 손실(동음이의, 긴 의존관계 처리 약함)이다.
 
-Transformer 기반 문서 분류 파이프라인
+##### \(5) Transformer 기반 문서 분류 파이프라인
 
 Transformer(예: BERT류)는 토큰 시퀀스 (w_1,\\dots,w_T)를 문맥 임베딩으로
 바꾼다. $\mathbf{H} = Transformer(w_{1:T})$
@@ -905,33 +890,23 @@ Transformer(예: BERT류)는 토큰 시퀀스 (w_1,\\dots,w_T)를 문맥 임베�
 $\mathbf{z} = W\mathbf{h}_{\text{CLS}} + b,\mathbf{p} = softmax(\mathbf{z})$로
 분류한다.
 
-실무 파이프라인은 대개
+실무 파이프라인은 대개 토크나이즈 → 사전학습 Transformer 로딩, head 부착 → (동결 후 head 학습) → 점진적 fine-tuning, 불균형이면 class weight / 샘플링, 운영 전 calibration/threshold 튜닝으로 정리된다.
 
-토크나이즈 → 사전학습 Transformer 로딩
-
-head 부착 → (동결 후 head 학습) → 점진적 fine-tuning
-
-불균형이면 class weight / 샘플링
-
-운영 전 calibration/threshold 튜닝으로 정리된다.
-
-불균형/임계값/보정의 적용 포인트
+**불균형/임계값/보정의 적용 포인트**
 
 문서 분류(특히 멀티라벨, 희귀 라벨)에서는 ["]{dir="rtl"}학습 성능"보다
 ["]{dir="rtl"}운영 품질"이 더 중요해지는 경우가 많다.
 
-불균형: 희귀 라벨 Recall이 급락 → class weight, focal, 라벨별 임계값
+- 불균형: 희귀 라벨 Recall이 급락 → class weight, focal, 라벨별 임계값
 $t_{k}$ 고려
-
-임계값: 멀티라벨이면
+- 임계값: 멀티라벨이면
 ${\widehat{y}}_{k} = \mathbf{1}\{ p_{k} \geq t_{k}\}$이며 global t보다
 라벨별 t_k가 실무적으로 유리한 경우가 많다.
-
-보정(calibration): Transformer도 과신이 흔하므로 calibration curve/ECE
+- 보정(calibration): Transformer도 과신이 흔하므로 calibration curve/ECE
 확인 후 temperature scaling 적용, 그리고 보정된 확률로 임계값 재튜닝까지
 한 세트로 운영하는 것이 안정적이다.
 
-5\. 불확실성(uncertainty)과 안정적 의사결정
+#### 5\. 불확실성(uncertainty)과 안정적 의사결정
 
 딥러닝 분류에서 ["]{dir="rtl"}확률 p(x)"은 흔히 모델의
 확신(confidence)처럼 해석되지만, 실제 안전한 운영을 위해서는
@@ -942,7 +917,7 @@ ${\widehat{y}}_{k} = \mathbf{1}\{ p_{k} \geq t_{k}\}$이며 global t보다
 Dropout/Ensemble/TTA)과 선택적 예측(Abstention), 그리고
 OOD/분포이동에서의 안전장치를 calibration과 함께 정리한다.
 
-불확실성 유형: aleatoric vs epistemic
+##### \(1) 불확실성 유형: aleatoric vs epistemic
 
 불확실성은 크게 두 종류로 나눈다.
 
@@ -967,27 +942,25 @@ OOD/분포이동에서의 안전장치를 calibration과 함께 정리한다.
 운영 관점에서는 특히 epistemic이 중요하다. 왜냐하면 ["]{dir="rtl"}모델이
 모르는 상황에서 과신"하면 사고로 이어지기 때문이다.
 
-불확실성 추정: MC Dropout / Ensemble / TTA(개념)
+##### \(2) 불확실성 추정: MC Dropout / Ensemble / TTA(개념)
 
 불확실성 추정의 대표 접근은 ["]{dir="rtl"}한 번의 forward로 끝내지 않고,
 예측을 여러 번 만들어 변동성을 본다"는 아이디어로 요약된다.
 
-MC Dropout (Monte Carlo Dropout)
+**MC Dropout (Monte Carlo Dropout)**
 
 드롭아웃을 학습 때만 쓰는 것이 아니라, 추론 시에도 드롭아웃을 켠 채로
 M번 예측한다.
 
-m번째 예측 확률: $\mathbf{p}^{(m)}(x)$
-
-평균 예측:
+- m번째 예측 확률: $\mathbf{p}^{(m)}(x)$
+- 평균 예측:
 $\overline{\mathbf{p}}(x) = \frac{1}{M}\overset{M}{\sum_{m = 1}}\mathbf{p}^{(m)}(x)$
-
-변동성(불확실성) 지표: 예측 분산 또는 엔트로피 기반 지표
+- 변동성(불확실성) 지표: 예측 분산 또는 엔트로피 기반 지표
 
 드롭아웃이 만든 여러 ["]{dir="rtl"}부분 모델"의 예측이 서로 크게 다르면
 epistemic 불확실성이 높다고 본다.
 
-Ensemble (모델 앙상블)
+**Ensemble (모델 앙상블)**
 
 서로 다른 초기화/데이터 샘플/구조로 학습한 모델 M개를 준비하여 평균을
 낸다.
@@ -996,7 +969,7 @@ $\overline{\mathbf{p}}(x) = \frac{1}{M}\overset{M}{\sum_{m = 1}}\mathbf{p}_{m}(x
 대체로 앙상블은 가장 강력한 불확실성/일반화 개선 수단으로 평가되지만,
 학습·서빙 비용이 증가한다.
 
-TTA (Test-Time Augmentation)
+**TTA (Test-Time Augmentation)**
 
 추론 시 입력에 증강을 적용해 여러 버전 x\^{(m)}을 만들고 예측을
 평균낸다.
@@ -1006,13 +979,11 @@ $\overline{\mathbf{p}}(x) = \frac{1}{M}\overset{M}{\sum_{m = 1}}\mathbf{p}(x^{(m
 이미지에서 흔하다. 다만 TTA는 ["]{dir="rtl"}입력 변환에 대한 불확실성"을
 반영하는 성격이 강하다.
 
-불확실성 수치화(대표 지표)
+**불확실성 수치화(대표 지표)**
 
-예측 확률 \\mathbf{p}로부터 가장 흔히 쓰는 불확실성 지표는 다음이다.
-
-최대 확률(신뢰도 점수): $conf(x) = \max_{k}{\overline{p}}_{k}(x)$
-
-예측 엔트로피:
+- 예측 확률 \\mathbf{p}로부터 가장 흔히 쓰는 불확실성 지표는 다음이다.
+- 최대 확률(신뢰도 점수): $conf(x) = \max_{k}{\overline{p}}_{k}(x)$
+- 예측 엔트로피:
 $H(\overline{\mathbf{p}}) = - \overset{K}{\sum_{k = 1}}{\overline{p}}_{k}\log{\overline{p}}_{k}$
 
 (앙상블/MC/TTA) 예측 분산: 클래스별 분산 또는 $\max_{k}$ 분산 등
@@ -1020,13 +991,13 @@ $H(\overline{\mathbf{p}}) = - \overset{K}{\sum_{k = 1}}{\overline{p}}_{k}\log{\o
 운영에서는 보통 ["]{dir="rtl"}$conf$가 낮다" 또는
 ["]{dir="rtl"}엔트로피가 높다"를 위험 신호로 쓴다.
 
-선택적 예측(Abstention): 보류 영역, 인간검토 연결
+##### \(3) 선택적 예측(Abstention): 보류 영역, 인간검토 연결
 
 선택적 예측은 ["]{dir="rtl"}모델이 확신할 때만 자동결정하고, 애매하면
 보류한다"는 정책이다. 이는 분류 성능을 단순히 끌어올리기보다 사고를
 줄이고 운영 품질을 안정화하는 목적을 가진다.
 
-보류 규칙의 기본형
+**보류 규칙의 기본형**
 
 이진분류에서 p(x)가 0.5 근처면 애매하다. 예를 들어 보류 구간을
 $\lbrack t_{L},t_{U}\rbrack$로 두면
@@ -1035,58 +1006,53 @@ $\text{자동 결정:}p(x) \leq t_{L}\text{또는}p(x) \geq t_{U},\text{보류:}
 다중분류에서는 $\max_{k}p_{k}(x) < \tau \Rightarrow \text{보류}$ 같은
 규칙이 많이 쓰인다.
 
-보류율--성능의 trade-off(coverage 관점)
+**보류율--성능의 trade-off(coverage 관점)**
 
 보류를 허용하면 ["]{dir="rtl"}자동으로 처리하는 비율(coverage)"이
 줄어드는 대신, 자동 처리된 케이스의 정확도/정밀도가 올라간다. 따라서
 운영 목적은 보통 coverage를 일정 수준 이상 유지하면서 자동 처리 품질을
 최대화 하는 형태로 설정한다.
 
-인간검토(human-in-the-loop) 연결
+**인간검토(human-in-the-loop) 연결**
 
 보류 샘플은 인간 검토로 보내거나, 추가 정보 수집/추가 모델로 재판단한다.
 보류 정책은 곧 ["]{dir="rtl"}검토량 제약"과 직결되므로, 제약 기반 임계값
 선택과 동일한 프레임으로 설계한다(예: 보류율 $\leq K$).
 
-OOD/분포이동에서의 안전장치와 calibration 연계
+##### \(4) OOD/분포이동에서의 안전장치와 calibration 연계
 
 불확실성이 특히 중요한 순간은 분포가 바뀌는 순간이다. 훈련 분포
 $P_{\text{train}}(X,Y)$와 운영 분포 $P_{\text{deploy}}(X,Y)$가
 달라지면(분포 이동), 정확도 하락과 과신 증가(특히 OOD에서)가 동시에
 발생할 수 있다.
 
-OOD/분포이동의 신호
+**OOD/분포이동의 신호**
 
 대표적으로 (1) 입력 통계 변화(특징 분포, 임베딩 분포), (2) 예측 분포
 변화($\max p$의 평균/분산, 엔트로피 변화) (3) calibration 악화(ECE
 증가), 그리고 (4) 특정 클래스 쏠림 증가 등이다.
 
-안전장치: 거절/보류/다단계 파이프라인
+**안전장치: 거절/보류/다단계 파이프라인**
 
-보류(Abstention): $\max_{k}p_{k} < \tau$이면 자동결정 중단
-
-OOD 점수 기반 거절: 임베딩 거리 기반 또는 에너지/엔트로피 기반 점수로
+- 보류(Abstention): $\max_{k}p_{k} < \tau$이면 자동결정 중단
+- OOD 점수 기반 거절: 임베딩 거리 기반 또는 에너지/엔트로피 기반 점수로
 unknown 처리
-
-2-stage(retrieval+rerank, 또는 rule-based + model): 위험 구간에서 더
+- 2-stage(retrieval+rerank, 또는 rule-based + model): 위험 구간에서 더
 보수적 절차로 전환
 
-Calibration과의 연결
+**Calibration과의 연결**
 
 Calibration은 ["]{dir="rtl"}IID 상황에서의 확률 신뢰도"를 개선하는 데
 매우 유효하지만, OOD에서는 calibration만으로 안전이 보장되지 않는다.
 그럼에도 calibration은 중요한 역할을 한다.
 
-보정된 확률은 임계값/보류 기준을 더 일관되게 만든다.
-
-배포 후 ECE/Brier를 모니터링하면 ["]{dir="rtl"}확률 품질 악화"를 조기
-경보로 사용할 수 있다.
+보정된 확률은 임계값/보류 기준을 더 일관되게 만든다. 배포 후 ECE/Brier를 모니터링하면 ["]{dir="rtl"}확률 품질 악화"를 조기 경보로 사용할 수 있다.
 
 따라서 운영에서는 (i) calibration 유지(temperature scaling 등) + (ii)
 불확실성 기반 보류/거절 정책 + (iii) 분포이동 모니터링을 함께 둬야
 안정적이다.
 
-실전 체크 리스트
+##### \(5) 실전 체크 리스트
 
 딥러닝 분류는 ["]{dir="rtl"}모델을 학습시키고 정확도를 확인하는 것"으로
 끝나지 않는다. 실제 운영에서는 학습 성능, 평가 지표, 확률의
