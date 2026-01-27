@@ -137,7 +137,8 @@ weights="distance": 단순 다수결이 아니라 가까운 이웃에 더 큰 �
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
 
 # k-NN 모델 (표준화 + kNN)
 knn_model = Pipeline([
@@ -155,23 +156,34 @@ knn_model.fit(X_train, y_train)
 # 예측(클래스)
 y_pred_knn = knn_model.predict(X_test)
 
-# 평가(기본)
+# labels는 0,1로 유지
+labels = knn_model.named_steps["knn"].classes_   # array([0,1])
+
+# labels(0,1)에 대응되는 "이름"을 문자열로 만들어 줌
+target_names = data.target_names[labels].astype(str)  # ['malignant','benign']
+
 print("[k-NN] Accuracy:", accuracy_score(y_test, y_pred_knn))
-print("[k-NN] Confusion matrix:\n", confusion_matrix(y_test, y_pred_knn))
-print("[k-NN] Classification report:\n", classification_report(y_test, y_pred_knn, target_names=data.target_names))
+
+cm = confusion_matrix(y_test, y_pred_knn, labels=labels)
+print("[k-NN] Confusion matrix:\n", cm)
+
+print("[k-NN] Classification report:\n",
+      classification_report(
+          y_test, y_pred_knn,
+          labels=labels,
+          target_names=target_names
+      ))
+
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=target_names)
+disp.plot(values_format="d")
+plt.show()
 ```
-
-[k-NN] Accuracy: 0.965034965034965
-<br> 
-[k-NN] Confusion matrix:
-<br> 
- [[48  5]
-<br> 
- [ 0 90]]
-
-[k-NN] Classification report:
-
 ```text
+[k-NN] Accuracy: 0.965034965034965
+[k-NN] Confusion matrix:
+ [[48  5]
+ [ 0 90]]
+[k-NN] Classification report:
                precision    recall  f1-score   support
 
    malignant       1.00      0.91      0.95        53
@@ -180,6 +192,59 @@ print("[k-NN] Classification report:\n", classification_report(y_test, y_pred_kn
     accuracy                           0.97       143
    macro avg       0.97      0.95      0.96       143 
 weighted avg       0.97      0.97      0.96       143
+```
+
+![](images/classification_ml_knnconfusion.png){fig-align="center" width="60%"}
+
+**사후 확률 출력**
+
+```python
+import pandas as pd
+import numpy as np
+
+def posterior_df(model, X, data=None, n=10):
+    """
+    model: sklearn estimator or Pipeline (with predict_proba)
+    X: feature matrix (e.g., X_test)
+    data: load_breast_cancer() 객체 (있으면 클래스명 표시)
+    n: 앞에서 n개만 미리보기
+    """
+    proba = model.predict_proba(X)
+
+    # classes_ 가져오기 (Pipeline이면 마지막 step)
+    classes = getattr(model, "classes_", None)
+    if classes is None and hasattr(model, "named_steps"):
+        classes = list(model.named_steps.values())[-1].classes_
+    classes = np.array(classes)
+
+    # 컬럼명: 가능하면 malignant/benign 같은 이름으로
+    if data is not None and hasattr(data, "target_names"):
+        colnames = [f"P({data.target_names[c]})" for c in classes]
+    else:
+        colnames = [f"P(class={c})" for c in classes]
+
+    df = pd.DataFrame(proba, columns=colnames)
+    return df.head(n), df  # (미리보기, 전체)
+
+# 예시) k-NN 사후확률
+knn_head, knn_all = posterior_df(knn_model, X_test, data=data, n=10)
+print("=== k-NN posterior (head) ===")
+display(knn_head)
+```
+
+```text
+=== k-NN posterior (head) ===
+P(malignant)	P(benign)
+0	0.061387	0.938613
+1	1.000000	0.000000
+2	0.319358	0.680642
+3	0.134996	0.865004
+4	0.422818	0.577182
+5	1.000000	0.000000
+6	0.940374	0.059626
+7	0.934269	0.065731
+8	1.000000	0.000000
+9	0.000000	1.000000
 ```
 
 **k-NN: ROC/PR 곡선과 임계값(Threshold) 선택**
