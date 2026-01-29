@@ -223,28 +223,31 @@ strong, b {
 }
 
 /* ===============================
-   Right TOC: scroll 따라 고정(sticky)
+   Right TOC: 스크롤 내려도 계속 보이게(권장 방식)
 =============================== */
 
-/* TOC가 들어있는 오른쪽 컬럼 자체는 overflow를 막아 sticky가 풀리지 않게 */
+/* 오른쪽 “컬럼” 자체를 sticky로 고정 */
 #quarto-margin-sidebar{
-  overflow: visible !important;
-}
-
-/* 목차 박스 sticky */
-#TOC{
+  display: block !important;
   position: sticky !important;
-  top: 5.2rem;                       /* 상단 navbar 높이만큼(필요시 4.5~6rem 조절) */
-  max-height: calc(100vh - 6.2rem);  /* 화면 높이 내에서 */
-  overflow-y: auto;                  /* 목차가 길면 목차만 스크롤 */
-  padding-right: .25rem;             /* 스크롤바 겹침 방지(선택) */
-  z-index: 5;
+  top: 5.2rem;                          /* navbar 아래로 (필요시 4.8~6.5rem 조정) */
+  height: calc(100vh - 6.2rem);         /* 화면 높이 안에 고정 */
+  overflow-y: auto;                     /* 목차가 길면 오른쪽만 스크롤 */
+  align-self: start;                    /* grid에서 위부터 시작(중요) */
+  width: var(--quarto-margin-width) !important;
 }
 
-/* 만약 어떤 부모가 sticky를 깨면(overflow/transform) 이걸로 방어 */
-.page-columns,
-#quarto-content,
-main.content{
+/* TOC는 컬럼 안에서 일반 흐름으로(중복 sticky 방지) */
+#TOC{
+  position: static !important;
+  max-height: none !important;
+  overflow: visible !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* sticky를 깨는 흔한 원인 방어 */
+.page-columns, #quarto-content, main.content{
   overflow: visible !important;
   transform: none !important;
 }
