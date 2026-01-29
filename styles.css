@@ -131,15 +131,43 @@ strong, b {
 }
 
 /* =================================================
-   7. 왼쪽 Sidebar (슬림 + 옅은 파랑 + 왼쪽정렬)
-   - Quarto 레이아웃과 충돌 줄이려고 main margin-left 강제는 제거
+   7. 레이아웃(핵심): 화면 전체 비율 사용 + 오른쪽 여백 폭증 방지
+   - 3칼럼 비율: 사이드바 15% / 본문 65% / 오른쪽 목차 20%
+   - 양쪽 바깥 여백(gutter)은 작은 px로 고정
 ================================================= */
 
-/* 사이드바 폭 */
+/* 전체 폭을 화면에 맞춤 (기본 max-width 제한 해제) */
+.page-columns,
+#quarto-content {
+  max-width: 100vw !important;
+  width: 100vw !important;
+}
+
+/* 3칼럼 그리드 재정의: 바깥 1fr 가터 제거 */
+.page-columns {
+  grid-template-columns:
+    [screen-start] 12px
+    [sidebar-start] clamp(180px, 15vw, 280px)
+    [sidebar-end content-start] minmax(0, 65vw)
+    [content-end margin-start] clamp(220px, 20vw, 360px)
+    [margin-end] 12px
+    [screen-end] !important;
+}
+
+/* 오른쪽 목차(TOC) 영역 폭 */
+#quarto-margin-sidebar {
+  width: clamp(220px, 20vw, 360px) !important;
+}
+
+/* =================================================
+   8. 왼쪽 Sidebar (슬림 + 옅은 파랑 + 왼쪽정렬)
+================================================= */
+
+/* 사이드바 폭: 200px 고정 → 비율(clamp)로 변경 */
 #quarto-sidebar,
 .sidebar.sidebar-navigation {
-  width: 200px !important;
-  min-width: 200px !important;
+  width: clamp(180px, 15vw, 280px) !important;
+  min-width: clamp(180px, 15vw, 280px) !important;
 
   /* 배경(옅은 파랑) */
   background-color: #f3f7ff !important;
@@ -160,7 +188,6 @@ strong, b {
   font-size: 0.92rem !important;
   line-height: 1.8 !important;
   padding: 8px 8px !important;
-
   color: #1f2d5c !important; /* 짙은 네이비 */
 }
 
@@ -184,4 +211,20 @@ strong, b {
   text-align: left !important;
   padding: 10px 8px !important;
   color: #1f2d5c !important;
+}
+
+/* =================================================
+   9. 반응형: 작은 화면에서는 오른쪽 목차 숨겨서 본문 확보
+================================================= */
+@media (max-width: 992px) {
+  #quarto-margin-sidebar { display: none !important; }
+
+  .page-columns {
+    grid-template-columns:
+      [screen-start] 10px
+      [sidebar-start] clamp(170px, 22vw, 240px)
+      [sidebar-end content-start] minmax(0, 1fr)
+      [content-end] 10px
+      [screen-end] !important;
+  }
 }
