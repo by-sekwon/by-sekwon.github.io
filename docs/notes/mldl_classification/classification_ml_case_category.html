@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MLDL 머신러닝 분류 - kNN SVM 사례분석 (범주형 목표변수) – 세상의 모든 통계 이야기</title>
+<title>MLDL 머신러닝 분류 - kNN SVM 사례분석 (3개 이상 범주형) – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -132,7 +161,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">MLDL 머신러닝 분류 - kNN SVM 사례분석 (범주형 목표변수)</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_classification/classification_ml_case_category.html">📄 머신러닝 k&gt;=3 사례</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -177,25 +206,31 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_classification/classification_ml_methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 머신러닝kNNSVM강의</span></a>
+ <span class="menu-text">📄 머신러닝 kNNSVM 이론</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_classification/classification_ml_case_binary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 머신러닝 이진형사례</span></a>
+ <span class="menu-text">📄 머신러닝 이진형 사례</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_case_category.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 머신러닝 k&gt;=3 사례</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_classification/classification_deeplearning01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 딥러닝 분류 파트1</span></a>
+ <span class="menu-text">📄 딥러닝 분류 이론 파트1</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_classification/classification_deeplearning02.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 딥러닝 분류 파트2</span></a>
+ <span class="menu-text">📄 딥러닝 분류 이론 파트2</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -214,9 +249,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#chapter-1.-머신러닝-분류-k-nn-svm-이진형-데이터-사례분석" id="toc-chapter-1.-머신러닝-분류-k-nn-svm-이진형-데이터-사례분석" class="nav-link active" data-scroll-target="#chapter-1.-머신러닝-분류-k-nn-svm-이진형-데이터-사례분석">Chapter 1. 머신러닝 분류 (k-NN | SVM) 이진형 데이터 사례분석</a>
+  <li><a href="#머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석" id="toc-머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석" class="nav-link active" data-scroll-target="#머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석">머신러닝 분류 (k-NN | SVM) 3개 이상 범주형 분류 사례분석</a>
   <ul>
-  <li><a href="#사례분석-이진분류" id="toc-사례분석-이진분류" class="nav-link" data-scroll-target="#사례분석-이진분류">1. 사례분석 (이진분류)</a></li>
+  <li><a href="#사례분석-범주형-분류-k-ge-3" id="toc-사례분석-범주형-분류-k-ge-3" class="nav-link" data-scroll-target="#사례분석-범주형-분류-k-ge-3">1. 사례분석 (범주형 분류 <span class="math inline">\(k \ge 3\)</span>)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -226,7 +261,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MLDL 머신러닝 분류 - kNN SVM 사례분석 (범주형 목표변수)</h1>
+<h1 class="title">MLDL 머신러닝 분류 - kNN SVM 사례분석 (3개 이상 범주형)</h1>
 </div>
 
 
@@ -243,12 +278,23 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="chapter-1.-머신러닝-분류-k-nn-svm-이진형-데이터-사례분석" class="level3">
-<h3 class="anchored" data-anchor-id="chapter-1.-머신러닝-분류-k-nn-svm-이진형-데이터-사례분석">Chapter 1. 머신러닝 분류 (k-NN | SVM) 이진형 데이터 사례분석</h3>
-<section id="사례분석-이진분류" class="level4">
-<h4 class="anchored" data-anchor-id="사례분석-이진분류">1. 사례분석 (이진분류)</h4>
+<section id="머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석" class="level3">
+<h3 class="anchored" data-anchor-id="머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석">머신러닝 분류 (k-NN | SVM) 3개 이상 범주형 분류 사례분석</h3>
+<section id="사례분석-범주형-분류-k-ge-3" class="level4">
+<h4 class="anchored" data-anchor-id="사례분석-범주형-분류-k-ge-3">1. 사례분석 (범주형 분류 <span class="math inline">\(k \ge 3\)</span>)</h4>
 <section id="데이터" class="level5">
 <h5 class="anchored" data-anchor-id="데이터">(1) 데이터</h5>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="머신러닝-분류" class="level5">
+<h5 class="anchored" data-anchor-id="머신러닝-분류">(2) 머신러닝 분류</h5>
+</section>
+<section id="트리기반-분류" class="level5">
+<h5 class="anchored" data-anchor-id="트리기반-분류">(3) 트리기반 분류</h5>
 
 
 </section>
