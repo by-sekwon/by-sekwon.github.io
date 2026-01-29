@@ -137,10 +137,10 @@ strong, b {
 
 /* Quarto 레이아웃 폭 제어는 변수로 하는 게 안전합니다 */
 :root{
-  --quarto-body-width: 1200px;     /* 본문 폭 */
-  --quarto-sidebar-width: 240px;   /* 왼쪽 사이드바 폭 */
-  --quarto-margin-width: 220px;    /* 오른쪽 TOC(목차) 폭 */
-  --quarto-gutter-width: 1.2rem;   /* 컬럼 간 간격 */
+  --quarto-body-width: 1200px;
+  --quarto-sidebar-width: clamp(180px, 15vw, 280px); /* ✅ 여기 */
+  --quarto-margin-width: 220px;
+  --quarto-gutter-width: 1.2rem;
 }
 
 /* 전체 컨테이너가 불필요하게 100vw로 늘어나며 오버플로우 나는 것 방지 */
@@ -176,10 +176,9 @@ strong, b {
 /* 사이드바 폭: 200px 고정 → 비율(clamp)로 변경 */
 #quarto-sidebar,
 .sidebar.sidebar-navigation {
-  width: clamp(180px, 15vw, 280px) !important;
-  min-width: clamp(180px, 15vw, 280px) !important;
+  width: var(--quarto-sidebar-width) !important;      /* ✅ 변경 */
+  min-width: var(--quarto-sidebar-width) !important;  /* ✅ 변경 */
 
-  /* 배경(옅은 파랑) */
   background-color: #f3f7ff !important;
   border-right: 1px solid #d6e2ff;
 }
