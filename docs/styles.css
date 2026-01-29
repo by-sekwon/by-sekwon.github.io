@@ -131,32 +131,42 @@ strong, b {
 }
 
 /* =================================================
-   7. 레이아웃(핵심): 화면 전체 비율 사용 + 오른쪽 여백 폭증 방지
-   - 3칼럼 비율: 사이드바 15% / 본문 65% / 오른쪽 목차 20%
-   - 양쪽 바깥 여백(gutter)은 작은 px로 고정
+   7. 레이아웃(핵심): Quarto 그리드는 건드리지 말고
+   Quarto CSS 변수로 폭만 조절 (TOC 겹침 방지)
 ================================================= */
 
-/* 전체 폭을 화면에 맞춤 (기본 max-width 제한 해제) */
-.page-columns,
-#quarto-content {
-  max-width: 100vw !important;
-  width: 100vw !important;
+/* Quarto 레이아웃 폭 제어는 변수로 하는 게 안전합니다 */
+:root{
+  --quarto-body-width: 1200px;     /* 본문 폭 */
+  --quarto-sidebar-width: 240px;   /* 왼쪽 사이드바 폭 */
+  --quarto-margin-width: 220px;    /* 오른쪽 TOC(목차) 폭 */
+  --quarto-gutter-width: 1.2rem;   /* 컬럼 간 간격 */
 }
 
-/* 3칼럼 그리드 재정의: 바깥 1fr 가터 제거 */
+/* 전체 컨테이너가 불필요하게 100vw로 늘어나며 오버플로우 나는 것 방지 */
+#quarto-content,
 .page-columns {
-  grid-template-columns:
-    [screen-start] 12px
-    [sidebar-start] clamp(180px, 15vw, 280px)
-    [sidebar-end content-start] minmax(0, 65vw)
-    [content-end margin-start] clamp(220px, 20vw, 360px)
-    [margin-end] 12px
-    [screen-end] !important;
+  max-width: 100% !important;
+  width: auto !important;
 }
 
-/* 오른쪽 목차(TOC) 영역 폭 */
-#quarto-margin-sidebar {
-  width: clamp(220px, 20vw, 360px) !important;
+/* 오른쪽 목차가 떠서 겹치는 현상 방지 + 스크롤 가능 */
+#quarto-margin-sidebar{
+  position: relative !important;
+  width: var(--quarto-margin-width) !important;
+}
+
+/* 목차를 오른쪽 컬럼 안에서 sticky로만 동작하게 */
+#TOC{
+  position: sticky !important;
+  top: 5rem;  /* 상단 navbar 높이에 맞춰 조정 */
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+
+  /* 혹시 float/absolute가 섞여있을 때 대비 */
+  float: none !important;
+  margin: 0 !important;
+  width: 100% !important;
 }
 
 /* =================================================
@@ -219,12 +229,4 @@ strong, b {
 @media (max-width: 992px) {
   #quarto-margin-sidebar { display: none !important; }
 
-  .page-columns {
-    grid-template-columns:
-      [screen-start] 10px
-      [sidebar-start] clamp(170px, 22vw, 240px)
-      [sidebar-end content-start] minmax(0, 1fr)
-      [content-end] 10px
-      [screen-end] !important;
-  }
 }
