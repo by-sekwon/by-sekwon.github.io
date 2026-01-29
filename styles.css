@@ -131,54 +131,32 @@ strong, b {
 }
 
 /* =================================================
-   7. 레이아웃(핵심): Quarto 그리드는 건드리지 말고
-   Quarto CSS 변수로 폭만 조절 (TOC 겹침 방지)
+   7. 레이아웃 변수(권장): Quarto가 쓰는 변수로 폭 제어
+   - 그리드 자체(grid-template-columns)는 건드리지 않음
 ================================================= */
-
-/* Quarto 레이아웃 폭 제어는 변수로 하는 게 안전합니다 */
 :root{
-  --quarto-body-width: 1200px;
-  --quarto-sidebar-width: clamp(180px, 15vw, 280px); /* ✅ 여기 */
-  --quarto-margin-width: 220px;
-  --quarto-gutter-width: 0.6rem;
+  --quarto-body-width: 1200px;                         /* 본문 폭 */
+  --quarto-sidebar-width: clamp(180px, 15vw, 280px);   /* 왼쪽 사이드바 폭 */
+  --quarto-margin-width: 220px;                        /* 오른쪽 TOC 폭 */
+  --quarto-gutter-width: 0.6rem;                       /* 컬럼 사이 간격 */
 }
 
-/* 전체 컨테이너가 불필요하게 100vw로 늘어나며 오버플로우 나는 것 방지 */
+/* sticky가 깨지는 흔한 원인(overflow/transform) 방어 */
+.page-columns,
 #quarto-content,
-.page-columns {
-  max-width: 100% !important;
-  width: auto !important;
-}
-
-/* 오른쪽 목차가 떠서 겹치는 현상 방지 + 스크롤 가능 */
-#quarto-margin-sidebar{
-  position: relative !important;
-  width: var(--quarto-margin-width) !important;
-}
-
-/* 목차를 오른쪽 컬럼 안에서 sticky로만 동작하게 */
-#TOC{
-  position: sticky !important;
-  top: 5rem;  /* 상단 navbar 높이에 맞춰 조정 */
-  max-height: calc(100vh - 6rem);
-  overflow-y: auto;
-
-  /* 혹시 float/absolute가 섞여있을 때 대비 */
-  float: none !important;
-  margin: 0 !important;
-  width: 100% !important;
+main.content{
+  overflow: visible !important;
+  transform: none !important;
 }
 
 /* =================================================
-   8. 왼쪽 Sidebar (슬림 + 옅은 파랑 + 왼쪽정렬)
+   8. 왼쪽 Sidebar (배경 + 정렬)
+   - 폭은 Quarto가 grid로 잡고, "박스는 100%"로 채움
 ================================================= */
-
-/* 사이드바 폭: 200px 고정 → 비율(clamp)로 변경 */
 #quarto-sidebar,
 .sidebar.sidebar-navigation {
-  width: 100% !important;      /* ✅ 여기 */
-  min-width: 100% !important;  /* ✅ 여기 */
-
+  width: 100% !important;
+  min-width: 100% !important;
   background-color: #f3f7ff !important;
   border-right: 1px solid #d6e2ff;
 }
@@ -197,7 +175,7 @@ strong, b {
   font-size: 0.92rem !important;
   line-height: 1.8 !important;
   padding: 8px 8px !important;
-  color: #1f2d5c !important; /* 짙은 네이비 */
+  color: #1f2d5c !important;
 }
 
 /* hover */
@@ -210,7 +188,7 @@ strong, b {
 .sidebar .nav-link.active {
   background-color: #dbe6ff !important;
   border-left: 3px solid #FFD700 !important;
-  padding-left: 6px !important; /* border만큼 보정 */
+  padding-left: 6px !important;
 }
 
 /* 사이드바 제목 */
@@ -222,32 +200,36 @@ strong, b {
   color: #1f2d5c !important;
 }
 
-/* ===============================
-   Right TOC: 스크롤 내려도 계속 보이게(권장 방식)
-=============================== */
-
-/* 오른쪽 “컬럼” 자체를 sticky로 고정 */
+/* =================================================
+   9. 오른쪽 TOC(목차): 스크롤 내려도 계속 보이게
+   - 가장 안정적인 방식: "오른쪽 컬럼(#quarto-margin-sidebar)"를 sticky
+================================================= */
 #quarto-margin-sidebar{
   display: block !important;
   position: sticky !important;
-  top: 5.2rem;                          /* navbar 아래로 (필요시 4.8~6.5rem 조정) */
-  height: calc(100vh - 6.2rem);         /* 화면 높이 안에 고정 */
-  overflow-y: auto;                     /* 목차가 길면 오른쪽만 스크롤 */
-  align-self: start;                    /* grid에서 위부터 시작(중요) */
+  top: 5.2rem !important;                       /* navbar 아래 */
+  height: calc(100vh - 6.2rem) !important;      /* 화면 안에 고정 */
+  overflow-y: auto !important;                  /* TOC가 길면 여기만 스크롤 */
+  align-self: start !important;                 /* grid에서 위쪽 기준 */
   width: var(--quarto-margin-width) !important;
+  background: #ffffff !important;               /* 배경 투명 방지(겹침 느낌 제거) */
+  z-index: 10 !important;
 }
 
-/* TOC는 컬럼 안에서 일반 흐름으로(중복 sticky 방지) */
+/* TOC는 컬럼 안에서 일반 흐름(중복 sticky 금지) */
 #TOC{
   position: static !important;
   max-height: none !important;
   overflow: visible !important;
+  float: none !important;
   margin: 0 !important;
   width: 100% !important;
 }
 
-/* sticky를 깨는 흔한 원인 방어 */
-.page-columns, #quarto-content, main.content{
-  overflow: visible !important;
-  transform: none !important;
+/* =================================================
+   10. 반응형: 아주 작은 화면에서는 TOC 숨김(선택)
+   - 992px는 너무 빨리 숨겨져서, 768px로 완화
+================================================= */
+@media (max-width: 768px) {
+  #quarto-margin-sidebar { display: none !important; }
 }
