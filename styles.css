@@ -221,3 +221,30 @@ strong, b {
   padding: 10px 8px !important;
   color: #1f2d5c !important;
 }
+
+/* ===============================
+   Right TOC: scroll 따라 고정(sticky)
+=============================== */
+
+/* TOC가 들어있는 오른쪽 컬럼 자체는 overflow를 막아 sticky가 풀리지 않게 */
+#quarto-margin-sidebar{
+  overflow: visible !important;
+}
+
+/* 목차 박스 sticky */
+#TOC{
+  position: sticky !important;
+  top: 5.2rem;                       /* 상단 navbar 높이만큼(필요시 4.5~6rem 조절) */
+  max-height: calc(100vh - 6.2rem);  /* 화면 높이 내에서 */
+  overflow-y: auto;                  /* 목차가 길면 목차만 스크롤 */
+  padding-right: .25rem;             /* 스크롤바 겹침 방지(선택) */
+  z-index: 5;
+}
+
+/* 만약 어떤 부모가 sticky를 깨면(overflow/transform) 이걸로 방어 */
+.page-columns,
+#quarto-content,
+main.content{
+  overflow: visible !important;
+  transform: none !important;
+}
