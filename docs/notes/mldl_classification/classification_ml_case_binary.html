@@ -991,7 +991,7 @@ weighted avg       0.98      0.98      0.98       143</code></pre>
 <p>반대로 “악성 놓침(FN)=0”이 정책적으로 절대조건이라면, 현재 표에서는 k-NN의 비용기반 임계값이 그 조건을 만족하지만, 오경보(FP)가 크게 늘어나는 점을 함께 감수해야 한다. (실무적으로는 같은 목적을 위해 SVM도 임계값을 더 낮춰 FN=0을 만족하는 지점을 찾는 방식으로 조정할 수도 있다.)</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/classification_ml_tvalue.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+<p><img src="images/classification_ml_tvalue.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
 </section>
@@ -1655,143 +1655,273 @@ Fraud rate = 0.001727485630620034</code></pre>
 <span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>knn_model.fit(X_train_knn, y_train_knn)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/classification_ml_knnfit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+<p><img src="images/classification_ml_knnfit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:20.0%"></p>
 </figure>
 </div>
-<p><strong>SVM (실무 권장: Linear SVM + 확률 보정(calibration))</strong></p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> LinearSVC</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.calibration <span class="im">import</span> CalibratedClassifierCV</span>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report, accuracy_score, ConfusionMatrixDisplay</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Linear SVM (결정함수) + 확률 보정(sigmoid)</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>svm_base <span class="op">=</span> Pipeline([</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"svm"</span>, LinearSVC(</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>        C<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>        class_weight<span class="op">=</span><span class="st">"balanced"</span>,   <span class="co"># 불균형 대응(기본 옵션)</span></span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="co"># CalibratedClassifierCV는 estimator가 이미 pipeline이어도 동작</span></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>svm_model <span class="op">=</span> CalibratedClassifierCV(</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    estimator<span class="op">=</span>svm_base,</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"sigmoid"</span>,</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">3</span></span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>svm_model.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> knn_model.predict(X_test)   <span class="co"># svm_knn_model 등 넣기</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 텍스트로 출력</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accuracy:"</span>, accuracy_score(y_test, y_pred))</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Confusion Matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred))</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Classification Report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred, digits<span class="op">=</span><span class="dv">4</span>))</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 그림(heatmap)으로 출력 (선택)</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> <span class="bu">getattr</span>(knn_model, <span class="st">"classes_"</span>, <span class="va">None</span>)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> labels <span class="kw">is</span> <span class="va">None</span> <span class="kw">and</span> <span class="bu">hasattr</span>(knn_model, <span class="st">"named_steps"</span>):  <span class="co"># Pipeline 대응</span></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    last <span class="op">=</span> <span class="bu">list</span>(knn_model.named_steps.values())[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> <span class="bu">getattr</span>(last, <span class="st">"classes_"</span>, <span class="va">None</span>)</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>disp <span class="op">=</span> ConfusionMatrixDisplay.from_predictions(</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    y_test, y_pred,</span>
+<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>labels,</span>
+<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a>    display_labels<span class="op">=</span>labels,</span>
+<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Blues"</span>,</span>
+<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>    values_format<span class="op">=</span><span class="st">"d"</span></span>
+<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Confusion Matrix"</span>)</span>
+<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Accuracy: 0.9993504441557529
+Confusion Matrix:
+ [[56855     9]
+ [   28    70]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0     0.9995    0.9998    0.9997     56864
+           1     0.8861    0.7143    0.7910        98
+
+    accuracy                         0.9994     56962
+   macro avg     0.9428    0.8571    0.8953     56962
+weighted avg     0.9993    0.9994    0.9993     56962</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/classification_ml_svmfit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+<p><img src="images/classification_ml_rareknnconfusion.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
 </figure>
 </div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#사후 확률 출력</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>proba <span class="op">=</span> knn_model.predict_proba(X_test)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>pos_idx <span class="op">=</span> np.where(knn_model.classes_ <span class="op">==</span> <span class="dv">1</span>)[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>p_fraud <span class="op">=</span> proba[:, pos_idx]</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>topN <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> np.argsort(<span class="op">-</span>p_fraud)[:topN]</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>df_top <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p_fraud"</span>: p_fraud[idx],</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y_true"</span>: np.asarray(y_test)[idx],</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>display(df_top)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+p_fraud y_true
+0   1.0 1
+1   1.0 1
+2   1.0 1
+3   1.0 0
+4   1.0 1
+5   1.0 1</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#오분류 출력</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> knn_model.predict(X_test)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># numpy로 통일(인덱싱 안정)</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>y_true <span class="op">=</span> np.asarray(y_test).ravel()</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> np.asarray(y_pred).ravel()</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>X_test_df <span class="op">=</span> X_test.copy()  <span class="co"># DataFrame 가정</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 오분류 인덱스</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>mis_idx <span class="op">=</span> np.where(y_true <span class="op">!=</span> y_pred)[<span class="dv">0</span>]</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co"># FP / FN 분리</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>fp_idx <span class="op">=</span> np.where((y_true <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (y_pred <span class="op">==</span> <span class="dv">1</span>))[<span class="dv">0</span>]</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>fn_idx <span class="op">=</span> np.where((y_true <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (y_pred <span class="op">==</span> <span class="dv">0</span>))[<span class="dv">0</span>]</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Total misclassified:"</span>, <span class="bu">len</span>(mis_idx))</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"FP (0-&gt;1):"</span>, <span class="bu">len</span>(fp_idx))</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"FN (1-&gt;0):"</span>, <span class="bu">len</span>(fn_idx))</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 오분류 샘플 테이블</span></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>df_mis <span class="op">=</span> X_test_df.iloc[mis_idx].copy()</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>df_mis[<span class="st">"y_true"</span>] <span class="op">=</span> y_true[mis_idx]</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>df_mis[<span class="st">"y_pred"</span>] <span class="op">=</span> y_pred[mis_idx]</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>df_mis[<span class="st">"type"</span>] <span class="op">=</span> np.where(df_mis[<span class="st">"y_true"</span>].values <span class="op">==</span> <span class="dv">1</span>, <span class="st">"FN(1-&gt;0)"</span>, <span class="st">"FP(0-&gt;1)"</span>)</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>display(df_mis.head(<span class="dv">3</span>))  <span class="co"># 처음 3개만</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Total misclassified: 37
+FP (0-&gt;1): 9
+FN (1-&gt;0): 28
+V1  Amount  y_true  y_pred  type
+102442  -13.192671  1.00    1   0   FN(1-&gt;0)
+14920   -17.950631  1.00    0   1   FP(0-&gt;1)
+153457  -3.141115   45.51   0   1   FP(0-&gt;1)</code></pre>
+<p><strong>SVM (실무 권장: Linear SVM + 확률 보정(calibration))</strong></p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.svm <span class="im">import</span> LinearSVC</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.calibration <span class="im">import</span> CalibratedClassifierCV</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Linear SVM (결정함수) + 확률 보정(sigmoid)</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>svm_base <span class="op">=</span> Pipeline([</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"svm"</span>, LinearSVC(</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>        C<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>        class_weight<span class="op">=</span><span class="st">"balanced"</span>,   <span class="co"># 불균형 대응(기본 옵션)</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="co"># CalibratedClassifierCV는 estimator가 이미 pipeline이어도 동작</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>svm_model <span class="op">=</span> CalibratedClassifierCV(</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    estimator<span class="op">=</span>svm_base,</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"sigmoid"</span>,</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>    cv<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>svm_model.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_svmfit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:20.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#svm confusion matrix</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>y_pred_svm <span class="op">=</span> svm_model.predict(X_test)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[SVM] Confusion Matrix"</span>)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(confusion_matrix(y_test, y_pred_svm))</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[SVM] Classification Report"</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred_svm, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[SVM] Confusion Matrix
+[[56850    14]
+ [   41    57]]
+
+[SVM] Classification Report
+              precision    recall  f1-score   support
+
+           0     0.9993    0.9998    0.9995     56864
+           1     0.8028    0.5816    0.6746        98
+
+    accuracy                         0.9990     56962
+   macro avg     0.9010    0.7907    0.8370     56962
+weighted avg     0.9989    0.9990    0.9990     56962</code></pre>
 <p><strong>ROC/PR + 임계값(Youden / FPR제약 / 비용기반) + 비교표</strong></p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    roc_curve, auc,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    precision_recall_curve, average_precision_score,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    confusion_matrix</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (안전) y를 numpy 1차원으로 통일</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> np.asarray(y_train).ravel()</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>y_test  <span class="op">=</span> np.asarray(y_test).ravel()</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>y_pos   <span class="op">=</span> y_test  <span class="co"># 1=Fraud(positive)</span></span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pos_score(model, X):</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    proba <span class="op">=</span> model.predict_proba(X)</span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> np.array(model.classes_)</span>
-<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> np.where(classes <span class="op">==</span> <span class="dv">1</span>)[<span class="dv">0</span>][<span class="dv">0</span>]</span>
-<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> proba[:, idx]</span>
-<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metrics_at_threshold(y_true01, score, t):</span>
-<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> (score <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>)</span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    tn, fp, fn, tp <span class="op">=</span> confusion_matrix(y_true01, y_hat).ravel()</span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>    tpr <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> fn) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>    fpr <span class="op">=</span> fp <span class="op">/</span> (fp <span class="op">+</span> tn) <span class="cf">if</span> (fp <span class="op">+</span> tn) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>    prec <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp) <span class="cf">if</span> (tp <span class="op">+</span> fp) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn)</span>
-<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"t"</span>: <span class="bu">float</span>(t), <span class="st">"tn"</span>: <span class="bu">int</span>(tn), <span class="st">"fp"</span>: <span class="bu">int</span>(fp), <span class="st">"fn"</span>: <span class="bu">int</span>(fn), <span class="st">"tp"</span>: <span class="bu">int</span>(tp),</span>
-<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>            <span class="st">"recall(tpr)"</span>: <span class="bu">float</span>(tpr), <span class="st">"fpr"</span>: <span class="bu">float</span>(fpr), <span class="st">"precision"</span>: <span class="bu">float</span>(prec), <span class="st">"accuracy"</span>: <span class="bu">float</span>(acc)}</span>
-<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_youden(y_true01, score):</span>
-<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
-<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> tpr <span class="op">-</span> fpr</span>
-<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[np.argmax(J)])</span>
-<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>):</span>
-<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
-<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>    cand <span class="op">=</span> np.where(fpr <span class="op">&lt;=</span> alpha)[<span class="dv">0</span>]</span>
-<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(cand) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> cand[np.argmax(tpr[cand])]</span>
-<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[i])</span>
-<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
-<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a>    thresholds <span class="op">=</span> np.unique(np.r_[<span class="fl">0.0</span>, score, <span class="fl">1.0</span>])</span>
-<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a>    best_t, best_cost <span class="op">=</span> <span class="va">None</span>, np.inf</span>
-<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> thresholds:</span>
-<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, t)</span>
-<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a>        cost <span class="op">=</span> c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]</span>
-<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cost <span class="op">&lt;</span> best_cost:</span>
-<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a>            best_cost <span class="op">=</span> cost</span>
-<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a>            best_t <span class="op">=</span> <span class="bu">float</span>(t)</span>
-<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_t, <span class="bu">float</span>(best_cost)</span>
-<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_rows(model_name, y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
-<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
-<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, _ <span class="op">=</span> roc_curve(y_true01, score)</span>
-<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a>    roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
-<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a>    ap <span class="op">=</span> average_precision_score(y_true01, score)</span>
-<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-62"><a href="#cb30-62" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Youden</span></span>
-<span id="cb30-63"><a href="#cb30-63" aria-hidden="true" tabindex="-1"></a>    t_y <span class="op">=</span> threshold_youden(y_true01, score)</span>
-<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a>    m_y <span class="op">=</span> metrics_at_threshold(y_true01, score, t_y)</span>
-<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a>    m_y.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="st">"Youden (TPR-FPR)"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
-<span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_y[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_y[<span class="st">"fp"</span>]})</span>
-<span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a>    rows.append(m_y)</span>
-<span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FPR constraint</span></span>
-<span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a>    t_f <span class="op">=</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span>alpha)</span>
-<span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> t_f <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a>        m_f <span class="op">=</span> metrics_at_threshold(y_true01, score, t_f)</span>
-<span id="cb30-73"><a href="#cb30-73" aria-hidden="true" tabindex="-1"></a>        m_f.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
-<span id="cb30-74"><a href="#cb30-74" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_f[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_f[<span class="st">"fp"</span>]})</span>
-<span id="cb30-75"><a href="#cb30-75" aria-hidden="true" tabindex="-1"></a>        rows.append(m_f)</span>
-<span id="cb30-76"><a href="#cb30-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a>        rows.append({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"t"</span>: <span class="va">None</span>,</span>
-<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tn"</span>: <span class="va">None</span>, <span class="st">"fp"</span>: <span class="va">None</span>, <span class="st">"fn"</span>: <span class="va">None</span>, <span class="st">"tp"</span>: <span class="va">None</span>,</span>
-<span id="cb30-79"><a href="#cb30-79" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"recall(tpr)"</span>: <span class="va">None</span>, <span class="st">"fpr"</span>: <span class="va">None</span>, <span class="st">"precision"</span>: <span class="va">None</span>, <span class="st">"accuracy"</span>: <span class="va">None</span>,</span>
-<span id="cb30-80"><a href="#cb30-80" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: <span class="va">None</span>})</span>
-<span id="cb30-81"><a href="#cb30-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-82"><a href="#cb30-82" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cost-based</span></span>
-<span id="cb30-83"><a href="#cb30-83" aria-hidden="true" tabindex="-1"></a>    t_c, best_cost <span class="op">=</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
-<span id="cb30-84"><a href="#cb30-84" aria-hidden="true" tabindex="-1"></a>    m_c <span class="op">=</span> metrics_at_threshold(y_true01, score, t_c)</span>
-<span id="cb30-85"><a href="#cb30-85" aria-hidden="true" tabindex="-1"></a>    m_c.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"Cost (c_fn=</span><span class="sc">{</span>c_fn<span class="sc">}</span><span class="ss">, c_fp=</span><span class="sc">{</span>c_fp<span class="sc">}</span><span class="ss">)"</span>,</span>
-<span id="cb30-86"><a href="#cb30-86" aria-hidden="true" tabindex="-1"></a>                <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: best_cost})</span>
-<span id="cb30-87"><a href="#cb30-87" aria-hidden="true" tabindex="-1"></a>    rows.append(m_c)</span>
-<span id="cb30-88"><a href="#cb30-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-89"><a href="#cb30-89" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span>
-<span id="cb30-90"><a href="#cb30-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-91"><a href="#cb30-91" aria-hidden="true" tabindex="-1"></a><span class="co"># score</span></span>
-<span id="cb30-92"><a href="#cb30-92" aria-hidden="true" tabindex="-1"></a>score_knn <span class="op">=</span> get_pos_score(knn_model, X_test)</span>
-<span id="cb30-93"><a href="#cb30-93" aria-hidden="true" tabindex="-1"></a>score_svm <span class="op">=</span> get_pos_score(svm_model, X_test)</span>
-<span id="cb30-94"><a href="#cb30-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-95"><a href="#cb30-95" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.001</span></span>
-<span id="cb30-96"><a href="#cb30-96" aria-hidden="true" tabindex="-1"></a>c_fn, c_fp <span class="op">=</span> <span class="fl">100.0</span>, <span class="fl">1.0</span></span>
-<span id="cb30-97"><a href="#cb30-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-98"><a href="#cb30-98" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
-<span id="cb30-99"><a href="#cb30-99" aria-hidden="true" tabindex="-1"></a>rows <span class="op">+=</span> build_rows(<span class="st">"k-NN"</span>, y_pos, score_knn, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
-<span id="cb30-100"><a href="#cb30-100" aria-hidden="true" tabindex="-1"></a>rows <span class="op">+=</span> build_rows(<span class="st">"SVM(Linear+Calib)"</span>, y_pos, score_svm, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
-<span id="cb30-101"><a href="#cb30-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-102"><a href="#cb30-102" aria-hidden="true" tabindex="-1"></a>df_cmp <span class="op">=</span> pd.DataFrame(rows)[</span>
-<span id="cb30-103"><a href="#cb30-103" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span>,<span class="st">"rule"</span>,<span class="st">"t"</span>,<span class="st">"tn"</span>,<span class="st">"fp"</span>,<span class="st">"fn"</span>,<span class="st">"tp"</span>,<span class="st">"recall(tpr)"</span>,<span class="st">"fpr"</span>,<span class="st">"precision"</span>,<span class="st">"accuracy"</span>,<span class="st">"roc_auc"</span>,<span class="st">"ap"</span>,<span class="st">"cost"</span>]</span>
-<span id="cb30-104"><a href="#cb30-104" aria-hidden="true" tabindex="-1"></a>].sort_values([<span class="st">"rule"</span>,<span class="st">"model"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb30-105"><a href="#cb30-105" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-106"><a href="#cb30-106" aria-hidden="true" tabindex="-1"></a>display(df_cmp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> (</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    roc_curve, auc,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    precision_recall_curve, average_precision_score,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    confusion_matrix</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (안전) y를 numpy 1차원으로 통일</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> np.asarray(y_train).ravel()</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>y_test  <span class="op">=</span> np.asarray(y_test).ravel()</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>y_pos   <span class="op">=</span> y_test  <span class="co"># 1=Fraud(positive)</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pos_score(model, X):</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    proba <span class="op">=</span> model.predict_proba(X)</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> np.array(model.classes_)</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> np.where(classes <span class="op">==</span> <span class="dv">1</span>)[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> proba[:, idx]</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metrics_at_threshold(y_true01, score, t):</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> (score <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>)</span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    tn, fp, fn, tp <span class="op">=</span> confusion_matrix(y_true01, y_hat).ravel()</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>    tpr <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> fn) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>    fpr <span class="op">=</span> fp <span class="op">/</span> (fp <span class="op">+</span> tn) <span class="cf">if</span> (fp <span class="op">+</span> tn) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>    prec <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp) <span class="cf">if</span> (tp <span class="op">+</span> fp) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn)</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"t"</span>: <span class="bu">float</span>(t), <span class="st">"tn"</span>: <span class="bu">int</span>(tn), <span class="st">"fp"</span>: <span class="bu">int</span>(fp), <span class="st">"fn"</span>: <span class="bu">int</span>(fn), <span class="st">"tp"</span>: <span class="bu">int</span>(tp),</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>            <span class="st">"recall(tpr)"</span>: <span class="bu">float</span>(tpr), <span class="st">"fpr"</span>: <span class="bu">float</span>(fpr), <span class="st">"precision"</span>: <span class="bu">float</span>(prec), <span class="st">"accuracy"</span>: <span class="bu">float</span>(acc)}</span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_youden(y_true01, score):</span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> tpr <span class="op">-</span> fpr</span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[np.argmax(J)])</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>):</span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>    cand <span class="op">=</span> np.where(fpr <span class="op">&lt;=</span> alpha)[<span class="dv">0</span>]</span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(cand) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> cand[np.argmax(tpr[cand])]</span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[i])</span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>    thresholds <span class="op">=</span> np.unique(np.r_[<span class="fl">0.0</span>, score, <span class="fl">1.0</span>])</span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>    best_t, best_cost <span class="op">=</span> <span class="va">None</span>, np.inf</span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> thresholds:</span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, t)</span>
+<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a>        cost <span class="op">=</span> c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]</span>
+<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cost <span class="op">&lt;</span> best_cost:</span>
+<span id="cb38-52"><a href="#cb38-52" aria-hidden="true" tabindex="-1"></a>            best_cost <span class="op">=</span> cost</span>
+<span id="cb38-53"><a href="#cb38-53" aria-hidden="true" tabindex="-1"></a>            best_t <span class="op">=</span> <span class="bu">float</span>(t)</span>
+<span id="cb38-54"><a href="#cb38-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_t, <span class="bu">float</span>(best_cost)</span>
+<span id="cb38-55"><a href="#cb38-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-56"><a href="#cb38-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_rows(model_name, y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb38-57"><a href="#cb38-57" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb38-58"><a href="#cb38-58" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, _ <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb38-59"><a href="#cb38-59" aria-hidden="true" tabindex="-1"></a>    roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
+<span id="cb38-60"><a href="#cb38-60" aria-hidden="true" tabindex="-1"></a>    ap <span class="op">=</span> average_precision_score(y_true01, score)</span>
+<span id="cb38-61"><a href="#cb38-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-62"><a href="#cb38-62" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Youden</span></span>
+<span id="cb38-63"><a href="#cb38-63" aria-hidden="true" tabindex="-1"></a>    t_y <span class="op">=</span> threshold_youden(y_true01, score)</span>
+<span id="cb38-64"><a href="#cb38-64" aria-hidden="true" tabindex="-1"></a>    m_y <span class="op">=</span> metrics_at_threshold(y_true01, score, t_y)</span>
+<span id="cb38-65"><a href="#cb38-65" aria-hidden="true" tabindex="-1"></a>    m_y.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="st">"Youden (TPR-FPR)"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
+<span id="cb38-66"><a href="#cb38-66" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_y[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_y[<span class="st">"fp"</span>]})</span>
+<span id="cb38-67"><a href="#cb38-67" aria-hidden="true" tabindex="-1"></a>    rows.append(m_y)</span>
+<span id="cb38-68"><a href="#cb38-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-69"><a href="#cb38-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FPR constraint</span></span>
+<span id="cb38-70"><a href="#cb38-70" aria-hidden="true" tabindex="-1"></a>    t_f <span class="op">=</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span>alpha)</span>
+<span id="cb38-71"><a href="#cb38-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> t_f <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb38-72"><a href="#cb38-72" aria-hidden="true" tabindex="-1"></a>        m_f <span class="op">=</span> metrics_at_threshold(y_true01, score, t_f)</span>
+<span id="cb38-73"><a href="#cb38-73" aria-hidden="true" tabindex="-1"></a>        m_f.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
+<span id="cb38-74"><a href="#cb38-74" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_f[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_f[<span class="st">"fp"</span>]})</span>
+<span id="cb38-75"><a href="#cb38-75" aria-hidden="true" tabindex="-1"></a>        rows.append(m_f)</span>
+<span id="cb38-76"><a href="#cb38-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb38-77"><a href="#cb38-77" aria-hidden="true" tabindex="-1"></a>        rows.append({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"t"</span>: <span class="va">None</span>,</span>
+<span id="cb38-78"><a href="#cb38-78" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tn"</span>: <span class="va">None</span>, <span class="st">"fp"</span>: <span class="va">None</span>, <span class="st">"fn"</span>: <span class="va">None</span>, <span class="st">"tp"</span>: <span class="va">None</span>,</span>
+<span id="cb38-79"><a href="#cb38-79" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"recall(tpr)"</span>: <span class="va">None</span>, <span class="st">"fpr"</span>: <span class="va">None</span>, <span class="st">"precision"</span>: <span class="va">None</span>, <span class="st">"accuracy"</span>: <span class="va">None</span>,</span>
+<span id="cb38-80"><a href="#cb38-80" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: <span class="va">None</span>})</span>
+<span id="cb38-81"><a href="#cb38-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-82"><a href="#cb38-82" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cost-based</span></span>
+<span id="cb38-83"><a href="#cb38-83" aria-hidden="true" tabindex="-1"></a>    t_c, best_cost <span class="op">=</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb38-84"><a href="#cb38-84" aria-hidden="true" tabindex="-1"></a>    m_c <span class="op">=</span> metrics_at_threshold(y_true01, score, t_c)</span>
+<span id="cb38-85"><a href="#cb38-85" aria-hidden="true" tabindex="-1"></a>    m_c.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"Cost (c_fn=</span><span class="sc">{</span>c_fn<span class="sc">}</span><span class="ss">, c_fp=</span><span class="sc">{</span>c_fp<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb38-86"><a href="#cb38-86" aria-hidden="true" tabindex="-1"></a>                <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: best_cost})</span>
+<span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a>    rows.append(m_c)</span>
+<span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span>
+<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a><span class="co"># score</span></span>
+<span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a>score_knn <span class="op">=</span> get_pos_score(knn_model, X_test)</span>
+<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>score_svm <span class="op">=</span> get_pos_score(svm_model, X_test)</span>
+<span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a>c_fn, c_fp <span class="op">=</span> <span class="fl">100.0</span>, <span class="fl">1.0</span></span>
+<span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-98"><a href="#cb38-98" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb38-99"><a href="#cb38-99" aria-hidden="true" tabindex="-1"></a>rows <span class="op">+=</span> build_rows(<span class="st">"k-NN"</span>, y_pos, score_knn, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb38-100"><a href="#cb38-100" aria-hidden="true" tabindex="-1"></a>rows <span class="op">+=</span> build_rows(<span class="st">"SVM(Linear+Calib)"</span>, y_pos, score_svm, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb38-101"><a href="#cb38-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-102"><a href="#cb38-102" aria-hidden="true" tabindex="-1"></a>df_cmp <span class="op">=</span> pd.DataFrame(rows)[</span>
+<span id="cb38-103"><a href="#cb38-103" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span>,<span class="st">"rule"</span>,<span class="st">"t"</span>,<span class="st">"tn"</span>,<span class="st">"fp"</span>,<span class="st">"fn"</span>,<span class="st">"tp"</span>,<span class="st">"recall(tpr)"</span>,<span class="st">"fpr"</span>,<span class="st">"precision"</span>,<span class="st">"accuracy"</span>,<span class="st">"roc_auc"</span>,<span class="st">"ap"</span>,<span class="st">"cost"</span>]</span>
+<span id="cb38-104"><a href="#cb38-104" aria-hidden="true" tabindex="-1"></a>].sort_values([<span class="st">"rule"</span>,<span class="st">"model"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb38-105"><a href="#cb38-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-106"><a href="#cb38-106" aria-hidden="true" tabindex="-1"></a>display(df_cmp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/classification_ml_knnsvmresult.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
@@ -1801,27 +1931,27 @@ Fraud rate = 0.001727485630620034</code></pre>
 <section id="모델-학습-회귀기반-트리기반-앙상블" class="level5">
 <h5 class="anchored" data-anchor-id="모델-학습-회귀기반-트리기반-앙상블">(3) 모델 학습 (회귀기반 트리기반 앙상블)</h5>
 <p><strong>회귀기반</strong></p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>logit_model <span class="op">=</span> Pipeline([</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"logit"</span>, LogisticRegression(</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>        C<span class="op">=</span><span class="fl">1.0</span>,</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"lbfgs"</span>,</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>        max_iter<span class="op">=</span><span class="dv">5000</span>,</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>        class_weight<span class="op">=</span><span class="st">"balanced"</span>,   <span class="co"># 극심 불균형 대응(기본 옵션)</span></span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>logit_model.fit(X_train, y_train)</span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>y_pred_logit <span class="op">=</span> logit_model.predict(X_test)</span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Logit] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_logit))</span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Logit] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_logit, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>logit_model <span class="op">=</span> Pipeline([</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler()),</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"logit"</span>, LogisticRegression(</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>        C<span class="op">=</span><span class="fl">1.0</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>        solver<span class="op">=</span><span class="st">"lbfgs"</span>,</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>        max_iter<span class="op">=</span><span class="dv">5000</span>,</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>        class_weight<span class="op">=</span><span class="st">"balanced"</span>,   <span class="co"># 극심 불균형 대응(기본 옵션)</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>logit_model.fit(X_train, y_train)</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>y_pred_logit <span class="op">=</span> logit_model.predict(X_test)</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Logit] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_logit))</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Logit] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_logit, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>[Logit] Confusion matrix:
  [[55478  1386]
  [    8    90]]
@@ -1834,59 +1964,59 @@ Fraud rate = 0.001727485630620034</code></pre>
     accuracy                         0.9755     56962
    macro avg     0.5304    0.9470    0.5510     56962
 weighted avg     0.9982    0.9755    0.9861     56962</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 계수 꺼내기 (표준화된 스케일 기준)</span></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>logit  <span class="op">=</span> logit_model.named_steps[<span class="st">"logit"</span>]</span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>coef   <span class="op">=</span> logit.coef_.ravel()</span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> <span class="bu">float</span>(logit.intercept_[<span class="dv">0</span>])</span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> X.columns</span>
-<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>df_coef <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"feature"</span>: feature_names,</span>
-<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coef"</span>: coef,</span>
-<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"odds_ratio"</span>: np.exp(coef),        <span class="co"># OR = exp(beta)</span></span>
-<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"abs_coef"</span>: np.<span class="bu">abs</span>(coef),</span>
-<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"abs_logOR"</span>: np.<span class="bu">abs</span>(coef)          <span class="co"># log(OR)=coef 이므로 절댓값은 동일</span></span>
-<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>}).sort_values(<span class="st">"abs_coef"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Intercept:"</span>, intercept)</span>
-<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) (+) 계수 큰 것 Top10  -&gt; OR &gt; 1</span></span>
-<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>top_pos10 <span class="op">=</span> df_coef[df_coef[<span class="st">"coef"</span>] <span class="op">&gt;</span> <span class="dv">0</span>].sort_values(<span class="st">"coef"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span>
-<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) (-) 계수 '큰 것' Top10  -&gt; 가장 음수(절댓값 큰 음수), OR &lt; 1</span></span>
-<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>top_neg10 <span class="op">=</span> df_coef[df_coef[<span class="st">"coef"</span>] <span class="op">&lt;</span> <span class="dv">0</span>].sort_values(<span class="st">"coef"</span>, ascending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">10</span>)</span>
-<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Top 10 POSITIVE coefs] (Fraud=1 odds ↑, OR&gt;1)"</span>)</span>
-<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>display(top_pos10[[<span class="st">"feature"</span>,<span class="st">"coef"</span>,<span class="st">"odds_ratio"</span>]])</span>
-<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Top 10 NEGATIVE coefs] (Fraud=1 odds ↓, OR&lt;1)"</span>)</span>
-<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>display(top_neg10[[<span class="st">"feature"</span>,<span class="st">"coef"</span>,<span class="st">"odds_ratio"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 계수 꺼내기 (표준화된 스케일 기준)</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>logit  <span class="op">=</span> logit_model.named_steps[<span class="st">"logit"</span>]</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>coef   <span class="op">=</span> logit.coef_.ravel()</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> <span class="bu">float</span>(logit.intercept_[<span class="dv">0</span>])</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>feature_names <span class="op">=</span> X.columns</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>df_coef <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"feature"</span>: feature_names,</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"coef"</span>: coef,</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"odds_ratio"</span>: np.exp(coef),        <span class="co"># OR = exp(beta)</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"abs_coef"</span>: np.<span class="bu">abs</span>(coef),</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"abs_logOR"</span>: np.<span class="bu">abs</span>(coef)          <span class="co"># log(OR)=coef 이므로 절댓값은 동일</span></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>}).sort_values(<span class="st">"abs_coef"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Intercept:"</span>, intercept)</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) (+) 계수 큰 것 Top10  -&gt; OR &gt; 1</span></span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>top_pos10 <span class="op">=</span> df_coef[df_coef[<span class="st">"coef"</span>] <span class="op">&gt;</span> <span class="dv">0</span>].sort_values(<span class="st">"coef"</span>, ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">10</span>)</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) (-) 계수 '큰 것' Top10  -&gt; 가장 음수(절댓값 큰 음수), OR &lt; 1</span></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>top_neg10 <span class="op">=</span> df_coef[df_coef[<span class="st">"coef"</span>] <span class="op">&lt;</span> <span class="dv">0</span>].sort_values(<span class="st">"coef"</span>, ascending<span class="op">=</span><span class="va">True</span>).head(<span class="dv">10</span>)</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Top 10 POSITIVE coefs] (Fraud=1 odds ↑, OR&gt;1)"</span>)</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>display(top_pos10[[<span class="st">"feature"</span>,<span class="st">"coef"</span>,<span class="st">"odds_ratio"</span>]])</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Top 10 NEGATIVE coefs] (Fraud=1 odds ↓, OR&lt;1)"</span>)</span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>display(top_neg10[[<span class="st">"feature"</span>,<span class="st">"coef"</span>,<span class="st">"odds_ratio"</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/classification_ml_rareregodds.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
 <p><strong>트리기반</strong></p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>tree_model <span class="op">=</span> DecisionTreeClassifier(</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    criterion<span class="op">=</span><span class="st">"gini"</span>,</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="dv">50</span>,     <span class="co"># fraud에서는 leaf를 너무 작게 두면 과적합 쉬움</span></span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    class_weight<span class="op">=</span><span class="st">"balanced"</span>,</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>tree_model.fit(X_train, y_train)</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>y_pred_tree <span class="op">=</span> tree_model.predict(X_test)</span>
-<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Tree] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_tree))</span>
-<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Tree] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_tree, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>tree_model <span class="op">=</span> DecisionTreeClassifier(</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    criterion<span class="op">=</span><span class="st">"gini"</span>,</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="dv">50</span>,     <span class="co"># fraud에서는 leaf를 너무 작게 두면 과적합 쉬움</span></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    class_weight<span class="op">=</span><span class="st">"balanced"</span>,</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>tree_model.fit(X_train, y_train)</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>y_pred_tree <span class="op">=</span> tree_model.predict(X_test)</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Tree] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_tree))</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Tree] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_tree, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>[Tree] Confusion matrix:
  [[55491  1373]
  [   13    85]]
@@ -1900,40 +2030,40 @@ weighted avg     0.9982    0.9755    0.9861     56962</code></pre>
    macro avg     0.5290    0.9216    0.5485     56962
 weighted avg     0.9981    0.9757    0.9862     56962</code></pre>
 <p><strong>앙상블</strong></p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier, GradientBoostingClassifier</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.utils.class_weight <span class="im">import</span> compute_sample_weight</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) RandomForest</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>rf_model <span class="op">=</span> RandomForestClassifier(</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">300</span>,</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="va">None</span>,</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    max_features<span class="op">=</span><span class="st">"sqrt"</span>,</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    class_weight<span class="op">=</span><span class="st">"balanced_subsample"</span>,</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=-</span><span class="dv">1</span>,</span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>rf_model.fit(X_train, y_train)</span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>y_pred_rf <span class="op">=</span> rf_model.predict(X_test)</span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[RF] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_rf))</span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[RF] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_rf, digits<span class="op">=</span><span class="dv">4</span>))</span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) GradientBoosting (+ sample_weight)</span></span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>GradientBoostingClassifier(</span>
-<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">150</span>,     <span class="co"># 300 → 150</span></span>
-<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,    <span class="co"># 0.05 → 0.1</span></span>
-<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.7</span>,        <span class="co"># 추가</span></span>
-<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
-<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>sw <span class="op">=</span> compute_sample_weight(class_weight<span class="op">=</span><span class="st">"balanced"</span>, y<span class="op">=</span>y_train)  <span class="co"># 불균형 가중치</span></span>
-<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>gb_model.fit(X_train, y_train, sample_weight<span class="op">=</span>sw)</span>
-<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>y_pred_gb <span class="op">=</span> gb_model.predict(X_test)</span>
-<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[GB] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_gb))</span>
-<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[GB] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_gb, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier, GradientBoostingClassifier</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.utils.class_weight <span class="im">import</span> compute_sample_weight</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) RandomForest</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>rf_model <span class="op">=</span> RandomForestClassifier(</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">300</span>,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    max_features<span class="op">=</span><span class="st">"sqrt"</span>,</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>    class_weight<span class="op">=</span><span class="st">"balanced_subsample"</span>,</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    n_jobs<span class="op">=-</span><span class="dv">1</span>,</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>rf_model.fit(X_train, y_train)</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>y_pred_rf <span class="op">=</span> rf_model.predict(X_test)</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[RF] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_rf))</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[RF] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_rf, digits<span class="op">=</span><span class="dv">4</span>))</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) GradientBoosting (+ sample_weight)</span></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>GradientBoostingClassifier(</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">150</span>,     <span class="co"># 300 → 150</span></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,    <span class="co"># 0.05 → 0.1</span></span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a>    subsample<span class="op">=</span><span class="fl">0.7</span>,        <span class="co"># 추가</span></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a>sw <span class="op">=</span> compute_sample_weight(class_weight<span class="op">=</span><span class="st">"balanced"</span>, y<span class="op">=</span>y_train)  <span class="co"># 불균형 가중치</span></span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a>gb_model.fit(X_train, y_train, sample_weight<span class="op">=</span>sw)</span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a>y_pred_gb <span class="op">=</span> gb_model.predict(X_test)</span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[GB] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, confusion_matrix(y_test, y_pred_gb))</span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[GB] Classification report:</span><span class="ch">\n</span><span class="st">"</span>, classification_report(y_test, y_pred_gb, digits<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>[RF] Confusion matrix:
  [[56860     4]
  [   22    76]]
@@ -1960,113 +2090,113 @@ weighted avg     0.9995    0.9995    0.9995     56962
    macro avg     0.5326    0.9429    0.5553     56962
 weighted avg     0.9982    0.9775    0.9871     56962</code></pre>
 <p><strong>모델 비교</strong></p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, auc, average_precision_score, confusion_matrix</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># y는 0/1로, 1이 Fraud(positive)</span></span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>y_test_np <span class="op">=</span> np.asarray(y_test).ravel()</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pos_score(model, X):</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    proba <span class="op">=</span> model.predict_proba(X)</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> np.array(model.classes_)</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    pos_idx <span class="op">=</span> np.where(classes <span class="op">==</span> <span class="dv">1</span>)[<span class="dv">0</span>][<span class="dv">0</span>]</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> proba[:, pos_idx]</span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metrics_at_threshold(y_true01, score, t):</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> (score <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>)</span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    tn, fp, fn, tp <span class="op">=</span> confusion_matrix(y_true01, y_hat).ravel()</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    tpr <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> fn) <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    fpr <span class="op">=</span> fp <span class="op">/</span> (fp <span class="op">+</span> tn) <span class="cf">if</span> (fp <span class="op">+</span> tn) <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    prec <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp) <span class="cf">if</span> (tp <span class="op">+</span> fp) <span class="cf">else</span> <span class="fl">0.0</span></span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn)</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"t"</span>: <span class="bu">float</span>(t), <span class="st">"tn"</span>: <span class="bu">int</span>(tn), <span class="st">"fp"</span>: <span class="bu">int</span>(fp), <span class="st">"fn"</span>: <span class="bu">int</span>(fn), <span class="st">"tp"</span>: <span class="bu">int</span>(tp),</span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">"recall(tpr)"</span>: <span class="bu">float</span>(tpr), <span class="st">"fpr"</span>: <span class="bu">float</span>(fpr), <span class="st">"precision"</span>: <span class="bu">float</span>(prec), <span class="st">"accuracy"</span>: <span class="bu">float</span>(acc)}</span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_youden(y_true01, score):</span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># inf(아무도 양성 예측 안 함) 제외</span></span>
-<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> np.isfinite(thr)</span>
-<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> (tpr <span class="op">-</span> fpr)</span>
-<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>    J[<span class="op">~</span>mask] <span class="op">=</span> <span class="op">-</span>np.inf</span>
-<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[np.argmax(J)])</span>
-<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>):</span>
-<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
-<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># inf 제외 + (TPR&gt;0) 조건으로 trivial 해 방지</span></span>
-<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> np.isfinite(thr) <span class="op">&amp;</span> (tpr <span class="op">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>    cand <span class="op">=</span> np.where(mask <span class="op">&amp;</span> (fpr <span class="op">&lt;=</span> alpha))[<span class="dv">0</span>]</span>
-<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(cand) <span class="op">==</span> <span class="dv">0</span>:</span>
-<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
-<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> cand[np.argmax(tpr[cand])]</span>
-<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[i])</span>
-<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
-<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a>    thresholds <span class="op">=</span> np.unique(score)</span>
-<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a>    thresholds <span class="op">=</span> np.r_[<span class="fl">0.0</span>, thresholds, <span class="fl">1.0</span>]  <span class="co"># 범위 포함</span></span>
-<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>    best_t, best_cost <span class="op">=</span> <span class="va">None</span>, np.inf</span>
-<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> thresholds:</span>
-<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, t)</span>
-<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>        cost <span class="op">=</span> c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]</span>
-<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cost <span class="op">&lt;</span> best_cost:</span>
-<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a>            best_cost, best_t <span class="op">=</span> cost, <span class="bu">float</span>(t)</span>
-<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_t, <span class="bu">float</span>(best_cost)</span>
-<span id="cb38-52"><a href="#cb38-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-53"><a href="#cb38-53" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_model(model_name, y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
-<span id="cb38-54"><a href="#cb38-54" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, _ <span class="op">=</span> roc_curve(y_true01, score)</span>
-<span id="cb38-55"><a href="#cb38-55" aria-hidden="true" tabindex="-1"></a>    roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
-<span id="cb38-56"><a href="#cb38-56" aria-hidden="true" tabindex="-1"></a>    ap <span class="op">=</span> average_precision_score(y_true01, score)</span>
-<span id="cb38-57"><a href="#cb38-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-58"><a href="#cb38-58" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
-<span id="cb38-59"><a href="#cb38-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-60"><a href="#cb38-60" aria-hidden="true" tabindex="-1"></a>    t_y <span class="op">=</span> threshold_youden(y_true01, score)</span>
-<span id="cb38-61"><a href="#cb38-61" aria-hidden="true" tabindex="-1"></a>    m_y <span class="op">=</span> metrics_at_threshold(y_true01, score, t_y)</span>
-<span id="cb38-62"><a href="#cb38-62" aria-hidden="true" tabindex="-1"></a>    m_y.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="st">"Youden (TPR-FPR)"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
-<span id="cb38-63"><a href="#cb38-63" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_y[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_y[<span class="st">"fp"</span>]})</span>
-<span id="cb38-64"><a href="#cb38-64" aria-hidden="true" tabindex="-1"></a>    rows.append(m_y)</span>
-<span id="cb38-65"><a href="#cb38-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-66"><a href="#cb38-66" aria-hidden="true" tabindex="-1"></a>    t_f <span class="op">=</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span>alpha)</span>
-<span id="cb38-67"><a href="#cb38-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> t_f <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
-<span id="cb38-68"><a href="#cb38-68" aria-hidden="true" tabindex="-1"></a>        m_f <span class="op">=</span> metrics_at_threshold(y_true01, score, t_f)</span>
-<span id="cb38-69"><a href="#cb38-69" aria-hidden="true" tabindex="-1"></a>        m_f.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
-<span id="cb38-70"><a href="#cb38-70" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_f[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_f[<span class="st">"fp"</span>]})</span>
-<span id="cb38-71"><a href="#cb38-71" aria-hidden="true" tabindex="-1"></a>        rows.append(m_f)</span>
-<span id="cb38-72"><a href="#cb38-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb38-73"><a href="#cb38-73" aria-hidden="true" tabindex="-1"></a>        rows.append({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"t"</span>: <span class="va">None</span>,</span>
-<span id="cb38-74"><a href="#cb38-74" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tn"</span>: <span class="va">None</span>, <span class="st">"fp"</span>: <span class="va">None</span>, <span class="st">"fn"</span>: <span class="va">None</span>, <span class="st">"tp"</span>: <span class="va">None</span>,</span>
-<span id="cb38-75"><a href="#cb38-75" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"recall(tpr)"</span>: <span class="va">None</span>, <span class="st">"fpr"</span>: <span class="va">None</span>, <span class="st">"precision"</span>: <span class="va">None</span>, <span class="st">"accuracy"</span>: <span class="va">None</span>,</span>
-<span id="cb38-76"><a href="#cb38-76" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: <span class="va">None</span>})</span>
-<span id="cb38-77"><a href="#cb38-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-78"><a href="#cb38-78" aria-hidden="true" tabindex="-1"></a>    t_c, best_cost <span class="op">=</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
-<span id="cb38-79"><a href="#cb38-79" aria-hidden="true" tabindex="-1"></a>    m_c <span class="op">=</span> metrics_at_threshold(y_true01, score, t_c)</span>
-<span id="cb38-80"><a href="#cb38-80" aria-hidden="true" tabindex="-1"></a>    m_c.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"Cost (c_fn=</span><span class="sc">{</span>c_fn<span class="sc">}</span><span class="ss">, c_fp=</span><span class="sc">{</span>c_fp<span class="sc">}</span><span class="ss">)"</span>,</span>
-<span id="cb38-81"><a href="#cb38-81" aria-hidden="true" tabindex="-1"></a>                <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: best_cost})</span>
-<span id="cb38-82"><a href="#cb38-82" aria-hidden="true" tabindex="-1"></a>    rows.append(m_c)</span>
-<span id="cb38-83"><a href="#cb38-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-84"><a href="#cb38-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span>
-<span id="cb38-85"><a href="#cb38-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-86"><a href="#cb38-86" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 모델 score 모으기(이미 앞에서 학습된 것으로 가정) =====</span></span>
-<span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
-<span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>    <span class="st">"k-NN"</span>: knn_model,</span>
-<span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SVM(Linear+Calib)"</span>: svm_model,</span>
-<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Logit"</span>: logit_model,</span>
-<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tree"</span>: tree_model,</span>
-<span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RandomForest"</span>: rf_model,</span>
-<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GradientBoosting"</span>: gb_model</span>
-<span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.001</span>          <span class="co"># 사기탐지에서 흔한 FPR 제약(0.1%)</span></span>
-<span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a>c_fn, c_fp <span class="op">=</span> <span class="fl">100.0</span>, <span class="fl">1.0</span>  <span class="co"># FN(사기 놓침) 비용을 크게</span></span>
-<span id="cb38-98"><a href="#cb38-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-99"><a href="#cb38-99" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
-<span id="cb38-100"><a href="#cb38-100" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, m <span class="kw">in</span> models.items():</span>
-<span id="cb38-101"><a href="#cb38-101" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> get_pos_score(m, X_test)</span>
-<span id="cb38-102"><a href="#cb38-102" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">+=</span> summarize_model(name, y_test_np, score, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
-<span id="cb38-103"><a href="#cb38-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-104"><a href="#cb38-104" aria-hidden="true" tabindex="-1"></a>df_all <span class="op">=</span> pd.DataFrame(rows)[</span>
-<span id="cb38-105"><a href="#cb38-105" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span>,<span class="st">"rule"</span>,<span class="st">"t"</span>,<span class="st">"tn"</span>,<span class="st">"fp"</span>,<span class="st">"fn"</span>,<span class="st">"tp"</span>,<span class="st">"recall(tpr)"</span>,<span class="st">"fpr"</span>,<span class="st">"precision"</span>,<span class="st">"accuracy"</span>,<span class="st">"roc_auc"</span>,<span class="st">"ap"</span>,<span class="st">"cost"</span>]</span>
-<span id="cb38-106"><a href="#cb38-106" aria-hidden="true" tabindex="-1"></a>].sort_values([<span class="st">"rule"</span>,<span class="st">"model"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb38-107"><a href="#cb38-107" aria-hidden="true" tabindex="-1"></a>display(df_all)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, auc, average_precision_score, confusion_matrix</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># y는 0/1로, 1이 Fraud(positive)</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>y_test_np <span class="op">=</span> np.asarray(y_test).ravel()</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pos_score(model, X):</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>    proba <span class="op">=</span> model.predict_proba(X)</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> np.array(model.classes_)</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>    pos_idx <span class="op">=</span> np.where(classes <span class="op">==</span> <span class="dv">1</span>)[<span class="dv">0</span>][<span class="dv">0</span>]</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> proba[:, pos_idx]</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metrics_at_threshold(y_true01, score, t):</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> (score <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>)</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>    tn, fp, fn, tp <span class="op">=</span> confusion_matrix(y_true01, y_hat).ravel()</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>    tpr <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> fn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>    fpr <span class="op">=</span> fp <span class="op">/</span> (fp <span class="op">+</span> tn) <span class="cf">if</span> (fp <span class="op">+</span> tn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>    prec <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp) <span class="cf">if</span> (tp <span class="op">+</span> fp) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn)</span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"t"</span>: <span class="bu">float</span>(t), <span class="st">"tn"</span>: <span class="bu">int</span>(tn), <span class="st">"fp"</span>: <span class="bu">int</span>(fp), <span class="st">"fn"</span>: <span class="bu">int</span>(fn), <span class="st">"tp"</span>: <span class="bu">int</span>(tp),</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">"recall(tpr)"</span>: <span class="bu">float</span>(tpr), <span class="st">"fpr"</span>: <span class="bu">float</span>(fpr), <span class="st">"precision"</span>: <span class="bu">float</span>(prec), <span class="st">"accuracy"</span>: <span class="bu">float</span>(acc)}</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_youden(y_true01, score):</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># inf(아무도 양성 예측 안 함) 제외</span></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> np.isfinite(thr)</span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> (tpr <span class="op">-</span> fpr)</span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>    J[<span class="op">~</span>mask] <span class="op">=</span> <span class="op">-</span>np.inf</span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[np.argmax(J)])</span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>):</span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># inf 제외 + (TPR&gt;0) 조건으로 trivial 해 방지</span></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>    mask <span class="op">=</span> np.isfinite(thr) <span class="op">&amp;</span> (tpr <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>    cand <span class="op">=</span> np.where(mask <span class="op">&amp;</span> (fpr <span class="op">&lt;=</span> alpha))[<span class="dv">0</span>]</span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(cand) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> cand[np.argmax(tpr[cand])]</span>
+<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(thr[i])</span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a>    thresholds <span class="op">=</span> np.unique(score)</span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a>    thresholds <span class="op">=</span> np.r_[<span class="fl">0.0</span>, thresholds, <span class="fl">1.0</span>]  <span class="co"># 범위 포함</span></span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>    best_t, best_cost <span class="op">=</span> <span class="va">None</span>, np.inf</span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> thresholds:</span>
+<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, t)</span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a>        cost <span class="op">=</span> c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]</span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cost <span class="op">&lt;</span> best_cost:</span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>            best_cost, best_t <span class="op">=</span> cost, <span class="bu">float</span>(t)</span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_t, <span class="bu">float</span>(best_cost)</span>
+<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_model(model_name, y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, _ <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a>    roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
+<span id="cb46-56"><a href="#cb46-56" aria-hidden="true" tabindex="-1"></a>    ap <span class="op">=</span> average_precision_score(y_true01, score)</span>
+<span id="cb46-57"><a href="#cb46-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-58"><a href="#cb46-58" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb46-59"><a href="#cb46-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-60"><a href="#cb46-60" aria-hidden="true" tabindex="-1"></a>    t_y <span class="op">=</span> threshold_youden(y_true01, score)</span>
+<span id="cb46-61"><a href="#cb46-61" aria-hidden="true" tabindex="-1"></a>    m_y <span class="op">=</span> metrics_at_threshold(y_true01, score, t_y)</span>
+<span id="cb46-62"><a href="#cb46-62" aria-hidden="true" tabindex="-1"></a>    m_y.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="st">"Youden (TPR-FPR)"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
+<span id="cb46-63"><a href="#cb46-63" aria-hidden="true" tabindex="-1"></a>                <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_y[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_y[<span class="st">"fp"</span>]})</span>
+<span id="cb46-64"><a href="#cb46-64" aria-hidden="true" tabindex="-1"></a>    rows.append(m_y)</span>
+<span id="cb46-65"><a href="#cb46-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-66"><a href="#cb46-66" aria-hidden="true" tabindex="-1"></a>    t_f <span class="op">=</span> threshold_fpr_constraint(y_true01, score, alpha<span class="op">=</span>alpha)</span>
+<span id="cb46-67"><a href="#cb46-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> t_f <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb46-68"><a href="#cb46-68" aria-hidden="true" tabindex="-1"></a>        m_f <span class="op">=</span> metrics_at_threshold(y_true01, score, t_f)</span>
+<span id="cb46-69"><a href="#cb46-69" aria-hidden="true" tabindex="-1"></a>        m_f.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap,</span>
+<span id="cb46-70"><a href="#cb46-70" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"cost"</span>: c_fn<span class="op">*</span>m_f[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m_f[<span class="st">"fp"</span>]})</span>
+<span id="cb46-71"><a href="#cb46-71" aria-hidden="true" tabindex="-1"></a>        rows.append(m_f)</span>
+<span id="cb46-72"><a href="#cb46-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb46-73"><a href="#cb46-73" aria-hidden="true" tabindex="-1"></a>        rows.append({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"t"</span>: <span class="va">None</span>,</span>
+<span id="cb46-74"><a href="#cb46-74" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tn"</span>: <span class="va">None</span>, <span class="st">"fp"</span>: <span class="va">None</span>, <span class="st">"fn"</span>: <span class="va">None</span>, <span class="st">"tp"</span>: <span class="va">None</span>,</span>
+<span id="cb46-75"><a href="#cb46-75" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"recall(tpr)"</span>: <span class="va">None</span>, <span class="st">"fpr"</span>: <span class="va">None</span>, <span class="st">"precision"</span>: <span class="va">None</span>, <span class="st">"accuracy"</span>: <span class="va">None</span>,</span>
+<span id="cb46-76"><a href="#cb46-76" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: <span class="va">None</span>})</span>
+<span id="cb46-77"><a href="#cb46-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-78"><a href="#cb46-78" aria-hidden="true" tabindex="-1"></a>    t_c, best_cost <span class="op">=</span> threshold_cost(y_true01, score, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb46-79"><a href="#cb46-79" aria-hidden="true" tabindex="-1"></a>    m_c <span class="op">=</span> metrics_at_threshold(y_true01, score, t_c)</span>
+<span id="cb46-80"><a href="#cb46-80" aria-hidden="true" tabindex="-1"></a>    m_c.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"Cost (c_fn=</span><span class="sc">{</span>c_fn<span class="sc">}</span><span class="ss">, c_fp=</span><span class="sc">{</span>c_fp<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb46-81"><a href="#cb46-81" aria-hidden="true" tabindex="-1"></a>                <span class="st">"roc_auc"</span>: roc_auc, <span class="st">"ap"</span>: ap, <span class="st">"cost"</span>: best_cost})</span>
+<span id="cb46-82"><a href="#cb46-82" aria-hidden="true" tabindex="-1"></a>    rows.append(m_c)</span>
+<span id="cb46-83"><a href="#cb46-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-84"><a href="#cb46-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span>
+<span id="cb46-85"><a href="#cb46-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-86"><a href="#cb46-86" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 모델 score 모으기(이미 앞에서 학습된 것으로 가정) =====</span></span>
+<span id="cb46-87"><a href="#cb46-87" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb46-88"><a href="#cb46-88" aria-hidden="true" tabindex="-1"></a>    <span class="st">"k-NN"</span>: knn_model,</span>
+<span id="cb46-89"><a href="#cb46-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SVM(Linear+Calib)"</span>: svm_model,</span>
+<span id="cb46-90"><a href="#cb46-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Logit"</span>: logit_model,</span>
+<span id="cb46-91"><a href="#cb46-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tree"</span>: tree_model,</span>
+<span id="cb46-92"><a href="#cb46-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RandomForest"</span>: rf_model,</span>
+<span id="cb46-93"><a href="#cb46-93" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GradientBoosting"</span>: gb_model</span>
+<span id="cb46-94"><a href="#cb46-94" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-95"><a href="#cb46-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-96"><a href="#cb46-96" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.001</span>          <span class="co"># 사기탐지에서 흔한 FPR 제약(0.1%)</span></span>
+<span id="cb46-97"><a href="#cb46-97" aria-hidden="true" tabindex="-1"></a>c_fn, c_fp <span class="op">=</span> <span class="fl">100.0</span>, <span class="fl">1.0</span>  <span class="co"># FN(사기 놓침) 비용을 크게</span></span>
+<span id="cb46-98"><a href="#cb46-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-99"><a href="#cb46-99" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb46-100"><a href="#cb46-100" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, m <span class="kw">in</span> models.items():</span>
+<span id="cb46-101"><a href="#cb46-101" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> get_pos_score(m, X_test)</span>
+<span id="cb46-102"><a href="#cb46-102" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">+=</span> summarize_model(name, y_test_np, score, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb46-103"><a href="#cb46-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-104"><a href="#cb46-104" aria-hidden="true" tabindex="-1"></a>df_all <span class="op">=</span> pd.DataFrame(rows)[</span>
+<span id="cb46-105"><a href="#cb46-105" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span>,<span class="st">"rule"</span>,<span class="st">"t"</span>,<span class="st">"tn"</span>,<span class="st">"fp"</span>,<span class="st">"fn"</span>,<span class="st">"tp"</span>,<span class="st">"recall(tpr)"</span>,<span class="st">"fpr"</span>,<span class="st">"precision"</span>,<span class="st">"accuracy"</span>,<span class="st">"roc_auc"</span>,<span class="st">"ap"</span>,<span class="st">"cost"</span>]</span>
+<span id="cb46-106"><a href="#cb46-106" aria-hidden="true" tabindex="-1"></a>].sort_values([<span class="st">"rule"</span>,<span class="st">"model"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb46-107"><a href="#cb46-107" aria-hidden="true" tabindex="-1"></a>display(df_all)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/classification_ml_rareall.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>

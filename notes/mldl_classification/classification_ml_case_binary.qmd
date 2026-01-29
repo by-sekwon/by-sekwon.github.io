@@ -834,7 +834,7 @@ k-NN에서 FPR≤0.02 제약을 강하게 적용하면 t≈0.423에서 FP=1로 �
 
 반대로 “악성 놓침(FN)=0”이 정책적으로 절대조건이라면, 현재 표에서는 k-NN의 비용기반 임계값이 그 조건을 만족하지만, 오경보(FP)가 크게 늘어나는 점을 함께 감수해야 한다. (실무적으로는 같은 목적을 위해 SVM도 임계값을 더 낮춰 FN=0을 만족하는 지점을 찾는 방식으로 조정할 수도 있다.)
 
-![](images/classification_ml_tvalue.png){fig-align="center" width="100%"}
+![](images/classification_ml_tvalue.png){fig-align="center" width="80%"}
 
 ##### \(6) 회귀기반 분류
 
@@ -1578,8 +1578,124 @@ knn_model = Pipeline([
 knn_model.fit(X_train_knn, y_train_knn)
 ```
 
-![](images/classification_ml_knnfit.png){fig-align="center" width="40%"}
+![](images/classification_ml_knnfit.png){fig-align="center" width="20%"}
 
+```python
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+# 예측
+y_pred = knn_model.predict(X_test)   # svm_knn_model 등 넣기
+
+# 1) 텍스트로 출력
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred, digits=4))
+
+# 2) 그림(heatmap)으로 출력 (선택)
+labels = getattr(knn_model, "classes_", None)
+if labels is None and hasattr(knn_model, "named_steps"):  # Pipeline 대응
+    last = list(knn_model.named_steps.values())[-1]
+    labels = getattr(last, "classes_", None)
+
+disp = ConfusionMatrixDisplay.from_predictions(
+    y_test, y_pred,
+    labels=labels,
+    display_labels=labels,
+    cmap="Blues",
+    values_format="d"
+)
+plt.title("Confusion Matrix")
+plt.show()
+```
+```text
+Accuracy: 0.9993504441557529
+Confusion Matrix:
+ [[56855     9]
+ [   28    70]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0     0.9995    0.9998    0.9997     56864
+           1     0.8861    0.7143    0.7910        98
+
+    accuracy                         0.9994     56962
+   macro avg     0.9428    0.8571    0.8953     56962
+weighted avg     0.9993    0.9994    0.9993     56962
+```
+![](images/classification_ml_rareknnconfusion.png){fig-align="center" width="40%"}
+
+```python
+#사후 확률 출력
+import numpy as np
+import pandas as pd
+
+proba = knn_model.predict_proba(X_test)
+pos_idx = np.where(knn_model.classes_ == 1)[0][0]
+p_fraud = proba[:, pos_idx]
+
+topN = 5
+idx = np.argsort(-p_fraud)[:topN]
+
+df_top = pd.DataFrame({
+    "p_fraud": p_fraud[idx],
+    "y_true": np.asarray(y_test)[idx],
+})
+
+display(df_top)
+```
+```text
+
+p_fraud	y_true
+0	1.0	1
+1	1.0	1
+2	1.0	1
+3	1.0	0
+4	1.0	1
+5	1.0	1
+```
+```python
+#오분류 출력
+import numpy as np
+import pandas as pd
+
+# 예측
+y_pred = knn_model.predict(X_test)
+
+# numpy로 통일(인덱싱 안정)
+y_true = np.asarray(y_test).ravel()
+y_pred = np.asarray(y_pred).ravel()
+X_test_df = X_test.copy()  # DataFrame 가정
+
+# 오분류 인덱스
+mis_idx = np.where(y_true != y_pred)[0]
+
+# FP / FN 분리
+fp_idx = np.where((y_true == 0) & (y_pred == 1))[0]
+fn_idx = np.where((y_true == 1) & (y_pred == 0))[0]
+
+print("Total misclassified:", len(mis_idx))
+print("FP (0->1):", len(fp_idx))
+print("FN (1->0):", len(fn_idx))
+
+# 오분류 샘플 테이블
+df_mis = X_test_df.iloc[mis_idx].copy()
+df_mis["y_true"] = y_true[mis_idx]
+df_mis["y_pred"] = y_pred[mis_idx]
+df_mis["type"] = np.where(df_mis["y_true"].values == 1, "FN(1->0)", "FP(0->1)")
+
+display(df_mis.head(3))  # 처음 3개만
+```
+```text
+Total misclassified: 37
+FP (0->1): 9
+FN (1->0): 28
+V1	Amount	y_true	y_pred	type
+102442	-13.192671	1.00	1	0	FN(1->0)
+14920	-17.950631	1.00	0	1	FP(0->1)
+153457	-3.141115	45.51	0	1	FP(0->1)
+```
 
 **SVM (실무 권장: Linear SVM + 확률 보정(calibration))**
 
@@ -1607,8 +1723,36 @@ svm_model = CalibratedClassifierCV(
 svm_model.fit(X_train, y_train)
 ```
 
-![](images/classification_ml_svmfit.png){fig-align="center" width="40%"}
+![](images/classification_ml_svmfit.png){fig-align="center" width="20%"}
 
+```python
+#svm confusion matrix
+from sklearn.metrics import confusion_matrix, classification_report
+
+y_pred_svm = svm_model.predict(X_test)
+
+print("[SVM] Confusion Matrix")
+print(confusion_matrix(y_test, y_pred_svm))
+
+print("\n[SVM] Classification Report")
+print(classification_report(y_test, y_pred_svm, digits=4))
+```
+
+```text
+[SVM] Confusion Matrix
+[[56850    14]
+ [   41    57]]
+
+[SVM] Classification Report
+              precision    recall  f1-score   support
+
+           0     0.9993    0.9998    0.9995     56864
+           1     0.8028    0.5816    0.6746        98
+
+    accuracy                         0.9990     56962
+   macro avg     0.9010    0.7907    0.8370     56962
+weighted avg     0.9989    0.9990    0.9990     56962
+```
 
 **ROC/PR + 임계값(Youden / FPR제약 / 비용기반) + 비교표**
 
