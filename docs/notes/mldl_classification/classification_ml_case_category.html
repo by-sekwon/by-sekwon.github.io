@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -251,7 +286,10 @@ window.Quarto = {
   <ul>
   <li><a href="#머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석" id="toc-머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석" class="nav-link active" data-scroll-target="#머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석">머신러닝 분류 (k-NN | SVM) 3개 이상 범주형 분류 사례분석</a>
   <ul>
-  <li><a href="#사례분석-범주형-분류-k-ge-3" id="toc-사례분석-범주형-분류-k-ge-3" class="nav-link" data-scroll-target="#사례분석-범주형-분류-k-ge-3">1. 사례분석 (범주형 분류 <span class="math inline">\(k \ge 3\)</span>)</a></li>
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터">1. 데이터</a></li>
+  <li><a href="#전처리" id="toc-전처리" class="nav-link" data-scroll-target="#전처리">2. 전처리</a></li>
+  <li><a href="#머신러닝-분류" id="toc-머신러닝-분류" class="nav-link" data-scroll-target="#머신러닝-분류">3. 머신러닝 분류</a></li>
+  <li><a href="#트리기반-분류" id="toc-트리기반-분류" class="nav-link" data-scroll-target="#트리기반-분류">4. 트리기반 분류</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -280,21 +318,1464 @@ window.Quarto = {
 
 <section id="머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석" class="level3">
 <h3 class="anchored" data-anchor-id="머신러닝-분류-k-nn-svm-3개-이상-범주형-분류-사례분석">머신러닝 분류 (k-NN | SVM) 3개 이상 범주형 분류 사례분석</h3>
-<section id="사례분석-범주형-분류-k-ge-3" class="level4">
-<h4 class="anchored" data-anchor-id="사례분석-범주형-분류-k-ge-3">1. 사례분석 (범주형 분류 <span class="math inline">\(k \ge 3\)</span>)</h4>
-<section id="데이터" class="level5">
-<h5 class="anchored" data-anchor-id="데이터">(1) 데이터</h5>
+<section id="데이터" class="level4">
+<h4 class="anchored" data-anchor-id="데이터">1. 데이터</h4>
+<p>seaborn의 <code>penguins</code> 데이터셋을 불러온 결과, 전체 데이터는 344개 행과 7개 열로 구성되어 있으며, 이 중 타깃(y)은 species 1개 열, 설명변수(X)는 species를 제외한 6개 열로 분리된다. 종(species)은 Adelie, Chinstrap, Gentoo의 3개 범주로 이루어진 다중분류 문제에 해당한다.</p>
+<p>데이터의 변수 구성은 종(species)과 섬(island), 그리고 부리 길이/깊이(bill_length_mm, bill_depth_mm), 날개 길이(flipper_length_mm), 체중(body_mass_g) 같은 연속형 수치 변수와 성별(sex) 같은 범주형 변수로 되어 있다. 자료형을 보면 수치형(float64) 변수가 4개, 문자열(object) 변수가 3개로 혼합되어 있다.</p>
+<p>결측치도 일부 존재한다. 부리 길이, 부리 깊이, 날개 길이, 체중은 각각 342개만 관측되어 있어 각 변수마다 2개씩 결측치가 있고, 성별(sex)은 333개만 관측되어 11개의 결측치가 확인된다. 반면 종(species)과 섬(island)은 모든 344개가 결측 없이 채워져 있다. 따라서 이후 모델링을 위해서는 결측치 처리(대치)와 범주형 변수 인코딩(예: 원-핫 인코딩), 그리고 k-NN/SVM처럼 스케일에 민감한 모델을 위한 표준화가 필요하다.</p>
+</section>
+<section id="전처리" class="level4">
+<h4 class="anchored" data-anchor-id="전처리">2. 전처리</h4>
+<p>해당 전처리 과정은 k-NN과 SVM 모델에서 성능에 큰 영향을 주는 스케일링(표준화)을 파이프라인 안에 자동으로 포함하도록 구성되어 있다. 또한 데이터에 결측치가 존재하더라도 수치형 변수는 적절한 방식으로 대치한 뒤 표준화를 수행하고, 범주형 변수는 원-핫 인코딩으로 변환해 모델이 바로 학습할 수 있는 형태로 처리한다.</p>
+<p>즉, 데이터의 누락값과 범주형 변수를 별도로 수작업 처리하지 않아도 일관된 방식으로 전처리가 진행되며, k-NN/SVM에 필요한 입력 형태를 안정적으로 보장한다.</p>
+<p>이 코드는 전체 데이터에서 입력 변수(X)와 정답 라벨(y)를 학습용과 테스트용으로 나누기 위해 <code>train_test_split()</code>을 사용한 것입니다. 여기서 <code>test_size=0.2</code>는 전체 데이터의 20%를 테스트 세트로 떼어 내고, 나머지 80%를 학습 세트로 쓰겠다는 의미입니다. 이렇게 분리하면 모델을 학습할 때는 <code>X_train, y_train</code>만 사용하고, 학습에 쓰지 않은 데이터인 <code>X_test, y_test</code>로 성능을 평가할 수 있어 “새 데이터에서도 잘 맞히는지(일반화 성능)”를 확인할 수 있습니다.</p>
+<p>특히 <code>stratify=y</code>는 분류 문제에서 매우 중요한 옵션인데, 학습/테스트로 나눌 때 각 클래스의 비율이 원본 데이터와 최대한 비슷하게 유지되도록(층화 추출) 해줍니다. 예를 들어 데이터가 불균형(한 클래스가 훨씬 많음)한 경우, 층화 없이 무작정 나누면 테스트 세트에 특정 클래스가 거의 없거나 아예 빠지는 일이 생길 수 있고, 그러면 평가 결과가 왜곡되거나 ROC/PR 같은 지표 계산 자체가 어려워질 수도 있습니다. <code>stratify=y</code>를 주면 이런 위험을 크게 줄일 수 있습니다.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> ColumnTransformer</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler, OneHotEncoder</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.impute <span class="im">import</span> SimpleImputer</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># (0) X, y 준비 (예: df에서 타깃 분리)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># y = df["Class"]  # 또는 df["species"] 등</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># X = df.drop(columns=["Class"])</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) Train/Test split (분류면 stratify 권장)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    X, y,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    stratify<span class="op">=</span>y,          <span class="co"># 불균형/분류에서 매우 중요</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) 컬럼 타입 분리</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>num_cols <span class="op">=</span> X_train.select_dtypes(include<span class="op">=</span>[<span class="st">"number"</span>]).columns.tolist()</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>cat_cols <span class="op">=</span> X_train.select_dtypes(exclude<span class="op">=</span>[<span class="st">"number"</span>]).columns.tolist()</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co"># (3) 전처리 파이프라인</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#   - 수치형: 결측치 중앙값 대치 + 표준화</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#   - 범주형: 최빈값 대치 + 원핫인코딩</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># -------------------------------------------------------</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>numeric_pipe <span class="op">=</span> Pipeline([</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"imputer"</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">"median"</span>)),</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"scaler"</span>, StandardScaler())</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># sklearn 버전에 따라 sparse 옵션명이 다를 수 있어 try 처리</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    ohe <span class="op">=</span> OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>, sparse_output<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">TypeError</span>:</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    ohe <span class="op">=</span> OneHotEncoder(handle_unknown<span class="op">=</span><span class="st">"ignore"</span>, sparse<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>categorical_pipe <span class="op">=</span> Pipeline([</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"imputer"</span>, SimpleImputer(strategy<span class="op">=</span><span class="st">"most_frequent"</span>)),</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"onehot"</span>, ohe)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>preprocess <span class="op">=</span> ColumnTransformer(</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    transformers<span class="op">=</span>[</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"num"</span>, numeric_pipe, num_cols),</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        (<span class="st">"cat"</span>, categorical_pipe, cat_cols),</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    remainder<span class="op">=</span><span class="st">"drop"</span>   <span class="co"># 안 쓰는 컬럼 버릴지/살릴지 선택</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="머신러닝-분류" class="level4">
+<h4 class="anchored" data-anchor-id="머신러닝-분류">3. 머신러닝 분류</h4>
+<section id="knn" class="level5">
+<h5 class="anchored" data-anchor-id="knn">(1) kNN</h5>
+<p><strong>실행코드</strong></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>knn_model <span class="op">=</span> Pipeline([</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"preprocess"</span>, preprocess),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"knn"</span>, KNeighborsClassifier(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        n_neighbors<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        weights<span class="op">=</span><span class="st">"distance"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        p<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>knn_model.fit(X_train, y_train)         <span class="co"># (전체학습 시)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/classification_ml_category_.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+<p><img src="images/classification_ml_category_knn.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>confusion matrix</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, ConfusionMatrixDisplay, classification_report</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> knn_model.predict(X_test)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (멀티클래스/문자열 라벨 포함) 라벨 순서 고정</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> knn_model.named_steps[<span class="st">"knn"</span>].classes_  <span class="co"># Pipeline이면 마지막 모델의 classes_</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># confusion matrix</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred, labels<span class="op">=</span>labels)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, cm)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># (선택) classification report</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Classification report:</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      classification_report(y_test, y_pred, labels<span class="op">=</span>labels, target_names<span class="op">=</span>labels.tolist()))</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># (선택) 시각화</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>disp <span class="op">=</span> ConfusionMatrixDisplay(confusion_matrix<span class="op">=</span>cm, display_labels<span class="op">=</span>labels)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>disp.plot(values_format<span class="op">=</span><span class="st">"d"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Confusion matrix:
+ [[30  0  0]
+ [ 0 14  0]
+ [ 0  0 25]]
+
+Classification report:
+               precision    recall  f1-score   support
+
+      Adelie       1.00      1.00      1.00        30
+   Chinstrap       1.00      1.00      1.00        14
+      Gentoo       1.00      1.00      1.00        25
+
+    accuracy                           1.00        69
+   macro avg       1.00      1.00      1.00        69
+weighted avg       1.00      1.00      1.00        69</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_knnconfusion.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p><strong>사후확률 출력</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#사후 확률 계산</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (n_samples, n_classes)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>proba_knn <span class="op">=</span> knn_model.predict_proba(X_test)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Pipeline이면 classes_는 마지막 모델에서 가져오기</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>classes_knn <span class="op">=</span> knn_model.named_steps[<span class="st">"knn"</span>].classes_</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>proba_knn_df <span class="op">=</span> pd.DataFrame(proba_knn, columns<span class="op">=</span>classes_knn)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>display(proba_knn_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Adelie  Chinstrap   Gentoo
+0   1.000000    0.000000    0.0
+1   1.000000    0.000000    0.0
+2   0.000000    0.000000    1.0
+3   0.000000    0.000000    1.0
+4   0.053935    0.946065    0.0</code></pre>
+<p><strong>분류 영향변인 출력</strong></p>
+<p>다음 코드는 테스트 데이터에서 특정 1개 샘플을 골라, 그 샘플이 preprocess(전처리기: 결측치 처리/스케일링/원핫인코딩 등)를 거친 뒤 어떤 “전처리된 피처들”로 변환되는지를 확인해서, 그중 영향(값의 절댓값)이 큰 피처 Top-k만 보기 좋게 출력하는 코드이다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 특정 샘플이 전처리 후 어떤 피처로 바뀌는지 출력</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_transformed_features(preprocess, X_row, topk<span class="op">=</span><span class="dv">20</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    Xt <span class="op">=</span> preprocess.transform(X_row)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    feat <span class="op">=</span> preprocess.get_feature_names_out()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> pd.Series(Xt.ravel(), index<span class="op">=</span>feat)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 값이 큰 순으로(원핫은 0/1이라 topk로 보면 편함)</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> s.reindex(s.<span class="bu">abs</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>).head(topk).index)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> X_test.iloc[[i]]</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>display(show_transformed_features(preprocess, x0, topk<span class="op">=</span><span class="dv">30</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>출력은 전처리(preprocess)를 거친 뒤, 테스트 데이터 0번 샘플이 “모델 입력 피처 벡터”로 바뀐 값을 보여준다. (코드에서 get_feature_names_out() + preprocess.transform() 결과를 Series로 만든 것)</p>
+<p>cat__… (범주형 원-핫 인코딩) 해석</p>
+<p>원-핫 인코딩은 해당 범주면 1, 아니면 0입니다.</p>
+<p>cat__sex_Male = 1.0 → 이 샘플의 성별은 Male <br> cat__sex_Female = 0.0 → Female이 아님 <br> cat__island_Dream = 1.0 → 섬은 Dream <br> cat__island_Biscoe = 0.0, cat__island_Torgersen = 0.0 → 다른 섬이 아님 <br> 즉, “Dream 섬의 수컷”이라는 뜻이다.</p>
+<p>num__… (수치형 표준화 z-score) 해석</p>
+<p>수치형은 StandardScaler()가 적용되어 (값 − 평균) / 표준편차 형태의 표준화 점수(z-score) 로 변환된다. 그래서 단위(mm, g)가 사라지고, “훈련 데이터 평균 대비 몇 표준편차 위/아래인가”로 해석된다.</p>
+<p>num__bill_depth_mm = 0.663 → 부리 깊이가 평균보다 0.66 표준편차 정도 큼 (조금 큰 편) <br> num__bill_length_mm = -0.471 → 부리 길이가 평균보다 0.47 표준편차 정도 작음 (조금 작은 편) <br> num__body_mass_g = -0.262 → 몸무게가 평균보다 0.26 표준편차 정도 작음 (약간 가벼운 편) <br> num__flipper_length_mm = 0.013 → 지느러미 길이가 거의 평균 수준 (평균과 매우 비슷)</p>
+<p>이 값들이 모델에서 의미하는 것</p>
+<p>k-NN: 이 벡터들로 거리를 계산하니, 절댓값이 큰 항목(예: bill_depth 0.66, bill_length -0.47)이 거리/이웃 선택에 더 영향을 주기 쉬움</p>
+<pre class="text"><code>cat__sex_Male   1.000000
+cat__island_Dream   1.000000
+num__bill_depth_mm  0.663008
+num__bill_length_mm -0.470502
+num__body_mass_g    -0.262136
+num__flipper_length_mm  0.013088
+cat__island_Biscoe  0.000000
+cat__island_Torgersen   0.000000
+cat__sex_Female 0.000000</code></pre>
+<p>이웃 개체 거리 정보</p>
+<p>다음 코드는 k-NN 모델이 특정 샘플 1개(<code>X_row</code>)를 어떤 근거로 분류했는지를 “이웃 기반”으로 설명하기 위한 함수이다. 입력으로는 전처리+모델이 묶인 <code>Pipeline</code>(<code>pipeline</code>), 학습 데이터 <code>X_train</code>, 학습 라벨 <code>y_train</code>, 설명 대상 1행 데이터프레임 <code>X_row</code>, 그리고 이웃 수 <code>k</code>를 받는다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#kNN 분류 과정 출력: “어떤 이웃들이 결정했는지”</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> explain_knn(pipeline, X_train, y_train, X_row, k<span class="op">=</span><span class="dv">15</span>):</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    pre <span class="op">=</span> pipeline.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    knn <span class="op">=</span> pipeline.named_steps[<span class="st">"knn"</span>]</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    Xt_row <span class="op">=</span> pre.transform(X_row)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    dist, ind <span class="op">=</span> knn.kneighbors(Xt_row, n_neighbors<span class="op">=</span>k, return_distance<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    dist, ind <span class="op">=</span> dist[<span class="dv">0</span>], ind[<span class="dv">0</span>]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    neigh <span class="op">=</span> X_train.iloc[ind].copy()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    neigh[<span class="st">"y"</span>] <span class="op">=</span> y_train.iloc[ind].to_numpy()</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    neigh[<span class="st">"distance"</span>] <span class="op">=</span> dist</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># weights="distance"인 경우 가중치(거리의 역수)로 투표가 이루어짐</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">getattr</span>(knn, <span class="st">"weights"</span>, <span class="va">None</span>) <span class="op">==</span> <span class="st">"distance"</span>:</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>        w <span class="op">=</span> <span class="fl">1.0</span> <span class="op">/</span> (dist <span class="op">+</span> <span class="fl">1e-12</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        w <span class="op">=</span> np.ones_like(dist)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    vote <span class="op">=</span> pd.Series(w).groupby(neigh[<span class="st">"y"</span>]).<span class="bu">sum</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> pipeline.predict(X_row)[<span class="dv">0</span>]</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    proba <span class="op">=</span> pipeline.predict_proba(X_row)[<span class="dv">0</span>]</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> knn.classes_</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"pred ="</span>, pred)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"proba ="</span>, <span class="bu">dict</span>(<span class="bu">zip</span>(classes, proba)))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[weighted vote by class]"</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    display(vote)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> neigh.sort_values(<span class="st">"distance"</span>)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> X_test.iloc[[i]]</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>display(explain_knn(knn_model, X_train, y_train, x0, k<span class="op">=</span><span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>출력은 “k-NN이 왜 Adelie라고 예측했는지”를 아주 직관적으로 보여준다.</p>
+<p>pred = Adelie: k-NN의 최종 예측 클래스가 Adelie라는 뜻이다. k개의 이웃(예: k=15)이 어느 클래스에 더 “가깝게/많이” 몰려있느냐로 결정된다.</p>
+<p>proba = {‘Adelie’: 1.0, ‘Chinstrap’: 0.0, ‘Gentoo’: 0.0}: predict_proba는 이웃들의 투표 결과를 확률처럼 정규화해서 보여준다.</p>
+<p>지금은 Adelie가 1.0(=100%)인 걸 보면, (거의 확실하게) 선택된 k개 이웃이 전부 Adelie이거나 거리 가중치 합이 Adelie 쪽에만 몰려 있다는 뜻이다. 그래서 모델이 “이 샘플은 Adelie일 가능성이 매우 높다”고 판단한 겁니다.</p>
+<p>[weighted vote by class]: weights=“distance”를 쓰면, 각 이웃의 표(투표)가 가까울수록 더 크게 반영된다. 보통 가중치가 1 / distance 형태로 들어간다. 그래서 [weighted vote by class]는 클래스별로 가중치 합(=투표 점수 합) 을 보여준다. 지금 결과가 사실상 Adelie로만 찍힌 건 “가까운 이웃들이 Adelie로만 구성”되었음을 의미한다.</p>
+<p>이 표는 가장 가까운 이웃들 일부를 보여준 거고, distance는 “전처리(표준화 + 원핫)” 이후 공간에서의 거리라서 원래 단위(mm, g) 그대로의 거리는 아니다. 가까운 이웃들이 전부 Adelie → 그래서 예측도 Adelie로 강하게 쏠림.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> Adelie</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>proba <span class="op">=</span> {<span class="st">'Adelie'</span>: np.float64(<span class="fl">1.0</span>), <span class="st">'Chinstrap'</span>: np.float64(<span class="fl">0.0</span>), <span class="st">'Gentoo'</span>: np.float64(<span class="fl">0.0</span>)}</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>island  bill_length_mm  bill_depth_mm   flipper_length_mm   body_mass_g sex y   distance</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="dv">97</span>  Dream   <span class="fl">40.3</span>    <span class="fl">18.5</span>    <span class="fl">196.0</span>   <span class="fl">4350.0</span>  Male    Adelie  <span class="fl">0.606939</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="dv">95</span>  Dream   <span class="fl">40.8</span>    <span class="fl">18.9</span>    <span class="fl">208.0</span>   <span class="fl">4300.0</span>  Male    Adelie  <span class="fl">0.671009</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="dv">139</span> Dream   <span class="fl">39.7</span>    <span class="fl">17.9</span>    <span class="fl">193.0</span>   <span class="fl">4250.0</span>  Male    Adelie  <span class="fl">0.791762</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="dv">137</span> Dream   <span class="fl">40.2</span>    <span class="fl">20.1</span>    <span class="fl">200.0</span>   <span class="fl">3975.0</span>  Male    Adelie  <span class="fl">0.836881</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="dv">135</span> Dream   <span class="fl">41.1</span>    <span class="fl">17.5</span>    <span class="fl">190.0</span>   <span class="fl">3900.0</span>  Male    Adelie  <span class="fl">0.947113</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="dv">133</span> Dream   <span class="fl">37.5</span>    <span class="fl">18.5</span>    <span class="fl">199.0</span>   <span class="fl">4475.0</span>  Male    Adelie  <span class="fl">0.952186</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="dv">149</span> Dream   <span class="fl">37.8</span>    <span class="fl">18.1</span>    <span class="fl">193.0</span>   <span class="fl">3750.0</span>  Male    Adelie  <span class="fl">0.962429</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="dv">43</span>  Dream   <span class="fl">44.1</span>    <span class="fl">19.7</span>    <span class="fl">196.0</span>   <span class="fl">4400.0</span>  Male    Adelie  <span class="fl">0.981460</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="dv">143</span> Dream   <span class="fl">40.7</span>    <span class="fl">17.0</span>    <span class="fl">190.0</span>   <span class="fl">3725.0</span>  Male    Adelie  <span class="fl">1.151793</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="dv">45</span>  Dream   <span class="fl">39.6</span>    <span class="fl">18.8</span>    <span class="fl">190.0</span>   <span class="fl">4600.0</span>  Male    Adelie  <span class="fl">1.153475</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="dv">85</span>  Dream   <span class="fl">41.3</span>    <span class="fl">20.3</span>    <span class="fl">194.0</span>   <span class="fl">3550.0</span>  Male    Adelie  <span class="fl">1.173729</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="dv">36</span>  Dream   <span class="fl">38.8</span>    <span class="fl">20.0</span>    <span class="fl">190.0</span>   <span class="fl">3950.0</span>  Male    Adelie  <span class="fl">1.197918</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="dv">33</span>  Dream   <span class="fl">40.9</span>    <span class="fl">18.9</span>    <span class="fl">184.0</span>   <span class="fl">3900.0</span>  Male    Adelie  <span class="fl">1.250992</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="dv">93</span>  Dream   <span class="fl">39.6</span>    <span class="fl">18.1</span>    <span class="fl">186.0</span>   <span class="fl">4450.0</span>  Male    Adelie  <span class="fl">1.281267</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="dv">145</span> Dream   <span class="fl">39.0</span>    <span class="fl">18.7</span>    <span class="fl">185.0</span>   <span class="fl">3650.0</span>  Male    Adelie  <span class="fl">1.317596</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="svm" class="level5">
+<h5 class="anchored" data-anchor-id="svm">(2) SVM</h5>
+<p><strong>실행 코드</strong></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>knn_model <span class="op">=</span> Pipeline([</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"preprocess"</span>, preprocess),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"knn"</span>, KNeighborsClassifier(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        n_neighbors<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        weights<span class="op">=</span><span class="st">"distance"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        p<span class="op">=</span><span class="dv">2</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>knn_model.fit(X_train, y_train)         <span class="co"># (전체학습 시)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_svm.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, classification_report, ConfusionMatrixDisplay</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>y_pred_svm <span class="op">=</span> svm_model.predict(X_test)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 라벨(클래스 이름) 가져오기: data.target_names 대신 사용</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> svm_model.named_steps[<span class="st">"svm"</span>].classes_   <span class="co"># 예: ['Adelie','Chinstrap','Gentoo']</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 평가</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[k-NN] Accuracy:"</span>, accuracy_score(y_test, y_pred_svm))</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred_svm, labels<span class="op">=</span>labels)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[k-NN] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, cm)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[k-NN] Classification report:</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>      classification_report(y_test, y_pred_svm,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                            labels<span class="op">=</span>labels,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                            target_names<span class="op">=</span>labels.tolist()))</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (선택) 보기 좋게 그림으로 출력</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>disp <span class="op">=</span> ConfusionMatrixDisplay(confusion_matrix<span class="op">=</span>cm, display_labels<span class="op">=</span>labels)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>disp.plot(values_format<span class="op">=</span><span class="st">"d"</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[k-NN] Accuracy: 0.9855072463768116
+[k-NN] Confusion matrix:
+ [[29  1  0]
+ [ 0 14  0]
+ [ 0  0 25]]
+[k-NN] Classification report:
+               precision    recall  f1-score   support
+
+      Adelie       1.00      0.97      0.98        30
+   Chinstrap       0.93      1.00      0.97        14
+      Gentoo       1.00      1.00      1.00        25
+
+    accuracy                           0.99        69
+   macro avg       0.98      0.99      0.98        69
+weighted avg       0.99      0.99      0.99        69</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_svmconfusion.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p><strong>사후확률 출력</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#사후확률 </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.calibration <span class="im">import</span> CalibratedClassifierCV</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># svm_model 자체가 Pipeline이어도 그대로 감쌀 수 있습니다.</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>svm_cal <span class="op">=</span> CalibratedClassifierCV(svm_model, method<span class="op">=</span><span class="st">"sigmoid"</span>, cv<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>svm_cal.fit(X_train, y_train)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>proba_svm <span class="op">=</span> svm_cal.predict_proba(X_test)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>classes_svm <span class="op">=</span> svm_cal.classes_</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>proba_svm_df <span class="op">=</span> pd.DataFrame(proba_svm, columns<span class="op">=</span>classes_svm)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>display(proba_svm_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+Adelie  Chinstrap   Gentoo
+0   0.895637    0.077118    0.027245
+1   0.944391    0.029562    0.026046
+2   0.017208    0.026771    0.956021
+3   0.036579    0.002759    0.960662
+4   0.122979    0.866984    0.010037</code></pre>
+<p><strong>임계값 출력</strong></p>
+<p>POS_LABEL = “Gentoo”: 양성, 다른 두 종은 “Adelie” / “Chinstrap” 음성으로 분류하는 ROC/PR(AUC/AP) 계산, 임계값 3종(Youden / FPR 제약 / 비용기반) 선택, 모델별 비교표(DataFrame) 생성한다.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, auc, average_precision_score, confusion_matrix</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 멀티클래스에서 "양성 클래스" 하나를 지정 (원하는 걸로 바꾸세요)</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>POS_LABEL <span class="op">=</span> <span class="st">"Gentoo"</span>   <span class="co"># "Adelie" / "Chinstrap" 도 가능</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _get_classes(model):</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Pipeline이면 마지막 estimator의 classes_를 가져오도록 보강</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> <span class="bu">getattr</span>(model, <span class="st">"classes_"</span>, <span class="va">None</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> classes <span class="kw">is</span> <span class="va">None</span> <span class="kw">and</span> <span class="bu">hasattr</span>(model, <span class="st">"named_steps"</span>):</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>        last <span class="op">=</span> <span class="bu">list</span>(model.named_steps.values())[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        classes <span class="op">=</span> <span class="bu">getattr</span>(last, <span class="st">"classes_"</span>, <span class="va">None</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span> <span class="cf">if</span> classes <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> np.array(classes)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pos_score(model, X, pos_label):</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> _get_classes(model)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1) predict_proba 우선</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"predict_proba"</span>):</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        proba <span class="op">=</span> model.predict_proba(X)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        proba <span class="op">=</span> np.asarray(proba)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> proba.ndim <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> proba</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> classes <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"classes_를 찾지 못했습니다. (Pipeline/Estimator 확인 필요)"</span>)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> np.where(classes <span class="op">==</span> pos_label)[<span class="dv">0</span>]</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(idx) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"pos_label=</span><span class="sc">{</span>pos_label<span class="sc">}</span><span class="ss"> 가 classes_에 없습니다: </span><span class="sc">{</span>classes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> proba[:, idx[<span class="dv">0</span>]]</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2) 없으면 decision_function 사용 (LinearSVC는 여기로 옴)</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"decision_function"</span>):</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> np.asarray(model.decision_function(X))</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> s.ndim <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> s</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> s.ndim <span class="op">==</span> <span class="dv">2</span>:</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> classes <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>                <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"decision_function이 2D인데 classes_를 찾지 못했습니다."</span>)</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>            idx <span class="op">=</span> np.where(classes <span class="op">==</span> pos_label)[<span class="dv">0</span>]</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(idx) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>                <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"pos_label=</span><span class="sc">{</span>pos_label<span class="sc">}</span><span class="ss"> 가 classes_에 없습니다: </span><span class="sc">{</span>classes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> s[:, idx[<span class="dv">0</span>]]</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">type</span>(model)<span class="sc">}</span><span class="ss">: predict_proba/decision_function 둘 다 없습니다."</span>)</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metrics_at_threshold(y_true01, score, t):</span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> (score <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>)</span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>    cm <span class="op">=</span> confusion_matrix(y_true01, y_hat, labels<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>    tn, fp, fn, tp <span class="op">=</span> cm.ravel()</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>    tpr <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> fn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>    fpr <span class="op">=</span> fp <span class="op">/</span> (fp <span class="op">+</span> tn) <span class="cf">if</span> (fp <span class="op">+</span> tn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>    prec <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp) <span class="cf">if</span> (tp <span class="op">+</span> fp) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>        <span class="st">"t"</span>: <span class="bu">float</span>(t),</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tn"</span>: <span class="bu">int</span>(tn), <span class="st">"fp"</span>: <span class="bu">int</span>(fp), <span class="st">"fn"</span>: <span class="bu">int</span>(fn), <span class="st">"tp"</span>: <span class="bu">int</span>(tp),</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>        <span class="st">"recall(tpr)"</span>: <span class="bu">float</span>(tpr),</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>        <span class="st">"fpr"</span>: <span class="bu">float</span>(fpr),</span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>        <span class="st">"precision"</span>: <span class="bu">float</span>(prec),</span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>        <span class="st">"accuracy"</span>: <span class="bu">float</span>(acc),</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> best_thresholds(y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)  <span class="co"># y_true01은 0/1이어야 함</span></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>    roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a>    ap <span class="op">=</span> average_precision_score(y_true01, score)</span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>    finite <span class="op">=</span> np.isfinite(thr)</span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>    thr_fin, fpr_fin, tpr_fin <span class="op">=</span> thr[finite], fpr[finite], tpr[finite]</span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (A) Youden</span></span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> tpr_fin <span class="op">-</span> fpr_fin</span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>    t_y <span class="op">=</span> <span class="bu">float</span>(thr_fin[np.argmax(J)])</span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (B) FPR&lt;=alpha 중 TPR 최대</span></span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>    cand <span class="op">=</span> np.where((fpr_fin <span class="op">&lt;=</span> alpha) <span class="op">&amp;</span> (tpr_fin <span class="op">&gt;</span> <span class="dv">0</span>))[<span class="dv">0</span>]</span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>    t_f <span class="op">=</span> <span class="bu">float</span>(thr_fin[cand[np.argmax(tpr_fin[cand])]]) <span class="cf">if</span> <span class="bu">len</span>(cand) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (C) 비용 기반</span></span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>    cand_thr <span class="op">=</span> np.r_[<span class="op">-</span>np.inf, thr_fin, np.inf]</span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>    best_t, best_cost <span class="op">=</span> <span class="va">None</span>, np.inf</span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> cand_thr:</span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, t)</span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>        cost <span class="op">=</span> c_fn <span class="op">*</span> m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp <span class="op">*</span> m[<span class="st">"fp"</span>]</span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cost <span class="op">&lt;</span> best_cost:</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>            best_cost, best_t <span class="op">=</span> cost, <span class="bu">float</span>(t)</span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"roc_auc"</span>: <span class="bu">float</span>(roc_auc), <span class="st">"ap"</span>: <span class="bu">float</span>(ap),</span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>            <span class="st">"t_youden"</span>: t_y, <span class="st">"t_fpr"</span>: t_f,</span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>            <span class="st">"t_cost"</span>: best_t, <span class="st">"best_cost"</span>: <span class="bu">float</span>(best_cost)}</span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_model(model_name, y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>    info <span class="op">=</span> best_thresholds(y_true01, score, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Youden</span></span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> metrics_at_threshold(y_true01, score, info[<span class="st">"t_youden"</span>])</span>
+<span id="cb16-101"><a href="#cb16-101" aria-hidden="true" tabindex="-1"></a>    m.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="st">"Youden (TPR-FPR)"</span>,</span>
+<span id="cb16-102"><a href="#cb16-102" aria-hidden="true" tabindex="-1"></a>              <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>],</span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a>              <span class="st">"cost"</span>: c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]})</span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a>    rows.append(m)</span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FPR constraint</span></span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> info[<span class="st">"t_fpr"</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, info[<span class="st">"t_fpr"</span>])</span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>        m.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>],</span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"cost"</span>: c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]})</span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>        rows.append(m)</span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>        rows.append({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"t"</span>: <span class="va">None</span>,</span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tn"</span>: <span class="va">None</span>, <span class="st">"fp"</span>: <span class="va">None</span>, <span class="st">"fn"</span>: <span class="va">None</span>, <span class="st">"tp"</span>: <span class="va">None</span>,</span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"recall(tpr)"</span>: <span class="va">None</span>, <span class="st">"fpr"</span>: <span class="va">None</span>, <span class="st">"precision"</span>: <span class="va">None</span>, <span class="st">"accuracy"</span>: <span class="va">None</span>,</span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>], <span class="st">"cost"</span>: <span class="va">None</span>})</span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cost-based</span></span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> metrics_at_threshold(y_true01, score, info[<span class="st">"t_cost"</span>])</span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>    m.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"Cost (c_fn=</span><span class="sc">{</span>c_fn<span class="sc">}</span><span class="ss">, c_fp=</span><span class="sc">{</span>c_fp<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>              <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>],</span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>              <span class="st">"cost"</span>: info[<span class="st">"best_cost"</span>]})</span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>    rows.append(m)</span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 실행부 (멀티클래스 → one-vs-rest로 0/1 만들기)</span></span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------</span></span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>y_test_arr <span class="op">=</span> np.asarray(y_test)</span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>y_pos <span class="op">=</span> (y_test_arr <span class="op">==</span> POS_LABEL).astype(<span class="bu">int</span>)</span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a><span class="co"># 양성/음성이 둘 다 있어야 ROC 계산 가능</span></span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> y_pos.<span class="bu">sum</span>() <span class="op">==</span> <span class="dv">0</span> <span class="kw">or</span> y_pos.<span class="bu">sum</span>() <span class="op">==</span> <span class="bu">len</span>(y_pos):</span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"y_test에 '</span><span class="sc">{</span>POS_LABEL<span class="sc">}</span><span class="ss">' 양성/음성이 한쪽만 있습니다. POS_LABEL이나 split을 확인하세요."</span>)</span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>    <span class="st">"k-NN"</span>: knn_model,</span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SVM(LinearSVC)"</span>: svm_model,</span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>c_fn, c_fp <span class="op">=</span> <span class="fl">100.0</span>, <span class="fl">1.0</span></span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> get_pos_score(model, X_test, pos_label<span class="op">=</span>POS_LABEL)  <span class="co"># ✅ POS_LABEL 컬럼 점수</span></span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">+=</span> summarize_model(name, y_pos, score, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>df_cmp <span class="op">=</span> pd.DataFrame(rows)[</span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span>,<span class="st">"rule"</span>,<span class="st">"t"</span>,<span class="st">"tn"</span>,<span class="st">"fp"</span>,<span class="st">"fn"</span>,<span class="st">"tp"</span>,<span class="st">"recall(tpr)"</span>,<span class="st">"fpr"</span>,<span class="st">"precision"</span>,<span class="st">"accuracy"</span>,<span class="st">"roc_auc"</span>,<span class="st">"ap"</span>,<span class="st">"cost"</span>]</span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>].sort_values([<span class="st">"rule"</span>,<span class="st">"model"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a>display(df_cmp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>왜 k-NN 점수가 1.0이 자주 나오나?</strong></p>
+<p>결과를 보면 ( tn=44, tp=25, fp=0, fn=0 )를 보면, k-NN의 POS_LABEL(Gentoo) 점수가 “1.0인 샘플 = 전부 Gentoo”, “1.0 미만 = 전부 비-Gentoo”로 완벽 분리가 된 상태이다. 그래서 Youden / FPR≤0.001 / Cost 같은 임계값 선택 규칙이 전부 “가장 높은 임계값” 쪽(=1.0)을 골라도 성능이 안 떨어져서 t가 항상 1.0으로 고정됩니다.</p>
+<p>k-NN의 predict_proba는 이웃들의 “투표 비율”이라서 이론적으로 0~1 사이의 이산값만 나온다. 특히 weights=“distance”일 때는 아래 상황에서 확률이 정확히 1.0이 쉽게 나온다. 거리 0인 이웃(완전히 동일한 전처리 결과) 이 존재 → scikit-learn은 거리 0이면 그 이웃(들)에게 사실상 모든 가중치가 몰려서 한 클래스 확률이 1.0이 될 수 있다.</p>
+<p>또는 k개 이웃이 전부 같은 클래스 → 그 클래스 확률이 1.0. 펭귄 데이터처럼 클래스가 잘 분리되거나, 결측치 대치/원핫/스케일링 후에 동일한 패턴이 생기면 이런 일이 더 잘 생깁니다.</p>
+<pre class="text"><code>    model   rule    t   tn  fp  fn  tp  recall(tpr) fpr precision   accuracy    roc_auc ap  cost
+0   SVM(LinearSVC)  Cost (c_fn=100.0, c_fp=1.0) 0.656852    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+1   k-NN    Cost (c_fn=100.0, c_fp=1.0) 1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+2   SVM(LinearSVC)  FPR &lt;= 0.001    0.656852    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+3   k-NN    FPR &lt;= 0.001    1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+4   SVM(LinearSVC)  Youden (TPR-FPR)    0.656852    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+5   k-NN    Youden (TPR-FPR)    1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>score_knn <span class="op">=</span> get_pos_score(knn_model, X_test, pos_label<span class="op">=</span>POS_LABEL)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>y_pos <span class="op">=</span> (np.asarray(y_test) <span class="op">==</span> POS_LABEL).astype(<span class="bu">int</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>pos_scores <span class="op">=</span> score_knn[y_pos <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>neg_scores <span class="op">=</span> score_knn[y_pos <span class="op">==</span> <span class="dv">0</span>]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"unique scores (top 20):"</span>, np.unique(score_knn)[:<span class="dv">20</span>])</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"count(score==1):"</span>, np.<span class="bu">sum</span>(score_knn <span class="op">==</span> <span class="fl">1.0</span>))</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pos min:"</span>, pos_scores.<span class="bu">min</span>(), <span class="st">"neg max:"</span>, neg_scores.<span class="bu">max</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>지금 출력은 k-NN이 Gentoo(POS_LABEL)를 거의 완벽하게 분리하고 있다는 신호예요.</p>
+<p>이 결과가 의미하는 것</p>
+<p>unique scores = [0, 0.03668, 0.05069, 1] → Gentoo 확률(p(Gentoo))이 딱 4가지 값만 나옵니다.</p>
+<p>count(score==1): 25 → 테스트에서 p(Gentoo)=1인 샘플이 25개.</p>
+<p>pos min: 1.0 → 실제 Gentoo인 샘플은 전부 p(Gentoo)=1 (최소가 1이니까 전부 1).</p>
+<p>neg max: 0.050686… → Gentoo가 아닌 샘플 중 가장 큰 p(Gentoo)도 0.05 정도.</p>
+<p>즉, 테스트셋에서</p>
+<p>양성(Gentoo): 점수 = 전부 1</p>
+<p>음성(비 Gentoo): 점수 = 최대 0.0507</p>
+<p>이라서 <strong>0.0507과 1 사이에 큰 “간격(gap)”</strong>이 생깁니다. 그래서 임계값을 t로 잡을 때 0.0507 &lt; t ≤ 1 아무거나 선택해도 TPR=1, FPR=0 (완벽 분류)가 됩니다. 이런 경우 ROC/AUC, 임계값 탐색이 “이상하게 쉬워 보이거나” 값이 뭉쳐 보이는 게 정상이에요.</p>
+<p>왜 점수가 이렇게 “이산적(몇 개 값만)”일까?</p>
+<p>k-NN의 확률은 본질적으로 <strong>이웃들의 투표(가중치 합 / 전체 가중치 합)</strong>라서,</p>
+<p>데이터가 잘 분리되어 있으면 많은 점들이 이웃이 전부 Gentoo → 확률 1,</p>
+<p>혹은 Gentoo 이웃이 아예 없음 → 확률 0,</p>
+<p>경계 근처 일부만 “조금 섞여”서 0.03~0.05 같은 값이 나옵니다.</p>
+<p>(특히 펭귄 데이터는 Gentoo가 몇 개 수치 특성에서 꽤 깔끔하게 구분되는 편이라 이런 패턴이 자주 나옵니다.)</p>
+<pre class="text"><code>unique scores (top 20): [0.         0.03668167 0.05068641 1.        ]
+count(score==1): 25
+pos min: 1.0 neg max: 0.0506864093164956</code></pre>
+</section>
+</section>
+<section id="트리기반-분류" class="level4">
+<h4 class="anchored" data-anchor-id="트리기반-분류">4. 트리기반 분류</h4>
+<section id="logittreerfgb-모델-학습" class="level5">
+<h5 class="anchored" data-anchor-id="logittreerfgb-모델-학습">(1) logit/tree/rf/gb 모델 학습</h5>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier, GradientBoostingClassifier</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Logit</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>logit_model <span class="op">=</span> Pipeline([</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"preprocess"</span>, preprocess),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"logit"</span>, LogisticRegression(max_iter<span class="op">=</span><span class="dv">2000</span>))</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>logit_model.fit(X_train, y_train)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tree</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>tree_model <span class="op">=</span> Pipeline([</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"preprocess"</span>, preprocess),</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"tree"</span>, DecisionTreeClassifier(random_state<span class="op">=</span><span class="dv">42</span>))</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>tree_model.fit(X_train, y_train)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co"># RandomForest</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>rf_model <span class="op">=</span> Pipeline([</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"preprocess"</span>, preprocess),</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"rf"</span>, RandomForestClassifier(</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">300</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>rf_model.fit(X_train, y_train)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a><span class="co"># GradientBoosting</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>gb_model <span class="op">=</span> Pipeline([</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"preprocess"</span>, preprocess),</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"gb"</span>, GradientBoostingClassifier(random_state<span class="op">=</span><span class="dv">42</span>))</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>gb_model.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_treebase.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p><strong>모델평가 및 임계값 t 결정</strong></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, auc, average_precision_score, confusion_matrix</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _get_classes(model):</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1) 일반 estimator</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"classes_"</span>):</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.array(model.classes_)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2) Pipeline이면 마지막 step에서 classes_</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"named_steps"</span>):</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        last <span class="op">=</span> <span class="bu">list</span>(model.named_steps.values())[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">hasattr</span>(last, <span class="st">"classes_"</span>):</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> np.array(last.classes_)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_pos_score(model, X, pos_label<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1) predict_proba 우선</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"predict_proba"</span>):</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        proba <span class="op">=</span> np.asarray(model.predict_proba(X))</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> proba.ndim <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> proba</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>        classes <span class="op">=</span> _get_classes(model)</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> classes <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"classes_를 찾지 못했습니다. (Pipeline/Estimator 확인 필요)"</span>)</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> np.where(classes <span class="op">==</span> pos_label)[<span class="dv">0</span>]</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(idx) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"pos_label=</span><span class="sc">{</span>pos_label<span class="sc">}</span><span class="ss"> 가 classes_에 없습니다: </span><span class="sc">{</span>classes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> proba[:, idx[<span class="dv">0</span>]]</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2) 없으면 decision_function (LinearSVC 등)</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">hasattr</span>(model, <span class="st">"decision_function"</span>):</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>        s <span class="op">=</span> np.asarray(model.decision_function(X))</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> s.ndim <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> s.ravel()</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>        classes <span class="op">=</span> _get_classes(model)</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> classes <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"decision_function이 2D인데 classes_를 찾지 못했습니다."</span>)</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>        idx <span class="op">=</span> np.where(classes <span class="op">==</span> pos_label)[<span class="dv">0</span>]</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(idx) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"pos_label=</span><span class="sc">{</span>pos_label<span class="sc">}</span><span class="ss"> 가 classes_에 없습니다: </span><span class="sc">{</span>classes<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> s[:, idx[<span class="dv">0</span>]]</span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f"</span><span class="sc">{</span><span class="bu">type</span>(model)<span class="sc">}</span><span class="ss">: predict_proba/decision_function 둘 다 없음"</span>)</span>
+<span id="cb21-44"><a href="#cb21-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-45"><a href="#cb21-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metrics_at_threshold(y_true01, score, t):</span>
+<span id="cb21-46"><a href="#cb21-46" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> (score <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>)</span>
+<span id="cb21-47"><a href="#cb21-47" aria-hidden="true" tabindex="-1"></a>    cm <span class="op">=</span> confusion_matrix(y_true01, y_hat, labels<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>])  <span class="co"># ✅ 항상 2x2 보장</span></span>
+<span id="cb21-48"><a href="#cb21-48" aria-hidden="true" tabindex="-1"></a>    tn, fp, fn, tp <span class="op">=</span> cm.ravel()</span>
+<span id="cb21-49"><a href="#cb21-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-50"><a href="#cb21-50" aria-hidden="true" tabindex="-1"></a>    tpr <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> fn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb21-51"><a href="#cb21-51" aria-hidden="true" tabindex="-1"></a>    fpr <span class="op">=</span> fp <span class="op">/</span> (fp <span class="op">+</span> tn) <span class="cf">if</span> (fp <span class="op">+</span> tn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb21-52"><a href="#cb21-52" aria-hidden="true" tabindex="-1"></a>    prec <span class="op">=</span> tp <span class="op">/</span> (tp <span class="op">+</span> fp) <span class="cf">if</span> (tp <span class="op">+</span> fp) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>    acc <span class="op">=</span> (tp <span class="op">+</span> tn) <span class="op">/</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn) <span class="cf">if</span> (tp <span class="op">+</span> tn <span class="op">+</span> fp <span class="op">+</span> fn) <span class="cf">else</span> <span class="fl">0.0</span></span>
+<span id="cb21-54"><a href="#cb21-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"t"</span>: <span class="bu">float</span>(t), <span class="st">"tn"</span>: <span class="bu">int</span>(tn), <span class="st">"fp"</span>: <span class="bu">int</span>(fp), <span class="st">"fn"</span>: <span class="bu">int</span>(fn), <span class="st">"tp"</span>: <span class="bu">int</span>(tp),</span>
+<span id="cb21-55"><a href="#cb21-55" aria-hidden="true" tabindex="-1"></a>            <span class="st">"recall(tpr)"</span>: <span class="bu">float</span>(tpr), <span class="st">"fpr"</span>: <span class="bu">float</span>(fpr), <span class="st">"precision"</span>: <span class="bu">float</span>(prec), <span class="st">"accuracy"</span>: <span class="bu">float</span>(acc)}</span>
+<span id="cb21-56"><a href="#cb21-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-57"><a href="#cb21-57" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> best_thresholds(y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb21-58"><a href="#cb21-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ✅ ROC 계산 가능 여부 체크 (한 클래스만 있으면 roc_curve가 에러)</span></span>
+<span id="cb21-59"><a href="#cb21-59" aria-hidden="true" tabindex="-1"></a>    y_true01 <span class="op">=</span> np.asarray(y_true01).astype(<span class="bu">int</span>)</span>
+<span id="cb21-60"><a href="#cb21-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> y_true01.<span class="bu">sum</span>() <span class="op">==</span> <span class="dv">0</span> <span class="kw">or</span> y_true01.<span class="bu">sum</span>() <span class="op">==</span> <span class="bu">len</span>(y_true01):</span>
+<span id="cb21-61"><a href="#cb21-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"y_true01에 0/1이 둘 다 있어야 ROC 계산이 가능합니다. split/데이터 확인!"</span>)</span>
+<span id="cb21-62"><a href="#cb21-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-63"><a href="#cb21-63" aria-hidden="true" tabindex="-1"></a>    fpr, tpr, thr <span class="op">=</span> roc_curve(y_true01, score)</span>
+<span id="cb21-64"><a href="#cb21-64" aria-hidden="true" tabindex="-1"></a>    roc_auc <span class="op">=</span> auc(fpr, tpr)</span>
+<span id="cb21-65"><a href="#cb21-65" aria-hidden="true" tabindex="-1"></a>    ap <span class="op">=</span> average_precision_score(y_true01, score)</span>
+<span id="cb21-66"><a href="#cb21-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-67"><a href="#cb21-67" aria-hidden="true" tabindex="-1"></a>    finite <span class="op">=</span> np.isfinite(thr)</span>
+<span id="cb21-68"><a href="#cb21-68" aria-hidden="true" tabindex="-1"></a>    thr_fin, fpr_fin, tpr_fin <span class="op">=</span> thr[finite], fpr[finite], tpr[finite]</span>
+<span id="cb21-69"><a href="#cb21-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-70"><a href="#cb21-70" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (A) Youden</span></span>
+<span id="cb21-71"><a href="#cb21-71" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> tpr_fin <span class="op">-</span> fpr_fin</span>
+<span id="cb21-72"><a href="#cb21-72" aria-hidden="true" tabindex="-1"></a>    t_y <span class="op">=</span> <span class="bu">float</span>(thr_fin[np.argmax(J)])</span>
+<span id="cb21-73"><a href="#cb21-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-74"><a href="#cb21-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (B) FPR&lt;=alpha 중 TPR 최대</span></span>
+<span id="cb21-75"><a href="#cb21-75" aria-hidden="true" tabindex="-1"></a>    cand <span class="op">=</span> np.where((fpr_fin <span class="op">&lt;=</span> alpha) <span class="op">&amp;</span> (tpr_fin <span class="op">&gt;</span> <span class="dv">0</span>))[<span class="dv">0</span>]</span>
+<span id="cb21-76"><a href="#cb21-76" aria-hidden="true" tabindex="-1"></a>    t_f <span class="op">=</span> <span class="bu">float</span>(thr_fin[cand[np.argmax(tpr_fin[cand])]]) <span class="cf">if</span> <span class="bu">len</span>(cand) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb21-77"><a href="#cb21-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-78"><a href="#cb21-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (C) 비용 기반</span></span>
+<span id="cb21-79"><a href="#cb21-79" aria-hidden="true" tabindex="-1"></a>    cand_thr <span class="op">=</span> np.r_[<span class="op">-</span>np.inf, thr_fin, np.inf]</span>
+<span id="cb21-80"><a href="#cb21-80" aria-hidden="true" tabindex="-1"></a>    best_t, best_cost <span class="op">=</span> <span class="va">None</span>, np.inf</span>
+<span id="cb21-81"><a href="#cb21-81" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> cand_thr:</span>
+<span id="cb21-82"><a href="#cb21-82" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, t)</span>
+<span id="cb21-83"><a href="#cb21-83" aria-hidden="true" tabindex="-1"></a>        cost <span class="op">=</span> c_fn <span class="op">*</span> m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp <span class="op">*</span> m[<span class="st">"fp"</span>]</span>
+<span id="cb21-84"><a href="#cb21-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> cost <span class="op">&lt;</span> best_cost:</span>
+<span id="cb21-85"><a href="#cb21-85" aria-hidden="true" tabindex="-1"></a>            best_cost, best_t <span class="op">=</span> cost, <span class="bu">float</span>(t)</span>
+<span id="cb21-86"><a href="#cb21-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-87"><a href="#cb21-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"roc_auc"</span>: <span class="bu">float</span>(roc_auc), <span class="st">"ap"</span>: <span class="bu">float</span>(ap),</span>
+<span id="cb21-88"><a href="#cb21-88" aria-hidden="true" tabindex="-1"></a>            <span class="st">"t_youden"</span>: t_y, <span class="st">"t_fpr"</span>: t_f, <span class="st">"t_cost"</span>: best_t,</span>
+<span id="cb21-89"><a href="#cb21-89" aria-hidden="true" tabindex="-1"></a>            <span class="st">"best_cost"</span>: <span class="bu">float</span>(best_cost)}</span>
+<span id="cb21-90"><a href="#cb21-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-91"><a href="#cb21-91" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> summarize_model(model_name, y_true01, score, alpha<span class="op">=</span><span class="fl">0.001</span>, c_fn<span class="op">=</span><span class="fl">100.0</span>, c_fp<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb21-92"><a href="#cb21-92" aria-hidden="true" tabindex="-1"></a>    info <span class="op">=</span> best_thresholds(y_true01, score, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb21-93"><a href="#cb21-93" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb21-94"><a href="#cb21-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-95"><a href="#cb21-95" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> metrics_at_threshold(y_true01, score, info[<span class="st">"t_youden"</span>])</span>
+<span id="cb21-96"><a href="#cb21-96" aria-hidden="true" tabindex="-1"></a>    m.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="st">"Youden (TPR-FPR)"</span>,</span>
+<span id="cb21-97"><a href="#cb21-97" aria-hidden="true" tabindex="-1"></a>              <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>],</span>
+<span id="cb21-98"><a href="#cb21-98" aria-hidden="true" tabindex="-1"></a>              <span class="st">"cost"</span>: c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]})</span>
+<span id="cb21-99"><a href="#cb21-99" aria-hidden="true" tabindex="-1"></a>    rows.append(m)</span>
+<span id="cb21-100"><a href="#cb21-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-101"><a href="#cb21-101" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> info[<span class="st">"t_fpr"</span>] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb21-102"><a href="#cb21-102" aria-hidden="true" tabindex="-1"></a>        m <span class="op">=</span> metrics_at_threshold(y_true01, score, info[<span class="st">"t_fpr"</span>])</span>
+<span id="cb21-103"><a href="#cb21-103" aria-hidden="true" tabindex="-1"></a>        m.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>,</span>
+<span id="cb21-104"><a href="#cb21-104" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>],</span>
+<span id="cb21-105"><a href="#cb21-105" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"cost"</span>: c_fn<span class="op">*</span>m[<span class="st">"fn"</span>] <span class="op">+</span> c_fp<span class="op">*</span>m[<span class="st">"fp"</span>]})</span>
+<span id="cb21-106"><a href="#cb21-106" aria-hidden="true" tabindex="-1"></a>        rows.append(m)</span>
+<span id="cb21-107"><a href="#cb21-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb21-108"><a href="#cb21-108" aria-hidden="true" tabindex="-1"></a>        rows.append({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"FPR &lt;= </span><span class="sc">{</span>alpha<span class="sc">}</span><span class="ss">"</span>, <span class="st">"t"</span>: <span class="va">None</span>,</span>
+<span id="cb21-109"><a href="#cb21-109" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"tn"</span>: <span class="va">None</span>, <span class="st">"fp"</span>: <span class="va">None</span>, <span class="st">"fn"</span>: <span class="va">None</span>, <span class="st">"tp"</span>: <span class="va">None</span>,</span>
+<span id="cb21-110"><a href="#cb21-110" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"recall(tpr)"</span>: <span class="va">None</span>, <span class="st">"fpr"</span>: <span class="va">None</span>, <span class="st">"precision"</span>: <span class="va">None</span>, <span class="st">"accuracy"</span>: <span class="va">None</span>,</span>
+<span id="cb21-111"><a href="#cb21-111" aria-hidden="true" tabindex="-1"></a>                     <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>], <span class="st">"cost"</span>: <span class="va">None</span>})</span>
+<span id="cb21-112"><a href="#cb21-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-113"><a href="#cb21-113" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> metrics_at_threshold(y_true01, score, info[<span class="st">"t_cost"</span>])</span>
+<span id="cb21-114"><a href="#cb21-114" aria-hidden="true" tabindex="-1"></a>    m.update({<span class="st">"model"</span>: model_name, <span class="st">"rule"</span>: <span class="ss">f"Cost (c_fn=</span><span class="sc">{</span>c_fn<span class="sc">}</span><span class="ss">, c_fp=</span><span class="sc">{</span>c_fp<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb21-115"><a href="#cb21-115" aria-hidden="true" tabindex="-1"></a>              <span class="st">"roc_auc"</span>: info[<span class="st">"roc_auc"</span>], <span class="st">"ap"</span>: info[<span class="st">"ap"</span>], <span class="st">"cost"</span>: info[<span class="st">"best_cost"</span>]})</span>
+<span id="cb21-116"><a href="#cb21-116" aria-hidden="true" tabindex="-1"></a>    rows.append(m)</span>
+<span id="cb21-117"><a href="#cb21-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-118"><a href="#cb21-118" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rows</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 양성으로 볼 클래스 지정 (원하는 걸로 바꾸세요)</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>POS_LABEL <span class="op">=</span> <span class="st">"Gentoo"</span>   <span class="co"># "Adelie" / "Chinstrap" 도 가능</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ y_test(문자열) -&gt; 0/1로 변환</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>y_pos <span class="op">=</span> (np.asarray(y_test) <span class="op">==</span> POS_LABEL).astype(<span class="bu">int</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"k-NN"</span>: knn_model,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SVM(Linear+Calib)"</span>: svm_cal,   <span class="co"># 확률 쓰려면 calibration 버전</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Logit"</span>: logit_model,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Tree"</span>: tree_model,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RandomForest"</span>: rf_model,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GradientBoosting"</span>: gb_model</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>alpha <span class="op">=</span> <span class="fl">0.001</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>c_fn, c_fp <span class="op">=</span> <span class="fl">100.0</span>, <span class="fl">1.0</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> []</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, model <span class="kw">in</span> models.items():</span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ✅ pos_label을 1이 아니라 POS_LABEL(문자열)로!</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> get_pos_score(model, X_test, pos_label<span class="op">=</span>POS_LABEL)</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">+=</span> summarize_model(name, y_pos, score, alpha<span class="op">=</span>alpha, c_fn<span class="op">=</span>c_fn, c_fp<span class="op">=</span>c_fp)</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>df_cmp <span class="op">=</span> pd.DataFrame(rows)[</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span>,<span class="st">"rule"</span>,<span class="st">"t"</span>,<span class="st">"tn"</span>,<span class="st">"fp"</span>,<span class="st">"fn"</span>,<span class="st">"tp"</span>,<span class="st">"recall(tpr)"</span>,<span class="st">"fpr"</span>,<span class="st">"precision"</span>,<span class="st">"accuracy"</span>,<span class="st">"roc_auc"</span>,<span class="st">"ap"</span>,<span class="st">"cost"</span>]</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>].sort_values([<span class="st">"rule"</span>,<span class="st">"model"</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>display(df_cmp)</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>df_t <span class="op">=</span> df_cmp.pivot(index<span class="op">=</span><span class="st">"model"</span>, columns<span class="op">=</span><span class="st">"rule"</span>, values<span class="op">=</span><span class="st">"t"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+model   rule    t   tn  fp  fn  tp  recall(tpr) fpr precision   accuracy    roc_auc ap  cost
+0   GradientBoosting    Cost (c_fn=100.0, c_fp=1.0) 0.999803    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+1   Logit   Cost (c_fn=100.0, c_fp=1.0) 0.930046    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+2   RandomForest    Cost (c_fn=100.0, c_fp=1.0) 0.746667    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+3   SVM(Linear+Calib)   Cost (c_fn=100.0, c_fp=1.0) 0.635238    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+4   Tree    Cost (c_fn=100.0, c_fp=1.0) 1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+5   k-NN    Cost (c_fn=100.0, c_fp=1.0) 1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+6   GradientBoosting    FPR &lt;= 0.001    0.999803    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+7   Logit   FPR &lt;= 0.001    0.930046    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+8   RandomForest    FPR &lt;= 0.001    0.746667    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+9   SVM(Linear+Calib)   FPR &lt;= 0.001    0.635238    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+10  Tree    FPR &lt;= 0.001    1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+11  k-NN    FPR &lt;= 0.001    1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+12  GradientBoosting    Youden (TPR-FPR)    0.999803    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+13  Logit   Youden (TPR-FPR)    0.930046    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+14  RandomForest    Youden (TPR-FPR)    0.746667    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+15  SVM(Linear+Calib)   Youden (TPR-FPR)    0.635238    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+16  Tree    Youden (TPR-FPR)    1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0
+17  k-NN    Youden (TPR-FPR)    1.000000    44  0   0   25  1.0 0.0 1.0 1.0 1.0 1.0 0.0</code></pre>
+</section>
+<section id="다항로짓" class="level5">
+<h5 class="anchored" data-anchor-id="다항로짓">(2) 다항로짓</h5>
+<p><strong>혼동행렬 출력</strong></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#혼동행렬 출력</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, classification_report, ConfusionMatrixDisplay</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>y_pred_logit <span class="op">=</span> logit_model.predict(X_test)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 라벨(클래스 이름) 가져오기: data.target_names 대신 사용</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> logit_model.named_steps[<span class="st">"logit"</span>].classes_   <span class="co"># 예: ['Adelie','Chinstrap','Gentoo']</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 평가</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[logit]] Accuracy:"</span>, accuracy_score(y_test, y_pred_logit))</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred_logit, labels<span class="op">=</span>labels)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[logit] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, cm)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[logi] Classification report:</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>      classification_report(y_test, y_pred_logit,</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>                            labels<span class="op">=</span>labels,</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>                            target_names<span class="op">=</span>labels.tolist()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[logit]] Accuracy: 1.0
+[logit] Confusion matrix:
+ [[30  0  0]
+ [ 0 14  0]
+ [ 0  0 25]]
+[logi] Classification report:
+               precision    recall  f1-score   support
+
+      Adelie       1.00      1.00      1.00        30
+   Chinstrap       1.00      1.00      1.00        14
+      Gentoo       1.00      1.00      1.00        25
+
+    accuracy                           1.00        69
+   macro avg       1.00      1.00      1.00        69
+weighted avg       1.00      1.00      1.00        69</code></pre>
+<p><strong>사후확률 및 회귀계수 출력</strong></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#사후확률 출력 및 회귀계수</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 1) 사후확률(Posterior probabilities) =====</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>proba <span class="op">=</span> logit_model.predict_proba(X_test)  <span class="co"># (n_samples, n_classes)</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> logit_model.named_steps[<span class="st">"logit"</span>].classes_</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>proba_df <span class="op">=</span> pd.DataFrame(proba, columns<span class="op">=</span>classes)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>display(proba_df.head())</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 특정 클래스(예: POS_LABEL) 확률만 보고 싶으면:</span></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>POS_LABEL <span class="op">=</span> <span class="st">"Gentoo"</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>pos_proba <span class="op">=</span> proba_df[POS_LABEL]</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>display(pos_proba.head())</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 2) 회귀계수(coef) + 절편(intercept) =====</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>logit <span class="op">=</span> logit_model.named_steps[<span class="st">"logit"</span>]</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>pre  <span class="op">=</span> logit_model.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 전처리 후 feature 이름 뽑기 (sklearn 최신 버전 기준)</span></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>feat_names <span class="op">=</span> pre.get_feature_names_out()</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>coef <span class="op">=</span> logit.coef_               <span class="co"># (n_classes, n_features) 또는 (1, n_features)</span></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>intercept <span class="op">=</span> logit.intercept_     <span class="co"># (n_classes,) 또는 (1,)</span></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>coef_df <span class="op">=</span> pd.DataFrame(coef, columns<span class="op">=</span>feat_names, index<span class="op">=</span>classes)</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a>intercept_s <span class="op">=</span> pd.Series(intercept, index<span class="op">=</span>classes, name<span class="op">=</span><span class="st">"intercept"</span>)</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>display(intercept_s)</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>display(coef_df.iloc[:, :<span class="dv">10</span>].head())  <span class="co"># 일부만 미리보기</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 클래스별로 |계수| 큰 상위 15개 보기</span></span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>topk <span class="op">=</span> <span class="dv">15</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> classes:</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> coef_df.loc[c].sort_values(key<span class="op">=</span><span class="kw">lambda</span> x: np.<span class="bu">abs</span>(x), ascending<span class="op">=</span><span class="va">False</span>).head(topk)</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=== Top </span><span class="sc">{</span>topk<span class="sc">}</span><span class="ss"> coefficients for class: </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss"> ==="</span>)</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>    display(s)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>표에 나온 값(예: 0번 개체: Adelie 0.918, Chinstrap 0.069, Gentoo 0.012)은 그 개체가 각 종일 ‘확률’(모델의 추정 확률)이다. 즉 0번은 Adelie일 가능성이 약 91.8%로 가장 크므로 최종 분류는 Adelie로 분류된다.</p>
+<p>이런 식으로 사후확률은 “맞혔다/틀렸다”를 넘어서, 모델이 얼마나 확신하는지(불확실성)까지 보여주고, 확률이 한 클래스에 쏠리면(0.95 이상 등) 판정이 매우 견고하고, 세 값이 비슷하면 경계 사례(애매한 개체)이다.</p>
+<pre class="text"><code>Adelie  Chinstrap   Gentoo
+0   0.918290    0.069404    0.012307
+1   0.988199    0.008662    0.003139
+2   0.001760    0.008249    0.989991
+3   0.000773    0.000746    0.998481
+4   0.036945    0.962263    0.000792
+
+Gentoo
+0   0.012307
+1   0.003139
+2   0.989991
+3   0.998481
+4   0.000792</code></pre>
+<p>다항 로짓은 각 클래스 <span class="math inline">\(η_k​(x)=αk​+x⊤β_k​\)</span> 를 만든 뒤, softmax로 확률, <span class="math inline">\(P(Y=k∣x)=\frac{exp(ηk​)-max_j n_j}{∑_j​ exp(ηj​ - max_j n_j)}\)</span>​ 계산한다.</p>
+<p>따라서 계수 <span class="math inline">\(\beta_k\)</span> 는 변수 x가 커질 때 클래스 k의 점수(로그오즈)가 얼마나 증가/감소하는지를 뜻한다. 계수 양(+): 그 변수가 증가할수록 그 클래스일 가능성이 커지는 방향으로 계수 음(-): 그 변수가 증가할수록 그 클래스일 가능성이 작아지는 방향이다. 크기(절대값)가 클수록 영향이 크다.</p>
+<p>지금 출력된 변수들은 num__…는 표준화(평균0, 표준편차1) 된 값이라, “1 증가”는 원 단위 1mm가 아니라 1표준편차 증가이다. 그리고 범주형(섬/성별)은 원핫이므로 계수는 “그 범주일 때(1일 때) vs 아닐 때(0일 때)”의 효과이다.</p>
+<p><strong>Adelie 클래스</strong></p>
+<p>bill_length_mm 계수 -2.344 (큰 음수): 부리 길이가(표준화 기준으로) 길어질수록 Adelie일 가능성은 뚜렷하게 감소한다. 즉, 짧은 부리가 Adelie 쪽으로 강하게 작용한다.</p>
+<p>bill_depth_mm 계수 +0.991 (양수): 부리 깊이가 깊어질수록 Adelie일 확률이 증가한다. (깊은 부리 → Adelie 쪽)</p>
+<p>island_Torgersen 계수 +0.649 (양수): 서식지가 Torgersen이면 Adelie일 가능성이 상대적으로 높아진다.</p>
+<p>flipper_length_mm 계수 -0.572 (음수): 날개(플리퍼) 길이가 길수록 Adelie일 가능성은 감소한다. 즉, 플리퍼가 상대적으로 짧은 개체가 Adelie 일 가능성 높다.</p>
+<p>island_Dream 계수 -0.548 (음수): Dream 섬이면 Adelie 확률은 낮아지는 방향이다.</p>
+<p>sex_Male +0.468 / sex_Female -0.462 남성(수컷) 표시는 Adelie 쪽으로 약간 밀고, 암컷은 반대 방향이지만, 이 성별 효과는 부리/플리퍼 변수들에 비해 “결정타”라기보다는 보조적입니다.</p>
+<p>👉 요약하면, 이 모델에서 Adelie는 “짧은 부리 길이 + 깊은 부리 + 짧은 플리퍼 + (Torgersen)”의 조합으로 설명된다.</p>
+<p><strong>다른 2종에 대해서도 동일한 해석이 가능하다.</strong> 이 다항 로짓 모델은 펭귄 종을 구분할 때, 부리 길이/깊이와 플리퍼 길이, 체중, 그리고 섬(island) 정보가 핵심 결정요인으로 작동한다.</p>
+<p>Adelie는 상대적으로 짧은 부리 길이와 깊은 부리, 짧은 플리퍼(특히 Torgersen) 특징을 보이며, Chinstrap은 긴 부리와 Dream 섬, 비교적 가벼운 체중이 특징적이다. Gentoo는 Biscoe 섬에 있을 때 확률이 크게 증가하고, 긴 플리퍼와 큰 체중이 Gentoo 쪽으로 강하게 작동하는 반면, 부리 깊이는 Gentoo에 불리하게(얕을수록 Gentoo 유리) 작동한다.</p>
+<pre class="text"><code>dtype: float64
+intercept
+Adelie  0.626198
+Chinstrap   -0.487019
+Gentoo  -0.139179
+
+num__bill_length_mm num__bill_depth_mm  num__flipper_length_mm  num__body_mass_g    cat__island_Biscoe  cat__island_Dream   cat__island_Torgersen   cat__sex_Female cat__sex_Male
+Adelie  -2.344400   0.990900    -0.571682   0.00089 -0.094988   -0.548209   0.649429    -0.461786   0.468019
+Chinstrap   1.882937    0.344919    -0.287865   -0.74111    -0.770085   1.189199    -0.421828   0.516992    -0.519705
+Gentoo  0.461463    -1.335819   0.859546    0.74022 0.865073    -0.640990   -0.227602   -0.055206   0.051687
+
+=== Top 15 coefficients for class: Adelie ===
+Adelie
+num__bill_length_mm -2.344400
+num__bill_depth_mm  0.990900
+cat__island_Torgersen   0.649429
+num__flipper_length_mm  -0.571682
+cat__island_Dream   -0.548209
+cat__sex_Male   0.468019
+cat__sex_Female -0.461786
+cat__island_Biscoe  -0.094988
+num__body_mass_g    0.000890
+
+=== Top 15 coefficients for class: Chinstrap ===
+Chinstrap
+num__bill_length_mm 1.882937
+cat__island_Dream   1.189199
+cat__island_Biscoe  -0.770085
+num__body_mass_g    -0.741110
+cat__sex_Male   -0.519705
+cat__sex_Female 0.516992
+cat__island_Torgersen   -0.421828
+num__bill_depth_mm  0.344919
+num__flipper_length_mm  -0.287865
+
+=== Top 15 coefficients for class: Gentoo ===
+Gentoo
+num__bill_depth_mm  -1.335819
+cat__island_Biscoe  0.865073
+num__flipper_length_mm  0.859546
+num__body_mass_g    0.740220
+cat__island_Dream   -0.640990
+num__bill_length_mm 0.461463
+cat__island_Torgersen   -0.227602
+cat__sex_Female -0.055206
+cat__sex_Male   0.051687</code></pre>
+</section>
+<section id="tree-기반" class="level5">
+<h5 class="anchored" data-anchor-id="tree-기반">(3) tree 기반</h5>
+<p><strong>혼동행렬 출력</strong></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, classification_report, ConfusionMatrixDisplay</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>y_pred_tree <span class="op">=</span> tree_model.predict(X_test)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 라벨(클래스 이름) 가져오기: data.target_names 대신 사용</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> tree_model.named_steps[<span class="st">"tree"</span>].classes_   <span class="co"># 예: ['Adelie','Chinstrap','Gentoo']</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 평가</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[tree] Accuracy:"</span>, accuracy_score(y_test, y_pred_tree))</span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred_tree, labels<span class="op">=</span>labels)</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[tree] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, cm)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[tree] Classification report:</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>      classification_report(y_test, y_pred_tree,</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>                            labels<span class="op">=</span>labels,</span>
+<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>                            target_names<span class="op">=</span>labels.tolist()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[tree] Accuracy: 1.0
+[tree] Confusion matrix:
+ [[30  0  0]
+ [ 0 14  0]
+ [ 0  0 25]]
+[tree] Classification report:
+               precision    recall  f1-score   support
+
+      Adelie       1.00      1.00      1.00        30
+   Chinstrap       1.00      1.00      1.00        14
+      Gentoo       1.00      1.00      1.00        25
+
+    accuracy                           1.00        69
+   macro avg       1.00      1.00      1.00        69
+weighted avg       1.00      1.00      1.00        69</code></pre>
+<p><strong>사후확률 출력</strong></p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#사후 확률 출력</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (n_samples, n_classes)</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>proba_tree <span class="op">=</span> tree_model.predict_proba(X_test)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>tree_clf <span class="op">=</span> tree_model.named_steps[<span class="st">"tree"</span>]</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>classes_tree <span class="op">=</span> tree_clf.classes_</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>proba_tree_df <span class="op">=</span> pd.DataFrame(proba_tree, columns<span class="op">=</span>classes_tree)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>display(proba_tree_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Adelie  Chinstrap   Gentoo
+0   1.0 0.0 0.0
+1   1.0 0.0 0.0
+2   0.0 0.0 1.0
+3   0.0 0.0 1.0
+4   0.0 1.0 0.0</code></pre>
+<p><strong>의사결정 출력</strong></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> explain_tree_path(pipeline, X_row, feature_names<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co">    pipeline: tree_model (preprocess + tree)</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">    X_row: DataFrame 1행 (예: X_test.iloc[[i]])</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>    pre <span class="op">=</span> pipeline.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>    clf <span class="op">=</span> pipeline.named_steps[<span class="st">"tree"</span>]</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 전처리된 2D 행렬</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    Xt <span class="op">=</span> pre.transform(X_row)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># feature name</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> feature_names <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>        feature_names <span class="op">=</span> pre.get_feature_names_out()</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># decision path</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>    node_indicator <span class="op">=</span> clf.decision_path(Xt)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>    leaf_id <span class="op">=</span> clf.<span class="bu">apply</span>(Xt)[<span class="dv">0</span>]</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    tree_ <span class="op">=</span> clf.tree_</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>    node_index <span class="op">=</span> node_indicator.indices[</span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>        node_indicator.indptr[<span class="dv">0</span>] : node_indicator.indptr[<span class="dv">1</span>]</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> node_id <span class="kw">in</span> node_index:</span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> node_id <span class="op">==</span> leaf_id:</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a>            <span class="co"># leaf에서의 class count / posterior</span></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>            counts <span class="op">=</span> tree_.value[node_id][<span class="dv">0</span>]  <span class="co"># (n_classes,)</span></span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>            probs <span class="op">=</span> counts <span class="op">/</span> counts.<span class="bu">sum</span>() <span class="cf">if</span> counts.<span class="bu">sum</span>() <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> counts</span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>            rows.append({</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>                <span class="st">"node"</span>: <span class="bu">int</span>(node_id),</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>                <span class="st">"type"</span>: <span class="st">"LEAF"</span>,</span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>                <span class="st">"class_counts"</span>: counts.tolist(),</span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>                <span class="st">"posterior"</span>: {<span class="bu">str</span>(c): <span class="bu">float</span>(p) <span class="cf">for</span> c, p <span class="kw">in</span> <span class="bu">zip</span>(clf.classes_, probs)}</span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>            f <span class="op">=</span> tree_.feature[node_id]</span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a>            thr <span class="op">=</span> tree_.threshold[node_id]</span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a>            feat_name <span class="op">=</span> feature_names[f]</span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a>            val <span class="op">=</span> Xt[<span class="dv">0</span>, f]</span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a>            direction <span class="op">=</span> <span class="st">"LEFT (&lt;=)"</span> <span class="cf">if</span> val <span class="op">&lt;=</span> thr <span class="cf">else</span> <span class="st">"RIGHT (&gt;)"</span></span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>            rows.append({</span>
+<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a>                <span class="st">"node"</span>: <span class="bu">int</span>(node_id),</span>
+<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a>                <span class="st">"type"</span>: <span class="st">"SPLIT"</span>,</span>
+<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a>                <span class="st">"feature"</span>: feat_name,</span>
+<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a>                <span class="st">"value_in_node"</span>: <span class="bu">float</span>(val),</span>
+<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a>                <span class="st">"threshold"</span>: <span class="bu">float</span>(thr),</span>
+<span id="cb33-52"><a href="#cb33-52" aria-hidden="true" tabindex="-1"></a>                <span class="st">"go"</span>: direction</span>
+<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb33-54"><a href="#cb33-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-55"><a href="#cb33-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(rows), <span class="bu">int</span>(leaf_id)</span>
+<span id="cb33-56"><a href="#cb33-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-57"><a href="#cb33-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 사용 예시: i번째 테스트 샘플 경로 보기</span></span>
+<span id="cb33-58"><a href="#cb33-58" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb33-59"><a href="#cb33-59" aria-hidden="true" tabindex="-1"></a>path_df, leaf <span class="op">=</span> explain_tree_path(tree_model, X_test.iloc[[i]])</span>
+<span id="cb33-60"><a href="#cb33-60" aria-hidden="true" tabindex="-1"></a>display(path_df)</span>
+<span id="cb33-61"><a href="#cb33-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-62"><a href="#cb33-62" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측/확률도 같이 확인</span></span>
+<span id="cb33-63"><a href="#cb33-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pred ="</span>, tree_model.predict(X_test.iloc[[i]])[<span class="dv">0</span>])</span>
+<span id="cb33-64"><a href="#cb33-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"proba ="</span>, <span class="bu">dict</span>(<span class="bu">zip</span>(tree_model.named_steps[<span class="st">"tree"</span>].classes_,</span>
+<span id="cb33-65"><a href="#cb33-65" aria-hidden="true" tabindex="-1"></a>                         tree_model.predict_proba(X_test.iloc[[i]])[<span class="dv">0</span>])))</span>
+<span id="cb33-66"><a href="#cb33-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"leaf ="</span>, leaf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>모델: 결정트리(전처리 포함)</strong></p>
+<p>대상: 테스트 데이터 중 특정 개체 1개 <br> 결과: 예측 클래스: Adelie <br> 사후확률: P(Adelie)=1.0,P(Chinstrap)=0,P(Gentoo)=0 <br> 최종 도착 리프: leaf = 7</p>
+<p><strong>단계별 분기 해석 (의사결정 과정)</strong></p>
+<p>첫 번째 분기: 조건 flipper_length_mm≤0.409, 이 값은 표준화된 값(z-score)이다. → 플리퍼 길이가 평균보다 길지 않다. Gentoo는 플리퍼가 매우 긴 종이므로 이 조건을 만족하면 Gentoo 가능성이 크게 감소한다. 따라서 트리는 Gentoo를 1차적으로 배제하고 왼쪽으로 이동한다.</p>
+<p>두 번째 분기: 조건 bill_length_mm≤0.178 → 부리 길이가 평균보다 약간 짧거나 비슷한 수준이다. Chinstrap은 부리 길이가 긴 편이므로 이 조건은 Chinstrap 가능성을 낮추는 방향이다. 트리는 Adelie/Chinstrap 중에서도 Adelie 쪽으로 기울기 시작한다.</p>
+<p>세 번째 분기: 조건 bill_length_mm≤−0.315 → 부리 길이가 평균보다 상당히 짧음. 짧은 부리는 Adelie의 핵심 특징을 가지므로 Chinstrap 가능성은 여기서 거의 제거된다.</p>
+<p>네 번째 분기: 조건 bill_depth_mm&gt;−0.260 → 부리 깊이가 너무 얕지 않음(즉, 상대적으로 두꺼운 부리). Adelie는 짧고 깊은 부리를 가지므로 이 조건은 Adelie의 전형적 형질과 정확히 일치한다.</p>
+<p>리프 노드 도착: 리프 정보 class_counts = [1, 0, 0] posterior = {Adelie: 1.0} → 이 경로로 도달한 학습 데이터가 모두 Adelie. 모델은 확률 1.0으로 Adelie 판정</p>
+<p>본 개체는 플리퍼 길이가 평균보다 길지 않아 Gentoo일 가능성이 초기 단계에서 배제되었으며, 부리 길이가 평균보다 상당히 짧아 Chinstrap 가능성 또한 단계적으로 감소하였다.</p>
+<p>이후 부리 깊이가 상대적으로 깊은 특성을 보임에 따라, 해당 개체는 Adelie의 전형적인 형태적 특성을 충족하는 것으로 판단되었고, 이에 따라 본 결정트리는 해당 개체를 Adelie로 확률 1.0으로 분류하였다.</p>
+<pre class="text"><code>node    type    feature value_in_node   threshold   go  class_counts    posterior
+0   0   SPLIT   num__flipper_length_mm  0.013088    0.409002    LEFT (&lt;=)   NaN NaN
+1   1   SPLIT   num__bill_length_mm -0.470502   0.178449    LEFT (&lt;=)   NaN NaN
+2   2   SPLIT   num__bill_length_mm -0.470502   -0.315119   LEFT (&lt;=)   NaN NaN
+3   3   SPLIT   num__bill_depth_mm  0.663008    -0.260357   RIGHT (&gt;)   NaN NaN
+4   7   LEAF    NaN NaN NaN NaN [1.0, 0.0, 0.0] {'Adelie': 1.0, 'Chinstrap': 0.0, 'Gentoo': 0.0}
+pred = Adelie
+proba = {'Adelie': np.float64(1.0), 'Chinstrap': np.float64(0.0), 'Gentoo': np.float64(0.0)}
+leaf = 7</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> export_text</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> tree_model.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> tree_model.named_steps[<span class="st">"tree"</span>]</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>feat_names <span class="op">=</span> pre.get_feature_names_out()</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(export_text(clf, feature_names<span class="op">=</span><span class="bu">list</span>(feat_names), max_depth<span class="op">=</span><span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>제시된 출력은 펭귄 데이터셋을 전처리(수치형 표준화, 범주형 원핫인코딩)한 뒤, 의사결정나무(DecisionTreeClassifier)가 분류를 수행하는 규칙을 텍스트로 펼쳐 놓은 결과이다. 맨 앞의 |—는 분기 조건을 뜻하며, 위에서 아래로 내려가면서 조건을 만족하는 경로를 따라가면 최종 예측 클래스가 결정되는 구조이다.</p>
+<p>num__로 시작하는 변수는 표준화된 수치형 특성(평균 0, 표준편차 1 기준의 값)이고, cat__로 시작하는 변수는 원핫인코딩된 범주형 더미 변수이다. 따라서 cat__sex_Male &lt;= 0.500은 “Male 더미가 0인 경우”, 즉 남성이 아닌 경우(대개 Female 또는 결측이 다른 값으로 처리된 경우)라는 뜻이다.</p>
+<p>가장 먼저 모델은 num__flipper_length_mm를 기준으로 전체를 두 갈래로 나누는 구조이다. num__flipper_length_mm &lt;= 0.409이면 상대적으로 지느러미 길이가 짧은 쪽 집단으로 들어가고, num__flipper_length_mm &gt; 0.409이면 상대적으로 지느러미 길이가 긴 쪽 집단으로 들어가는 방식이다. 이 분기 자체가 “지느러미 길이가 길면 Gentoo일 가능성이 크다”는 큰 패턴을 반영한 규칙이라고 볼 수 있다.</p>
+<p>지느러미 길이가 짧은 집단(&lt;= 0.409) 안에서는 num__bill_length_mm(부리 길이)로 다시 갈라지는 구조이다. num__bill_length_mm &lt;= 0.178이면 부리 길이가 상대적으로 짧거나 보통인 쪽이며, 여기서 num__bill_length_mm &lt;= -0.315처럼 더 짧은 구간으로 들어가면 num__bill_depth_mm(부리 깊이) 조건이 추가로 붙는다.</p>
+<p>특히 num__bill_depth_mm &gt; -0.260인 경우에는 잎노드에서 weights: [103.000, 0.000, 0.000] class: Adelie로 끝나는데, 이는 그 지점까지 도달한 학습 표본의 클래스 분포가 Adelie 103, Chinstrap 0, Gentoo 0이며 최종 예측이 Adelie라는 뜻이다. 반대로 num__bill_depth_mm &lt;= -0.260처럼 더 얕은 경우에는 부리 길이를 한 번 더 쪼개어 Adelie 7개가 모인 잎으로 가거나, 매우 드물게 Chinstrap 1개가 모인 잎으로 가는 구조도 나타난다.</p>
+<p>같은 “지느러미 짧음” 가지에서 num__bill_length_mm &gt; -0.315로 넘어가면 cat__sex_Male이 등장한다. cat__sex_Male &lt;= 0.500이면 weights: [0.000, 4.000, 0.000] class: Chinstrap으로 끝나서 Chinstrap으로 예측되는 구간이 생긴다.</p>
+<p>cat__sex_Male &gt; 0.500이면 다시 num__bill_depth_mm로 갈라지는데, 일부는 truncated branch of depth 2로 표시되어 출력에서 더 깊은 분기가 생략된 부분이다. 출력에 보이는 범위에서는 num__bill_depth_mm &gt; 0.139인 경우 weights: [7.000, 0.000, 0.000] class: Adelie로 귀결되는 구간이 존재한다.</p>
+<p>한편 num__bill_length_mm &gt; 0.178인 쪽(부리 길이가 상대적으로 긴 쪽)에서는 cat__island_Dream이 핵심 분기이다. cat__island_Dream &gt; 0.500이면 weights: [0.000, 44.000, 0.000] class: Chinstrap으로 바로 끝나며, Dream 섬으로 인코딩된 경우 Chinstrap이 매우 강하게 예측되는 규칙임을 보여준다.</p>
+<p>cat__island_Dream &lt;= 0.500인 경우에는 다시 cat__sex_Male로 갈라지면서, 남성이 아니면 Gentoo 1개가 모인 잎으로, 남성이면 Adelie 3개가 모인 잎으로 가는 작은 보조 규칙이 붙어 있다.</p>
+<p>지느러미 길이가 긴 집단(&gt; 0.409)에서는 모델이 먼저 num__bill_depth_mm로 분기한다. num__bill_depth_mm &lt;= 0.413이면 weights: [0.000, 0.000, 97.000] class: Gentoo로 끝나며, 이 구간은 거의 순수하게 Gentoo로 구성된 매우 강한 규칙이다.</p>
+<p>반대로 num__bill_depth_mm &gt; 0.413이면 num__bill_length_mm로 한 번 더 갈라져서, &lt;= 0.151인 경우 Adelie 1개가 모인 잎으로, &gt; 0.151인 경우 Chinstrap 5개가 모인 잎으로 가는 예외 규칙이 존재한다.</p>
+<p>정리하면, 이 의사결정나무는 지느러미 길이로 큰 틀을 먼저 나누고, 그 다음에 부리 길이/부리 깊이 및 섬(Dream)과 성별(Male 더미) 같은 정보로 세 종(Adelie, Chinstrap, Gentoo)을 판별하는 구조이다.</p>
+<p>각 잎노드의 weights: [a, b, c]는 해당 규칙까지 도달한 학습 데이터의 클래스 분포이며, 그 분포에서 가장 많은 클래스를 class:로 예측하는 방식인 것이다. 또한 수치형 기준값들이 표준화 좌표이므로, 임계값의 크기 자체는 “원래 단위(mm)”가 아니라 “평균 대비 몇 표준편차인가”를 의미하는 값이라는 점이 핵심 전제이다.</p>
+<pre class="text"><code>|--- num__flipper_length_mm &lt;= 0.409
+|   |--- num__bill_length_mm &lt;= 0.178
+|   |   |--- num__bill_length_mm &lt;= -0.315
+|   |   |   |--- num__bill_depth_mm &lt;= -0.260
+|   |   |   |   |--- num__bill_length_mm &lt;= -0.836
+|   |   |   |   |   |--- weights: [7.000, 0.000, 0.000] class: Adelie
+|   |   |   |   |--- num__bill_length_mm &gt;  -0.836
+|   |   |   |   |   |--- weights: [0.000, 1.000, 0.000] class: Chinstrap
+|   |   |   |--- num__bill_depth_mm &gt;  -0.260
+|   |   |   |   |--- weights: [103.000, 0.000, 0.000] class: Adelie
+|   |   |--- num__bill_length_mm &gt;  -0.315
+|   |   |   |--- cat__sex_Male &lt;= 0.500
+|   |   |   |   |--- weights: [0.000, 4.000, 0.000] class: Chinstrap
+|   |   |   |--- cat__sex_Male &gt;  0.500
+|   |   |   |   |--- num__bill_depth_mm &lt;= 0.139
+|   |   |   |   |   |--- truncated branch of depth 2
+|   |   |   |   |--- num__bill_depth_mm &gt;  0.139
+|   |   |   |   |   |--- weights: [7.000, 0.000, 0.000] class: Adelie
+|   |--- num__bill_length_mm &gt;  0.178
+|   |   |--- cat__island_Dream &lt;= 0.500
+|   |   |   |--- cat__sex_Male &lt;= 0.500
+|   |   |   |   |--- weights: [0.000, 0.000, 1.000] class: Gentoo
+|   |   |   |--- cat__sex_Male &gt;  0.500
+|   |   |   |   |--- weights: [3.000, 0.000, 0.000] class: Adelie
+|   |   |--- cat__island_Dream &gt;  0.500
+|   |   |   |--- weights: [0.000, 44.000, 0.000] class: Chinstrap
+|--- num__flipper_length_mm &gt;  0.409
+|   |--- num__bill_depth_mm &lt;= 0.413
+|   |   |--- weights: [0.000, 0.000, 97.000] class: Gentoo
+|   |--- num__bill_depth_mm &gt;  0.413
+|   |   |--- num__bill_length_mm &lt;= 0.151
+|   |   |   |--- weights: [1.000, 0.000, 0.000] class: Adelie
+|   |   |--- num__bill_length_mm &gt;  0.151
+|   |   |   |--- weights: [0.000, 5.000, 0.000] class: Chinstrap</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> plot_tree</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>pre <span class="op">=</span> tree_model.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> tree_model.named_steps[<span class="st">"tree"</span>]</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>feat_names <span class="op">=</span> pre.get_feature_names_out()</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">18</span>, <span class="dv">8</span>))</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>plot_tree(clf, feature_names<span class="op">=</span>feat_names, class_names<span class="op">=</span>clf.classes_, filled<span class="op">=</span><span class="va">True</span>, max_depth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_treeprocess.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </section>
-<section id="머신러닝-분류" class="level5">
-<h5 class="anchored" data-anchor-id="머신러닝-분류">(2) 머신러닝 분류</h5>
-</section>
-<section id="트리기반-분류" class="level5">
-<h5 class="anchored" data-anchor-id="트리기반-분류">(3) 트리기반 분류</h5>
+<section id="random-forest" class="level5">
+<h5 class="anchored" data-anchor-id="random-forest">(4) random forest</h5>
+<p><strong>혼동행렬 출력</strong></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, classification_report, ConfusionMatrixDisplay</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 예측</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>y_pred_tree <span class="op">=</span> rf_model.predict(X_test)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 라벨(클래스 이름) 가져오기: data.target_names 대신 사용</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> tree_model.named_steps[<span class="st">"tree"</span>].classes_   <span class="co"># 예: ['Adelie','Chinstrap','Gentoo']</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 평가</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Random Forest] Accuracy:"</span>, accuracy_score(y_test, y_pred_tree))</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred_tree, labels<span class="op">=</span>labels)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Random Forest] Confusion matrix:</span><span class="ch">\n</span><span class="st">"</span>, cm)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"[Random Forest] Classification report:</span><span class="ch">\n</span><span class="st">"</span>,</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>      classification_report(y_test, y_pred_tree,</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>                            labels<span class="op">=</span>labels,</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>                            target_names<span class="op">=</span>labels.tolist()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[Random Forest] Accuracy: 1.0
+[Random Forest] Confusion matrix:
+ [[30  0  0]
+ [ 0 14  0]
+ [ 0  0 25]]
+[Random Forest] Classification report:
+               precision    recall  f1-score   support
+
+      Adelie       1.00      1.00      1.00        30
+   Chinstrap       1.00      1.00      1.00        14
+      Gentoo       1.00      1.00      1.00        25
+
+    accuracy                           1.00        69
+   macro avg       1.00      1.00      1.00        69
+weighted avg       1.00      1.00      1.00        69</code></pre>
+<p><strong>사후확률 출력</strong></p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (n_samples, n_classes)</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>proba_rf <span class="op">=</span> rf_model.predict_proba(X_test)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>rf_clf <span class="op">=</span> rf_model.named_steps[<span class="st">"rf"</span>]</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>classes_rf <span class="op">=</span> rf_clf.classes_</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>proba_rf_df <span class="op">=</span> pd.DataFrame(proba_rf, columns<span class="op">=</span>classes_rf)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>display(proba_rf_df.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Adelie  Chinstrap   Gentoo
+0   0.853333    0.146667    0.0
+1   0.986667    0.013333    0.0
+2   0.000000    0.000000    1.0
+3   0.000000    0.000000    1.0
+4   0.060000    0.940000    0.0</code></pre>
+<p><strong>의사결정 과정</strong></p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> export_text</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> explain_one_tree(rf_pipeline, tree_idx<span class="op">=</span><span class="dv">0</span>, max_depth<span class="op">=</span><span class="dv">4</span>):</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    pre <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    rf  <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"rf"</span>]</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    feat_names <span class="op">=</span> <span class="bu">list</span>(pre.get_feature_names_out())</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    tree <span class="op">=</span> rf.estimators_[tree_idx]</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(export_text(tree, feature_names<span class="op">=</span>feat_names, max_depth<span class="op">=</span>max_depth))</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>explain_one_tree(rf_model, tree_idx<span class="op">=</span><span class="dv">0</span>, max_depth<span class="op">=</span><span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 규칙은 전처리된 변수(수치형은 표준화된 값, 범주형은 원-핫 인코딩된 0/1 값)를 기준으로 최종 클래스를 결정하는 분기 규칙이다. 여기서 cat__island_Torgersen, cat__island_Dream은 원-핫 변수이므로 값이 0.50 이하이면 해당 섬이 아닌 경우이고, 0.50 초과이면 해당 섬인 경우로 해석하는 것이 자연스러운 규칙이다.</p>
+<p>또한 num__bill_length_mm, num__bill_depth_mm, num__body_mass_g는 표준화된 수치일 가능성이 높으므로 임계값 -0.32, -0.24, -1.35, 0.41 등은 원 단위(mm, g)가 아니라 표준화 스케일 기준의 경계값인 해석이다.</p>
+<p>첫 번째 큰 분기는 num__bill_length_mm이 -0.32 이하인지 여부로 나뉘는 규칙이다.</p>
+<ul>
+<li>num__bill_length_mm이 -0.32 이하이면, 다음으로 num__bill_depth_mm이 -0.24 이하인지 확인하는 규칙이다.</li>
+<li>num__bill_depth_mm이 -0.24 이하이면, num__body_mass_g이 -1.35 이하인지 확인하는 규칙이다.</li>
+<li>num__body_mass_g이 -1.35 이하이면 최종 클래스는 0.0인 규칙이다.</li>
+<li>num__body_mass_g이 -1.35 초과이면 cat__island_Torgersen이 0.50 이하인지 확인하는 규칙이다.</li>
+<li>cat__island_Torgersen이 0.50 이하이면 최종 클래스는 1.0인 규칙이다.</li>
+<li>cat__island_Torgersen이 0.50 초과이면 최종 클래스는 0.0인 규칙이다.</li>
+<li>num__bill_length_mm이 -0.32 이하이면서 num__bill_depth_mm이 -0.24 초과이면 최종 클래스는 0.0인 규칙이다.</li>
+</ul>
+<p>두 번째 큰 분기는 num__bill_length_mm이 -0.32 초과인 경우의 규칙이다.</p>
+<ul>
+<li>num__bill_length_mm이 -0.32 초과이면, cat__island_Dream이 0.50 이하인지 확인하는 규칙이다.</li>
+<li>cat__island_Dream이 0.50 이하이면, cat__island_Torgersen이 0.50 이하인지 확인하는 규칙이다.</li>
+<li>cat__island_Torgersen이 0.50 이하이면, num__bill_depth_mm이 0.41 이하인지 확인하는 규칙이다.</li>
+<li>num__bill_depth_mm이 0.41 이하이면 최종 클래스는 2.0인 규칙이다.</li>
+<li>num__bill_depth_mm이 0.41 초과이면 최종 클래스는 0.0인 규칙이다.</li>
+<li>cat__island_Torgersen이 0.50 초과이면 최종 클래스는 0.0인 규칙이다.</li>
+<li>num__bill_length_mm이 -0.32 초과이면서 cat__island_Dream이 0.50 초과이면 최종 클래스는 1.0인 규칙이다.</li>
+</ul>
+<p>정리하면, 이 트리는 (1) 표준화된 부리 길이와 부리 깊이, 체중 같은 수치형 경계값과 (2) 특정 섬 여부(원-핫)를 조합하여 최종 클래스를 0.0, 1.0, 2.0으로 결정하는 규칙 집합인 해석이다.</p>
+<pre class="text"><code>|--- num__bill_length_mm &lt;= -0.32
+|   |--- num__bill_depth_mm &lt;= -0.24
+|   |   |--- num__body_mass_g &lt;= -1.35
+|   |   |   |--- class: 0.0
+|   |   |--- num__body_mass_g &gt;  -1.35
+|   |   |   |--- cat__island_Torgersen &lt;= 0.50
+|   |   |   |   |--- class: 1.0
+|   |   |   |--- cat__island_Torgersen &gt;  0.50
+|   |   |   |   |--- class: 0.0
+|   |--- num__bill_depth_mm &gt;  -0.24
+|   |   |--- class: 0.0
+|--- num__bill_length_mm &gt;  -0.32
+|   |--- cat__island_Dream &lt;= 0.50
+|   |   |--- cat__island_Torgersen &lt;= 0.50
+|   |   |   |--- num__bill_depth_mm &lt;= 0.41
+|   |   |   |   |--- class: 2.0
+|   |   |   |--- num__bill_depth_mm &gt;  0.41
+|   |   |   |   |--- class: 0.0
+|   |   |--- cat__island_Torgersen &gt;  0.50
+|   |   |   |--- class: 0.0
+|   |--- cat__island_Dream &gt;  0.50
+|   |   |--- class: 1.0</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> plot_tree</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 입력: rf_model(Pipeline), X_test(DataFrame) 가 이미 있다고 가정</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================================================</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 특정 샘플 1개에 대해: 트리별 투표(확률) + 평균/표준편차</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rf_vote_summary(rf_pipeline, X_row):</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>    pre <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>    rf  <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"rf"</span>]</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a>    Xt <span class="op">=</span> pre.transform(X_row)</span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> rf.classes_</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 각 트리의 predict_proba</span></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>    probs <span class="op">=</span> np.array([est.predict_proba(Xt)[<span class="dv">0</span>] <span class="cf">for</span> est <span class="kw">in</span> rf.estimators_])  <span class="co"># (n_trees, n_classes)</span></span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.DataFrame(probs, columns<span class="op">=</span>classes)</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>    mean_proba <span class="op">=</span> df.mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>    std_proba  <span class="op">=</span> df.std().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> mean_proba.index[<span class="dv">0</span>]</span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pred, mean_proba, std_proba, df</span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) "대표 트리" 선택: (A) 평균예측과 같은 클래스를 내는 트리 중</span></span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a><span class="co">#    (B) 해당 샘플에서 예측확률이 가장 높은 트리 1개를 고름</span></span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pick_representative_tree(rf_pipeline, X_row, target_class<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>    pre <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a>    rf  <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"rf"</span>]</span>
+<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a>    Xt <span class="op">=</span> pre.transform(X_row)</span>
+<span id="cb44-39"><a href="#cb44-39" aria-hidden="true" tabindex="-1"></a>    classes <span class="op">=</span> <span class="bu">list</span>(rf.classes_)</span>
+<span id="cb44-40"><a href="#cb44-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-41"><a href="#cb44-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># target_class를 안 주면 RF 평균 예측 클래스로</span></span>
+<span id="cb44-42"><a href="#cb44-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> target_class <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb44-43"><a href="#cb44-43" aria-hidden="true" tabindex="-1"></a>        mean_proba <span class="op">=</span> np.mean([est.predict_proba(Xt)[<span class="dv">0</span>] <span class="cf">for</span> est <span class="kw">in</span> rf.estimators_], axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb44-44"><a href="#cb44-44" aria-hidden="true" tabindex="-1"></a>        target_class <span class="op">=</span> classes[<span class="bu">int</span>(np.argmax(mean_proba))]</span>
+<span id="cb44-45"><a href="#cb44-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-46"><a href="#cb44-46" aria-hidden="true" tabindex="-1"></a>    c_idx <span class="op">=</span> classes.index(target_class)</span>
+<span id="cb44-47"><a href="#cb44-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-48"><a href="#cb44-48" aria-hidden="true" tabindex="-1"></a>    best_idx, best_p <span class="op">=</span> <span class="va">None</span>, <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb44-49"><a href="#cb44-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, est <span class="kw">in</span> <span class="bu">enumerate</span>(rf.estimators_):</span>
+<span id="cb44-50"><a href="#cb44-50" aria-hidden="true" tabindex="-1"></a>        proba <span class="op">=</span> est.predict_proba(Xt)[<span class="dv">0</span>]</span>
+<span id="cb44-51"><a href="#cb44-51" aria-hidden="true" tabindex="-1"></a>        pred  <span class="op">=</span> classes[<span class="bu">int</span>(np.argmax(proba))]</span>
+<span id="cb44-52"><a href="#cb44-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> pred <span class="op">==</span> target_class <span class="kw">and</span> proba[c_idx] <span class="op">&gt;</span> best_p:</span>
+<span id="cb44-53"><a href="#cb44-53" aria-hidden="true" tabindex="-1"></a>            best_p <span class="op">=</span> <span class="bu">float</span>(proba[c_idx])</span>
+<span id="cb44-54"><a href="#cb44-54" aria-hidden="true" tabindex="-1"></a>            best_idx <span class="op">=</span> i</span>
+<span id="cb44-55"><a href="#cb44-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-56"><a href="#cb44-56" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 혹시 일치 트리가 없다면(거의 없지만) 그냥 확률 최대 트리</span></span>
+<span id="cb44-57"><a href="#cb44-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> best_idx <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb44-58"><a href="#cb44-58" aria-hidden="true" tabindex="-1"></a>        best_idx <span class="op">=</span> <span class="bu">int</span>(np.argmax([est.predict_proba(Xt)[<span class="dv">0</span>][c_idx] <span class="cf">for</span> est <span class="kw">in</span> rf.estimators_]))</span>
+<span id="cb44-59"><a href="#cb44-59" aria-hidden="true" tabindex="-1"></a>        best_p   <span class="op">=</span> <span class="bu">float</span>(rf.estimators_[best_idx].predict_proba(Xt)[<span class="dv">0</span>][c_idx])</span>
+<span id="cb44-60"><a href="#cb44-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-61"><a href="#cb44-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> best_idx, target_class, best_p</span>
+<span id="cb44-62"><a href="#cb44-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-63"><a href="#cb44-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-64"><a href="#cb44-64" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-65"><a href="#cb44-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 특정 트리에서 "한 샘플"의 결정 경로(path) 표로 출력</span></span>
+<span id="cb44-66"><a href="#cb44-66" aria-hidden="true" tabindex="-1"></a><span class="co">#    (split feature, threshold, 실제 값, LEFT/RIGHT, 마지막 leaf의 posterior)</span></span>
+<span id="cb44-67"><a href="#cb44-67" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-68"><a href="#cb44-68" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> tree_decision_path_for_one(estimator_tree, Xt_row_2d, feature_names, class_names):</span>
+<span id="cb44-69"><a href="#cb44-69" aria-hidden="true" tabindex="-1"></a>    clf <span class="op">=</span> estimator_tree</span>
+<span id="cb44-70"><a href="#cb44-70" aria-hidden="true" tabindex="-1"></a>    tree_ <span class="op">=</span> clf.tree_</span>
+<span id="cb44-71"><a href="#cb44-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-72"><a href="#cb44-72" aria-hidden="true" tabindex="-1"></a>    node_indicator <span class="op">=</span> clf.decision_path(Xt_row_2d)</span>
+<span id="cb44-73"><a href="#cb44-73" aria-hidden="true" tabindex="-1"></a>    leaf_id <span class="op">=</span> clf.<span class="bu">apply</span>(Xt_row_2d)[<span class="dv">0</span>]</span>
+<span id="cb44-74"><a href="#cb44-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-75"><a href="#cb44-75" aria-hidden="true" tabindex="-1"></a>    node_index <span class="op">=</span> node_indicator.indices[</span>
+<span id="cb44-76"><a href="#cb44-76" aria-hidden="true" tabindex="-1"></a>        node_indicator.indptr[<span class="dv">0</span>]: node_indicator.indptr[<span class="dv">1</span>]</span>
+<span id="cb44-77"><a href="#cb44-77" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb44-78"><a href="#cb44-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-79"><a href="#cb44-79" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> []</span>
+<span id="cb44-80"><a href="#cb44-80" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> node_id <span class="kw">in</span> node_index:</span>
+<span id="cb44-81"><a href="#cb44-81" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> node_id <span class="op">==</span> leaf_id:</span>
+<span id="cb44-82"><a href="#cb44-82" aria-hidden="true" tabindex="-1"></a>            counts <span class="op">=</span> tree_.value[node_id][<span class="dv">0</span>]</span>
+<span id="cb44-83"><a href="#cb44-83" aria-hidden="true" tabindex="-1"></a>            probs <span class="op">=</span> counts <span class="op">/</span> counts.<span class="bu">sum</span>() <span class="cf">if</span> counts.<span class="bu">sum</span>() <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">else</span> counts</span>
+<span id="cb44-84"><a href="#cb44-84" aria-hidden="true" tabindex="-1"></a>            rows.append({</span>
+<span id="cb44-85"><a href="#cb44-85" aria-hidden="true" tabindex="-1"></a>                <span class="st">"node"</span>: <span class="bu">int</span>(node_id),</span>
+<span id="cb44-86"><a href="#cb44-86" aria-hidden="true" tabindex="-1"></a>                <span class="st">"type"</span>: <span class="st">"LEAF"</span>,</span>
+<span id="cb44-87"><a href="#cb44-87" aria-hidden="true" tabindex="-1"></a>                <span class="st">"class_counts"</span>: counts.tolist(),</span>
+<span id="cb44-88"><a href="#cb44-88" aria-hidden="true" tabindex="-1"></a>                <span class="st">"posterior"</span>: {<span class="bu">str</span>(c): <span class="bu">float</span>(p) <span class="cf">for</span> c, p <span class="kw">in</span> <span class="bu">zip</span>(class_names, probs)}</span>
+<span id="cb44-89"><a href="#cb44-89" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb44-90"><a href="#cb44-90" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb44-91"><a href="#cb44-91" aria-hidden="true" tabindex="-1"></a>            f <span class="op">=</span> tree_.feature[node_id]</span>
+<span id="cb44-92"><a href="#cb44-92" aria-hidden="true" tabindex="-1"></a>            thr <span class="op">=</span> tree_.threshold[node_id]</span>
+<span id="cb44-93"><a href="#cb44-93" aria-hidden="true" tabindex="-1"></a>            feat_name <span class="op">=</span> feature_names[f]</span>
+<span id="cb44-94"><a href="#cb44-94" aria-hidden="true" tabindex="-1"></a>            val <span class="op">=</span> <span class="bu">float</span>(Xt_row_2d[<span class="dv">0</span>, f])</span>
+<span id="cb44-95"><a href="#cb44-95" aria-hidden="true" tabindex="-1"></a>            go <span class="op">=</span> <span class="st">"LEFT(&lt;=)"</span> <span class="cf">if</span> val <span class="op">&lt;=</span> thr <span class="cf">else</span> <span class="st">"RIGHT(&gt;)"</span></span>
+<span id="cb44-96"><a href="#cb44-96" aria-hidden="true" tabindex="-1"></a>            rows.append({</span>
+<span id="cb44-97"><a href="#cb44-97" aria-hidden="true" tabindex="-1"></a>                <span class="st">"node"</span>: <span class="bu">int</span>(node_id),</span>
+<span id="cb44-98"><a href="#cb44-98" aria-hidden="true" tabindex="-1"></a>                <span class="st">"type"</span>: <span class="st">"SPLIT"</span>,</span>
+<span id="cb44-99"><a href="#cb44-99" aria-hidden="true" tabindex="-1"></a>                <span class="st">"feature"</span>: feat_name,</span>
+<span id="cb44-100"><a href="#cb44-100" aria-hidden="true" tabindex="-1"></a>                <span class="st">"value_in_node"</span>: val,</span>
+<span id="cb44-101"><a href="#cb44-101" aria-hidden="true" tabindex="-1"></a>                <span class="st">"threshold"</span>: <span class="bu">float</span>(thr),</span>
+<span id="cb44-102"><a href="#cb44-102" aria-hidden="true" tabindex="-1"></a>                <span class="st">"go"</span>: go</span>
+<span id="cb44-103"><a href="#cb44-103" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb44-104"><a href="#cb44-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-105"><a href="#cb44-105" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame(rows), <span class="bu">int</span>(leaf_id)</span>
+<span id="cb44-106"><a href="#cb44-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-107"><a href="#cb44-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-108"><a href="#cb44-108" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-109"><a href="#cb44-109" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 한 번에 실행: 투표요약 + 대표트리 시각화 + path 출력</span></span>
+<span id="cb44-110"><a href="#cb44-110" aria-hidden="true" tabindex="-1"></a><span class="co"># ---------------------------------------------------------</span></span>
+<span id="cb44-111"><a href="#cb44-111" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> explain_random_forest_sample(rf_pipeline, X_row, plot_max_depth<span class="op">=</span><span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">22</span>, <span class="dv">10</span>), topn_trees<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb44-112"><a href="#cb44-112" aria-hidden="true" tabindex="-1"></a>    pre <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"preprocess"</span>]</span>
+<span id="cb44-113"><a href="#cb44-113" aria-hidden="true" tabindex="-1"></a>    rf  <span class="op">=</span> rf_pipeline.named_steps[<span class="st">"rf"</span>]</span>
+<span id="cb44-114"><a href="#cb44-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-115"><a href="#cb44-115" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (A) RF 투표 요약</span></span>
+<span id="cb44-116"><a href="#cb44-116" aria-hidden="true" tabindex="-1"></a>    pred, mean_proba, std_proba, all_tree_df <span class="op">=</span> rf_vote_summary(rf_pipeline, X_row)</span>
+<span id="cb44-117"><a href="#cb44-117" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"=== RandomForest final prediction (mean proba) ==="</span>)</span>
+<span id="cb44-118"><a href="#cb44-118" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"pred ="</span>, pred)</span>
+<span id="cb44-119"><a href="#cb44-119" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[mean proba]"</span>)</span>
+<span id="cb44-120"><a href="#cb44-120" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(mean_proba)</span>
+<span id="cb44-121"><a href="#cb44-121" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[std proba]  (트리들 의견 불일치 정도)"</span>)</span>
+<span id="cb44-122"><a href="#cb44-122" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(std_proba)</span>
+<span id="cb44-123"><a href="#cb44-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-124"><a href="#cb44-124" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 트리별로 '예측된 클래스' 집계(다수결 느낌)</span></span>
+<span id="cb44-125"><a href="#cb44-125" aria-hidden="true" tabindex="-1"></a>    tree_preds <span class="op">=</span> all_tree_df.idxmax(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb44-126"><a href="#cb44-126" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[top class vote count]"</span>)</span>
+<span id="cb44-127"><a href="#cb44-127" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(tree_preds.value_counts())</span>
+<span id="cb44-128"><a href="#cb44-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-129"><a href="#cb44-129" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (B) 대표 트리 선택</span></span>
+<span id="cb44-130"><a href="#cb44-130" aria-hidden="true" tabindex="-1"></a>    rep_idx, target_class, rep_p <span class="op">=</span> pick_representative_tree(rf_pipeline, X_row, target_class<span class="op">=</span>pred)</span>
+<span id="cb44-131"><a href="#cb44-131" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=== Representative tree ===</span><span class="ch">\n</span><span class="ss">index=</span><span class="sc">{</span>rep_idx<span class="sc">}</span><span class="ss">, target_class=</span><span class="sc">{</span>target_class<span class="sc">}</span><span class="ss">, tree_proba=</span><span class="sc">{</span>rep_p<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb44-132"><a href="#cb44-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-133"><a href="#cb44-133" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (C) 대표 트리 시각화</span></span>
+<span id="cb44-134"><a href="#cb44-134" aria-hidden="true" tabindex="-1"></a>    feat_names <span class="op">=</span> pre.get_feature_names_out()</span>
+<span id="cb44-135"><a href="#cb44-135" aria-hidden="true" tabindex="-1"></a>    rep_tree <span class="op">=</span> rf.estimators_[rep_idx]</span>
+<span id="cb44-136"><a href="#cb44-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-137"><a href="#cb44-137" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>figsize)</span>
+<span id="cb44-138"><a href="#cb44-138" aria-hidden="true" tabindex="-1"></a>    plot_tree(</span>
+<span id="cb44-139"><a href="#cb44-139" aria-hidden="true" tabindex="-1"></a>        rep_tree,</span>
+<span id="cb44-140"><a href="#cb44-140" aria-hidden="true" tabindex="-1"></a>        feature_names<span class="op">=</span>feat_names,</span>
+<span id="cb44-141"><a href="#cb44-141" aria-hidden="true" tabindex="-1"></a>        class_names<span class="op">=</span>[<span class="bu">str</span>(c) <span class="cf">for</span> c <span class="kw">in</span> rf.classes_],</span>
+<span id="cb44-142"><a href="#cb44-142" aria-hidden="true" tabindex="-1"></a>        filled<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb44-143"><a href="#cb44-143" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span>plot_max_depth</span>
+<span id="cb44-144"><a href="#cb44-144" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb44-145"><a href="#cb44-145" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"Representative Tree #</span><span class="sc">{</span>rep_idx<span class="sc">}</span><span class="ss"> (max_depth=</span><span class="sc">{</span>plot_max_depth<span class="sc">}</span><span class="ss">)"</span>)</span>
+<span id="cb44-146"><a href="#cb44-146" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb44-147"><a href="#cb44-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-148"><a href="#cb44-148" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (D) 대표 트리에서 해당 샘플의 결정 경로</span></span>
+<span id="cb44-149"><a href="#cb44-149" aria-hidden="true" tabindex="-1"></a>    Xt <span class="op">=</span> pre.transform(X_row)</span>
+<span id="cb44-150"><a href="#cb44-150" aria-hidden="true" tabindex="-1"></a>    path_df, leaf_id <span class="op">=</span> tree_decision_path_for_one(rep_tree, Xt, feat_names, rf.classes_)</span>
+<span id="cb44-151"><a href="#cb44-151" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">=== Decision path in representative tree ==="</span>)</span>
+<span id="cb44-152"><a href="#cb44-152" aria-hidden="true" tabindex="-1"></a>    display(path_df)</span>
+<span id="cb44-153"><a href="#cb44-153" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"leaf_id ="</span>, leaf_id)</span>
+<span id="cb44-154"><a href="#cb44-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-155"><a href="#cb44-155" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (E) 참고: target_class에 높은 확률을 준 트리 TOP-N</span></span>
+<span id="cb44-156"><a href="#cb44-156" aria-hidden="true" tabindex="-1"></a>    c_idx <span class="op">=</span> <span class="bu">list</span>(rf.classes_).index(target_class)</span>
+<span id="cb44-157"><a href="#cb44-157" aria-hidden="true" tabindex="-1"></a>    tree_scores <span class="op">=</span> all_tree_df[target_class].sort_values(ascending<span class="op">=</span><span class="va">False</span>).head(topn_trees)</span>
+<span id="cb44-158"><a href="#cb44-158" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=== Top-</span><span class="sc">{</span>topn_trees<span class="sc">}</span><span class="ss"> trees by P(</span><span class="sc">{</span>target_class<span class="sc">}</span><span class="ss">) ==="</span>)</span>
+<span id="cb44-159"><a href="#cb44-159" aria-hidden="true" tabindex="-1"></a>    display(tree_scores)</span>
+<span id="cb44-160"><a href="#cb44-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-161"><a href="#cb44-161" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb44-162"><a href="#cb44-162" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pred"</span>: pred,</span>
+<span id="cb44-163"><a href="#cb44-163" aria-hidden="true" tabindex="-1"></a>        <span class="st">"mean_proba"</span>: mean_proba,</span>
+<span id="cb44-164"><a href="#cb44-164" aria-hidden="true" tabindex="-1"></a>        <span class="st">"std_proba"</span>: std_proba,</span>
+<span id="cb44-165"><a href="#cb44-165" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tree_proba_table"</span>: all_tree_df,</span>
+<span id="cb44-166"><a href="#cb44-166" aria-hidden="true" tabindex="-1"></a>        <span class="st">"rep_tree_idx"</span>: rep_idx,</span>
+<span id="cb44-167"><a href="#cb44-167" aria-hidden="true" tabindex="-1"></a>        <span class="st">"path_df"</span>: path_df</span>
+<span id="cb44-168"><a href="#cb44-168" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb44-169"><a href="#cb44-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-170"><a href="#cb44-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-171"><a href="#cb44-171" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb44-172"><a href="#cb44-172" aria-hidden="true" tabindex="-1"></a><span class="co"># 사용 예시</span></span>
+<span id="cb44-173"><a href="#cb44-173" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb44-174"><a href="#cb44-174" aria-hidden="true" tabindex="-1"></a>i <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb44-175"><a href="#cb44-175" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> X_test.iloc[[i]]          <span class="co"># DataFrame 1행 유지가 포인트!</span></span>
+<span id="cb44-176"><a href="#cb44-176" aria-hidden="true" tabindex="-1"></a>out <span class="op">=</span> explain_random_forest_sample(rf_model, x0, plot_max_depth<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>랜덤포레스트(RandomForest)는 여러 개의 결정트리의 예측을 평균내어 최종 클래스를 결정하는 앙상블 모델이다. 본 샘플에 대해 트리들의 예측확률을 평균낸 결과, 최종 예측 클래스는 Adelie이다. 평균 사후확률(mean proba)은 Adelie 0.853333, Chinstrap 0.146667, Gentoo 0.000000으로 나타나 Adelie일 가능성이 가장 높다고 판단된다.</p>
+<p>트리별 예측확률의 표준편차(std proba)는 Adelie 0.354364, Chinstrap 0.354364, Gentoo 0.000000이다. 이는 Adelie와 Chinstrap에 대해 트리들 사이의 의견 불일치가 존재함을 의미한다. 특히 확률이 0 또는 1처럼 극단적으로 갈리는 트리가 섞여 있을 때 표준편차가 크게 나타나는 경향이 있다. 반면 Gentoo는 평균도 0이고 표준편차도 0이므로, 거의 모든 트리가 Gentoo 가능성을 사실상 배제한 상태이다.</p>
+<p>다수결 관점의 집계(top class vote count)에서 전체 300개 트리 중 256개 트리가 Adelie, 44개 트리가 Chinstrap을 최종 클래스로 선택하였다. Gentoo를 최종 클래스로 선택한 트리는 없었다. 따라서 ‘대부분의 트리는 Adelie로 분류하되, 일부 트리는 Chinstrap으로 분류하는’ 구조라고 해석된다.</p>
+<p>대표 트리(representative tree)는 전체 평균 예측과 동일한 목표 클래스(Adelie)를 내는 트리들 중에서, 해당 샘플에 대해 Adelie 확률을 가장 높게 산출한 트리로 선택된 것이다. 선택된 대표 트리는 index=0이며, 이 트리에서의 Adelie 예측확률(tree_proba)은 1.0000으로 완전 확신에 해당한다.</p>
+<p>대표 트리에서의 결정 경로(decision path)는 전처리(표준화 및 원핫인코딩) 이후의 특징 공간에서 이루어진 분기 규칙의 연쇄이다. 첫 분기에서 num__bill_length_mm의 표준화 값이 -0.470502이고 임계값 -0.315119 이하이므로 왼쪽(LEFT)으로 이동한다.</p>
+<p>다음 분기에서 num__bill_depth_mm의 표준화 값이 0.663008이고 임계값 -0.235401보다 크므로 오른쪽(RIGHT)으로 이동한다. 그 결과 leaf_id=7에 도달하며, 이 리프의 클래스 분포(class_counts)는 [1.0, 0.0, 0.0]이고 사후확률(posterior)은 {Adelie: 1.0, Chinstrap: 0.0, Gentoo: 0.0}이다. 즉 대표 트리 기준으로는 해당 조건을 만족하는 리프에 Adelie만 존재하여 Adelie로 단정하는 구조이다.</p>
+<p>추가로, Adelie에 대한 확률이 1.0인 트리가 상위 10개(예: 298, 0, 1, 2, 3, 297, 5, 6, 7, 8 등)로 확인된다. 이는 일부 트리들이 해당 샘플을 Adelie로 매우 강하게(확률 1.0) 분류하고 있음을 보여주는 근거이다. 다만 전체적으로는 Chinstrap으로 분류하는 트리도 일정 비율 존재하므로, 모델 내부에서는 Adelie와 Chinstrap의 경계 근처에 위치한 샘플일 가능성이 있음을 시사한다.</p>
+<pre class="text"><code>=== RandomForest final prediction (mean proba) ===
+pred = Adelie
+
+[mean proba]
+Adelie       0.853333
+Chinstrap    0.146667
+Gentoo       0.000000
+dtype: float64
+
+[std proba]  (트리들 의견 불일치 정도)
+Adelie       0.354364
+Chinstrap    0.354364
+Gentoo       0.000000
+dtype: float64
+
+[top class vote count]
+Adelie       256
+Chinstrap     44
+Name: count, dtype: int64
+
+=== Representative tree ===
+index=0, target_class=Adelie, tree_proba=1.0000</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_ml_category_rfprocess.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<p>node 0에서 num__bill_length_mm = -0.4705 이고 기준이 -0.3151이니까 -0.4705 &lt;= -0.3151 → LEFT로 감</p>
+<p>node 1에서 num__bill_depth_mm = 0.6630 기준 -0.2354보다 크니까 → RIGHT로 감</p>
+<p>node 7 (LEAF) 도착 class_counts = [1.0, 0.0, 0.0] → 이 잎 노드에 도달한 (학습 데이터 기준) 클래스 분포가 Adelie만 있었다는 뜻이다. 그래서 posterior = {‘Adelie’: 1.0, …}로 Adelie 확률 100%가 된다.</p>
+<p>class_counts/posterior는 “테스트 샘플의 진짜 정답”이 아니라, 그 leaf에 모인 학습 샘플(또는 가중치)의 분포라서 트리가 그렇게 “믿는다”는 근거예요.</p>
+<p>leaf_id = 7: 이 샘플이 대표 트리에서 최종적으로 도착한 잎 노드의 ID가 7이라는 의미입니다.</p>
+<p>=== Top-10 trees by P(Adelie) ===: 랜덤포레스트에는 트리가 엄청 많다(예: 300개). 그중에서 이 샘플에 대해 Adelie 확률을 가장 높게 준 트리 10개를 보여준 거예요.</p>
+<p>예를 들어: 트리 298번은 이 샘플을 Adelie 확률 1.0으로 봤다 트리 0,1,2,…도 1.0으로 봤다. 즉, 여러 트리가 아주 강하게 Adelie로 동의하고 있는 상황이라 랜덤포레스트 최종 예측도 흔들림이 적습니다.</p>
+<pre class="text"><code>=== Decision path in representative tree ===
+node    type    feature value_in_node   threshold   go  class_counts    posterior
+0   0   SPLIT   num__bill_length_mm -0.470502   -0.315119   LEFT(&lt;=)    NaN NaN
+1   1   SPLIT   num__bill_depth_mm  0.663008    -0.235401   RIGHT(&gt;)    NaN NaN
+2   7   LEAF    NaN NaN NaN NaN [1.0, 0.0, 0.0] {'Adelie': 1.0, 'Chinstrap': 0.0, 'Gentoo': 0.0}
+
+leaf_id = 7
+
+=== Top-10 trees by P(Adelie) ===
+Adelie
+298 1.0
+0   1.0
+1   1.0
+2   1.0
+3   1.0
+297 1.0
+5   1.0
+6   1.0
+7   1.0
+8   1.0</code></pre>
 
 
 </section>
