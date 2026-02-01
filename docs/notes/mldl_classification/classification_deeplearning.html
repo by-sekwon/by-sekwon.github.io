@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 딥러닝 분류 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44962e3d41ec9ccc254fd50f1af5efbe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_intro/index.html"> 
+<span class="menu-text">MLDL개념</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/mldl_classification/index.html" aria-current="page"> 
+<span class="menu-text">MLDL분류</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_classification/classification_deeplearning.html">📄 딥러닝 분류 이론</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【머신·딥러닝 분류문제】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 분류문제: 정의</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/lm_logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 예측분류-로지스틱회귀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/mda_discriminant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 예측분류-판별분석</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/prediction_treebase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 예측분류-ML 트리기반</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 kNNSVM 이론</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 분류모델 평가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_case_binary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 이진형 사례</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_case_category.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 k&gt;=3 사례</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_deeplearning.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 딥러닝 분류 이론</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-딥러닝-분류" id="toc-chapter-딥러닝-분류" class="nav-link active" data-scroll-target="#chapter-딥러닝-분류">Chapter 딥러닝 분류</a>
+  <ul>
+  <li><a href="#개요-딥러닝-분류는-무엇을-학습하나" id="toc-개요-딥러닝-분류는-무엇을-학습하나" class="nav-link" data-scroll-target="#개요-딥러닝-분류는-무엇을-학습하나">0. 개요: 딥러닝 분류는 무엇을 학습하나?</a></li>
+  <li><a href="#출력-설계라벨-구조에-따른-분류-정식화" id="toc-출력-설계라벨-구조에-따른-분류-정식화" class="nav-link" data-scroll-target="#출력-설계라벨-구조에-따른-분류-정식화">1. 출력 설계(라벨 구조에 따른 분류 정식화)</a></li>
+  <li><a href="#손실-함수와-학습-목적-loss-objective" id="toc-손실-함수와-학습-목적-loss-objective" class="nav-link" data-scroll-target="#손실-함수와-학습-목적-loss-objective">2. 손실 함수와 학습 목적 (Loss &amp; Objective)</a></li>
+  <li><a href="#분류용-백본-네트워크와-분류-패러다임" id="toc-분류용-백본-네트워크와-분류-패러다임" class="nav-link" data-scroll-target="#분류용-백본-네트워크와-분류-패러다임">3. 분류용 백본 네트워크와 분류 패러다임</a></li>
+  <li><a href="#일반화와-정규화-과적합을-줄이고-과신을-완화하는-설계" id="toc-일반화와-정규화-과적합을-줄이고-과신을-완화하는-설계" class="nav-link" data-scroll-target="#일반화와-정규화-과적합을-줄이고-과신을-완화하는-설계">4. 일반화와 정규화: 과적합을 줄이고 <span dir="rtl">”</span>과신”을 완화하는 설계</a></li>
+  <li><a href="#사전학습자기지도대조학습-후-분류기" id="toc-사전학습자기지도대조학습-후-분류기" class="nav-link" data-scroll-target="#사전학습자기지도대조학습-후-분류기">5. 사전학습/자기지도/대조학습 후 분류기</a></li>
+  <li><a href="#평가와-임계값-운영-관점의-의사결정-설계" id="toc-평가와-임계값-운영-관점의-의사결정-설계" class="nav-link" data-scroll-target="#평가와-임계값-운영-관점의-의사결정-설계">6. 평가와 임계값: 운영 관점의 의사결정 설계</a></li>
+  <li><a href="#calibration-uncertainty-과신을-줄이고-안정적-의사결정을-만드는-법" id="toc-calibration-uncertainty-과신을-줄이고-안정적-의사결정을-만드는-법" class="nav-link" data-scroll-target="#calibration-uncertainty-과신을-줄이고-안정적-의사결정을-만드는-법">7. Calibration &amp; Uncertainty: 과신을 줄이고 안정적 의사결정을 만드는 법</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 딥러닝 분류</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-딥러닝-분류" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-딥러닝-분류">Chapter 딥러닝 분류</h3>
+<p>딥러닝 분류는 입력 <span class="math inline">\(x \in \mathbb{R}^{d}\)</span>가 주어졌을 때, 출력 y가 어떤 클래스에 속하는지 예측하는 문제이다. 전통적 분류(로지스틱 회귀, LDA 등)가 비교적 명시적 확률모형 혹은 선형 결정규칙을 강조했다면, 딥러닝 분류는 표현학습을 통해 복잡한 비선형 결정경계를 자동으로 학습한다는 점이 핵심이다.</p>
+<p>딥러닝 분류를 이해할 때는 <span dir="rtl">”</span>모형이 무엇을 내놓고(출력층), 그 출력을 어떻게 확률로 바꾸며, 어떤 손실을 최소화하는가”를 한 덩어리로 보는 것이 중요하다. 특히 분류에서 실무적 의사결정은 다음의 3단계를 분리해서 생각하면 정리된다.</p>
+<p>아직 확률이 아니라, 클래스별로 얼마나 그럴듯한지를 나타내는 원시적인 척도이며 보통 <span class="math inline">\(logitz = (z_{1},\ldots,z_{K})\)</span> 형태로 출력된다.</p>
+<p>다음으로 이 점수 벡터를 확률로 해석할 수 있도록 변환한다. 다중분류라면 점수들 사이의 상대적 크기를 반영해 합이 1이 되도록 만드는 softmax를 적용하고, 이진분류나 멀티라벨이라면 각 클래스의 <span dir="rtl">”</span>존재 확률”을 독립적으로 해석하기 위해 sigmoid를 적용해 p를 얻는다.</p>
+<p>마지막으로 이렇게 얻어진 확률 p를 실제 의사결정으로 연결한다. 다중분류에서는 가장 큰 확률을 가진 클래스를 선택하여 <span class="math inline">\(\widehat{y} = \arg\max_{k}p_{k}\)</span>로 예측하고, 이진/멀티라벨에서는 특정 임계값 t를 기준으로 <span class="math inline">\(p \geq t\)</span>이면 양성, 그렇지 않으면 음성으로 판정한다. 즉 딥러닝 분류는 <span dir="rtl">”</span>점수를 계산하고 → 확률로 바꾸고 → 운영 규칙에 따라 결정한다”는 흐름으로 정리할 수 있다.</p>
+<section id="개요-딥러닝-분류는-무엇을-학습하나" class="level4">
+<h4 class="anchored" data-anchor-id="개요-딥러닝-분류는-무엇을-학습하나">0. 개요: 딥러닝 분류는 무엇을 학습하나?</h4>
+<p>딥러닝 분류는 입력 데이터로부터 각 클래스(또는 라벨)에 대한 점수를 만들고, 그 점수를 확률로 변환한 뒤, 운영 목적에 맞는 결정 규칙을 적용해 행동으로 연결하는 학습 과정이다. 핵심은 단순히 <span dir="rtl">”</span>정답을 맞히는 것”에 그치지 않고, 얼마나 확신하는지(확률의 품질) 까지 포함하여 모델을 설계·학습·평가한다는 점이다. 즉 분류는 <span dir="rtl">”</span>모델 출력 → 확률 → 임계값/정책”이 이어지는 전체 파이프라인 문제로 이해하는 것이 중요하다.</p>
+<section id="분류-문제와-목표-점수확률결정" class="level5">
+<h5 class="anchored" data-anchor-id="분류-문제와-목표-점수확률결정">분류 문제와 목표: 점수–확률–결정</h5>
+<p>신경망 분류기는 보통 마지막 층에서 클래스별로 점수(로짓/스코어) 를 출력한다. 이 점수는 <span dir="rtl">”</span>확률”이 아니라, 모델이 각 클래스에 대해 얼마나 강하게 판단하는지를 나타내는 내부 지표에 가깝다.</p>
+<p>운영에서 바로 활용하려면, 점수를 사람이 해석 가능한 형태인 확률로 바꾸는 변환이 필요하다. 이 변환 방식은 문제의 라벨 구조에 따라 달라진다(이진, 다중 단일정답, 멀티라벨 등).</p>
+<p>마지막으로 실제 의사결정은 확률을 그대로 쓰기보다, 임계값(threshold) 이나 규칙(rule) 을 적용해 <span dir="rtl">”</span>양성/음성”, <span dir="rtl">”</span>어느 클래스”, <span dir="rtl">”</span>검토로 넘김” 같은 행동으로 변환한다. 여기서 중요한 점은, 학습이 추구하는 목표(손실 최소화)와 운영이 요구하는 목표(오경보/미탐 비용, 검토량 제한, 위험 기준 등)가 항상 동일하지 않다는 것이다. 따라서 분류 성능은 <span dir="rtl">”</span>학습 단계”뿐 아니라 <span dir="rtl">”</span>운영 단계의 결정 규칙”까지 포함해 설계해야 한다.</p>
+</section>
+<section id="데이터라벨-구조-이진-다중단일정답-멀티라벨" class="level5">
+<h5 class="anchored" data-anchor-id="데이터라벨-구조-이진-다중단일정답-멀티라벨">데이터/라벨 구조: 이진, 다중(단일정답), 멀티라벨</h5>
+<p>딥러닝 분류에서 가장 먼저 확인해야 할 것은 라벨 구조다. 라벨 구조가 달라지면 출력층 형태, 확률 변환 방식, 손실 함수, 평가 지표가 함께 달라진다.</p>
+<p>이진 분류는 한 관측치가 두 범주 중 하나에 속하는 문제다. 모델은 <span dir="rtl">”</span>양성일 가능성” 하나를 중심으로 점수와 확률을 설계한다.</p>
+<p>다중 분류(단일 정답) 는 여러 클래스 중 하나만 정답인 문제다. 모델은 여러 클래스 점수를 동시에 만들고, 그중 하나를 선택하는 구조로 설계한다.</p>
+<p>멀티라벨 분류는 한 관측치가 여러 라벨을 동시에 가질 수 있는 문제다. 각 라벨을 <span dir="rtl">”</span>독립적인 예/아니오” 문제처럼 다루는 방식이 일반적이며, 따라서 출력과 확률도 라벨별로 따로 해석한다.</p>
+<p>이 구분은 단순한 형식 차이가 아니라, <span dir="rtl">”</span>모델이 무엇을 맞히도록 학습되는가”와 <span dir="rtl">”</span>운영에서 무엇을 결정해야 하는가”를 바꾸는 근본 요소다.</p>
+</section>
+<section id="손실-함수의-역할-확률을-학습-목표로-만드는" class="level5">
+<h5 class="anchored" data-anchor-id="손실-함수의-역할-확률을-학습-목표로-만드는">손실 함수의 역할: 확률을 <span dir="rtl">’</span>학습 목표<span dir="rtl">’</span>로 만드는</h5>
+<p>장치</p>
+<p>손실 함수는 모델이 출력한 확률이 정답 라벨과 일치하도록 학습을 유도하는 장치다. 직관적으로 말하면, 정답에 높은 확률을 주면 보상, 오답에 높은 확률을 주면 페널티를 주는 방식으로 작동한다.</p>
+<p>다만 손실 함수는 단지 <span dir="rtl">”</span>정확도”만을 직접 최적화하는 것이 아니라, 예측의 확신 정도까지 반영한다. 그래서 같은 정확도라도 확률이 지나치게 과감하거나(과신) 너무 소극적인 모델은 운영에서 문제가 될 수 있다.</p>
+<p>또한 멀티라벨처럼 라벨 구조가 바뀌면 손실의 형태도 달라지며, 불균형 데이터처럼 특정 오류가 더 치명적인 상황에서는 손실을 조정해 학습의 초점을 바꾸기도 한다(이 내용은 이후 절에서 상세히 다룬다).</p>
+</section>
+<section id="학습과-일반화-훈련-성능이-아니라-새-데이터" class="level5">
+<h5 class="anchored" data-anchor-id="학습과-일반화-훈련-성능이-아니라-새-데이터">학습과 일반화: <span dir="rtl">”</span>훈련 성능”이 아니라 <span dir="rtl">”</span>새 데이터</h5>
+<p>성능”이 목표</p>
+<p>딥러닝 분류의 성능은 훈련 데이터에서의 성능이 아니라, 보지 못한 새 데이터에서의 성능, 즉 일반화 성능으로 평가된다. 신경망은 표현력이 매우 커서 훈련 데이터를 거의 외워버릴 수도 있기 때문에, 훈련 성능이 좋아지는 것이 곧바로 실제 성능 개선을 의미하지는 않는다.</p>
+<p>과적합이 나타나면 흔히 다음과 같은 현상이 함께 관찰된다.</p>
+<p>훈련에서는 계속 좋아지는데, 검증/테스트에서는 어느 순간부터 성능이 정체되거나 나빠진다.</p>
+<p>예측 확률이 0 또는 1 같은 극단으로 치우치며, 모델이 지나치게 확신하는 경향(과신)이 동반된다.</p>
+<p>따라서 분류 모델은 <span dir="rtl">”</span>학습”과 함께 <span dir="rtl">”</span>일반화”를 동시에 설계해야 한다.</p>
+</section>
+<section id="일반화를-좌우하는-실무-레버-정규화와-학습-안정화" class="level5">
+<h5 class="anchored" data-anchor-id="일반화를-좌우하는-실무-레버-정규화와-학습-안정화">일반화를 좌우하는 실무 레버: 정규화와 학습 안정화</h5>
+<p>일반화를 개선하는 대표적 방법들은 크게 두 부류로 정리할 수 있다.</p>
+<ul>
+<li>정규화(Regularization): 모델이 훈련 데이터에 과도하게 맞춰지는 것을 억제해 일반화를 돕는 장치들이다. 대표적으로 가중치 규제, 드롭아웃, 조기 종료(early stopping) 등이 있으며, 경우에 따라 확률의 과신을 완화하는 데에도 도움이 된다.</li>
+<li>학습 안정화(Stabilization): 학습 자체가 불안정해 성능이 흔들리는 문제를 줄이는 기법들이다. 최적화가 안정되면 일반화도 함께 좋아지는 경우가 많으며, 배치정규화 같은 기법이 대표적이다.</li>
+</ul>
+</section>
+<section id="데이터-규모와-모델-규모의-균형-작은-데이터일수록-전략이-달라진다" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-규모와-모델-규모의-균형-작은-데이터일수록-전략이-달라진다">데이터 규모와 모델 규모의 균형: 작은 데이터일수록 전략이 달라진다</h5>
+<p>실무에서 가장 중요한 감각 중 하나는 데이터 규모와 모델 규모의 균형이다.</p>
+<ul>
+<li>데이터가 작을수록, 큰 모델을 그대로 쓰기보다 모델을 단순화하거나 정규화를 강하게 하고, 사전학습 모델을 활용하는 전략의 가치가 커진다.</li>
+<li>데이터가 충분히 클수록, 모델 규모를 키워 표현력을 확보할 수 있고, 증강이나 정규화는 <span dir="rtl">”</span>성능 극대화”보다 <span dir="rtl">”</span>학습 안정성 확보” 용도로 조절되는 경우가 많다.</li>
+</ul>
+<p>즉, 같은 분류 문제라도 데이터 환경에 따라 <span dir="rtl">”</span>어떤 방법론을 우선 적용할지”가 달라진다.</p>
+</section>
+</section>
+<section id="출력-설계라벨-구조에-따른-분류-정식화" class="level4">
+<h4 class="anchored" data-anchor-id="출력-설계라벨-구조에-따른-분류-정식화">1. 출력 설계(라벨 구조에 따른 분류 정식화)</h4>
+<p>딥러닝 분류에서 출력층(output layer) 은 <span dir="rtl">”</span>마지막 층” 이상의 의미를 가진다. 신경망이 만든 점수(score, logit) 를 확률(probability) 로 변환하여 해석 가능하게 만들고, 그 확률을 바탕으로 운영 단계의 결정(decision) 규칙(임계값, Top-k, 비용민감 규칙 등)이 적용될 수 있도록 확률모형의 형태 자체를 결정한다.</p>
+<p>따라서 출력 설계는 <span dir="rtl">”</span>모델이 무엇을 학습하느냐”와 동시에 <span dir="rtl">”</span>운영에서 무엇을 결정할 수 있느냐”를 규정하며, 라벨 구조(이진/다중 단일정답/멀티라벨)를 먼저 확정하지 않으면 손실함수·평가·의사결정 규칙이 서로 충돌해 학습이 불안정해질 수 있다.</p>
+<section id="점수score-확률probability-결정decision" class="level5">
+<h5 class="anchored" data-anchor-id="점수score-확률probability-결정decision">(1) 점수(score) → 확률(probability) → 결정(decision)</h5>
+<p>분류 모델의 흐름은 보통 다음 3단계로 이해하는 것이 가장 안전하다.</p>
+<p>1. 점수(score): 신경망 f_\theta가 입력 x로부터 계산한 값 <br> 2. 확률(probability): 점수를 확률로 변환(라벨 구조에 따라 변환이 달라짐) <br> 3. 결정(decision): 확률에 임계값/정책/Top-k 규칙을 적용하여 최종 예측 또는 행동을 결정</p>
+<p>점수는 임의의 실수이고(확률이 아님), 확률은 운영에서 해석 가능한 형태이며, 결정은 <span dir="rtl">”</span>정답 맞추기”가 아니라 비용, 제약, 서비스 목표를 반영하는 규칙이다. 이 장은 2)까지(확률모형 설계)를 중심으로 정리하되, 3)과의 연결고리(임계값/Top-k/비용민감)를 함께 제시한다.</p>
+</section>
+<section id="이진-분류-logit-1개와-sigmoid-확률모형" class="level5">
+<h5 class="anchored" data-anchor-id="이진-분류-logit-1개와-sigmoid-확률모형">(2) 이진 분류: logit 1개와 sigmoid 확률모형</h5>
+<p>이진 분류는 라벨이 <span class="math inline">\(Y \in \{ 0,1\}\)</span>인 문제다. 신경망은 마지막에서 단일 점수를 출력한다. <span class="math inline">\(z = f_{\theta}(x) \in \mathbb{R}\)</span></p>
+<p>이 점수 z는 <span dir="rtl">”</span>양성일수록 크게” 학습되는 방향으로 해석하면 된다. 확률모형은 이 점수를 sigmoid로 변환하여 <span class="math inline">\(p(x) = P(Y = 1 \mid X = x) = \sigma(z) = \frac{1}{1 + e^{- z}}\)</span>로 정의한다. 그러면 <span class="math inline">\(P(Y = 0 \mid x) = 1 - p(x)\)</span>가 자동으로 결정된다.</p>
+<p>logit과 log-odds 해석(확률모형 관점)</p>
+<p>sigmoid는 다음 관계를 만족한다.</p>
+<p><span class="math display">\[\frac{p(x)}{1 - p(x)} = e^{z},\log\frac{p(x)}{1 - p(x)} = z\]</span></p>
+<p>즉 z는 조건부 확률의 로그 오즈(log-odds) 로 해석된다. 이 관점은 딥러닝 이진분류가 <span dir="rtl">”</span>확률을 직접 출력한다”기보다, 먼저 log-odds를 예측하고 이를 확률로 변환하는 구조임을 분명히 해 준다.</p>
+</section>
+<section id="다중-분류단일정답-클래스별-logit과-softmax-확률모형" class="level5">
+<h5 class="anchored" data-anchor-id="다중-분류단일정답-클래스별-logit과-softmax-확률모형">(3) 다중 분류(단일정답): 클래스별 logit과 softmax 확률모형</h5>
+<p>다중 분류(멀티클래스, 단일 정답)는 라벨이 <span class="math inline">\(Y \in \{ 1,\ldots,K\}\)</span>이고, 각 관측치의 정답이 정확히 하나인 경우다. 신경망은 클래스별 점수 벡터를 출력한다. <span class="math inline">\(\mathbf{z} = f_{\theta}(x) = (z_{1},\ldots,z_{K}) \in \mathbb{R}^{K}\)</span></p>
+<p>이를 확률 벡터로 바꾸는 표준 변환이 softmax이다.</p>
+<p><span class="math display">\[p_{k}(x) = P(Y = k \mid X = x) = \frac{e^{z_{k}}}{\sum_{j = 1}^{K}e^{z_{j}}},k = 1,\ldots,K\]</span></p>
+<p>softmax의 핵심은 <span class="math inline">\(p_{k}(x) \in (0,1)\)</span>, <span class="math inline">\(\overset{K}{\sum_{k = 1}}p_{k}(x) = 1\)</span>을 만족한다는 점이며, 이는 <span dir="rtl">”</span>확률 질량을 K개 클래스에 분배”하는 구조를 의미한다. 따라서 단일정답 다중 분류에서는 클래스들이 서로 경쟁한다.</p>
+<p><strong>softmax 불변성(수치안정성의 핵심)</strong></p>
+<p>모든 logit에 같은 상수 c를 더해도 확률은 변하지 않는다.</p>
+<p><span class="math inline">\(\frac{e^{z_{k} + c}}{\sum_{j}^{}e^{z_{j} + c}} = \frac{e^{z_{k}}}{\sum_{j}^{}e^{z_{j}}}\)</span>. 이 성질 때문에 실제 구현에서는 overflow 방지를 위해 보통 <span class="math inline">\(p_{k} = \frac{e^{z_{k} - \max_{j}z_{j}}}{\sum_{j}^{}e^{z_{j} - \max_{j}z_{j}}}\)</span>처럼 최대값을 빼서 계산한다.</p>
+</section>
+<section id="결정-규칙-map-규칙과-비용민감cost-sensitive-일반화" class="level5">
+<h5 class="anchored" data-anchor-id="결정-규칙-map-규칙과-비용민감cost-sensitive-일반화">(4) 결정 규칙: MAP 규칙과 비용민감(cost-sensitive) 일반화</h5>
+<p>확률모형이 정해지면, 최종 예측은 결정 규칙으로 나온다. 가장 기본 규칙은 최대확률(MAP) 규칙이다.</p>
+<p><span class="math display">\[\widehat{y}(x) = \arg\max_{k}p_{k}(x)\]</span></p>
+<p>softmax는 단조 변환 구조이므로 <span class="math inline">\(\arg\max_{k}p_{k}(x) = \arg\max_{k}z_{k}\)</span>도 성립한다. 하지만 현실에서는 오분류 비용이 클래스별로 다를 수 있다. 행동 a를 취했을 때의 비용을 C(a,k)로 두면, 최적 결정은 기대비용을 최소화하는 규칙이 된다.</p>
+<p><span class="math display">\[\widehat{a}(x) = \arg\min_{a}\overset{K}{\sum_{k = 1}}C(a,k)p_{k}(x)\]</span></p>
+<p>MAP 규칙은 <span dir="rtl">”</span>모든 오분류 비용이 동일”한 특수한 경우로 볼 수 있다. 이 점 때문에 운영에서는 단순 정확도보다 임계값/정책 설계가 중요해진다.</p>
+</section>
+<section id="멀티클래스-vs-멀티라벨-출력-구조가-달라지는-이유" class="level5">
+<h5 class="anchored" data-anchor-id="멀티클래스-vs-멀티라벨-출력-구조가-달라지는-이유">(5) 멀티클래스 vs 멀티라벨: 출력 구조가 달라지는 이유</h5>
+<p>이름이 비슷해 혼동이 잦지만, 두 문제는 라벨 의미가 다르다.</p>
+<ul>
+<li>멀티클래스(단일정답): <span dir="rtl">”</span>K개 중 정확히 하나” <span class="math inline">\(\Rightarrow softmax,\sum_{k}p_{k} = 1\)</span></li>
+<li>멀티라벨: <span dir="rtl">”</span>K개 라벨이 각각 존재/부재(여러 개 동시 가능)” → 라벨별 sigmoid, 라벨 간 경쟁 제약 없음</li>
+</ul>
+<p>멀티라벨의 라벨 벡터는 보통 <span class="math inline">\(\mathbf{Y} = (Y_{1},\ldots,Y_{K}) \in \{ 0,1\}^{K}\)</span>로 표현하며 목표는 각 라벨의 조건부 확률 <span class="math inline">\(p_{k}(x) = P(Y_{k} = 1 \mid X = x)\)</span>를 추정하는 것이다.</p>
+</section>
+<section id="멀티라벨-출력층-라벨별-sigmoid-독립-bce-합" class="level5">
+<h5 class="anchored" data-anchor-id="멀티라벨-출력층-라벨별-sigmoid-독립-bce-합">(6) 멀티라벨 출력층: 라벨별 sigmoid + (독립) BCE 합</h5>
+<p>멀티라벨 신경망은 마지막에 K개의 logit을 출력한다.</p>
+<p><span class="math display">\[\mathbf{z} = f_{\theta}(x) = (z_{1},\ldots,z_{K}) \in \mathbb{R}^{K}\]</span></p>
+<p>각 logit을 라벨별 sigmoid로 변환해 라벨별 확률을 만든다.</p>
+<p><span class="math display">\[p_{k}(x) = \sigma(z_{k}),k = 1,\ldots,K\]</span></p>
+<p>그리고 표준 손실은 라벨별 이진 교차엔트로피(BCE)를 합한 형태다.</p>
+<p><span class="math display">\[\mathcal{L}_{ML}(y,p) = - \overset{K}{\sum_{k = 1}}\left( y_{k}\log p_{k} + (1 - y_{k})\log(1 - p_{k}) \right)\]</span></p>
+<p>이 구성은 <span dir="rtl">”</span>각 라벨이 독립적인 베르누이 타깃”이라는 모델링 관점과 대응한다.</p>
+<p>현실에서는 라벨 간 상관이 존재할 수 있지만, 예측은 라벨별 확률로 두고(독립 형태), 공유 표현(shared representation) 을 통해 상관을 간접적으로 흡수하는 방식이 실무적으로 널리 쓰인다.</p>
+</section>
+<section id="멀티라벨에-softmax를-쓰면-왜-문제인가" class="level5">
+<h5 class="anchored" data-anchor-id="멀티라벨에-softmax를-쓰면-왜-문제인가">(7) <span dir="rtl">”</span>멀티라벨에 softmax를 쓰면 왜 문제인가?”</h5>
+<p>softmax는 <span class="math inline">\(\sum_{k}p_{k} = 1\)</span> 을 강제한다. 즉 라벨들이 확률 질량을 나눠 갖는 경쟁 구조가 된다.</p>
+<p>하지만 멀티라벨은 <span dir="rtl">”</span>사람”과 <span dir="rtl">”</span>자전거”가 동시에 존재할 수 있어 둘 다 높은 확률이어야 자연스럽다. softmax는 둘 다 0.9처럼 동시에 크게 만드는 것을 구조적으로 허용하지 않는다(한쪽이 커지면 다른 쪽은 상대적으로 줄어듦).</p>
+<p>따라서 라벨이 비배타적일 가능성이 있다면, 출력층은 멀티라벨 설계(라벨별 sigmoid)로 가야 한다.</p>
+</section>
+<section id="멀티라벨의-임계값-전략-global-vs-라벨별-t_k" class="level5">
+<h5 class="anchored" data-anchor-id="멀티라벨의-임계값-전략-global-vs-라벨별-t_k">(8) 멀티라벨의 임계값 전략: global vs 라벨별 <span class="math inline">\(t_k\)</span></h5>
+<p>멀티라벨의 최종 예측은 라벨별 임계값을 적용해 이진화한다. <span class="math inline">\({\widehat{y}}_{k} = \mathbf{1}(p_{k} \geq t_{k})\)</span> 여기서 임계값 설정이 성능과 운영량을 크게 좌우한다. 대표 전략은 두 가지다.</p>
+<p><strong>(A) Global threshold: 전 라벨 공통 임계값 <span class="math inline">\(t_{k} = t,\forall k\)</span></strong></p>
+<p>단순하고 운영/설명이 쉽고, 튜닝 비용 낮은 장점이 있느나, 라벨별 빈도(희귀도), 비용, 난이도가 다르면 비효율적이라는 단점이 있다. (희귀 라벨은 보통 더 낮은 임계값이 필요하지만 공통 임계값은 이를 반영하기 어렵다)</p>
+<p><strong>(B) 라벨별 threshold: <span class="math inline">\(t_{1},\ldots,t_{K}\)</span> 개별 튜닝</strong></p>
+<p>라벨별 불균형/비용/난이도를 반영 가능 → 실무 성능 향상 가능성이 크다는 장점이 있으나 관리 복잡도 증가(라벨 수가 많을수록), 데이터가 적으면 과적합 위험이 발생한다.</p>
+<p>실무에서는 검증셋에서 라벨별 기준을 정해 <span class="math inline">\(t_{k}\)</span>를 선택한다. 예컨대 라벨별 F1 최대화 기준, 라벨별 FPR 제약(알람 오경보 제한), 라벨별 운영량(일일 알람 수 상한) 기반 등으로 결정한다.</p>
+</section>
+<section id="멀티라벨-평가-요약-micro-vs-macro-pr-관점" class="level5">
+<h5 class="anchored" data-anchor-id="멀티라벨-평가-요약-micro-vs-macro-pr-관점">(9) 멀티라벨 평가 요약: micro vs macro, PR 관점</h5>
+<p>멀티라벨에서는 <span dir="rtl">”</span>정확도(accuracy)“가 의미가 약해지는 경우가 많아, 보통 Precision/Recall/F1을 micro/macro로 요약한다.</p>
+<p><strong>Micro</strong> 평균: 전체 라벨·전체 샘플의 TP/FP/FN을 한데 모아 계산</p>
+<p><span class="math display">\[\begin{matrix}
+TP_{\text{micro}} &amp; = \sum_{k}TP_{k}, \\
+FP_{\text{micro}} &amp; = \sum_{k}FP_{k}, \\
+FN_{\text{micro}} &amp; = \sum_{k}FN_{k}, \\
+{Precision}_{\text{micro}} &amp; = \frac{TP_{\text{micro}}}{TP_{\text{micro}} + FP_{\text{micro}}}, \\
+{Recall}_{\text{micro}} &amp; = \frac{TP_{\text{micro}}}{TP_{\text{micro}} + FN_{\text{micro}}}, \\
+F1_{\text{micro}} &amp; = \frac{2{Precision}_{\text{micro}}{Recall}_{\text{micro}}}{{Precision}_{\text{micro}} + {Recall}_{\text{micro}}}.
+\end{matrix}\]</span></p>
+<p>→ 자주 등장하는(빈도 큰) 라벨이 지표에 더 큰 영향</p>
+<p><strong>Macro</strong> 평균: 라벨별 점수를 평균</p>
+<p><span class="math display">\[\begin{array}{r}
+Precision_{\text{macro}} = \frac{1}{K}\overset{K}{\sum_{k = 1}}Precision_{k}, \\
+Recall_{\text{macro}} = \frac{1}{K}\overset{K}{\sum_{k = 1}}Recall_{k}, \\
+F1_{\text{macro}} = \frac{1}{K}\overset{K}{\sum_{k = 1}}F1_{k}
+\end{array}\]</span></p>
+<p>→ 희귀 라벨도 동일 가중치로 반영(<span dir="rtl">”</span>모든 라벨을 고르게 잘하나?“)</p>
+<p>또한 멀티라벨은 라벨별 양성 비율이 크게 다르므로 ROC보다 PR(Precision–Recall) 곡선이 더 직접적인 경우가 많다. 운영에서는 <span dir="rtl">”</span>Recall을 조금 올리려다 FP가 폭증하는 구간”이 흔하므로, PR 곡선으로 임계값 민감도를 확인하는 것이 중요하다.</p>
+</section>
+<section id="large-k대규모-클래스-분류-softmax가-학습추론-병목이-되는-경우" class="level5">
+<h5 class="anchored" data-anchor-id="large-k대규모-클래스-분류-softmax가-학습추론-병목이-되는-경우">(10) Large-K(대규모 클래스) 분류: softmax가 학습/추론 병목이 되는 경우</h5>
+<p>클래스 수 K가 수만~수백만으로 커지는 문제(상품/문서/광고 ID 예측, 추천, 검색 쿼리–문서 매칭 등)에서는 <span dir="rtl">”</span>모델이 무엇을 학습하느냐”보다 softmax를 어떻게 계산하느냐가 학습·추론의 병목이 된다. 핵심은 한 번의 학습 스텝에서 필요한 계산이 기본적으로 O(K) 로 커지기 때문이다.</p>
+<p><strong>softmax 계산 병목과 메모리 이슈</strong></p>
+<p>다중분류에서 <span class="math inline">\(logit\mathbf{z} \in \mathbb{R}^{K}\)</span>에 대해 <span class="math inline">\(p_{k} = \frac{e^{z_{k}}}{\sum_{j = 1}^{K}e^{z_{j}}}\)</span>를 계산하려면 분모 <span class="math inline">\(\sum_{j = 1}^{K}e^{z_{j}}\)</span>가 필요하므로 모든 클래스 logit을 한 번은 계산해야 한다. 병목은 크게 두 가지다.</p>
+<p><strong>(A) 시간 복잡도: O(K) softmax + loss</strong></p>
+<p>정답이 y일 때 cross-entropy는 <span class="math inline">\(\mathcal{L} = - \log p_{y} = - z_{y} + \log\overset{K}{\sum_{j = 1}}e^{z_{j}}\)</span>이므로 <span class="math inline">\(\log\sum_{j}e^{z_{j}}\)</span> 계산이 핵심 비용이다. K가 커지면 한 배치에서 이 항을 계산하는 비용이 지배적이 된다.</p>
+<p><strong>(B) 출력층 파라미터 메모리: O(Kd)</strong></p>
+<p>마지막 선형층이 보통 <span class="math inline">\(z_{k} = \mathbf{w}_{k}^{\top}\mathbf{h} + b_{k},\mathbf{h} \in \mathbb{R}^{d}\)</span> 형태이므로 출력층 가중치 <span class="math inline">\(W \in \mathbb{R}^{K \times d}\)</span>를 저장해야 한다. 파라미터 수는 Kd (+ bias K)로 증가한다. K가 수백만이면 이 층만으로도 GPU 메모리 한계에 부딪히며, 분산 학습/샤딩이 필요해진다.</p>
+<p><strong>Sampled softmax: <span dir="rtl">”</span>분모를 일부 클래스만으로 근사”</strong></p>
+<p>Large-K의 대표 아이디어는 <span dir="rtl">”</span>정답 클래스 1개 + 일부 음성 클래스”만 사용해 학습 신호를 만들고, 전체 K에 대한 softmax 계산을 피하는 것이다.</p>
+<p>샘플마다 정답 y와 음성 샘플 집합 <span class="math inline">\(S \subset \{ 1,\ldots,K\} \smallsetminus \{ y\},|S| = m \ll K\)</span>를 뽑아 <span dir="rtl">”</span>부분 softmax”로 근사한다.</p>
+<p>개념적으로는 <span class="math inline">\(\log\overset{K}{\sum_{j = 1}}e^{z_{j}} \approx \log(e^{z_{y}} + \sum_{j \in S}e^{z_{j}})\)</span>를 사용한다. 실제로는 샘플링 분포에 따른 보정항을 넣어 편향을 줄이는 변형이 많다.</p>
+<p>학습 시 클래스 연산이 K에서 m으로 줄어들어 비용이 O(m)이 되지만, 근사이므로 샘플링 전략과 보정 방식이 품질을 좌우한다.</p>
+<p><strong>Negative sampling: <span dir="rtl">”</span>분류”를 <span dir="rtl">”</span>정답 vs 음성”의 랭킹 학습으로</strong></p>
+<p>negative sampling은 softmax의 분모를 근사한다기보다, 관점을 바꿔 <span dir="rtl">”</span>정답 쌍”과 <span dir="rtl">”</span>음성 쌍”을 구분하도록 학습하는 성격이 강하다. 점수 <span class="math inline">\(s(x,k)\)</span>를 사용해 정답 쌍 <span class="math inline">\((x,y)\)</span>는 양성, 샘플된 음성 <span class="math inline">\((x,j)\)</span>는 음성으로 두고 <span class="math inline">\(\mathcal{L} = - \log\sigma(s(x,y)) - \sum_{j \in S}\log\sigma( - s(x,j))\)</span> 같은 형태의 손실로 학습한다. 직관은 단순하다. 정답의 점수는 크게하고 음성의 점수는 작게한다.</p>
+<p>특히 추천/검색처럼 <span dir="rtl">”</span>확률의 정규화”보다 Top-k 랭킹 품질이 핵심인 문제에서 negative sampling은 자주 쓰인다.</p>
+<p><strong>샘플링의 핵심: 음성을 어떻게 뽑을 것인가?</strong></p>
+<p>무작위 음성은 너무 쉬워 학습 신호가 약할 수 있다. 그래서 자주 쓰는 전략이 빈도 기반 샘플링(자주 나오는 클래스에 더 많이), hard negative(현재 모델이 헷갈리는 클래스), in-batch negative(같은 배치의 다른 정답들을 음성으로 활용) 등이다. Large-K에서 성능 차이는 종종 <span dir="rtl">”</span>모델 구조”보다 <span dir="rtl">”</span>negative 구성”에서 크게 난다.</p>
+<p><strong>Retrieval + Rerank(2-stage): 분류를 <span dir="rtl">”</span>찾기(search)” 문제로 재정의</strong></p>
+<p>Large-K 문제를 <span dir="rtl">”</span>분류”로만 보면 softmax가 병목이지만, 관점을 바꾸면 본질은 종종 Top-N 후보를 잘 찾는 문제다. 즉 전체 K 중 <span dir="rtl">”</span>상위 몇 개”만 정확하면 되는 경우가 많다. 이때 표준 해법이 2-stage 구조다.</p>
+<p><strong>Stage 1</strong>: Retrieval(후보 생성)</p>
+<p>입력 x를 임베딩 <span class="math inline">\(\mathbf{h}(x) \in \mathbb{R}^{d}\)</span>로 만들고, 클래스(또는 아이템)도 임베딩 <span class="math inline">\(\mathbf{e}_{k} \in \mathbb{R}^{d}\)</span>로 두어 유사도로 후보를 찾는다. <span class="math inline">\(score(x,k) = \mathbf{h}(x)^{\top}\mathbf{e}_{k}\)</span></p>
+<p>그리고 ANN(Approximate Nearest Neighbor) 같은 근사 최근접 탐색으로 Top-N 후보를 빠르게 가져온다. 이 단계의 목적은 <span dir="rtl">”</span>정확도”보다 회수(recall), 즉 정답 후보를 넓게 포함하는 것이다.</p>
+<p><strong>Stage 2</strong>: Rerank(정밀 재정렬)</p>
+<p>1단계 후보 N개(예: 100~1000개)만 놓고, 더 무거운 모델(딥 네트워크, cross-attention 등)로 정교하게 점수화해 최종 Top-k를 결정한다.</p>
+<p><span class="math display">\[\widehat{y} \in \text{Top-}k\text{of}\{ rerank\_ score(x,c):c \in \mathcal{C}_{N}\}\]</span></p>
+<p>왜 2-stage가 강력한가? 전체 K에 대해 매번 계산하지 않아도 되어 추론 비용이 크게 감소하고 목표가 <span dir="rtl">”</span>정규화된 확률”이 아니라 랭킹/Top-k 품질일 때 자연스럽게 맞을 뿐 아니라 검색/추천의 운영 요구(지연시간 제한, Top-k 응답)에 잘 부합한가.</p>
+<p>Large-K에서는 <span dir="rtl">”</span>확률의 정확한 정규화”보다 <span dir="rtl">”</span>상위 후보를 얼마나 잘/빠르게 찾는가”가 더 중요해져, 분류가 검색(retrieval) 문제로 재정식화되는 경우가 많다.</p>
+<p><strong>무엇을 언제 쓰나? (Large-K 의사결정 가이드)</strong></p>
+<p>Large-K에서 핵심 선택지는 <span dir="rtl">”</span>끝까지 분류(softmax 계열)로 갈 것인가” vs <span dir="rtl">”</span>문제를 검색/랭킹으로 재정식화할 것인가”다.</p>
+<p><strong>Sampled softmax / negative sampling</strong>을 우선 고려하는 경우</p>
+<p>(A) 목표가 정규화된 확률에 가깝다: 다음 토큰 확률(언어모델), 확률 자체가 다운스트림에 직접 쓰이는 경우 → softmax는 <span class="math inline">\(\sum_k p_k=1\)</span> 인 분포를 제공하므로 확률 해석이 필요할 때 유리</p>
+<p>(B) 학습은 대규모지만 서빙은 상대적으로 단순/오프라인: 학습에서 샘플링으로 가볍게 만들고, 추론은 필요한 범위에서 계산하는 절충 가능</p>
+<p>(C) 라벨이 명확한 1-of-K closed-set 구조: 카테고리/클래스가 고정되고 정답이 하나인 폐집합 분류는 CE 프레임을 유지하는 것이 자연스럽다.</p>
+<p>(D) 평가/목표가 Top-1 정확도 중심: CE 기반 학습은 top-1 분류 성격과 결이 잘 맞는다.</p>
+<p><strong>Retrieval + Rerank(2-stage)</strong>를 우선 고려하는 경우</p>
+<p>(A) 목표가 Top-k 추천/검색이며 전체 확률이 필요 없다.: <span dir="rtl">”</span>상위 10개/50개를 잘 맞추기”가 목표면 2-stage가 자연스럽다.</p>
+<p>(B) 초저지연/대규모 서빙이 필수: 온라인 추천/검색에서 ms 단위 지연 제한이면 전체 K 스코어링은 사실상 불가능에 가깝고, ANN 기반 retrieval이 정답에 가깝다.</p>
+<p>(C) 클래스/아이템이 자주 추가·삭제되는 동적 카탈로그: 분류 출력층 테이블(K\times d)을 계속 재학습·동기화하기 어렵다. 임베딩 인덱스 기반 retrieval은 추가/갱신이 비교적 수월하다.</p>
+<p>(D) 랭킹 지표(NDCG, MAP, Recall@k)가 중요하고 hard negative를 잘 만들고 싶다.: 2-stage는 1단계가 회수(recall), 2단계가 정밀도(precision)를 담당해 랭킹 최적화에 유리하다.</p>
+<p>확률이 꼭 필요하면 sampled softmax(또는 계층 softmax 등) 쪽으로 Top-k 품질이 핵심이면 negative sampling / retrieval+r erank 쪽으로 기운다.</p>
+<p><strong>최종 체크리스트(출력 설계)</strong></p>
+<p>1. 출력이 <span dir="rtl">”</span>확률분포(\sum_k p_k=1)“로 꼭 필요한가? → Yes: softmax 계열(필요 시 sampled/근사) / No: retrieval+rerank 또는 negative sampling</p>
+<p>2. 라벨이 단일정답인가, 멀티라벨인가? → 단일정답: softmax / 멀티라벨: 라벨별 sigmoid</p>
+<p>3. K가 매우 큰가(수만~수백만)? → Yes: 근사 softmax, negative sampling, 2-stage 중 운영 목표에 맞게 선택</p>
+<p>4. 운영 목표가 accuracy인가, Recall@k/NDCG/MAP인가? → accuracy: CE/softmax 프레임 선호 → 랭킹 지표: negative sampling + 2-stage 설계가 자연스럽다</p>
+</section>
+</section>
+<section id="손실-함수와-학습-목적-loss-objective" class="level4">
+<h4 class="anchored" data-anchor-id="손실-함수와-학습-목적-loss-objective">2. 손실 함수와 학습 목적 (Loss &amp; Objective)</h4>
+<p>딥러닝 분류에서 손실함수(loss)는 <span dir="rtl">”</span>정답을 맞추라”는 막연한 지시가 아니라, 확률모형 <span class="math inline">\(P_{\theta}(Y \mid X)\)</span>가 데이터에 맞게 추정되도록 만드는 통계적 기준이다. 분류에서 가장 표준적인 손실은 Cross-Entropy(교차엔트로피) 이며, 이는 곧 음의 로그우도(NLL, negative log-likelihood) 최소화와 동일하다. 이 절에서는 (1) CE가 왜 자연스러운 목표인지, (2) 불균형/어려운 샘플에서 손실을 어떻게 조정하는지, (3) Large-K에서 계산을 가능하게 만드는 근사 학습을 정리한다.</p>
+<section id="mlenllcross-entropy-연결-확률모형을-학습한다의-의미" class="level5">
+<h5 class="anchored" data-anchor-id="mlenllcross-entropy-연결-확률모형을-학습한다의-의미">(1) MLE–NLL–Cross-Entropy 연결: <span dir="rtl">”</span>확률모형을 학습한다”의 의미</h5>
+<p>데이터 <span class="math inline">\(\{(x_{i},y_{i})\}_{i = 1}^{n} \sim iid\)</span>이고, 모델이 조건부확률 <span class="math inline">\(P_{\theta}(Y \mid X)\)</span>를 준다고 하자. 최대우도추정(MLE)은 <span class="math inline">\(\widehat{\theta} = \arg\max_{\theta}\overset{n}{\prod_{i = 1}}P_{\theta}(y_{i} \mid x_{i})\)</span>이다. 곱은 로그를 취하면 합으로 바뀌면 최적화가 쉬워진다. 그리고 최대화를 최소화로 바꾸기 위해 마이너스를 붙이면 음의 로그우도(NLL) 최소화가 된다.</p>
+<p><span class="math display">\[\widehat{\theta} = \arg\min_{\theta}\overset{n}{\sum_{i = 1}}( - \log P_{\theta}(y_{i} \mid x_{i}))\]</span></p>
+<p>다중분류에서 라벨을 원-핫 벡터 <span class="math inline">\(y_{i} = (y_{i1},\ldots,y_{iK})\)</span>로 쓰고, 모델 확률을 <span class="math inline">\(p_{i} = (p_{i1},\ldots,p_{iK})\)</span>라 하면 <span class="math inline">\(- \log P_{\theta}(y_{i} \mid x_{i}) = - \overset{K}{\sum_{k = 1}}y_{ik}\log p_{ik}\)</span>. 이 식이 바로 Cross-Entropy(교차엔트로피) 다. 즉 <span class="math inline">\(\text{MLE} \leftrightarrow \text{NLL 최소화} \leftrightarrow \text{Cross-Entropy 최소화}\)</span>가 한 줄로 연결된다. 딥러닝 분류는 결과적으로 <span dir="rtl">”</span>확률모형의 최대우도추정”을 SGD로 수행하는 것으로 볼 수 있다.</p>
+</section>
+<section id="다중분류-손실-softmax-cross-entropy" class="level5">
+<h5 class="anchored" data-anchor-id="다중분류-손실-softmax-cross-entropy">(2) 다중분류 손실: Softmax + Cross-Entropy</h5>
+<p>단일정답 다중분류에서 신경망은 로짓 <span class="math inline">\(\mathbf{z} \in \mathbb{R}^{K}\)</span>를 출력하고 <span class="math inline">\(p_{k} = \frac{e^{z_{k}}}{\sum_{j = 1}^{K}e^{z_{j}}}\)</span>로 확률을 만든다. 정답이 <span class="math inline">\(y \in \{ 1,\ldots,K\}\)</span>일 때 CE는 <span class="math inline">\(\mathcal{L}_{CE}(y,p) = - \log p_{y}\)</span>이며, 원-핫 y를 쓰면 <span class="math inline">\(\mathcal{L}_{CE}(y,p) = - \overset{K}{\sum_{k = 1}}y_{k}\log p_{k}\)</span>로 정리된다.</p>
+<p>직관: <span dir="rtl">”</span>정답 확률이 작으면 크게 벌점”</p>
+<p><span class="math inline">\(- \log p_{y}\)</span>는 정답에 부여한 확률 <span class="math inline">\(p_{y}\)</span>가 작을수록 커진다. 특히 <span class="math inline">\(p_{y} \rightarrow 0\)</span>이면 손실이 발산하므로, <span dir="rtl">”</span>정답인데 0에 가깝게 확신하는 예측”을 강하게 교정한다. 이 성질 때문에 CE는 실무에서 매우 강력한 기본 손실로 작동한다.</p>
+</section>
+<section id="gradient-직관-p-y-형태와-학습-안정성" class="level5">
+<h5 class="anchored" data-anchor-id="gradient-직관-p-y-형태와-학습-안정성">(3) gradient 직관: (p-y) 형태와 학습 안정성</h5>
+<p>Cross-Entropy가 널리 쓰이는 이유 중 하나는 softmax와 결합했을 때 기울기가 깔끔해 학습이 안정적이기 때문이다. 한 샘플에 대해 로짓 <span class="math inline">\(z_{k}\)</span>에 대한 미분은 <span class="math inline">\(\frac{\partial\mathcal{L}}{\partial z_{k}} = p_{k} - y_{k}\)</span>로 정리된다. 즉 <span dir="rtl">”</span>예측확률 p”에서 <span dir="rtl">”</span>정답 y”를 뺀 오차가 그대로 출력층 역전파 신호가 된다.</p>
+<ul>
+<li>정답 클래스(<span class="math inline">\(y_{k} = 1\)</span>)에서는 <span class="math inline">\(\frac{\partial\mathcal{L}}{\partial z_{k}} = p_{k} - 1\)</span> → <span class="math inline">\(p_{k} &lt; 1\)</span>이면 음수이므로 <span class="math inline">\(z_{k}\)</span>를 키우는 방향으로 업데이트된다.</li>
+<li>오답 클래스(<span class="math inline">\(y_{k} = 0\)</span>)에서는 <span class="math inline">\(\frac{\partial\mathcal{L}}{\partial z_{k}} = p_{k}\)</span> → 오답 확률이 클수록 z_k를 줄이는 방향으로 업데이트된다.</li>
+</ul>
+<p>이 구조는 <span dir="rtl">”</span>출력층 오차 신호”가 직관적이고 크기 조절도 잘 되며, 단순 제곱오차를 분류에 억지로 쓰는 것보다 최적화가 유리한 이유를 설명해준다.</p>
+</section>
+<section id="이진분류-손실-bce이진-교차엔트로피" class="level5">
+<h5 class="anchored" data-anchor-id="이진분류-손실-bce이진-교차엔트로피">(4) 이진분류 손실: BCE(이진 교차엔트로피)</h5>
+<p>이진분류에서 <span class="math inline">\(p = P(Y = 1 \mid x)\)</span>라 하면 표준 손실은 <span class="math inline">\(\mathcal{L}_{BCE}(y,p) = - (y\log p + (1 - y)\log(1 - p))\)</span>이다. CE와 동일한 철학(정답 확률을 높이도록 압박)을 갖지만, 단일 확률 p를 다룬다는 점이 다르다.</p>
+</section>
+<section id="실무-옵션-1-class-weight불균형-대응" class="level5">
+<h5 class="anchored" data-anchor-id="실무-옵션-1-class-weight불균형-대응">(5) 실무 옵션 1: Class weight(불균형 대응)</h5>
+<p>현장 데이터는 흔히 클래스 불균형(양성이 희귀, 특정 클래스가 압도적으로 많음)을 가진다. 불균형에서 가장 기본 대응은 <span dir="rtl">”</span>소수 클래스의 손실을 더 크게” 벌점 주는 방식이다.</p>
+<p><strong>(A) 다중분류 가중 CE</strong></p>
+<p>클래스 가중치를 <span class="math inline">\(w_{k}\)</span>로 두면 <span class="math inline">\(\mathcal{L} = - \overset{K}{\sum_{k = 1}}w_{k}y_{k}\log p_{k}\)</span> 정답이 y면 <span class="math inline">\(\mathcal{L} = - w_{y}\log p_{y}\)</span>가 된다.</p>
+<p><strong>(B) 이진분류 가중 BCE</strong></p>
+<p>양성 가중치 <span class="math inline">\(w_{1}\)</span>, 음성 가중치 <span class="math inline">\(w_{0}\)</span>를 두면 <span class="math inline">\(\mathcal{L} = - (w_{1}y\log p + w_{0}(1 - y)\log(1 - p))\)</span>이다.</p>
+<p>가중치를 올리면 대체로 Recall이 좋아질 수 있지만, FP(오경보) 도 함께 늘 수 있다. 즉 학습 목표를 바꾸면 출력 확률/점수의 분포도 변하므로, 운영에서는 임계값 t 를 다시 맞추는 작업이 거의 항상 필요하다.</p>
+<p>따라서 불균형 대응은 <span dir="rtl">”</span>가중치만 주면 끝”이 아니라, 학습(손실) + 운영(임계값/정책) 을 함께 튜닝하는 문제다.</p>
+</section>
+<section id="실무-옵션-2-label-smoothing과신-완화-일반화-개선" class="level5">
+<h5 class="anchored" data-anchor-id="실무-옵션-2-label-smoothing과신-완화-일반화-개선">(6) 실무 옵션 2: Label smoothing(과신 완화, 일반화 개선)</h5>
+<p>원-핫 정답은 <span dir="rtl">”</span>정답 클래스 확률 1”을 강제하는 성격이 강해, 모델이 과도하게 확신(과신)하도록 만들 수 있다. 이를 완화하기 위해 정답 분포를 조금 부드럽게 만드는 것이 label smoothing이다.</p>
+<p>원-핫 y를 다음처럼 바꾼다. <span class="math inline">\({\overset{˜}{y}}_{k} = (1 - \varepsilon)y_{k} + \frac{\varepsilon}{K}\)</span>. 그리고 <span class="math inline">\(\mathcal{L} = - \overset{K}{\sum_{k = 1}}{\overset{˜}{y}}_{k}\log p_{k}\)</span>로 CE를 계산한다.</p>
+<p>효과는 과신 감소하고(확률 보정에 유리한 경우가 많음), 라벨 노이즈에 덜 민감하며, 일부 데이터셋에서 일반화 성능이 개선된다.</p>
+<p>단, <span class="math inline">\(\varepsilon\)</span>가 너무 크면 정답을 지나치게 희석해 성능이 떨어질 수 있어 보통 작은 값(예: 0.05~0.1)을 후보로 둔다.</p>
+</section>
+<section id="불균형과-오류비용은-다른-문제다학습-vs-운영" class="level5">
+<h5 class="anchored" data-anchor-id="불균형과-오류비용은-다른-문제다학습-vs-운영">(7) 불균형과 <span dir="rtl">”</span>오류비용”은 다른 문제다(학습 vs 운영)</h5>
+<p>불균형은 데이터에서 양성 비율이 작은 현상(예: <span class="math inline">\(\pi = P(Y = 1) \ll 1\)</span>)이고, 오류비용 비대칭은 <span dir="rtl">”</span>틀렸을 때 손해가 다름”이다. 예컨대 미탐 비용 <span class="math inline">\(c_{FN}\)</span>이 크면 양성을 놓치는 것이 치명적이고, 오경보 비용 <span class="math inline">\(c_{FP}\)</span>이 크면 괜히 양성으로 띄우는 것이 위험하다.</p>
+<p>이 비용 비대칭은 운영 단계에서 임계값을 바꾸는 근거가 된다. 대표적으로 <span class="math inline">\(t^{*} = \frac{c_{FP}}{c_{FP} + c_{FN}}\)</span> 같은 형태로 <span dir="rtl">”</span>결정 정책”이 바뀐다. 요지는 다음 한 줄이다.</p>
+<p>불균형은 <span dir="rtl">’</span>학습 신호의 희소화<span dir="rtl">’</span> 문제이고, 비용 비대칭은 <span dir="rtl">’</span>결정 정책<span dir="rtl">’</span> 문제다. 둘은 관련은 있지만 동일하지 않다.</p>
+</section>
+<section id="어려운-샘플-대응-focal-loss와-hard-example-mining" class="level5">
+<h5 class="anchored" data-anchor-id="어려운-샘플-대응-focal-loss와-hard-example-mining">(8) 어려운 샘플 대응: focal loss와 hard example mining</h5>
+<p>불균형 문제에서 모델을 힘들게 하는 것은 <span dir="rtl">”</span>양성이 적다”뿐 아니라, 실제로는 쉬운 음성(명백히 음성인 샘플) 이 너무 많아 업데이트가 그쪽으로 쏠리는 현상이다. 이때는 <span dir="rtl">”</span>쉬운 샘플의 영향은 줄이고, 어려운 샘플에 집중”하는 손실 설계가 유효하다.</p>
+<p><strong>(A) Focal loss</strong></p>
+<p>정답 확률을 <span class="math inline">\(p_{t}\)</span>라 할 때(이진/다중에서 표기만 달라질 뿐 철학은 동일), focal loss는 <span class="math inline">\(\mathcal{L}_{focal} = - \alpha(1 - p_{t})^{\gamma}\log(p_{t})\)</span>로 정의된다.</p>
+<ul>
+<li><span class="math inline">\(p_{t} \approx 1\)</span>인 쉬운 샘플은 (1-p_t)^\gamma가 매우 작아져 기여가 거의 사라진다.</li>
+<li><span class="math inline">\(p_{t}\)</span>가 작은 어려운 샘플은 상대적으로 큰 기여를 갖는다.</li>
+</ul>
+<p>결과적으로 결정경계 근처의 샘플이 학습을 더 주도하게 된다.</p>
+<p><strong>(B) Hard example mining</strong></p>
+<p>손실이 큰 샘플을 더 자주 학습에 포함시키거나, 미니배치에서 손실 상위 일부만 역전파하는 방식으로 <span dir="rtl">”</span>학습 신호를 어려운 사례에 집중”시킨다.</p>
+<p>다만 라벨 노이즈가 있으면 모델이 <span dir="rtl">”</span>사실 틀린 라벨”을 어려운 샘플로 착각해 과도하게 끌려갈 수 있다. 이 경우 정규화나 label smoothing 같은 안정화가 함께 필요할 수 있다.</p>
+</section>
+<section id="large-k-근사학습-ce를-유지하되-계산을-가능하게-만든다" class="level5">
+<h5 class="anchored" data-anchor-id="large-k-근사학습-ce를-유지하되-계산을-가능하게-만든다">(9) Large-K 근사학습: CE를 유지하되 계산을 가능하게 만든다</h5>
+<p>클래스 수 K가 수만~수백만으로 커지면, softmax와 CE 계산이 병목이 된다. 핵심은 CE가 <span class="math inline">\(\mathcal{L} = - \log p_{y} = - z_{y} + \log\overset{K}{\sum_{j = 1}}e^{z_{j}}\)</span>이므로 <span class="math inline">\(\log\sum_{j}e^{z_{j}}\)</span>계산이 기본적으로 O(K)라는 점이다. 또한 출력층 파라미터 <span class="math inline">\(W \in \mathbb{R}^{K \times d}\)</span> 저장 자체가 O(Kd)로 커져 메모리 병목도 발생한다.</p>
+<p><strong>Sampled softmax: <span dir="rtl">”</span>분모를 일부 클래스만으로 근사”</strong></p>
+<p>샘플마다 정답 y와 음성 집합 <span class="math inline">\(S(|S| = m \ll K)\)</span>를 뽑아 부분 softmax로 근사한다.</p>
+<p><span class="math inline">\(\log\overset{K}{\sum_{j = 1}}e^{z_{j}} \approx \log(e^{z_{y}} + \sum_{j \in S}e^{z_{j}})\)</span>이로써 클래스 연산이 K\to m으로 줄어 비용이 O(m)이 된다. 다만 근사이므로 샘플링 분포와 보정 방식이 품질에 영향을 준다(편향 감소를 위한 보정항을 넣는 변형들이 존재).</p>
+<p><strong>Negative sampling: <span dir="rtl">”</span>정답 vs 음성”의 대조/랭킹 손실</strong></p>
+<p>negative sampling은 softmax 분모를 직접 근사하기보다, 정답쌍 <span class="math inline">\((x,y)\)</span>와 음성쌍 <span class="math inline">\((x,j)\)</span>를 구분하도록 학습하는 관점이 강하다. 점수 <span class="math inline">\(s(x,k)\)</span>에 대해 <span class="math inline">\(\mathcal{L} = - \log\sigma(s(x,y)) - \sum_{j \in S}\log\sigma( - s(x,j))\)</span>를 사용한다. 직관은 <span dir="rtl">”</span>정답 점수는 크게, 음성 점수는 작게”다.</p>
+<p>음성 샘플링 전략이 성능을 좌우한다.</p>
+<ul>
+<li>무작위 음성: 너무 쉬워 학습 신호가 약할 수 있음</li>
+<li>빈도 기반: 자주 나오는 클래스를 더 자주 음성으로</li>
+<li>hard negative: 모델이 헷갈리는 음성</li>
+<li>in-batch negative: 같은 배치의 다른 정답을 음성으로 활용</li>
+</ul>
+<p>Large-K에서 종종 <span dir="rtl">”</span>모델 구조”보다 <span dir="rtl">”</span>negative 구성”에서 성능 차이가 크게 난다.</p>
+</section>
+</section>
+<section id="분류용-백본-네트워크와-분류-패러다임" class="level4">
+<h4 class="anchored" data-anchor-id="분류용-백본-네트워크와-분류-패러다임">3. 분류용 백본 네트워크와 분류 패러다임</h4>
+<p>앞 절에서는 <span dir="rtl">”</span>출력층을 어떻게 설계하고(확률모형)“, <span dir="rtl">”</span>무슨 손실로 학습할지(CE 및 변형)”를 다뤘다. 이제 남는 핵심은 무엇을 분류할 특징으로 만들 것인가이다. 딥러닝 분류 성능의 상당 부분은 입력 x를 표현으로 바꾸는 백본이 결정한다.</p>
+<p>또한 분류는 반드시 <span dir="rtl">”</span>softmax로 확률을 출력”하는 형태만 있는 것이 아니라, 임베딩 공간에서 거리(유사도)로 분류하는 패러다임(=metric learning)으로도 정식화될 수 있다. 특히 Large-K, few-shot, open-set 환경에서는 metric learning이 강한 대안이 된다.</p>
+<section id="백본의-역할-입력을-임베딩으로-바꾸는-공통-구조" class="level5">
+<h5 class="anchored" data-anchor-id="백본의-역할-입력을-임베딩으로-바꾸는-공통-구조">(1) 백본의 역할: 입력을 임베딩으로 바꾸는 공통 구조</h5>
+<p>딥러닝 분류기는 크게 두 부분으로 생각하면 구조가 단순해진다.</p>
+<p>1. 백본(Feature Extractor / Encoder): 입력 x를 임베딩(은닉표현) <span class="math inline">\(\mathbf{h}\)</span>로 변환한다.</p>
+<p>2. 헤드(Classification Head): \mathbf{h}로부터 점수/확률(또는 거리 기반 결정)을 만든다.</p>
+<p>이를 수식으로 쓰면 <span class="math inline">\(\mathbf{h} = f_{\theta}(x) \in \mathbb{R}^{d},\text{(backbone)}\)</span> <span class="math inline">\(\text{Head}(\mathbf{h}) \Rightarrow \text{score/probability/decision}\)</span>이다.</p>
+<p>즉 <span dir="rtl">”</span>딥러닝 분류를 한다”는 것은 결국 <span class="math inline">\(f_{\theta}\)</span>가 유용한 임베딩 공간을 만들게 학습하는 것이며, 출력층(softmax/metric)은 그 임베딩을 어떻게 사용할지에 대한 선택이다.</p>
+</section>
+<section id="대표-백본-계열-데이터-구조에-따라-선택한다" class="level5">
+<h5 class="anchored" data-anchor-id="대표-백본-계열-데이터-구조에-따라-선택한다">(2) 대표 백본 계열: 데이터 구조에 따라 선택한다</h5>
+<p>백본은 입력 구조에 맞게 설계된다. 강의노트에서는 <span dir="rtl">”</span>데이터 타입 → 백본”의 대응으로 정리하는 것이 가장 직관적이다.</p>
+<p><strong>MLP(표형 데이터, tabular)</strong></p>
+<p>표형 데이터에서는 특성 간 상호작용을 학습하기 위해 완전연결층을 쌓은 MLP가 기본이다. 입력 차원이 크지 않고 구조적 인덕티브 바이어스가 약할 때(표형) 표준 선택이다.</p>
+<p><strong>CNN(이미지/격자형)</strong></p>
+<p>이미지는 국소 패턴(엣지, 텍스처)과 공간 구조가 핵심이므로 CNN이 강한 인덕티브 바이어스를 제공한다. 합성곱–풀링–계층적 특징 추출을 통해 \mathbf{h}를 만든다.</p>
+<p><strong>Transformer(텍스트/시계열/비전)</strong></p>
+<p>Transformer는 self-attention을 통해 전역 상호작용을 직접 모델링한다. 텍스트에서는 거의 표준이며, 비전에서도 패치 기반 Transformer가 널리 쓰인다. 긴 의존성이 중요한 시계열에도 적용이 증가한다.</p>
+<p><strong>기타: 시계열, 그래프</strong></p>
+<ul>
+<li>시계열: 1D-CNN, RNN/LSTM, Transformer 계열</li>
+<li>그래프: GNN 계열(노드/엣지 구조 활용)</li>
+</ul>
+<p>요약하면, 백본의 목적은 <span dir="rtl">”</span>좋은 임베딩 \mathbf{h}“이며, 이후 분류 패러다임(softmax vs metric)이 그 임베딩을 어떤 규칙으로 읽어낼지 결정한다.</p>
+</section>
+<section id="분류-패러다임-1-softmax폐집합-확률분포-기반" class="level5">
+<h5 class="anchored" data-anchor-id="분류-패러다임-1-softmax폐집합-확률분포-기반">(3) 분류 패러다임 1: Softmax(폐집합, 확률분포 기반)</h5>
+<p>가장 표준적인 분류는 폐집합(closed-set) 가정이다. 학습과 운영에서 클래스 집합이 동일하고, 정답은 그중 하나라고 가정한다. 이때 헤드는 선형 점수 + softmax로 확률분포를 만든다.</p>
+<p><span class="math inline">\(z_{k} = \mathbf{w}_{k}^{\top}\mathbf{h} + b_{k},k = 1,\ldots,K\)</span>. <span class="math inline">\(p_{k} = \frac{e^{z_{k}}}{\sum_{j = 1}^{K}e^{z_{j}}}\)</span></p>
+<p>이 구조의 장점은 <span class="math inline">\(\sum_{k}p_{k} = 1\)</span>인 정규화된 확률분포 제공하고 비용민감 의사결정, calibration, thresholding 등 운영 설계에 적합하다. 그리고 Top-1 분류 정확도를 목표로 할 때 정합성이 높다.</p>
+<p>반면 단점/한계는 K가 매우 커지면 출력층 계산/메모리가 병목(Large-K)된다. 학습에 없던 클래스가 들어오는 open-set에서는 <span dir="rtl">”</span>항상 기존 클래스 중 하나로 강제 분류”되는 경향(과신 문제)이 있다.</p>
+</section>
+<section id="분류-패러다임-2-metric-learning임베딩-거리-기반-분류" class="level5">
+<h5 class="anchored" data-anchor-id="분류-패러다임-2-metric-learning임베딩-거리-기반-분류">(4) 분류 패러다임 2: Metric Learning(임베딩 거리 기반 분류)</h5>
+<p>Large-K 또는 open-set 환경에서는 <span dir="rtl">”</span>클래스마다 고정된 출력 뉴런(softmax)“을 두는 방식이 비효율적이거나 불가능해진다. 이때 분류를 임베딩 공간에서의 거리/유사도 문제로 바꾸는 접근이 유용하며, 이를 거리학습(metric learning) 이라 한다.</p>
+<p><strong>핵심 아이디어: <span dir="rtl">”</span>가까운 것이 정답”</strong></p>
+<p>입력 x를 임베딩으로 보내고, <span class="math inline">\(\mathbf{h} = f_{\theta}(x) \in \mathbb{R}^{d}\)</span> 같은 클래스는 가깝게, 다른 클래스는 멀게 배치되도록 학습한다. 분류는 확률분포를 직접 출력하기보다, 가장 가까운 클래스(또는 프로토타입) 를 고르는 규칙으로 수행된다.</p>
+<p>(A) 최근접(Nearest Neighbor) 분류</p>
+<p>클래스 k의 대표 임베딩(학습 샘플 또는 대표점) <span class="math inline">\(\{\mathbf{c}_{k}\}\)</span>가 있을 때,</p>
+<p><span class="math inline">\(\widehat{y} = \arg\min_{k}d(\mathbf{h},\mathbf{c}_{k})\text{또는}\widehat{y} = \arg\max_{k}s(\mathbf{h},\mathbf{c}_{k})\)</span>, 여기서 d는 거리(예: <span class="math inline">\(\parallel \mathbf{h} - \mathbf{c} \parallel_{2}\)</span>), s는 유사도(예: cosine similarity)다.</p>
+<p><span class="math display">\[\cos(\mathbf{h},\mathbf{c}) = \frac{\mathbf{h}^{\top}\mathbf{c}}{\parallel \mathbf{h} \parallel \parallel \mathbf{c} \parallel}\]</span></p>
+<p>이 방식의 장점은 출력층에 <span dir="rtl">”</span>K개 뉴런”이 필요 없어서, 클래스가 커지거나 새 클래스가 추가되어도 유연하다는 점이다(임베딩만 추가하면 됨).</p>
+<p>(B) 프로토타입(Prototype) 기반 분류</p>
+<p>각 클래스 k의 support set <span class="math inline">\(S_{k}\)</span>가 있을 때, 프로토타입(대표 벡터)을 평균으로 둔다. <span class="math inline">\(\mathbf{c}_{k} = \frac{1}{|S_{k}|}\sum_{x_{i} \in S_{k}}f_{\theta}(x_{i})\)</span> 그리고 <span class="math inline">\(\widehat{y} = \arg\min_{k} \parallel \mathbf{h} - \mathbf{c}_{k} \parallel_{2}\)</span>처럼 분류한다. 프로토타입은 클래스 내 변동성을 평균으로 흡수하므로 few-shot에서 특히 자연스럽다.</p>
+<p><strong>metric learning 손실: contrastive / triplet</strong></p>
+<p>임베딩 공간을 원하는 모양으로 만들려면 <span dir="rtl">”</span>어떤 쌍/삼쌍은 가깝게, 어떤 것은 멀게”라는 학습 신호가 필요하다. 대표 손실이 contrastive loss 와 triplet loss 다.</p>
+<p>(A) Contrastive loss(쌍 기반)</p>
+<p>두 샘플 <span class="math inline">\((x_{i},x_{j})\)</span>에 대해 같은 클래스면 <span class="math inline">\(y_{ij} = 1\)</span>, 다르면 <span class="math inline">\(y_{ij} = 0\)</span>이라 하자. 거리 <span class="math inline">\(D_{ij} = \parallel f_{\theta}(x_{i}) - f_{\theta}(x_{j}) \parallel_{2}\)</span>를 정의하면 전형적 형태는 <span class="math inline">\(\mathcal{L} = y_{ij}D_{ij}^{2} + (1 - y_{ij})\lbrack\max(0,m - D_{ij})\rbrack^{2}\)</span>이다.</p>
+<p>같은 클래스 <span class="math inline">\((y_{ij} = 1)\)</span>는 거리를 0에 가깝게 줄이고, 다른 클래스 <span class="math inline">\((y_{ij} = 0)\)</span>는 최소 margin m 이상 떨어지도록 만든다. 핵심은 <span dir="rtl">”</span>음성 쌍은 일정 거리 이상이면 더 밀 필요가 없다”는 margin 개념이다.</p>
+<p>(B) Triplet loss(삼쌍 기반)</p>
+<p>anchor a, positive p(같은 클래스), negative n(다른 클래스)를 구성한다. 거리 <span class="math inline">\(D(a,p) = \parallel f(a) - f(p) \parallel_{2},D(a,n) = \parallel f(a) - f(n) \parallel_{2}\)</span>를 두고 목표는 <span class="math inline">\(D(a,p) + \alpha \leq D(a,n)\)</span>가 되도록 하는 것이다.</p>
+<p>손실은 <span class="math inline">\(\mathcal{L} = \max(0,D(a,p) - D(a,n) + \alpha)\)</span>로 쓴다(<span class="math inline">\(\alpha\)</span>: margin).</p>
+<p>triplet loss의 성패는 negative를 어떻게 고르느냐(hard / semi-hard negative mining)에 크게 달려 있다. 너무 쉬운 negative는 학습 신호가 약하고, 너무 어려운 negative(노이즈/오표기 포함)는 학습을 불안정하게 만들 수 있다.</p>
+<p>정리하면, contrastive는 <span dir="rtl">”</span>쌍을 맞추는 문제”, triplet은 <span dir="rtl">”</span>가까움의 순위(상대 비교)“를 맞추는 문제에 가깝다.</p>
+</section>
+<section id="few-shot과-open-set-metric-learning이-자연스러운-이유" class="level5">
+<h5 class="anchored" data-anchor-id="few-shot과-open-set-metric-learning이-자연스러운-이유">(5) few-shot과 open-set: metric learning이 자연스러운 이유</h5>
+<p><strong>few-shot 학습과의 연결</strong></p>
+<p>few-shot은 클래스당 샘플이 매우 적은 상황이다. softmax 분류는 클래스별 파라미터를 충분히 학습하기 어렵지만, metric learning은 <span dir="rtl">”</span>임베딩 공간의 일반화”가 핵심이므로 적은 샘플로도 분류 규칙을 만들 수 있다.</p>
+<p>특히 프로토타입 방식은 support set으로 \mathbf{c}_k만 계산하면 즉시 동작한다.</p>
+<p><strong>open-set / OOD 탐지와의 연결</strong></p>
+<p>open-set에서는 학습에 없던 클래스가 들어올 수 있다. softmax는 <span class="math inline">\(\sum_{k}p_{k} = 1\)</span>을 강제하므로 무엇이 들어와도 기존 클래스 중 하나로 강제 분류하는 경향이 있어 과신 문제가 생길 수 있다.</p>
+<p>반면 metric learning은 <span dir="rtl">”</span>가까운 클래스가 없으면 거리가 멀다”는 신호를 이용해 거절(reject) 규칙을 만들기 쉽다. 예를 들어 최소 거리 기반 거절은 <span class="math inline">\(\min_{k}d(\mathbf{h},\mathbf{c}_{k}) &gt; \tau \rightarrow \text{unknown}\)</span>처럼 둘 수 있다(유사도 기반이면 <span class="math inline">\(\max_{k}s(\mathbf{h},\mathbf{c}_{k}) &lt; \tau\)</span> 형태).</p>
+</section>
+<section id="stageretrieval-rerank와의-연결-large-k에서의-실전-구조" class="level5">
+<h5 class="anchored" data-anchor-id="stageretrieval-rerank와의-연결-large-k에서의-실전-구조">(6) 2-stage(retrieval + rerank)와의 연결: Large-K에서의 실전 구조</h5>
+<p>Large-K 문제에서 <span dir="rtl">”</span>모든 클래스 K에 대해 softmax 점수를 계산”하는 방식은 학습·서빙 모두에서 계산/메모리 병목이 된다. 대신 실무에서는 목표를 <span dir="rtl">”</span>정답을 포함하는 후보 집합을 빠르게 좁힌 뒤, 그 안에서 정밀하게 고르는 문제”로 재정식화한다. 이때 metric learning은 1단계 retrieval의 표현(임베딩)을 만드는 핵심 학습 도구가 된다.</p>
+<p><strong>Stage 1: Retrieval(후보 생성, high-recall 목표)</strong></p>
+<p>목표: 정답을 놓치지 않게 Top-N 후보를 빠르게 회수(recall)한다.</p>
+<p>즉 이 단계는 precision보다 recall을 우선한다(<span dir="rtl">”</span>후보에만 들어오면 2단계가 해결한다”).</p>
+<p>1. 임베딩 생성: <span class="math inline">\(\mathbf{h}(x) = f_{\theta}(x) \in \mathbb{R}^{d}\)</span> 입력(쿼리) x를 d차원 임베딩으로 바꾼다. (이미지/텍스트/사용자 행동 등 어떤 입력이든 <span dir="rtl">”</span>백본+프로젝션 헤드”로 \mathbf{h}를 만든다.)</p>
+<p>2. 클래스/아이템 임베딩 테이블: 각 후보 k (상품/문서/광고/클래스)를 임베딩 <span class="math inline">\(\mathbf{e}_{k} \in \mathbb{R}^{d}\)</span>로 둔다.</p>
+<p>분류 관점에서는 <span dir="rtl">”</span>클래스 프로토타입”</p>
+<p>추천/검색에서는 <span dir="rtl">”</span>아이템 임베딩”</p>
+<p>3. 유사도 점수와 Top-N 검색: 보통 내적이나 cosine을 쓴다. <span class="math inline">\(s(x,k) = \mathbf{h}(x)^{\top}\mathbf{e}_{k}\text{(또는)}s(x,k) = \cos(\mathbf{h}(x),\mathbf{e}_{k})\)</span>. 이 점수로 <span class="math inline">\(\mathcal{C}_{N}(x) = \text{Top-}N\{ s(x,k)\}_{k = 1}^{K}\)</span>을 찾는다.</p>
+<p>4. ANN(Approximate Nearest Neighbor): 인덱스 K가 매우 크면 정확한 Top-N 탐색이 어렵다. 그래서 근사 최근접 탐색(ANN) 인덱스를 구축한다.</p>
+<p>IVF/HNSW/ScaNN/FAISS류 방법을 사용해 <span dir="rtl">”</span>거의 Top-N”을 매우 빠르게 찾는다.</p>
+<p>운영에서는 지연시간(latency) 과 recall@N 사이의 트레이드오프를 튜닝한다.</p>
+<p>5. Stage 1에서 무엇을 학습하나(핵심): Stage 1은 <span dir="rtl">”</span>정답 임베딩이 쿼리 임베딩에 더 가깝게” 되도록 학습한다. 전형적으로 contrastive / triplet / in-batch negative 혹은 샘플링 기반 softmax(큰 후보공간에서 분모를 근사)를 쓴다. 중요한 건 음성 설계가 곧 retrieval 성능을 좌우한다는 점이다(쉬운 음성만 쓰면 retrieval이 약해짐).</p>
+<p>무엇을 언제 쓰나? Softmax 분류 vs Metric Learning 선택 기준</p>
+<p>둘 다 <span dir="rtl">”</span>분류”지만 전제가 다르다. 아래 체크리스트로 선택하면 실무적으로 안정적이다.</p>
+<p><strong>Stage 2: Rerank(정밀 재정렬, high-precision 목표)</strong></p>
+<p>Stage 2는 Stage 1이 만든 후보 집합 <span class="math inline">\(\mathcal{C}(x)\)</span> 내부에서 더 정밀하게 최종 순위를 결정하는 단계이다. 후보 수는 <span class="math inline">\(N\ll K\)</span> 이므로, Stage 2에서는 Stage 1보다 더 비싼 특징과 더 강한 모델을 사용할 수 있다.</p>
+<ol type="1">
+<li><p>정밀 점수 계산: 후보 <span class="math inline">\(k\in\mathcal{C}(x)\)</span> 에 대해 재점수화 함수 <span class="math inline">\(s_2(x,k)\)</span> 를 계산한다. 이 점수는 쿼리–후보의 교차 특징(cross feature), 문맥 정보, 메타데이터(가격/재고/시간/정책 점수 등)까지 포함할 수 있다. <span class="math inline">\(\widehat{k}=\arg\max_{k\in\mathcal{C}(x)} s_2(x,k)\)</span></p></li>
+<li><p>대표적인 Stage 2 설계</p></li>
+</ol>
+<ul>
+<li>후보집합 softmax: 후보 집합 안에서만 정규화하여 “확률적 선택”으로 해석한다. <span class="math inline">\(p(k\mid x,\mathcal{C})=\frac{\exp(s_2(x,k))}{\sum_{j\in\mathcal{C}(x)}\exp(s_2(x,j))}\)</span></li>
+<li>랭킹 학습(pairwise/listwise): 정렬 품질(NDCG 등)에 직접 맞춘다.</li>
+<li>cross-encoder / deep interaction 모델: [x;k]를 함께 넣어 상호작용을 강하게 반영한다(특히 텍스트 검색에서 유효하다).</li>
+<li>후처리(정책/제약 반영): 금지 항목 필터링, 다양성, 중복 제거, 최신성 가중 등 운영 규칙을 최종 단계에서 함께 반영하는 경우가 많다.</li>
+</ul>
+<ol start="3" type="1">
+<li>Stage 2를 생략하는 경우: 서비스 목표가 “유사 항목 제시”처럼 Stage 1의 Top-N 자체가 충분히 좋은 결과인 경우에는 Stage 2를 생략하기도 한다. 다만 “Top-1 정답 선택”이나 “상위 몇 개의 정밀도”가 핵심인 문제에서는 Stage 2가 품질을 안정화하는 역할을 하므로, 일반적으로 두 단계를 함께 두는 편이 강건하다.</li>
+</ol>
+</section>
+<section id="무엇을-언제-쓰나-softmax-분류-vs-metric-learning-선택-기준" class="level5">
+<h5 class="anchored" data-anchor-id="무엇을-언제-쓰나-softmax-분류-vs-metric-learning-선택-기준">(7) 무엇을 언제 쓰나? Softmax 분류 vs Metric Learning 선택 기준</h5>
+<p>둘 다 “분류”지만 전제가 다르다. 아래 체크리스트로 선택하면 실무적으로 안정적이다.</p>
+<p><strong>Softmax(+CE)를 우선 선택하는 경우</strong></p>
+<ul>
+<li>클래스가 고정된 폐집합(closed-set) 이고 학습/운영에서 동일한 클래스 집합을 사용한다.</li>
+<li>확률 <span class="math inline">\(P(Y = k \mid x)\)</span> 자체가 필요하다(리스크 스코어링, 비용기반 의사결정, calibration 운영 등). <span class="math inline">\(\sum_{k}p_{k} = 1\)</span>인 확률분포가 자연스럽다.</li>
+<li>클래스당 데이터가 충분하여 출력층 파라미터가 안정적으로 추정된다.</li>
+<li>목표가 Top-1 정확도 중심이고 <span dir="rtl">”</span>unknown 거절”이 운영 요구가 아니다.</li>
+</ul>
+<p><strong>Metric Learning을 우선 선택하는 경우</strong></p>
+<ul>
+<li>새 클래스가 자주 추가/변경되거나, 학습 시점에 모든 클래스를 다 보지 못한다. softmax 출력층(<span class="math inline">\(K \times d\)</span>)을 계속 재학습하기 어렵다.</li>
+<li>few-shot(클래스당 샘플이 매우 적음)에서 빠르게 적응해야 한다.프로토타입 + 최근접 분류가 강력하다. open-set/unknown 거절이 중요하다. <span class="math inline">\(\min_{k}d(\mathbf{h},\mathbf{c}_{k}) &gt; \tau\)</span> 같은 규칙이 자연스럽다.</li>
+<li>문제의 본질이 검색/추천/유사도 질의(retrieval)이고 Top-k/랭킹 지표가 핵심이다. 임베딩 + ANN + rerank(2-stage)로 확장성이 좋다.</li>
+</ul>
+<p><strong>실무 결론(하이브리드도 흔함)</strong></p>
+<ul>
+<li><span dir="rtl">”</span>폐집합 분류 + 확률 필요”이면 softmax(+CE)로 가고, calibration/threshold 정책까지 함께 설계한다.</li>
+<li><span dir="rtl">”</span>대규모/동적/검색형”이면 metric learning으로 임베딩을 만들고 retrieval+r erank로 운영한다.</li>
+<li>하이브리드로, 임베딩 기반 retrieval로 후보를 줄인 뒤 후보에 대해 softmax(또는 pairwise scoring)로 rerank/확률화하는 구조도 흔하다.</li>
+</ul>
+</section>
+<section id="대조학습contrastive-learning-metric-learning-사전학습-파이프라인" class="level5">
+<h5 class="anchored" data-anchor-id="대조학습contrastive-learning-metric-learning-사전학습-파이프라인">(8) 대조학습(Contrastive Learning) ↔︎ Metric Learning ↔︎ 사전학습 파이프라인</h5>
+<p>metric learning은 겉으로는 <span dir="rtl">”</span>거리 기반 분류”처럼 보이지만, 본질적으로는 임베딩 공간을 학습하는 표현학습 이다.</p>
+<p>같은 클래스(또는 같은 의미)의 샘플은 가깝게, 다른 클래스는 멀게 배치하도록 학습한다는 점에서, contrastive loss / triplet loss는 대조학습(contrastive learning) 의 대표적 형태로 볼 수 있다. 즉, <span dir="rtl">”</span>분류기를 바로 학습”하기보다 먼저 좋은 임베딩 <span class="math inline">\(f_{\theta}(x)\)</span>을 만들고, 그 임베딩 위에서 최근접/프로토타입/랭킹으로 분류 또는 검색을 수행한다.</p>
+<p>이 관점은 최근 딥러닝의 표준 파이프라인인 사전학습(pretraining) → 다운스트림 분류(finetune/linear probe) 와 직접 연결된다.</p>
+<p>사전학습 단계에서는 레이블이 없거나 약한 상황에서도, 데이터 쌍(positive/negative)을 구성해 다음과 같은 목표를 최적화한다.</p>
+<ul>
+<li>positive(유사/동일 의미) 쌍은 유사도 증가</li>
+<li>negative(다른 의미) 쌍은 유사도 감소</li>
+</ul>
+<p>예를 들어 <span class="math inline">\(\mathcal{L} = - \log\sigma(s(x,x^{+})) - \sum_{j}\log\sigma( - s(x,x_{j}^{-}))\)</span>와 같은 형태로 학습된 임베딩은 라벨이 적은 상황(few-shot), 클래스가 자주 바뀌는 동적 카탈로그, Large-K 검색/추천에서 특히 강력하다.</p>
+<p>이후 다운스트림에서는 (i) 임베딩을 고정한 채 얕은 분류기만 학습(linear probe)하거나, (ii) 전체를 미세조정(fine-tuning)하여 softmax 분류기로 마무리하는 방식이 가능하다.</p>
+</section>
+</section>
+<section id="일반화와-정규화-과적합을-줄이고-과신을-완화하는-설계" class="level4">
+<h4 class="anchored" data-anchor-id="일반화와-정규화-과적합을-줄이고-과신을-완화하는-설계">4. 일반화와 정규화: 과적합을 줄이고 <span dir="rtl">”</span>과신”을 완화하는 설계</h4>
+<p>딥러닝 분류의 성능은 훈련 데이터에서의 정확도가 아니라, 보지 못한 새 데이터에서 얼마나 잘 작동하는가(일반화)로 평가된다. 신경망은 표현력이 매우 커서 훈련 데이터를 거의 외우는 수준까지도 도달할 수 있으므로, 훈련 손실이 계속 내려간다고 해서 실제 운영 성능이 보장되지는 않는다.</p>
+<p>특히 분류에서는 과적합이 단순한 <span dir="rtl">”</span>테스트 정확도 하락”에 그치지 않고, 예측 확률이 0 또는 1에 가깝게 치우치는 과신으로 동반되는 경우가 많다. 따라서 일반화/정규화는 정확도뿐 아니라 확률의 신뢰도(calibration)까지 염두에 둔 설계로 이해하는 것이 중요하다.</p>
+<section id="일반화의-목표-경험위험-최소화-vs-테스트-위험-최소화" class="level5">
+<h5 class="anchored" data-anchor-id="일반화의-목표-경험위험-최소화-vs-테스트-위험-최소화">일반화의 목표: 경험위험 최소화 vs 테스트 위험 최소화</h5>
+<p>훈련 데이터 <span class="math inline">\(\{(x_{i},y_{i})\}_{i = 1}^{n}\)</span>에 대해 분류 모델은 보통 훈련 손실(경험위험)을 최소화한다. <span class="math inline">\(\widehat{\theta} = \arg\min_{\theta}\frac{1}{n}\overset{n}{\sum_{i = 1}}\mathcal{L}(y_{i},f_{\theta}(x_{i}))\)</span></p>
+<p>그러나 우리가 진짜로 줄이고 싶은 것은 훈련셋이 아니라 모집단 분포에서의 손실(테스트 위험)이다.</p>
+<p><span class="math display">\[\mathcal{R}(\theta) = \mathbb{E}_{(X,Y)}\lbrack\mathcal{L}(Y,f_{\theta}(X))\rbrack\]</span></p>
+<p>훈련 손실을 낮추는 것은 <span class="math inline">\(\mathcal{R}(\theta)\)</span>를 낮추기 위한 대리 목적이지만, 모델 용량이 충분히 크면 훈련 손실만 과도하게 낮추면서 오히려 <span class="math inline">\(\mathcal{R}(\theta)\)</span>를 악화시키는 과적합이 쉽게 발생한다. 일반화의 핵심은 <span dir="rtl">”</span>훈련을 잘하는 것”이 아니라 <span dir="rtl">”</span>훈련을 통해 테스트 위험을 줄이는 것”이다.</p>
+</section>
+<section id="과적합의-전형적-징후-정확도-문제와-과신의-동반" class="level5">
+<h5 class="anchored" data-anchor-id="과적합의-전형적-징후-정확도-문제와-과신의-동반">과적합의 전형적 징후: 정확도 문제와 과신의 동반</h5>
+<p>과적합은 보통 다음과 같은 형태로 드러난다. 훈련 손실은 계속 감소하지만 검증 손실은 어느 시점부터 증가하며, 훈련 정확도는 매우 높아지는 반면 테스트 정확도는 정체하거나 하락한다.</p>
+<p>동시에 예측 확률이 극단으로 치우치며, 틀린 예측에도 <span class="math inline">\(p \approx 0.99\)</span> 같은 높은 확률을 부여하는 과신이 나타나기도 한다.</p>
+<p>과신이 과적합과 함께 나타나는 이유는 구조적으로 설명할 수 있다. 다중분류에서 softmax는 <span class="math inline">\(\sum_{k}p_{k} = 1\)</span>이라는 경쟁 구조를 만들고, cross-entropy는 정답 확률 <span class="math inline">\(p_{y}\)</span>를 1 쪽으로 밀어붙이는 손실이다.</p>
+<p><span class="math display">\[\mathcal{L} = - \log p_{y}\]</span></p>
+<p>데이터가 쉽게 분리되거나 모델 용량이 과도하면 로짓 격차가 커지고, softmax는 최대 클래스 확률을 급격히 1에 가깝게 만든다. 이때 결정경계 밖에서 확률이 극단화되며, 분포 이동이나 OOD 입력이 존재하는 운영 환경에서는 이러한 과신이 특히 위험해진다.</p>
+</section>
+<section id="정규화의-큰-축-복잡도-억제와-학습-안정화" class="level5">
+<h5 class="anchored" data-anchor-id="정규화의-큰-축-복잡도-억제와-학습-안정화">정규화의 큰 축: 복잡도 억제와 학습 안정화</h5>
+<p>일반화 성능을 개선하는 실무적 레버는 크게 두 가지로 정리된다. 하나는 모델이 훈련 데이터에 과도하게 맞춰지는 것을 직접 억제하는 복잡도 억제(명시적 정규화)이고, 다른 하나는 학습을 안정화해 결과적으로 더 좋은 해에 도달하게 하는 학습 안정화(최적화 관점의 안정화)이다.</p>
+</section>
+<section id="복잡도-억제-1-가중치-규제weight-decay-l_2" class="level5">
+<h5 class="anchored" data-anchor-id="복잡도-억제-1-가중치-규제weight-decay-l_2">복잡도 억제 1: 가중치 규제(Weight decay, L_2)</h5>
+<p>가장 보편적인 정규화는 가중치 크기를 억제하는 것이다. 전형적으로 손실에 <span class="math inline">\(L_{2}\)</span> 페널티를 더해 <span class="math inline">\(\min_{\theta}\frac{1}{n}\overset{n}{\sum_{i = 1}}\mathcal{L}(y_{i},f_{\theta}(x_{i})) + \lambda \parallel \theta \parallel_{2}^{2}\)</span>를 최소화한다. 직관적으로 weight decay는 가중치를 과도하게 키워 결정경계를 지나치게 날카롭게 만드는 경향을 완화하며, 결과적으로 예측 확률의 극단화(과신)도 줄어드는 방향으로 작용할 수 있다.</p>
+<p>실무에서는 AdamW와 같은 옵티마이저와 함께 쓰는 경우가 많고, 데이터가 작거나 노이즈가 있을수록 중요해진다.</p>
+</section>
+<section id="복잡도-억제-2-드롭아웃dropout" class="level5">
+<h5 class="anchored" data-anchor-id="복잡도-억제-2-드롭아웃dropout">복잡도 억제 2: 드롭아웃(Dropout)</h5>
+<p>드롭아웃은 학습 중 일부 뉴런을 확률적으로 제거하여 공적응(co-adaptation)을 억제한다. 이는 모델이 특정 특징 조합에 과도하게 의존하지 않고, 보다 일반적인 표현을 학습하도록 유도하는 효과가 있다. 구현이 단순하고 과적합 완화에 효과적이지만, 배치정규화(BN)와 동시에 사용할 때는 적용 위치와 강도 등 세부 튜닝이 필요할 수 있다.</p>
+<p>과신 관점에서도 드롭아웃은 결정경계를 덜 날카롭게 만들어 확률의 극단화를 완화하는 데 도움이 되는 경우가 있다. 다만 드롭아웃만으로 calibration이 자동으로 보장되지는 않으므로, 필요하면 사후 보정(temperature scaling 등)과 함께 보는 것이 안전하다.</p>
+</section>
+<section id="복잡도-억제-3-조기-종료early-stopping" class="level5">
+<h5 class="anchored" data-anchor-id="복잡도-억제-3-조기-종료early-stopping">복잡도 억제 3: 조기 종료(Early stopping)</h5>
+<p>조기 종료는 검증 손실이 나빠지기 시작하면 학습을 멈추는 방식으로, 복잡한 정규화 없이도 과적합을 막는 매우 강력한 도구다. 훈련 손실은 내려가는데 검증 손실이 증가한다면 그 시점 이후는 과적합 구간으로 보는 것이 자연스럽고, 최적 epoch는 <span dir="rtl">”</span>훈련이 끝난 시점”이 아니라 <span dir="rtl">”</span>검증 성능이 가장 좋은 시점”이 된다.</p>
+<p>과신과의 연결에서도, 학습을 오래 지속하면 로짓 규모가 계속 커지며 확률이 극단화되는 경향이 있으므로, 조기 종료가 과신을 완화하는 경우가 많다.</p>
+</section>
+<section id="복잡도-억제-4-label-smoothing과신-완화-정규화" class="level5">
+<h5 class="anchored" data-anchor-id="복잡도-억제-4-label-smoothing과신-완화-정규화">복잡도 억제 4: Label smoothing(과신 완화 정규화)</h5>
+<p>label smoothing은 손실 옵션이면서 동시에 정규화로 볼 수 있다. 원-핫 정답을 부드럽게 만들어 <span dir="rtl">”</span>정답 확률 1을 강제”하는 압박을 줄인다.</p>
+<p><span class="math display">\[{\overset{˜}{y}}_{k} = (1 - \varepsilon)y_{k} + \frac{\varepsilon}{K},\mathcal{L} = - \overset{K}{\sum_{k = 1}}{\overset{˜}{y}}_{k}\log p_{k}\]</span></p>
+<p>이 기법은 과신을 줄이고 라벨 노이즈에 덜 민감하게 만들며, 일부 데이터셋에서는 일반화 성능을 개선한다. 다만 \varepsilon이 너무 크면 정답이 과도하게 희석되어 성능이 하락할 수 있어, 보통 작은 값을 후보로 두고 튜닝한다. 핵심은 label smoothing이 정확도뿐 아니라 확률 품질에도 영향을 주는 대표적 학습 단계 기법이라는 점이다.</p>
+</section>
+<section id="학습-안정화-batchnorm과-최적화-안정성이-일반화로-이어지는-경우" class="level5">
+<h5 class="anchored" data-anchor-id="학습-안정화-batchnorm과-최적화-안정성이-일반화로-이어지는-경우">학습 안정화: BatchNorm과 최적화 안정성이 일반화로 이어지는 경우</h5>
+<p>배치정규화(BatchNorm)는 층의 활성값 분포를 정규화해 학습을 안정화하는 기법이다. 최적화가 안정되면 더 좋은 해로 수렴하거나 학습이 덜 흔들려 일반화 성능이 함께 좋아지는 경우가 많다. 또한 학습률이나 초기화에 대한 민감도를 낮춰 실무에서 튜닝 부담을 줄여준다.</p>
+<p>다만 BN이 calibration을 자동으로 해결하는 것은 아니다. BN은 학습 과정의 안정화이고 calibration은 확률 해석의 품질이므로, 확률 품질은 후속 절에서 별도로 점검·보정하는 것이 원칙이다.</p>
+</section>
+<section id="데이터-규모와-모델-규모-환경에-따라-전략이-달라진다" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-규모와-모델-규모-환경에-따라-전략이-달라진다">데이터 규모와 모델 규모: 환경에 따라 전략이 달라진다</h5>
+<p>일반화 전략은 대체로 <span dir="rtl">”</span>데이터가 작을수록 정규화를 강하게, 데이터가 클수록 표현력을 확보”라는 흐름을 따른다. 데이터가 작으면 모델을 단순화하고(파라미터 수 감소), 정규화를 강하게 적용하며(weight decay↑, dropout↑), 조기 종료를 적극적으로 쓰고, 사전학습/전이학습 비중을 높이는 것이 안전하다.</p>
+<p>반대로 데이터가 충분히 크면 모델 규모를 키워 표현력을 확보하되, 정규화는 성능 극대화보다는 안정성 확보 관점에서 조절한다.</p>
+<p>특히 작은 데이터에서 큰 모델을 쓰면 훈련에서는 매우 높은 확률로 맞히는 것처럼 보이지만, 운영에서는 과신과 오경보가 커지는 문제가 자주 발생한다.</p>
+</section>
+<section id="정규화와-과신-학습-단계-개선-사후-보정의-2단-접근" class="level5">
+<h5 class="anchored" data-anchor-id="정규화와-과신-학습-단계-개선-사후-보정의-2단-접근">정규화와 과신: <span dir="rtl">”</span>학습 단계 개선 + 사후 보정”의 2단 접근</h5>
+<p>과신은 softmax 구조, CE 학습 압력, 데이터/학습 환경이 결합된 결과로 보는 것이 정확하다. 따라서 실무에서는 두 단계 접근이 안정적이다.</p>
+<p>먼저 학습 단계에서 정규화(가중치 규제, 드롭아웃, 조기 종료, label smoothing, 증강, 전이학습 등)로 일반화와 과신을 완화하고, 이후 사후 단계에서 calibration(temperature scaling, Platt scaling, isotonic 등)으로 확률을 보정한다. 정규화만으로 확률이 완벽히 보정되길 기대하기보다, 일반화 개선과 사후 보정을 함께 설계하는 것이 운영 관점에서 안전하다.</p>
+</section>
+<section id="실전-체크리스트-무엇부터-조절할까" class="level5">
+<h5 class="anchored" data-anchor-id="실전-체크리스트-무엇부터-조절할까">실전 체크리스트: 무엇부터 조절할까?</h5>
+<p>훈련 성능과 검증 성능의 격차가 커지면 조기 종료를 먼저 점검한다. 데이터가 작거나 노이즈가 크면 weight decay를 우선 강화하고, 필요하면 label smoothing을 소량 적용하며 dropout을 병행한다.</p>
+<p>학습이 불안정하면 학습률/스케줄과 BatchNorm 등 학습 안정화 요소를 점검한다. 정확도는 괜찮은데 과신이 심하다면, 학습 단계에서 정규화·증강·label smoothing을 강화한 뒤에도 문제가 남는지 확인하고, 운영 단계에서는 temperature scaling 같은 calibration과 threshold 재설계를 함께 수행한다.</p>
+</section>
+</section>
+<section id="사전학습자기지도대조학습-후-분류기" class="level4">
+<h4 class="anchored" data-anchor-id="사전학습자기지도대조학습-후-분류기">5. 사전학습/자기지도/대조학습 후 분류기</h4>
+<p>현대 딥러닝 분류는 <span dir="rtl">”</span>처음부터 끝까지 supervised 학습”만으로 설명되기 어렵다. 특히 이미지·텍스트 모두에서 (i) 강한 데이터 증강, (ii) 사전학습(pretraining), (iii) 전이학습(transfer learning)이 표준 파이프라인이 되었고, 분류기는 종종 <span dir="rtl">”</span>잘 학습된 표현(representation) 위에 얹는 얕은(head)” 형태로 구현된다.</p>
+<p>여기에서는 CNN 기반 이미지 분류의 기본 구조를 정리하고, 증강과 전이학습이 왜 일반화와 calibration에까지 영향을 주는지, 그리고 문서 분류에서의 전형적 파이프라인을 함께 연결한다.</p>
+<section id="cnn합성곱-기반-딥러닝-분류" class="level5">
+<h5 class="anchored" data-anchor-id="cnn합성곱-기반-딥러닝-분류">(1) CNN(합성곱) 기반 딥러닝 분류</h5>
+<p>신경망은 2010년 무렵 이미지 분류에서 큰 성공을 거두면서 다시 주목받기 시작했다. 그 당시에는 라벨이 붙은 이미지로 이루어진 대규모 데이터베이스가 빠르게 축적되고 있었고, 클래스 수도 계속 증가하고 있었다.</p>
+<p>다음 그림은 CIFAR100 데이터베이스에서 뽑은 75장의 이미지를 보여준다. 이 데이터베이스는 20개의 상위 범주(예: 수생 포유류)로 구분된 60,000장의 이미지로 구성되며, 각 상위 범주마다 5개의 클래스(예: 비버, 돌고래, 수달, 물개, 고래)가 있다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_deep_cnn.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>각 이미지는 32×32 픽셀의 해상도를 가지며, 각 픽셀은 빨강(red), 초록(green), 파랑(blue)을 나타내는 8비트 숫자 3개로 표현된다. 각 이미지의 숫자들은 특징맵(feature map)이라 불리는 3차원 배열로 정리된다. 앞의 두 축은 공간 축(둘 다 길이 32)이고, 세 번째 축은 세 가지 색을 나타내는 채널(channel) 축이다. 학습용(training) 세트는 50,000장, 테스트(test) 세트는 10,000장으로 지정되어 있다.</p>
+<p>이러한 이미지들을 분류하기 위해 합성곱 신경망(CNN)이라는 특수한 신경망 계열이 발전해 왔으며, 매우 다양한 문제에서 뛰어난 성과를 보여 왔다. CNN은 이미지 속 어디에서든 특정 특징이나 패턴을 인식함으로써, 어느 정도는 인간이 이미지를 분류하는 방식과 유사하게 작동한다.</p>
+<p>이미지 분류에서 CNN은 <span dir="rtl">”</span>공간적 구조를 활용해 특징을 계층적으로 추출”하는 대표 모델이다. 입력 <span class="math inline">\(X \in \mathbb{R}^{H \times W \times C}\)</span>에 대해, CNN은 국소 영역을 공유 가중치로 스캔하며(feature sharing) 특징맵(feature map)을 만든다. 이는 완전연결(FC)보다 파라미터 효율이 높고, 위치 변화에 더 강건한 표현을 학습하게 한다.</p>
+<p><strong>Convolutional Layers (합성곱 층)</strong></p>
+<p>합성곱 층은 많은 수의 합성곱 필터로 구성된다. 각 필터는 이미지 안에 특정한 국소 특징이 존재하는지를 판별하는 템플릿 역할을 한다. 합성곱 필터는 합성곱이라 불리는 매우 단순한 연산에 기반하며, 이는 기본적으로 행렬 원소들을 반복적으로 곱한 뒤 그 결과를 더하는 작업으로 이루어진다.</p>
+<p>합성곱 필터가 어떻게 작동하는지 이해하기 위해, 아주 단순한 <span class="math inline">\(2 \times 3\)</span>이미지 예를 생각해보자.</p>
+<p><span class="math inline">\(\text{Original Image} = \begin{bmatrix}
+a &amp; b &amp; c \\
+d &amp; e &amp; f \\
+g &amp; h &amp; i \\
+j &amp; k &amp; l
+\end{bmatrix}\)</span>. 다음의 <span class="math inline">\(2 \times 2\)</span> 필터 <span class="math inline">\(\text{Convolution Filter} = \begin{bmatrix}
+\alpha &amp; \beta \\
+\gamma &amp; \delta
+\end{bmatrix}\)</span>로 이미지를 합성곱하면 다음 결과를 얻는다. 예를 들어, 왼쪽 위 원소는 <span class="math inline">\(2 \times 2\)</span> 필터의 각 원소를 이미지의 왼쪽 위 <span class="math inline">\(2 \times 2\)</span> 부분과 대응시키며 곱한 뒤 그 결과를 합하여 얻는다. 다른 원소들도 동일한 방식으로 얻어진다.</p>
+<p><span class="math display">\[\text{Convolved Image} = \begin{bmatrix}
+a\alpha + b\beta + d\gamma + e\delta &amp; b\alpha + c\beta + e\gamma + f\delta \\
+d\alpha + e\beta + g\gamma + h\delta &amp; e\alpha + f\beta + h\gamma + i\delta \\
+g\alpha + h\beta + j\gamma + k\delta &amp; h\alpha + i\beta + k\gamma + l\delta
+\end{bmatrix}\]</span></p>
+<p>즉, 합성곱 필터를 원본 이미지의 모든 <span class="math inline">\(2 \times 2\)</span> 부분행렬에 적용함으로써 합성곱된 이미지를 만든다. 원본 이미지의 어떤 <span class="math inline">\(2 \times 2\)</span> 부분행렬이 합성곱 필터와 비슷하다면, 합성곱된 이미지에서 해당 위치의 값은 크게 나타나고, 그렇지 않다면 작게 나타난다.</p>
+<p>따라서 합성곱된 이미지는 원본 이미지에서 합성곱 필터와 유사한 영역을 강조(highlight)한다. 여기서는 <span class="math inline">\(2 \times 2\)</span>를 예로 들었지만, 일반적으로 합성곱 필터는 <span class="math inline">\(\ell_{1} \times \ell_{2}\)</span> 크기의 작은 배열이며, <span class="math inline">\(\ell_{1},\ell_{2}\)</span> 는 (반드시 같을 필요는 없는) 작은 양의 정수이다.</p>
+<p>다음 그림은 왼쪽에 있는 <span class="math inline">\(192 \times 179\)</span> 크기의 호랑이 이미지에 두 개의 합성곱 필터를 적용하는 예를 보여준다. 각 합성곱 필터는 <span class="math inline">\(15 \times 15\)</span> 크기의 이미지로, 대부분은 0(검정)이며 이미지 안에서 세로 또는 가로 방향으로 놓인 1(흰색)의 좁은 띠를 포함한다. 각 필터를 호랑이 이미지에 합성곱하면, 필터와 유사한(즉 세로/가로 줄무늬나 에지를 가진) 영역에는 큰 값이 부여되고, 해당 특징과 닮지 않은 영역에는 작은 값이 부여된다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_deep_cnn02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<p>합성곱 필터는 에지(edge)나 작은 모양처럼 이미지의 국소 특징을 찾아낸다. 왼쪽의 호랑이 이미지에 가운데의 두 개 작은 합성곱 필터를 적용한다. 합성곱된 이미지는 원본 이미지에서 필터와 비슷한 세부 구조가 발견되는 영역을 강조한다.</p>
+<p>구체적으로 위쪽 합성곱 결과는 호랑이의 세로 줄무늬를 강조하고, 아래쪽 합성곱 결과는 가로 줄무늬를 강조한다. 원본 이미지를 합성곱 신경망의 입력층으로, 합성곱된 이미지들을 첫 번째 은닉층의 유닛들로 생각할 수 있다.</p>
+<p>합성곱 층에서는 서로 다른 방향의 에지와 형태를 다양하게 골라내기 위해 필터들의 전체 집합(bank)을 사용한다. 이러한 방식으로 미리 정의된 필터를 쓰는 것은 전통적인 이미지 처리에서 표준적 관행이다.</p>
+<p>반면 CNN에서는 필터가 특정 분류 과제를 위해 학습된다. 필터의 가중치는 입력층에서 은닉층으로 가는 모수로 생각할 수 있는데, 합성곱된 이미지의 각 픽셀마다 하나의 은닉 유닛이 대응된다고 보면 된다.</p>
+<p>실제로도 그렇지만, 이 모수들은 매우 구조화되고 제약된 형태를 가진다. 즉 입력 이미지의 국소 패치에만 작동하므로 구조적으로 0인 부분이 많고, 하나의 필터 안에서 같은 가중치가 이미지의 모든 가능한 위치에 재사용되므로(가중치가 공유되므로) 가중치가 제약된다.</p>
+<p>입력 이미지가 컬러이므로, 3차원 특징맵(배열)로 표현되는 세 개의 채널을 가진다. 각 채널은 <span class="math inline">\(32 \times 32\)</span>의 2차원 특징맵이며, 각각 빨강(red), 초록(green), 파랑(blue)에 해당한다.</p>
+<p>하나의 합성곱 필터도 마찬가지로 색상별로 하나씩, 총 세 개의 채널을 가지며, 각 채널은 <span class="math inline">\(3 \times 3\)</span> 크기이고 채널마다 필터 가중치가 달라질 수 있다.</p>
+<p>이 세 번의 합성곱 결과를 합산하여 하나의 2차원 출력 특징맵을 만든다. 이 시점에서는 색상 정보가 이미 사용되었고, 이후 층으로는(합성곱에서의 역할을 제외하면) 별도로 전달되지 않는다.</p>
+<p>첫 번째 은닉층에서 서로 다른 합성곱 필터를 K개 사용하면, K개의 2차원 출력 특징맵을 얻게 된다. 이들은 함께 하나의 3차원 특징맵으로 취급된다.</p>
+<p>우리는 K개의 출력 특징맵 각각을 서로 다른 정보 채널로 보며, 따라서 원래 입력 특징맵의 3개 색상 채널과 대비되어 이제는 K개의 채널을 갖게 된다. 이 3차원 특징맵은 단순 신경망 은닉층의 활성값(activations)과 유사하지만, 공간적으로 구조화된 방식으로 정리되고 생성된다는 점이 다르다.</p>
+<p>보통 합성곱된 이미지에 ReLU 활성함수를 적용한다. 이 단계는 때로 CNN의 별도 층으로 간주되며, 그런 경우 detector layer(검출기 층)라고 부르기도 한다.</p>
+<p><strong>Pooling Layers</strong></p>
+<p>풀링 층(pooling layer)은 큰 이미지를 더 작은 요약 이미지로 압축(condense)하는 방법을 제공한다. 풀링에는 여러 방식이 가능하지만, 맥스 풀링(max pooling)은 이미지의 겹치지 않는 각 <span class="math inline">\(2 \times 2\)</span> 블록을 그 블록 안의 최댓값으로 요약한다.</p>
+<p>이 연산은 이미지의 크기를 각 방향에서 2배씩 줄이며(즉 가로/세로 모두 절반), 동시에 어느 정도의 위치 불변성(location invariance)을 제공한다. 즉 블록 안의 4개 픽셀 중 하나라도 큰 값이 있으면, 축소된 이미지에서는 그 블록 전체가 큰 값으로 기록된다.</p>
+<p>맥스 풀링의 간단한 예는 다음과 같다.</p>
+<p><span class="math display">\[\text{Max pool}\begin{bmatrix}
+1 &amp; 2 &amp; 5 &amp; 3 \\
+3 &amp; 0 &amp; 1 &amp; 2 \\
+2 &amp; 1 &amp; 3 &amp; 4 \\
+1 &amp; 1 &amp; 2 &amp; 0
+\end{bmatrix} \rightarrow \begin{bmatrix}
+3 &amp; 5 \\
+2 &amp; 4
+\end{bmatrix}\]</span></p>
+<p><strong>CNN Architecture</strong></p>
+<p>지금까지 우리는 하나의 합성곱 층을 정의했다. 각 필터는 새로운 2차원 특징맵 하나를 만든다. 합성곱 층에서 필터의 개수는, 완전연결 신경망에서 특정 은닉층의 유닛 수와 유사한 역할을 한다.</p>
+<p>이 수는 또한 결과로 생성되는 3차원 특징맵의 채널 수를 결정한다. 또한 풀링 층은 각 3차원 특징맵의 앞 두 차원(공간 차원)을 줄인다는 것을 설명했다. 깊은 CNN은 이러한 층을 많이 쌓는다.</p>
+<p>다음 그림은 CIFAR100 이미지 분류 과제를 위한 CNN의 전형적인 구조를 보여준다. CIFAR100 분류 과제를 위한 깊은 CNN의 아키텍처. 합성곱 층들 사이에 <span class="math inline">\(2 \times 2\)</span> 맥스풀 층이 끼워져 있으며, 맥스풀은 두 공간 차원 모두에서 크기를 2배씩 줄인다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_deep_cnn03.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p>입력층에서는 컬러 이미지의 3차원 특징맵을 보게 되는데, 여기서 채널 축은 각 색을 <span class="math inline">\(32 \times 32\)</span>의 2차원 픽셀 특징맵으로 나타낸다.</p>
+<p>첫 번째 은닉층에서 각 합성곱 필터는 새로운 채널을 하나씩 만들어내며, 각각은(가장자리에 패딩을 약간 준 뒤) <span class="math inline">\(32 \times 32\)</span> 특징맵이 된다.</p>
+<p>첫 번째 합성곱을 마치면 우리는 새로운 <span dir="rtl">”</span>이미지”, 즉 입력의 3개 색상 채널보다 훨씬 많은 채널을 가진 특징맵을 얻게 된다(그림에서는 합성곱 필터를 6개 사용했기 때문에 채널이 6개).</p>
+<p>그 다음에는 맥스풀 층이 이어지며, 이는 각 채널의 특징맵 크기를 4분의 1로 줄인다(각 방향에서 2배씩 줄어드는 것과 같다). 이런 <span dir="rtl">”</span>합성곱→풀링” 순서는 다음 두 층에서도 반복된다.</p>
+<p>세부 사항은 다음과 같다. 이후의 각 합성곱 층은 첫 번째 층과 유사하다. 이전 층의 3차원 특징맵을 입력으로 받아 이를 하나의 다채널 이미지처럼 취급한다. 학습되는 각 합성곱 필터는 이 특징맵과 동일한 수의 채널을 가진다.</p>
+<p>풀링 층을 거치면 채널 특징맵의 공간 크기가 줄어드므로, 보통 이를 보상하기 위해 다음 합성곱 층에서 필터 수를 늘린다.</p>
+<p>때로는 풀링 층을 넣기 전에 합성곱 층을 여러 번 반복한다. 이는 사실상 필터의 차원을(표현력을) 증가시키는 효과가 있다.</p>
+<p>이 연산들은 풀링을 통해 각 채널 특징맵이 각 차원에서 몇 픽셀만 남을 때까지 반복된다. 이 시점에서 3차원 특징맵은 flatten되어(픽셀을 개별 유닛으로 취급) 하나 이상의 완전연결 층으로 들어가며, 최종적으로 출력층에 도달한다. 출력층은 100개 클래스에 대한 softmax 활성함수를 사용한다.</p>
+<p>이런 네트워크를 구성할 때는 각 층의 개수·종류·크기 외에도 선택해야 할 튜닝 파라미터가 많다. 드롭아웃(dropout)은 각 층에서 사용할 수 있고, 라쏘(lasso)나 릿지(ridge) 정규화도 사용할 수 있다. 합성곱 신경망을 구성하는 세부 사항은 부담스럽게 느껴질 수 있다.</p>
+<p>다음 그림은 데이터 증강(data augmentation)으로 원본 이미지(가장 왼쪽)를 자연스러운 방식으로 왜곡하여 같은 클래스 레이블을 갖는 서로 다른 이미지를 만든다. 이러한 왜곡은 사람을 속이지 않으며, CNN을 적합할 때 정규화(regularization)의 한 형태로 작동한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_deep_cnn04.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+<section id="data-augmentation" class="level5">
+<h5 class="anchored" data-anchor-id="data-augmentation">(2) Data Augmentation</h5>
+<p>데이터 증강은 <span dir="rtl">”</span>라벨을 유지하는 변환으로 학습 데이터를 확장”하여 일반화 성능을 높이는 핵심 기법이다. 증강은 단순히 데이터 수를 늘리는 것 이상으로, 모델에게 불변성(invariance) 또는 평활한 결정경계를 학습시키는 역할을 한다.</p>
+<p><strong>기본 증강(flip/crop/rotate/color jitter)</strong></p>
+<ul>
+<li>flip: 좌우 반전 (대칭성이 있는 문제에서 유효)</li>
+<li>random crop / resize: 위치/스케일 변화에 강건</li>
+<li>rotate: 회전 불변성이 있는 경우 유효(과도한 회전은 라벨 의미를 바꿀 수 있음)</li>
+<li>color jitter: 밝기/대비/채도 변형으로 조명 변화에 강건</li>
+</ul>
+<p>증강의 본질은 <span dir="rtl">”</span>입력 공간에서 같은 라벨을 갖는 영역을 넓혀” 과적합을 줄이는 것이다.</p>
+<p><strong>강한 증강/혼합(mixup/cutmix 등, 선택)</strong></p>
+<p>강한 증강은 일반화를 크게 올릴 수 있지만, 과하면 학습이 어려워지거나 과소적합을 유발할 수 있어 데이터/도메인에 맞춰 조절한다.</p>
+<ul>
+<li>mixup: 두 샘플과 라벨을 선형 결합 <span class="math inline">\(\overset{˜}{x} = \lambda x_{i} + (1 - \lambda)x_{j},\overset{˜}{y} = \lambda y_{i} + (1 - \lambda)y_{j}\)</span> 이는 결정경계를 더 선형/평활하게 만들어 과신을 줄이고(calibration 개선 사례 많음), 노이즈에 강해질 수 있다.</li>
+<li>cutmix: 한 이미지의 일부 패치를 다른 이미지로 교체하고, 면적 비율로 라벨을 혼합</li>
+</ul>
+<p>라벨 혼합이 <span dir="rtl">”</span>공간적 부분”과 대응하므로 이미지 분류에서 효과가 좋은 경우가 많다.</p>
+</section>
+<section id="pretrained-model-transfer-learning전이학습" class="level5">
+<h5 class="anchored" data-anchor-id="pretrained-model-transfer-learning전이학습">(3) Pretrained Model &amp; Transfer Learning(전이학습)</h5>
+<p>사전학습 모델은 대규모 데이터로 학습된 표현을 제공하며, 작은 데이터에서도 강력한 출발점을 만든다. 특히 CNN/Transformer 모두에서 <span dir="rtl">”</span>표현 학습은 대규모로, 과제별 분류기는 소규모로”가 표준이 되었다.</p>
+<p><strong>feature extraction vs fine-tuning</strong></p>
+<ul>
+<li><p>Feature extraction(특징 추출): backbone g_\theta는 고정하고, head만 학습 <span class="math inline">\(\mathbf{h} = g_{\theta_{0}}(x),\min_{W}\sum_{i}\mathcal{L}(y_{i},softmax(W\mathbf{h}_{i}))\)</span> 장점으로는 빠르고 과적합 위험이 낮다(특히 데이터가 작을 때).</p></li>
+<li><p>Fine-tuning(미세조정): backbone까지 함께 업데이트 <span class="math inline">\(\min_{\theta,W}\sum_{i}\mathcal{L}(y_{i},softmax(Wg_{\theta}(x_{i})))\)</span> 장점은 도메인 적응력이 커서 최종 성능이 더 좋아지기 쉽고 단점으로는 데이터가 작으면 과적합/과신이 커질 수 있어 정규화/증강이 중요하다.</p></li>
+</ul>
+<p>작은 데이터에서의 실무 절차(동결→점진적 unfreeze)</p>
+<p>작은 데이터에서 흔히 쓰는 안정적 절차는 다음이다.</p>
+<p>1. head만 학습(backbone 동결) → 빠르게 베이스라인 확보 <br> 2. 성능이 정체되면 상위 블록부터 점진적 unfreeze <br> 3. backbone 학습률은 head보다 작게(예: <span class="math inline">\(\eta_{\text{backbone}} \ll \eta_{\text{head}}\)</span>) <br> 4. 증강/weight decay/early stopping으로 과적합 제어</p>
+<p>5. 필요 시 calibration(temperature scaling)과 임계값 재튜닝까지 묶어서 운영 성능 정리</p>
+</section>
+<section id="document-classification문서-분류" class="level5">
+<h5 class="anchored" data-anchor-id="document-classification문서-분류">(4) Document Classification(문서 분류)</h5>
+<p>문서 분류는 <span dir="rtl">”</span>텍스트를 어떤 표현으로 바꾸고, 그 위에 분류기를 얹는다”는 점에서 이미지와 동일한 구조를 가진다. 다만 표현 방식이 BoW/TF-IDF 같은 고전적 희소 벡터에서, Transformer 기반 문맥 임베딩으로 이동했다.</p>
+<p><strong>TF-IDF/BoW + 선형분류(개념 요약)</strong></p>
+<ul>
+<li>BoW/TF-IDF로 문서를 벡터화: \mathbf{x}\in\mathbb{R}^p (희소)</li>
+<li>선형 분류기(로지스틱 회귀, 선형 SVM 등): <span class="math inline">\(z = \mathbf{w}^{\top}\mathbf{x} + b,p = \sigma(z)\)</span>(이진) 또는 다중분류 softmax를 사용한다.</li>
+</ul>
+<p>장점은 빠르고 강력한 베이스라인, 데이터가 적어도 안정적인 반면, 한계로는 단어 순서/문맥 정보 손실(동음이의, 긴 의존관계 처리 약함)이다.</p>
+<p><strong>Transformer 기반 문서 분류 파이프라인</strong></p>
+<p>Transformer(예: BERT류)는 토큰 시퀀스 (w_1,\dots,w_T)를 문맥 임베딩으로 바꾼다. <span class="math inline">\(\mathbf{H} = Transformer(w_{1:T})\)</span></p>
+<p>대표적으로 [CLS] 토큰 표현 \mathbf{h}_{\text{CLS}} 또는 평균 풀링을 사용해 문서 벡터를 만들고, <span class="math inline">\(\mathbf{z} = W\mathbf{h}_{\text{CLS}} + b,\mathbf{p} = softmax(\mathbf{z})\)</span>로 분류한다.</p>
+<p>실무 파이프라인은 대개 토크나이즈 → 사전학습 Transformer 로딩, head 부착 → (동결 후 head 학습) → 점진적 fine-tuning, 불균형이면 class weight / 샘플링, 운영 전 calibration/threshold 튜닝으로 정리된다.</p>
+<p><strong>불균형/임계값/보정의 적용 포인트</strong></p>
+<p>문서 분류(특히 멀티라벨, 희귀 라벨)에서는 <span dir="rtl">”</span>학습 성능”보다 <span dir="rtl">”</span>운영 품질”이 더 중요해지는 경우가 많다.</p>
+<ul>
+<li>불균형: 희귀 라벨 Recall이 급락 → class weight, focal, 라벨별 임계값 <span class="math inline">\(t_{k}\)</span> 고려</li>
+<li>임계값: 멀티라벨이면 <span class="math inline">\({\widehat{y}}_{k} = \mathbf{1}\{ p_{k} \geq t_{k}\}\)</span>이며 global t보다 라벨별 t_k가 실무적으로 유리한 경우가 많다.</li>
+<li>보정(calibration): Transformer도 과신이 흔하므로 calibration curve/ECE 확인 후 temperature scaling 적용, 그리고 보정된 확률로 임계값 재튜닝까지 한 세트로 운영하는 것이 안정적이다.</li>
+</ul>
+</section>
+</section>
+<section id="평가와-임계값-운영-관점의-의사결정-설계" class="level4">
+<h4 class="anchored" data-anchor-id="평가와-임계값-운영-관점의-의사결정-설계">6. 평가와 임계값: 운영 관점의 의사결정 설계</h4>
+<p>딥러닝 분류 모델은 보통 확률 <span class="math inline">\(p(x) = P(Y = 1 \mid x)\)</span> 또는 다중분류 확률벡터 <span class="math inline">\(\{ p_{k}(x)\}\)</span>를 출력한다. 그러나 운영(실제 의사결정) 은 <span dir="rtl">”</span>확률을 어떻게 행동(action)으로 바꿀 것인가”가 핵심이며, 그 연결고리가 임계값(threshold) 과 결정규칙(decision rule) 이다.</p>
+<p>같은 모델이라도 임계값을 어떻게 두느냐에 따라 미탐/오경보/검토량/비용이 크게 달라진다. 따라서 분류 문제의 완성은 <span dir="rtl">”</span>학습(확률 추정)“이 아니라, 평가 지표 + 운영 제약 + 임계값 정책까지 포함한 end-to-end 설계로 이해해야 한다.</p>
+<section id="확률-예측과-의사결정의-분리-왜-임계값이-필요한가" class="level5">
+<h5 class="anchored" data-anchor-id="확률-예측과-의사결정의-분리-왜-임계값이-필요한가">확률 예측과 의사결정의 분리: 왜 임계값이 필요한가?</h5>
+<p>이진분류에서 모델은 확률 p(x)를 내지만, 실제 행동은 보통 임계값 t로 이산화된다. <span class="math inline">\(\widehat{y}(x) = \mathbf{1}\{ p(x) \geq t\}\)</span></p>
+<p>여기서 중요한 분리는 다음과 같다.</p>
+<ul>
+<li>학습(모형 추정): 손실(NLL/CE)을 최소화해 p(x)를 <span dir="rtl">”</span>잘” 추정한다.</li>
+<li>운영(정책 결정): 비용/제약/리소스에 맞춰 t 또는 정책을 선택한다.</li>
+</ul>
+<p>즉 <span dir="rtl">”</span>확률을 잘 맞추는 문제”와 <span dir="rtl">”</span>그 확률로 최적 행동을 고르는 문제”는 서로 다른 최적화 문제다. 임계값은 이 둘을 연결하는 운영 레버다.</p>
+</section>
+<section id="confusion-matrix와-운영-지표-precisionrecallfprfnr" class="level5">
+<h5 class="anchored" data-anchor-id="confusion-matrix와-운영-지표-precisionrecallfprfnr">Confusion Matrix와 운영 지표: Precision/Recall/FPR/FNR</h5>
+<p>이진분류에서 혼동행렬은 네 가지로 요약된다: (1) TP: 실제 양성(1)을 양성으로 예측 (2) FP: 실제 음성(0)을 양성으로 예측(오경보) (3) FN: 실제 양성(1)을 음성으로 예측(미탐) (4) TN: 실제 음성(0)을 음성으로 예측.</p>
+<p>이로부터 운영에서 자주 쓰는 지표가 정의된다.</p>
+<ul>
+<li><span class="math inline">\(Precision = \frac{TP}{TP + FP}\text{(양성이라 예측한 것의 품질)}\)</span></li>
+<li><span class="math inline">\(Recall = TPR = \frac{TP}{TP + FN}\text{(진짜 양성 중 얼마나 잡았나)}\)</span></li>
+<li><span class="math inline">\(Specificity = \frac{TN}{TN + FP}\text{(진짜 음성 중 얼마나 음성이라 했나)}\)</span></li>
+<li><span class="math inline">\(FPR = \frac{FP}{FP + TN} = 1 - SpecificityFNR = \frac{FN}{TP + FN} = 1 - Recall\)</span></li>
+</ul>
+<p>임계값 t를 올리면 대체로 FP가 줄어 Precision은 오르기 쉽지만 Recall은 떨어진다. t를 내리면 그 반대가 된다. 이 trade-off 가 운영 의사결정의 핵심이다.</p>
+</section>
+<section id="rocauc-순위-분리력-평가와-한계" class="level5">
+<h5 class="anchored" data-anchor-id="rocauc-순위-분리력-평가와-한계">ROC–AUC: <span dir="rtl">”</span>순위 분리력” 평가와 한계</h5>
+<p>임계값 t를 변화시키며 x축은 <span class="math inline">\(FPR(t)\)</span>, y축은 <span class="math inline">\(TPR(t) = Recall(t)\)</span>를 그린 것이 ROC 곡선이다. AUC는 ROC 곡선 아래 면적이며, 다음과 같이 해석할 수 있다.</p>
+<p>AUC는 <span dir="rtl">”</span>무작위 양성 샘플이 무작위 음성 샘플보다 더 높은 점수를 받을 확률”이다.</p>
+<p>즉 AUC는 순위 기반 분리력을 본다. 따라서 클래스 비율이 변해도 상대적으로 덜 흔들리는 장점이 있다.</p>
+<p>다만 운영에서 중요한 <span dir="rtl">”</span>양성 경보의 품질(Precision)“은 ROC에 직접 드러나지 않는다. 불균형(양성 희귀)에서는 ROC가 좋아 보여도 실제로는 FP가 대량 발생할 수 있으므로, 운영 관점에서는 ROC만으로 결정을 내리기 어렵다.</p>
+</section>
+<section id="불균형에서-핵심-precisionrecallpr-곡선과-ap" class="level5">
+<h5 class="anchored" data-anchor-id="불균형에서-핵심-precisionrecallpr-곡선과-ap">불균형에서 핵심: Precision–Recall(PR) 곡선과 AP</h5>
+<p>양성이 희귀한 문제(사기, 결함, 이상탐지, 의료 선별)에서는 <span dir="rtl">”</span>Recall을 조금 올리려다가 FP가 폭증”하는 구간이 흔하다. 이때 ROC보다 더 직접적인 그림이 PR 곡선이다. x축은 <span class="math inline">\(Recall(t)\)</span>, y축은 <span class="math inline">\(Precision(t)\)</span>이므러<span dir="rtl">”</span>얼마나 잡을 것인가(Recall)“와 <span dir="rtl">”</span>잡은 것의 품질이 어떤가(Precision)”를 직접 연결해준다.</p>
+<p>PR 곡선 아래 면적(정확히는 Precision의 Recall-가중 평균)을 AP(Average Precision) 라 한다. AP는 불균형 문제에서 모델 비교에 자주 사용되며, 특히 운영이 <span dir="rtl">”</span>상위 경보를 사람/시스템이 검토”하는 형태일 때 더 실용적이다.</p>
+</section>
+<section id="임계값-선택-1-비용-기반-최적-임계값-t" class="level5">
+<h5 class="anchored" data-anchor-id="임계값-선택-1-비용-기반-최적-임계값-t">임계값 선택 1: 비용 기반 최적 임계값 <span class="math inline">\(t^{*}\)</span></h5>
+<p>운영에서 오경보 비용을 <span class="math inline">\(c_{FP}\)</span>, 미탐 비용을 <span class="math inline">\(c_{FN}\)</span>이라 하자(정답 비용은 0으로 두는 단순화). 확률 <span class="math inline">\(p = P(Y = 1 \mid x)\)</span>가 주어졌을 때,</p>
+<ul>
+<li><span class="math inline">\(\widehat{y} = 1\)</span>로 결정하면 기대비용: <span class="math inline">\(\mathbb{E}\lbrack C \mid \widehat{y} = 1\rbrack = c_{FP} \cdot P(Y = 0 \mid x) = c_{FP}(1 - p)\)</span></li>
+<li><span class="math inline">\(\widehat{y} = 0\)</span>로 결정하면 기대비용: <span class="math inline">\(\mathbb{E}\lbrack C \mid \widehat{y} = 0\rbrack = c_{FN} \cdot P(Y = 1 \mid x) = c_{FN}p\)</span></li>
+</ul>
+<p>따라서 <span class="math inline">\(\widehat{y} = 1\)</span>이 유리한 조건은 <span class="math inline">\(c_{FP}(1 - p) \leq c_{FN}p \leftrightarrow p \geq \frac{c_{FP}}{c_{FP} + c_{FN}}\)</span>이다.</p>
+<p>즉 비용 기반 최적 임계값은 <span class="math inline">\(t^{*} = \frac{c_{FP}}{c_{FP} + c_{FN}}\)</span>으로 정리된다.</p>
+<p>미탐 비용 <span class="math inline">\(c_{FN}\)</span>이 크면 <span class="math inline">\(t^{*}\)</span>는 내려가며(더 쉽게 양성), 오경보 비용 <span class="math inline">\(c_{FP}\)</span>이 크면 <span class="math inline">\(t^{*}\)</span>는 올라간다(더 보수적으로 양성).</p>
+</section>
+<section id="임계값-선택-2-제약-기반-선택fpr-제한-검토량-k-제한-등" class="level5">
+<h5 class="anchored" data-anchor-id="임계값-선택-2-제약-기반-선택fpr-제한-검토량-k-제한-등">임계값 선택 2: 제약 기반 선택(FPR 제한, 검토량 K 제한 등)</h5>
+<p>현장에서는 비용 숫자를 정확히 박기 어렵거나(정책/규제/리소스가 먼저인 경우) 제약 조건이 우선인 경우가 많다. 이때는 검증셋에서 제약을 만족하는 임계값을 찾는다.</p>
+<p><strong>FPR 제약: <span class="math inline">\(\mathrm{FPR}(t)\\le \\alpha\)</span></strong></p>
+<p><span dir="rtl">”</span>오경보율은 1% 이하가 필수” 같은 규정이 있을 때, 여러 임계값 후보에 대해 <span class="math inline">\(\mathrm{FPR}(t)\)</span> 를 계산하고 <span class="math inline">\(FPR(t) \leq \alpha\)</span> 를 만족하는 영역에서 목표(Recall 최대, 비용 최소 등)를 최적화한다.</p>
+<p><strong>검토량(알림 수) 제약: <span dir="rtl">”</span>하루 최대 K건만 검토 가능”</strong></p>
+<p>사기 의심 거래 상위 K건만 조사하는 경우처럼, 임계값 대신 Top-K 정책이 자연스럽다. 점수 s(x) 또는 확률 p(x)를 내림차순으로 정렬해 상위 K개만 양성(검토 대상으로) 처리한다.</p>
+<p>이 관점에서는 <span dir="rtl">”</span>임계값”이 고정값이 아니라, 그날의 데이터 분포에 따라 달라지는 동적 임계값으로 구현된다.</p>
+<p><strong>복합 제약</strong></p>
+<p>실무는 보통 제약이 하나가 아니다. 예를 들어 <span class="math inline">\(FPR(t) \leq \alpha\text{AND검토량} \leq K\)</span>처럼 다중 제약을 동시에 만족시키는 영역에서, Recall 최대/Precision 최대/비용 최소 같은 목표를 최적화해 임계값을 결정한다.</p>
+</section>
+<section id="불균형-학습과-임계값-학습을-바꾸면-임계값도-바뀐다" class="level5">
+<h5 class="anchored" data-anchor-id="불균형-학습과-임계값-학습을-바꾸면-임계값도-바뀐다">불균형 학습과 임계값: <span dir="rtl">”</span>학습을 바꾸면 임계값도 바뀐다”</h5>
+<p>불균형 대응(class weight, oversampling, focal loss, hard mining 등)을 적용하면 모델의 점수/확률 분포가 바뀐다. 그 결과 <span dir="rtl">”</span>순위”는 좋아질 수 있어도 확률의 해석(정규화/보정)이 변형될 수 있고, 운영 임계값 t는 대개 다시 설계해야 한다.</p>
+<p>따라서 불균형 문제는 <span dir="rtl">”</span>학습 기법”만으로 끝나지 않고, PR 관점 평가 + 임계값 정책까지 포함한 최적화로 완성된다.</p>
+<p><strong>운영 관점 체크리스트: 무엇을 먼저 결정할까?</strong></p>
+<p>운영 설계는 다음 순서가 실무적으로 안정적이다.</p>
+<p>1. 운영 목표 명시: 미탐이 더 치명적인가, 오경보가 더 치명적인가? 검토량 제한이 있는가? <br> 2. 평가 지표 선택: 일반 분류: ROC/AUC + 정확도 지표, 불균형/검출: PR/AP, Recall@K(또는 Precision@K) 중심 <br> 3. 임계값 정책 선택: 비용이 명확하면 <span class="math inline">\(t^{*} = \frac{c_{FP}}{c_{FP} + c_{FN}}\)</span>, 제약이 우선이면 <span class="math inline">\(FPR \leq \alpha\)</span>, 검토량 <span class="math inline">\(\leq K\)</span>, Top-K 정책 <br> 4. 검증셋에서 튜닝: 선택한 정책이 실제로 목표/제약을 만족하는지 확인 <br> 5. (필요 시) 보정 후 재튜닝: calibration을 수행하면 확률이 바뀌므로 t도 다시 맞춘다.</p>
+</section>
+</section>
+<section id="calibration-uncertainty-과신을-줄이고-안정적-의사결정을-만드는-법" class="level4">
+<h4 class="anchored" data-anchor-id="calibration-uncertainty-과신을-줄이고-안정적-의사결정을-만드는-법">7. Calibration &amp; Uncertainty: 과신을 줄이고 안정적 의사결정을 만드는 법</h4>
+<p>앞 절에서 보았듯이, 운영의 핵심은 <span dir="rtl">”</span>확률을 행동으로 바꾸는 규칙(임계값/정책)“이다. 그런데 이 규칙이 의미를 가지려면, 모델이 내놓는 확률이 단지 <span dir="rtl">”</span>점수”가 아니라 신뢰 가능한 확률이어야 한다.</p>
+<p>딥러닝 분류는 정확도는 높지만 확률이 지나치게 확신적인 경우가 흔하고, 분포 이동(OOD), 불균형, noisy label 환경에서는 그 문제가 더욱 두드러진다.</p>
+<p>이 절에서는 (1) calibration이 무엇이며 왜 필요한지, (2) calibration을 어떻게 평가하는지, (3) 대표 보정 방법(temperature/Platt/isotonic), (4) uncertainty를 이용한 안정적 의사결정(거절/검토/리스크 관리)까지 하나의 운영 파이프라인으로 정리한다.</p>
+<section id="calibration이란-무엇인가-0.8이라-말한-것-중-80가-맞는가" class="level5">
+<h5 class="anchored" data-anchor-id="calibration이란-무엇인가-0.8이라-말한-것-중-80가-맞는가">Calibration이란 무엇인가: <span dir="rtl">”</span>0.8이라 말한 것 중 80%가 맞는가?”</h5>
+<p>이진분류에서 모델이 <span class="math inline">\(\widehat{p}(x) = 0.8\)</span>이라고 출력한 샘플들을 모았을 때, 그 집합에서 실제 양성 비율이 약 0.8이라면 그 모델은 calibrated 라고 말한다.</p>
+<p>즉 calibration은 <span dir="rtl">”</span>순위(누가 더 위험한가)“가 아니라, 확률의 의미가 현실과 맞는가를 묻는다.</p>
+<ul>
+<li>좋은 분리력(discrimination): 위험한 샘플이 더 높은 점수를 받는가? (AUC/PR 등)</li>
+<li>좋은 보정(calibration): 점수 자체가 확률로 해석 가능한가? (reliability/ECE/Brier 등)</li>
+</ul>
+<p>운영에서 비용 기반 임계값 <span class="math inline">\(t^{*} = \frac{c_{FP}}{c_{FP} + c_{FN}}\)</span>같은 규칙이 <span dir="rtl">”</span>정당”해지려면, <span class="math inline">\(\widehat{p}(x)\)</span>가 확률로서 해석 가능해야 한다. 즉 calibration은 단순한 평가 지표가 아니라 정책 설계의 기반이다.</p>
+</section>
+<section id="과신이-생기는-구조적-이유요약" class="level5">
+<h5 class="anchored" data-anchor-id="과신이-생기는-구조적-이유요약">과신이 생기는 구조적 이유(요약)</h5>
+<p>딥러닝 분류가 과신하기 쉬운 이유는 보통 단일 원인이 아니라 구조와 데이터/학습 환경이 결합된 결과다.</p>
+<p><strong>softmax</strong> 경쟁 구조: 다중분류에서 <span class="math inline">\(\sum_{k}p_{k} = 1\)</span>이 강제되므로 <span dir="rtl">”</span>모르는 입력”에도 확률 질량을 반드시 배분한다. OOD에서 <span class="math inline">\(\max_{k}p_{k}\)</span>가 커지는 현상이 흔한 이유다.</p>
+<p><strong>cross-entropy</strong>의 압력: CE는 정답 확률 <span class="math inline">\(p_{y}\)</span>를 1로 밀어붙인다: <span class="math inline">\(\mathcal{L} = - \log p_{y}\)</span>. 데이터가 쉽게 분리되거나 모델 용량이 크면 로짓 스케일이 커져 확률이 극단화될 수 있다.</p>
+<p>데이터 편향<strong>/</strong>라벨 노이즈<strong>/</strong>분포 이동: 훈련 분포가 운영 분포를 충분히 대표하지 못하면(표본 편향), 모델은 <span dir="rtl">”</span>보지 못한 영역”에서도 높은 확률을 낼 수 있다. 라벨 노이즈가 있어도 CE는 틀린 라벨을 맞추려는 방향으로 강하게 학습되어 불필요한 확신이 쌓일 수 있다.</p>
+</section>
+<section id="calibration-평가-reliability-diagram-ece-brier-score" class="level5">
+<h5 class="anchored" data-anchor-id="calibration-평가-reliability-diagram-ece-brier-score">Calibration 평가: Reliability diagram / ECE / Brier score</h5>
+<p><strong>Reliability diagram(= calibration curve)</strong>: 예측확률 <span class="math inline">\({\widehat{p}}_{i}\)</span>를 구간(bin)으로 나눈 뒤, 각 구간에서 평균 예측확률(신뢰도) <span class="math inline">\(conf(b)\)</span>와 실제 정답 비율(정확도) <span class="math inline">\(acc(b)\)</span>을 비교한다.</p>
+<p>이진분류 예시: <span class="math inline">\(acc(b) = \frac{1}{|B_{b}|}\sum_{i \in B_{b}}y_{i},conf(b) = \frac{1}{|B_{b}|}\sum_{i \in B_{b}}{\widehat{p}}_{i}\)</span></p>
+<p>완전 보정이면 <span class="math inline">\(acc(b) \approx conf(b)\)</span>가 되어 대각선 근처에 놓인다. 만약 과신이면 <span class="math inline">\(conf(b) &gt; acc(b)\)</span>, 과소신이면 <span class="math inline">\(conf(b) &lt; acc(b)\)</span></p>
+<p><strong>ECE(Expected Calibration Error)</strong>: ECE는 구간별 불일치의 가중 평균이다. <span class="math inline">\(ECE = \overset{B}{\sum_{b = 1}}\frac{|B_{b}|}{n}\left| acc(b) - conf(b) \right|\)</span></p>
+<p>작을수록 보정이 잘 된 것이다. 단, bin 개수 B와 binning 방식에 민감할 수 있으므로 평가 세팅을 명시하는 것이 좋다.</p>
+<p><strong>Brier score(</strong>확률 예측의 제곱오차<strong>)</strong>: Brier score는 calibration과 sharpness(확률 분포의 분별력)를 함께 반영하는 확률 오차다.</p>
+<ul>
+<li>이진분류: <span class="math inline">\(BS = \frac{1}{n}\overset{n}{\sum_{i = 1}}({\widehat{p}}_{i} - y_{i})^{2}\)</span></li>
+<li>다중분류(원-핫 <span class="math inline">\(y_{ik}\)</span>, 확률 <span class="math inline">\(p_{ik}\)</span>): <span class="math inline">\(BS = \frac{1}{n}\overset{n}{\sum_{i = 1}}\overset{K}{\sum_{k = 1}}(p_{ik} - y_{ik})^{2}\)</span></li>
+</ul>
+</section>
+<section id="calibration-방법-모델은-고정하고-출력-변환을-학습한다" class="level5">
+<h5 class="anchored" data-anchor-id="calibration-방법-모델은-고정하고-출력-변환을-학습한다">Calibration 방법: 모델은 고정하고 <span dir="rtl">”</span>출력 변환”을 학습한다</h5>
+<p>실무에서 보정은 <span dir="rtl">”</span>모델을 다시 학습”하기보다, 학습된 모델의 로짓/점수(score) 를 사후 변환해 확률을 조정하는 방식이 안정적이다. 핵심은 검증셋(또는 별도의 calibration set) 에서 변환 파라미터를 추정하는 것이다.</p>
+<p><strong>Temperature scaling(softmax</strong> 로짓 보정<strong>)</strong>: 다중분류에서 로짓 <span class="math inline">\(\mathbf{z}\)</span>에 온도 T&gt;0를 적용해 <span class="math inline">\(\mathbf{p}^{(T)} = softmax(\frac{\mathbf{z}}{T})\)</span>로 확률을 재계산한다.</p>
+<p><span class="math inline">\(T &gt; 1\)</span>: 분포를 평평하게 만들어 과신 완화(가장 흔한 케이스)</p>
+<p><span class="math inline">\(T &lt; 1\)</span>: 분포를 더 뾰족하게(과소신 보정일 때)</p>
+<p>T는 calibration set에서 NLL(=CE)을 최소화하도록 추정한다.</p>
+<p><span class="math inline">\(T^{*} = \arg\min_{T}\overset{n}{\sum_{i = 1}}( - \log p_{i,y_{i}}^{(T)})\)</span>. 장점은 분류 순위(Top-1)는 거의 유지되면서 확률만 조정되고 운영 임계값 설계가 쉬워진다는 것이다.</p>
+<p><strong>Platt scaling(</strong>주로 이진분류: <span class="math inline">\(score \rightarrow sigmoid\)</span>): 어떤 점수 s(x)에 대해 <span class="math inline">\(\widehat{p}(x) = \sigma(as(x) + b)\)</span> 형태로 a,b를 calibration set에서 추정한다(SVM에서 유래했지만 딥러닝 로짓에도 적용 가능). 파라미터 수가 적고 데이터가 많지 않아도 비교적 안정적이다.</p>
+<p><strong>Isotonic regression(</strong>비모수 단조 보정<strong>)</strong>: 확률을 단조 함수 g(\cdot)로 보정한다. <span class="math inline">\(\widehat{p}(x) = g(s(x))\)</span>. 장점으로 함수 형태 가정이 약해 유연하다는 것이고, 데이터가 적으면 과적합 위험이 있고, 특히 희귀 양성에서 불안정할 수 있다는 단점이 있다.</p>
+<p>데이터가 충분하면 isotonic을 고려할 수 있고, 그렇지 않으면 temperature/Platt처럼 파라미터가 적은 방법이 안전한 편이다.</p>
+</section>
+<section id="uncertainty불확실성-확률이-높다낮다와는-다른-축" class="level5">
+<h5 class="anchored" data-anchor-id="uncertainty불확실성-확률이-높다낮다와는-다른-축">Uncertainty(불확실성): <span dir="rtl">”</span>확률이 높다/낮다”와는 다른 축</h5>
+<p>보정(calibration)은 <span dir="rtl">”</span>출력 확률이 의미를 갖는가”를 다루고, 불확실성은 <span dir="rtl">”</span>이 예측을 얼마나 믿어도 되는가”를 다룬다. 운영에서는 둘이 결합되어 안정적 의사결정을 만든다.</p>
+<p>불확실성은 보통 두 종류로 나눠 설명한다.</p>
+<ul>
+<li>Aleatoric uncertainty(데이터 고유의 불확실성): 입력 자체가 애매하거나 노이즈가 큰 경우(본질적으로 구분이 어려움)</li>
+<li>Epistemic uncertainty(모델 불확실성): 데이터 부족/분포 밖 입력/OOD 등으로 모델이 <span dir="rtl">”</span>모르는” 영역</li>
+</ul>
+<p>실무적으로는 이론적 분해보다, 다음과 같은 운영 질문으로 연결하는 것이 중요하다. <span dir="rtl">”</span>이 샘플은 자동처리해도 되는가?“, <span dir="rtl">”</span>사람 검토로 보내야 하는가?”, <span dir="rtl">”</span>거절/보류(unknown)해야 하는가?”</p>
+</section>
+<section id="안정적-의사결정-설계-rejectreviewdefer-정책" class="level5">
+<h5 class="anchored" data-anchor-id="안정적-의사결정-설계-rejectreviewdefer-정책">안정적 의사결정 설계: Reject/Review/Defer 정책</h5>
+<p>불확실성을 운영으로 연결하는 가장 실용적인 방법은 <span dir="rtl">”</span>3갈래 정책”이다. (1) Auto-accept / Auto-reject: 확신이 충분히 높을 때 자동 결정, (2) Review(사람 검토): 확률이 애매하거나 리스크가 큰 구간, (3) Reject/Defer(unknown/보류): OOD 가능성이 높거나 모델이 모르는 영역이다.</p>
+<p><strong>단순 임계값 + 회색지대(gray zone)</strong></p>
+<p>이진분류에서 <span class="math inline">\(\widehat{p}(x) \geq t_{\text{high}}\)</span>이면 자동 양성, <span class="math inline">\(\widehat{p}(x) \leq t_{\text{low}}\)</span>이면 자동 음성, 그 사이는 검토로 보낸다.</p>
+<p>즉, <span class="math inline">\(\text{review if}t_{\text{low}} &lt; \widehat{p}(x) &lt; t_{\text{high}}\)</span>. 이는 <span dir="rtl">”</span>정책을 한 번 더” 얹는 방식이며, 검토량(리소스) 제약과 잘 맞는다.</p>
+<p><strong>OOD/unknown 거절(거리 기반 또는 최대확률 기반)</strong></p>
+<p>softmax 기반에서는 \max_k p_k가 작으면 <span dir="rtl">”</span>잘 모른다”는 신호로 쓰기도 한다(단, OOD에서 과신이 가능하므로 calibration과 함께 써야 한다).</p>
+<p>metric learning/embedding 기반이라면 거절 규칙이 더 자연스럽다. <span class="math inline">\(\min_{k}d(\mathbf{h},\mathbf{c}_{k}) &gt; \tau \Rightarrow \text{unknown}\)</span>. 즉 <span dir="rtl">”</span>가까운 클래스가 없다”는 신호로 reject가 가능하다.</p>
+</section>
+<section id="large-k에서의-연결-top-k-의사결정과-확률-품질" class="level5">
+<h5 class="anchored" data-anchor-id="large-k에서의-연결-top-k-의사결정과-확률-품질">Large-K에서의 연결: Top-k 의사결정과 확률 품질</h5>
+<p>Large-K 추천/검색에서는 전체 확률분포가 꼭 필요하지 않고 Top-k 품질이 핵심인 경우가 많다. 이때는 Stage 1: retrieval(임베딩 + ANN)로 후보 회수, Stage 2: rerank로 정밀 점수화를 사용하며, <span dir="rtl">”</span>확률이 필요한 구간”은 보통 Stage 2 후보 집합 내부에서만 의미를 가진다.</p>
+<p>즉 실무에서는 전체 K에 대해 잘 보정된 확률이 필요한가?, 아니면 후보 내부에서의 점수/확률만 충분한가?를 먼저 결정해야 하며, 필요 시 후보 집합 \mathcal{C}_N(x)에 대해 조건부 softmax로 확률화하고 temperature scaling으로 보정하는 방식이 쓰인다.</p>
+<p>Calibration 운영 체크리스트(실전 4단계)</p>
+<p>1. 진단: reliability diagram으로 과신/과소신 구간을 먼저 확인 <br> 2. 수치화: ECE/Brier를 기록해 모델/버전 간 비교 가능하게 함 <br> 3. 보정: temperature scaling(기본), 필요 시 Platt/isotonic 적용 <br> 4. 정책 재튜닝: 보정 후 확률이 바뀌므로 임계값/Top-k/검토량 규칙을 다시 맞춤</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
