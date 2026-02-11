@@ -1,0 +1,944 @@
+---
+title: "MLDL 딥러닝 분류 - 사례분석"
+format: html
+---
+
+### 딥러닝 분류 사례분석
+
+#### 1. 희소성공 딥러닝 분류
+##### \(1) 데이터
+
+**데이터 불러오기**
+
+Credit Card Fraud(creditcard.csv) 데이터는 대표적인 이진 분류(surveillance / fraud detection) 벤치마크로, 한 건의 거래가 사기(Fraud) 인지 정상(Normal) 인지를 판정하는 문제를 다룬다. 
+
+반응변수는 Class 하나이며 보통 Class=0을 정상(negative), Class=1을 사기(positive)로 정의한다. 즉 목표는 각 거래 $P(Y=1∣X=x)$ 을 추정하고, 운영 목적(오탐/미탐 비용, 검토량 등)에 맞는 임계값 t를 정해 $\hat y =1{p(x)≥t}$ 형태로 의사결정을 내리는 것이다.
+
+데이터 규모는 284,807건의 거래로 구성되며, 총 31개 변수를 가진다. 이 중 Class가 타깃(y)이고 나머지 30개가 입력 변수(X) 다. 입력 변수는 Time, V1~V28, Amount로 이루어진다. 자료형 관점에서 입력 변수들은 대부분 연속형이며(실수형), Class만 정수형 라벨이다. 
+
+특히 V1~V28은 원래 거래 속성들을 그대로 제공한 것이 아니라, 개인정보 보호 및 비식별화를 위해 PCA(주성분 분석) 로 변환된 특징들이다. 따라서 각 $V_k$ 는 원변수들의 선형결합으로 얻어진 주성분 점수이며, 원래 변수의 해석 가능성은 제한된다. 
+
+반면 Time과 Amount는 비교적 직관적인 의미를 유지한다. Time은 기준 시점 이후의 경과 시간으로 시간대에 따른 패턴을 반영할 수 있고, Amount는 거래 금액으로서 사기 여부와 연관된 중요한 신호가 될 수 있다.
+
+이 데이터의 가장 결정적인 특성은 극심한 클래스 불균형(extreme class imbalance) 이다. 정상 거래(Class=0)는 284,315건으로 전체의 약 99.827%를 차지하는 반면, 사기 거래(Class=1)는 492건으로 약 0.173%에 불과하다. 
+
+이런 환경에서는 단순 정확도(Accuracy)가 쉽게 과대평가된다. 예를 들어 모든 거래를 정상으로만 예측해도 정확도는 약 99.8%에 달할 수 있으나, 이는 사기 탐지라는 목적을 전혀 달성하지 못한다. 따라서 실무적으로는 양성(사기) 탐지 성능을 직접 반영하는 지표, 예컨대 Precision–Recall(PR) 관점의 평가(AP 포함)나, 오탐을 일정 수준 이하로 제한하는 FPR 제약 기반 임계값 선택, 혹은 미탐(FN)과 오탐(FP)의 비용을 반영한 비용기반 임계값 설계가 핵심이 된다.
+
+```python
+!pip -q install kagglehub
+
+import kagglehub
+import pandas as pd
+import os
+
+# 데이터 다운로드 (캐시 경로 반환)
+path = kagglehub.dataset_download("mlg-ulb/creditcardfraud")
+print("downloaded to:", path)
+print(os.listdir(path)[:10])
+
+# CSV 로드
+df = pd.read_csv(os.path.join(path, "creditcard.csv"))
+
+print("shape:", df.shape)
+
+# 타깃
+y = df["Class"].astype(int)        # 1=Fraud(positive), 0=Normal
+X = df.drop(columns=["Class"])
+```
+
+**전처리**
+
+이 코드는 희귀 이벤트(사기 거래) 이진 분류 문제에서 학습과 평가가 왜곡되지 않도록 데이터 분리와 전처리를 누수 없이 일관되게 수행하기 위한 구성이다.
+
+먼저 train_test_split으로 전체 데이터를 학습용(train)과 테스트용(test)으로 분리하는 단계이다. 이때 stratify=y를 사용하여 사기(Class=1) 비율이 train과 test에 거의 동일하게 유지되도록 하는 방식이다. 사기 데이터는 전체에서 극히 적은 불균형 데이터이므로 stratify를 사용하지 않으면 테스트셋의 양성 비율이 우연에 의해 흔들리고, 그 결과 평가 지표가 불안정해질 가능성이 큰 구조이다. 출력된 Fraud rate가 train과 test에서 거의 같게 나타나는 것은 분리 과정이 의도대로 수행되었음을 보여주는 결과이다.
+
+다음은 ColumnTransformer를 이용한 전처리 정의 단계이다. 이 데이터의 V1~V28은 PCA 기반으로 변환된 수치 특성이므로 대체로 스케일이 유사한 형태로 제공되는 편이다. 반면 Amount와 Time은 원래 스케일을 유지하는 변수이므로 값의 범위가 상대적으로 크고 학습 안정성을 저해할 수 있는 요소이다. 따라서 cols_scale을 ["Amount", "Time"]으로 지정하고, 해당 두 컬럼에만 StandardScaler를 적용하여 평균 0, 표준편차 1로 표준화하는 구성이다. 나머지 컬럼은 remainder="passthrough"로 지정하여 변환 없이 그대로 통과시키는 방식이다. 이는 필요한 컬럼에만 최소 전처리를 적용하는 실무형 선택이다.
+
+전처리에서 가장 중요한 원칙은 데이터 누수 방지 원칙이다. 전처리 객체 preprocess는 학습 데이터에서만 fit을 수행해야 하며, 테스트 데이터에는 transform만 적용되어야 한다. fit_transform(X_train)은 train에서 평균과 표준편차 같은 통계량을 학습하고 동시에 변환하는 과정이다. transform(X_test)은 train에서 학습한 기준을 동일하게 test에 적용하는 과정이다. 만약 테스트 데이터까지 포함하여 스케일러를 fit해버리면 테스트 정보가 전처리 과정에 반영되는 누수 문제가 발생하고, 그 결과 성능이 과대평가되는 위험이 존재하는 구조이다.
+
+set_output(transform="pandas")를 사용할 수 있는 환경에서는 전처리 결과를 pandas DataFrame으로 받아 컬럼명을 보존하는 구성이다. 이때 feature_names는 변환 결과 DataFrame의 columns를 통해 그대로 확보되는 방식이다. 이후 딥러닝 모델 입력을 위해 to_numpy()로 넘파이 배열로 변환하여 X_train_scaled와 X_test_scaled를 생성하는 흐름이다. 만약 set_output이 지원되지 않는 환경이면 예외 처리로 넘어가며, 이 경우 ColumnTransformer의 출력은 보통 배열 형태이므로 feature_names는 직접 구성하게 된다. 이때 ColumnTransformer 특성상 변환된 컬럼(Amount, Time)이 앞쪽에 배치되고, remainder로 통과된 나머지 컬럼이 뒤에 이어지는 순서가 된다. 실제 출력에서 feature_names의 앞부분이 ['Amount', 'Time', 'V1', 'V2', 'V3'] 형태로 나타나는 것은 이러한 출력 순서를 반영한 결과이다.
+
+종합하면, 이 코드는 불균형 데이터에서 분포를 안정적으로 유지한 train/test 분리를 수행하고, Amount와 Time에만 표준화를 적용하며, 전처리의 fit을 train에만 고정함으로써 누수를 방지하고, 딥러닝 학습을 위한 배열과 특성 이름까지 일관되게 준비하는 전처리 파이프라인 구성이다.
+
+```python
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler
+
+# =========================
+# 0) Train/Test 분리 (불균형 유지)
+# =========================
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
+)
+
+print("Train shape:", X_train.shape, "Test shape:", X_test.shape)
+print("Fraud rate (train):", y_train.mean(), "Fraud rate (test):", y_test.mean())
+
+# =========================
+# 1) 전처리 파이프라인(누수 방지)
+#   - Time, Amount만 표준화
+#   - 나머지 컬럼(V1~V28)은 그대로 통과
+# =========================
+cols_scale = ["Amount", "Time"]
+
+preprocess = ColumnTransformer(
+    transformers=[
+        ("scale_time_amount", StandardScaler(), cols_scale),
+    ],
+    remainder="passthrough",              # 나머지 컬럼은 그대로
+    verbose_feature_names_out=False
+)
+
+# (선택) 가능하면 pandas로 출력되게 해서 feature_names를 안전하게 확보
+try:
+    preprocess.set_output(transform="pandas")
+    X_train_scaled_df = preprocess.fit_transform(X_train)   # train에만 fit
+    X_test_scaled_df  = preprocess.transform(X_test)        # test는 transform만
+
+    # Keras용 numpy 배열
+    X_train_scaled = X_train_scaled_df.to_numpy()
+    X_test_scaled  = X_test_scaled_df.to_numpy()
+
+    # 컬럼명 유지
+    feature_names = X_train_scaled_df.columns.tolist()
+
+except Exception:
+    # 구버전 sklearn 등으로 set_output이 없을 때 fallback
+    X_train_scaled = preprocess.fit_transform(X_train)      # train에만 fit
+    X_test_scaled  = preprocess.transform(X_test)           # test는 transform만
+
+    # ColumnTransformer는 스케일된 cols_scale이 앞쪽으로 오고, 나머지가 뒤로 붙습니다.
+    feature_names = cols_scale + [c for c in X_train.columns if c not in cols_scale]
+
+print("Scaled shapes:", X_train_scaled.shape, X_test_scaled.shape)
+print("First 5 feature names:", feature_names[:5])
+```
+
+Train shape: (227845, 30) Test shape: (56962, 30)
+<br>
+Fraud rate (train): 0.001729245759178389 Fraud rate (test): 0.0017204452090867595
+<br>
+Scaled shapes: (227845, 30) (56962, 30)
+<br>
+First 5 feature names: ['Amount', 'Time', 'V1', 'V2', 'V3']
+
+##### \(2) 딥러닝 분류
+
+**공통 준비 셀 (TensorFlow + seed + 가중치)**
+
+이 코드는 텐서플로 기반 딥러닝 학습을 시작하기 전에 재현성을 확보하고, 극단적 클래스 불균형 문제를 완화하기 위한 표본 가중치(sample weight)를 계산하는 준비 단계이다.
+
+먼저 numpy와 tensorflow, keras 및 layers를 임포트하는 부분이다. 이후 SEED=42를 정하고 np.random.seed(SEED), tf.random.set_seed(SEED)를 호출하는데, 이는 난수에 의존하는 연산(가중치 초기화, 미니배치 셔플, 드롭아웃 등)의 결과가 실행마다 달라지는 현상을 줄여 실험 재현성을 높이기 위한 설정이다. 완전한 재현성은 실행 환경이나 연산 커널에 따라 제한될 수 있으나, 일반적으로 이 두 줄은 실험 비교에 필요한 최소한의 고정 장치이다.
+
+다음은 클래스 불균형을 보정하기 위한 가중치 계산 단계이다. n_pos = int(y_train.sum())는 학습 데이터에서 양성 클래스(사기, y=1)의 개수를 의미한다. 라벨이 0과 1로 구성되어 있으므로 합(sum)은 1의 개수와 동일한 구조이다. n_neg = int(len(y_train) - n_pos)는 전체 학습 표본 수에서 양성 개수를 뺀 값이며, 음성 클래스(정상, y=0)의 개수이다.
+
+pos_weight = n_neg / max(n_pos, 1)는 양성 클래스에 부여할 가중치 비율을 계산하는 식이다. 음성 표본 수를 양성 표본 수로 나눈 값이므로, 양성이 매우 적을수록 pos_weight는 크게 증가하는 구조이다. 분모에 max(n_pos, 1)을 사용한 이유는 극단적으로 양성이 0개인 상황에서도 0으로 나누는 오류를 피하기 위한 방어적 처리이다.
+
+w_train = np.where(y_train == 1, pos_weight, 1.0)은 각 학습 표본마다 적용할 가중치 벡터를 만드는 과정이다. y_train이 1인 표본에는 pos_weight를 부여하고, y_train이 0인 표본에는 1.0을 부여하는 방식이다. 결과적으로 손실 함수 계산에서 양성 표본의 기여도가 pos_weight배 확대되는 효과가 발생한다. 이는 단순 정확도 중심으로는 양성을 거의 맞히지 못하는 불균형 데이터에서, 양성 검출(재현율) 성능을 끌어올리는 데에 자주 사용되는 방법이다.
+
+마지막 print 문은 n_pos, n_neg, pos_weight를 출력하여 가중치가 어느 정도로 설정되었는지 확인하기 위한 진단용 출력이다. 이후 모델 학습에서 model.fit(..., sample_weight=w_train) 형태로 w_train을 전달하면, 이 가중치가 배치 단위 손실 계산에 반영되는 구조이다.
+
+```python
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+SEED = 42
+np.random.seed(SEED)
+tf.random.set_seed(SEED)
+
+# class imbalance weight (positive upweight)
+n_pos = int(y_train.sum())
+n_neg = int(len(y_train) - n_pos)
+pos_weight = n_neg / max(n_pos, 1)
+w_train = np.where(y_train == 1, pos_weight, 1.0)
+
+print("n_pos:", n_pos, "n_neg:", n_neg, "pos_weight:", pos_weight)
+```
+
+시드(seed) 고정이 필요한 이유: 딥러닝 학습 과정에는 난수가 많이 들어간다(가중치 초기화, 미니배치 셔플, 드롭아웃 등). 시드를 고정하지 않으면 같은 코드라도 실행할 때마다 성능이 달라질 수 있다. 그러면 “이번 개선이 모델 구조 때문인지, 운이 좋았던 것인지”를 구분하기 어렵다. 그래서 시드 고정은 실험을 과학적으로 비교하기 위한 최소 조건이다.
+
+불균형 가중치(sample_weight)가 필요한 이유: 이 데이터는 사기 비율이 약 0.17% 수준이라서, 가중치를 주지 않으면 모델이 학습 초기에 “거의 전부 0(정상)”으로 예측해도 손실이 크게 줄어드는 방향으로 빠지기 쉽다. 즉, 사기를 맞히는 방향으로 학습 신호가 약해지는 구조이다.
+
+표본가중치는 양성(사기) 샘플의 손실을 크게 만들어서, 사기를 틀렸을 때 패널티가 커지고 그 결과 모델이 사기를 구분하는 특징을 더 적극적으로 학습하게 된다 이때 pos_weight = n_neg / n_pos는 “양성 1개가 음성 몇 개에 해당하는가”를 맞춰주는 대표적인 균형화 방식이다. 지금 출력된 값이 약 577이면, 사기 1건을 정상 약 577건 정도의 중요도로 보도록 설정한 셈이다.
+
+이 방식의 성격과 한계: \(장점) 구현이 단순하고, PR-AUC/Recall 같은 지표가 개선되는 경우가 많다. \(한계) 가중치가 너무 크면 확률이 과대추정되거나(캘리브레이션 문제), FP가 증가할 수 있다 그래서 운영에서는 임계값(threshold) 정책(Top-K, 정밀도 제약 등)과 같이 튜닝하는 편이다
+
+n_pos: 394 n_neg: 227451 pos_weight: 577.2868020304569
+
+**MLP + 가중 BCE (권장 메인)**
+
+이 코드는 극단적 불균형(사기 비율이 매우 낮은) 이진 분류 문제에서, 다층퍼셉트론(MLP)을 구성하고 가중 손실을 적용하여 학습한 뒤 테스트 데이터에 대한 예측 확률을 생성하는 흐름이다.
+
+먼저 build_mlp(input_dim) 함수는 입력 특성 수(input_dim)를 받아 MLP 모델을 정의하는 함수이다. 입력층은 keras.Input(shape=(input_dim,))로 설정되어 있으며, 각 샘플이 길이 input_dim인 1차원 벡터임을 의미한다. 이후 Dense(64, activation="relu") 층이 첫 번째 은닉층으로 배치되어 64차원 표현을 학습하도록 구성되어 있다. 그 다음 Dropout(0.2)이 적용되는데, 학습 시 은닉 유닛의 일부를 확률적으로 비활성화하여 과적합을 완화하는 정규화 기법이다. 두 번째 은닉층은 Dense(32, activation="relu")로 32차원 표현을 추가로 학습하도록 구성되어 있으며, 다시 Dropout(0.2)으로 정규화를 한 번 더 적용한다. 출력층은 Dense(1, activation="sigmoid")로 정의되며, 시그모이드 활성화의 출력은 0과 1 사이의 값이므로 각 거래가 사기일 확률로 해석되는 점수(score)를 생성하는 구조이다. 마지막으로 keras.Model(inputs, outputs)를 반환하여 입력에서 출력까지의 계산 그래프를 하나의 모델 객체로 만든다.
+
+mlp_bce = build_mlp(X_train_scaled.shape[1])는 전처리된 학습 데이터의 열 개수(특성 수)를 입력 차원으로 사용하여 모델을 실제로 생성하는 단계이다. 이어지는 compile 단계는 학습을 위한 최적화 설정과 손실함수 및 평가 지표를 지정하는 단계이다. optimizer는 Adam(1e-3)로 지정되어 있으며, 이는 학습률 0.001의 Adam 최적화 알고리즘으로 가중치를 갱신한다는 의미이다. loss는 BinaryCrossentropy로 지정되어 이진 분류에 표준적으로 사용하는 로그 손실을 최소화하도록 학습된다. metrics에는 AUC(curve="ROC")와 AUC(curve="PR")가 포함되어 있는데, 불균형 데이터에서는 ROC-AUC뿐 아니라 PR-AUC가 모델의 양성(사기) 분별력을 더 직접적으로 반영하는 경우가 많기 때문에 두 지표를 함께 모니터링하는 구성이다.
+
+cb에 포함된 EarlyStopping 콜백은 검증 지표가 개선되지 않을 때 학습을 조기에 종료하기 위한 장치이다. monitor="val_pr_auc"와 mode="max"는 검증 PR-AUC가 최대가 되도록 학습을 진행하며, 이 값이 더 이상 개선되지 않으면 멈추도록 설정한 것이다. patience=3은 연속 3 epoch 동안 개선이 없을 때 종료한다는 의미이며, restore_best_weights=True는 학습이 종료된 시점의 가중치가 아니라 검증 PR-AUC가 가장 높았던 시점의 가중치를 복원하도록 하는 설정이다. 이 설정은 불필요한 과적합 구간에 진입한 뒤의 가중치를 남기지 않기 위한 목적이다.
+
+hist_bce = mlp_bce.fit(...)는 실제 학습 수행 단계이다. 입력은 X_train_scaled와 y_train이며, sample_weight=w_train이 핵심 설정이다. w_train은 양성 샘플의 손실 기여도를 크게 만들어 불균형으로 인해 모델이 정상(0)만 예측하는 방향으로 수렴하는 현상을 완화하는 목적이다. validation_split=0.2는 학습 데이터의 일부(20%)를 내부 검증용으로 떼어 검증 지표를 계산하는 방식이다. epochs=20은 최대 20번의 epoch을 수행하되, EarlyStopping 조건이 만족되면 더 일찍 종료되는 구조이다. batch_size=2048은 한 번의 가중치 업데이트에 사용하는 미니배치 크기이며, 데이터가 큰 경우 학습 속도와 안정성을 고려한 비교적 큰 배치 설정이다.
+
+학습이 끝난 뒤 p_test_bce = mlp_bce.predict(X_test_scaled, batch_size=8192).ravel()는 테스트 데이터에 대한 예측을 수행하는 단계이다. predict의 출력은 각 샘플에 대한 시그모이드 확률이므로 사기일 가능성 점수로 사용된다. batch_size=8192는 예측 시 계산 효율을 위해 더 큰 배치를 사용한 설정이다. ravel()은 (N, 1) 형태의 출력을 (N,) 형태의 1차원 배열로 펴서 이후 평가 코드에서 다루기 쉽게 만드는 처리이다. 마지막 print는 예측 확률의 앞부분 몇 개를 출력하여 값의 범위와 형태가 정상인지 확인하는 점검 단계이다.
+
+정리하면 이 코드는 MLP 구조를 정의하고, 이진 교차엔트로피 손실과 AUC 지표를 기준으로 학습하며, 불균형을 sample_weight로 보정하고, 검증 PR-AUC를 기준으로 조기 종료한 뒤 테스트셋 확률 점수를 생성하는 전형적인 불균형 이진 분류 학습 파이프라인이다.
+
+```python
+def build_mlp(input_dim):
+    inputs = keras.Input(shape=(input_dim,))
+    x = layers.Dense(64, activation="relu")(inputs)
+    x = layers.Dropout(0.2)(x)
+    x = layers.Dense(32, activation="relu")(x)
+    x = layers.Dropout(0.2)(x)
+    outputs = layers.Dense(1, activation="sigmoid")(x)
+    return keras.Model(inputs, outputs)
+
+mlp_bce = build_mlp(X_train_scaled.shape[1])
+mlp_bce.compile(
+    optimizer=keras.optimizers.Adam(1e-3),
+    loss=keras.losses.BinaryCrossentropy(),
+    metrics=[keras.metrics.AUC(curve="ROC", name="roc_auc"),
+             keras.metrics.AUC(curve="PR",  name="pr_auc")]
+)
+
+cb = [
+    keras.callbacks.EarlyStopping(monitor="val_pr_auc", mode="max",
+                                  patience=3, restore_best_weights=True)
+]
+
+hist_bce = mlp_bce.fit(
+    X_train_scaled, y_train,
+    sample_weight=w_train,
+    validation_split=0.2,
+    epochs=20,
+    batch_size=2048,
+    callbacks=cb,
+    verbose=1
+)
+
+p_test_bce = mlp_bce.predict(X_test_scaled, batch_size=8192).ravel()
+print("p_test_bce:", p_test_bce[:5])
+```
+
+**MLP + Focal Loss (불균형에서 recall 밀 때 자주 유리)**
+
+이 코드는 불균형 이진 분류에서 자주 사용하는 focal loss를 직접 정의하고, 동일한 MLP 구조에 focal loss를 적용하여 학습한 뒤 테스트 데이터에 대한 예측 확률을 생성하는 과정이다.
+
+먼저 binary_focal_loss(gamma=2.0, alpha=0.25)는 focal loss 함수를 반환하는 팩토리 함수이다. gamma와 alpha는 focal loss의 두 하이퍼파라미터이며, gamma는 쉬운 샘플의 기여도를 줄이는 정도를 결정하고 alpha는 클래스 불균형을 완화하기 위한 클래스 가중 역할을 한다. 내부의 loss(y_true, y_pred)는 케라스가 배치 단위로 호출하는 실제 손실 계산 함수이다.
+
+loss 함수에서 y_true를 float32로 변환하는 이유는 이후 연산을 텐서플로 타입으로 안정적으로 처리하기 위함이다. eps = tf.keras.backend.epsilon()를 사용하고 y_pred를 [eps, 1-eps] 범위로 clip하는 이유는 log(pt) 계산에서 0 또는 1이 들어가면 로그가 발산하거나 수치 문제가 생기는 것을 방지하기 위한 처리이다.
+
+그 다음 pt를 정의하는 부분은 focal loss의 핵심이다. pt는 정답 클래스에 대해 모델이 부여한 확률을 의미한다. y_true가 1이면 pt는 y_pred가 되고, y_true가 0이면 pt는 1 - y_pred가 된다. 즉, 모델이 정답을 맞힐수록 pt가 커지고, 틀릴수록 pt가 작아지는 구조이다. w는 alpha를 이용한 클래스 가중치이다. y_true가 1이면 alpha를, y_true가 0이면 1-alpha를 사용하여 양성과 음성의 손실 비중을 조절하는 구성이다.
+
+반환식인 -mean(w * (1-pt)^gamma * log(pt))가 focal loss의 형태이다. log(pt)는 이진 교차엔트로피의 기본 형태이며, (1-pt)^gamma가 추가되어 있다. 이 항은 pt가 큰 쉬운 샘플에서는 (1-pt)가 작아져 손실 기여가 급격히 줄어들고, pt가 작은 어려운 샘플에서는 (1-pt)가 커져 손실 기여가 상대적으로 유지되도록 만드는 역할이다. 결과적으로 모델이 다수의 쉬운 정상 거래에 과도하게 끌려가지 않고, 소수이면서 어려운 사기 거래를 더 집중적으로 학습하도록 유도하는 손실 함수이다.
+
+이후 mlp_focal = build_mlp(...)는 앞에서 정의한 동일한 MLP 구조를 생성하는 부분이다. compile 단계에서 optimizer는 Adam(1e-3)로 설정되어 있으며, loss에 binary_focal_loss(gamma=2.0, alpha=0.25)를 지정하여 학습 목표를 focal loss 최소화로 바꾸는 구성이다. metrics에는 roc_auc와 pr_auc를 함께 두어 ROC 관점과 PR 관점을 동시에 모니터링하도록 한 설정이다. 특히 불균형 문제에서는 PR-AUC가 성능 변화를 더 민감하게 반영하는 경우가 많다.
+
+콜백 cb는 EarlyStopping으로 구성되어 있으며, 검증 PR-AUC(val_pr_auc)를 기준으로 성능이 더 이상 좋아지지 않으면 학습을 중단하는 방식이다. patience=3은 3 epoch 동안 개선이 없으면 중단한다는 의미이며, restore_best_weights=True는 검증 PR-AUC가 최고였던 시점의 가중치를 복원하는 설정이다. 이는 과적합 구간에 들어간 뒤의 가중치를 남기지 않기 위한 목적이다.
+
+hist_focal = mlp_focal.fit(...)는 실제 학습 단계이다. validation_split=0.2로 학습 데이터 일부를 검증에 사용하며, epochs=20은 최대 반복 횟수이다. batch_size=2048은 미니배치 크기이다. 앞선 가중 BCE 버전과 달리 여기서는 sample_weight를 따로 주지 않는데, focal loss 자체가 alpha와 (1-pt)^gamma 항을 통해 불균형과 쉬운 샘플 지배 문제를 완화하도록 설계된 손실이기 때문이다. 다만 필요하면 focal loss와 sample_weight를 함께 쓰는 구성도 가능하나, 보통은 한 가지 전략을 중심으로 비교하는 편이 깔끔하다.
+
+마지막으로 p_test_focal = mlp_focal.predict(...).ravel()는 테스트 데이터에 대한 예측을 수행하는 단계이다. 출력은 시그모이드 확률이므로 각 거래가 사기일 가능성 점수로 해석된다. ravel()은 (N,1) 형태를 (N,) 형태로 펼쳐 이후 평가 코드에서 다루기 쉽게 만드는 처리이다. print 문은 예측 값이 정상적으로 생성되었는지 앞부분 몇 개를 확인하는 점검 단계이다.
+
+```python
+def binary_focal_loss(gamma=2.0, alpha=0.25):
+    # y_true, y_pred in [0,1]
+    def loss(y_true, y_pred):
+        y_true = tf.cast(y_true, tf.float32)
+        eps = tf.keras.backend.epsilon()
+        y_pred = tf.clip_by_value(y_pred, eps, 1.0 - eps)
+
+        pt = tf.where(tf.equal(y_true, 1.0), y_pred, 1.0 - y_pred)
+        w  = tf.where(tf.equal(y_true, 1.0), alpha, 1.0 - alpha)
+
+        return -tf.reduce_mean(w * tf.pow(1.0 - pt, gamma) * tf.math.log(pt))
+    return loss
+
+mlp_focal = build_mlp(X_train_scaled.shape[1])
+mlp_focal.compile(
+    optimizer=keras.optimizers.Adam(1e-3),
+    loss=binary_focal_loss(gamma=2.0, alpha=0.25),
+    metrics=[keras.metrics.AUC(curve="ROC", name="roc_auc"),
+             keras.metrics.AUC(curve="PR",  name="pr_auc")]
+)
+
+cb = [
+    keras.callbacks.EarlyStopping(monitor="val_pr_auc", mode="max",
+                                  patience=3, restore_best_weights=True)
+]
+
+hist_focal = mlp_focal.fit(
+    X_train_scaled, y_train,
+    validation_split=0.2,
+    epochs=20,
+    batch_size=2048,
+    callbacks=cb,
+    verbose=1
+)
+
+p_test_focal = mlp_focal.predict(X_test_scaled, batch_size=8192).ravel()
+print("p_test_focal:", p_test_focal[:5])
+```
+
+**오토인코더(Anomaly Detection) — 정상만으로 학습 후 재구성오차로 점수화**
+
+이 코드는 오토인코더(autoencoder)를 이용한 이상탐지(anomaly detection) 방식으로, 정상 거래만을 사용해 재구성 모델을 학습하고 테스트 데이터의 재구성 오차를 이상 점수로 계산하는 절차이다.
+
+첫 줄에서 X_train_norm = X_train_scaled[y_train == 0]을 통해 학습 데이터 중 정상 클래스(0)만 추출하는 단계이다. 이는 오토인코더가 정상 패턴을 잘 재구성하도록 학습시키고, 정상과 다른 패턴(사기)이 들어오면 재구성 오차가 커지도록 만드는 전형적인 정상기반(one-class) 학습 전략이다. 이어지는 출력은 정상 학습 샘플 수와 입력 차원(특성 수)이 의도대로 구성되었는지 확인하는 점검용 출력이다.
+
+build_autoencoder(input_dim) 함수는 입력 차원 input_dim을 받아 오토인코더 모델을 정의하는 부분이다. 입력층은 keras.Input(shape=(input_dim,))로 설정되어 있으며, 각 샘플이 길이 input_dim인 1차원 벡터임을 의미한다. 이후 Dense(32)와 Dense(16) 층은 인코더 역할을 하며 입력을 점차 저차원 표현으로 압축하는 구조이다. z = Dense(8) 층은 병목(bottleneck) 또는 잠재벡터(latent representation)에 해당하며, 정상 데이터의 핵심 구조를 8차원으로 요약한 표현을 학습하는 단계이다. 그 다음 Dense(16), Dense(32) 층은 디코더 역할을 하며 잠재벡터에서 원래 차원으로 다시 복원하는 과정이다. 마지막 출력층 Dense(input_dim, activation=None)은 입력과 동일한 차원의 재구성 벡터를 생성하는 층이며, activation=None은 선형 출력이므로 입력값의 연속적인 재구성에 적합한 설정이다.
+
+ae = build_autoencoder(X_train_scaled.shape[1])는 특성 수를 입력 차원으로 사용하여 오토인코더를 생성하는 단계이다. compile에서는 optimizer를 Adam(1e-3)로 지정하고 loss를 "mse"로 지정한다. 여기서 mse는 입력과 출력(재구성)의 평균제곱오차를 최소화하도록 학습한다는 의미이며, 오토인코더 학습에 가장 기본적으로 사용되는 손실 함수이다.
+
+EarlyStopping 콜백은 검증 손실(val_loss)을 기준으로 학습을 조기에 종료하는 장치이다. monitor="val_loss", mode="min"은 검증 MSE가 작아지는 방향으로 학습을 진행하되 개선이 멈추면 중단한다는 의미이다. patience=3은 3 epoch 연속 개선이 없을 때 종료한다는 설정이며, restore_best_weights=True는 검증 손실이 가장 낮았던 시점의 가중치를 복원하여 과적합 구간의 가중치가 남지 않도록 하는 설정이다.
+
+hist_ae = ae.fit(X_train_norm, X_train_norm, ...)는 학습 수행 단계이다. 오토인코더는 입력을 자기 자신으로 재구성하는 모델이므로 입력과 타깃이 동일하게 X_train_norm으로 들어간다. validation_split=0.2는 정상 학습 데이터 중 일부를 검증용으로 분리해 조기 종료 기준을 계산하기 위한 설정이다. epochs=30은 최대 30번 반복 학습을 허용하되 조기 종료 조건이 만족되면 더 일찍 끝나는 구조이다. batch_size=2048은 한 번의 업데이트에 사용하는 배치 크기이며, 데이터가 큰 상황에서 효율을 고려한 큰 배치 설정이다.
+
+학습 후 Xhat_test = ae.predict(X_test_scaled, ...)는 테스트 데이터를 오토인코더로 재구성한 결과를 얻는 단계이다. 이어서 score_test_ae = np.mean((X_test_scaled - Xhat_test)**2, axis=1)은 각 샘플별 재구성 오차를 계산하는 부분이다. (X - Xhat)의 제곱오차를 특성 축(axis=1)으로 평균내므로 샘플마다 하나의 스칼라 점수가 생성된다. 이 점수는 클수록 입력을 정상 패턴으로 재구성하기 어려웠다는 의미이므로 이상(anomaly) 가능성이 높다고 해석하는 점수이다. 마지막 출력은 계산된 이상 점수가 정상적으로 생성되었는지 확인하기 위한 점검용 출력이다.
+
+정리하면 이 코드는 정상 데이터로만 오토인코더를 학습시키고, 테스트 샘플의 재구성 오차를 이상 점수로 변환하여 이후 단계에서 임계값 기준(Top-K, 비용 기반, 정밀도 제약 등)으로 사기 의심 거래를 선별할 수 있도록 준비하는 코드이다.
+
+```python
+# 정상 데이터만으로 학습
+X_train_norm = X_train_scaled[y_train == 0]
+print("AE train normals:", X_train_norm.shape)
+
+def build_autoencoder(input_dim):
+    inputs = keras.Input(shape=(input_dim,))
+    x = layers.Dense(32, activation="relu")(inputs)
+    x = layers.Dense(16, activation="relu")(x)
+    z = layers.Dense(8, activation="relu")(x)
+    x = layers.Dense(16, activation="relu")(z)
+    x = layers.Dense(32, activation="relu")(x)
+    outputs = layers.Dense(input_dim, activation=None)(x)
+    return keras.Model(inputs, outputs)
+
+ae = build_autoencoder(X_train_scaled.shape[1])
+ae.compile(optimizer=keras.optimizers.Adam(1e-3), loss="mse")
+
+cb = [
+    keras.callbacks.EarlyStopping(monitor="val_loss", mode="min",
+                                  patience=3, restore_best_weights=True)
+]
+
+hist_ae = ae.fit(
+    X_train_norm, X_train_norm,
+    validation_split=0.2,
+    epochs=30,
+    batch_size=2048,
+    callbacks=cb,
+    verbose=1
+)
+
+# 재구성 오차를 anomaly score로 사용
+Xhat_test = ae.predict(X_test_scaled, batch_size=8192)
+score_test_ae = np.mean((X_test_scaled - Xhat_test)**2, axis=1)  # MSE per sample
+
+print("score_test_ae:", score_test_ae[:5])
+```
+##### \(3) 평가 지표 “세 방법 공통 비교표” 코드
+
+이 코드는 세 가지 모델이 만든 점수(score)를 동일한 기준으로 비교하기 위해 공통 평가 지표를 계산하고, 결과를 표 형태의 DataFrame으로 정리하는 평가 셀이다. 여기서 score는 분류모델의 경우 사기 확률 p이며, 오토인코더의 경우 재구성오차로서 값이 클수록 사기 의심이 큰 점수이다.
+
+먼저 roc_auc_score, average_precision_score, precision_recall_curve를 불러와 ROC-AUC, PR-AUC(AP), 그리고 정밀도-재현율 곡선을 기반으로 한 임계값 관련 계산을 수행할 준비를 한다. 이후 precision_recall_at_k 함수는 운영에서 자주 쓰는 상위 K건 선별 정책을 모사하기 위한 함수이다. 점수를 내림차순으로 정렬한 뒤 상위 K개의 인덱스를 선택하고, 그 안에 포함된 실제 양성(사기) 건수의 합을 TP로 간주하여 Precision@K와 Recall@K를 계산한다. Precision@K는 상위 K건 중 실제 사기 비율이며, Recall@K는 전체 사기 중 상위 K에 포함된 비율이다.
+
+recall_at_precision 함수는 정밀도 하한을 만족하는 조건에서 가능한 최대 재현율을 계산하는 함수이다. precision_recall_curve로 얻은 정밀도 배열과 재현율 배열을 사용하여 precision이 target_precision 이상인 구간을 찾고, 그 구간에서 재현율의 최댓값을 반환한다. 해당 조건을 만족하는 구간이 없으면 값이 존재하지 않으므로 NaN을 반환하도록 구성되어 있다. 이 함수는 현업에서 정밀도 목표를 먼저 고정한 뒤 회수율을 최대화하는 정책을 수치로 요약할 때 유용하다.
+
+eval_scores 함수는 하나의 모델 점수에 대해 여러 지표를 한 번에 계산해 딕셔너리로 반환하는 래퍼 함수이다. 입력으로 모델 이름, 정답 라벨, 점수를 받고, ROC-AUC와 PR-AUC(AP)을 기본 지표로 계산한다. 또한 Recall@Prec≥p0 형태의 지표를 추가하여 정밀도 제약 하에서의 최대 재현율을 함께 기록한다. 이어서 k_list에 포함된 각 K에 대해 Precision@K와 Recall@K를 계산해 결과 딕셔너리에 추가한다. 결과적으로 한 모델에 대해 임계값이 없는 순위 기반 지표와 운영 정책 기반 지표를 동시에 확보하는 구성이다.
+
+마지막 부분은 세 모델의 점수를 results 리스트에 모아 평가하는 단계이다. MLP 기반 두 분류 모델은 테스트에서 나온 확률 점수 p_test_bce, p_test_focal을 그대로 score로 사용한다. 오토인코더는 테스트 샘플별 재구성오차 score_test_ae를 score로 사용하며, 값이 클수록 이상 거래로 간주되는 방향이므로 별도의 부호 변환 없이 그대로 비교에 넣는 구조이다. 이렇게 생성된 results를 DataFrame으로 변환해 df_metrics를 만들고, PR-AUC(AP) 기준으로 내림차순 정렬하여 실무적으로 중요한 불균형 성능 관점에서 상위 모델이 위로 오도록 한다. 이후 df_metrics_rounded는 가독성을 위해 model 컬럼을 제외한 모든 수치형 지표를 소수 넷째 자리로 반올림한 표이며, 최종적으로 이 표가 화면에 출력되도록 구성되어 있다.
+
+```python
+import numpy as np
+import pandas as pd
+
+from sklearn.metrics import (
+    roc_auc_score, average_precision_score,
+    precision_recall_curve
+)
+
+def precision_recall_at_k(y_true, score, k):
+    """
+    상위 K개를 양성(사기)으로 보내는 정책에서
+    Precision@K, Recall@K 계산
+    """
+    y_true = np.asarray(y_true).astype(int)
+    score = np.asarray(score)
+
+    k = int(min(k, len(score)))
+    idx = np.argsort(-score)[:k]
+    tp = y_true[idx].sum()
+    prec_k = tp / max(k, 1)
+    rec_k  = tp / max(y_true.sum(), 1)
+    return prec_k, rec_k
+
+def recall_at_precision(y_true, score, target_precision=0.80):
+    """
+    Precision >= target_precision 을 만족하는 구간 중
+    Recall의 최대값(가능하면) 반환
+    """
+    y_true = np.asarray(y_true).astype(int)
+    score = np.asarray(score)
+
+    prec, rec, thr = precision_recall_curve(y_true, score)
+    mask = prec >= target_precision
+    if mask.any():
+        return float(np.max(rec[mask]))
+    return np.nan
+
+def eval_scores(name, y_true, score, k_list=(100, 200, 500), target_precision=0.80):
+    """
+    공통 지표:
+    - ROC-AUC
+    - PR-AUC(AP)
+    - Precision@K / Recall@K (Top-K 운영 정책)
+    - Recall @ Precision>=p0 (정밀도 제약 하에서 회수율)
+    """
+    y_true = np.asarray(y_true).astype(int)
+    score = np.asarray(score)
+
+    out = {
+        "model": name,
+        "ROC-AUC": roc_auc_score(y_true, score),
+        "PR-AUC(AP)": average_precision_score(y_true, score),
+        f"Recall@Prec≥{target_precision:.2f}": recall_at_precision(y_true, score, target_precision)
+    }
+
+    for k in k_list:
+        pk, rk = precision_recall_at_k(y_true, score, k)
+        out[f"P@{k}"] = pk
+        out[f"R@{k}"] = rk
+
+    return out
+
+# -----------------------------
+# 세 방법 스코어 정리
+# - 분류모델: 확률 p가 score
+# - 오토인코더: 재구성오차(score_test_ae)가 score (클수록 사기 의심)
+# -----------------------------
+results = []
+results.append(eval_scores("MLP + weighted BCE", y_test, p_test_bce))
+results.append(eval_scores("MLP + focal loss",  y_test, p_test_focal))
+results.append(eval_scores("Autoencoder (recon error)", y_test, score_test_ae))
+
+df_metrics = pd.DataFrame(results)
+
+# 보기 좋게 정렬/반올림
+df_metrics = df_metrics.sort_values("PR-AUC(AP)", ascending=False)
+df_metrics_rounded = df_metrics.copy()
+for c in df_metrics.columns:
+    if c != "model":
+        df_metrics_rounded[c] = df_metrics_rounded[c].astype(float).round(4)
+
+df_metrics_rounded
+```
+세 가지 방법의 성능 비교 결과는 MLP + focal loss가 전반적으로 가장 우수한 방법으로 나타난 결과이다. ROC-AUC는 MLP + focal loss가 0.9857로 가장 높고, MLP + weighted BCE가 0.9795로 그 다음이며, 오토인코더(재구성오차)는 0.9475로 상대적으로 낮은 수준이다. 다만 이 문제는 극단적 불균형 데이터이므로 ROC-AUC보다 PR-AUC(AP)와 운영 지표가 더 중요한 상황이다.
+
+PR-AUC(AP) 기준으로는 MLP + focal loss가 0.8303으로 가장 높고, MLP + weighted BCE가 0.6584로 중간 수준이며, 오토인코더가 0.5902로 가장 낮다. 이는 사기 거래처럼 양성이 희귀한 환경에서 focal loss가 양성 표본의 학습 신호를 더 잘 살려 정밀도-재현율 관점의 성능을 크게 끌어올린 결과로 해석되는 결과이다.
+
+정밀도 제약 조건을 둔 지표인 Recall@Prec≥0.80에서도 focal loss가 0.8163으로 가장 높다. weighted BCE는 같은 정밀도 조건에서 재현율이 0.6837에 그치며, 오토인코더는 0.1531로 매우 낮아 정밀도 0.80을 유지하면서 사기를 충분히 회수하기 어려운 방법으로 나타난 결과이다. 즉 “정밀도 0.80 이상을 반드시 유지해야 한다”는 운영 조건에서는 focal loss가 사실상 유일하게 높은 재현율을 확보하는 방법으로 보이는 결과이다.
+
+Top-K 운영 정책 관점에서도 focal loss가 우세한 경향이다. 상위 100건을 조사하는 정책에서 focal loss는 P@100=0.80, R@100=0.8163을 보이며, weighted BCE는 P@100=0.73, R@100=0.7449이고, 오토인코더는 P@100=0.62, R@100=0.6327이다. 상위 200건 정책에서는 focal loss가 P@200=0.435, R@200=0.8878이고, weighted BCE가 P@200=0.430, R@200=0.8776이며, 오토인코더가 P@200=0.400, R@200=0.8163으로 나타난다. 상위 500건 정책에서도 focal loss가 P@500=0.178, R@500=0.9082로 가장 높은 재현율을 보이며, weighted BCE는 P@500=0.174, R@500=0.8878이고, 오토인코더는 P@500=0.160, R@500=0.8163이다. 조사 물량이 커질수록 세 방법 모두 정밀도는 낮아지지만, 같은 조사 물량에서 focal loss가 더 많은 사기 거래를 회수하는 구조로 나타난 결과이다.
+
+종합하면 본 실험의 결과는 MLP + focal loss가 PR-AUC, 정밀도 제약 하 재현율, Top-K 회수율에서 일관되게 가장 우수한 방법이며, MLP + weighted BCE가 그 다음 대안이고, 오토인코더 기반 방법은 레이블이 없는 상황에서는 의미가 있으나 레이블이 있는 감독학습 설정에서는 성능이 가장 낮게 나타난 결과이다.
+
+```text
+model	ROC-AUC	PR-AUC(AP)	Recall@Prec≥0.80	P@100	R@100	P@200	R@200	P@500	R@500
+1	MLP + focal loss	0.9857	0.8303	0.8163	0.80	0.8163	0.435	0.8878	0.178	0.9082
+0	MLP + weighted BCE	0.9795	0.6584	0.6837	0.73	0.7449	0.430	0.8776	0.174	0.8878
+2	Autoencoder (recon error)	0.9475	0.5902	0.1531	0.62	0.6327	0.400	0.8163	0.160	0.8163
+```
+
+##### \(4) 임계값에서, 위 비교표 결과를 바탕으로
+
+이 코드는 세 가지 모델이 만든 점수(score)를 입력으로 받아, 운영에서 자주 쓰는 세 가지 임계값 정책을 동일한 형식으로 평가하고 그 결과를 df_thr라는 표로 정리하는 코드이다. 여기서 score는 값이 클수록 사기(양성)일 가능성이 큰 점수라고 가정하며, 분류모델은 예측확률 p를, 오토인코더는 재구성오차를 그대로 score로 사용한다.
+
+처음의 import 구문은 임계값 기반 분류 결과를 평가하기 위해 필요한 함수들을 불러오는 부분이다. confusion_matrix는 임계값을 적용해 만든 예측값과 실제값을 비교하여 TN, FP, FN, TP를 계산하는 데 사용되고, precision_recall_curve는 점수의 임계값을 변화시키며 정밀도와 재현율의 관계를 계산하는 데 사용된다.
+
+eval_threshold 함수는 임계값 thr을 고정했을 때의 혼동행렬과 주요 지표를 계산하는 공통 평가 함수이다. positive_if 인자는 점수와 임계값의 비교 방향을 의미하며, 기본값 "ge"는 score가 thr 이상이면 양성으로 예측한다는 규칙이다. 이 규칙으로 y_pred를 만든 뒤 confusion_matrix로 tn, fp, fn, tp를 얻고, precision, recall, fpr을 계산한다. precision은 TP/(TP+FP), recall은 TP/(TP+FN), fpr은 FP/(FP+TN)으로 정의되며, pred_pos는 모델이 양성으로 예측한 전체 건수(TP+FP)이다. 분모에 1e-12를 더하는 처리는 0으로 나누는 수치 오류를 방지하기 위한 안전장치이다.
+
+find_topk_threshold 함수는 Top-K 운영 정책을 임계값으로 변환하는 함수이다. 점수를 내림차순으로 정렬했을 때 K번째에 위치한 점수를 임계값으로 선택한다. 이 임계값을 사용하면 점수가 그 이상인 샘플이 대략 K개 수준으로 양성 판정을 받게 되어, 조사 가능 물량이 K건으로 고정된 상황을 모사하는 방식이다. K가 데이터 길이를 넘지 않도록 min(k, len(score))로 보정하는 처리가 포함된다.
+
+find_cost_threshold 함수는 비용 기반 정책의 임계값을 찾는 함수이다. 비용은 cFN·FN + cFP·FP로 정의되어 있으며, 놓침(FN)의 비용과 오경보(FP)의 비용을 상대적으로 반영한다. 임계값 후보는 score의 분위수(quantile) 그리드에서 생성되며, grid_q 개의 분위수 값을 계산한 뒤 중복을 제거해 cand를 만든다. 각 후보 임계값마다 eval_threshold로 FN과 FP를 얻고 비용을 계산하여, 비용이 최소가 되는 임계값과 그때의 혼동행렬 및 지표를 best로 반환한다. 이 방식은 모든 가능한 임계값을 완전탐색하지 않고도 점수 분포를 대표하는 후보들에서 효율적으로 근사 최적 임계값을 찾는 구조이다.
+
+find_precision_constrained_threshold 함수는 정밀도 하한 p0를 만족하면서 재현율을 최대화하는 임계값을 찾는 함수이다. precision_recall_curve는 점수 임계값을 변화시키며 precision과 recall을 계산하지만, 반환되는 thr 배열의 길이는 prec, rec보다 하나 짧은 형태이다. 따라서 thr의 길이를 맞추기 위해 thr에 1.0을 추가하여 배열 길이를 정렬한다. 이후 precision이 p0 이상인 지점(mask)을 찾고, 가능한 지점이 하나라도 있으면 그중 recall이 최대가 되는 지점을 선택한다. 선택된 임계값으로 eval_threshold를 다시 수행해 실제 혼동행렬과 지표를 계산한 뒤 반환한다. p0를 만족하는 지점이 전혀 없으면 불가능하다고 보고 None을 반환한다.
+
+이후 scores 리스트는 평가 대상 모델과 해당 모델의 점수 배열을 묶어 둔 입력 구성이다. K, cFN·cFP, p0는 각각 Top-K 정책의 검토량, 비용 기반 정책의 비용 비율, 정밀도 제약 정책의 목표 정밀도를 지정하는 설정값이다. for 루프는 각 모델에 대해 세 정책을 차례대로 적용한다. Top-K 정책에서는 find_topk_threshold로 임계값을 구하고 eval_threshold로 성능을 계산한다. 비용 정책에서는 find_cost_threshold로 비용 최소 임계값과 성능을 얻는다. 정밀도 제약 정책에서는 find_precision_constrained_threshold로 임계값을 찾고, 불가능한 경우에는 NaN으로 채운 더미 결과를 만들어 정책이 infeasible임을 표시한다. 각 결과에는 model 이름과 policy 설명을 추가하여, 나중에 한 표로 합쳤을 때 어떤 모델의 어떤 정책 결과인지 식별 가능하게 만든다.
+
+마지막으로 rows에 누적된 결과를 DataFrame으로 변환해 df_thr를 만들고, 화면에 보여줄 컬럼(show_cols)만 선택해 정리한다. thr, precision, recall, fpr은 가독성을 위해 반올림하여 표시한다. 최종 df_thr는 모델별로 Top-K, 비용 최소, 정밀도 제약 정책에서 선택된 임계값과, 그 임계값에서의 예측 양성 건수(pred_pos), 혼동행렬(TP, FP, FN, TN), 정밀도와 재현율, FPR을 한 번에 비교할 수 있도록 만든 요약표이다.
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.metrics import confusion_matrix, precision_recall_curve
+
+# -----------------------------
+# 공통 평가 함수
+# -----------------------------
+def eval_threshold(y_true, score, thr, positive_if="ge"):
+    """
+    positive_if:
+      - "ge": score >= thr 이면 양성
+      - "le": score <= thr 이면 양성 (거의 안 씀)
+    """
+    y_true = np.asarray(y_true).astype(int)
+    score = np.asarray(score)
+
+    if positive_if == "ge":
+        y_pred = (score >= thr).astype(int)
+    else:
+        y_pred = (score <= thr).astype(int)
+
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    precision = tp / (tp + fp + 1e-12)
+    recall    = tp / (tp + fn + 1e-12)
+    fpr       = fp / (fp + tn + 1e-12)
+    tpr       = recall
+    return {
+        "thr": float(thr),
+        "TP": int(tp), "FP": int(fp), "FN": int(fn), "TN": int(tn),
+        "precision": float(precision),
+        "recall": float(recall),
+        "fpr": float(fpr),
+        "tpr": float(tpr),
+        "pred_pos": int(tp + fp)
+    }
+
+def find_topk_threshold(score, k):
+    score = np.asarray(score)
+    k = int(min(k, len(score)))
+    idx = np.argsort(-score)          # descending
+    thr = score[idx[k-1]]             # K번째 점수
+    return float(thr)
+
+def find_cost_threshold(y_true, score, cFN=20.0, cFP=1.0, grid_q=400):
+    """
+    분위수 그리드에서 비용 최소 임계값 탐색
+    """
+    y_true = np.asarray(y_true).astype(int)
+    score = np.asarray(score)
+
+    cand = np.unique(np.quantile(score, np.linspace(0, 1, grid_q)))
+    best = None
+    for thr in cand:
+        d = eval_threshold(y_true, score, thr, positive_if="ge")
+        cost = cFN * d["FN"] + cFP * d["FP"]
+        d["cost"] = float(cost)
+        if (best is None) or (d["cost"] < best["cost"]):
+            best = d
+    return best
+
+def find_precision_constrained_threshold(y_true, score, p0=0.80):
+    """
+    PR curve 기반으로 Precision >= p0 를 만족하는 지점 중 Recall 최대가 되는 threshold 선택
+    """
+    y_true = np.asarray(y_true).astype(int)
+    score = np.asarray(score)
+
+    prec, rec, thr = precision_recall_curve(y_true, score)
+    # thr 길이 = len(prec)-1 이므로 정렬 맞추기
+    thr = np.concatenate([thr, [1.0]])
+
+    mask = prec >= p0
+    if not mask.any():
+        return None  # 불가능
+    # recall 최대, 동률이면 precision 큰 것 선택
+    idx = np.argmax(np.where(mask, rec, -1))
+    chosen_thr = thr[idx]
+    d = eval_threshold(y_true, score, chosen_thr, positive_if="ge")
+    d["p0"] = float(p0)
+    return d
+
+# -----------------------------
+# 입력: 세 모델의 score 준비
+#  - 분류모델: 확률 p (클수록 fraud)
+#  - 오토인코더: 재구성오차 score (클수록 fraud)
+# -----------------------------
+scores = [
+    ("MLP + weighted BCE", p_test_bce),
+    ("MLP + focal loss",   p_test_focal),
+    ("Autoencoder (recon error)", score_test_ae),
+]
+
+K = 200          # 운영 검토량 예시
+cFN, cFP = 20.0, 1.0
+p0 = 0.80        # precision 하한 예시
+
+rows = []
+for name, sc in scores:
+    # (A) Top-K
+    thr_topk = find_topk_threshold(sc, K)
+    d_topk = eval_threshold(y_test, sc, thr_topk)
+    d_topk.update({"model": name, "policy": f"Top-K (K={K})"})
+
+    # (B) Cost-based
+    d_cost = find_cost_threshold(y_test, sc, cFN=cFN, cFP=cFP, grid_q=500)
+    d_cost.update({"model": name, "policy": f"Cost min (cFN={cFN}, cFP={cFP})"})
+
+    # (C) Precision constrained
+    d_prec = find_precision_constrained_threshold(y_test, sc, p0=p0)
+    if d_prec is None:
+        d_prec = {"thr": np.nan, "TP": np.nan, "FP": np.nan, "FN": np.nan, "TN": np.nan,
+                  "precision": np.nan, "recall": np.nan, "fpr": np.nan, "tpr": np.nan, "pred_pos": np.nan}
+        d_prec.update({"model": name, "policy": f"Prec≥{p0} (infeasible)"})
+    else:
+        d_prec.update({"policy": f"Prec≥{p0} (max recall)"})
+
+    rows.extend([d_topk, d_cost, d_prec])
+
+df_thr = pd.DataFrame(rows)
+
+# 보기 좋게
+show_cols = ["model", "policy", "thr", "pred_pos", "TP", "FP", "FN", "TN", "precision", "recall", "fpr"]
+df_thr = df_thr[show_cols].copy()
+
+for c in ["thr", "precision", "recall", "fpr"]:
+    df_thr[c] = df_thr[c].astype(float)
+
+df_thr["thr"] = df_thr["thr"].round(6)
+df_thr["precision"] = df_thr["precision"].round(4)
+df_thr["recall"] = df_thr["recall"].round(4)
+df_thr["fpr"] = df_thr["fpr"].round(6)
+
+df_thr
+```
+출력된 df_thr는 테스트셋(총 56,962건)에서 각 모델 점수(score)에 임계값(thr)을 적용했을 때의 혼동행렬(TP, FP, FN, TN)과 파생 지표(precision, recall, fpr), 그리고 양성으로 판정된 건수(pred_pos)를 정책별로 정리한 결과이다. 표의 TP+FN이 98로 일치하므로 테스트셋의 실제 사기(양성) 건수는 98건인 설정이다.
+
+Top-K(K=200) 정책은 “점수가 높은 상위 200건만 조사한다”는 검토량 고정 정책이다. 이 정책에서는 세 모델 모두 pred_pos가 200으로 고정되며, precision은 조사 효율, recall은 전체 사기 98건 중 회수 비율을 의미한다. MLP+focal loss는 TP=87, FP=113, FN=11로 precision=0.435, recall=0.8878을 보이며, 동일 검토량에서 가장 많은 사기를 회수한 결과이다. MLP+weighted BCE는 TP=86, FN=12로 recall=0.8776이며 focal보다 근소하게 낮다. 오토인코더는 TP=80, FN=18로 recall=0.8163에 그쳐 감독학습 MLP 두 방법 대비 회수 성능이 낮게 나타난 결과이다. fpr은 모두 약 0.002 내외로 작아 보이지만, Top-K에서는 FP가 113~120 수준으로 실제 오경보 절대량이 운영 부담을 결정하는 구조이다.
+
+Cost min(cFN=20, cFP=1) 정책은 FN 1건의 비용을 FP 20건과 동일하게 보는 비용함수를 최소화하는 임계값 선택 결과이다. 이때 비용은 cFN·FN + cFP·FP로 계산되는 구조이다. MLP+focal loss는 thr=0.236961에서 TP=82, FP=33, FN=16을 만들어 precision=0.7130, recall=0.8367을 보이며, 비용은 20·16+33=353으로 계산되는 결과이다. MLP+weighted BCE는 thr=0.936538에서 TP=81, FP=34, FN=17로 precision=0.7043, recall=0.8265이며, 비용은 20·17+34=374로 focal보다 크다. 오토인코더는 thr=2.056266에서 TP=80, FP=149, FN=18로 pred_pos=229까지 증가하며 precision=0.3493으로 크게 낮아진다. 이때 비용은 20·18+149=509로 산출되어, 해당 비용 비율 하에서는 오토인코더가 두 MLP 대비 불리한 결과이다. 즉 cFN이 큰 환경(놓침이 매우 비싼 환경)에서도 오토인코더는 FP 증가로 총비용이 커지는 양상을 보인 결과이다.
+
+Prec≥0.8(max recall) 정책은 precision이 0.8 이상이 되도록 임계값을 선택한 뒤, 그 제약 하에서 recall을 최대화한 결과이다. 이 정책은 “오경보를 일정 수준 이하로 억제해야 한다”는 품질 보장형 운영 조건에 해당한다. MLP+focal loss는 thr=0.366035에서 TP=80, FP=20, FN=18로 precision=0.8000을 정확히 만족하면서 recall=0.8163을 확보한 결과이다. MLP+weighted BCE는 thr=0.991104에서 TP=67, FP=16, FN=31로 precision=0.8072를 만족하지만 recall이 0.6837로 떨어진다. 오토인코더는 thr=39.812298에서 TP=15, FP=3으로 precision=0.8333은 확보하나 FN=83으로 recall이 0.1531에 그쳐, 높은 정밀도를 유지하는 대신 대부분의 사기를 놓치는 결과이다. 따라서 정밀도 하한이 존재하는 환경에서는 focal loss 기반 MLP가 동일 정밀도 수준에서 훨씬 높은 회수율을 제공하는 결과이다.
+
+임계값(thr)의 절대값은 모델 간 직접 비교 대상이 아니다. focal loss 모델의 thr가 0.11~0.36 수준으로 낮게 나타나는 것은 점수 스케일과 캘리브레이션 차이에 따른 현상이며, 정책별로 산출되는 TP/FP/FN의 조합이 실제 비교 기준이다. 또한 Prec≥0.8 행에서 model 컬럼이 NaN으로 출력된 것은 계산 과정에서 해당 행에 model 필드가 갱신되지 않아 생긴 표기 현상이며, 행의 위치상 각각 MLP+weighted BCE, MLP+focal loss, Autoencoder 결과에 대응하는 구조이다.
+
+종합 해석은 다음과 같은 형태이다. 검토량이 고정된 운영(Top-K)에서는 MLP+focal loss가 TP와 recall에서 가장 우수한 결과이다. 비용 비율이 명시되는 운영(비용 최소)에서도 동일 비용 설정(cFN=20, cFP=1) 하에서 MLP+focal loss가 가장 낮은 비용과 높은 precision·recall 조합을 보인 결과이다. 정밀도 하한이 존재하는 운영(Prec≥0.8)에서는 MLP+focal loss가 정밀도 조건을 만족하면서도 높은 recall을 유지한 반면, 오토인코더는 recall이 급락하는 결과이다.
+
+```text
+model	policy	thr	pred_pos	TP	FP	FN	TN	precision	recall	fpr
+0	MLP + weighted BCE	Top-K (K=200)	0.849815	200	86	114	12	56750	0.4300	0.8776	0.002005
+1	MLP + weighted BCE	Cost min (cFN=20.0, cFP=1.0)	0.936538	115	81	34	17	56830	0.7043	0.8265	0.000598
+2	NaN	Prec≥0.8 (max recall)	0.991104	83	67	16	31	56848	0.8072	0.6837	0.000281
+3	MLP + focal loss	Top-K (K=200)	0.112033	200	87	113	11	56751	0.4350	0.8878	0.001987
+4	MLP + focal loss	Cost min (cFN=20.0, cFP=1.0)	0.236961	115	82	33	16	56831	0.7130	0.8367	0.000580
+5	NaN	Prec≥0.8 (max recall)	0.366035	100	80	20	18	56844	0.8000	0.8163	0.000352
+6	Autoencoder (recon error)	Top-K (K=200)	2.285710	200	80	120	18	56744	0.4000	0.8163	0.002110
+7	Autoencoder (recon error)	Cost min (cFN=20.0, cFP=1.0)	2.056266	229	80	149	18	56715	0.3493	0.8163	0.002620
+8	NaN	Prec≥0.8 (max recall)	39.812298	18	15	3	83	56861	0.8333	0.1531	0.000053
+```
+
+##### \(5) 사후확률 출력
+
+```python
+import numpy as np
+import pandas as pd
+
+# 0) 정렬/길이 체크(안 맞으면 여기서 바로 에러로 잡힘)
+assert len(X_test) == len(y_test) == len(p_post_bce) == len(p_post_focal) == len(p_post_ae)
+
+# 1) 원본 테스트 데이터 + (원래 df의) row index 보존
+df_out = X_test.copy()
+df_out = df_out.reset_index().rename(columns={"index": "row_id"})  # 원본 df에서의 행 번호
+
+# 2) 정답/사후확률 붙이기
+df_out["Class"] = np.asarray(y_test).astype(int)
+df_out["p_post_bce"] = p_post_bce
+df_out["p_post_focal"] = p_post_focal
+df_out["p_post_ae"] = p_post_ae
+
+# (선택) 원점수도 같이 붙이고 싶으면
+if "p_test_bce" in globals():
+    df_out["p_raw_bce"] = p_test_bce
+if "p_test_focal" in globals():
+    df_out["p_raw_focal"] = p_test_focal
+if "score_test_ae" in globals():
+    df_out["ae_score"] = score_test_ae
+
+# 3) 미리보기: 주요 컬럼만
+cols_view = ["row_id", "Class", "Time", "Amount", "p_post_bce", "p_post_focal", "p_post_ae"]
+df_out[cols_view].head(5)
+```
+```text
+	row_id	Class	Time	Amount	p_post_bce	p_post_focal	p_post_ae
+0	263020	0	160760.0	23.00	0.093039	0.112076	0.147201
+1	11378	0	19847.0	11.85	0.096227	0.103626	0.802136
+2	147283	0	88326.0	76.07	0.095866	0.100284	0.724984
+3	219439	0	141734.0	0.99	0.079366	0.105319	0.133961
+4	36939	0	38741.0	1.50	0.928282	0.380319	0.202574
+```
+
+```python
+topN = 50
+df_top = df_out.sort_values("p_post_focal", ascending=False).head(topN)
+df_top[cols_view + ["p_raw_focal"] if "p_raw_focal" in df_top.columns else cols_view]
+```
+```text
+	row_id	Class	Time	Amount	p_post_bce	p_post_focal	p_post_ae	p_raw_focal
+31804	102444	1	68207.0	1.00	0.989034	1.0	1.000000	0.627694
+1146	102442	1	68207.0	1.00	0.989034	1.0	1.000000	0.627694
+19638	151008	1	94362.0	1.00	0.989034	1.0	1.000000	0.945187
+9730	153835	1	100298.0	1.00	0.989034	1.0	1.000000	0.936203
+7299	151519	1	95628.0	1.63	0.989034	1.0	1.000000	0.853552
+```
+
+##### \(6) 세 모델 중 어떤 정책이 ‘현업형’으로 가장 합리적인지(Top-K vs 비용 vs 정밀도제약)
+
+이 코드는 앞에서 계산한 df_thr(모델×정책별 임계값 적용 결과표)를 이용하여, (1) df_thr가 존재하지 않으면 동일 규칙으로 다시 생성하고, (2) 세 가지 운영 정책(Top-K, 비용 최소, 정밀도 제약)별로 “가장 적합한 모델”을 자동으로 선택한 뒤, (3) 선택 결과를 요약표(summary)로 정리하는 절차이다.
+
+첫 부분은 df_thr를 만들 때 필요한 공통 함수들을 정의하는 단계이다. eval_threshold는 점수(score)와 임계값(thr)을 비교하여 예측 라벨 y_pred를 생성하고, confusion_matrix로부터 TN, FP, FN, TP를 계산한 다음 precision, recall, fpr, pred_pos(TP+FP)를 반환하는 함수이다. find_topk_threshold는 점수를 내림차순으로 정렬했을 때 K번째 점수를 임계값으로 선택하여 “상위 K개를 양성으로 보내는” Top-K 정책을 구현하는 함수이다. find_cost_threshold는 분위수(quantile) 그리드에서 임계값 후보를 만들고, 각 후보에 대해 eval_threshold로 FN과 FP를 계산한 뒤 비용 cFN·FN + cFP·FP가 최소가 되는 임계값을 선택하는 함수이다. find_precision_constrained_threshold는 precision_recall_curve로 PR 곡선 상의 (precision, recall, threshold)을 구한 뒤 precision이 p0 이상인 지점들만 남기고, 그중 recall이 최대가 되는 지점의 threshold를 선택하는 함수이다.
+
+두 번째 부분은 df_thr가 런타임에 존재하지 않을 때 재생성하는 단계이다. 이 단계는 런타임 재시작이나 변수 소실 상황에서도 동일한 분석을 재현할 수 있도록 만든 방어적 처리이다. scores 리스트에는 각 모델 이름과 해당 모델의 테스트 점수 배열이 들어가며, 분류 모델은 p_test_bce와 p_test_focal을 점수로 사용하고 오토인코더는 score_test_ae(재구성오차)를 점수로 사용한다. 이후 for 루프에서 각 모델에 대해 Top-K 임계값(thr_topk), 비용 최소 임계값(d_cost), 정밀도 제약 임계값(d_prec)을 순서대로 계산한다. 각 결과 딕셔너리에 model과 policy를 붙여 한 행으로 식별 가능하게 만들고, rows에 누적하여 최종적으로 df_thr = pd.DataFrame(rows) 형태의 결과표를 구성한다. 마지막의 반올림 처리(round)는 표를 읽기 쉽게 만들기 위한 출력용 전처리이다.
+
+세 번째 부분은 정책별 우승 모델을 자동 선택하는 단계이다. 먼저 df = df_thr.copy()로 원본을 복사한 뒤 df["cost"]를 cFN·FN + cFP·FP로 계산하여 비용 정책 비교에 사용할 cost 컬럼을 생성한다. Top-K 정책에서는 policy에 “Top-K”가 포함된 행만 필터링한 뒤 TP가 최대가 되는 조합을 1순위로 선택하고, TP 동률이면 recall이 더 큰 조합을 선택하도록 정렬 기준을 설정한다. 이는 Top-K가 “검토량(pred_pos)이 고정된 상황에서 적중 사기 수(TP)를 최대화”하는 운영 목표에 부합하는 선택 기준이다. 비용 정책에서는 policy에 “Cost”가 포함된 행만 필터링한 뒤 cost가 최소가 되는 조합을 선택한다. 이는 cFN과 cFP로 정의한 비용 비율 하에서 총 운영 손실을 최소화하는 조합을 찾는 기준이다. 정밀도 제약 정책에서는 policy에 “Prec≥”가 포함된 행 중 precision이 p0 이상인 행만 남긴 뒤 recall이 최대가 되는 조합을 선택한다. 후보가 하나도 없으면 해당 정밀도 하한을 만족하는 조합이 없다고 판단하여 winner_prec를 None으로 둔다.
+
+마지막으로 print 구문은 각 정책별로 선택된 우승 모델의 핵심 지표(TP, FP, FN, precision, recall 등)를 즉시 확인할 수 있도록 출력하는 단계이다. summary는 정책별로 선택된 winner_model과 선택 근거(key_reason)를 한 줄로 요약한 DataFrame이며, 강의노트나 보고서에서 “운영 정책별 추천 모델”을 간결하게 제시하기 위한 최종 요약 결과물이다.
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.metrics import confusion_matrix, precision_recall_curve
+
+# -----------------------------
+# df_thr 생성에 필요한 함수들
+# -----------------------------
+def eval_threshold(y_true, score, thr, positive_if="ge"):
+    y_true = np.asarray(y_true).astype(int)
+    score  = np.asarray(score)
+
+    if positive_if == "ge":
+        y_pred = (score >= thr).astype(int)
+    else:
+        y_pred = (score <= thr).astype(int)
+
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    precision = tp / (tp + fp + 1e-12)
+    recall    = tp / (tp + fn + 1e-12)
+    fpr       = fp / (fp + tn + 1e-12)
+
+    return {
+        "thr": float(thr),
+        "TP": int(tp), "FP": int(fp), "FN": int(fn), "TN": int(tn),
+        "precision": float(precision),
+        "recall": float(recall),
+        "fpr": float(fpr),
+        "pred_pos": int(tp + fp)
+    }
+
+def find_topk_threshold(score, k):
+    score = np.asarray(score)
+    k = int(min(k, len(score)))
+    idx = np.argsort(-score)
+    return float(score[idx[k-1]])
+
+def find_cost_threshold(y_true, score, cFN=20.0, cFP=1.0, grid_q=500):
+    y_true = np.asarray(y_true).astype(int)
+    score  = np.asarray(score)
+    cand = np.unique(np.quantile(score, np.linspace(0, 1, grid_q)))
+
+    best = None
+    for thr in cand:
+        d = eval_threshold(y_true, score, thr, positive_if="ge")
+        d["cost"] = float(cFN * d["FN"] + cFP * d["FP"])
+        if (best is None) or (d["cost"] < best["cost"]):
+            best = d
+    return best
+
+def find_precision_constrained_threshold(y_true, score, p0=0.80):
+    y_true = np.asarray(y_true).astype(int)
+    score  = np.asarray(score)
+
+    prec, rec, thr = precision_recall_curve(y_true, score)
+    thr = np.concatenate([thr, [1.0]])  # 길이 맞춤
+
+    mask = prec >= p0
+    if not mask.any():
+        return None
+
+    idx = np.argmax(np.where(mask, rec, -1))
+    chosen_thr = float(thr[idx])
+    d = eval_threshold(y_true, score, chosen_thr, positive_if="ge")
+    d["p0"] = float(p0)
+    return d
+
+# -----------------------------
+# 1) df_thr가 없으면 재생성
+# -----------------------------
+if "df_thr" not in globals():
+    print("df_thr가 없어 재생성합니다...")
+
+    # 아래 3개 score는 이미 앞 셀에서 만들어져 있어야 함
+    # p_test_bce, p_test_focal, score_test_ae, y_test
+    scores = [
+        ("MLP + weighted BCE", p_test_bce),
+        ("MLP + focal loss",   p_test_focal),
+        ("Autoencoder (recon error)", score_test_ae),
+    ]
+
+    K = 200
+    cFN, cFP = 20.0, 1.0
+    p0 = 0.80
+
+    rows = []
+    for name, sc in scores:
+        # (A) Top-K
+        thr_topk = find_topk_threshold(sc, K)
+        d_topk = eval_threshold(y_test, sc, thr_topk)
+        d_topk.update({"model": name, "policy": f"Top-K (K={K})"})
+
+        # (B) Cost min
+        d_cost = find_cost_threshold(y_test, sc, cFN=cFN, cFP=cFP, grid_q=500)
+        d_cost.update({"model": name, "policy": f"Cost min (cFN={cFN}, cFP={cFP})"})
+
+        # (C) Prec constraint
+        d_prec = find_precision_constrained_threshold(y_test, sc, p0=p0)
+        if d_prec is None:
+            d_prec = {"thr": np.nan, "TP": np.nan, "FP": np.nan, "FN": np.nan, "TN": np.nan,
+                      "precision": np.nan, "recall": np.nan, "fpr": np.nan, "pred_pos": np.nan}
+            d_prec.update({"model": name, "policy": f"Prec≥{p0} (infeasible)"})
+        else:
+            d_prec.update({"model": name, "policy": f"Prec≥{p0} (max recall)"})
+
+        rows.extend([d_topk, d_cost, d_prec])
+
+    df_thr = pd.DataFrame(rows)
+
+    # 보기 좋게 정리
+    show_cols = ["model","policy","thr","pred_pos","TP","FP","FN","TN","precision","recall","fpr"]
+    df_thr = df_thr[show_cols].copy()
+    df_thr["thr"] = df_thr["thr"].astype(float).round(6)
+    for c in ["precision","recall","fpr"]:
+        df_thr[c] = df_thr[c].astype(float).round(4)
+
+else:
+    print("df_thr가 이미 존재합니다. 그대로 사용합니다.")
+
+# -----------------------------
+# 2) 정책별 우승 모델 자동 선택
+# -----------------------------
+cFN, cFP = 20.0, 1.0
+p0 = 0.80
+
+df = df_thr.copy()
+df["cost"] = cFN * df["FN"] + cFP * df["FP"]
+
+# Top-K: TP 최대(동률이면 recall 최대)
+df_topk = df[df["policy"].str.contains("Top-K")].copy()
+winner_topk = df_topk.sort_values(["TP", "recall"], ascending=[False, False]).iloc[0]
+
+# Cost: cost 최소
+df_cost = df[df["policy"].str.contains("Cost")].copy()
+winner_cost = df_cost.sort_values("cost", ascending=True).iloc[0]
+
+# Prec≥p0: precision 충족 중 recall 최대
+df_prec = df[df["policy"].str.contains("Prec≥") & (df["precision"] >= p0)].copy()
+winner_prec = df_prec.sort_values("recall", ascending=False).iloc[0] if len(df_prec) > 0 else None
+
+print("\n===== 정책별 우승 모델 =====\n")
+print("[Top-K 정책]")
+print(winner_topk[["model","policy","TP","FP","FN","precision","recall"]], "\n")
+
+print("[Cost 기반 정책]")
+print(winner_cost[["model","policy","TP","FP","FN","cost","precision","recall"]], "\n")
+
+print("[Precision 제약 정책]")
+if winner_prec is None:
+    print(f"precision ≥ {p0}을 만족하는 모델 없음\n")
+else:
+    print(winner_prec[["model","policy","TP","FP","FN","precision","recall"]], "\n")
+
+summary = pd.DataFrame([
+    {"policy":"Top-K", "winner_model": winner_topk["model"], "key_reason":"TP 최대(검토량 고정)"},
+    {"policy":"Cost",  "winner_model": winner_cost["model"], "key_reason":"총 비용 최소"},
+    {"policy":f"Prec≥{p0}", "winner_model": None if winner_prec is None else winner_prec["model"],
+     "key_reason":"정밀도 제약 하 recall 최대"}
+])
+summary
+```
+선택된 출력은 “정책(Top-K / 비용최소 / 정밀도제약)”별로 임계값을 다르게 잡았을 때, 어떤 모델 조합이 운영 목적에 가장 잘 맞는지를 요약한 결과이다. 세 결과 모두에서 실제 양성(사기) 개수는 TP+FN=98건으로 동일하게 읽힌다.
+
+**Top-K 정책(검토량 고정, K=200)**
+
+우승: MLP + focal loss
+<br>
+결과: TP=87, FP=113, FN=11
+
+해석: 상위 200건을 무조건 조사하는 상황에서, focal loss가 사기 98건 중 87건을 회수(Recall=87/98=0.8878)한 결과이다. 다만 검토량이 200건으로 고정이므로 FP가 113건 발생하고, Precision=87/200=0.435가 된다.
+
+결론: “조사 인력/콜센터/심사팀이 하루 200건만 볼 수 있다” 같은 용량(capacity) 기반 운영에서는 이 결과가 가장 합리적인 선택이다.
+
+**Cost 기반 정책(비용 최소, cFN=20, cFP=1)**
+
+우승: MLP + focal loss
+<br>
+결과: TP=83, FP=32, FN=15, 비용 cost=332
+
+해석: 비용함수는 20·FN + 1·FP 이므로, 이 조합의 비용은 20×15 + 32 = 332로 계산되는 결과이다.
+이 정책은 Top-K처럼 검토량을 고정하지 않고, “놓침(FN)이 FP보다 훨씬 비싸다”는 가정 하에서 총비용이 최소가 되도록 임계값을 선택한다. 그 결과 양성 판정 건수는 TP+FP=115건으로 줄고, Precision=83/115=0.7217로 크게 올라가지만, Recall=83/98=0.8469로 Top-K보다 내려간다.
+
+결론: “사기 1건을 놓치면 손실이 매우 크다”처럼 비용 구조가 명확한 현업 상황에서는, 비용비율(cFN, cFP)을 합의한 뒤 이 정책이 가장 설득력이 크다.
+
+**Precision 제약 정책(Prec ≥ 0.8, 가능한 범위에서 Recall 최대)**
+
+우승: MLP + weighted BCE
+<br>
+결과: TP=79, FP=19, FN=19, Precision=79/(79+19)=0.8061, Recall=79/98=0.8061
+
+해석: 이 정책은 “정밀도 0.8 미만은 운영상 불가” 같은 품질 보장 조건을 먼저 만족시키고, 그 조건 안에서 회수율을 최대화한다. 여기서는 weighted BCE가 정밀도 0.8을 넘기면서 가장 높은 재현율을 만든 조합으로 선택된 결과이다.
+focal loss가 선택되지 않은 것은, 정밀도 0.8 이상을 만족하는 임계값 구간에서 weighted BCE보다 높은 recall을 만들지 못했기 때문으로 해석하는 것이 자연스럽다.
+
+결론: “오경보를 많이 내면 민원/업무폭증/고객경험 악화가 발생한다”처럼 정밀도 하한이 강한 운영에서는 이 정책이 가장 현업형이다.
+
+**종합 결론**
+
+검토량 고정(Top-K)이면 → MLP + focal loss가 가장 많은 사기를 회수한 결과이다.
+
+비용구조가 명확(비용최소)이면 → 같은 비용비율(cFN=20, cFP=1) 하에서 MLP + focal loss가 총비용을 가장 줄인 결과이다.
+
+정밀도 하한(Prec≥0.8)이면 → 그 제약을 만족하면서 회수율이 최대인 MLP + weighted BCE가 가장 합리적인 결과이다.
+
+```text
+df_thr가 없어 재생성합니다...
+
+===== 정책별 우승 모델 =====
+[Top-K 정책]
+model        MLP + focal loss
+policy          Top-K (K=200)
+TP                         87
+FP                        113
+FN                         11
+precision               0.435
+recall                 0.8878
+Name: 3, dtype: object 
+
+[Cost 기반 정책]
+model                    MLP + focal loss
+policy       Cost min (cFN=20.0, cFP=1.0)
+TP                                     83
+FP                                     32
+FN                                     15
+cost                                332.0
+precision                          0.7217
+recall                             0.8469
+Name: 4, dtype: object 
+
+[Precision 제약 정책]
+model           MLP + weighted BCE
+policy       Prec≥0.8 (max recall)
+TP                              79
+FP                              19
+FN                              19
+precision                   0.8061
+recall                      0.8061
+Name: 2, dtype: object 
+
+policy	winner_model	key_reason
+0	Top-K	MLP + focal loss	TP 최대(검토량 고정)
+1	Cost	MLP + focal loss	총 비용 최소
+2	Prec≥0.8	MLP + weighted BCE	정밀도 제약 하 recall 최대
+```
+
