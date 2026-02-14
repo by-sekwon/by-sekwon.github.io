@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 딥러닝 분류 - 사례분석 이미지 분류 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44962e3d41ec9ccc254fd50f1af5efbe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_intro/index.html"> 
+<span class="menu-text">MLDL개념</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/mldl_classification/index.html" aria-current="page"> 
+<span class="menu-text">MLDL분류</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_classification/classification_dl_image_case.html">📄 딥러닝 분류 (이미지)사례</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【머신·딥러닝 분류문제】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 분류문제: 정의</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/lm_logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 예측분류-로지스틱회귀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/mda_discriminant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 예측분류-판별분석</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/prediction_treebase.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 예측분류-ML 트리기반</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 kNNSVM 이론</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 분류모델 평가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_case_binary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 이진형 사례</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_ml_case_category.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 머신러닝 k&gt;=3 사례</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_deeplearning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 딥러닝 분류 이론</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_dl_rare_case.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 딥러닝 분류 (희소성공)사례</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_dl_image_case.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 딥러닝 분류 (이미지)사례</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#딥러닝-분류-사례분석-이미지-분류" id="toc-딥러닝-분류-사례분석-이미지-분류" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석-이미지-분류">딥러닝 분류 사례분석 (이미지 분류)</a>
+  <ul>
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터">1. 데이터</a></li>
+  <li><a href="#cnn-모델-학습-및-평가" id="toc-cnn-모델-학습-및-평가" class="nav-link" data-scroll-target="#cnn-모델-학습-및-평가">2. CNN 모델 학습 및 평가</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 딥러닝 분류 - 사례분석 이미지 분류</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="딥러닝-분류-사례분석-이미지-분류" class="level3">
+<h3 class="anchored" data-anchor-id="딥러닝-분류-사례분석-이미지-분류">딥러닝 분류 사례분석 (이미지 분류)</h3>
+<section id="데이터" class="level4">
+<h4 class="anchored" data-anchor-id="데이터">1. 데이터</h4>
+<section id="메타-데이터-및-데이터-분할" class="level5">
+<h5 class="anchored" data-anchor-id="메타-데이터-및-데이터-분할">메타 데이터 및 데이터 분할</h5>
+<p>본 실습에서는 TensorFlow/Keras에서 제공하는 내장 데이터셋인 CIFAR-10을 사용한다. CIFAR-10은 32×32 크기의 RGB 컬러 이미지로 구성된 10개 클래스 분류 문제이며, 각 이미지는 (높이 32, 너비 32, 채널 3)의 형태를 가진다(NHWC 포맷).</p>
+<p>코드에서 keras.datasets.cifar10.load_data()를 통해 학습용 데이터 50,000장과 테스트 데이터 10,000장을 로드하였다. 로드 직후 입력 데이터는 x_train_raw의 크기가 (50000, 32, 32, 3), x_test_raw의 크기가 (10000, 32, 32, 3)이며, 자료형(dtype)은 uint8이다. 이는 각 픽셀이 0~255 범위의 정수 값(원시 이미지 값)으로 저장되어 있음을 의미한다.</p>
+<p>정답 레이블은 y_train, y_test로 제공되며, 원래 (N, 1) 형태로 로드되기 때문에 reshape(-1)을 적용해 (N,) 형태의 1차원 벡터로 변환하였다. 변환 이후 y_train의 크기는 (50000,), y_test의 크기는 (10000,)이며, 레이블 값은 0부터 9까지의 정수로 구성된다. 각 정수 레이블은 class_names 리스트에 따라 0=airplane, 1=automobile, 2=bird, 3=cat, 4=deer, 5=dog, 6=frog, 7=horse, 8=ship, 9=truck에 대응한다.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) 데이터 불러오기</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 재현성</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>np.random.seed(SEED)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>tf.random.set_seed(SEED)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># CIFAR-10 로드</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>(x_train_raw, y_train), (x_test_raw, y_test) <span class="op">=</span> keras.datasets.cifar10.load_data()</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> y_train.reshape(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>y_test  <span class="op">=</span> y_test.reshape(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>class_names <span class="op">=</span> [<span class="st">"airplane"</span>,<span class="st">"automobile"</span>,<span class="st">"bird"</span>,<span class="st">"cat"</span>,<span class="st">"deer"</span>,<span class="st">"dog"</span>,<span class="st">"frog"</span>,<span class="st">"horse"</span>,<span class="st">"ship"</span>,<span class="st">"truck"</span>]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train raw:"</span>, x_train_raw.shape, y_train.shape, x_train_raw.dtype)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test  raw:"</span>, x_test_raw.shape,  y_test.shape,  x_test_raw.dtype)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Labels:"</span>, np.unique(y_train))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Train raw: (50000, 32, 32, 3) (50000,) uint8
+Test  raw: (10000, 32, 32, 3) (10000,) uint8
+Labels: [0 1 2 3 4 5 6 7 8 9]</code></pre>
+</section>
+<section id="원본-이미지-보기optional" class="level5">
+<h5 class="anchored" data-anchor-id="원본-이미지-보기optional">원본 이미지 보기(optional)</h5>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) CIFAR-10 로드</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>(x_train, y_train), (x_test, y_test) <span class="op">=</span> keras.datasets.cifar10.load_data()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> y_train.reshape(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>y_test  <span class="op">=</span> y_test.reshape(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>class_names <span class="op">=</span> [<span class="st">"airplane"</span>,<span class="st">"automobile"</span>,<span class="st">"bird"</span>,<span class="st">"cat"</span>,<span class="st">"deer"</span>,<span class="st">"dog"</span>,<span class="st">"frog"</span>,<span class="st">"horse"</span>,<span class="st">"ship"</span>,<span class="st">"truck"</span>]</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 원본(0~255, uint8) 보존</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>x_train_raw <span class="op">=</span> x_train.copy()</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>x_test_raw  <span class="op">=</span> x_test.copy()</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># (선택) 이후 학습용 정규화는 별도로 수행</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> x_train.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>x_test  <span class="op">=</span> x_test.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_grid_original(X_raw, y, n<span class="op">=</span><span class="dv">25</span>, seed<span class="op">=</span><span class="dv">1</span>, scale<span class="op">=</span><span class="dv">6</span>):</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    idx <span class="op">=</span> rng.choice(<span class="bu">len</span>(X_raw), size<span class="op">=</span>n, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    ncols <span class="op">=</span> <span class="bu">int</span>(np.ceil(np.sqrt(n)))</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    nrows <span class="op">=</span> <span class="bu">int</span>(np.ceil(n <span class="op">/</span> ncols))</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># scale을 키울수록 크게 보이지만 픽셀은 그대로(희미해지지 않음)</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    fig, axes <span class="op">=</span> plt.subplots(nrows, ncols, figsize<span class="op">=</span>(ncols<span class="op">*</span>scale, nrows<span class="op">*</span>scale))</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    axes <span class="op">=</span> np.array(axes).reshape(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax, i <span class="kw">in</span> <span class="bu">zip</span>(axes, idx):</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        ax.imshow(X_raw[i], interpolation<span class="op">=</span><span class="st">"nearest"</span>)  <span class="co"># 핵심: 보간 끔</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        ax.set_title(class_names[<span class="bu">int</span>(y[i])], fontsize<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 남는 칸 지우기</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax <span class="kw">in</span> axes[<span class="bu">len</span>(idx):]:</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>show_grid_original(x_train_raw, y_train, n<span class="op">=</span><span class="dv">25</span>, seed<span class="op">=</span><span class="dv">1</span>, scale<span class="op">=</span><span class="fl">2.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/classification_dl_case_image.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="전처리-전처리-정규화-01-trainvalid-분리-augmentation" class="level5">
+<h5 class="anchored" data-anchor-id="전처리-전처리-정규화-01-trainvalid-분리-augmentation">전처리: 전처리 (정규화 0~1 + train/valid 분리 + augmentation)</h5>
+<p>이 코드는 CIFAR-10 이미지 분류 실험을 위해 학습/평가에 사용할 입력 데이터를 전처리하는 단계로, (1) 픽셀값 정규화, (2) 학습/검증 분리, (3) 학습용 데이터 증강 모듈 정의의 세 부분으로 구성된다.</p>
+<p>먼저 x_train_raw, x_test_raw는 원본 이미지 배열(자료형 uint8, 픽셀 범위 0~255)로 유지해 두고, 모델 학습에 사용할 x_train, x_test를 새로 만든다. 이때 x_train_raw와 x_test_raw를 float32로 변환한 뒤 255.0으로 나누어 픽셀 값을 0~1 범위로 스케일링한다. 이렇게 정규화를 하면 입력 스케일이 안정화되어 최적화(경사하강) 과정이 수치적으로 더 안정적이고, 학습 속도 및 수렴 특성이 좋아지는 경향이 있다. 코드에 “정규화는 딱 1번만”이라고 주석을 둔 이유는, 이미 0~1로 스케일링된 데이터를 이후 단계에서 다시 나누거나 변환하는 중복 처리가 생기면 입력 분포가 의도와 다르게 바뀌어 성능 저하나 비교 불가능 문제가 발생할 수 있기 때문이다.</p>
+<p>다음으로 정규화가 올바르게 되었는지 확인하기 위해 x_train과 x_test의 최소값/최대값을 출력한다. 정상적인 경우 최소값은 0.0, 최대값은 1.0 근처(정확히 1.0까지 가능)가 되어야 하며, 이 출력은 전처리 오류(예: 정규화 누락, 자료형 문제, 잘못된 스케일링)가 없는지 빠르게 점검하는 안전장치 역할을 한다.</p>
+<p>그 다음 train_test_split을 사용하여 학습 데이터를 학습용(train_sub)과 검증용(val)으로 8:2 비율로 분리한다. random_state=SEED로 난수 시드를 고정해 매번 동일한 분할이 재현되도록 하고, stratify=y_train 옵션을 사용해 클래스 분포가 학습/검증 세트에서 원본과 유사하게 유지되도록 한다. CIFAR-10은 10개 클래스의 균형 데이터에 가깝지만, 실험 재현성과 공정한 성능 비교를 위해 층화 분리는 기본적으로 좋은 습관이다. 분리 후에는 각 세트의 shape를 출력해 분할이 기대한 크기(예: 40000/10000)로 되었는지 확인한다.</p>
+<p>마지막으로 data_augmentation이라는 이름의 keras.Sequential 모듈을 정의한다. 여기에는 (1) 좌우 반전(RandomFlip), (2) 작은 회전(RandomRotation), (3) 약간의 확대/축소(RandomZoom)가 포함되어 있으며, 이는 학습 과정에서 입력 이미지를 확률적으로 변형해 모델이 데이터의 작은 변형에 덜 민감하고 일반화 성능이 좋아지도록 돕는 목적이다. 이 모듈은 정의만 해두면 단독으로는 아무 변화도 일으키지 않으며, 이후 모델 설계 단계에서 입력단에 연결하여 학습 시에만 적용되도록 사용하는 것이 일반적이다. 검증/테스트 데이터에는 증강을 적용하지 않고 원본 분포 그대로 평가해야 모델의 실제 성능을 올바르게 측정할 수 있으므로, “훈련시에만 모델 내부에서 적용”이라는 운영 원칙과 맞물려 설계된다.</p>
+<p>요약하면, 이 전처리 코드는 원본 이미지를 0~1 범위로 표준 입력 형태로 변환하고(정규화), 학습 중 성능 모니터링을 위한 검증 세트를 층화 분리로 확보하며, 학습 전용 데이터 증강 모듈을 정의해 일반화 성능 향상을 준비하는 단계이다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) 전처리: 정규화 + train/valid 분리 + 증강</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (중요) 정규화는 "딱 1번만"</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> x_train_raw.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>x_test  <span class="op">=</span> x_test_raw.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 범위 체크(0~1이어야 정상)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Range train:"</span>, <span class="bu">float</span>(x_train.<span class="bu">min</span>()), <span class="bu">float</span>(x_train.<span class="bu">max</span>()))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Range test :"</span>, <span class="bu">float</span>(x_test.<span class="bu">min</span>()),  <span class="bu">float</span>(x_test.<span class="bu">max</span>()))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># train/valid 분리</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>x_train_sub, x_val, y_train_sub, y_val <span class="op">=</span> train_test_split(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    x_train, y_train,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    test_size<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span>SEED,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    stratify<span class="op">=</span>y_train</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train sub:"</span>, x_train_sub.shape, y_train_sub.shape)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valid    :"</span>, x_val.shape,      y_val.shape)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 증강(훈련시에만 모델 내부에서 적용하는 용도)</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>data_augmentation <span class="op">=</span> keras.Sequential(</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        keras.layers.RandomFlip(<span class="st">"horizontal"</span>),</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        keras.layers.RandomRotation(<span class="fl">0.1</span>),</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        keras.layers.RandomZoom(<span class="fl">0.1</span>),</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"data_augmentation"</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>data_augmentation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>Range train: 0.0 1.0
+Range test : 0.0 1.0
+Train sub: (40000, 32, 32, 3) (40000,)
+Valid    : (10000, 32, 32, 3) (10000,)</code></pre>
+</section>
+</section>
+<section id="cnn-모델-학습-및-평가" class="level4">
+<h4 class="anchored" data-anchor-id="cnn-모델-학습-및-평가">2. CNN 모델 학습 및 평가</h4>
+<section id="baseline-cnn" class="level5">
+<h5 class="anchored" data-anchor-id="baseline-cnn">(1) Baseline CNN</h5>
+<p><strong>모델 학습</strong></p>
+<p>이 코드는 CIFAR-10 이미지 분류를 위한 기본형(Baseline) CNN을 구성하고, 학습용/검증용 데이터로 학습을 수행하는 전체 흐름을 담고 있다. 코드의 목적은 간단한 합성곱 신경망을 기준선 모델로 학습시켜 이후 개선 모델과 성능을 비교할 수 있도록 하는 것이다.</p>
+<ol type="1">
+<li><p>재현성 설정 및 세션 초기화 코드 첫 부분에서는 NumPy와 TensorFlow 관련 모듈을 불러온 뒤, SEED 값을 고정한다. tf.keras.backend.clear_session()으로 기존 그래프/모델 상태를 초기화하고, np.random.seed와 tf.random.set_seed를 통해 난수 생성이 가능한 한 동일하게 나오도록 설정한다. 이렇게 하면 같은 데이터와 같은 코드로 실행했을 때 모델 학습 결과가 크게 흔들리지 않도록 도움을 준다.</p></li>
+<li><p>전처리/분할 변수 존재 여부 확인(안전장치) 이 코드는 학습에 필요한 x_train_sub, x_val, y_train_sub, y_val 변수가 이미 앞 셀에서 만들어졌다고 가정한다. 다만, 해당 변수가 현재 런타임에 없을 경우를 대비하여 if “x_train_sub” not in globals(): 조건문을 두고 있다. 조건이 참이면, 원본 학습/테스트 이미지(x_train_raw, x_test_raw)를 0~1 범위로 정규화한 뒤(train과 test를 각각 float32로 변환 후 255로 나눔), train_test_split을 이용해 학습용(train_sub)과 검증용(val)을 8:2 비율로 분리한다. 이때 stratify=y_train을 사용하여 클래스 비율이 학습/검증에 유사하게 유지되도록 한다.</p></li>
+<li><p>Baseline CNN 구조 정의(build_baseline_cnn) build_baseline_cnn 함수는 입력 이미지(32×32×3)를 받아 10개 클래스에 대한 확률(softmax)을 출력하는 CNN 모델을 만든다. 모델의 합성곱 블록은 Conv2D(3×3, same padding, ReLU)와 MaxPooling2D를 반복하는 형태로 구성된다. 구체적으로는 32채널 → 64채널 → 128채널 순으로 특성 맵의 채널 수를 늘리며, 각 단계에서 풀링으로 공간 해상도를 줄여가면서 더 추상적인 특징을 학습한다. 이후 Flatten으로 2차원 특성맵을 1차원 벡터로 펼친 뒤 Dense(128, ReLU)로 분류에 필요한 표현을 만들고, Dropout(0.3)으로 과적합을 완화한다. 마지막 Dense(num_classes, softmax) 층은 10개 클래스에 대한 사후확률(모델이 추정한 클래스 확률)을 출력한다.</p></li>
+<li><p>컴파일(최적화/손실/평가지표) model.compile 단계에서는 Adam(학습률 1e-3)을 사용하고, 다중분류에 표준적으로 쓰이는 SparseCategoricalCrossentropy 손실을 사용한다. 라벨이 원-핫 인코딩이 아니라 정수 클래스(0~9)이므로 sparse 버전의 손실함수를 선택한 것이다. 평가지표는 accuracy를 사용해 분류 정확도를 모니터링한다.</p></li>
+<li><p>콜백 설정(ReduceLROnPlateau, EarlyStopping) cb_baseline에는 두 가지 콜백이 들어 있다.</p></li>
+</ol>
+<ul>
+<li>ReduceLROnPlateau: 검증 정확도(val_accuracy)가 개선되지 않으면 학습률을 factor=0.5만큼 줄여 더 미세한 탐색을 유도한다. patience=2는 2번 연속 개선이 없을 때 학습률을 낮춘다는 의미이며, min_lr=1e-5로 학습률 하한을 둔다.</li>
+<li>EarlyStopping: 검증 정확도 기준으로 성능 향상이 일정 기간 없으면 학습을 조기 종료한다. patience=6은 6 epoch 동안 개선이 없으면 멈춘다는 의미이며, restore_best_weights=True는 가장 성능이 좋았던 시점의 가중치를 마지막에 복원한다.</li>
+</ul>
+<ol start="6" type="1">
+<li>학습 실행(fit) baseline_cnn.fit에서는 학습 데이터(x_train_sub, y_train_sub)로 모델을 학습하고, validation_data=(x_val, y_val)로 매 epoch마다 검증 성능을 계산한다. epochs=30은 최대 반복 횟수이며, 실제로는 EarlyStopping 조건이 먼저 만족되면 30보다 빨리 종료될 수 있다. batch_size=128은 한 번의 업데이트에 사용하는 샘플 묶음 크기이며, 값이 클수록 학습은 빠를 수 있으나 메모리 사용량이 증가한다. 학습 결과는 hist_baseline에 저장되어 epoch별 train/val loss와 accuracy 변화 추이를 이후에 그래프로 확인할 수 있다.</li>
+</ol>
+<p>정리하면, 이 Baseline CNN 코드는 (재현성 설정) → (데이터 정규화 및 학습/검증 분할 보장) → (간단한 CNN 모델 설계) → (표준 손실함수/최적화로 컴파일) → (학습률 조정과 조기 종료로 학습 안정화) → (학습 수행)이라는 흐름으로 구성되어 있으며, 개선 모델 대비 비교 기준선을 만들기 위한 목적에 맞게 설계되어 있다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>np.random.seed(SEED)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>tf.random.set_seed(SEED)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># (안전장치) 전처리/분할 변수가 없으면 여기서 만들어줌</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="st">"x_train_sub"</span> <span class="kw">not</span> <span class="kw">in</span> <span class="bu">globals</span>():</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    x_train <span class="op">=</span> x_train_raw.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    x_test  <span class="op">=</span> x_test_raw.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    x_train_sub, x_val, y_train_sub, y_val <span class="op">=</span> train_test_split(</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        x_train, y_train, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span>SEED, stratify<span class="op">=</span>y_train</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># (Baseline) Conv-ReLU-Pool 중심 + (Flatten) + Softmax</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>num_classes <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>input_shape <span class="op">=</span> (<span class="dv">32</span>, <span class="dv">32</span>, <span class="dv">3</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_baseline_cnn():</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> keras.Input(shape<span class="op">=</span>input_shape)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> inputs</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (선택) 데이터 증강을 Baseline에는 "빼는" 게 비교가 깔끔합니다.</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 만약 넣고 싶으면 아래 2줄 주석 해제하고, data_augmentation 변수가 있어야 합니다.</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># if "data_augmentation" in globals():</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="co">#     x = data_augmentation(x)</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2D(<span class="dv">32</span>, <span class="dv">3</span>, padding<span class="op">=</span><span class="st">"same"</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D()(x)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2D(<span class="dv">64</span>, <span class="dv">3</span>, padding<span class="op">=</span><span class="st">"same"</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D()(x)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2D(<span class="dv">128</span>, <span class="dv">3</span>, padding<span class="op">=</span><span class="st">"same"</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D()(x)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Flatten()(x)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">128</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dropout(<span class="fl">0.3</span>)(x)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> layers.Dense(num_classes, activation<span class="op">=</span><span class="st">"softmax"</span>)(x)</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> keras.Model(inputs, outputs, name<span class="op">=</span><span class="st">"baseline_cnn"</span>)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">compile</span>(</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>        optimizer<span class="op">=</span>keras.optimizers.Adam(<span class="fl">1e-3</span>),</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>        loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(),</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>        metrics<span class="op">=</span>[<span class="st">"accuracy"</span>],</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>baseline_cnn <span class="op">=</span> build_baseline_cnn()</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>baseline_cnn.summary()</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>cb_baseline <span class="op">=</span> [</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    keras.callbacks.ReduceLROnPlateau(</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>        monitor<span class="op">=</span><span class="st">"val_accuracy"</span>, mode<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>        factor<span class="op">=</span><span class="fl">0.5</span>, patience<span class="op">=</span><span class="dv">2</span>, min_lr<span class="op">=</span><span class="fl">1e-5</span>, verbose<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    keras.callbacks.EarlyStopping(</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>        monitor<span class="op">=</span><span class="st">"val_accuracy"</span>, mode<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>        patience<span class="op">=</span><span class="dv">6</span>, restore_best_weights<span class="op">=</span><span class="va">True</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>hist_baseline <span class="op">=</span> baseline_cnn.fit(</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    x_train_sub, y_train_sub,</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    validation_data<span class="op">=</span>(x_val, y_val),</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">128</span>,</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>cb_baseline,</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이번 Baseline CNN 모델은 CIFAR-10(32×32×3) 이미지를 입력으로 받아, Conv–ReLU–MaxPool 블록을 3회(채널 32→64→128) 반복한 뒤 Flatten → Dense(128) → Dropout(0.3) → Softmax(10)로 분류하는 구조로 설계되었다. 전체 파라미터 수는 356,810개(약 1.36MB)이며, 모두 학습 가능한(trainable) 파라미터로 구성되어 있다.</p>
+<p>학습은 초기 학습률 1e-3(Adam)로 시작되었다. Epoch 1에서는 정확도 0.2787, 검증 정확도 0.5203으로 출발했지만, 초반 몇 epoch 동안 손실이 빠르게 감소하며 성능이 급격히 향상되었다. Epoch 2~6 구간에서 훈련 정확도는 약 0.50 → 0.69로 상승했고, 검증 정확도도 0.59 → 0.71 수준까지 안정적으로 증가하면서 모델이 기본적인 특징(에지/텍스처 등)을 빠르게 학습하는 모습을 보였다.</p>
+<p>이후 Epoch 7~10에서는 훈련 정확도는 계속 상승(약 0.72 → 0.77)했지만, 검증 정확도는 0.71~0.718 부근에서 정체되는 양상이 나타났다. 이에 따라 Epoch 11에서 ReduceLROnPlateau가 동작해 학습률이 0.001 → 0.0005로 감소했고, 이는 ‘큰 보폭 학습’에서 ‘미세 조정’ 단계로 전환되었음을 의미한다. 학습률 감소 이후 Epoch 12~14 구간에서 검증 정확도는 다시 개선되어 최고 약 0.7454까지 상승했다.</p>
+<p>그러나 Epoch 15 이후부터는 훈련 정확도가 0.84 → 0.90+로 꾸준히 오르는 반면, 검증 정확도는 0.74~0.75대에서 큰 폭으로 개선되지 않고 오히려 미세한 등락을 반복했다. 이 구간에서 검증 손실(val_loss)이 0.78대에서 0.85대로 다소 증가하는 흐름도 보였는데, 이는 학습 데이터에는 더 잘 맞추지만 일반화 성능은 크게 좋아지지 않는, 즉 과적합의 신호로 해석할 수 있다.</p>
+<p>검증 정확도의 정체가 반복되면서 학습률은 추가로 여러 차례 감소했다(예: Epoch 16: 0.0005→0.00025, Epoch 19: 0.00025→0.000125, Epoch 23: 0.000125→6.25e-5, Epoch 25: 6.25e-5→3.125e-5, Epoch 28: 3.125e-5→1.5625e-5). 이러한 단계적 학습률 감소는 큰 개선이 나오지 않는 상황에서 파라미터를 더 세밀하게 조정하여 성능을 ‘조금씩’ 끌어올리는 역할을 한다. 최종적으로 Epoch 30에서 훈련 정확도는 0.9080, 검증 정확도는 0.7578을 기록하며 학습이 마무리되었다.</p>
+<p>정리하면, 본 학습 과정은 (1) 초반 빠른 수렴으로 기본 성능 확보 → (2) 중반 검증 성능 정체 발생 → (3) 학습률을 단계적으로 낮추며 미세 조정 → (4) 훈련 성능은 계속 상승하지만 검증 성능은 0.75대에서 제한되는 형태로 진행되었다. 따라서 Baseline CNN은 CIFAR-10에서 준수한 성능(검증 약 0.76)을 보였으나, 후반부 과적합 경향을 줄이기 위해서는 데이터 증강 강화, 정규화(BN), L2 규제, GAP 기반 헤드 등 추가 개선이 필요함을 시사한다.</p>
+<pre class="text"><code>Model: "baseline_cnn"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type)                    ┃ Output Shape           ┃       Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ input_layer (InputLayer)        │ (None, 32, 32, 3)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d (Conv2D)                 │ (None, 32, 32, 32)     │           896 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d (MaxPooling2D)    │ (None, 16, 16, 32)     │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_1 (Conv2D)               │ (None, 16, 16, 64)     │        18,496 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_1 (MaxPooling2D)  │ (None, 8, 8, 64)       │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_2 (Conv2D)               │ (None, 8, 8, 128)      │        73,856 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_2 (MaxPooling2D)  │ (None, 4, 4, 128)      │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (Flatten)               │ (None, 2048)           │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense (Dense)                   │ (None, 128)            │       262,272 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dropout (Dropout)               │ (None, 128)            │             0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense)                 │ (None, 10)             │         1,290 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+ Total params: 356,810 (1.36 MB)
+ Trainable params: 356,810 (1.36 MB)
+ Non-trainable params: 0 (0.00 B)
+Epoch 1/30
+313/313 ━━━━━━━━━━━━━━━━━━━━ 109s 336ms/step - accuracy: 0.2787 - loss: 1.9401 - val_accuracy: 0.5203 - val_loss: 1.3502 - learning_rate: 0.0010
+Epoch 2/30
+(중간 생략)
+Epoch 30/30
+313/313 ━━━━━━━━━━━━━━━━━━━━ 91s 289ms/step - accuracy: 0.9080 - loss: 0.2692 - val_accuracy: 0.7578 - val_loss: 0.8503 - learning_rate: 1.5625e-05</code></pre>
+<p><strong>평가결과</strong></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report, accuracy_score</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Test accuracy</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>loss, acc <span class="op">=</span> baseline_cnn.evaluate(x_test, y_test, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[Baseline CNN] Test accuracy: </span><span class="sc">{</span>acc<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Prediction</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>y_prob <span class="op">=</span> baseline_cnn.predict(x_test, batch_size<span class="op">=</span><span class="dv">256</span>, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> np.argmax(y_prob, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Confusion Matrix (DataFrame)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>cm_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    cm,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="ss">f"True_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names],</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f"Pred_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names],</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Baseline CNN] Confusion Matrix"</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>display(cm_df)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Classification Report</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Baseline CNN] Classification Report"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    y_test, y_pred,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    target_names<span class="op">=</span>class_names,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    digits<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    zero_division<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이번 Baseline CNN은 CIFAR-10 테스트셋에서 정확도 0.7531을 기록했습니다. 테스트 데이터가 각 클래스당 1000장으로 균등하므로, 전체 정확도 75.31%는 “10개 중 7~8개는 맞추는 수준”으로 해석할 수 있고, 클래스별 성능 차이(어떤 클래스가 특히 어려운지)가 결과 해석에서 핵심이 됩니다.</p>
+<p>분류 리포트의 macro avg와 weighted avg가 거의 동일한 값(precision 0.7534, recall 0.7531, f1 0.7531)으로 나온 이유도 바로 클래스가 균형이기 때문입니다. 즉, 특정 클래스가 데이터 수가 많아서 평균을 끌어올리거나(또는 끌어내리거나) 하는 효과가 거의 없고, 클래스별 성능을 공평하게 반영한 macro 지표가 전체 성능의 대표값으로 봐도 무방합니다.</p>
+<p>클래스별로 보면 automobile(정밀도 0.8660, 재현율 0.8530, F1 0.8594), ship(0.8604/0.8570/0.8587), truck(0.8451/0.8290/0.8370), horse(0.7994/0.7770/0.7880), frog(0.7854/0.8160/0.8004), airplane(0.7696/0.8050/0.7869)는 비교적 안정적으로 맞추는 편입니다. 반면 cat(0.5778/0.5870/0.5823)이 가장 어려웠고, bird(0.6636/0.6510/0.6572), dog(0.6680/0.6580/0.6630)도 상대적으로 낮은 성능을 보입니다. 전형적으로 배경 다양성이 크고, 형태가 비슷하거나(고양이-개), 시각적 단서가 작게 나타나는 클래스(새 등)에서 성능이 떨어진 패턴입니다.</p>
+<p>혼동행렬을 보면 어떤 실수가 많이 발생하는지 더 구체적으로 확인됩니다.</p>
+<p>cat ↔︎ dog 혼동이 가장 두드러집니다. 고양이를 개로 예측한 사례가 145건이고(True_cat → Pred_dog), 개를 고양이로 예측한 사례가 165건(True_dog → Pred_cat)입니다. 즉, cat 클래스의 낮은 정밀도/재현율은 “개로 빨려 들어가는” 오분류가 큰 비중을 차지합니다. CIFAR-10의 해상도(32×32) 특성상 얼굴/귀/무늬 같은 미세 특징이 약해지고, 포즈와 배경의 영향이 커져서 이런 혼동이 쉽게 생깁니다.</p>
+<p>automobile ↔︎ truck 혼동이 큽니다. 자동차를 트럭으로 74건, 트럭을 자동차로 56건 잘못 예측했습니다. 두 클래스는 모두 도로/차량이라는 공통 배경과 형태적 유사성이 있고, 특히 작은 이미지에서 화물칸/차체 비율 같은 단서가 흐려지면 상호 혼동이 잦아집니다. 그럼에도 두 클래스의 F1이 높은 것은, 큰 틀에서 “차량 계열은 잘 잡되 서로 헷갈리는” 성격을 보여준다고 해석할 수 있습니다.</p>
+<p>bird는 다양한 동물/자연 클래스와 넓게 섞입니다. 새를 사슴으로 80건, 비행기로 63건, 개로 54건, 고양이로 50건, 개구리로 52건 등 오분류가 여러 방향으로 분산되어 있습니다. 이는 bird 클래스가 배경(하늘, 나뭇가지, 풀숲 등)에 따라 시각적 단서가 달라지고, 실루엣이 작거나 흐릿할 때 다른 클래스의 질감/색상 단서에 의해 흔들리기 쉬움을 시사합니다.</p>
+<p>deer는 horse/bird/cat 쪽으로 자주 새어 나갑니다. 사슴을 말로 63건, 새로 63건, 고양이로 59건, 개구리로 52건 오분류했습니다. 특히 사슴-말은 다리/체형 실루엣이 비슷하게 잡히는 경우가 있고, 풀밭 배경이 공통으로 나타나는 경우도 많아 혼동이 증가합니다.</p>
+<p>airplane과 ship도 서로 및 bird와 혼동합니다. 비행기는 새(50건)와 배(42건)로, 배는 비행기(59건)로 비교적 자주 잘못 예측됩니다. 물체가 작게 나타나거나 배경이 단순할 때(하늘/바다) 텍스처보다 형태 단서에 의존하게 되고, 그 형태 단서가 부족하면 이런 혼동이 생기기 쉽습니다.</p>
+<p>frog는 상대적으로 강하지만, cat/bird와 혼동이 남아 있습니다. 개구리는 재현율이 0.816으로 높은 편(816건 정답)인데, 고양이(66건)와 새(48건)로의 오분류가 주된 실패 양상입니다. 즉, “개구리를 놓치는 경우”가 완전히 없지는 않지만, 다른 취약 클래스(cat, bird)만큼 구조적으로 무너지진 않습니다.</p>
+<p>정리하면, 이 모델은 차량(automobile/truck), 배(ship), 자동차/트럭, 그리고 비교적 형태가 뚜렷한 클래스에서 강점을 보이고, cat-dog처럼 미세 특징이 중요한 클래스, bird처럼 배경/포즈 변동이 큰 클래스에서 약점을 보입니다. 따라서 후속 개선을 한다면 cat·dog·bird·deer 쪽 성능을 올리는 방향(더 강한 데이터 증강, 정규화/규제 기법, 더 깊은 모델 또는 BN/GAP/Residual 계열, 학습률 스케줄, label smoothing 등)이 전체 성능을 끌어올리는 데 가장 효과적일 가능성이 큽니다.</p>
+<pre class="text"><code>[Baseline CNN] Test accuracy: 0.7531
+[Baseline CNN] Confusion Matrix
+Pred_airplane   Pred_automobile Pred_bird   Pred_cat    Pred_deer   Pred_dog    Pred_frog   Pred_horse  Pred_ship   Pred_truck
+True_airplane   805 16  50  17  24  7   9   5   42  25
+True_automobile 16  853 8   6   3   4   13  4   19  74
+True_bird   63  10  651 50  80  54  52  28  8   4
+True_cat    21  8   65  587 51  145 64  30  18  11
+True_deer   17  3   63  59  698 34  52  63  9   2
+True_dog    16  4   37  165 41  658 18  47  7   7
+True_frog   5   3   48  66  29  17  816 4   6   6
+True_horse  12  2   41  31  65  54  6   777 3   9
+True_ship   59  30  8   16  6   5   2   3   857 14
+True_truck  32  56  10  19  2   7   7   11  27  829
+[Baseline CNN] Classification Report
+              precision    recall  f1-score   support
+
+    airplane     0.7696    0.8050    0.7869      1000
+  automobile     0.8660    0.8530    0.8594      1000
+        bird     0.6636    0.6510    0.6572      1000
+         cat     0.5778    0.5870    0.5823      1000
+        deer     0.6987    0.6980    0.6983      1000
+         dog     0.6680    0.6580    0.6630      1000
+        frog     0.7854    0.8160    0.8004      1000
+       horse     0.7994    0.7770    0.7880      1000
+        ship     0.8604    0.8570    0.8587      1000
+       truck     0.8451    0.8290    0.8370      1000
+
+    accuracy                         0.7531     10000
+   macro avg     0.7534    0.7531    0.7531     10000
+weighted avg     0.7534    0.7531    0.7531     10000</code></pre>
+<p><strong>사후확률 출력</strong></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ (중요) 학습한 모델 변수가 baseline_cnn인지 확인!</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - baseline_cnn.fit(...) 끝난 뒤 실행하세요.</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># - x_test는 이미 0~1 정규화된 float32여야 합니다.</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 테스트셋 사후확률 (N, 10)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>proba <span class="op">=</span> baseline_cnn.predict(x_test, batch_size<span class="op">=</span><span class="dv">256</span>, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"proba shape:"</span>, proba.shape, <span class="st">"| row sum (first 3):"</span>, proba[:<span class="dv">3</span>].<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) 예측 클래스 / 최대확률</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>pred <span class="op">=</span> np.argmax(proba, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>conf <span class="op">=</span> np.<span class="bu">max</span>(proba, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Top-3 클래스/확률 뽑기</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>top3_idx <span class="op">=</span> np.argsort(<span class="op">-</span>proba, axis<span class="op">=</span><span class="dv">1</span>)[:, :<span class="dv">3</span>]</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>top3_cls <span class="op">=</span> np.vectorize(<span class="kw">lambda</span> i: class_names[i])(top3_idx)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>top3_prob <span class="op">=</span> np.take_along_axis(proba, top3_idx, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) 요약 테이블 (원하시면 row_id도 붙여드릴 수 있어요)</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>df_post <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y_true"</span>: y_test,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"true_class"</span>: [class_names[i] <span class="cf">for</span> i <span class="kw">in</span> y_test],</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y_pred"</span>: pred,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"pred_class"</span>: [class_names[i] <span class="cf">for</span> i <span class="kw">in</span> pred],</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p_max"</span>: conf,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"top1"</span>: top3_cls[:,<span class="dv">0</span>], <span class="st">"p1"</span>: top3_prob[:,<span class="dv">0</span>],</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"top2"</span>: top3_cls[:,<span class="dv">1</span>], <span class="st">"p2"</span>: top3_prob[:,<span class="dv">1</span>],</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"top3"</span>: top3_cls[:,<span class="dv">2</span>], <span class="st">"p3"</span>: top3_prob[:,<span class="dv">2</span>],</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>display(df_post.head(<span class="dv">5</span>))</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) (선택) 10개 클래스 확률까지 다 펼친 표(크니까 일부만 미리보기)</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>df_proba_full <span class="op">=</span> pd.DataFrame(proba, columns<span class="op">=</span>[<span class="ss">f"p_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names])</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>display(df_proba_full.head(<span class="dv">5</span>))</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) (선택) CSV로 저장</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co"># df_out = pd.concat([df_post, df_proba_full], axis=1)</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a><span class="co"># df_out.to_csv("baseline_posterior_test.csv", index=False)</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a><span class="co"># print("saved:", "baseline_posterior_test.csv")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>proba shape: (10000, 10) | row sum (first 3): [1.         0.99999994 0.9999998 ]
+y_true  true_class  y_pred  pred_class  p_max   top1    p1  top2    p2  top3    p3
+0   3   cat 3   cat 0.858937    cat 0.858937    dog 0.138064    ship    2.706298e-03
+1   8   ship    8   ship    0.999983    ship    0.999983    automobile  0.000016    airplane    6.444214e-07
+2   8   ship    1   automobile  0.575449    automobile  0.575449    airplane    0.181981    ship    1.770541e-01
+3   0   airplane    0   airplane    0.978334    airplane    0.978334    ship    0.018194    automobile  2.495502e-03
+4   6   frog    6   frog    0.709844    frog    0.709844    cat 0.284362    deer    4.154720e-03
+
+p_airplane  p_automobile    p_bird  p_cat   p_deer  p_dog   p_frog  p_horse p_ship  p_truck
+0   8.775511e-06    3.007165e-05    1.263697e-04    8.589367e-01    4.273423e-07    1.380642e-01    8.442276e-05    4.002472e-05    2.706298e-03    2.676775e-06
+1   6.444214e-07    1.604075e-05    1.157150e-11    4.172198e-10    4.067237e-15    1.935446e-12    6.580451e-13    9.225259e-15    9.999833e-01    1.616474e-09
+2   1.819807e-01    5.754491e-01    3.163953e-04    3.293752e-03    1.416876e-04    1.367454e-03    5.368760e-05    3.820267e-03    1.770541e-01    5.652267e-02
+3   9.783342e-01    2.495502e-03    2.775183e-04    1.507238e-05    1.984747e-04    7.650324e-08    8.786704e-06    1.045343e-09    1.819358e-02    4.767261e-04
+4   1.966741e-10    7.218498e-08    1.572623e-03    2.843625e-01    4.154720e-03    6.576478e-05    7.098442e-01    1.100643e-08    3.614207e-08    7.421475e-08</code></pre>
+</section>
+<section id="improved-cnn" class="level5">
+<h5 class="anchored" data-anchor-id="improved-cnn">(2) improved CNN</h5>
+<p>본 개선형 CNN은 baseline_cnn 대비 정확도를 유지하면서 학습 시간을 줄이기 위해 계산량과 학습 병목을 동시에 축소한 설계이다. 속도 측면에서는 (i) WIDTH_MULT로 채널 폭을 줄여 합성곱 연산량을 직접 감소시키고, (ii) 블록당 합성곱을 1회로 경량화하여 레이어 수 대비 FLOPs를 낮추며, (iii) tf.data의 cache/prefetch로 입력 파이프라인 병목을 줄이고, (iv) mixed precision을 통해 GPU에서 연산과 메모리 효율을 개선하며, (v) steps_per_epoch/validation_steps로 에폭당 처리 스텝을 제한해 학습 시간을 상한 관리하는 구조이다.</p>
+<p>일반화 측면에서는 BatchNormalization과 L2 가중치 감쇠, Dropout, 데이터 증강이 과적합을 완화하고, Flatten 대신 GAP를 사용해 파라미터 수를 줄여 작은 이미지 분류에서의 안정적인 일반화에 기여하는 구성이다.</p>
+<p><strong>학습</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers, regularizers</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0) 재현성 + (선택) 가속 설정</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>SEED <span class="op">=</span> <span class="dv">42</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>keras.utils.set_random_seed(SEED)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>tf.keras.backend.clear_session()</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># (선택) GPU면 mixed precision으로 속도/메모리 개선 (GPU 없으면 자동으로 float32 유지)</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    gpus <span class="op">=</span> tf.config.list_physical_devices(<span class="st">"GPU"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> gpus:</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> tensorflow.keras <span class="im">import</span> mixed_precision</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>        mixed_precision.set_global_policy(<span class="st">"mixed_float16"</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"GPU detected -&gt; mixed precision:"</span>, mixed_precision.global_policy())</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"No GPU -&gt; float32 (CPU)"</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Mixed precision skipped:"</span>, e)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 속도 우선 하이퍼파라미터</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>FAST_MODE <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>num_classes <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>input_shape <span class="op">=</span> (<span class="dv">32</span>, <span class="dv">32</span>, <span class="dv">3</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> FAST_MODE:</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    BATCH_SIZE <span class="op">=</span> <span class="dv">256</span>         <span class="co"># OOM이면 128로 낮추기</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    EPOCHS <span class="op">=</span> <span class="dv">20</span>              <span class="co"># 상한. EarlyStopping이 더 빨리 끊을 수 있음</span></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    WIDTH_MULT <span class="op">=</span> <span class="fl">0.75</span>        <span class="co"># 1.0이 원래 폭, 0.75/0.5로 줄이면 빨라짐</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>    STEPS_PER_EPOCH <span class="op">=</span> <span class="dv">200</span>    <span class="co"># None이면 전체 데이터 1 epoch, 숫자면 시간 상한(빠른 실습용)</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>    VAL_STEPS <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>    PATIENCE <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    BATCH_SIZE <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    EPOCHS <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>    WIDTH_MULT <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>    STEPS_PER_EPOCH <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>    VAL_STEPS <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>    PATIENCE <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) tf.data 파이프라인 (속도 개선)</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>AUTOTUNE <span class="op">=</span> tf.data.AUTOTUNE</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>SHUFFLE <span class="op">=</span> <span class="dv">20000</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> tf.data.Dataset.from_tensor_slices((x_train_sub, y_train_sub))</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> train_ds.shuffle(SHUFFLE, seed<span class="op">=</span>SEED, reshuffle_each_iteration<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>train_ds <span class="op">=</span> train_ds.batch(BATCH_SIZE).cache().prefetch(AUTOTUNE)</span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>val_ds <span class="op">=</span> tf.data.Dataset.from_tensor_slices((x_val, y_val))</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>val_ds <span class="op">=</span> val_ds.batch(BATCH_SIZE).cache().prefetch(AUTOTUNE)</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) 증강(훈련시에만 자동 적용)</span></span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>data_augmentation <span class="op">=</span> keras.Sequential(</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    [</span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>        layers.RandomFlip(<span class="st">"horizontal"</span>),</span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>        layers.RandomRotation(<span class="fl">0.1</span>),</span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>        layers.RandomZoom(<span class="fl">0.1</span>),</span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"data_augmentation"</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Improved CNN (BN + L2 + GAP) - 속도용으로 경량화 포함</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a><span class="co">#    - 각 블록을 "Conv 2회" -&gt; "Conv 1회"로 줄여 시간 단축</span></span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a><span class="co">#    - WIDTH_MULT로 채널 폭 축소 가능</span></span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> conv_block(x, filters, wd<span class="op">=</span><span class="fl">1e-4</span>):</span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2D(</span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>        filters, <span class="dv">3</span>, padding<span class="op">=</span><span class="st">"same"</span>,</span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>        use_bias<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        kernel_initializer<span class="op">=</span><span class="st">"he_normal"</span>,</span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        kernel_regularizer<span class="op">=</span>regularizers.l2(wd)</span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>    )(x)</span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.BatchNormalization()(x)</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Activation(<span class="st">"relu"</span>)(x)</span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x</span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_improved_cnn(wd<span class="op">=</span><span class="fl">1e-4</span>, dropout<span class="op">=</span><span class="fl">0.2</span>, head_dropout<span class="op">=</span><span class="fl">0.4</span>, width_mult<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>    f1 <span class="op">=</span> <span class="bu">int</span>(<span class="dv">32</span> <span class="op">*</span> width_mult)</span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>    f2 <span class="op">=</span> <span class="bu">int</span>(<span class="dv">64</span> <span class="op">*</span> width_mult)</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>    f3 <span class="op">=</span> <span class="bu">int</span>(<span class="dv">128</span> <span class="op">*</span> width_mult)</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>    head <span class="op">=</span> <span class="bu">int</span>(<span class="dv">128</span> <span class="op">*</span> width_mult)</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>    inputs <span class="op">=</span> keras.Input(shape<span class="op">=</span>input_shape)</span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> data_augmentation(inputs)  <span class="co"># training=True일 때만 랜덤 적용</span></span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Block 1 (경량화: conv 1회)</span></span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> conv_block(x, f1, wd)</span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D()(x)</span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dropout(dropout)(x)</span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Block 2</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> conv_block(x, f2, wd)</span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D()(x)</span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dropout(dropout)(x)</span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Block 3</span></span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> conv_block(x, f3, wd)</span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D()(x)</span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dropout(dropout)(x)</span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>    <span class="co"># GAP Head</span></span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.GlobalAveragePooling2D()(x)</span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(</span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a>        head, use_bias<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a>        kernel_initializer<span class="op">=</span><span class="st">"he_normal"</span>,</span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a>        kernel_regularizer<span class="op">=</span>regularizers.l2(wd)</span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a>    )(x)</span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.BatchNormalization()(x)</span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Activation(<span class="st">"relu"</span>)(x)</span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dropout(head_dropout)(x)</span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a>    <span class="co"># mixed precision 사용 시 출력은 float32로 고정(지표/손실 안정)</span></span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a>    outputs <span class="op">=</span> layers.Dense(num_classes, activation<span class="op">=</span><span class="st">"softmax"</span>, dtype<span class="op">=</span><span class="st">"float32"</span>)(x)</span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> keras.Model(inputs, outputs, name<span class="op">=</span><span class="st">"improved_cnn_bn_l2_gap_fast"</span>)</span>
+<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>    model.<span class="bu">compile</span>(</span>
+<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a>        optimizer<span class="op">=</span>keras.optimizers.Adam(<span class="fl">1e-3</span>),</span>
+<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a>        loss<span class="op">=</span>keras.losses.SparseCategoricalCrossentropy(),</span>
+<span id="cb12-131"><a href="#cb12-131" aria-hidden="true" tabindex="-1"></a>        metrics<span class="op">=</span>[<span class="st">"accuracy"</span>],</span>
+<span id="cb12-132"><a href="#cb12-132" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> model</span>
+<span id="cb12-134"><a href="#cb12-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-135"><a href="#cb12-135" aria-hidden="true" tabindex="-1"></a>improved_cnn <span class="op">=</span> build_improved_cnn(wd<span class="op">=</span><span class="fl">1e-4</span>, width_mult<span class="op">=</span>WIDTH_MULT)</span>
+<span id="cb12-136"><a href="#cb12-136" aria-hidden="true" tabindex="-1"></a>improved_cnn.summary()</span>
+<span id="cb12-137"><a href="#cb12-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-138"><a href="#cb12-138" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-139"><a href="#cb12-139" aria-hidden="true" tabindex="-1"></a><span class="co"># 5) 콜백 (조기 종료 + LR 감소)</span></span>
+<span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a>cb_improved <span class="op">=</span> [</span>
+<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a>    keras.callbacks.ReduceLROnPlateau(</span>
+<span id="cb12-143"><a href="#cb12-143" aria-hidden="true" tabindex="-1"></a>        monitor<span class="op">=</span><span class="st">"val_accuracy"</span>, mode<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb12-144"><a href="#cb12-144" aria-hidden="true" tabindex="-1"></a>        factor<span class="op">=</span><span class="fl">0.5</span>, patience<span class="op">=</span><span class="dv">2</span>, min_lr<span class="op">=</span><span class="fl">1e-5</span>, verbose<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb12-145"><a href="#cb12-145" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-146"><a href="#cb12-146" aria-hidden="true" tabindex="-1"></a>    keras.callbacks.EarlyStopping(</span>
+<span id="cb12-147"><a href="#cb12-147" aria-hidden="true" tabindex="-1"></a>        monitor<span class="op">=</span><span class="st">"val_accuracy"</span>, mode<span class="op">=</span><span class="st">"max"</span>,</span>
+<span id="cb12-148"><a href="#cb12-148" aria-hidden="true" tabindex="-1"></a>        patience<span class="op">=</span>PATIENCE, restore_best_weights<span class="op">=</span><span class="va">True</span></span>
+<span id="cb12-149"><a href="#cb12-149" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a><span class="co"># 6) 학습 (시간 상한 옵션 포함)</span></span>
+<span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
+<span id="cb12-155"><a href="#cb12-155" aria-hidden="true" tabindex="-1"></a>fit_kwargs <span class="op">=</span> <span class="bu">dict</span>(</span>
+<span id="cb12-156"><a href="#cb12-156" aria-hidden="true" tabindex="-1"></a>    validation_data<span class="op">=</span>val_ds,</span>
+<span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span>EPOCHS,</span>
+<span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>cb_improved,</span>
+<span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb12-160"><a href="#cb12-160" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-162"><a href="#cb12-162" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> STEPS_PER_EPOCH <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb12-163"><a href="#cb12-163" aria-hidden="true" tabindex="-1"></a>    fit_kwargs[<span class="st">"steps_per_epoch"</span>] <span class="op">=</span> STEPS_PER_EPOCH</span>
+<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a>    fit_kwargs[<span class="st">"validation_steps"</span>] <span class="op">=</span> VAL_STEPS</span>
+<span id="cb12-165"><a href="#cb12-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a>hist_improved <span class="op">=</span> improved_cnn.fit(train_ds, <span class="op">**</span>fit_kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>GPU 없이 CPU(float32) 환경에서 CIFAR-10 학습/검증 데이터를 입력으로, 데이터 증강(RandomFlip/Rotation/Zoom)과 BN+L2 정규화+GAP(Global Average Pooling)을 포함한 경량 CNN(improved_cnn_bn_l2_gap_fast, 약 6.37만 파라미터)을 구성해 20 epoch 동안 학습하였다. 초기 학습률 1e-3에서 시작해 ReduceLROnPlateau가 검증 정확도 정체 시점(예: 5, 9, 14, 17 epoch)에 학습률을 1/2로 단계적으로 감소시켰고, 그 결과 손실은 감소하면서 정확도는 1 epoch 약 0.24 수준에서 점진적으로 상승해 후반부에 학습 정확도 약 0.52, 검증 정확도 약 0.48~0.49 수준에 도달하였다.</p>
+<p>로그에 나타난 “input ran out of data” 경고는 steps_per_epoch를 고정(200 step)해 두었는데 데이터셋이 .repeat() 없이 구성되어 일부 epoch에서 설정한 step을 채우지 못해 조기 종료된 배치가 있었음을 의미하며, 필요하면 train_ds = train_ds.repeat() 또는 steps_per_epoch=None로 조정해 경고 없이 안정적으로 학습을 진행할 수 있습니다.</p>
+<pre class="text"><code>Epoch 1/20
+200/200 ━━━━━━━━━━━━━━━━━━━━ 108s 512ms/step - accuracy: 0.2362 - loss: 2.2105 - val_accuracy: 0.1793 - val_loss: 2.5417 - learning_rate: 0.0010
+Epoch 2/20
+200/200 ━━━━━━━━━━━━━━━━━━━━ 101s 506ms/step - accuracy: 0.3467 - loss: 1.8224 - val_accuracy: 0.3290 - val_loss: 1.8517 - learning_rate: 0.0010
+(중간 생략)
+Epoch 20/20
+200/200 ━━━━━━━━━━━━━━━━━━━━ 101s 506ms/step - accuracy: 0.5186 - loss: 1.3772 - val_accuracy: 0.4840 - val_loss: 1.5281 - learning_rate: 6.2500e-05</code></pre>
+<p><strong>모델평가</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Test accuracy</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>loss, acc <span class="op">=</span> improved_cnn.evaluate(x_test, y_test, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[Improved CNN] Test accuracy: </span><span class="sc">{</span>acc<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Prediction</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>y_prob <span class="op">=</span> improved_cnn.predict(x_test, batch_size<span class="op">=</span><span class="dv">256</span>, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> np.argmax(y_prob, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Confusion Matrix (DataFrame)</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>cm_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    cm,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="ss">f"True_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names],</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f"Pred_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names],</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Improved CNN] Confusion Matrix"</span>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>display(cm_df)</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Classification Report</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Improved CNN] Classification Report"</span>)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    y_test, y_pred,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    target_names<span class="op">=</span>class_names,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    digits<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    zero_division<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[Improved CNN] Test accuracy: 0.4845
+[Improved CNN] Confusion Matrix
+Pred_airplane   Pred_automobile Pred_bird   Pred_cat    Pred_deer   Pred_dog    Pred_frog   Pred_horse  Pred_ship   Pred_truck
+True_airplane   416 41  12  1   44  0   45  21  353 67
+True_automobile 20  624 0   0   2   1   50  7   48  248
+True_bird   63  11  106 10  227 16  432 43  70  22
+True_cat    7   19  12  76  80  55  596 66  46  43
+True_deer   16  5   5   2   381 3   455 93  32  8
+True_dog    4   14  11  84  144 182 364 130 41  26
+True_frog   2   6   2   5   17  0   943 2   11  12
+True_horse  12  6   4   15  143 22  130 591 19  58
+True_ship   33  31  2   2   11  0   39  2   819 61
+True_truck  21  123 1   0   7   0   64  12  65  707
+
+[Improved CNN] Classification Report
+              precision    recall  f1-score   support
+
+    airplane     0.7003    0.4160    0.5220      1000
+  automobile     0.7091    0.6240    0.6638      1000
+        bird     0.6839    0.1060    0.1835      1000
+         cat     0.3897    0.0760    0.1272      1000
+        deer     0.3608    0.3810    0.3706      1000
+         dog     0.6523    0.1820    0.2846      1000
+        frog     0.3024    0.9430    0.4580      1000
+       horse     0.6112    0.5910    0.6009      1000
+        ship     0.5445    0.8190    0.6542      1000
+       truck     0.5647    0.7070    0.6279      1000
+
+    accuracy                         0.4845     10000
+   macro avg     0.5519    0.4845    0.4493     10000
+weighted avg     0.5519    0.4845    0.4493     10000</code></pre>
+</section>
+<section id="학습-결과-비교" class="level5">
+<h5 class="anchored" data-anchor-id="학습-결과-비교">(5) 학습 결과 비교</h5>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Test accuracy</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>loss, acc <span class="op">=</span> improved_cnn.evaluate(x_test, y_test, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[Improved CNN] Test accuracy: </span><span class="sc">{</span>acc<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Prediction</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>y_prob <span class="op">=</span> improved_cnn.predict(x_test, batch_size<span class="op">=</span><span class="dv">256</span>, verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> np.argmax(y_prob, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Confusion Matrix (DataFrame)</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>cm_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    cm,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="ss">f"True_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names],</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>[<span class="ss">f"Pred_</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> c <span class="kw">in</span> class_names],</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Improved CNN] Confusion Matrix"</span>)</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>display(cm_df)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Classification Report</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">[Improved CNN] Classification Report"</span>)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    y_test, y_pred,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    target_names<span class="op">=</span>class_names,</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    digits<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    zero_division<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>비교표 결과만 놓고 보면, Baseline CNN이 Improved CNN(BN+L2+GAP)보다 테스트 성능이 훨씬 안정적이고 우수합니다. Baseline CNN은 테스트 정확도(test_acc)가 0.7531로 10개 클래스 분류에서 약 75% 수준의 예측 성공률을 보였고, macro F1과 weighted F1도 0.7531로 동일하게 나타났다. CIFAR-10처럼 각 클래스가 거의 동일한 비중(클래스 균형)인 데이터에서는 macro/weighted F1이 서로 비슷하게 나오는 것이 자연스러운데, 이 값이 accuracy와도 비슷하다는 점은 Baseline 모델이 특정 클래스에만 편향되지 않고 전반적으로 비교적 고르게 분류하고 있음을 시사한다.</p>
+<p>반대로 Improved CNN은 테스트 정확도가 0.4845로 크게 낮아졌고, macro F1(0.4493)과 weighted F1(0.4493)도 함께 하락하였다. 이는 단순히 “맞춘 비율이 줄었다”를 넘어, 클래스별로 정밀도·재현율의 균형까지 나빠져서 클래스 전반에서 예측 품질이 떨어졌음을 의미한다. 특히 균형 데이터에서 weighted F1과 macro F1이 동일하게 낮게 나온 점은 “일부 클래스만 유독 나쁜 게 아니라, 전체적으로 분류 성능이 약화된 상태”에 가깝다는 해석이 가능하다.</p>
+<p>따라서 이 비교표의 결론은 명확히 ’개선 모델’이 현재 설정에서는 개선이 아니라 성능 저하를 가져왔다는 것이다. 즉, BN/L2/GAP 자체가 나쁘다기보다는, 현재 구성(예: 모델 폭 축소, 규제 강도, 증강 강도, 학습 스텝 제한 등)에서 모델이 충분히 학습하지 못해 과소적합(underfitting) 또는 학습 조건 불리가 발생했을 가능성이 크며, 실무적으로는 현 시점에서 Baseline CNN을 채택하는 것이 더 합리적이라고 정리할 수 있다.</p>
+<pre class="text"><code>[Improved CNN] Test accuracy: 0.4845
+[Improved CNN] Confusion Matrix
+Pred_airplane   Pred_automobile Pred_bird   Pred_cat    Pred_deer   Pred_dog    Pred_frog   Pred_horse  Pred_ship   Pred_truck
+True_airplane   416 41  12  1   44  0   45  21  353 67
+True_automobile 20  624 0   0   2   1   50  7   48  248
+True_bird   63  11  106 10  227 16  432 43  70  22
+True_cat    7   19  12  76  80  55  596 66  46  43
+True_deer   16  5   5   2   381 3   455 93  32  8
+True_dog    4   14  11  84  144 182 364 130 41  26
+True_frog   2   6   2   5   17  0   943 2   11  12
+True_horse  12  6   4   15  143 22  130 591 19  58
+True_ship   33  31  2   2   11  0   39  2   819 61
+True_truck  21  123 1   0   7   0   64  12  65  707
+
+[Improved CNN] Classification Report
+              precision    recall  f1-score   support
+
+    airplane     0.7003    0.4160    0.5220      1000
+  automobile     0.7091    0.6240    0.6638      1000
+        bird     0.6839    0.1060    0.1835      1000
+         cat     0.3897    0.0760    0.1272      1000
+        deer     0.3608    0.3810    0.3706      1000
+         dog     0.6523    0.1820    0.2846      1000
+        frog     0.3024    0.9430    0.4580      1000
+       horse     0.6112    0.5910    0.6009      1000
+        ship     0.5445    0.8190    0.6542      1000
+       truck     0.5647    0.7070    0.6279      1000
+
+    accuracy                         0.4845     10000
+   macro avg     0.5519    0.4845    0.4493     10000
+weighted avg     0.5519    0.4845    0.4493     10000</code></pre>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>MLDL 딥러닝 분류 - 사례분석 – 세상의 모든 통계 이야기</title>
+<title>MLDL 딥러닝 분류 - 사례분석 희소성공 – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -274,6 +274,12 @@ window.Quarto = {
  <span class="menu-text">📄 딥러닝 분류 (희소성공)사례</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_classification/classification_dl_image_case.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 딥러닝 분류 (이미지)사례</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -284,9 +290,13 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#딥러닝-분류-사례분석" id="toc-딥러닝-분류-사례분석" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석">딥러닝 분류 사례분석</a>
+  <li><a href="#딥러닝-분류-사례분석-희소성공-분류" id="toc-딥러닝-분류-사례분석-희소성공-분류" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석-희소성공-분류">딥러닝 분류 사례분석 (희소성공 분류)</a>
   <ul>
-  <li><a href="#희소성공-딥러닝-분류" id="toc-희소성공-딥러닝-분류" class="nav-link" data-scroll-target="#희소성공-딥러닝-분류">1. 희소성공 딥러닝 분류</a></li>
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터">1. 데이터</a></li>
+  <li><a href="#공통-준비-셀-tensorflow-seed-가중치" id="toc-공통-준비-셀-tensorflow-seed-가중치" class="nav-link" data-scroll-target="#공통-준비-셀-tensorflow-seed-가중치">2. 공통 준비 셀 (TensorFlow + seed + 가중치)</a></li>
+  <li><a href="#딥러닝-분류방법" id="toc-딥러닝-분류방법" class="nav-link" data-scroll-target="#딥러닝-분류방법">3. 딥러닝 분류방법</a></li>
+  <li><a href="#평가-지표-세-방법-공통-비교표-코드" id="toc-평가-지표-세-방법-공통-비교표-코드" class="nav-link" data-scroll-target="#평가-지표-세-방법-공통-비교표-코드">4. 평가 지표 “세 방법 공통 비교표” 코드</a></li>
+  <li><a href="#분류평가" id="toc-분류평가" class="nav-link" data-scroll-target="#분류평가">5. 분류평가</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -296,7 +306,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">MLDL 딥러닝 분류 - 사례분석</h1>
+<h1 class="title">MLDL 딥러닝 분류 - 사례분석 희소성공</h1>
 </div>
 
 
@@ -313,13 +323,12 @@ window.Quarto = {
 </header>
 
 
-<section id="딥러닝-분류-사례분석" class="level3">
-<h3 class="anchored" data-anchor-id="딥러닝-분류-사례분석">딥러닝 분류 사례분석</h3>
-<section id="희소성공-딥러닝-분류" class="level4">
-<h4 class="anchored" data-anchor-id="희소성공-딥러닝-분류">1. 희소성공 딥러닝 분류</h4>
-<section id="데이터" class="level5">
-<h5 class="anchored" data-anchor-id="데이터">(1) 데이터</h5>
-<p><strong>데이터 불러오기</strong></p>
+<section id="딥러닝-분류-사례분석-희소성공-분류" class="level3">
+<h3 class="anchored" data-anchor-id="딥러닝-분류-사례분석-희소성공-분류">딥러닝 분류 사례분석 (희소성공 분류)</h3>
+<section id="데이터" class="level4">
+<h4 class="anchored" data-anchor-id="데이터">1. 데이터</h4>
+<section id="데이터-불러오기" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-불러오기">데이터 불러오기</h5>
 <p>Credit Card Fraud(creditcard.csv) 데이터는 대표적인 이진 분류(surveillance / fraud detection) 벤치마크로, 한 건의 거래가 사기(Fraud) 인지 정상(Normal) 인지를 판정하는 문제를 다룬다.</p>
 <p>반응변수는 Class 하나이며 보통 Class=0을 정상(negative), Class=1을 사기(positive)로 정의한다. 즉 목표는 각 거래 <span class="math inline">\(P(Y=1∣X=x)\)</span> 을 추정하고, 운영 목적(오탐/미탐 비용, 검토량 등)에 맞는 임계값 t를 정해 <span class="math inline">\(\hat y =1{p(x)≥t}\)</span> 형태로 의사결정을 내리는 것이다.</p>
 <p>데이터 규모는 284,807건의 거래로 구성되며, 총 31개 변수를 가진다. 이 중 Class가 타깃(y)이고 나머지 30개가 입력 변수(X) 다. 입력 변수는 Time, V1~V28, Amount로 이루어진다. 자료형 관점에서 입력 변수들은 대부분 연속형이며(실수형), Class만 정수형 라벨이다.</p>
@@ -346,7 +355,9 @@ window.Quarto = {
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 타깃</span></span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"Class"</span>].astype(<span class="bu">int</span>)        <span class="co"># 1=Fraud(positive), 0=Normal</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span>[<span class="st">"Class"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>전처리</strong></p>
+</section>
+<section id="전처리" class="level5">
+<h5 class="anchored" data-anchor-id="전처리">전처리</h5>
 <p>이 코드는 희귀 이벤트(사기 거래) 이진 분류 문제에서 학습과 평가가 왜곡되지 않도록 데이터 분리와 전처리를 누수 없이 일관되게 수행하기 위한 구성이다.</p>
 <p>먼저 train_test_split으로 전체 데이터를 학습용(train)과 테스트용(test)으로 분리하는 단계이다. 이때 stratify=y를 사용하여 사기(Class=1) 비율이 train과 test에 거의 동일하게 유지되도록 하는 방식이다. 사기 데이터는 전체에서 극히 적은 불균형 데이터이므로 stratify를 사용하지 않으면 테스트셋의 양성 비율이 우연에 의해 흔들리고, 그 결과 평가 지표가 불안정해질 가능성이 큰 구조이다. 출력된 Fraud rate가 train과 test에서 거의 같게 나타나는 것은 분리 과정이 의도대로 수행되었음을 보여주는 결과이다.</p>
 <p>다음은 ColumnTransformer를 이용한 전처리 정의 단계이다. 이 데이터의 V1~V28은 PCA 기반으로 변환된 수치 특성이므로 대체로 스케일이 유사한 형태로 제공되는 편이다. 반면 Amount와 Time은 원래 스케일을 유지하는 변수이므로 값의 범위가 상대적으로 크고 학습 안정성을 저해할 수 있는 요소이다. 따라서 cols_scale을 [“Amount”, “Time”]으로 지정하고, 해당 두 컬럼에만 StandardScaler를 적용하여 평균 0, 표준편차 1로 표준화하는 구성이다. 나머지 컬럼은 remainder=“passthrough”로 지정하여 변환 없이 그대로 통과시키는 방식이다. 이는 필요한 컬럼에만 최소 전처리를 적용하는 실무형 선택이다.</p>
@@ -411,9 +422,9 @@ window.Quarto = {
 <span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"First 5 feature names:"</span>, feature_names[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Train shape: (227845, 30) Test shape: (56962, 30) <br> Fraud rate (train): 0.001729245759178389 Fraud rate (test): 0.0017204452090867595 <br> Scaled shapes: (227845, 30) (56962, 30) <br> First 5 feature names: [‘Amount’, ‘Time’, ‘V1’, ‘V2’, ‘V3’]</p>
 </section>
-<section id="딥러닝-분류" class="level5">
-<h5 class="anchored" data-anchor-id="딥러닝-분류">(2) 딥러닝 분류</h5>
-<p><strong>공통 준비 셀 (TensorFlow + seed + 가중치)</strong></p>
+</section>
+<section id="공통-준비-셀-tensorflow-seed-가중치" class="level4">
+<h4 class="anchored" data-anchor-id="공통-준비-셀-tensorflow-seed-가중치">2. 공통 준비 셀 (TensorFlow + seed + 가중치)</h4>
 <p>이 코드는 텐서플로 기반 딥러닝 학습을 시작하기 전에 재현성을 확보하고, 극단적 클래스 불균형 문제를 완화하기 위한 표본 가중치(sample weight)를 계산하는 준비 단계이다.</p>
 <p>먼저 numpy와 tensorflow, keras 및 layers를 임포트하는 부분이다. 이후 SEED=42를 정하고 np.random.seed(SEED), tf.random.set_seed(SEED)를 호출하는데, 이는 난수에 의존하는 연산(가중치 초기화, 미니배치 셔플, 드롭아웃 등)의 결과가 실행마다 달라지는 현상을 줄여 실험 재현성을 높이기 위한 설정이다. 완전한 재현성은 실행 환경이나 연산 커널에 따라 제한될 수 있으나, 일반적으로 이 두 줄은 실험 비교에 필요한 최소한의 고정 장치이다.</p>
 <p>다음은 클래스 불균형을 보정하기 위한 가중치 계산 단계이다. n_pos = int(y_train.sum())는 학습 데이터에서 양성 클래스(사기, y=1)의 개수를 의미한다. 라벨이 0과 1로 구성되어 있으므로 합(sum)은 1의 개수와 동일한 구조이다. n_neg = int(len(y_train) - n_pos)는 전체 학습 표본 수에서 양성 개수를 뺀 값이며, 음성 클래스(정상, y=0)의 개수이다.</p>
@@ -441,7 +452,11 @@ window.Quarto = {
 <p>표본가중치는 양성(사기) 샘플의 손실을 크게 만들어서, 사기를 틀렸을 때 패널티가 커지고 그 결과 모델이 사기를 구분하는 특징을 더 적극적으로 학습하게 된다 이때 pos_weight = n_neg / n_pos는 “양성 1개가 음성 몇 개에 해당하는가”를 맞춰주는 대표적인 균형화 방식이다. 지금 출력된 값이 약 577이면, 사기 1건을 정상 약 577건 정도의 중요도로 보도록 설정한 셈이다.</p>
 <p>이 방식의 성격과 한계: (장점) 구현이 단순하고, PR-AUC/Recall 같은 지표가 개선되는 경우가 많다. (한계) 가중치가 너무 크면 확률이 과대추정되거나(캘리브레이션 문제), FP가 증가할 수 있다 그래서 운영에서는 임계값(threshold) 정책(Top-K, 정밀도 제약 등)과 같이 튜닝하는 편이다</p>
 <p>n_pos: 394 n_neg: 227451 pos_weight: 577.2868020304569</p>
-<p><strong>MLP + 가중 BCE (권장 메인)</strong></p>
+</section>
+<section id="딥러닝-분류방법" class="level4">
+<h4 class="anchored" data-anchor-id="딥러닝-분류방법">3. 딥러닝 분류방법</h4>
+<section id="mlp-가중-bce-권장-메인" class="level5">
+<h5 class="anchored" data-anchor-id="mlp-가중-bce-권장-메인">(1) MLP + 가중 BCE (권장 메인)</h5>
 <p>이 코드는 극단적 불균형(사기 비율이 매우 낮은) 이진 분류 문제에서, 다층퍼셉트론(MLP)을 구성하고 가중 손실을 적용하여 학습한 뒤 테스트 데이터에 대한 예측 확률을 생성하는 흐름이다.</p>
 <p>먼저 build_mlp(input_dim) 함수는 입력 특성 수(input_dim)를 받아 MLP 모델을 정의하는 함수이다. 입력층은 keras.Input(shape=(input_dim,))로 설정되어 있으며, 각 샘플이 길이 input_dim인 1차원 벡터임을 의미한다. 이후 Dense(64, activation=“relu”) 층이 첫 번째 은닉층으로 배치되어 64차원 표현을 학습하도록 구성되어 있다. 그 다음 Dropout(0.2)이 적용되는데, 학습 시 은닉 유닛의 일부를 확률적으로 비활성화하여 과적합을 완화하는 정규화 기법이다. 두 번째 은닉층은 Dense(32, activation=“relu”)로 32차원 표현을 추가로 학습하도록 구성되어 있으며, 다시 Dropout(0.2)으로 정규화를 한 번 더 적용한다. 출력층은 Dense(1, activation=“sigmoid”)로 정의되며, 시그모이드 활성화의 출력은 0과 1 사이의 값이므로 각 거래가 사기일 확률로 해석되는 점수(score)를 생성하는 구조이다. 마지막으로 keras.Model(inputs, outputs)를 반환하여 입력에서 출력까지의 계산 그래프를 하나의 모델 객체로 만든다.</p>
 <p>mlp_bce = build_mlp(X_train_scaled.shape[1])는 전처리된 학습 데이터의 열 개수(특성 수)를 입력 차원으로 사용하여 모델을 실제로 생성하는 단계이다. 이어지는 compile 단계는 학습을 위한 최적화 설정과 손실함수 및 평가 지표를 지정하는 단계이다. optimizer는 Adam(1e-3)로 지정되어 있으며, 이는 학습률 0.001의 Adam 최적화 알고리즘으로 가중치를 갱신한다는 의미이다. loss는 BinaryCrossentropy로 지정되어 이진 분류에 표준적으로 사용하는 로그 손실을 최소화하도록 학습된다. metrics에는 AUC(curve=“ROC”)와 AUC(curve=“PR”)가 포함되어 있는데, 불균형 데이터에서는 ROC-AUC뿐 아니라 PR-AUC가 모델의 양성(사기) 분별력을 더 직접적으로 반영하는 경우가 많기 때문에 두 지표를 함께 모니터링하는 구성이다.</p>
@@ -483,7 +498,9 @@ window.Quarto = {
 <span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>p_test_bce <span class="op">=</span> mlp_bce.predict(X_test_scaled, batch_size<span class="op">=</span><span class="dv">8192</span>).ravel()</span>
 <span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p_test_bce:"</span>, p_test_bce[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>MLP + Focal Loss (불균형에서 recall 밀 때 자주 유리)</strong></p>
+</section>
+<section id="mlp-focal-loss-불균형에서-recall-밀-때-자주-유리" class="level5">
+<h5 class="anchored" data-anchor-id="mlp-focal-loss-불균형에서-recall-밀-때-자주-유리">(2) MLP + Focal Loss (불균형에서 recall 밀 때 자주 유리)</h5>
 <p>이 코드는 불균형 이진 분류에서 자주 사용하는 focal loss를 직접 정의하고, 동일한 MLP 구조에 focal loss를 적용하여 학습한 뒤 테스트 데이터에 대한 예측 확률을 생성하는 과정이다.</p>
 <p>먼저 binary_focal_loss(gamma=2.0, alpha=0.25)는 focal loss 함수를 반환하는 팩토리 함수이다. gamma와 alpha는 focal loss의 두 하이퍼파라미터이며, gamma는 쉬운 샘플의 기여도를 줄이는 정도를 결정하고 alpha는 클래스 불균형을 완화하기 위한 클래스 가중 역할을 한다. 내부의 loss(y_true, y_pred)는 케라스가 배치 단위로 호출하는 실제 손실 계산 함수이다.</p>
 <p>loss 함수에서 y_true를 float32로 변환하는 이유는 이후 연산을 텐서플로 타입으로 안정적으로 처리하기 위함이다. eps = tf.keras.backend.epsilon()를 사용하고 y_pred를 [eps, 1-eps] 범위로 clip하는 이유는 log(pt) 계산에서 0 또는 1이 들어가면 로그가 발산하거나 수치 문제가 생기는 것을 방지하기 위한 처리이다.</p>
@@ -530,7 +547,9 @@ window.Quarto = {
 <span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>p_test_focal <span class="op">=</span> mlp_focal.predict(X_test_scaled, batch_size<span class="op">=</span><span class="dv">8192</span>).ravel()</span>
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p_test_focal:"</span>, p_test_focal[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p><strong>오토인코더(Anomaly Detection) — 정상만으로 학습 후 재구성오차로 점수화</strong></p>
+</section>
+<section id="오토인코더anomaly-detection-정상만으로-학습-후-재구성오차로-점수화" class="level5">
+<h5 class="anchored" data-anchor-id="오토인코더anomaly-detection-정상만으로-학습-후-재구성오차로-점수화">(3) 오토인코더(Anomaly Detection) — 정상만으로 학습 후 재구성오차로 점수화</h5>
 <p>이 코드는 오토인코더(autoencoder)를 이용한 이상탐지(anomaly detection) 방식으로, 정상 거래만을 사용해 재구성 모델을 학습하고 테스트 데이터의 재구성 오차를 이상 점수로 계산하는 절차이다.</p>
 <p>첫 줄에서 X_train_norm = X_train_scaled[y_train == 0]을 통해 학습 데이터 중 정상 클래스(0)만 추출하는 단계이다. 이는 오토인코더가 정상 패턴을 잘 재구성하도록 학습시키고, 정상과 다른 패턴(사기)이 들어오면 재구성 오차가 커지도록 만드는 전형적인 정상기반(one-class) 학습 전략이다. 이어지는 출력은 정상 학습 샘플 수와 입력 차원(특성 수)이 의도대로 구성되었는지 확인하는 점검용 출력이다.</p>
 <p>build_autoencoder(input_dim) 함수는 입력 차원 input_dim을 받아 오토인코더 모델을 정의하는 부분이다. 입력층은 keras.Input(shape=(input_dim,))로 설정되어 있으며, 각 샘플이 길이 input_dim인 1차원 벡터임을 의미한다. 이후 Dense(32)와 Dense(16) 층은 인코더 역할을 하며 입력을 점차 저차원 표현으로 압축하는 구조이다. z = Dense(8) 층은 병목(bottleneck) 또는 잠재벡터(latent representation)에 해당하며, 정상 데이터의 핵심 구조를 8차원으로 요약한 표현을 학습하는 단계이다. 그 다음 Dense(16), Dense(32) 층은 디코더 역할을 하며 잠재벡터에서 원래 차원으로 다시 복원하는 과정이다. 마지막 출력층 Dense(input_dim, activation=None)은 입력과 동일한 차원의 재구성 벡터를 생성하는 층이며, activation=None은 선형 출력이므로 입력값의 연속적인 재구성에 적합한 설정이다.</p>
@@ -576,8 +595,9 @@ window.Quarto = {
 <span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"score_test_ae:"</span>, score_test_ae[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="평가-지표-세-방법-공통-비교표-코드" class="level5">
-<h5 class="anchored" data-anchor-id="평가-지표-세-방법-공통-비교표-코드">(3) 평가 지표 “세 방법 공통 비교표” 코드</h5>
+</section>
+<section id="평가-지표-세-방법-공통-비교표-코드" class="level4">
+<h4 class="anchored" data-anchor-id="평가-지표-세-방법-공통-비교표-코드">4. 평가 지표 “세 방법 공통 비교표” 코드</h4>
 <p>이 코드는 세 가지 모델이 만든 점수(score)를 동일한 기준으로 비교하기 위해 공통 평가 지표를 계산하고, 결과를 표 형태의 DataFrame으로 정리하는 평가 셀이다. 여기서 score는 분류모델의 경우 사기 확률 p이며, 오토인코더의 경우 재구성오차로서 값이 클수록 사기 의심이 큰 점수이다.</p>
 <p>먼저 roc_auc_score, average_precision_score, precision_recall_curve를 불러와 ROC-AUC, PR-AUC(AP), 그리고 정밀도-재현율 곡선을 기반으로 한 임계값 관련 계산을 수행할 준비를 한다. 이후 precision_recall_at_k 함수는 운영에서 자주 쓰는 상위 K건 선별 정책을 모사하기 위한 함수이다. 점수를 내림차순으로 정렬한 뒤 상위 K개의 인덱스를 선택하고, 그 안에 포함된 실제 양성(사기) 건수의 합을 TP로 간주하여 Precision@K와 Recall@K를 계산한다. Precision@K는 상위 K건 중 실제 사기 비율이며, Recall@K는 전체 사기 중 상위 K에 포함된 비율이다.</p>
 <p>recall_at_precision 함수는 정밀도 하한을 만족하는 조건에서 가능한 최대 재현율을 계산하는 함수이다. precision_recall_curve로 얻은 정밀도 배열과 재현율 배열을 사용하여 precision이 target_precision 이상인 구간을 찾고, 그 구간에서 재현율의 최댓값을 반환한다. 해당 조건을 만족하는 구간이 없으면 값이 존재하지 않으므로 NaN을 반환하도록 구성되어 있다. 이 함수는 현업에서 정밀도 목표를 먼저 고정한 뒤 회수율을 최대화하는 정책을 수치로 요약할 때 유용하다.</p>
@@ -675,8 +695,10 @@ window.Quarto = {
 0   MLP + weighted BCE  0.9795  0.6584  0.6837  0.73    0.7449  0.430   0.8776  0.174   0.8878
 2   Autoencoder (recon error)   0.9475  0.5902  0.1531  0.62    0.6327  0.400   0.8163  0.160   0.8163</code></pre>
 </section>
+<section id="분류평가" class="level4">
+<h4 class="anchored" data-anchor-id="분류평가">5. 분류평가</h4>
 <section id="임계값에서-위-비교표-결과를-바탕으로" class="level5">
-<h5 class="anchored" data-anchor-id="임계값에서-위-비교표-결과를-바탕으로">(4) 임계값에서, 위 비교표 결과를 바탕으로</h5>
+<h5 class="anchored" data-anchor-id="임계값에서-위-비교표-결과를-바탕으로">임계값에서, 위 비교표 결과를 바탕으로</h5>
 <p>이 코드는 세 가지 모델이 만든 점수(score)를 입력으로 받아, 운영에서 자주 쓰는 세 가지 임계값 정책을 동일한 형식으로 평가하고 그 결과를 df_thr라는 표로 정리하는 코드이다. 여기서 score는 값이 클수록 사기(양성)일 가능성이 큰 점수라고 가정하며, 분류모델은 예측확률 p를, 오토인코더는 재구성오차를 그대로 score로 사용한다.</p>
 <p>처음의 import 구문은 임계값 기반 분류 결과를 평가하기 위해 필요한 함수들을 불러오는 부분이다. confusion_matrix는 임계값을 적용해 만든 예측값과 실제값을 비교하여 TN, FP, FN, TP를 계산하는 데 사용되고, precision_recall_curve는 점수의 임계값을 변화시키며 정밀도와 재현율의 관계를 계산하는 데 사용된다.</p>
 <p>eval_threshold 함수는 임계값 thr을 고정했을 때의 혼동행렬과 주요 지표를 계산하는 공통 평가 함수이다. positive_if 인자는 점수와 임계값의 비교 방향을 의미하며, 기본값 “ge”는 score가 thr 이상이면 양성으로 예측한다는 규칙이다. 이 규칙으로 y_pred를 만든 뒤 confusion_matrix로 tn, fp, fn, tp를 얻고, precision, recall, fpr을 계산한다. precision은 TP/(TP+FP), recall은 TP/(TP+FN), fpr은 FP/(FP+TN)으로 정의되며, pred_pos는 모델이 양성으로 예측한 전체 건수(TP+FP)이다. 분모에 1e-12를 더하는 처리는 0으로 나누는 수치 오류를 방지하기 위한 안전장치이다.</p>
@@ -836,7 +858,7 @@ window.Quarto = {
 8   NaN Prec≥0.8 (max recall)   39.812298   18  15  3   83  56861   0.8333  0.1531  0.000053</code></pre>
 </section>
 <section id="사후확률-출력" class="level5">
-<h5 class="anchored" data-anchor-id="사후확률-출력">(5) 사후확률 출력</h5>
+<h5 class="anchored" data-anchor-id="사후확률-출력">사후확률 출력</h5>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -881,7 +903,7 @@ window.Quarto = {
 7299    151519  1   95628.0 1.63    0.989034    1.0 1.000000    0.853552</code></pre>
 </section>
 <section id="세-모델-중-어떤-정책이-현업형으로-가장-합리적인지top-k-vs-비용-vs-정밀도제약" class="level5">
-<h5 class="anchored" data-anchor-id="세-모델-중-어떤-정책이-현업형으로-가장-합리적인지top-k-vs-비용-vs-정밀도제약">(6) 세 모델 중 어떤 정책이 ’현업형’으로 가장 합리적인지(Top-K vs 비용 vs 정밀도제약)</h5>
+<h5 class="anchored" data-anchor-id="세-모델-중-어떤-정책이-현업형으로-가장-합리적인지top-k-vs-비용-vs-정밀도제약">세 모델 중 어떤 정책이 ’현업형’으로 가장 합리적인지(Top-K vs 비용 vs 정밀도제약)</h5>
 <p>이 코드는 앞에서 계산한 df_thr(모델×정책별 임계값 적용 결과표)를 이용하여, (1) df_thr가 존재하지 않으면 동일 규칙으로 다시 생성하고, (2) 세 가지 운영 정책(Top-K, 비용 최소, 정밀도 제약)별로 “가장 적합한 모델”을 자동으로 선택한 뒤, (3) 선택 결과를 요약표(summary)로 정리하는 절차이다.</p>
 <p>첫 부분은 df_thr를 만들 때 필요한 공통 함수들을 정의하는 단계이다. eval_threshold는 점수(score)와 임계값(thr)을 비교하여 예측 라벨 y_pred를 생성하고, confusion_matrix로부터 TN, FP, FN, TP를 계산한 다음 precision, recall, fpr, pred_pos(TP+FP)를 반환하는 함수이다. find_topk_threshold는 점수를 내림차순으로 정렬했을 때 K번째 점수를 임계값으로 선택하여 “상위 K개를 양성으로 보내는” Top-K 정책을 구현하는 함수이다. find_cost_threshold는 분위수(quantile) 그리드에서 임계값 후보를 만들고, 각 후보에 대해 eval_threshold로 FN과 FP를 계산한 뒤 비용 cFN·FN + cFP·FP가 최소가 되는 임계값을 선택하는 함수이다. find_precision_constrained_threshold는 precision_recall_curve로 PR 곡선 상의 (precision, recall, threshold)을 구한 뒤 precision이 p0 이상인 지점들만 남기고, 그중 recall이 최대가 되는 지점의 threshold를 선택하는 함수이다.</p>
 <p>두 번째 부분은 df_thr가 런타임에 존재하지 않을 때 재생성하는 단계이다. 이 단계는 런타임 재시작이나 변수 소실 상황에서도 동일한 분석을 재현할 수 있도록 만든 방어적 처리이다. scores 리스트에는 각 모델 이름과 해당 모델의 테스트 점수 배열이 들어가며, 분류 모델은 p_test_bce와 p_test_focal을 점수로 사용하고 오토인코더는 score_test_ae(재구성오차)를 점수로 사용한다. 이후 for 루프에서 각 모델에 대해 Top-K 임계값(thr_topk), 비용 최소 임계값(d_cost), 정밀도 제약 임계값(d_prec)을 순서대로 계산한다. 각 결과 딕셔너리에 model과 policy를 붙여 한 행으로 식별 가능하게 만들고, rows에 누적하여 최종적으로 df_thr = pd.DataFrame(rows) 형태의 결과표를 구성한다. 마지막의 반올림 처리(round)는 표를 읽기 쉽게 만들기 위한 출력용 전처리이다.</p>

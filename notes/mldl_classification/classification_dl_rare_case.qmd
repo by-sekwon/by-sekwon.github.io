@@ -1,14 +1,13 @@
 ---
-title: "MLDL 딥러닝 분류 - 사례분석"
+title: "MLDL 딥러닝 분류 - 사례분석 희소성공"
 format: html
 ---
 
-### 딥러닝 분류 사례분석
+### 딥러닝 분류 사례분석 (희소성공 분류)
 
-#### 1. 희소성공 딥러닝 분류
-##### \(1) 데이터
+#### 1. 데이터
 
-**데이터 불러오기**
+##### 데이터 불러오기
 
 Credit Card Fraud(creditcard.csv) 데이터는 대표적인 이진 분류(surveillance / fraud detection) 벤치마크로, 한 건의 거래가 사기(Fraud) 인지 정상(Normal) 인지를 판정하는 문제를 다룬다. 
 
@@ -46,7 +45,7 @@ y = df["Class"].astype(int)        # 1=Fraud(positive), 0=Normal
 X = df.drop(columns=["Class"])
 ```
 
-**전처리**
+##### 전처리
 
 이 코드는 희귀 이벤트(사기 거래) 이진 분류 문제에서 학습과 평가가 왜곡되지 않도록 데이터 분리와 전처리를 누수 없이 일관되게 수행하기 위한 구성이다.
 
@@ -127,9 +126,7 @@ Scaled shapes: (227845, 30) (56962, 30)
 <br>
 First 5 feature names: ['Amount', 'Time', 'V1', 'V2', 'V3']
 
-##### \(2) 딥러닝 분류
-
-**공통 준비 셀 (TensorFlow + seed + 가중치)**
+#### 2\. 공통 준비 셀 (TensorFlow + seed + 가중치)
 
 이 코드는 텐서플로 기반 딥러닝 학습을 시작하기 전에 재현성을 확보하고, 극단적 클래스 불균형 문제를 완화하기 위한 표본 가중치(sample weight)를 계산하는 준비 단계이다.
 
@@ -172,7 +169,9 @@ print("n_pos:", n_pos, "n_neg:", n_neg, "pos_weight:", pos_weight)
 
 n_pos: 394 n_neg: 227451 pos_weight: 577.2868020304569
 
-**MLP + 가중 BCE (권장 메인)**
+#### 3. 딥러닝 분류방법
+
+##### \(1) MLP + 가중 BCE (권장 메인)
 
 이 코드는 극단적 불균형(사기 비율이 매우 낮은) 이진 분류 문제에서, 다층퍼셉트론(MLP)을 구성하고 가중 손실을 적용하여 학습한 뒤 테스트 데이터에 대한 예측 확률을 생성하는 흐름이다.
 
@@ -225,7 +224,7 @@ p_test_bce = mlp_bce.predict(X_test_scaled, batch_size=8192).ravel()
 print("p_test_bce:", p_test_bce[:5])
 ```
 
-**MLP + Focal Loss (불균형에서 recall 밀 때 자주 유리)**
+##### \(2) MLP + Focal Loss (불균형에서 recall 밀 때 자주 유리)
 
 이 코드는 불균형 이진 분류에서 자주 사용하는 focal loss를 직접 정의하고, 동일한 MLP 구조에 focal loss를 적용하여 학습한 뒤 테스트 데이터에 대한 예측 확률을 생성하는 과정이다.
 
@@ -285,7 +284,7 @@ p_test_focal = mlp_focal.predict(X_test_scaled, batch_size=8192).ravel()
 print("p_test_focal:", p_test_focal[:5])
 ```
 
-**오토인코더(Anomaly Detection) — 정상만으로 학습 후 재구성오차로 점수화**
+##### \(3) 오토인코더(Anomaly Detection) — 정상만으로 학습 후 재구성오차로 점수화
 
 이 코드는 오토인코더(autoencoder)를 이용한 이상탐지(anomaly detection) 방식으로, 정상 거래만을 사용해 재구성 모델을 학습하고 테스트 데이터의 재구성 오차를 이상 점수로 계산하는 절차이다.
 
@@ -341,7 +340,7 @@ score_test_ae = np.mean((X_test_scaled - Xhat_test)**2, axis=1)  # MSE per sampl
 
 print("score_test_ae:", score_test_ae[:5])
 ```
-##### \(3) 평가 지표 “세 방법 공통 비교표” 코드
+#### 4. 평가 지표 “세 방법 공통 비교표” 코드
 
 이 코드는 세 가지 모델이 만든 점수(score)를 동일한 기준으로 비교하기 위해 공통 평가 지표를 계산하고, 결과를 표 형태의 DataFrame으로 정리하는 평가 셀이다. 여기서 score는 분류모델의 경우 사기 확률 p이며, 오토인코더의 경우 재구성오차로서 값이 클수록 사기 의심이 큰 점수이다.
 
@@ -454,7 +453,9 @@ model	ROC-AUC	PR-AUC(AP)	Recall@Prec≥0.80	P@100	R@100	P@200	R@200	P@500	R@500
 2	Autoencoder (recon error)	0.9475	0.5902	0.1531	0.62	0.6327	0.400	0.8163	0.160	0.8163
 ```
 
-##### \(4) 임계값에서, 위 비교표 결과를 바탕으로
+#### 5. 분류평가
+
+##### 임계값에서, 위 비교표 결과를 바탕으로
 
 이 코드는 세 가지 모델이 만든 점수(score)를 입력으로 받아, 운영에서 자주 쓰는 세 가지 임계값 정책을 동일한 형식으로 평가하고 그 결과를 df_thr라는 표로 정리하는 코드이다. 여기서 score는 값이 클수록 사기(양성)일 가능성이 큰 점수라고 가정하며, 분류모델은 예측확률 p를, 오토인코더는 재구성오차를 그대로 score로 사용한다.
 
@@ -632,7 +633,7 @@ model	policy	thr	pred_pos	TP	FP	FN	TN	precision	recall	fpr
 8	NaN	Prec≥0.8 (max recall)	39.812298	18	15	3	83	56861	0.8333	0.1531	0.000053
 ```
 
-##### \(5) 사후확률 출력
+##### 사후확률 출력
 
 ```python
 import numpy as np
@@ -686,7 +687,7 @@ df_top[cols_view + ["p_raw_focal"] if "p_raw_focal" in df_top.columns else cols_
 7299	151519	1	95628.0	1.63	0.989034	1.0	1.000000	0.853552
 ```
 
-##### \(6) 세 모델 중 어떤 정책이 ‘현업형’으로 가장 합리적인지(Top-K vs 비용 vs 정밀도제약)
+##### 세 모델 중 어떤 정책이 ‘현업형’으로 가장 합리적인지(Top-K vs 비용 vs 정밀도제약)
 
 이 코드는 앞에서 계산한 df_thr(모델×정책별 임계값 적용 결과표)를 이용하여, (1) df_thr가 존재하지 않으면 동일 규칙으로 다시 생성하고, (2) 세 가지 운영 정책(Top-K, 비용 최소, 정밀도 제약)별로 “가장 적합한 모델”을 자동으로 선택한 뒤, (3) 선택 결과를 요약표(summary)로 정리하는 절차이다.
 
