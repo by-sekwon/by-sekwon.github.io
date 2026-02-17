@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>data-reduction_statmethod – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44962e3d41ec9ccc254fd50f1af5efbe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_intro/index.html"> 
+<span class="menu-text">MLDL개념</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_classification/index.html"> 
+<span class="menu-text">MLDL분류</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/data_reduction/index.html" aria-current="page"> 
+<span class="menu-text">차원축소</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_clustering/index.html"> 
+<span class="menu-text">MLDL군집</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/data_reduction/data reduction_statmethod.html">📄 차원축소 개념|필요성</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【머신·딥러닝 차원축소】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 개념|필요성</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_statmethod.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 차원축소 개념|필요성</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 개념|필요성</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<p>권세혁교수 통계 사전 【차원축소】</p>
+<p>s<a href="https://sites.google.com/view/wolfpack61"><u>https://sites.google.com/view/wolfpack61</u></a></p>
+<p>Chapter 통계적 차원축소</p>
+<p>1. PCA: 분산 최대화와 재구성 관점</p>
+<p>주성분분석 PCA는 고차원 변수 <span class="math inline">\(X \in \mathbb{R}^{n \times p}\)</span>를 더 낮은 차원 <span class="math inline">\(Z \in \mathbb{R}^{n \times k}(k \ll p)\)</span>로 선형 변환하여 데이터의 핵심 변동 구조를 보존하려는 차원축소 방법이다.</p>
+<p>PCA는 원변수들의 선형결합으로 이루어진 새로운 좌표축을 구성하는 방법이며, 그 좌표축은 데이터의 분산을 가장 잘 설명하는 방향들로 정해지는 방식이다.</p>
+<p>PCA의 결과는 행렬 형태로 <span class="math inline">\(Z = XW\)</span>로 표현되는 구조이며, 여기서 <span class="math inline">\(W \in \mathbb{R}^{p \times k}\)</span>는 주성분 적재행렬(loading matrix)이고 Z는 주성분 점수(score) 행렬이다.</p>
+<p>분산 최대화 관점의 PCA</p>
+<p>자료는 보통 중심화(centered)된 형태로 다루는 것이 기본이다. 각 변수의 평균을 뺀 중심화 행렬을 여전히 X로 표기하면, 공분산 행렬은 <span class="math inline">\(S = \frac{1}{n - 1}X^{\top}X\)</span>으로 정의되는 형태이다.</p>
+<p>첫 번째 주성분 방향 벡터 <span class="math inline">\(w_{1} \in \mathbb{R}^{p}\)</span>는 <span class="math inline">\(Xw_{1}\)</span>의 분산이 최대가 되도록 선택되는 벡터이다. 즉 <span class="math inline">\(\max_{\parallel w_{1} \parallel = 1}Var(Xw_{1}) = \max_{\parallel w_{1} \parallel = 1}w_{1}^{\top}Sw_{1}\)</span>로 정의되는 최적화 문제의 해가 <span class="math inline">\(w_{1}\)</span>인 구조이다. 여기서 <span class="math inline">\(\parallel w_{1} \parallel = 1\)</span> 제약은 축의 크기를 고정하여 문제를 유일하게 만드는 역할을 하는 제약이다. 이 최적화의 해는 S의 가장 큰 고유값 <span class="math inline">\(\lambda_{1}\)</span>에 대응하는 고유벡터이며, <span class="math inline">\(w_{1}\)</span>이 그 고유벡터가 되는 구조이다.</p>
+<p>두 번째 주성분 <span class="math inline">\(w_{2}\)</span>는 <span class="math inline">\(\parallel w_{2} \parallel = 1\)</span>이고 <span class="math inline">\(w_{2}^{\top}w_{1} = 0\)</span>을 만족하면서 <span class="math inline">\(w_{2}^{\top}Sw_{2}\)</span>를 최대화하는 벡터로 정의되는 구조이다. 일반적으로 m번째 주성분 방향 <span class="math inline">\(w_{m}\)</span>은 앞선 주성분들과 직교하면서 분산을 최대화하는 방향이며, 결과적으로 <span class="math inline">\(w_{1},\ldots,w_{k}\)</span>는 S의 상위 k개 고유벡터로 구성되는 구조이다.</p>
+<p>주성분 점수는 <span class="math inline">\(z_{im} = x_{i}^{\top}w_{m},i = 1,\ldots,n,m = 1,\ldots,k\)</span>로 정의되는 형태이며, 이를 모으면 <span class="math inline">\(Z = XW\)</span>가 되는 구조이다. 여기서 <span class="math inline">\(W = \lbrack w_{1},\ldots,w_{k}\rbrack\)</span>이다. 각 주성분의 분산은 해당 고유값과 연결되며 <span class="math inline">\(Var(Xw_{m}) = \lambda_{m}\)</span>로 해석되는 구조이다. 따라서 \lambda_m은 m번째 주성분이 설명하는 변동의 크기를 나타내는 수량이다.</p>
+<p>재구성(근사) 관점의 PCA</p>
+<p>PCA는 분산을 최대화하는 축을 찾는 문제이면서 동시에 원자료를 저차원으로 가장 잘 근사하는 문제로도 해석되는 방법이다. k차원 표현을 이용하여 원자료 X를 <span class="math inline">\(\widehat{X} = ZW^{\top} = XWW^{\top}\)</span>로 근사한다고 할 때, PCA는 다음의 재구성 오차를 최소화하는 W를 제공하는 구조이다.</p>
+<p><span class="math inline">\(\min_{W^{\top}W = I_{k}} \parallel X - XWW^{\top} \parallel_{F}^{2}\)</span>, 여기서 <span class="math inline">\(\parallel \cdot \parallel_{F}\)</span>는 Frobenius 놈(norm)이며, 행렬 원소 제곱합의 제곱근인 형태이다. 이 관점에서 PCA는 p차원 공간에서 데이터를 k차원 부분공간으로 투영한 뒤 다시 원공간으로 되돌렸을 때의 오차가 최소가 되도록 하는 최적의 부분공간을 찾는 방법인 구조이다. 따라서 k가 커질수록 재구성 오차는 감소하며, k=p이면 재구성 오차가 0이 되는 구조이다.</p>
+<p>표준화 여부와 공분산 PCA vs 상관 PCA</p>
+<p>PCA는 거리와 분산 구조를 기반으로 하는 방법이므로, 변수의 스케일에 매우 민감한 방법이다. 예를 들어 어떤 변수는 단위가 매우 커서 분산이 크고, 다른 변수는 단위가 작아 분산이 작은 경우가 흔한 구조이다.</p>
+<p>공분산 PCA는 중심화된 X로부터 공분산 S를 만들고 그 고유분해로 주성분을 구하는 방식이다. 이 경우 분산이 큰 변수의 방향이 주성분을 지배하기 쉬운 구조이다. 즉 큰 단위를 가진 변수의 변동이 <span dir="rtl">”</span>중요한 신호”로 간주되어 주성분에 크게 반영되는 경향이 있는 구조이다.</p>
+<p>상관 PCA는 각 변수를 표준화하여 평균 0, 분산 1로 만든 뒤 PCA를 수행하는 방식이다. 표준화된 자료를 X_s라 하면, 상관행렬은 <span class="math inline">\(R = \frac{1}{n - 1}X_{s}^{\top}X_{s}\)</span>로 주어지는 형태이며, R의 고유벡터로 주성분 방향을 구하는 구조이다. 이 방식은 변수 스케일 차이를 제거하여, 모든 변수가 동일한 분산 척도에서 주성분에 기여하도록 만드는 방법인 구조이다.</p>
+<p>공분산 PCA를 사용하는 것이 타당한 상황은 변수들이 동일 단위이거나 분산 차이 자체가 의미 있는 정보일 때인 구조이다. 상관 PCA를 사용하는 것이 타당한 상황은 단위가 서로 다르거나, 단위 차이가 분석 목적과 무관하며 <span dir="rtl">”</span>상관 구조” 자체를 보고자 할 때인 구조이다. 실무에서는 서로 단위가 다른 변수가 혼재하는 경우가 많으므로, 상관 PCA가 기본 선택이 되는 경우가 많은 구조이다.</p>
+<p>차원 선택 k의 기준: 설명분산, 스크리 플롯, CV</p>
+<p>PCA에서 핵심 실무 의사결정은 k, 즉 몇 개의 주성분을 남길지를 정하는 문제이다. 가장 널리 쓰이는 기준은 설명분산 비율이다. S의 고유값을 <span class="math inline">\(\lambda_{1} \geq \lambda_{2} \geq \cdots \geq \lambda_{p}\)</span>라 하면, m번째 주성분의 설명분산 비율은 <span class="math inline">\(\text{PVE}_{m} = \frac{\lambda_{m}}{\sum_{j = 1}^{p}\lambda_{j}}\)</span>로 정의되는 형태이다.</p>
+<p>누적 설명분산 비율은 <span class="math inline">\(\text{CPVE}(k) = \frac{\sum_{m = 1}^{k}\lambda_{m}}{\sum_{j = 1}^{p}\lambda_{j}}\)</span>로 정의되는 형태이며, <span class="math inline">\(\text{CPVE}(k)\)</span>가 예를 들어 0.80(80%)를 넘는 최소의 k를 선택하는 방식이 흔히 쓰이는 구조이다. 이 기준은 직관적이지만, <span dir="rtl">”</span>설명분산이 크다”가 반드시 <span dir="rtl">”</span>예측에 유리하다”를 의미하지는 않는 한계가 있는 기준이다.</p>
+<p>스크리 플롯은 고유값 <span class="math inline">\(\lambda_{m}\)</span>을 m에 따라 그린 그림에서 꺾이는 지점(elbow)을 찾아 k를 선택하는 방법이다. 고유값이 급격히 감소하다가 완만해지는 지점 이후의 성분은 추가적인 정보가 적고 잡음에 가까울 수 있다는 직관을 활용하는 방식이다. 이 방법은 시각적으로 이해가 쉽지만 꺾이는 지점의 판단이 주관적일 수 있는 한계가 있는 구조이다.</p>
+<p>교차검증 CV 기반 선택은 다운스트림 목적을 반영하는 선택 기준이다. 예측이 목적이면, 각 k에 대해 <span class="math inline">\(Z = XW_{k}\)</span>로 축소한 뒤 회귀나 분류 모델을 학습하고 검증 성능이 가장 좋은 k를 선택하는 방식이다.</p>
+<p>재구성이 목적이면, 훈련 데이터에서 <span class="math inline">\(W_{k}\)</span>를 추정한 뒤 검증 데이터 <span class="math inline">\(X_{\text{val}}\)</span>에 대해 <span class="math inline">\({\widehat{X}}_{\text{val}} = X_{\text{val}}W_{k}W_{k}^{\top}\)</span>를 만들고 재구성 오차 <span class="math inline">\(\parallel X_{\text{val}} - {\widehat{X}}_{\text{val}} \parallel_{F}^{2}\)</span>가 작은 k를 선택하는 방식이다.</p>
+<p>CV 기반 선택은 실용적이지만, 반드시 훈련 데이터에서만 <span class="math inline">\(W_{k}\)</span>를 추정하고 검증 데이터에는 같은 변환을 적용해야 하며, 이를 어기면 데이터 누수가 발생하는 구조이다.</p>
+<p>행렬 표현 <span class="math inline">\(Z = XW\)</span>와 해석 요소</p>
+<p>PCA 결과를 행렬로 정리하면 <span class="math inline">\(Z = XW\)</span>라는 표현이 가장 핵심이다. W의 각 열 <span class="math inline">\(w_{m}\)</span>은 m번째 주성분의 적재벡터이며, 각 성분의 크기와 부호는 원변수들이 그 주성분에 어떻게 기여하는지를 나타내는 구조이다.</p>
+<p>Z의 각 열은 주성분 점수이며, 각 관측치가 해당 주성분 축에서 어디에 위치하는지를 나타내는 좌표인 구조이다. 따라서 해석은 보통 W를 통해 <span dir="rtl">”</span>축의 의미”를 설명하고, Z를 통해 <span dir="rtl">”</span>관측치의 위치와 군집”을 설명하는 방식으로 이루어지는 구조이다.</p>
+<p>결론적으로 PCA가 분산을 최대화하는 최적의 선형 축을 제공하는 동시에, 원자료를 저차원 부분공간으로 가장 잘 근사하는 최적화 해석을 갖는 방법이라는 점이다. 또한 표준화 여부는 분석 결과를 크게 바꾸는 핵심 선택이며, 차원 선택 k는 설명분산과 스크리 플롯의 직관을 활용하되 목적에 따라 교차검증 기반 선택으로 보완하는 것이 타당하다는 점으로 정리할 수 있다.</p>
+<p>기하학적 해석</p>
+<p>이 그림은 PCA가 고차원 데이터 X를 더 낮은 차원 Z로 바꾸는 과정을 기하적으로 보여주는 그림이다. 파란 점들은 원래 공간에서의 관측치들이며, 이 관측치들이 가장 많이 퍼져 있는 방향을 찾으면 그 방향이 첫 번째 주성분 <span class="math inline">\(PC_{1}\)</span>이 되는 구조이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="media/image1.tif" style="width:4.5in;height:3in" class="figure-img"></p>
+<figcaption>붙여넣은 이미지.tiff</figcaption>
+</figure>
+</div>
+<p><span class="math inline">\(PC_{1}\)</span>은 데이터 분산이 최대가 되는 축이므로, 점구름을 가장 잘 <span dir="rtl">”</span>펴서” 설명하는 방향이라는 의미이다. <span class="math inline">\(PC_{2}\)</span>는 <span class="math inline">\(PC_{1}\)</span>과 직교하면서 남아 있는 변동을 가장 크게 설명하는 두 번째 축이라는 의미이다.</p>
+<p>점에서 아래의 평면으로 내려가는 점선은 각 관측치를 주성분 부분공간으로 직교 투영(projection)하는 과정을 나타내며, 투영된 위치들이 저차원 표현 Z가 되는 구조이다.</p>
+<p>즉 <span class="math inline">\(Z = XW\)</span>에서 W는 <span class="math inline">\(PC_{1}\)</span>, <span class="math inline">\(PC_{2}\)</span> 방향 벡터를 모아 만든 행렬이고, 각 관측치는 그 축들 위에서의 좌표값으로 요약되는 구조이다. 그림의 <span dir="rtl">”</span>Reconstruction” 표시는 저차원 표현 Z로부터 다시 원공간으로 되돌려 근사 <span class="math inline">\(\widehat{X} = ZW^{\top}\)</span>를 만드는 개념을 나타내며, 이때 원점과의 차이가 재구성 오차로 해석되는 구조이다.</p>
+<p>요약하면, PCA는 분산이 큰 방향의 축을 선택해 그 축으로 투영하여 차원을 줄이고, 그 결과로 정보 손실은 최소화하면서도 데이터 구조를 간단한 좌표계로 표현하는 방법이라는 내용을 시각적으로 보여주는 그림이다.</p>
+<p>2. 요인분석(FA): 공통요인과 고유요인</p>
+<p>요인분석은 다변량 관측변수 X의 공분산 구조를 소수의 잠재변수로 설명하려는 통계적 차원축소 방법이다. PCA가 관측자료의 분산을 최대한 보존하는 선형축을 구성하는 방법이라면, 요인분석은 관측변수들 사이의 상관을 만들어내는 공통 원인을 잠재요인으로 가정하고 그 구조를 추정하는 방법이다. 요인분석에서 핵심은 관측된 변동을 공통요인이 설명하는 부분과 변수마다 고유하게 남는 오차(특수요인)로 분해하는 관점이다.</p>
+<p>요인모형의 기본 형태</p>
+<p>관측치가 n개이고 변수가 p개인 자료를 <span class="math inline">\(X \in \mathbb{R}^{n \times p}\)</span>로 두며, 한 관측치를 열벡터로 표현하면 <span class="math inline">\(x \in \mathbb{R}^{p}\)</span>이다. 요인분석의 표준 모형은 다음과 같은 형태이다.</p>
+<p><span class="math inline">\(x = \Lambda f + \varepsilon\)</span>, 여기서 <span class="math inline">\(f \in \mathbb{R}^{q}\)</span>는 q차원의 잠재요인(공통요인)이고, <span class="math inline">\(\Lambda \in \mathbb{R}^{p \times q}\)</span>는 적재행렬(loading matrix)이며, <span class="math inline">\(\varepsilon \in \mathbb{R}^{p}\)</span>는 고유오차(특수요인 포함)이다. 보통 <span class="math inline">\(q \ll p\)</span>를 가정하여 저차원 잠재구조로 상관을 설명하는 설정이다.</p>
+<p>관측치 <span class="math inline">\(i\)</span>에 대한 표현은 <span class="math inline">\(x_{i} = \Lambda f_{i} + \varepsilon_{i},i = 1,\ldots,n\)</span>인 형태이다. 요인분석의 핵심 가정은 공통요인과 오차의 분산 구조에 관한 가정이다. 대표적으로 다음 가정이 사용되는 구조이다.</p>
+<p><span class="math inline">\(\mathbb{E}(f) = 0,Cov(f) = I_{q}\)</span>, 그리고<span class="math inline">\(\mathbb{E}(\varepsilon) = 0,Cov(\varepsilon) = \Psi Cov(f,\varepsilon) = 0\)</span>이다. 여기서 <span class="math inline">\(\Psi\)</span>는 보통 대각행렬로 가정되며 <span class="math inline">\(\Psi = diag(\psi_{1},\ldots,\psi_{p})\)</span>인 형태이다. 이 가정은 변수별 고유오차는 서로 상관이 없고 각 변수 고유의 분산만 가진다는 가정이다.</p>
+<p>이때 관측변수의 공분산 행렬 <span class="math inline">\(\Sigma = Cov(x)\)</span>는 다음처럼 분해되는 구조이다. <span class="math inline">\(\Sigma = \Lambda\Lambda^{\top} + \Psi\)</span>. 이 식이 요인분석의 핵심 결과이다. <span class="math inline">\(\Lambda\Lambda^{\top}\)</span>는 공통요인이 만들어내는 공분산 구조이고, <span class="math inline">\(\Psi\)</span>는 변수별 고유분산을 모은 부분이다.</p>
+<p>공통성, 고유성, 요인적재의 해석</p>
+<p>요인분석에서는 각 변수 <span class="math inline">\(x_{j}\)</span>의 분산이 공통요인이 설명하는 부분과 고유오차가 설명하는 부분으로 분해되는 구조이다. 위 분해에서 대각 원소를 보면 <span class="math inline">\(Var(x_{j}) = \overset{q}{\sum_{m = 1}}\lambda_{jm}^{2} + \psi_{j}\)</span>인 형태이다. 여기서 <span class="math inline">\(\lambda_{jm}\)</span>은 <span class="math inline">\(\Lambda(j,m)\)</span>원소이다.</p>
+<p>공통성(communality)은 변수 <span class="math inline">\(x_{j}\)</span>의 분산 중 공통요인이 설명하는 비중이며 <span class="math inline">\(h_{j}^{2} = \overset{q}{\sum_{m = 1}}\lambda_{jm}^{2}\)</span>로 정의되는 구조이다.</p>
+<p>고유성(uniqueness)은 변수 <span class="math inline">\(x_{j}\)</span>에만 남는 분산이며 <span class="math inline">\(\psi_{j} = Var(\varepsilon_{j})\)</span>로 표현되는 구조이다.</p>
+<p>요인적재 <span class="math inline">\(\lambda_{jm}\)</span>는 요인 <span class="math inline">\(f_{m}\)</span>이 변수 <span class="math inline">\(x_{j}\)</span>에 미치는 영향의 크기를 나타내는 계수로 해석되는 경우가 많다. 다만 요인의 부호, 회전 등에 의해 적재행렬의 표현은 여러 형태로 나타날 수 있으므로, 해석은 보통 회전 이후의 패턴을 중심으로 이루어지는 구조이다.</p>
+<p>PCA와의 차이: 목적, 가정, 오차모형</p>
+<p>요인분석과 PCA는 모두 선형 결합을 이용한 차원축소로 보일 수 있으나, 목적과 모형 가정이 근본적으로 다른 방법이다.</p>
+<p>첫째, 목적의 차이이다. PCA는 관측자료 X의 분산을 최대한 설명하는 축을 찾는 것이 목적이다. 요인분석은 공분산 구조를 <span class="math inline">\(\Lambda\Lambda^{\top} + \Psi\)</span>로 설명하여 변수들 사이의 상관을 만들어내는 공통 원인을 추정하는 것이 목적이다. 따라서 PCA는 분산 보존과 재구성 정확도에 초점이 맞고, 요인분석은 공통요인에 의한 구조적 설명에 초점이 맞는 방식이다.</p>
+<p>둘째, 가정의 차이이다. PCA는 확률모형이 없어도 정의되는 방법이다. 표본 공분산 행렬의 고유분해 또는 SVD로 계산되는 대수적 절차이다. 요인분석은 명시적 확률모형을 전제로 하는 방법이다. 특히 <span class="math inline">\(Cov(\varepsilon) = \Psi\)</span>가 대각이라는 구조적 가정이 핵심이며, 이 가정이 성립할 때 <span class="math inline">\(\Lambda\Lambda^{\top}\)</span>가 <span dir="rtl">”</span>공통” 구조로 해석되는 방식이다.</p>
+<p>셋째, 오차모형의 차이이다. PCA는 X를 저차원 부분공간으로 투영할 때의 재구성 오차를 최소화하는 성격이 강하며, 오차는 주로 근사 관점에서 등장하는 구조이다. 요인분석은 <span class="math inline">\(\varepsilon\)</span>가 명시적으로 모형에 포함되며, 각 변수마다 고유오차 분산 <span class="math inline">\(\psi_{j}\)</span>를 추정하는 구조이다. 즉 요인분석은 변수별로 <span dir="rtl">”</span>설명되지 않는 분산”을 따로 모델링하는 방식이다.</p>
+<p>이 차이는 고유값이 큰 방향을 단순히 남기는 것이 항상 좋은 요인구조를 의미하지 않는다는 점으로 연결되는 구조이다. PCA는 총분산을 기준으로 축을 뽑는 반면, 요인분석은 공통분산의 구조를 우선적으로 설명하려는 방식이기 때문이다.</p>
+<p>식별 문제와 회전</p>
+<p>요인분석에는 식별 문제가 존재하는 구조이다. 그 이유는 <span class="math inline">\(\Lambda f\)</span>에서 <span class="math inline">\(\Lambda\)</span>와 <span class="math inline">\(f\)</span>를 동시에 바꾸어도 <span class="math inline">\(\Lambda f\)</span>가 동일하게 유지되는 변환이 존재하기 때문이다. 예를 들어 <span class="math inline">\(q \times q\)</span> 직교행렬 T에 대해 <span class="math inline">\(\Lambda f = (\Lambda T)(T^{\top}f)\)</span>가 성립하는 구조이다.</p>
+<p>따라서 <span class="math inline">\(\Lambda\)</span> 자체는 유일하지 않으며, 같은 <span class="math inline">\(\Sigma = \Lambda\Lambda^{\top} + \Psi\)</span>를 만드는 <span class="math inline">\(\Lambda\)</span>가 여러 개 존재할 수 있다. 이 때문에 요인분석에서는 보통 <span class="math inline">\(Cov(f) = I\)</span> 같은 정규화와 더불어, 해석 가능한 구조를 얻기 위해 회전(rotation)을 사용하는 방식이다.</p>
+<p>대표적인 회전 기준은 직교회전인 varimax가 있으며, 요인들 간 상관을 허용하는 사각회전(oblique rotation)도 사용되는 방식이다. 회전은 적합도를 바꾸기보다 해석의 단순성을 높이는 절차로 이해되는 구조이다.</p>
+<p>추정과 요인 수 선택의 개요</p>
+<p>요인분석의 추정은 대개 표본 공분산 S를 관측된 공분산으로 보고, <span class="math inline">\(\Sigma = \Lambda\Lambda^{\top} + \Psi\)</span>가 <span class="math inline">\(S\)</span>에 가깝도록 <span class="math inline">\(\Lambda,\Psi\)</span>를 추정하는 방식이다. 대표적인 추정 방법은 최대우도추정, 주축요인법(principal axis factoring) 등이 알려져 있는 구조이다. 최대우도추정에서는 정규성 가정 하에서 로그우도를 최대화하여 <span class="math inline">\(\Lambda,\Psi\)</span>를 구하는 방식이다.</p>
+<p>요인 수 q의 선택은 차원축소의 핵심 결정이다. 실무에서는 설명 목적과 해석 가능성을 함께 고려하며, 적합도 지표와 잔차 공분산의 크기, 요인해석의 안정성 등을 종합해 결정하는 방식이다. 요인 수가 너무 작으면 공통구조를 충분히 설명하지 못하고, 너무 크면 해석이 복잡해지고 과적합적 구조가 생길 수 있는 위험이 존재하는 구조이다.</p>
+<p>요인점수와 주성분 점수</p>
+<p>요인점수는 요인분석 모형 <span class="math inline">\(x = \Lambda f + \varepsilon\)</span>에서 관측된 x로부터 잠재요인 f를 추정한 값이라는 의미를 갖는 점수이다. 주성분 점수는 PCA에서 정해진 주성분 방향 W로 자료를 투영하여 얻는 <span class="math inline">\(z = x^{\top}w\)</span>의 값이라는 의미를 갖는 점수이다. 두 점수는 모두 관측치를 저차원 좌표로 표현한다는 점에서 형태는 유사하지만, 생성 원리와 계산 방식, 해석의 기준이 서로 다른 점수이다.</p>
+<p>첫째, 주성분 점수는 W가 고유분해로 결정되면 <span class="math inline">\(Z = XW\)</span>로 유일하게 계산되는 점수이다. 요인점수는 f가 관측되지 않으므로 어떤 규칙으로 f를 추정해야 하며, 보통 <span class="math inline">\(\widehat{F} = XA\)</span>ㅊ형태의 선형추정을 사용하고 A의 선택에 따라 서로 다른 점수가 나오는 구조이다. 대표적으로 회귀법, Bartlett 방법, Thomson 방법 등 서로 다른 산출 방식이 존재하는 구조이다.</p>
+<p>둘째, 요인점수는 실제 분석 보고나 해석 단계에서 <span dir="rtl">”</span>개별 관측치의 연속형 점수”로만 사용되는 것이 아니라, 적재(부하) 패턴을 이용해 관측변수들을 요인별로 배타적으로 묶고 그 그룹의 평균을 요인 수준의 대용치로 사용하는 방식이 함께 활용되는 구조이다.</p>
+<p>즉 요인 m에 대해 적재값 <span class="math inline">\(\lambda_{jm}\)</span>가 큰 변수들만 골라 하나의 묶음으로 두고, 다른 요인에는 포함시키지 않는 방식으로 요인별 지표를 구성한 뒤, 관측치 i에 대해 그 묶음에 속한 변수들의 표준화 값 평균을 <span class="math inline">\(s_{im} = \frac{1}{|G_{m}|}\sum_{j \in G_{m}}x_{ij}^{*}\)</span>와 같이 계산하여 요인점수처럼 사용하는 접근이 존재하는 구조이다. 여기서 <span class="math inline">\(G_{m}\)</span>은 요인 m에 배정된 변수 집합이고, <span class="math inline">\(x_{ij}^{*}\)</span>는 표준화된 관측값인 형태이다. 경우에 따라 평균 대신 적재값을 가중치로 사용하여 <span class="math inline">\(s_{im} = \frac{\sum_{j \in G_{m}}\lambda_{jm}x_{ij}^{*}}{\sum_{j \in G_{m}}|\lambda_{jm}|}\)</span>처럼 계산하는 방식도 사용되는 구조이다.</p>
+<p>이 방식은 요인점수 추정치를 직접 산출하지 않더라도 해석 가능한 요인별 지표를 쉽게 만들 수 있다는 장점이 있는 구조이다. 다만 교차적재가 큰 변수들이 존재하면 배타적 그룹화가 임의적이 될 수 있고, 요인모형이 내포하는 <span class="math inline">\(\Psi\)</span>나 추정오차를 충분히 반영하지 못할 수 있다는 한계가 있는 구조이다.</p>
+<p>셋째, 목적과 해석이 다르다. 주성분 점수는 총분산을 가장 잘 설명하는 축에서의 좌표이며 재구성 관점에서 <span class="math inline">\(\widehat{X} = ZW^{\top}\)</span>의 오차를 최소화하는 의미가 강한 점수이다. 요인점수는 공통요인의 수준을 나타내는 값으로 해석되며, 추정점수를 사용하든 부하 기반 그룹 평균을 사용하든 <span dir="rtl">”</span>공통구조를 대표하는 잠재특성의 정도”를 요약한다는 목적을 갖는 점수이다.</p>
+<p>정리하면, 주성분 점수는 <span class="math inline">\(Z = XW\)</span>로 유일하게 계산되는 투영 좌표인 점수이다. 요인점수는 잠재요인 f의 추정치로서 여러 산출 방식이 가능하며, 실무에서는 적재값을 기준으로 변수를 요인별로 배타적으로 묶어 그룹 평균이나 가중평균으로 요인 지표를 구성해 요인점수처럼 사용하는 방식도 일반적으로 활용되는 점수이다.</p>
+<p>3. 선형 판별 기반 축소: LDA는 <span dir="rtl">’</span>차원축소<span dir="rtl">’</span>인가?</p>
+<p>선형판별분석 LDA는 분류 문제에서 집단 간 분리를 극대화하는 선형 변환을 찾는 방법이다. LDA는 결과적으로 원변수 <span class="math inline">\(X \in \mathbb{R}^{n \times p}\)</span>를 더 낮은 차원 <span class="math inline">\(Z \in \mathbb{R}^{n \times k}\)</span>로 바꾸는 형태를 가지므로 차원축소처럼 보이는 방법이다.</p>
+<p>그러나 LDA는 비지도 차원축소인 PCA와 달리, 반응변수 y의 클래스 정보를 사용하여 <span dir="rtl">”</span>분류에 유리한 방향”을 찾는 지도 학습 기반의 표현학습이라는 점에서 목적과 의미가 다른 방법이다. 따라서 LDA를 차원축소로 볼 수 있는지의 질문은 <span dir="rtl">”</span>차원을 줄이는 연산이 존재하는가”가 아니라 <span dir="rtl">”</span>무엇을 보존하기 위해 줄이는가”의 관점에서 답해야 하는 질문이다.</p>
+<p>LDA의 핵심 목적과 변환 형태</p>
+<p>클래스가 K개인 분류 문제에서, <span class="math inline">\(y \in \{ 1,\ldots,K\}\)</span>이고 설명변수 벡터가 <span class="math inline">\(x \in \mathbb{R}^{p}\)</span>인 상황을 고려한다. LDA는 각 클래스의 평균벡터를 <span class="math inline">\(\mu_{k}\)</span>, 공통 공분산을 <span class="math inline">\(\Sigma\)</span>로 가정하는 정규모형 기반 분류 규칙으로도 이해되지만, 여기서는 선형 변환 관점이 핵심이다.</p>
+<p>LDA는 선형 투영 <span class="math inline">\(z = W^{\top}x\)</span>의 형태로 p차원을 k차원으로 줄이는 변환을 구성하는 방법이다. 여기서 <span class="math inline">\(W \in \mathbb{R}^{p \times k}\)</span>의 열벡터들이 판별축(discriminant directions)이며, 이 축 위에서 클래스들이 가장 잘 분리되도록 W를 선택하는 구조이다.</p>
+<p>산포행렬과 <span dir="rtl">”</span>분리 최대화” 기준</p>
+<p>LDA의 차원축소는 클래스 내 변동을 작게, 클래스 간 변동을 크게 만드는 방향을 찾는 최적화 문제로 정리되는 구조이다. 전체 평균을 <span class="math inline">\(\mu\)</span>라 하면, 클래스 내 산포행렬(within-class scatter)은 <span class="math inline">\(S_{W} = \overset{K}{\sum_{k = 1}}\sum_{i \in C_{k}}(x_{i} - \mu_{k})(x_{i} - \mu_{k})^{\top}\)</span>로 정의되는 형태이다. 클래스 간 산포행렬(between-class scatter)은 <span class="math inline">\(S_{B} = \overset{K}{\sum_{k = 1}}n_{k}(\mu_{k} - \mu)(\mu_{k} - \mu)^{\top}\)</span>로 정의되는 형태이다. 여기서 <span class="math inline">\(n_{k}\)</span>는 k번째 클래스의 표본수이다.</p>
+<p>한 개의 축 <span class="math inline">\(w \in \mathbb{R}^{p}\)</span>로 투영할 때, LDA는 다음 비율을 최대화하는 방향을 찾는 구조이다. <span class="math inline">\(\max_{w \neq 0}\frac{w^{\top}S_{B}w}{w^{\top}S_{W}w}\)</span>. 이 목적함수는 투영된 공간에서 클래스 평균 간 거리를 키우되, 클래스 내 분산을 작게 만드는 방향을 선택한다는 의미이다.</p>
+<p>다차원 축 <span class="math inline">\(W = \lbrack w_{1},\ldots,w_{k}\rbrack\)</span>의 경우에도 유사하게 일반화되며, 해는 일반화 고유값 문제 <span class="math inline">\(S_{B}w = \lambda S_{W}w\)</span>를 풀어 얻는 구조이다.</p>
+<p>LDA가 줄일 수 있는 최대 차원</p>
+<p>LDA는 원칙적으로 K개의 클래스를 (K-1)차원 공간에서 완전히 분리할 수 있는 정보만 갖는 구조이다. 이유는 S_B의 랭크가 최대 (K-1)이기 때문이다. 따라서 LDA로 얻을 수 있는 판별축의 수는 <span class="math inline">\(k \leq \min(p,K - 1)\)</span>인 구조이다.</p>
+<p>예를 들어 클래스가 3개이면 최대 2개의 판별축만 의미가 있는 구조이다. 이 성질 때문에 LDA는 <span dir="rtl">”</span>항상 p에서 원하는 임의의 k로 줄이는 일반적 차원축소”라기보다, <span dir="rtl">”</span>클래스 수가 허용하는 범위 안에서 분류에 필요한 좌표로 바꾸는 축소”라는 성격이 강한 구조이다.</p>
+<p>PCA와의 차이와 차원축소로서의 위치</p>
+<p>PCA는 반응변수 없이 데이터의 총분산을 가장 잘 보존하는 축을 찾는 비지도 방법이다. LDA는 반응변수 y를 이용하여 클래스 분리를 최대화하는 축을 찾는 지도 방법이다.</p>
+<p>PCA의 변환은 <span class="math inline">\(Z = XW_{\text{PCA}}\)</span>형태이며, <span class="math inline">\(W_{\text{PCA}}\)</span>는 S의 고유벡터로 결정되는 구조이다. LDA의 변환은 <span class="math inline">\(Z = XW_{\text{LDA}}\)</span>형태이지만, <span class="math inline">\(W_{\text{LDA}}\)</span>는 <span class="math inline">\(S_{W}^{- 1}S_{B}\)</span>의 구조를 반영하는 판별축이라는 점에서 완전히 다른 기준으로 정해지는 구조이다.</p>
+<p>따라서 LDA를 차원축소라고 부를 수 있는 이유는 <span dir="rtl">”</span>실제로 <span class="math inline">\(z = W^{\top}x\)</span> 형태의 저차원 표현을 만든다”는 점이다. 그러나 LDA를 PCA와 같은 의미의 차원축소로 부르기 어려운 이유는 <span dir="rtl">”</span>보존 대상이 분산이 아니라 분류 정보”라는 점이다. 즉 LDA는 차원축소이되, 분류 목적의 지도 표현학습에 속하는 차원축소라는 결론이 자연스러운 구조이다.</p>
+<p>수치적 문제와 정규화의 필요성</p>
+<p>LDA에서 핵심 계산은 <span class="math inline">\(S_{W}^{- 1}\)</span> 또는 그에 준하는 선형시스템 풀이이다. 그런데 p가 크고 n이 작으면 <span class="math inline">\(S_{W}\)</span>가 특이해질 수 있으며, 이 경우 고전적 LDA는 계산이 불가능하거나 불안정해지는 구조이다. 이는 고차원 분류에서 매우 흔한 상황이다.</p>
+<p>이 문제를 해결하기 위해 정규화 LDA가 사용되며, 대표적으로 <span class="math inline">\(S_{W}(\gamma) = (1 - \gamma)S_{W} + \gamma I\)</span>와 같이 클래스 내 산포행렬을 단위행렬 방향으로 수축시키는 방식이 사용되는 구조이다.</p>
+<p>이는 릿지와 유사한 안정화 효과를 주며, 고차원에서의 판별축 추정을 가능하게 만드는 방식이다. 또한 실제 파이프라인에서는 먼저 PCA로 차원을 줄여 S_W의 특이성을 완화한 뒤 LDA를 적용하는 PCA+LDA 조합이 자주 사용되는 구조이다.</p>
+<p>언제 LDA를 <span dir="rtl">”</span>차원축소”로 사용하는가</p>
+<p>LDA는 다음 상황에서 차원축소로 유용한 구조이다. 첫째, 클래스 구조가 분명하고 저차원 투영에서 분리도가 크게 개선되는 상황이다. 둘째, 시각화 목적에서 K-1차원의 판별공간을 이용해 클래스 간 분리를 보여주려는 상황이다.</p>
+<p>셋째, 다운스트림 분류기의 입력으로 저차원 판별특징을 만들고자 하는 상황이다. 이때 LDA의 출력 Z는 분류에 최적화된 특징이므로, 단순한 분산 보존 기반 축소보다 분류 성능에 유리할 수 있는 구조이다.</p>
+<p>정리</p>
+<p>LDA는 클래스 정보를 이용하여 클래스 간 분산을 크게 하고 클래스 내 분산을 작게 만드는 선형 투영을 찾는 방법이다. 이 방법은 <span class="math inline">\(z = W^{\top}x\)</span> 형태의 저차원 표현을 제공하므로 차원축소의 기능을 수행하는 방법이다.</p>
+<p>그러나 LDA는 비지도 차원축소가 아니라 지도 학습 기반의 판별 표현학습이며, 얻을 수 있는 축의 수가 최대 (K-1)로 제한된다는 점에서 PCA와 성격이 다른 차원축소이다. 따라서 LDA는 <span dir="rtl">’</span>차원축소인가<span dir="rtl">’</span>라는 질문에 대해, 분류 목적의 지도 차원축소라는 의미에서 차원축소로 분류되는 방법이라는 결론이 타당한 구조이다.</p>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
