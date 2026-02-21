@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>MLDL 차원축소 - 사례분석 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44962e3d41ec9ccc254fd50f1af5efbe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_intro/index.html"> 
+<span class="menu-text">MLDL개념</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_classification/index.html"> 
+<span class="menu-text">MLDL분류</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/data_reduction/index.html" aria-current="page"> 
+<span class="menu-text">차원축소</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_clustering/index.html"> 
+<span class="menu-text">MLDL군집</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/data_reduction/data reduction_case.html">📄 차원축소 사례분석</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【머신·딥러닝 차원축소】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 개념|필요성</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_statmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 통계적방법</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 비지도학습</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_case.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 차원축소 사례분석</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#mldl-사례분석-차원축소" id="toc-mldl-사례분석-차원축소" class="nav-link active" data-scroll-target="#mldl-사례분석-차원축소">MLDL 사례분석 (차원축소)</a>
+  <ul>
+  <li><a href="#데이터-전처리" id="toc-데이터-전처리" class="nav-link" data-scroll-target="#데이터-전처리">1. 데이터 &amp; 전처리</a></li>
+  <li><a href="#pca-차원축소" id="toc-pca-차원축소" class="nav-link" data-scroll-target="#pca-차원축소">2. PCA 차원축소</a></li>
+  <li><a href="#오토인코더-차원축소" id="toc-오토인코더-차원축소" class="nav-link" data-scroll-target="#오토인코더-차원축소">3. 오토인코더 차원축소</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MLDL 차원축소 - 사례분석</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="mldl-사례분석-차원축소" class="level3">
+<h3 class="anchored" data-anchor-id="mldl-사례분석-차원축소">MLDL 사례분석 (차원축소)</h3>
+<p>이 노트북 코드는 차원축소와 비지도 표현학습을 하나의 흐름으로 실습하기 위해 구성된 코드이다. 전체 구성은 (1) MNIST 데이터 준비, (2) PCA 기반 재구성 실습, (3) 오토인코더 기반 재구성 실습, (4) VAE 기반 확률적 표현과 샘플링 실습으로 이어지는 구조이다. 각 단계는 “저차원 표현을 만들고 다시 원자료를 복원한다”는 공통 관점을 유지하면서, 선형 방법과 신경망 기반 방법의 차이를 비교하도록 설계된 코드이다.</p>
+<section id="데이터-전처리" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-전처리">1. 데이터 &amp; 전처리</h4>
+<p>이 셀은 차원축소와 표현학습 실습에 필요한 계산 환경을 준비하는 셀이다. Numpy와 Matplotlib은 배열 연산과 시각화를 위한 기본 도구이며, scikit-learn의 PCA는 선형 차원축소를 구현하기 위한 도구이다.</p>
+<p>TensorFlow와 Keras는 오토인코더 및 VAE 같은 신경망 기반 표현모형을 학습하기 위한 프레임워크이다. 실험의 재현성을 위해 난수 시드를 고정하는 설정이며, 실행 환경 확인을 위해 TensorFlow 버전을 출력하는 구성이다.</p>
+<section id="기본-설정-및-공통-import" class="level5">
+<h5 class="anchored" data-anchor-id="기본-설정-및-공통-import">기본 설정 및 공통 import</h5>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, mean_absolute_error</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>tf.random.set_seed(<span class="dv">42</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"TensorFlow:"</span>, tf.__version__)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="데이터-로드-및-전처리" class="level5">
+<h5 class="anchored" data-anchor-id="데이터-로드-및-전처리">데이터 로드 및 전처리</h5>
+<p>이 셀은 MNIST 학습·테스트 데이터를 불러오고, 학습 가능한 형태로 변환하는 전처리 셀이다. MNIST는 28×28 흑백 이미지이므로 입력은 원래 2차원 격자 형태이다. 학습 안정성을 위해 픽셀 값을 0~255 범위에서 0~1 범위로 정규화하는 방식이며, 자료형을 float32로 맞추는 방식이다.</p>
+<p>이후 검증셋을 훈련 데이터에서 분리하여 과적합 여부를 확인할 수 있게 구성하는 방식이다. PCA와 Dense 기반 모델을 위해 28×28을 784 차원의 벡터로 펼쳐 <span class="math inline">\(X \in R^{n×784}\)</span> 형태로 만드는 과정이 포함되는 셀이다. 출력으로 훈련·검증·테스트의 크기와 펼친 차원 784를 확인하는 셀이다.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MNIST 로드</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>(x_train, y_train), (x_test, y_test) <span class="op">=</span> keras.datasets.mnist.load_data()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># [0,1] 정규화</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>x_train <span class="op">=</span> x_train.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>x_test  <span class="op">=</span> x_test.astype(<span class="st">"float32"</span>) <span class="op">/</span> <span class="fl">255.0</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 검증셋 분리</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>n_val <span class="op">=</span> <span class="dv">10000</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>x_val, y_val <span class="op">=</span> x_train[<span class="op">-</span>n_val:], y_train[<span class="op">-</span>n_val:]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>x_train_sub, y_train_sub <span class="op">=</span> x_train[:<span class="op">-</span>n_val], y_train[:<span class="op">-</span>n_val]</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA 및 Dense AE를 위한 벡터화</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>x_train_flat <span class="op">=</span> x_train_sub.reshape(<span class="bu">len</span>(x_train_sub), <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>x_val_flat   <span class="op">=</span> x_val.reshape(<span class="bu">len</span>(x_val), <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>x_test_flat  <span class="op">=</span> x_test.reshape(<span class="bu">len</span>(x_test), <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train:"</span>, x_train_sub.shape, <span class="st">"Val:"</span>, x_val.shape, <span class="st">"Test:"</span>, x_test.shape)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Flat dim:"</span>, x_train_flat.shape[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="원본-데이터-보기" class="level5">
+<h5 class="anchored" data-anchor-id="원본-데이터-보기">원본 데이터 보기</h5>
+</section>
+<section id="시각화-및-평가-함수" class="level5">
+<h5 class="anchored" data-anchor-id="시각화-및-평가-함수">시각화 및 평가 함수</h5>
+<p>이 셀은 실습 전반에서 반복되는 시각화와 평가를 함수로 묶어 두는 셀이다. 여러 장 이미지를 한 줄로 보여주는 함수와, 원본 이미지와 재구성 이미지를 위아래로 나란히 비교하는 함수가 포함되는 구성이다.</p>
+<p>재구성 품질을 정량화하기 위해 MSE와 MAE를 계산하는 함수가 포함되는 구성이다. 이 셀은 이후 PCA, AE, VAE 실험에서 결과를 동일한 기준으로 비교하게 하는 기반 셀이다.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_images_grid(images, n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(n, <span class="fl">1.6</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        ax <span class="op">=</span> plt.subplot(<span class="dv">1</span>, n, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        ax.imshow(images[i], cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    plt.suptitle(title)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> show_reconstructions(x_orig, x_recon, n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(n, <span class="fl">3.0</span>))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        ax <span class="op">=</span> plt.subplot(<span class="dv">2</span>, n, i<span class="op">+</span><span class="dv">1</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        ax.imshow(x_orig[i], cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        ax <span class="op">=</span> plt.subplot(<span class="dv">2</span>, n, i<span class="op">+</span><span class="dv">1</span><span class="op">+</span>n)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        ax.imshow(x_recon[i], cmap<span class="op">=</span><span class="st">"gray"</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        ax.axis(<span class="st">"off"</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    plt.suptitle(title)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> recon_metrics(x_true_flat, x_pred_flat, prefix<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    mse <span class="op">=</span> mean_squared_error(x_true_flat, x_pred_flat)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    mae <span class="op">=</span> mean_absolute_error(x_true_flat, x_pred_flat)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>prefix<span class="sc">}</span><span class="ss">MSE: </span><span class="sc">{</span>mse<span class="sc">:.6f}</span><span class="ss">  MAE: </span><span class="sc">{</span>mae<span class="sc">:.6f}</span><span class="ss">"</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mse, mae</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="pca-차원축소" class="level4">
+<h4 class="anchored" data-anchor-id="pca-차원축소">2. PCA 차원축소</h4>
+<p>PCA는 중심화된 데이터 X를 주성분 축 W로 투영해 저차원 점수 Z를 만들고, 다시 원공간으로 복원하는 관점에서 설명할 수 있다.</p>
+<p>핵심 관계는 <span class="math inline">\(Z = XW\)</span> (투영)과 <span class="math inline">\(\hat{X} = ZW^T =XWW^T\)</span> (복원)으로 표현된다. 주성분 개수 k가 커질수록 <span class="math inline">\(\hat X\)</span> 가 X에 가까워지고 재구성 오차가 감소하는 구조이다.</p>
+<section id="pca-재구성-실습-1개" class="level5">
+<h5 class="anchored" data-anchor-id="pca-재구성-실습-1개">PCA 재구성 실습 1개</h5>
+<p>이 셀은 PCA를 적합하여 누적 설명분산 곡선을 확인하고, 서로 다른 k에서 재구성 결과가 어떻게 달라지는지 시각화하는 셀이다. 구현은 훈련 데이터에 PCA를 적합한 뒤, 테스트 샘플을 k차원으로 변환하고 다시 역변환하여 재구성 이미지를 얻는 방식이다.</p>
+<p>해석은 k가 작을수록 숫자 형태가 흐려지고 윤곽만 남는 경향이 나타나며, k가 커질수록 원본과 유사한 디테일이 복원되는 경향이 나타나는 구조이다. 동시에 MSE와 MAE가 k 증가에 따라 감소하는 경향이 나타나는 구조이다.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># PCA는 중심화가 기본적으로 적용된다</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 표준화(분산 스케일링)는 여기서는 생략하고, 이미지 픽셀 자체로 진행한다</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>pca_full <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">200</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>pca_full.fit(x_train_flat)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>explained <span class="op">=</span> pca_full.explained_variance_ratio_</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>cum_explained <span class="op">=</span> np.cumsum(explained)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>plt.plot(cum_explained)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Number of components"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Cumulative explained variance ratio"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"PCA cumulative explained variance"</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 다양한 k에서 재구성 비교</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>k_list <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">100</span>]</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> np.random.choice(<span class="bu">len</span>(x_test_flat), size<span class="op">=</span><span class="dv">10</span>, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>x_sample <span class="op">=</span> x_test_flat[idx]</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>x_sample_img <span class="op">=</span> x_test[idx]</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> k_list:</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    pca <span class="op">=</span> PCA(n_components<span class="op">=</span>k, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    pca.fit(x_train_flat)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> pca.transform(x_sample)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    x_hat <span class="op">=</span> pca.inverse_transform(z)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    x_hat_img <span class="op">=</span> x_hat.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    show_reconstructions(x_sample_img, x_hat_img, n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="ss">f"PCA reconstruction, k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    recon_metrics(x_sample, x_hat, prefix<span class="op">=</span><span class="ss">f"[PCA k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">] "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pca.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>이 그림은 PCA로 MNIST 이미지를 k개의 주성분만 남겨서 저차원으로 압축했다가 다시 복원했을 때 재구성이 어떻게 달라지는지를 보여주는 그림이다. 각 블록에서 윗줄은 원본, 아랫줄은 PCA 재구성 이미지이다.</p>
+<p>k=2 재구성의 의미이다: 주성분이 2개뿐이므로 784차원 정보를 2차원으로 극단적으로 압축한 상태이다. 그래서 숫자의 세부 획 정보는 대부분 사라지고, 대략적인 밝기 분포와 전체 윤곽 정도만 남는다. 여러 숫자가 서로 비슷하게 뭉개져 보이는 것은 2개의 축으로 표현할 수 있는 변동이 매우 제한적이기 때문이라는 해석이 된다.</p>
+<p>k=10 재구성의 의미이다: 주성분이 10개로 늘어나면서 숫자별 윤곽이 훨씬 분명해진다. 다만 획의 끝부분, 굵기, 미세한 곡선 같은 고주파 정보는 아직 충분히 복원되지 않아 약간 흐릿하고 회색 배경이 남는 모습이 나타난다. 이는 중요한 변동(큰 구조)은 상위 몇 개 성분에서 설명되지만, 세부 디테일은 더 많은 성분이 필요하다는 점을 보여주는 결과이다.</p>
+<p>k=100 재구성의 의미이다: 주성분이 100개이면 원본과 매우 유사하게 복원된다. 숫자 모양이 거의 동일하게 보이고, 흐림도 크게 줄어든다. 이 수준에서는 데이터의 주요 변동뿐 아니라 상당한 수준의 디테일까지 포함되며, 재구성 오차가 크게 감소한 상태라는 해석이 된다.</p>
+<p>이 그림이 전달하는 핵심 메시지이다: PCA는 Z=XW로 저차원 표현을 만든 뒤 <span class="math inline">\(\hat{X} = ZW^T =XWW^T\)</span> 로 복원하는데, k가 작을수록 정보 손실이 커져 재구성이 흐려지고, k가 커질수록 정보가 더 보존되어 재구성이 원본에 가까워진다는 사실을 시각적으로 보여주는 그림이다. 동시에 “상위 몇 개 주성분이 큰 구조를 잡고, 나머지 성분이 디테일을 채운다”는 분산 설명 관점과 재구성 관점이 연결되는 결과이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pca2k.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pca10k.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pca100k.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="pca-차원-k에-따른-재구성-오차-곡선" class="level5">
+<h5 class="anchored" data-anchor-id="pca-차원-k에-따른-재구성-오차-곡선">PCA 차원 k에 따른 재구성 오차 곡선</h5>
+<p>이 셀은 여러 k 값에 대해 재구성 MSE를 계산하여 곡선으로 나타내는 셀이다. 구현은 k 격자를 정하고, 각 k에서 PCA를 다시 적합한 뒤 테스트 일부에 대해 재구성 MSE를 계산하는 방식이다.</p>
+<p>해석은 k가 증가할수록 재구성 오차가 단조 감소하는 경향이 나타나며, 어느 지점 이후에는 감소 폭이 완만해지는 형태가 나타나는 구조이다. 이 완만해지는 구간은 재구성 관점에서 추가 성분의 효용이 줄어드는 구간으로 해석할 수 있는 구조이다.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>k_grid <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">75</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>mse_list <span class="op">=</span> []</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 테스트 전체에서 비교하면 시간이 늘어나므로 일부 샘플로 평가한다</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="dv">5000</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>x_eval <span class="op">=</span> x_test_flat[:m]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> k_grid:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    pca <span class="op">=</span> PCA(n_components<span class="op">=</span>k, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    pca.fit(x_train_flat)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    x_hat <span class="op">=</span> pca.inverse_transform(pca.transform(x_eval))</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    mse <span class="op">=</span> mean_squared_error(x_eval, x_hat)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    mse_list.append(mse)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>plt.plot(k_grid, mse_list, marker<span class="op">=</span><span class="st">"o"</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"k (number of components)"</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Reconstruction MSE"</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"PCA reconstruction error vs k"</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pcaerror.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="공분산-pca-vs-상관-pca-비교-셀" class="level5">
+<h5 class="anchored" data-anchor-id="공분산-pca-vs-상관-pca-비교-셀">공분산 PCA vs 상관 PCA 비교 셀</h5>
+<p>이 셀은 표준화 여부가 PCA 결과에 미치는 영향을 확인하는 셀이다. 공분산 PCA는 원자료 X에서 공분산 구조를 기반으로 주성분을 찾는 방식이며, 상관 PCA는 각 변수(여기서는 각 픽셀)를 표준화하여 분산을 1로 맞춘 뒤 상관 구조를 기반으로 주성분을 찾는 방식이다.</p>
+<p>구현은 StandardScaler로 표준화한 데이터에서 PCA를 수행하고, 재구성 후 다시 원 스케일로 되돌려 MSE를 비교하는 방식이다. 해석은 MNIST는 모든 변수가 같은 단위의 픽셀 강도이므로 표준화 효과가 다른 탭울러 데이터만큼 크지 않을 수 있지만, 원리적으로는 스케일이 다른 변수가 섞인 데이터에서는 상관 PCA가 주성분 방향을 크게 바꿀 수 있다는 점을 확인하는 목적의 셀이다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 상관 PCA를 위한 표준화기(픽셀별 z-score)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler(with_mean<span class="op">=</span><span class="va">True</span>, with_std<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>x_train_std <span class="op">=</span> scaler.fit_transform(x_train_flat)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>x_test_std  <span class="op">=</span> scaler.transform(x_test_flat)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 비교용: 동일한 k_grid에서 공분산 PCA(원본) vs 상관 PCA(표준화 후)</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>k_grid <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">50</span>, <span class="dv">75</span>, <span class="dv">100</span>, <span class="dv">150</span>, <span class="dv">200</span>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> <span class="dv">5000</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>x_eval <span class="op">=</span> x_test_flat[:m]</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>x_eval_std <span class="op">=</span> x_test_std[:m]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>mse_cov_list <span class="op">=</span> []</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>mse_cor_list <span class="op">=</span> []</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> k_grid:</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 공분산 PCA</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    pca_cov <span class="op">=</span> PCA(n_components<span class="op">=</span>k, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    pca_cov.fit(x_train_flat)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    x_hat_cov <span class="op">=</span> pca_cov.inverse_transform(pca_cov.transform(x_eval))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    mse_cov_list.append(mean_squared_error(x_eval, x_hat_cov))</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 상관 PCA = 표준화 후 PCA, 복원 후 원래 스케일로 역변환</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    pca_cor <span class="op">=</span> PCA(n_components<span class="op">=</span>k, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    pca_cor.fit(x_train_std)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    x_hat_std <span class="op">=</span> pca_cor.inverse_transform(pca_cor.transform(x_eval_std))</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    x_hat_cor <span class="op">=</span> scaler.inverse_transform(x_hat_std)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    mse_cor_list.append(mean_squared_error(x_eval, x_hat_cor))</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>plt.plot(k_grid, mse_cov_list, marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="st">"Covariance PCA"</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>plt.plot(k_grid, mse_cor_list, marker<span class="op">=</span><span class="st">"o"</span>, label<span class="op">=</span><span class="st">"Correlation PCA"</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"k (number of components)"</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Reconstruction MSE"</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Covariance PCA vs Correlation PCA (MNIST)"</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 대표 k에서 재구성 비교(이미지)</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>k_show <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> np.random.choice(<span class="bu">len</span>(x_test_flat), size<span class="op">=</span><span class="dv">10</span>, replace<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>x_sample <span class="op">=</span> x_test_flat[idx]</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>x_sample_img <span class="op">=</span> x_test[idx]</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 공분산 PCA 재구성</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>pca_cov <span class="op">=</span> PCA(n_components<span class="op">=</span>k_show, random_state<span class="op">=</span><span class="dv">42</span>).fit(x_train_flat)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>x_hat_cov <span class="op">=</span> pca_cov.inverse_transform(pca_cov.transform(x_sample))</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 상관 PCA 재구성</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>pca_cor <span class="op">=</span> PCA(n_components<span class="op">=</span>k_show, random_state<span class="op">=</span><span class="dv">42</span>).fit(x_train_std)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>x_hat_std <span class="op">=</span> pca_cor.inverse_transform(pca_cor.transform(scaler.transform(x_sample)))</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>x_hat_cor <span class="op">=</span> scaler.inverse_transform(x_hat_std)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>show_reconstructions(</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    x_sample_img, x_hat_cov.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>),</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="ss">f"Covariance PCA reconstruction, k=</span><span class="sc">{</span>k_show<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>recon_metrics(x_sample, x_hat_cov, prefix<span class="op">=</span><span class="ss">f"[Cov PCA k=</span><span class="sc">{</span>k_show<span class="sc">}</span><span class="ss">] "</span>)</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>show_reconstructions(</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>    x_sample_img, x_hat_cor.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>),</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="ss">f"Correlation PCA reconstruction, k=</span><span class="sc">{</span>k_show<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>recon_metrics(x_sample, x_hat_cor, prefix<span class="op">=</span><span class="ss">f"[Cor PCA k=</span><span class="sc">{</span>k_show<span class="sc">}</span><span class="ss">] "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pcacovcorr.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pcacovk30.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>[Cov PCA k=30] MSE: 0.020638 MAE: 0.077749</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_pcacorrk30.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>[Cor PCA k=30] MSE: 0.027271 MAE: 0.088686</p>
+</section>
+</section>
+<section id="오토인코더-차원축소" class="level4">
+<h4 class="anchored" data-anchor-id="오토인코더-차원축소">3. 오토인코더 차원축소</h4>
+<p>오토인코더는 인코더 <span class="math inline">\(z=f_{\phi}(x)\)</span> 와 디코더 <span class="math inline">\(\hat x=g_{\theta}(z)\)</span> 로 구성되며, 재구성 손실 <span class="math inline">\(loss(x, \hat x)\)</span> 를 최소화하여 잠재표현 z를 학습하는 구조이다. 병목 구조를 통해 <span class="math inline">\(k&lt;p\)</span> 인 잠재차원에서 정보를 압축하게 하는 점이 차원축소와 대응되는 구조이다.</p>
+<section id="dence-autoencoder-모델-정의-및-학습" class="level5">
+<h5 class="anchored" data-anchor-id="dence-autoencoder-모델-정의-및-학습">DENCE Autoencoder 모델 정의 및 학습</h5>
+<p>이 셀은 784차원 벡터 입력을 32차원 잠재벡터로 압축한 뒤 다시 784차원으로 복원하는 Dense AE를 학습하는 셀이다. 구현은 Dense 층으로 인코더와 디코더를 구성하고, 손실함수로 MSE를 사용하여 x와 <span class="math inline">\(\hat x\)</span> 의 차이를 최소화하는 방식이다.</p>
+<p>EarlyStopping은 검증 손실이 개선되지 않을 때 학습을 중단하고 최적 가중치로 되돌리는 방식이며, 과적합을 줄이는 실용적 장치이다. 해석은 학습 곡선에서 훈련 손실과 검증 손실이 함께 감소하는지, 혹은 훈련 손실만 감소하고 검증 손실이 정체·증가하는지로 과적합 신호를 판단하는 구조이다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>input_dim <span class="op">=</span> <span class="dv">28</span> <span class="op">*</span> <span class="dv">28</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>latent_dim <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_dense_ae(input_dim<span class="op">=</span><span class="dv">784</span>, latent_dim<span class="op">=</span><span class="dv">32</span>):</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    inp <span class="op">=</span> keras.Input(shape<span class="op">=</span>(input_dim,))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">256</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(inp)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> layers.Dense(latent_dim, name<span class="op">=</span><span class="st">"latent"</span>)(x)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(z)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">256</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> layers.Dense(input_dim, activation<span class="op">=</span><span class="st">"sigmoid"</span>)(x)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    ae <span class="op">=</span> keras.Model(inp, out, name<span class="op">=</span><span class="st">"dense_ae"</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    encoder <span class="op">=</span> keras.Model(inp, z, name<span class="op">=</span><span class="st">"encoder"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ae, encoder</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>ae, encoder <span class="op">=</span> build_dense_ae(input_dim, latent_dim)</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>ae.<span class="bu">compile</span>(optimizer<span class="op">=</span>keras.optimizers.Adam(<span class="fl">1e-3</span>), loss<span class="op">=</span><span class="st">"mse"</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>es <span class="op">=</span> keras.callbacks.EarlyStopping(monitor<span class="op">=</span><span class="st">"val_loss"</span>, patience<span class="op">=</span><span class="dv">3</span>, restore_best_weights<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> ae.fit(</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    x_train_flat, x_train_flat,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    validation_data<span class="op">=</span>(x_val_flat, x_val_flat),</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">256</span>,</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>[es],</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"loss"</span>], label<span class="op">=</span><span class="st">"train"</span>)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>plt.plot(history.history[<span class="st">"val_loss"</span>], label<span class="op">=</span><span class="st">"val"</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Epoch"</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"MSE loss"</span>)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"AE training curve"</span>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 그래프는 AE가 학습되면서 재구성 손실(MSE)이 어떻게 변하는지를 보여주는 학습 곡선이다. 파란선은 훈련(train) 손실이고 주황선은 검증(val) 손실이다.</p>
+<p>초반 급격한 하강의 의미이다: 에폭 0~3 구간에서 손실이 빠르게 감소하는 것은 모델이 입력 이미지의 큰 구조를 빠르게 학습하고 있다는 의미이다. 이 구간은 학습이 정상적으로 진행되고 있다는 전형적인 신호이다.</p>
+<p>이후 완만한 감소와 수렴의 의미이다: 에폭이 증가할수록 손실 감소 폭이 줄고 곡선이 평평해지는 것은 학습이 점차 수렴하고 있다는 의미이다. 대략 10 에폭 이후부터는 추가 학습의 이득이 크지 않은 구간으로 해석되는 경향이 있다.</p>
+<p>train과 val이 거의 겹치는 의미이다: 훈련 손실과 검증 손실이 비슷한 수준으로 함께 감소하며 마지막까지 큰 간격이 생기지 않는 것은 과적합이 뚜렷하지 않다는 의미이다. 과적합이 발생하면 일반적으로 훈련 손실만 계속 내려가고 검증 손실은 정체하거나 다시 증가하는 형태가 나타난다.</p>
+<p>val이 train보다 약간 낮거나 비슷하게 나오는 이유이다: 초반에 검증 손실이 훈련 손실보다 약간 낮게 보일 수 있는데, 이는 배치 구성의 우연한 차이, 훈련 과정의 변동성, 검증셋 난이도 차이 등으로 인해 충분히 발생할 수 있는 자연스러운 현상이다.</p>
+<p>정리하면, 이 곡선은 AE가 안정적으로 학습되었고 검증 기준에서도 일반화가 잘 되며, 후반부(대략 10~15 에폭 이후)에는 성능 개선 폭이 작아지는 수렴 상태에 도달했다는 의미이다.</p>
+<p>(생략) Epoch 20/20 196/196 - 4s 22ms/step - loss: 0.0082 - val_loss: 0.0083</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_AEtrain.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="dence-ae-재구성-시각화-및-평가-지표" class="level5">
+<h5 class="anchored" data-anchor-id="dence-ae-재구성-시각화-및-평가-지표">DENCE AE 재구성 시각화 및 평가 지표</h5>
+<p>이 셀은 학습된 AE로 테스트 이미지를 재구성하고, 원본과 재구성을 비교하며 MSE·MAE를 계산하는 셀이다. 구현은 테스트 일부를 예측하여 <span class="math inline">\(\hat x\)</span> 를 만든 뒤 이미지를 28×28로 reshape하여 시각화하는 방식이다. 해석은 PCA와 비교할 때 비선형 AE는 더 복잡한 변환을 학습할 수 있으므로 같은 잠재차원에서도 재구성이 더 좋아질 수 있다는 점을 관찰하는 셀이다. 또한 encoder 출력의 shape를 확인하여 잠재표현 차원이 의도대로 구성되었는지 점검하는 셀이다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 재구성</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>x_hat_test <span class="op">=</span> ae.predict(x_test_flat[:<span class="dv">200</span>], verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>recon_metrics(x_test_flat[:<span class="dv">200</span>], x_hat_test, prefix<span class="op">=</span><span class="st">"[AE] "</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 이미지로 보기</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>x_orig_img <span class="op">=</span> x_test[:<span class="dv">10</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>x_hat_img <span class="op">=</span> x_hat_test[:<span class="dv">10</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>show_reconstructions(x_orig_img, x_hat_img, n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="ss">f"AE reconstruction, latent_dim=</span><span class="sc">{</span>latent_dim<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 잠재공간 간단 확인(라벨은 시각화용으로만 사용)</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>z_test <span class="op">=</span> encoder.predict(x_test_flat[:<span class="dv">3000</span>], verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Latent shape:"</span>, z_test.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 그림은 오토인코더(AE) 가 MNIST 테스트 이미지 10장을 잠재차원 k=32 로 압축했다가 다시 복원한 결과를 원본과 나란히 보여주는 그림이다. 위 행이 원본 x이고 아래 행이 재구성 <span class="math inline">\(\hat{x}\)</span> 이다.</p>
+<p>재구성이 전반적으로 잘 된 상태이다: 아래 행의 숫자들이 위 행의 숫자와 형태가 거의 같게 복원되어 있으므로, k=32라는 병목에서도 숫자의 핵심 구조(윤곽, 획의 배치)를 충분히 담아낸 상태라고 해석되는 결과이다.</p>
+<p>약간의 흐림과 두꺼워짐은 평균화 효과의 신호이다: 재구성된 숫자에서 획이 원본보다 조금 흐릿하거나 두꺼워진 느낌이 있을 수 있다. 이는 재구성 손실(MSE)을 최소화하는 과정에서 픽셀 단위로 “평균적인” 복원이 유리해지는 성질이 반영된 결과이다. 즉 세밀한 고주파 디테일보다는 큰 구조를 우선 보존하는 방향으로 학습된 상태이다.</p>
+<p>숫자별 난이도 차이가 보인다: ‘0’처럼 단순한 폐곡선 구조나 ‘1’처럼 획이 단순한 숫자는 복원이 특히 안정적으로 보이는 경향이 있다. 반면 ‘9’, ’5’처럼 곡선과 교차가 복합적인 숫자는 작은 왜곡이나 흐림이 더 나타나기 쉬운 편이다. 이는 동일한 잠재차원에서 복잡한 형태가 상대적으로 더 많은 정보를 요구하기 때문인 결과이다.</p>
+<p>[AE] MSE: 0.008012 MAE: 0.028769</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_AEresult.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="dense-vae-선택-실습-모델-정의-및-학습" class="level5">
+<h5 class="anchored" data-anchor-id="dense-vae-선택-실습-모델-정의-및-학습">Dense VAE 선택 실습: 모델 정의 및 학습</h5>
+<p>이 셀은 오토인코더를 확률적 잠재변수 모형으로 확장한 VAE를 구현하는 셀이다. VAE는 인코더가 잠재변수의 점 z를 직접 출력하는 대신 <span class="math inline">\(q_{\phi}(z|x)\)</span>의 평균 <span class="math inline">\(z_{mean}\)</span> 과 로그분산 <span class="math inline">\(z_{logvar}\)</span>를 출력하는 구조이다.</p>
+<p>재파라미터화 기법을 통해 <span class="math inline">\(z=z_{mean} + exp(0.5 z_{logvar}) \epsilon\)</span> 형태로 샘플링하는 구조이다. 학습 목표는 ELBO를 최대화하는 것이며, 손실은 재구성 항과 KL 항의 합으로 나타나는 구조이다. 재구성 항은 <span class="math inline">\(p_{\theta}(x|z)\)</span> 가 x를 잘 설명하도록 만드는 항이며, KL 항은 <span class="math inline">\(q_{\phi}(z|x)\)</span>가 사전분포 <span class="math inline">\(p(z)\)</span>와 가깝도록 만드는 정규화 항이다.</p>
+<p>KL 항의 해석은 단순히 재구성만 잘하는 표현이 아니라, 잠재공간이 정리되어 임의의 <span class="math inline">\(z \sim N(0, I)\)</span> 에서 샘플링이 가능해지는 표현을 학습한다는 점에 있는 셀이다.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>latent_dim_vae <span class="op">=</span> <span class="dv">2</span>  <span class="co"># 2로 두면 잠재공간 시각화가 가능하다</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Sampling(layers.Layer):</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> call(<span class="va">self</span>, inputs):</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        z_mean, z_logvar <span class="op">=</span> inputs</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        eps <span class="op">=</span> tf.random.normal(shape<span class="op">=</span>tf.shape(z_mean))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> z_mean <span class="op">+</span> tf.exp(<span class="fl">0.5</span> <span class="op">*</span> z_logvar) <span class="op">*</span> eps</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_vae(input_dim<span class="op">=</span><span class="dv">784</span>, latent_dim<span class="op">=</span><span class="dv">2</span>):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Encoder</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    inp <span class="op">=</span> keras.Input(shape<span class="op">=</span>(input_dim,))</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">256</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(inp)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    z_mean <span class="op">=</span> layers.Dense(latent_dim, name<span class="op">=</span><span class="st">"z_mean"</span>)(x)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    z_logvar <span class="op">=</span> layers.Dense(latent_dim, name<span class="op">=</span><span class="st">"z_logvar"</span>)(x)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> Sampling()([z_mean, z_logvar])</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    encoder <span class="op">=</span> keras.Model(inp, [z_mean, z_logvar, z], name<span class="op">=</span><span class="st">"vae_encoder"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Decoder</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    z_in <span class="op">=</span> keras.Input(shape<span class="op">=</span>(latent_dim,))</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">64</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(z_in)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">256</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(x)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> layers.Dense(input_dim, activation<span class="op">=</span><span class="st">"sigmoid"</span>)(x)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    decoder <span class="op">=</span> keras.Model(z_in, out, name<span class="op">=</span><span class="st">"vae_decoder"</span>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> encoder, decoder</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>encoder_vae, decoder_vae <span class="op">=</span> build_vae(input_dim, latent_dim_vae)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_x(data):</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># data가 (x,) 또는 (x,y) 형태로 들어올 수도 있고, 그냥 x 텐서로 들어올 수도 있음</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">isinstance</span>(data, (<span class="bu">tuple</span>, <span class="bu">list</span>)):</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> data[<span class="dv">0</span>]</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> VAE(keras.Model):</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, encoder, decoder, <span class="op">**</span>kwargs):</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="op">**</span>kwargs)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.encoder <span class="op">=</span> encoder</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.decoder <span class="op">=</span> decoder</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.total_loss_tracker <span class="op">=</span> keras.metrics.Mean(name<span class="op">=</span><span class="st">"loss"</span>)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.recon_loss_tracker <span class="op">=</span> keras.metrics.Mean(name<span class="op">=</span><span class="st">"recon_loss"</span>)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.kl_loss_tracker <span class="op">=</span> keras.metrics.Mean(name<span class="op">=</span><span class="st">"kl_loss"</span>)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> metrics(<span class="va">self</span>):</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [<span class="va">self</span>.total_loss_tracker, <span class="va">self</span>.recon_loss_tracker, <span class="va">self</span>.kl_loss_tracker]</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> train_step(<span class="va">self</span>, data):</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> get_x(data)  <span class="co"># 핵심 수정이다</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> tf.GradientTape() <span class="im">as</span> tape:</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>            z_mean, z_logvar, z <span class="op">=</span> <span class="va">self</span>.encoder(x, training<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>            x_hat <span class="op">=</span> <span class="va">self</span>.decoder(z, training<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>            <span class="co"># (batch, 784) -&gt; 샘플별 합</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>            bce <span class="op">=</span> keras.backend.binary_crossentropy(x, x_hat)   <span class="co"># (batch, 784)</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>            recon <span class="op">=</span> tf.reduce_sum(bce, axis<span class="op">=</span><span class="dv">1</span>)                  <span class="co"># (batch,)</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>            kl <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.reduce_sum(</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>                <span class="dv">1</span> <span class="op">+</span> z_logvar <span class="op">-</span> tf.square(z_mean) <span class="op">-</span> tf.exp(z_logvar),</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>                axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>            )  <span class="co"># (batch,)</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>            loss <span class="op">=</span> tf.reduce_mean(recon <span class="op">+</span> kl)</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>        grads <span class="op">=</span> tape.gradient(loss, <span class="va">self</span>.trainable_weights)</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.optimizer.apply_gradients(<span class="bu">zip</span>(grads, <span class="va">self</span>.trainable_weights))</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.total_loss_tracker.update_state(loss)</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.recon_loss_tracker.update_state(tf.reduce_mean(recon))</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.kl_loss_tracker.update_state(tf.reduce_mean(kl))</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {m.name: m.result() <span class="cf">for</span> m <span class="kw">in</span> <span class="va">self</span>.metrics}</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> test_step(<span class="va">self</span>, data):</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> get_x(data)  <span class="co"># 핵심 수정이다</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>        z_mean, z_logvar, z <span class="op">=</span> <span class="va">self</span>.encoder(x, training<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>        x_hat <span class="op">=</span> <span class="va">self</span>.decoder(z, training<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>        bce <span class="op">=</span> keras.backend.binary_crossentropy(x, x_hat)</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>        recon <span class="op">=</span> tf.reduce_sum(bce, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>        kl <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.reduce_sum(</span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>            <span class="dv">1</span> <span class="op">+</span> z_logvar <span class="op">-</span> tf.square(z_mean) <span class="op">-</span> tf.exp(z_logvar),</span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>            axis<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>        loss <span class="op">=</span> tf.reduce_mean(recon <span class="op">+</span> kl)</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.total_loss_tracker.update_state(loss)</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.recon_loss_tracker.update_state(tf.reduce_mean(recon))</span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.kl_loss_tracker.update_state(tf.reduce_mean(kl))</span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {m.name: m.result() <span class="cf">for</span> m <span class="kw">in</span> <span class="va">self</span>.metrics}</span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>vae <span class="op">=</span> VAE(encoder_vae, decoder_vae)</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>vae.<span class="bu">compile</span>(optimizer<span class="op">=</span>keras.optimizers.Adam(<span class="fl">1e-3</span>))</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>history_vae <span class="op">=</span> vae.fit(</span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>    x_train_flat,</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>    validation_data<span class="op">=</span>(x_val_flat,),  <span class="co"># 이 형태 그대로 사용 가능이다</span></span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">256</span>,</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>plt.plot(history_vae.history[<span class="st">"loss"</span>], label<span class="op">=</span><span class="st">"train"</span>)</span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>plt.plot(history_vae.history[<span class="st">"val_loss"</span>], label<span class="op">=</span><span class="st">"val"</span>)</span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Epoch"</span>)</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Negative ELBO (approx.)"</span>)</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"VAE training curve"</span>)</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Epoch 20/20 196/196 - 6s 32ms/step - kl_loss: 5.9151 - loss: 150.5069 - recon_loss: 144.5918 - val_kl_loss: 6.0038 - val_loss: 150.1220 - val_recon_loss: 144.1183</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_VAEtrain.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="vae-잠재공간-시각화와-샘플링" class="level5">
+<h5 class="anchored" data-anchor-id="vae-잠재공간-시각화와-샘플링">VAE 잠재공간 시각화와 샘플링</h5>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 잠재공간 시각화(라벨은 시각화용)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>z_mean, z_logvar, z <span class="op">=</span> encoder_vae.predict(x_test_flat[:<span class="dv">5000</span>], verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">5</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>plt.scatter(z_mean[:,<span class="dv">0</span>], z_mean[:,<span class="dv">1</span>], s<span class="op">=</span><span class="dv">6</span>, c<span class="op">=</span>y_test[:<span class="dv">5000</span>], cmap<span class="op">=</span><span class="st">"tab10"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.colorbar()</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"z1"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"z2"</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"VAE latent space (means), colored by label for visualization"</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 잠재공간 보간 예시</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>i, j <span class="op">=</span> <span class="dv">0</span>, <span class="dv">1</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>za <span class="op">=</span> z_mean[i]</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>zb <span class="op">=</span> z_mean[j]</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>ts <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">10</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>z_interp <span class="op">=</span> np.array([(<span class="dv">1</span><span class="op">-</span>t)<span class="op">*</span>za <span class="op">+</span> t<span class="op">*</span>zb <span class="cf">for</span> t <span class="kw">in</span> ts])</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>x_gen <span class="op">=</span> decoder_vae.predict(z_interp, verbose<span class="op">=</span><span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>show_images_grid(x_gen, n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="st">"VAE interpolation in latent space"</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 사전분포에서 샘플링하여 생성</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>z_samples <span class="op">=</span> np.random.normal(size<span class="op">=</span>(<span class="dv">10</span>, latent_dim_vae))</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>x_samples <span class="op">=</span> decoder_vae.predict(z_samples, verbose<span class="op">=</span><span class="dv">0</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>show_images_grid(x_samples, n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="st">"VAE sampling from N(0, I)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>이 그림은 VAE가 MNIST 각 이미지를 2차원 잠재변수 <span class="math inline">\(z=(z_1, z_2)\)</span> 로 압축했을 때, 각 이미지의 잠재분포 평균 <span class="math inline">\(z_{mean}\)</span> 을 좌표평면에 찍은 산점도이다. 점 하나가 이미지 한 장에 해당하는 표현이며, 색은 학습에는 쓰지 않은 정답 라벨을 시각화 목적으로만 덧칠한 결과이다.</p>
+<p>첫째, 군집이 보인다는 사실은 VAE가 숫자 이미지의 형태적 유사성을 어느 정도 보존하는 저차원 표현을 학습했다는 의미이다. 같은 숫자(같은 색)의 점들이 특정 영역에 더 많이 모이는 경향이 나타나며, 이는 잠재공간에서 가까운 점일수록 비슷한 모양의 숫자일 가능성이 커지는 구조임을 시사하는 결과이다.</p>
+<p>둘째, 군집 간 겹침이 존재한다는 사실은 2차원이라는 강한 병목과 비지도 학습의 한계가 동시에 드러난 결과이다. 예를 들어 3과 5, 4와 9처럼 획 구조가 비슷한 숫자들은 잠재공간에서 구분이 완벽하지 않고 중심부에서 서로 섞여 나타나는 경향이 생기기 쉽다. 이는 모델이 라벨 분리를 목표로 학습한 것이 아니라 재구성 항과 KL 정규화 항의 균형으로 표현을 학습했기 때문에 나타나는 자연스러운 현상이다.</p>
+<p>셋째, 바깥쪽으로 비교적 또렷한 덩어리가 형성된 숫자들이 있다는 점은 해당 숫자들의 형태가 다른 숫자들과 구별되는 특징을 갖는다는 의미이다. 예를 들어 ’1’처럼 획이 단순한 숫자나 ’0’처럼 폐곡선 구조가 강한 숫자는 다른 숫자들과 구분되는 방향으로 잠재공간에서 상대적으로 분리된 영역을 형성하는 경향이 나타나기 쉽다. 반대로 획 조합이 다양하고 다른 숫자와 공통 요소가 많은 숫자들은 중심부에 섞이는 경향이 커지는 구조이다.</p>
+<p>넷째, 점들이 완전히 흩어지지 않고 연속적인 구름 형태로 분포한다는 사실은 VAE의 KL 항이 잠재공간을 정규분포 N(0,I) 근처로 정리했음을 보여주는 결과이다. 이 성질 때문에 잠재공간에서 보간(interpolation)을 하면 중간 좌표에서도 그럴듯한 숫자 이미지가 생성될 가능성이 커지는 구조이다.</p>
+<p>정리하면, 이 그림은 VAE가 2차원 잠재공간에서 숫자 형태의 주요 변동을 요약해 군집 구조를 만들었지만, 라벨 분리를 직접 목표로 하지 않았고 차원이 매우 낮기 때문에 여러 숫자 군집이 겹치는 구조가 함께 나타난 결과이다. 더 또렷한 분리를 원하면 잠재차원을 2보다 크게 두고 시각화만 2차원으로 투영하거나, β-VAE로 KL 가중치를 조절하거나, 조건부 VAE(CVAE)처럼 라벨 정보를 결합하는 방식이 선택지이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_VAEvisual.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>이 그림은 VAE의 잠재공간에서 두 점 <span class="math inline">\(z_a, z_b\)</span> 사이를 선형보간 한 <span class="math inline">\(z(t)=(1-t)z_a + tz_b\)</span> 를 디코더에 넣어 생성한 이미지들을 왼쪽에서 오른쪽으로 나열한 결과이다.</p>
+<p>부드러운 형태 변화가 보간의 핵심 의미이다: 왼쪽의 ’7’에서 시작해 중간으로 갈수록 획의 굵기와 기울기, 윗부분 모양이 조금씩 바뀌다가 ’9’로 넘어가고, 마지막에는 ’2’와 비슷한 형태로 이어지는 모습이다. 이는 잠재공간이 단절된 점들의 집합이 아니라 연속적인 공간으로 학습되어, 중간 좌표에서도 그럴듯한 숫자 이미지를 생성할 수 있음을 보여주는 결과이다.</p>
+<p>중간 구간의 “애매한 숫자”가 나타나는 이유이다: ‘7→9’나 ‘9→2’ 사이에서 완전히 한 숫자로 분류하기 어려운 모양이 나타나는 것은 자연스러운 현상이다. VAE는 라벨을 맞추는 것이 목표가 아니라, 재구성과 KL 정규화의 균형을 통해 데이터 분포를 그럴듯하게 근사하도록 학습된 모델이기 때문이다. 따라서 보간 경로는 “숫자 클래스 경계”를 고려하지 않고, 데이터 분포상 가능해 보이는 형태를 연속적으로 연결하는 방향으로 나타나는 구조이다.</p>
+<p>마지막에 ’2’로 급격히 바뀌는 듯 보이는 이유이다: 잠재공간이 2차원이라 표현력이 제한되고, 서로 다른 클래스 군집이 일부 영역에서 가까워질 수 있다. 보간 경로가 군집 경계 근처를 지나면 생성 결과가 특정 지점에서 빠르게 다른 형태로 전환되는 현상이 나타날 수 있다. 또한 시작점과 끝점이 서로 다른 숫자(라벨)일수록 이런 급격한 전이가 더 두드러질 수 있는 구조이다.</p>
+<p>정리하면, 이 그림은 VAE가 잠재공간을 연속적이고 샘플링 가능한 공간으로 정규화했기 때문에, 잠재벡터를 조금씩 움직이면 생성되는 이미지가 의미 있게 변하는 모습을 보여주는 그림이다. 이는 VAE가 단순 재구성 모델을 넘어 “잠재공간 조작이 가능한 생성모형”으로 동작한다는 증거로 해석되는 결과이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_VAElatent.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>이 그림은 학습이 끝난 VAE에서 잠재변수 z 를 사전분포 <span class="math inline">\(p(z)=N(0,I)\)</span> 에서 임의로 뽑아 z∼N(0,I), 그 z를 디코더에 넣어 새로운 이미지 <span class="math inline">\(\hat x\)</span> 를 생성한 결과이다. 즉 훈련 데이터에 있던 특정 샘플을 “복원”한 것이 아니라, 모델이 학습한 분포로부터 새 샘플을 생성한 결과이다.</p>
+<p>“샘플링이 된다”는 의미이다: 오토인코더는 임의의 z를 넣으면 의미 없는 출력이 나올 수 있지만, VAE는 학습 중 KL 항으로 <span class="math inline">\(q_{\phi}(z|x)\)</span> 가 N(0,I)에 가깝도록 정규화 하기 때문에 N(0,I)에서 뽑은 z가 데이터가 존재하는 잠재공간 영역에 있을 가능성이 커지는 구조이다. 그 결과 디코더가 그럴듯한 숫자 이미지를 생성할 수 있는 상태가 되는 의미이다.</p>
+<p>생성된 숫자가 “그럴듯하지만 약간 흐릿한” 이유이다: MNIST VAE는 보통 평균적인 형태를 내는 경향이 있어, 획이 약간 두껍거나 흐릿하게 보이는 경우가 많다. 이는 (a) 재구성 항이 확률적 평균 형태로 학습되는 성질, (b) 잠재공간 정규화(KL 항)로 인해 과도하게 날카로운(세밀한) 복원보다는 “전형적인” 샘플을 내는 방향으로 학습되는 성질 때문이다.</p>
+<p>품질이 들쭉날쭉한 이유이다: 어떤 샘플은 매우 선명한 숫자(예: 7, 0)로 보이고, 어떤 샘플은 조금 애매하거나 찌그러진 형태로 보일 수 있다. 이는 2차원 잠재공간이 표현력이 제한적이고, N(0,I)에서 뽑힌 점이 잠재공간의 “밀도가 높은 영역”에 떨어지느냐에 따라 생성 품질이 달라질 수 있기 때문이다.</p>
+<p>이 그림이 강의노트에서 강조하는 포인트이다: 이 결과는 VAE가 단순한 차원축소나 재구성 모델이 아니라, 생성모형으로 동작한다는 직접 증거이다. 학습이 끝나면 z∼N(0,I)로 샘플링하고 <span class="math inline">\(x \sim p_{\theta}(x|z)\)</span> 로 생성하는 과정이 가능해지며, 이것이 오토인코더와 VAE의 경계를 가르는 핵심 특성이라는 의미이다. 학습이 잘 된 VAE에서는 잠재공간에서 임의로 뽑은 z가 그럴듯한 숫자 이미지로 매핑되는 경향이 나타나며, 이는 VAE가 단순 재구성 모델을 넘어 “잠재공간 조작이 가능한 생성모형”으로 기능한다는 증거로 해석되는 결과이다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_VAEnormal.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="part-b-교체-dense-ae-대신-conv-ae" class="level5">
+<h5 class="anchored" data-anchor-id="part-b-교체-dense-ae-대신-conv-ae">Part B 교체: Dense AE 대신 Conv AE</h5>
+<p><strong>Conv AE와 Conv VAE 확장 부분의 의미이다</strong></p>
+<p>Conv AE는 Dense 대신 합성곱과 풀링으로 인코더를 구성하고, 전치합성곱으로 디코더를 구성하여 이미지의 공간적 구조를 더 잘 반영하는 방식이다. 구현은 입력을 (28,28,1) 형태로 두고 다운샘플링으로 병목을 만든 뒤 업샘플링으로 복원하는 구조이다.</p>
+<p>해석은 Dense AE보다 재구성 품질이 자연스럽게 나타나는 경우가 많으며, 잠재표현이 이미지의 국소 패턴을 더 잘 담는 경향이 있는 구조이다. Conv VAE는 동일한 확률적 잠재변수 구조를 합성곱 인코더·디코더로 구현한 것이며, 잠재공간 시각화, 보간, 샘플링의 논리는 Dense VAE와 동일하되 표현력이 더 적합한 구조라는 점이 핵심이다.</p>
+<p>다음 코드는 학습된 VAE에서 잠재평균 <span class="math inline">\(z_{mean}\)</span> 을 2차원 평면에 찍어 데이터 구조를 확인하는 셀이다. 구현은 테스트 데이터 일부를 인코더에 통과시켜 <span class="math inline">\(z_{mean}\)</span> 을 얻고, 라벨은 시각화 편의를 위한 색상으로만 사용하여 산점도를 그리는 방식이다.</p>
+<p>해석은 같은 숫자들이 잠재공간에서 가까이 모이는 경향이 나타나면 표현이 의미 구조를 어느 정도 보존한다고 해석하는 구조이다. 이어서 두 잠재점 사이를 보간하여 디코더로 복원하면 이미지가 부드럽게 변하는지 확인하는데, 이는 잠재공간의 연속성을 확인하는 실험이다.</p>
+<p>마지막으로 <span class="math inline">\(z \sim N(0,I)\)</span> 에서 샘플링하여 디코더에 넣어 새로운 이미지를 생성하는데, 이것이 VAE가 오토인코더와 달리 생성모형으로 기능하는 이유를 보여주는 실험이다.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Conv AE는 (28,28,1) 입력을 사용한다</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>x_train_cnn <span class="op">=</span> x_train_sub[..., np.newaxis]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>x_val_cnn   <span class="op">=</span> x_val[..., np.newaxis]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>x_test_cnn  <span class="op">=</span> x_test[..., np.newaxis]</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>latent_dim_cae <span class="op">=</span> <span class="dv">32</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> build_conv_ae(latent_dim<span class="op">=</span><span class="dv">32</span>):</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    inp <span class="op">=</span> keras.Input(shape<span class="op">=</span>(<span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Encoder</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2D(<span class="dv">32</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">"relu"</span>, padding<span class="op">=</span><span class="st">"same"</span>)(inp)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D(<span class="dv">2</span>, padding<span class="op">=</span><span class="st">"same"</span>)(x)            <span class="co"># 14x14</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2D(<span class="dv">64</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">"relu"</span>, padding<span class="op">=</span><span class="st">"same"</span>)(x)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.MaxPooling2D(<span class="dv">2</span>, padding<span class="op">=</span><span class="st">"same"</span>)(x)            <span class="co"># 7x7</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Flatten()(x)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    z <span class="op">=</span> layers.Dense(latent_dim, name<span class="op">=</span><span class="st">"latent"</span>)(x)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    encoder <span class="op">=</span> keras.Model(inp, z, name<span class="op">=</span><span class="st">"conv_encoder"</span>)</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Decoder</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    z_in <span class="op">=</span> keras.Input(shape<span class="op">=</span>(latent_dim,))</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Dense(<span class="dv">7</span> <span class="op">*</span> <span class="dv">7</span> <span class="op">*</span> <span class="dv">64</span>, activation<span class="op">=</span><span class="st">"relu"</span>)(z_in)</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Reshape((<span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">64</span>))(x)</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2DTranspose(<span class="dv">64</span>, <span class="dv">3</span>, strides<span class="op">=</span><span class="dv">2</span>, activation<span class="op">=</span><span class="st">"relu"</span>, padding<span class="op">=</span><span class="st">"same"</span>)(x)  <span class="co"># 14x14</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> layers.Conv2DTranspose(<span class="dv">32</span>, <span class="dv">3</span>, strides<span class="op">=</span><span class="dv">2</span>, activation<span class="op">=</span><span class="st">"relu"</span>, padding<span class="op">=</span><span class="st">"same"</span>)(x)  <span class="co"># 28x28</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>    out <span class="op">=</span> layers.Conv2D(<span class="dv">1</span>, <span class="dv">3</span>, activation<span class="op">=</span><span class="st">"sigmoid"</span>, padding<span class="op">=</span><span class="st">"same"</span>)(x)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    decoder <span class="op">=</span> keras.Model(z_in, out, name<span class="op">=</span><span class="st">"conv_decoder"</span>)</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Autoencoder end-to-end</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>    out_img <span class="op">=</span> decoder(encoder(inp))</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    ae <span class="op">=</span> keras.Model(inp, out_img, name<span class="op">=</span><span class="st">"conv_ae"</span>)</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ae, encoder, decoder</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>cae, cae_encoder, cae_decoder <span class="op">=</span> build_conv_ae(latent_dim<span class="op">=</span>latent_dim_cae)</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>cae.<span class="bu">compile</span>(optimizer<span class="op">=</span>keras.optimizers.Adam(<span class="fl">1e-3</span>), loss<span class="op">=</span><span class="st">"mse"</span>)</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>es <span class="op">=</span> keras.callbacks.EarlyStopping(monitor<span class="op">=</span><span class="st">"val_loss"</span>, patience<span class="op">=</span><span class="dv">3</span>, restore_best_weights<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>history_cae <span class="op">=</span> cae.fit(</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>    x_train_cnn, x_train_cnn,</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    validation_data<span class="op">=</span>(x_val_cnn, x_val_cnn),</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    epochs<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">256</span>,</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    callbacks<span class="op">=</span>[es],</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">4</span>))</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a>plt.plot(history_cae.history[<span class="st">"loss"</span>], label<span class="op">=</span><span class="st">"train"</span>)</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a>plt.plot(history_cae.history[<span class="st">"val_loss"</span>], label<span class="op">=</span><span class="st">"val"</span>)</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Epoch"</span>)</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"MSE loss"</span>)</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Conv AE training curve"</span>)</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Epoch 20/20 196/196 - 200s 740ms/step - loss: 0.0036 - val_loss: 0.0038</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_convAEtrain.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</section>
+<section id="conv-ae-재구성-시각화-및-평가-지표" class="level5">
+<h5 class="anchored" data-anchor-id="conv-ae-재구성-시각화-및-평가-지표">Conv AE 재구성 시각화 및 평가 지표</h5>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 재구성</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>x_hat <span class="op">=</span> cae.predict(x_test_cnn[:<span class="dv">200</span>], verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># flat 지표 계산(기존 함수 재사용)</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>x_true_flat <span class="op">=</span> x_test_cnn[:<span class="dv">200</span>].reshape(<span class="dv">200</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>x_pred_flat <span class="op">=</span> x_hat.reshape(<span class="dv">200</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>recon_metrics(x_true_flat, x_pred_flat, prefix<span class="op">=</span><span class="st">"[Conv AE] "</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 이미지로 보기</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>show_reconstructions(</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    x_test[:<span class="dv">10</span>], x_hat[:<span class="dv">10</span>].squeeze(<span class="op">-</span><span class="dv">1</span>),</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    n<span class="op">=</span><span class="dv">10</span>, title<span class="op">=</span><span class="ss">f"Conv AE reconstruction, latent_dim=</span><span class="sc">{</span>latent_dim_cae<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 잠재표현 shape 확인</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>z_test <span class="op">=</span> cae_encoder.predict(x_test_cnn[:<span class="dv">3000</span>], verbose<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Latent shape:"</span>, z_test.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>[Conv AE] MSE: 0.003495 MAE: 0.018034</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/datareduction_case_convAEresult.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
