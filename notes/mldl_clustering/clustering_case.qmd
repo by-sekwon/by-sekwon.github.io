@@ -1,0 +1,118 @@
+---
+title: "군집・비지도학습: 사례분석"
+format: html
+---
+
+### 군집・비지도학습 사례분석
+
+#### 1. Digits 데이터 불러오기 및 설명
+
+Digits 데이터셋은 UCI의 Optical Recognition of Handwritten Digits 자료(원래 5,620개 중 scikit-learn에는 테스트셋 1,797개가 수록됨)에서 가져온 것으로, 손글씨 숫자를 미리 인쇄된 양식에 작성하게 한 뒤 이미지를 전처리하여 구축된 것이다. 
+
+구체적으로 각 손글씨는 NIST 전처리 프로그램으로 정규화된 32×32 비트맵으로 만든 다음, 이를 겹치지 않는 4×4 블록으로 나누어 각 블록에서 ‘켜진 픽셀(on pixel)’ 개수를 세어 0~16 범위의 값을 얻고, 이렇게 계산된 8×8(=64개) 값이 한 관측치의 특징벡터가 된다. 
+
+따라서 Digits의 “픽셀값”은 일반 회색조 밝기라기보다, 해당 영역에서 글씨가 차지하는 정도를 요약한 블록 단위 밀도(density) 지표이며, 이 특성 때문에 거리 기반 군집, 혼합모형(GMM), PCA/딥 임베딩 기반 군집 비교 실습에 적절한 표준 사례로 사용된다.
+
+scikit-learn의 Digits 데이터셋은 0~9 손글씨 숫자를 8×8 흑백 이미지로 표현한 자료이다. 각 관측치는 64개의 픽셀 강도(feature)로 구성된 벡터이며, 픽셀 값의 범위는 대략 0~16이다. 표본 크기는 1,797개이며, 비지도학습 군집 사례에 적절한 이유는 다음과 같다.
+
+- 차원이 64로 적절하여(고차원 효과가 있으나 과도하지 않음) 군집 기법 비교가 용이하다.
+- 원자료 공간(픽셀)에서의 군집, 확률모형 기반(GMM) 군집, PCA/딥 임베딩 기반 군집을 모두 적용하기 쉽다.
+- 정답 라벨(숫자 0~9)이 존재하므로, 학습에는 숨기고 최종 비교에서만 외부평가(ARI, NMI 등)에 사용할 수 있다.
+
+이후 분석에서는 입력 데이터는 $X \in \mathbb{R}^{n\times p}$ 로 두고($n=1797, p=64$), 라벨 $y$ 는 평가용 보조정보로만 사용한다.
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import load_digits
+
+# 재현성
+RANDOM_STATE = 42
+np.random.seed(RANDOM_STATE)
+
+# 데이터 로드
+digits = load_digits()
+X = digits.data          # (n, 64) : 8x8 이미지를 1차원 벡터로 펼친 것
+y = digits.target        # (n,)     : 실제 숫자 라벨(평가용으로만 사용할 것)
+images = digits.images   # (n, 8, 8) : 원래 이미지 형태
+
+n, p = X.shape
+print(f"n = {n}, p = {p}")
+print(f"pixel value range: min={X.min():.1f}, max={X.max():.1f}")
+print("classes:", np.unique(y), " (총", len(np.unique(y)), "개)")
+
+# 클래스 분포 확인(평가용 참고)
+counts = pd.Series(y).value_counts().sort_index()
+display(pd.DataFrame({"count": counts, "proportion": counts / counts.sum()}))
+
+# 샘플 이미지 시각화 (각 숫자별 1개씩)
+fig, axes = plt.subplots(2, 5, figsize=(10, 4))
+axes = axes.ravel()
+
+for digit_label in range(10):
+    idx = np.where(y == digit_label)[0][0]
+    axes[digit_label].imshow(images[idx], cmap="gray")
+    axes[digit_label].set_title(f"label={digit_label}")
+    axes[digit_label].axis("off")
+
+plt.tight_layout()
+plt.show()
+
+# 데이터 행렬의 간단 요약(평균/표준편차)
+X_df = pd.DataFrame(X)
+summary = pd.DataFrame({
+    "mean": X_df.mean(),
+    "std": X_df.std(),
+    "min": X_df.min(),
+    "max": X_df.max()
+})
+display(summary.head(5))
+```
+**데이터 X.shape = (1797, 64)**
+```text
+array([[ 0.,  0.,  5., ...,  0.,  0.,  0.],
+       [ 0.,  0.,  0., ..., 10.,  0.,  0.],
+       [ 0.,  0.,  0., ..., 16.,  9.,  0.],
+       ...,
+       [ 0.,  0.,  1., ...,  6.,  0.,  0.],
+       [ 0.,  0.,  2., ..., 12.,  0.,  0.],
+       [ 0.,  0., 10., ..., 12.,  1.,  0.]])
+```
+
+```text
+n = 1797, p = 64
+pixel value range: min=0.0, max=16.0
+classes: [0 1 2 3 4 5 6 7 8 9]  (총 10 개)
+count	proportion
+0	178	0.099054
+1	182	0.101280
+2	177	0.098497
+3	183	0.101836
+4	181	0.100723
+5	182	0.101280
+6	181	0.100723
+7	179	0.099610
+8	174	0.096828
+9	180	0.100167
+```
+이 그림은 Digits 데이터셋이 어떤 형태의 입력 X 로 구성되어 있는지를 “눈으로 확인”하기 위한 대표 샘플 시각화이다.
+
+각 작은 패널(예: label=0, label=1, …, label=9)은 숫자 클래스별로 관측치 1개씩을 골라 보여준 것이다. (코드에서 idx = np.where(y==digit_label)[0][0]로 해당 숫자 라벨 중 ‘첫 번째 샘플’을 선택한 결과이다.)
+
+한 장의 이미지는 8×8 격자이며, 즉 한 관측치가 64개의 변수(픽셀/블록 값) 로 이루어진다는 뜻이다. 색의 의미는 밝을수록 값이 크다는 의미이다. Digits의 값은 보통 0~16 범위이며, 값이 클수록 그 위치(블록)에 글씨 획이 많이 포함되어 있다는 뜻이다. 따라서 흰색에 가까운 칸은 글씨가 많이 지나간 영역, 검은 칸은 거의 비어 있는 영역이다.
+
+이 그림은 “각 숫자가 대략 어떤 획 구조를 갖는가”를 보여주는 동시에, 예를 들어 3과 8, 4와 9처럼 모양이 비슷해 보이는 클래스가 존재함을 보여주므로, 이후 군집에서 군집 간 분리가 완벽하지 않을 수 있음을 미리 시사하는 역할도 한다.
+
+![](images/clustering_case_dataimage.png){fig-align="center" width="60%"}
+
+```text
+	mean	std	min	max
+0	0.000000	0.000000	0.0	0.0
+1	0.303840	0.907192	0.0	8.0
+2	5.204786	4.754826	0.0	16.0
+3	11.835838	4.248842	0.0	16.0
+4	11.848080	4.287388	0.0	16.0
+```
+

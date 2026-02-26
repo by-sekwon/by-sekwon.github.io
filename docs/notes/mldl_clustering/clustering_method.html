@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>군집・비지도학습: 방법론 – 세상의 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44962e3d41ec9ccc254fd50f1af5efbe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상의 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/linear_model/index.html"> 
+<span class="menu-text">회귀·다변량</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_intro/index.html"> 
+<span class="menu-text">MLDL개념</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_prediction/index.html"> 
+<span class="menu-text">MLDL예측</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_classification/index.html"> 
+<span class="menu-text">MLDL분류</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../notes/data_reduction/index.html" aria-current="page"> 
+<span class="menu-text">차원축소|군집</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/mldl_clustering/clustering_method.html">📄 군집・비지도학습 방법론</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">【차원축소 | 군집・비지도학습】</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 개념|필요성</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_statmethod.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 통계적방법</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 비지도학습</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/data_reduction/data reduction_case.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 차원축소 사례분석</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_clustering/clustering_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 군집・비지도학습 개념</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_clustering/clustering_method.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 군집・비지도학습 방법론</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mldl_clustering/clustering_case.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 군집・비지도학습 사례분석</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-2.-전통적-군집모형" id="toc-chapter-2.-전통적-군집모형" class="nav-link active" data-scroll-target="#chapter-2.-전통적-군집모형">Chapter 2. 전통적 군집모형</a>
+  <ul>
+  <li><a href="#k-means-군집" id="toc-k-means-군집" class="nav-link" data-scroll-target="#k-means-군집">1. k-means 군집</a></li>
+  <li><a href="#계층적-군집hierarchical-clustering" id="toc-계층적-군집hierarchical-clustering" class="nav-link" data-scroll-target="#계층적-군집hierarchical-clustering">2. 계층적 군집(Hierarchical clustering)</a></li>
+  <li><a href="#거리-척도의-선택-원리" id="toc-거리-척도의-선택-원리" class="nav-link" data-scroll-target="#거리-척도의-선택-원리">3. 거리 척도의 선택 원리</a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-모델기반-군집" id="toc-chapter-3.-모델기반-군집" class="nav-link" data-scroll-target="#chapter-3.-모델기반-군집">Chapter 3. 모델기반 군집</a>
+  <ul>
+  <li><a href="#gaussian-mixture-modelgmm" id="toc-gaussian-mixture-modelgmm" class="nav-link" data-scroll-target="#gaussian-mixture-modelgmm">1. Gaussian Mixture Model(GMM)</a></li>
+  <li><a href="#우도함수와-최대우도추정" id="toc-우도함수와-최대우도추정" class="nav-link" data-scroll-target="#우도함수와-최대우도추정">2. 우도함수와 최대우도추정</a></li>
+  <li><a href="#em-알고리즘" id="toc-em-알고리즘" class="nav-link" data-scroll-target="#em-알고리즘">3. EM 알고리즘</a></li>
+  <li><a href="#모델-기반-군집의-해석" id="toc-모델-기반-군집의-해석" class="nav-link" data-scroll-target="#모델-기반-군집의-해석">4. 모델 기반 군집의 해석</a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-표현기반-군집" id="toc-chapter-3.-표현기반-군집" class="nav-link" data-scroll-target="#chapter-3.-표현기반-군집">Chapter 3. 표현기반 군집</a>
+  <ul>
+  <li><a href="#pca-clustering" id="toc-pca-clustering" class="nav-link" data-scroll-target="#pca-clustering">1. PCA + clustering</a></li>
+  <li><a href="#deep-clustering의-개념" id="toc-deep-clustering의-개념" class="nav-link" data-scroll-target="#deep-clustering의-개념">2. Deep clustering의 개념</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">군집・비지도학습: 방법론</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-2.-전통적-군집모형" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-전통적-군집모형">Chapter 2. 전통적 군집모형</h3>
+<p>전통적 군집모형은 데이터의 잠재 확률모형을 명시적으로 가정하기보다, 거리(또는 비유사도) 와 최적화 기준에 기반하여 관측치를 분할하는 방법이다. 여기서는 대표적인 거리 기반 군집인 k-means와 계층적 군집을 중심으로 정리하고, 군집 결과를 좌우하는 거리 척도의 선택 원리를 함께 서술한다.</p>
+<p>전통적 군집모형의 공통점은 (i) 유사성의 정의가 알고리즘의 본질을 결정한다는 점이며, (ii) 군집의 결과가 하나의 <span dir="rtl">”</span>정답”이 아니라 선택된 기준(거리, linkage, 표준화)에 대한 구조적 제안이라는 점이다.</p>
+<p>전통적 군집모형은 거리 기반 최적화 또는 병합 규칙에 의해 군집을 구성하는 방법이다. k-means는 군집 내 제곱거리합을 최소화하는 분산 기반 방법이며, 계층적 군집은 덴드로그램을 통해 계층적 구조를 제공하는 방법이다.</p>
+<p>이들 방법에서 핵심은 거리 척도와 표준화의 선택이며, 이는 곧 군집이 의미하는 <span dir="rtl">”</span>유사성”의 정의이다. 따라서 전통적 군집 결과는 정답이 아니라, 선택된 거리와 규칙 하에서 도출된 구조적 제안이다.</p>
+<section id="k-means-군집" class="level4">
+<h4 class="anchored" data-anchor-id="k-means-군집">1. k-means 군집</h4>
+<p>k-means는 K개의 군집을 가정하고, 각 군집의 중심(centroid)으로부터의 군집 내 제곱거리합(WSS) 을 최소화하는 방법이다. 데이터 <span class="math inline">\(X = \{ x_{1},\ldots,x_{n}\},x_{i} \in \mathbb{R}^{p}\)</span>에 대해 군집 할당 <span class="math inline">\(z_{i} \in \{ 1,\ldots,K\}\)</span>와 군집 중심 <span class="math inline">\(\mu_{k}\)</span>를 사용하면 목적함수는 다음과 같이 정의된다.</p>
+<p><span class="math inline">\(\min_{z_{1},\ldots,z_{n},\mu_{1},\ldots,\mu_{K}}\overset{K}{\sum_{k = 1}}\sum_{i:z_{i} = k} \parallel x_{i} - \mu_{k} \parallel^{2}\)</span>. 여기서 <span class="math inline">\(\parallel \cdot \parallel\)</span>는 보통 유클리드 노름이다. k-means는 <span class="math inline">\(TSS = WSS + BSS\)</span>분해에 의해 <span class="math inline">\(WSS\)</span>를 줄이는 것이 곧 <span class="math inline">\(BSS\)</span>를 키우는 것과 연결된다는 점에서, 통계적 해석이 명확한 알고리즘이다.</p>
+<section id="최적해의-구조-군집-중심은-평균이다" class="level5">
+<h5 class="anchored" data-anchor-id="최적해의-구조-군집-중심은-평균이다">최적해의 구조: 군집 중심은 평균이다</h5>
+<p>군집 할당 z가 주어졌다고 하자. 이때 군집 k의 목적함수 부분은 <span class="math inline">\(\sum_{i:z_{i} = k} \parallel x_{i} - \mu_{k} \parallel^{2}\)</span>이며, 이를 <span class="math inline">\(\mu_{k}\)</span>에 대해 최소화하는 해는 군집 내 평균 <span class="math inline">\(\mu_{k} = \frac{1}{n_{k}}\sum_{i:z_{i} = k}x_{i}\)</span>이다.</p>
+<p>즉 k-means에서 중심은 <span dir="rtl">”</span>대표값”으로서 통계적 평균이며, 이는 제곱오차 손실의 최적 대표값이 평균이라는 성질과 동일하다.</p>
+</section>
+<section id="lloyd-알고리즘표준-k-means-절차" class="level5">
+<h5 class="anchored" data-anchor-id="lloyd-알고리즘표준-k-means-절차">Lloyd 알고리즘(표준 k-means 절차)</h5>
+<p>k-means의 최적화는 z와 <span class="math inline">\(\mu\)</span>를 동시에 찾는 비볼록(non-convex) 문제이므로 전역최적(global optimum)이 보장되지 않는다. 대신 다음 두 단계를 반복하는 방식으로 국소해(local minimum)를 찾는다.</p>
+<ul>
+<li>할당(Assignment) 단계: 현재 중심 <span class="math inline">\(\mu_{1},\ldots,\mu_{K}\)</span>가 주어지면 각 관측치는 가장 가까운 중심에 배정된다. <span class="math inline">\(z_{i} \leftarrow \arg\min_{k \in \{ 1,\ldots,K\}} \parallel x_{i} - \mu_{k} \parallel^{2}\)</span></li>
+<li>갱신(Update) 단계: 현재 할당 z가 주어지면 각 중심은 해당 군집의 평균으로 갱신된다. <span class="math inline">\(\mu_{k} \leftarrow \frac{1}{n_{k}}\sum_{i:z_{i} = k}x_{i}\)</span>. 이 반복은 매 단계에서 목적함수 <span class="math inline">\(WSS\)</span>를 감소시키므로 유한번 내 수렴한다. 다만 수렴이 곧 전역최적을 의미하지는 않으며, 초기값에 따라 결과가 달라질 수 있다.</li>
+</ul>
+</section>
+<section id="초기값과-k-means의-의미" class="level5">
+<h5 class="anchored" data-anchor-id="초기값과-k-means의-의미">초기값과 k-means++의 의미</h5>
+<p>초기 중심을 무작위로 잡으면 좋지 않은 국소해에 빠질 수 있다. 이를 완화하기 위해 k-means++ 초기화는 <span dir="rtl">”</span>이미 선택된 중심에서 멀리 떨어진 점”을 중심으로 뽑아 초기 중심들의 분산을 확보한다. 실무적으로는 (i) k-means++ 사용, (ii) 여러 번 재시작(n_init)을 통해 가장 작은 WSS 해를 선택하는 방식이 안정적이다.</p>
+</section>
+<section id="k-means의-통계적-한계" class="level5">
+<h5 class="anchored" data-anchor-id="k-means의-통계적-한계">k-means의 통계적 한계</h5>
+<p>k-means는 다음의 구조적 가정을 강하게 포함한다.</p>
+<ul>
+<li>구형(spherical) 군집 가정이다. 유클리드 제곱거리 최소화는 등거리 곡면이 구형이므로, 군집이 타원형이거나 길게 늘어진 형태이면 부적절할 수 있다.</li>
+<li>동일 분산 및 유사 크기 군집에 유리하다. 큰 군집이 작은 군집을 흡수하는 경향이 나타날 수 있다.</li>
+<li>이상치(outlier)에 민감하다. 평균은 이상치에 약하므로 중심이 끌려가며 군집이 왜곡된다.</li>
+<li>스케일에 민감하다. 표준화 여부가 결과를 결정하는 경우가 많다.</li>
+</ul>
+<p>이 한계는 모델 기반 군집(GMM)이나 밀도 기반 군집(DBSCAN)으로 확장되는 이유가 된다.</p>
+</section>
+</section>
+<section id="계층적-군집hierarchical-clustering" class="level4">
+<h4 class="anchored" data-anchor-id="계층적-군집hierarchical-clustering">2. 계층적 군집(Hierarchical clustering)</h4>
+<p>계층적 군집은 군집의 개수를 미리 고정하지 않고, 데이터 간 유사성을 기반으로 계층적 구조를 구성하는 방법이다.</p>
+<p>대표적으로 병합적(agglomerative) 방식이 널리 쓰이며, 이는 처음에 각 관측치를 하나의 군집으로 두고 점차 병합하여 하나의 군집으로 만드는 절차이다. 그 결과는 덴드로그램(dendrogram)이라는 나무 구조로 표현된다. 덴드로그램을 특정 높이에서 자르면 그 높이에 해당하는 군집 개수 K가 결정된다.</p>
+<section id="병합적-계층군집의-알고리즘" class="level5">
+<h5 class="anchored" data-anchor-id="병합적-계층군집의-알고리즘">병합적 계층군집의 알고리즘</h5>
+<p>초기 상태에서 n개의 군집이 있고(각 관측치가 하나의 군집), 단계 t마다 가장 가까운 두 군집 A,B를 선택해 병합한다. 이때 <span dir="rtl">”</span>군집 간 거리”를 정의하는 방식이 linkage 이다. 병합이 n-1번 수행되면 최종적으로 하나의 군집이 된다.</p>
+</section>
+<section id="주요-linkage의-정의와-성질" class="level5">
+<h5 class="anchored" data-anchor-id="주요-linkage의-정의와-성질">주요 linkage의 정의와 성질</h5>
+<p>군집 A,B의 원소를 각각 <span class="math inline">\(x \in A,y \in B\)</span>라 하자. 점 간 거리 d(x,y)가 주어졌을 때 linkage는 다음과 같이 정의된다.</p>
+<ul>
+<li>Single linkage(최단거리 연결): <span class="math inline">\(D(A,B) = \min_{x \in A,y \in B}d(x,y)\)</span>, 군집 사이의 최소 거리로 병합하며, 사슬처럼 이어지는 chaining 현상이 나타나기 쉽다.</li>
+<li>Complete linkage(최장거리 연결): <span class="math inline">\(D(A,B) = \max_{x \in A,y \in B}d(x,y)\)</span>, 군집 간 최대거리를 기준으로 병합하며, 군집이 비교적 조밀하고 타이트하게 형성되는 경향이 있다.</li>
+<li>Average linkage(평균거리 연결): <span class="math inline">\(D(A,B) = \frac{1}{|A||B|}\sum_{x \in A}\sum_{y \in B}d(x,y)\)</span>, single과 complete의 중간 성격이며, 전반적으로 안정적인 결과를 주는 경우가 많다.</li>
+<li>Ward linkage(분산 증가 최소화): Ward는 거리 자체보다 <span dir="rtl">”</span>병합했을 때의 WSS 증가량”을 기준으로 한다. 즉, <span class="math inline">\(\Delta(A,B) = WSS(A \cup B) - WSS(A) - WSS(B)\)</span>가 가장 작은 두 군집을 병합한다. Ward는 k-means의 분산 최소화 철학과 유사하며, 유클리드 거리와 결합될 때 특히 해석이 깔끔하다.</li>
+</ul>
+</section>
+<section id="계층군집의-장단점" class="level5">
+<h5 class="anchored" data-anchor-id="계층군집의-장단점">계층군집의 장단점</h5>
+<p>계층적 군집의 장점은 (i) 덴드로그램으로 군집 구조를 시각적으로 해석할 수 있고, (ii) K를 사전에 정하지 않고 사후에 선택할 수 있다는 점이다. 반면 단점은 (i) 계산량이 커서 대규모 데이터에서 부담이 크고, (ii) 한 번 병합된 결정이 이후 단계에서 되돌릴 수 없는 탐욕적(greedy) 구조라는 점이다. 즉 초기에 잘못된 병합이 발생하면 이후 결과가 연쇄적으로 영향을 받는다.</p>
+</section>
+</section>
+<section id="거리-척도의-선택-원리" class="level4">
+<h4 class="anchored" data-anchor-id="거리-척도의-선택-원리">3. 거리 척도의 선택 원리</h4>
+<p>전통적 군집에서 거리 척도는 단순한 계산 도구가 아니라, <span dir="rtl">”</span>비슷함”에 대한 통계적 가정 그 자체이다. 거리 척도의 선택은 다음 세 요소에 의해 결정된다.</p>
+<ul>
+<li>자료의 척도(scale)와 분포이다.</li>
+<li>변수 간 상관 구조이다.</li>
+<li>분석 목적(형태 vs 방향 vs 순서) 이다.</li>
+</ul>
+<section id="연속형-변수-유클리드-마할라노비스-민코프스키" class="level5">
+<h5 class="anchored" data-anchor-id="연속형-변수-유클리드-마할라노비스-민코프스키">연속형 변수: 유클리드, 마할라노비스, 민코프스키</h5>
+<p>유클리드 거리는 변수 간 독립성과 동일 스케일을 암묵적으로 전제한다. 스케일이 다르면 표준화가 필요하다.</p>
+<p>마할라노비스 거리는 공분산 <span class="math inline">\(\Sigma\)</span>를 반영하므로 상관이 큰 변수들로 인한 <span dir="rtl">”</span>중복 정보”를 완화한다. <span class="math inline">\(d_{Mah}(x_{i},x_{j}) = \sqrt{(x_{i} - x_{j})^{\top}\Sigma^{- 1}(x_{i} - x_{j})}\)</span>. 다만 <span class="math inline">\(\Sigma^{- 1}\)</span> 추정이 불안정하면 오히려 노이즈가 커지므로, 차원축소(PCA)나 정규화(regularization)가 병행되는 것이 일반적이다.</p>
+<p>민코프스키 거리 d_q는 q로 민감도를 조절하는 일반화이다.</p>
+</section>
+<section id="방향성이-중요한-경우-코사인-거리" class="level5">
+<h5 class="anchored" data-anchor-id="방향성이-중요한-경우-코사인-거리">방향성이 중요한 경우: 코사인 거리</h5>
+<p>텍스트 벡터나 임베딩에서는 벡터 크기보다 방향이 유사성에 중요할 때가 많다. 이때 코사인 거리 <span class="math inline">\(d_{C}(x_{i},x_{j}) = 1 - \frac{x_{i}^{\top}x_{j}}{\parallel x_{i} \parallel \parallel x_{j} \parallel}\)</span>를 사용하면, 크기 차이에 덜 민감한 군집이 형성된다.</p>
+</section>
+<section id="범주형이진형-변수-해밍-자카드" class="level5">
+<h5 class="anchored" data-anchor-id="범주형이진형-변수-해밍-자카드">범주형/이진형 변수: 해밍, 자카드</h5>
+<p>이진 벡터에서 해밍거리는 불일치의 개수를 센다.</p>
+<p>자카드 유사도는 <span dir="rtl">”</span>둘 다 1인 경우”를 강조하고 <span dir="rtl">”</span>둘 다 0인 경우”를 덜 중요하게 본다. 희소 이진 데이터(예: 구매 여부, 클릭 여부)에서 유용하다.</p>
+</section>
+<section id="표준화의-통계적-의미" class="level5">
+<h5 class="anchored" data-anchor-id="표준화의-통계적-의미">표준화의 통계적 의미</h5>
+<p>표준화는 단순한 전처리가 아니라 <span dir="rtl">”</span>각 변수를 동등한 중요도로 보겠다”는 선언이다. 표준화(z-score)는 각 변수를 평균 0, 분산 1로 맞춘다. 이를 통해 거리 계산에서 분산이 큰 변수의 영향력이 과도해지는 현상을 줄인다. 반대로 원자료 스케일을 유지하는 것은 <span dir="rtl">”</span>단위 자체가 의미가 있다”는 가정에 해당한다. 즉 표준화 여부는 군집 결과의 해석을 바꾸는 중요한 선택이다.</p>
+</section>
+</section>
+</section>
+<section id="chapter-3.-모델기반-군집" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-모델기반-군집">Chapter 3. 모델기반 군집</h3>
+<p>모델 기반 군집(model-based clustering)은 군집을 <span dir="rtl">”</span>거리로 묶는 규칙”으로 보지 않고, 데이터가 어떤 확률모형으로부터 생성되었다는 가정 하에 잠재집단(latent class) 을 추정하는 문제로 정의하는 방법이다.</p>
+<p>즉 관측치 <span class="math inline">\(x_i\)</span> 는 군집 라벨 <span class="math inline">\(z_i\)</span> 에 의해 조건부분포가 달라지며, 전체 분포는 여러 분포의 혼합(mixture) 으로 표현된다고 보는 관점이다. 이 관점의 장점은 (i) 군집이 확률적 의미를 가지며, (ii) 군집 소속을 <span dir="rtl">”</span>딱 잘라” 배정하는 hard clustering 대신 소속확률을 제공하는 soft clustering이 가능하고, (iii) 정보기준(AIC/BIC) 등 통계적 모형 선택 도구로 군집 수 K를 정당화할 수 있다는 점이다.</p>
+<p>모델 기반 군집은 데이터가 혼합분포에서 생성된다는 가정 하에 잠재집단을 추정하는 방법이다. Gaussian Mixture Model은 정규분포의 혼합으로 전체 분포를 표현하며, EM 알고리즘은 잠재변수의 사후확률(책임도)을 이용해 혼합계수·평균·공분산을 반복적으로 갱신하여 최대우도해를 찾는 절차이다. 이 접근은 군집을 <span dir="rtl">”</span>거리 규칙”이 아니라 <span dir="rtl">”</span>확률적 생성모형”으로 해석하게 해준다는 점에서 통계적 의미가 분명한 방법이다.</p>
+<section id="gaussian-mixture-modelgmm" class="level4">
+<h4 class="anchored" data-anchor-id="gaussian-mixture-modelgmm">1. Gaussian Mixture Model(GMM)</h4>
+<p>Gaussian Mixture Model은 데이터가 K개의 가우시안(정규) 성분분포의 혼합으로 생성된다고 가정하는 모형이다. 관측치 <span class="math inline">\(x_{i} \in \mathbb{R}^{p}\)</span>에 대해 혼합분포는 다음과 같이 정의된다.</p>
+<p><span class="math inline">\(p(x_{i}) = \overset{K}{\sum_{k = 1}}\pi_{k}\mathcal{N}(x_{i} \mid \mu_{k},\Sigma_{k})\)</span>. 여기서 <span class="math inline">\(\pi_{k}\)</span>는 혼합계수(mixing proportion)이며 <span class="math inline">\(\pi_{k} \geq 0,\overset{K}{\sum_{k = 1}}\pi_{k} = 1\)</span>을 만족한다. <span class="math inline">\(\mu_{k} \in \mathbb{R}^{p}\)</span>는 k번째 군집의 평균벡터, <span class="math inline">\(\Sigma_{k} \in \mathbb{R}^{p \times p}\)</span>는 공분산행렬이다.</p>
+<section id="잠재변수-표현" class="level5">
+<h5 class="anchored" data-anchor-id="잠재변수-표현">잠재변수 표현</h5>
+<p>군집 라벨 <span class="math inline">\(z_{i} \in \{ 1,\ldots,K\}\)</span>를 잠재변수로 도입하면 생성모형은 다음과 같이 표현된다. <span class="math inline">\(P(z_{i} = k) = \pi_{k},x_{i} \mid (z_{i} = k) \sim \mathcal{N}(\mu_{k},\Sigma_{k})\)</span></p>
+<p>즉, 먼저 군집이 <span class="math inline">\(\pi\)</span>에 따라 선택되고, 선택된 군집의 정규분포에서 <span class="math inline">\(x_{i}\)</span>가 생성된다고 보는 모형이다. 이때 <span class="math inline">\(z_{i}\)</span>는 관측되지 않으므로 추정의 핵심이 된다.</p>
+</section>
+<section id="k-means와의-연결" class="level5">
+<h5 class="anchored" data-anchor-id="k-means와의-연결">k-means와의 연결</h5>
+<p>k-means는 <span dir="rtl">”</span>유클리드 제곱거리” 기준의 분할이며, GMM은 <span dir="rtl">”</span>정규 혼합의 우도” 기준의 분할이다. 특히 다음의 제한을 두면 GMM은 k-means와 매우 가까워진다.</p>
+<ul>
+<li>모든 군집이 동일한 구형 공분산을 가진다고 가정한다. <span class="math inline">\(\Sigma_{k} = \sigma^{2}I_{p}(k = 1,\ldots,K)\)</span></li>
+<li>혼합계수 <span class="math inline">\(\pi_{k}\)</span>가 크기 비례로 추정된다.</li>
+</ul>
+<p>이때 <span class="math inline">\(\sigma^{2}\)</span>가 작아질수록(분포가 뾰족해질수록) 각 점은 가장 가까운 평균 <span class="math inline">\(\mu_{k}\)</span>의 성분에 사실상 배정되며, 군집 중심은 평균으로 추정된다. 따라서 k-means는 <span dir="rtl">”</span>구형·동분산 가정의 GMM을 hard하게 근사한 방법”으로 이해할 수 있다. 반대로 GMM은 k-means를 타원형(elliptical) 군집까지 확장한 일반화로 해석할 수 있다.</p>
+</section>
+<section id="공분산-구조에-따른-군집-형태" class="level5">
+<h5 class="anchored" data-anchor-id="공분산-구조에-따른-군집-형태">공분산 구조에 따른 군집 형태</h5>
+<p><span class="math inline">\(\Sigma_{k}\)</span>의 형태에 따라 군집이 표현할 수 있는 모양이 달라진다.</p>
+<ul>
+<li><span class="math inline">\(\Sigma_{k} = \sigma^{2}I\)</span> : 구형, 동일 크기 군집이다.</li>
+<li><span class="math inline">\(\Sigma_{k} = \sigma_{k}^{2}I\)</span> : 구형이지만 군집별 크기(분산) 차이를 허용하는 모형이다.</li>
+<li><span class="math inline">\(\Sigma_{k} = \Sigma\)</span> : 타원형이지만 모든 군집이 동일한 타원 모양을 공유하는 모형이다.</li>
+<li><span class="math inline">\(\Sigma_{k}\)</span> 자유 : 군집별로 서로 다른 타원형을 허용하는 가장 유연한 모형이다.</li>
+</ul>
+<p>유연할수록 적합도는 좋아지나, 추정해야 할 모수가 급격히 늘어나 과적합 위험이 커진다. 특히 p가 큰 경우 <span class="math inline">\(\Sigma_{k}\)</span>의 추정이 불안정해지므로 정규화나 차원축소를 병행하는 것이 일반적이다.</p>
+</section>
+</section>
+<section id="우도함수와-최대우도추정" class="level4">
+<h4 class="anchored" data-anchor-id="우도함수와-최대우도추정">2. 우도함수와 최대우도추정</h4>
+<p>관측 데이터 <span class="math inline">\(X = \{ x_{1},\ldots,x_{n}\}\)</span>에 대한 모수 <span class="math inline">\(\Theta = \{\pi_{k},\mu_{k},\Sigma_{k}\}_{k = 1}^{K}\)</span>의 우도는 <span class="math inline">\(L(\Theta) = \overset{n}{\prod_{i = 1}}\overset{K}{\sum_{k = 1}}\pi_{k}\mathcal{N}(x_{i} \mid \mu_{k},\Sigma_{k})\)</span>이며 로그우도는 <span class="math inline">\(\ell(\Theta) = \overset{n}{\sum_{i = 1}}\log\left( \overset{K}{\sum_{k = 1}}\pi_{k}\mathcal{N}(x_{i} \mid \mu_{k},\Sigma_{k}) \right)\)</span>이다. 혼합모형의 특징은 로그 안에 합이 존재한다는 점이며, 이 때문에 <span class="math inline">\(\ell(\Theta)\)</span>를 직접 미분하여 닫힌형태 해를 얻기가 어렵다. 이 문제를 해결하는 대표적 방법이 EM(Expectation–Maximization) 알고리즘이다.</p>
+</section>
+<section id="em-알고리즘" class="level4">
+<h4 class="anchored" data-anchor-id="em-알고리즘">3. EM 알고리즘</h4>
+<p>EM 알고리즘은 관측되지 않은 잠재변수 <span class="math inline">\(Z = \{ z_{i}\}\)</span>를 도입하여, <span dir="rtl">”</span>완전자료(complete data)“의 로그우도를 반복적으로 최적화하는 방법이다. 핵심 아이디어는 다음과 같다.</p>
+<p>관측자료만 보면 최적화가 어렵다(로그-합 구조 때문이다). 그러나 <span class="math inline">\(z_{i}\)</span>까지 관측된다고 가정하면(완전자료), 최적화가 매우 쉬워진다.</p>
+<p>따라서 현재 모수로 <span class="math inline">\(z_{i}\)</span>의 기대값(사후확률)을 계산(E-step)하고, 그 기대값을 가중치로 사용하여 모수를 갱신(M-step)한다.</p>
+<section id="완전자료-로그우도" class="level5">
+<h5 class="anchored" data-anchor-id="완전자료-로그우도">완전자료 로그우도</h5>
+<p>지시변수 <span class="math inline">\(z_{ik} = \mathbf{1}(z_{i} = k)\)</span>를 사용하면 완전자료의 로그우도는 <span class="math inline">\(\ell_{c}(\Theta) = \overset{n}{\sum_{i = 1}}\overset{K}{\sum_{k = 1}}z_{ik}(\log\pi_{k} + \log\mathcal{N}(x_{i} \mid \mu_{k},\Sigma_{k}))\)</span>이다. 이 식은 <span class="math inline">\(z_{ik}\)</span>가 주어지면 <span class="math inline">\(\pi_{k},\mu_{k},\Sigma_{k}\)</span>에 대해 분리되어 최적화가 가능하다.</p>
+</section>
+<section id="e-step-책임도responsibility-계산" class="level5">
+<h5 class="anchored" data-anchor-id="e-step-책임도responsibility-계산">E-step: 책임도(responsibility) 계산</h5>
+<p>현재 모수 <span class="math inline">\(\Theta^{(t)}\)</span>하에서 관측치 <span class="math inline">\(x_{i}\)</span>가 군집 k에 속할 사후확률을 계산한다. <span class="math inline">\(\gamma_{ik}: = P(z_{i} = k \mid x_{i},\Theta^{(t)}) = \frac{\pi_{k}^{(t)}\mathcal{N}(x_{i} \mid \mu_{k}^{(t)},\Sigma_{k}^{(t)})}{\sum_{j = 1}^{K}\pi_{j}^{(t)}\mathcal{N}(x_{i} \mid \mu_{j}^{(t)},\Sigma_{j}^{(t)})}\)</span>.</p>
+<p><span class="math inline">\(\gamma_{ik}\)</span>는 <span dir="rtl">”</span>관측치 i를 군집 k가 얼마나 책임지는가”라는 의미에서 책임도라 부른다. 이 값이 soft clustering의 핵심 결과이며, hard clustering은 <span class="math inline">\(\arg\max_{k}\gamma_{ik}\)</span>로 얻어진다.</p>
+</section>
+<section id="m-step-모수-갱신" class="level5">
+<h5 class="anchored" data-anchor-id="m-step-모수-갱신">M-step: 모수 갱신</h5>
+<p>E-step에서 얻은 \gamma_{ik}를 z_{ik}의 기대값으로 두고, 기대 완전자료 로그우도를 최대화하는 방식으로 모수를 갱신한다. 우선 유효표본크기를 <span class="math inline">\(N_{k} = \overset{n}{\sum_{i = 1}}\gamma_{ik}\)</span>로 정의하면, 갱신식은 다음과 같다.</p>
+<ul>
+<li>혼합계수: <span class="math inline">\(\pi_{k}^{(t + 1)} = \frac{N_{k}}{n}\)</span></li>
+<li>평균: <span class="math inline">\(\mu_{k}^{(t + 1)} = \frac{1}{N_{k}}\overset{n}{\sum_{i = 1}}\gamma_{ik}x_{i}\)</span></li>
+<li>공분산: <span class="math inline">\(\Sigma_{k}^{(t + 1)} = \frac{1}{N_{k}}\overset{n}{\sum_{i = 1}}\gamma_{ik}(x_{i} - \mu_{k}^{(t + 1)})(x_{i} - \mu_{k}^{(t + 1)})^{\top}\)</span></li>
+</ul>
+<p>이 갱신은 <span dir="rtl">”</span>가중 평균/가중 공분산” 형태이며, 가중치가 바로 책임도 <span class="math inline">\(\gamma_{ik}\)</span>이다.</p>
+</section>
+<section id="수렴-성질과-주의점" class="level5">
+<h5 class="anchored" data-anchor-id="수렴-성질과-주의점">수렴 성질과 주의점</h5>
+<p>EM 알고리즘은 반복할수록 관측자료 로그우도 <span class="math inline">\(\ell(\Theta)\)</span>를 감소시키지 않는 성질(단조증가)을 가진다. 즉, <span class="math inline">\(\ell(\Theta^{(t + 1)}) \geq \ell(\Theta^{(t)})\)</span>이다. 그러나 이는 전역최적을 보장하지 않으며, 초기값에 따라 국소최적에 수렴할 수 있다. 따라서 여러 초기값으로 반복하여 가장 큰 로그우도를 선택하는 방식이 권장된다.</p>
+<p>또한 혼합모형에서는 다음과 같은 수치적 문제가 발생할 수 있다.</p>
+<p>특이해(singularity) 문제이다. 어떤 성분이 한 점에 과도하게 집중되면 <span class="math inline">\(\Sigma_{k} \rightarrow 0\)</span>로 가면서 우도가 발산할 수 있다. 이는 공분산에 작은 <span class="math inline">\(\epsilon I\)</span>를 더하는 정규화나 최소 공분산 제약으로 완화된다.</p>
+<p>고차원 불안정성 문제이다. p가 크면 <span class="math inline">\(\Sigma_{k}\)</span> 추정이 불안정해진다. 이때 PCA로 차원을 줄인 뒤 GMM을 적용하거나, 대각 공분산(diagonal covariance) 가정 등 단순화를 적용하는 것이 일반적이다.</p>
+<p>라벨 스위칭(label switching) 문제이다. 혼합모형은 성분의 순서가 본질적으로 의미가 없으므로(군집 1과 2의 이름을 바꿔도 같은 모형이다) 해석 시 <span dir="rtl">”</span>군집 번호 자체”에 의미를 부여하지 않는 것이 원칙이다.</p>
+</section>
+</section>
+<section id="모델-기반-군집의-해석" class="level4">
+<h4 class="anchored" data-anchor-id="모델-기반-군집의-해석">4. 모델 기반 군집의 해석</h4>
+<p>GMM의 군집 결과는 단순한 분할이 아니라, 각 점에 대한 소속확률 <span class="math inline">\(\gamma_{ik}\)</span>를 제공한다는 점에서 해석이 풍부하다. 예를 들어 <span class="math inline">\(\max_{k}\gamma_{ik}\)</span>가 작으면 해당 점은 어느 군집에도 강하게 속하지 않는 경계점일 가능성이 크다.</p>
+<p>또한 <span class="math inline">\(\Sigma_{k}\)</span>는 군집의 모양과 방향성을 의미하므로, <span dir="rtl">”</span>군집이 어떤 축으로 퍼져 있는가”를 통계적으로 설명할 수 있다. 이는 k-means처럼 구형 군집만 가정하는 방법보다 현실 데이터를 더 잘 반영하는 경우가 많다.</p>
+</section>
+</section>
+<section id="chapter-3.-표현기반-군집" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-표현기반-군집">Chapter 3. 표현기반 군집</h3>
+<p>표현 기반 군집(representation-based clustering)은 원자료 공간에서 곧바로 군집을 수행하기보다, 데이터를 더 <span dir="rtl">”</span>군집하기 좋은” 표현공간으로 변환한 뒤 군집을 수행하는 접근이다.</p>
+<p>실제 데이터는 고차원, 강한 상관, 잡음, 비선형 구조를 동시에 포함하는 경우가 많으며, 이때 단순 거리 기반 군집은 거리의 의미가 약해지거나(차원의 저주), 특정 변수의 스케일·상관에 의해 결과가 왜곡되기 쉽다.</p>
+<p>표현 기반 군집은 이러한 문제를 완화하기 위해 (i) 차원축소 및 특징추출로 핵심 구조를 요약하고, (ii) 그 표현 위에서 k-means, GMM, 계층군집 등을 수행하여 군집의 안정성과 해석가능성을 높이는 방법이다. 이 절에서는 PCA 기반 파이프라인과 딥러닝 기반 deep clustering의 개념을 정리한다.</p>
+<p>표현 기반 군집은 원공간에서 직접 군집하기 어려운 경우, 차원축소 또는 특징학습을 통해 군집에 유리한 표현공간을 만든 뒤 군집을 수행하는 방법이다.</p>
+<p>PCA+clustering은 가장 표준적인 선형 표현 기반 방법이며, deep clustering은 신경망으로 비선형 임베딩을 학습하면서 군집 목적을 함께 최적화하는 확장된 개념이다. 이 절의 핵심은 군집이 <span dir="rtl">”</span>알고리즘 선택”만의 문제가 아니라, 표현공간을 어떻게 설계하느냐의 문제라는 점이다.</p>
+<section id="pca-clustering" class="level4">
+<h4 class="anchored" data-anchor-id="pca-clustering">1. PCA + clustering</h4>
+<section id="pca의-목적과-군집과의-연결" class="level5">
+<h5 class="anchored" data-anchor-id="pca의-목적과-군집과의-연결">PCA의 목적과 군집과의 연결</h5>
+<p>주성분분석(PCA)은 p차원 데이터를 분산이 큰 방향으로 정렬하여, 소수의 선형결합으로 데이터를 요약하는 차원축소 방법이다. 평균을 제거한 데이터 행렬을 <span class="math inline">\(X_{c} \in \mathbb{R}^{n \times p}\)</span>라 하면, PCA는 다음 최적화 문제로 정의된다.</p>
+<p><span class="math inline">\(\max_{\parallel w \parallel = 1}Var(X_{c}w)\)</span>. 즉 1번째 주성분 방향 <span class="math inline">\(w_{1}\)</span>는 투영점수의 분산을 최대화하는 단위벡터이다. 이를 확장하면 상위 q개 주성분으로 구성된 행렬 <span class="math inline">\(W_{q} = \lbrack w_{1},\ldots,w_{q}\rbrack \in \mathbb{R}^{p \times q}\)</span>에 대해 저차원 표현은 <span class="math inline">\(Z = X_{c}W_{q} \in \mathbb{R}^{n \times q}\)</span>로 주어진다. 여기서 Z가 바로 군집에 투입되는 <span dir="rtl">”</span>표현(representation)“이다.</p>
+<p>군집 관점에서 PCA의 핵심 역할은 다음 두 가지이다.</p>
+<ul>
+<li>잡음 제거 및 거리 안정화이다. 고차원에서 유클리드 거리는 차이가 균질해져 구분력이 약해지는 경향이 있으며, 잡음 차원이 많을수록 이 현상이 강해진다. PCA로 중요한 분산 방향만 남기면 거리가 더 의미 있게 작동한다.</li>
+<li>상관 구조 정리이다. 상관이 큰 변수들이 중복정보를 제공하면 거리가 특정 방향으로 과도하게 왜곡될 수 있다. PCA는 서로 직교하는 축으로 변환하여 중복성을 줄인다.</li>
+</ul>
+<p>따라서 PCA+clustering은 <span dir="rtl">”</span>차원축소로 표현공간을 정리한 뒤, 그 공간에서 거리 기반 또는 모델 기반 군집을 수행하는 표준적 파이프라인”이다.</p>
+</section>
+<section id="절차-전형적-파이프라인" class="level5">
+<h5 class="anchored" data-anchor-id="절차-전형적-파이프라인">절차: 전형적 파이프라인</h5>
+<p>PCA+clustering은 다음 순서로 수행하는 것이 일반적이다.</p>
+<p>① 전처리 및 표준화이다. 변수 단위가 다르면 표준화(z-score)가 필요하다. 이는 각 변수의 분산을 동일하게 두겠다는 가정이다.</p>
+<p>② PCA 적합 및 차원 q 선택이다. 설명분산비 또는 누적 설명분산 기준으로 q를 정한다.</p>
+<p>③ 저차원 점수 Z 산출이다. <span class="math inline">\(Z = X_{c}W_{q}\)</span>이다.</p>
+<p>④ 군집 수행이다. Z에 대해 k-means, GMM, 계층군집 등을 적용한다.</p>
+<p>⑤ 해석이다. 군집 결과를 원변수로 되돌려 군집별 평균·비율·특징을 요약한다.</p>
+<p>이 과정에서 <span dir="rtl">”</span>PCA에서의 q”와 <span dir="rtl">”</span>군집에서의 K”는 서로 다른 선택 문제이다. q는 표현의 복잡도를, K는 군집 구조의 복잡도를 조절한다.</p>
+</section>
+<section id="pca-공간에서의-거리-해석" class="level5">
+<h5 class="anchored" data-anchor-id="pca-공간에서의-거리-해석">PCA 공간에서의 거리 해석</h5>
+<p>PCA는 선형변환이므로, 원공간의 유클리드 거리와 PCA 공간의 유클리드 거리는 일반적으로 동일하지 않다. 다만 모든 주성분을 사용하면(즉 q=p) 직교변환이므로 거리가 보존된다.</p>
+<p>하지만 q&lt;p로 축소하면 일부 방향 정보를 버리므로 거리도 근사적으로만 유지된다. 이때 중요한 점은 <span dir="rtl">”</span>버린 방향이 주로 잡음이라면 오히려 거리 기반 군집이 좋아질 수 있다”는 사실이다.</p>
+<p>따라서 PCA+clustering은 단순한 정보 손실이 아니라, 군집에 유리한 신호대잡음비(signal-to-noise ratio)를 높이는 전략이다.</p>
+</section>
+<section id="k-means와-pca의-관계" class="level5">
+<h5 class="anchored" data-anchor-id="k-means와-pca의-관계">k-means와 PCA의 관계</h5>
+<p>PCA와 k-means는 서로 다른 목적함수를 갖지만, 둘 다 <span dir="rtl">”</span>제곱거리와 분산”의 구조를 공유한다. 특히 k-means는 군집 내 제곱거리합을 최소화하며, PCA는 투영 후 재구성 오차를 최소화하는 성질을 가진다.</p>
+<p>따라서 분산 구조가 강하게 존재하는 데이터에서는 PCA 축 위에서 군집이 더 뚜렷해지는 경우가 많다. 그러나 데이터 구조가 비선형이면 PCA만으로는 군집 구조가 선명해지지 않을 수도 있다.</p>
+</section>
+</section>
+<section id="deep-clustering의-개념" class="level4">
+<h4 class="anchored" data-anchor-id="deep-clustering의-개념">2. Deep clustering의 개념</h4>
+<p>딥러닝 기반 deep clustering은 신경망을 사용해 데이터의 표현을 학습하면서, 그 표현에서 군집이 잘 분리되도록 만드는 접근이다. 이는 <span dir="rtl">”</span>좋은 표현이 주어지면 군집은 쉬워진다”는 명제를 전제로 한다.</p>
+<p>전통적 방식(PCA+clustering)은 표현 학습(PCA)과 군집을 분리하여 수행하지만, deep clustering은 두 단계를 결합하거나 번갈아 최적화한다는 점에서 차이가 있다.</p>
+<section id="기본-구성-표현-함수와-군집-목적" class="level5">
+<h5 class="anchored" data-anchor-id="기본-구성-표현-함수와-군집-목적">기본 구성: 표현 함수와 군집 목적</h5>
+<p>딥러닝은 입력 x를 저차원 임베딩 z로 변환하는 함수 <span class="math inline">\(f_{\theta}( \cdot )\)</span>를 학습한다. <span class="math inline">\(z_{i} = f_{\theta}(x_{i}) \in \mathbb{R}^{q}\)</span>. 여기서 <span class="math inline">\(\theta\)</span>는 신경망 파라미터이다. deep clustering은 이 임베딩 <span class="math inline">\(z_{i}\)</span>가 <span dir="rtl">”</span>군집하기 좋은 공간”이 되도록 <span class="math inline">\(\theta\)</span>를 학습한다. 즉, 목표는 단순히 재구성이나 분류가 아니라 군집 구조가 드러나는 표현을 만드는 것이다.</p>
+</section>
+<section id="대표적-접근-1-오토인코더-군집" class="level5">
+<h5 class="anchored" data-anchor-id="대표적-접근-1-오토인코더-군집">대표적 접근 1: 오토인코더 + 군집</h5>
+<p>가장 직관적인 방식은 오토인코더(autoencoder)를 이용하는 방식이다. 오토인코더는 인코더 <span class="math inline">\(f_{\theta}\)</span>와 디코더 <span class="math inline">\(f_{\theta}\)</span>로 구성되며, <span class="math inline">\(z_{i} = f_{\theta}(x_{i}),{\widehat{x}}_{i} = g_{\phi}(z_{i})\)</span>로 재구성한다. 재구성 손실은 보통 <span class="math inline">\(L_{\text{rec}} = \overset{n}{\sum_{i = 1}} \parallel x_{i} - {\widehat{x}}_{i} \parallel^{2}\)</span>이다. 여기서 <span class="math inline">\(z_{i}\)</span>는 PCA의 점수와 유사한 역할을 하되, 비선형 함수를 통해 더 유연한 표현을 학습한다.</p>
+<p>이후 z_i에 대해 k-means를 수행하는 방법은 <span dir="rtl">”</span>오토인코더로 표현 학습 → 임베딩에서 군집”이라는 2단계 접근이다. 그러나 deep clustering이라 부르는 핵심은 <span dir="rtl">”</span>재구성만 잘하는 임베딩”이 아니라 <span dir="rtl">”</span>군집이 잘 되도록 임베딩을 조정”하는 것에 있다.</p>
+<p>따라서 다음과 같은 결합 목적이 등장한다. <span class="math inline">\(L = L_{\text{rec}} + \lambda L_{\text{clust}}\)</span>. 여기서 <span class="math inline">\(L_{\text{clust}}\)</span>는 임베딩에서 군집이 조밀·분리되도록 유도하는 손실이며, <span class="math inline">\(\lambda\)</span>는 두 목표의 균형을 조절하는 계수이다.</p>
+</section>
+<section id="대표적-접근-2-자기학습self-training-기반-soft-assignment" class="level5">
+<h5 class="anchored" data-anchor-id="대표적-접근-2-자기학습self-training-기반-soft-assignment">대표적 접근 2: 자기학습(self-training) 기반 soft assignment</h5>
+<p>딥러닝 기반 군집에서는 hard assignment 대신 soft assignment를 이용하는 경우가 많다. 임베딩 z_i와 군집 중심 <span class="math inline">\(m_{k}\)</span>가 있을 때, 예를 들어 Student-t 분포 형태의 soft assignment를 <span class="math inline">\(q_{ik} \propto \left( 1 + \frac{\parallel z_{i} - m_{k} \parallel^{2}}{\alpha} \right)^{- \frac{\alpha + 1}{2}}\)</span>로 정의하고, 이를 정규화하여 <span class="math inline">\(\sum_{k}q_{ik} = 1\)</span>이 되게 한다.</p>
+<p>이후 <span class="math inline">\(q_{ik}\)</span>로부터 더 <span dir="rtl">”</span>날카로운” 목표분포 <span class="math inline">\(p_{ik}\)</span>를 만들고(예: 큰 값을 강조하는 방식), q가 p를 따라가도록 KL divergence를 최소화한다. <span class="math inline">\(L_{\text{clust}} = \overset{n}{\sum_{i = 1}}\overset{K}{\sum_{k = 1}}p_{ik}\log\frac{p_{ik}}{q_{ik}}\)</span>이라는 형태가 자주 사용된다.</p>
+<p>이 방식의 의미는 <span dir="rtl">”</span>현재 임베딩에서 군집이 될 듯한 구조를 만든 뒤, 그 구조가 더 선명해지도록 임베딩을 다시 학습”하는 반복 구조이다.</p>
+</section>
+<section id="deep-clustering의-장점과-위험" class="level5">
+<h5 class="anchored" data-anchor-id="deep-clustering의-장점과-위험">deep clustering의 장점과 위험</h5>
+<p>deep clustering의 장점은 다음과 같다.</p>
+<ul>
+<li>고차원·비선형 구조에서 PCA보다 더 강력한 표현을 학습할 수 있다.</li>
+<li>이미지, 텍스트 등 복잡한 데이터에서 <span dir="rtl">”</span>군집 가능한 특징”을 자동으로 추출할 수 있다.</li>
+<li>soft assignment를 통해 경계점의 불확실성까지 표현할 수 있다.</li>
+</ul>
+<p>반면 위험도 분명하다.</p>
+<ul>
+<li>퇴화(degenerate) 해의 위험이다. 모든 점이 하나의 군집으로 몰리거나, 임베딩이 상수로 붕괴(collapse)하는 현상이 발생할 수 있다.</li>
+<li>하이퍼파라미터 의존성이 크다. 임베딩 차원 q, 손실 가중치 <span class="math inline">\(\lambda\)</span>, 초기 중심, 학습률 등에 따라 결과가 크게 달라질 수 있다.</li>
+<li>해석가능성이 낮아질 수 있다. PCA는 선형결합으로 설명되지만, 딥 임베딩은 설명이 어려운 경우가 많다.</li>
+</ul>
+<p>따라서 deep clustering은 <span dir="rtl">”</span>군집 성능”만이 아니라 <span dir="rtl">”</span>안정성과 해석가능성”까지 함께 고려하여 사용해야 한다.</p>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
