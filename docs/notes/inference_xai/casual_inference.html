@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>casual_inference – 세상의 모든 통계 이야기</title>
+<title>인과추론 – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -144,7 +179,7 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../../notes/data_reduction/index.html" aria-current="page"> 
-<span class="menu-text">차원축소|군집|인과추론|XAI</span></a>
+<span class="menu-text">차원축소|군집|인과추론・XAI</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../cardnews/index.html"> 
@@ -254,36 +289,89 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-0.-왜-인과추론설명가능-ai가-필요한가" id="toc-chapter-0.-왜-인과추론설명가능-ai가-필요한가" class="nav-link active" data-scroll-target="#chapter-0.-왜-인과추론설명가능-ai가-필요한가">Chapter 0. 왜 인과추론·설명가능 AI가 필요한가?</a></li>
+  <li><a href="#chapter-1.-예측과-인과의-구분" id="toc-chapter-1.-예측과-인과의-구분" class="nav-link" data-scroll-target="#chapter-1.-예측과-인과의-구분">Chapter 1. 예측과 인과의 구분</a>
+  <ul>
+  <li><a href="#예측-인과-그리고-상관" id="toc-예측-인과-그리고-상관" class="nav-link" data-scroll-target="#예측-인과-그리고-상관">1. 예측, 인과, 그리고 상관</a></li>
+  <li><a href="#예측-문제의-수식적-정식화" id="toc-예측-문제의-수식적-정식화" class="nav-link" data-scroll-target="#예측-문제의-수식적-정식화">2. 예측 문제의 수식적 정식화</a></li>
+  <li><a href="#인과-문제의-수식적-정식화" id="toc-인과-문제의-수식적-정식화" class="nav-link" data-scroll-target="#인과-문제의-수식적-정식화">3. 인과 문제의 수식적 정식화</a></li>
+  <li><a href="#상관-vs-개입의-핵심-차이" id="toc-상관-vs-개입의-핵심-차이" class="nav-link" data-scroll-target="#상관-vs-개입의-핵심-차이">4. <span dir="rtl">”</span>상관 vs 개입”의 핵심 차이</a></li>
+  <li><a href="#왜-관측-차이상관가-인과가-아닌가-교란과-선택편의" id="toc-왜-관측-차이상관가-인과가-아닌가-교란과-선택편의" class="nav-link" data-scroll-target="#왜-관측-차이상관가-인과가-아닌가-교란과-선택편의">5. 왜 관측 차이(상관)가 인과가 아닌가: 교란과 선택편의</a></li>
+  <li><a href="#정책-오류-사례전형-패턴-3가지" id="toc-정책-오류-사례전형-패턴-3가지" class="nav-link" data-scroll-target="#정책-오류-사례전형-패턴-3가지">6. 정책 오류 사례(전형 패턴) 3가지</a></li>
+  <li><a href="#파이썬-예제" id="toc-파이썬-예제" class="nav-link" data-scroll-target="#파이썬-예제">7. 파이썬 예제</a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-통계적-인과추론-프레임" id="toc-chapter-2.-통계적-인과추론-프레임" class="nav-link" data-scroll-target="#chapter-2.-통계적-인과추론-프레임">Chapter 2. 통계적 인과추론 프레임</a>
+  <ul>
+  <li><a href="#기본-설정과-표기" id="toc-기본-설정과-표기" class="nav-link" data-scroll-target="#기본-설정과-표기">1. 기본 설정과 표기</a></li>
+  <li><a href="#관측결과의-구성식" id="toc-관측결과의-구성식" class="nav-link" data-scroll-target="#관측결과의-구성식">2. 관측결과의 구성식</a></li>
+  <li><a href="#근본적-인과추론-문제" id="toc-근본적-인과추론-문제" class="nav-link" data-scroll-target="#근본적-인과추론-문제">3. 근본적 인과추론 문제</a></li>
+  <li><a href="#평균-효과의-정의" id="toc-평균-효과의-정의" class="nav-link" data-scroll-target="#평균-효과의-정의">4. 평균 효과의 정의</a></li>
+  <li><a href="#인과효과와-관측차이의-관계" id="toc-인과효과와-관측차이의-관계" class="nav-link" data-scroll-target="#인과효과와-관측차이의-관계">5. 인과효과와 관측차이의 관계</a></li>
+  <li><a href="#식별identification이라는-단계" id="toc-식별identification이라는-단계" class="nav-link" data-scroll-target="#식별identification이라는-단계">6. 식별(identification)이라는 단계</a></li>
+  <li><a href="#정책-질문과-ateatt의-연결" id="toc-정책-질문과-ateatt의-연결" class="nav-link" data-scroll-target="#정책-질문과-ateatt의-연결">7. 정책 질문과 ATE/ATT의 연결</a></li>
+  <li><a href="#관측차이-ate-att가-서로-달라질-수-있음을-확인하는-시뮬레이션" id="toc-관측차이-ate-att가-서로-달라질-수-있음을-확인하는-시뮬레이션" class="nav-link" data-scroll-target="#관측차이-ate-att가-서로-달라질-수-있음을-확인하는-시뮬레이션">8. 관측차이, ATE, ATT가 서로 달라질 수 있음을 확인하는 시뮬레이션</a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-관측자료-기반-인과기법" id="toc-chapter-3.-관측자료-기반-인과기법" class="nav-link" data-scroll-target="#chapter-3.-관측자료-기반-인과기법">Chapter 3. 관측자료 기반 인과기법</a>
+  <ul>
+  <li><a href="#관측자료-인과추론의-기본-가정과-식별식" id="toc-관측자료-인과추론의-기본-가정과-식별식" class="nav-link" data-scroll-target="#관측자료-인과추론의-기본-가정과-식별식">1. 관측자료 인과추론의 기본 가정과 식별식</a></li>
+  <li><a href="#회귀-조정regression-adjustment" id="toc-회귀-조정regression-adjustment" class="nav-link" data-scroll-target="#회귀-조정regression-adjustment">2. 회귀 조정(regression adjustment)</a></li>
+  <li><a href="#성향점수propensity-score-기반-방법" id="toc-성향점수propensity-score-기반-방법" class="nav-link" data-scroll-target="#성향점수propensity-score-기반-방법">3. 성향점수(propensity score) 기반 방법</a></li>
+  <li><a href="#diddifference-in-differences" id="toc-diddifference-in-differences" class="nav-link" data-scroll-target="#diddifference-in-differences">4. DiD(Difference-in-Differences</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">인과추론</h1>
+</div>
 
 
 
+<div class="quarto-title-meta column-body">
 
-<p>Chapter 0. 왜 인과추론·설명가능 AI가 필요한가?</p>
-<p>권세혁교수 통계 사전 【인과추론・설명가능 AI -1】</p>
-<p>s<a href="https://sites.google.com/view/wolfpack61"><u>https://sites.google.com/view/wolfpack61</u></a></p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-0.-왜-인과추론설명가능-ai가-필요한가" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-0.-왜-인과추론설명가능-ai가-필요한가">Chapter 0. 왜 인과추론·설명가능 AI가 필요한가?</h3>
 <p>데이터 분석과 머신러닝이 널리 보급되면서 <span dir="rtl">”</span>예측을 잘하는 모델”은 더 이상 특별한 기술이 아니게 되었다. 공개된 라이브러리와 자동화된 학습 절차를 이용하면, 비교적 짧은 시간 안에 높은 정확도를 얻는 일이 가능하다.</p>
 <p>그러나 실제 현장에서 데이터 분석이 요구되는 이유는 단순히 값을 맞히기 위해서가 아니라, 어떤 결정을 내려야 하는 상황에서 근거를 제공하기 위해서인 경우가 많다.</p>
 <p>정책을 설계하고, 의료적 처방을 선택하고, 금융에서 위험을 관리하며, 행정에서 지원 대상을 선정하는 일은 모두 <span dir="rtl">”</span>결정”의 문제이며, 결정은 예측값 하나로 정당화되기 어렵다. 이 강의노트는 바로 그 지점, 즉 예측을 넘어 의사결정의 근거를 세우는 데 필요한 통계적 언어와 방법을 정리하기 위해 구성되었다.</p>
-<p>예측<strong>(prediction)</strong>은 관측된 데이터에서 반복되는 패턴을 학습하여, 새로운 입력 X가 주어졌을 때 미관측 결과 Y를 정확히 맞히는 문제이다. 예측은 <span class="math inline">\(P(Y \mid X)\)</span>라는 조건부분포를 학습하는 작업이며, 그 성과는 오차율, RMSE, AUC 같은 지표로 평가된다.</p>
+<p><strong>예측(prediction)</strong>은 관측된 데이터에서 반복되는 패턴을 학습하여, 새로운 입력 X가 주어졌을 때 미관측 결과 Y를 정확히 맞히는 문제이다. 예측은 <span class="math inline">\(P(Y \mid X)\)</span>라는 조건부분포를 학습하는 작업이며, 그 성과는 오차율, RMSE, AUC 같은 지표로 평가된다.</p>
 <p>이때 중요한 것은 <span dir="rtl">”</span>현재와 유사한 환경에서” 잘 맞히는 능력이다. 반면 현실의 많은 질문은 예측 자체가 아니라 개입의 효과를 묻는다. 예를 들어 <span dir="rtl">”</span>이 정책을 시행하면 실업률이 줄어드는가”, <span dir="rtl">”</span>이 프로그램에 참여시키면 소득이 늘어나는가”, <span dir="rtl">”</span>이 약을 투여하면 증상이 호전되는가”와 같은 질문은 어떤 변수를 바꾸었을 때 결과가 어떻게 달라지는지를 묻는다.</p>
 <p>이는 인과(causality)의 질문이며, 관측된 상관관계가 곧 인과효과를 의미하지 않는다. 따라서 예측 모델의 정확도가 높다는 사실만으로는 정책·처방·개입의 정당성이 확보되지 않는다.</p>
-<p>인과추론<strong>(causal inference)</strong>은 <span dir="rtl">”</span>바꾸면 달라지는가”를 묻는 질문을 통계적으로 다루는 체계이다. 관측자료에서 처치 T는 대개 무작위로 주어지지 않으며, 처치집단과 비교집단은 처치 이전부터 서로 다른 특성을 가질 수 있다.</p>
+<p><strong>인과추론(causal inference)</strong>은 <span dir="rtl">”</span>바꾸면 달라지는가”를 묻는 질문을 통계적으로 다루는 체계이다. 관측자료에서 처치 T는 대개 무작위로 주어지지 않으며, 처치집단과 비교집단은 처치 이전부터 서로 다른 특성을 가질 수 있다.</p>
 <p>이 차이는 교란(confounding)과 선택편의(selection bias)로 나타나며, 단순한 평균 차이 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span>는 보통 인과효과가 아니다. 인과추론은 잠재결과 Y(1), Y(0)라는 표준 언어를 통해 효과를 명확히 정의하고, 어떤 가정 하에서 평균처치효과(ATE), 처치집단 평균처치효과(ATT) 같은 정책적 요약치를 식별하고 추정하는 절차를 제공한다.</p>
 <p>또한 회귀 조정, 성향점수, 차분의 차분(DiD)과 같은 방법들은 관측자료를 최대한 실험과 유사하게 만들기 위한 설계 도구로 이해되어야 하며, <span dir="rtl">”</span>가정 + 설계 + 진단”이 하나의 패키지로 수행될 때 인과적 해석이 가능해진다.</p>
-<p>한편 최근의 데이터 분석은 <strong>ML</strong>을 중심으로 빠르게 확장되고 있다. ML은 복잡한 패턴을 잘 학습하여 예측력을 극대화하지만, 이를 인과효과 추정에 그대로 적용하면 오히려 편향이 커질 수 있다. ML은 예측오차를 최소화하도록 설계되어 있으며, 관측자료의 선택편의가 존재하는 상황에서는 교란 구조를 더욱 정교하게 학습해 버릴 수도 있다.</p>
-<p>또한 규제(regularization)나 변수선택은 예측에는 유리하지만, 인과모수 추정에서는 정규화 편향을 유발할 수 있다. 이러한 이유로 현대의 인과-ML 결합 방법들은 <span dir="rtl">”</span>관심 인과모수”와 <span dir="rtl">”</span>복잡한 함수 추정”을 분리한다. 예컨대 Causal Forest는 평균효과를 넘어 공변량에 따른 이질적 처치효과(CATE)를 추정함으로써 <span dir="rtl">”</span>누구에게 정책이 더 잘 듣는가”를 탐색하게 해 주며, Double Machine Learning(DML)은 결과모형과 처치모형을 ML로 유연하게 추정하되 직교화와 교차적합을 통해 인과모수 추정을 편향에 둔감하게 만든다. 이는 예측의 강점을 인과추론에 안전하게 가져오기 위한 현대적 접근이다.</p>
-<p>또한 모델이 실제 의사결정에 쓰이려면 <span dir="rtl">”</span>왜 그런 예측이 나왔는가”에 대한 설명이 필요하다. 특히 정책·의료·금융 영역에서는 예측 결과에 대한 설명 책임과 이의제기 가능성이 중요하며, 이는 단순한 성능 지표로 대체될 수 없다. 설명가능 AI(XAI)는 feature importance, LIME, SHAP 같은 도구를 통해 모델이 무엇을 근거로 예측했는지를 해석 가능한 형태로 제공한다.</p>
+<p>한편 최근의 <strong>데이터 분석은 ML</strong>을 중심으로 빠르게 확장되고 있다. ML은 복잡한 패턴을 잘 학습하여 예측력을 극대화하지만, 이를 인과효과 추정에 그대로 적용하면 오히려 편향이 커질 수 있다. ML은 예측오차를 최소화하도록 설계되어 있으며, 관측자료의 선택편의가 존재하는 상황에서는 교란 구조를 더욱 정교하게 학습해 버릴 수도 있다.</p>
+<p>또한 규제(regularization)나 변수선택은 예측에는 유리하지만, 인과모수 추정에서는 정규화 편향을 유발할 수 있다. 이러한 이유로 현대의 인과-ML 결합 방법들은 <span dir="rtl">”</span>관심 인과모수”와 <span dir="rtl">”</span>복잡한 함수 추정”을 분리한다.</p>
+<p>예컨대 Causal Forest는 평균효과를 넘어 공변량에 따른 이질적 처치효과(CATE)를 추정함으로써 <span dir="rtl">”</span>누구에게 정책이 더 잘 듣는가”를 탐색하게 해 주며, Double Machine Learning(DML)은 결과모형과 처치모형을 ML로 유연하게 추정하되 직교화와 교차적합을 통해 인과모수 추정을 편향에 둔감하게 만든다. 이는 예측의 강점을 인과추론에 안전하게 가져오기 위한 현대적 접근이다.</p>
+<p>또한 <strong>모델이 실제 의사결정</strong>에 쓰이려면 <span dir="rtl">”</span>왜 그런 예측이 나왔는가”에 대한 설명이 필요하다. 특히 정책·의료·금융 영역에서는 예측 결과에 대한 설명 책임과 이의제기 가능성이 중요하며, 이는 단순한 성능 지표로 대체될 수 없다. 설명가능 AI(XAI)는 feature importance, LIME, SHAP 같은 도구를 통해 모델이 무엇을 근거로 예측했는지를 해석 가능한 형태로 제공한다.</p>
 <p>다만 XAI의 설명은 일반적으로 <span dir="rtl">”</span>인과적 영향”이 아니라 <span dir="rtl">”</span>예측 기여”를 보여주는 것이므로, 설명 결과를 곧바로 정책적 개입으로 연결하는 것은 위험할 수 있다. 따라서 XAI는 인과추론과 결합될 때 더 의미가 커지며, 적어도 모델의 판단 근거가 합리적인지, 설명이 안정적인지(샘플·시드·모형 변화에 민감하지 않은지) 점검하는 데 중요한 역할을 한다.</p>
 <p>마지막으로 책임 있는 AI는 정확도만으로 끝나지 않는다. 데이터에는 표본편향, 측정편향, 레이블 편향, 역사적 편향이 포함될 수 있으며, 모델은 이를 그대로 학습하거나 심지어 증폭할 수 있다. 공정성(fairness)은 하나의 정의로 고정되지 않으며, 집단 간 오류율, 기회균등, 보정(calibration) 등 다양한 기준이 존재하고 동시에 만족되기 어려운 경우가 많다.</p>
 <p>따라서 어떤 공정성 정의를 채택할지 자체가 가치 판단이자 정책 선택이 된다. 또한 모델이 제안하는 기준이 실제 행정·현장 절차에서 구현 가능한지, 최종 의사결정 책임이 누구에게 있는지, 이의제기 절차와 사후 모니터링 체계가 있는지까지 설계되어야 AI의 사용이 사회적으로 정당화될 수 있다.</p>
 <p>이 강의노트의 목적은 예측의 기술을 넘어, 데이터를 기반으로 한 판단이 실무와 사회에서 책임 있게 사용될 수 있도록 통계적 사고의 틀을 제공하는 데 있다. 예측은 유용하지만, 개입의 정당성을 대신할 수 없다. 설명은 필요하지만, 인과를 자동으로 보장하지 않는다. 결국 AI의 마지막 책임은 인간의 해석과 제도적 설계에 있으며, 본 노트는 그 책임을 수행하기 위한 최소한의 개념·수식·방법·진단을 체계적으로 제시하고자 한다.</p>
-<p>Chapter 1. 예측과 인과의 구분</p>
-<p>1. 예측, 인과, 그리고 상관</p>
+</section>
+<section id="chapter-1.-예측과-인과의-구분" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-예측과-인과의-구분">Chapter 1. 예측과 인과의 구분</h3>
+<section id="예측-인과-그리고-상관" class="level4">
+<h4 class="anchored" data-anchor-id="예측-인과-그리고-상관">1. 예측, 인과, 그리고 상관</h4>
 <p>예측(prediction)은 관측된 표본 <span class="math inline">\(\{(X_{i},Y_{i})\}_{i = 1}^{n}\)</span>이 주어졌을 때, 새로운 개체의 설명변수 <span class="math inline">\(X = x\)</span>가 관측되면 그에 대응하는 결과 Y를 최대한 정확히 맞히는 문제이다.</p>
 <p>이때 <span dir="rtl">”</span>정확히 맞힌다”는 말은 단순한 직관이 아니라, 보통 어떤 손실함수 <span class="math inline">\(L( \cdot , \cdot )\)</span>를 정해 두고 기대손실을 최소화한다는 의미로 수식화된다. 예를 들어 연속형 결과에서는 제곱오차 손실 <span class="math inline">\(L(y,\widehat{y}) = (y - \widehat{y})^{2}\)</span>를 많이 쓰며, 이 경우 이론적으로 최적 예측함수는 조건부기대 <span class="math inline">\(f^{*}(x) = \mathbb{E}\lbrack Y \mid X = x\rbrack\)</span>이다.</p>
 <p>즉, 예측의 핵심 대상은 <span dir="rtl">”</span>현실에서 관측되는 확률법칙 하에서 <span class="math inline">\(X = x\)</span>인 개체가 평균적으로 어떤 Y를 갖는가”라는 조건부분포 <span class="math inline">\(P(Y \mid X)\)</span>이며, 회귀모형·랜덤포레스트·신경망 등은 결국 이를 근사하여 <span class="math inline">\(\widehat{f}(x) \approx \mathbb{E}\lbrack Y \mid X = x\rbrack\)</span>가 되도록 학습하는 방법들이다.</p>
@@ -296,21 +384,25 @@ window.Quarto = {
 <p>따라서 인과추론은 예측처럼 단순히 함수근사 문제로 끝나지 않고, 어떤 가정 하에서 어떤 양이 식별(identification)되는지, 그리고 그 가정이 현실에서 타당한지(진단·검증 가능성)를 함께 논의해야 한다.</p>
 <p>정리하면 예측은 <span dir="rtl">”</span>주어진 데이터 생성 과정에서 Y를 잘 맞히는 것”이 목적이며, 그때 중요한 것은 <span class="math inline">\(P(Y \mid X)\)</span>의 정확한 근사이다. 반면 인과는 <span dir="rtl">”</span>T를 바꾸면 Y가 바뀌는가”를 묻는 문제이며, 그때 중요한 것은 <span class="math inline">\(\mathbb{E}\lbrack Y \mid do(T = t)\rbrack\)</span>를 정당하게 추론할 수 있는 설계와 가정이다.</p>
 <p>예측에서 유용한 변수는 단지 Y와 강하게 연관된 변수이면 충분하지만, 정책에서 유효한 변수는 실제로 조작 가능한 레버이며 동시에 교란의 영향을 분리해 낼 수 있어야 한다. 이런 이유로 상관은 예측에서는 힘이 세지만, 정책·처방의 근거로 쓰이려면 인과적 해석을 가능하게 하는 추가 조건이 반드시 필요하다.</p>
-<p>예측과 인과의 한 줄 수식 비교이다</p>
+<p><strong>예측과 인과의 한 줄 수식 비교이다</strong></p>
 <p>예측은 관측된 세계에서의 조건부분포를 학습하는 문제이며, 목표는 새로운 x에 대해 <span class="math inline">\(\widehat{f}(x) \approx \mathbb{E}\lbrack Y \mid X = x\rbrack\)</span>가 되도록 만드는 것이다. 반면 인과는 처치변수 T를 개입으로 설정했을 때의 결과를 비교하는 문제이며, 목표는 <span class="math inline">\(\mathbb{E}\lbrack Y \mid do(T = 1)\rbrack - \mathbb{E}\lbrack Y \mid do(T = 0)\rbrack\)</span>를 정당하게 추정하는 것이다.</p>
 <p>관측자료에서는 일반적으로 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack \neq \mathbb{E}\lbrack Y \mid do(T = 1)\rbrack - \mathbb{E}\lbrack Y \mid do(T = 0)\rbrack\)</span>가 성립하며, 그 이유는 교란(confounding)과 선택편의(selection bias)로 인해 처치집단과 비처치집단의 구성이 처치 이전부터 다르기 때문이다.</p>
-<p>장학금 프로그램이 성적을 올리는가에 대한 논의이다</p>
+<p><strong>장학금 프로그램이 성적을 올리는가에 대한 논의이다</strong></p>
 <p>장학금 프로그램 참여 여부를 <span class="math inline">\(T \in \{ 0,1\}\)</span>, 학업 성적을 Y, 학업 동기·가정환경·기초학력 등을 X라고 하자. 관측자료에서 흔히 보는 사실은 장학금을 받은 학생이 평균 성적이 더 높다는 것이며, 이는 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack &gt; \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span></p>
 <p>로 표현된다.</p>
 <p>그러나 이 부등식만으로 <span dir="rtl">”</span>장학금이 성적을 올린다”는 결론을 내리면 오류가 될 수 있다. 장학금을 받는 학생은 원래 동기나 기초학력이 높고(X가 큼), 그러한 특성 자체가 성적을 높이기 때문이다. 즉 <span class="math inline">\(X \rightarrow T\)</span>와 <span class="math inline">\(X \rightarrow Y\)</span>가 동시에 존재하는 교란 구조에서, 단순 평균 차이는 장학금의 효과와 학생 구성 차이가 섞인 값이다.</p>
 <p>이 문제를 인과적으로 표현하면, 각 학생 i에 대해 <span dir="rtl">”</span>장학금을 받았을 때의 성적” <span class="math inline">\(Y_{i}(1)\)</span>과 <span dir="rtl">”</span>받지 않았을 때의 성적” <span class="math inline">\(Y_{i}(0)\)</span>을 정의하고, 평균처치효과는 <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack Y(1) - Y(0)\rbrack\)</span>로 정의된다.</p>
 <p>하지만 현실에서는 한 학생이 동시에 장학금을 받는 세계와 받지 않는 세계를 모두 경험할 수 없으므로 <span class="math inline">\(Y_{i}(1)\)</span>과 <span class="math inline">\(Y_{i}(0)\)</span>을 함께 관측할 수 없다. 따라서 단순히 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span>를 계산하는 것은 ATE를 직접 계산하는 것이 아니며, ATE를 얻기 위해서는 무작위배정(RCT)처럼 T를 설계로 통제하거나, 관측자료에서는 X를 충분히 통제하여 <span class="math inline">\((Y(1),Y(0))\bot T \mid X\)</span>가 성립한다고 가정할 수 있어야 한다.</p>
 <p>이 조건이 성립한다면 장학금 효과는 <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack\mathbb{E}\lbrack Y \mid T = 1,X\rbrack - \mathbb{E}\lbrack Y \mid T = 0,X\rbrack\rbrack\)</span>로 식별되며, 회귀 조정이나 성향점수 방법은 이 식별식을 실제 데이터에서 구현하는 절차로 이해할 수 있다.</p>
-<p>2. 예측 문제의 수식적 정식화</p>
+</section>
+<section id="예측-문제의-수식적-정식화" class="level4">
+<h4 class="anchored" data-anchor-id="예측-문제의-수식적-정식화">2. 예측 문제의 수식적 정식화</h4>
 <p>관측자료에서 예측의 목표는 일반적으로 조건부기대의 근사로 표현된다. 회귀 예측(연속형 Y)의 목표는 <span class="math inline">\(f^{*}(x) = \mathbb{E}\lbrack Y \mid X = x\rbrack\)</span>를 잘 근사하는 함수 <span class="math inline">\(\widehat{f}(x)\)</span>를 찾는 것이다.</p>
 <p>분류 예측(이진형 <span class="math inline">\(Y \in \{ 0,1\}\)</span>)의 목표는 <span class="math inline">\(p^{*}(x) = \mathbb{P}(Y = 1 \mid X = x)\)</span>를 잘 근사하는 <span class="math inline">\(\widehat{p}(x)\)</span>를 찾는 것이다.</p>
 <p>예측은 대개 어떤 손실함수 <span class="math inline">\(L( \cdot , \cdot )\)</span>에 대해 기대위험을 최소화하는 형태로 쓴다. <span class="math inline">\(\widehat{f} = \arg\min_{f \in \mathcal{F}}\mathbb{E}\lbrack L(Y,f(X))\rbrack\)</span>, 여기서 중요한 점은<span class="math inline">\(\mathbb{E}\lbrack Y \mid X = x\rbrack\)</span> 혹은 <span class="math inline">\(\mathbb{P}(Y = 1 \mid X = x)\)</span>는 관측된 세계의 확률법칙에서 정의되는 양이라는 사실이다. 즉 <span dir="rtl">”</span>현재 관측된 상태에서 X를 가진 사람은 평균적으로 Y가 어떠한가”를 말하는 양이다.</p>
-<p>3. 인과 문제의 수식적 정식화</p>
+</section>
+<section id="인과-문제의-수식적-정식화" class="level4">
+<h4 class="anchored" data-anchor-id="인과-문제의-수식적-정식화">3. 인과 문제의 수식적 정식화</h4>
 <p>인과는 <span dir="rtl">”</span>개입했을 때”를 명시해야 한다. 가장 표준적인 언어는 잠재결과이다. 처치변수 <span class="math inline">\(T \in \{ 0,1\}\)</span>에 대해 <span class="math inline">\(Y(1)\)</span>은 처치를 했을 때의 결과이고 <span class="math inline">\(Y(0)\)</span>은 처치를 하지 않았을 때의 결과이다.</p>
 <p>관측되는 결과는 한 개인에 대해 두 세계가 동시에 펼쳐질 수 없다는 점에서 출발한다. 처치변수 T는 개입을 받았는지 여부를 나타내며, T=1이면 처치를 받은 상태이고 T=0이면 처치를 받지 않은 상태이다.</p>
 <p>잠재결과 Y(1)은 그 개인이 처치를 받았다고 가정했을 때 나타날 결과이고, Y(0)은 그 개인이 처치를 받지 않았다고 가정했을 때 나타날 결과이다. 현실에서는 한 개인이 처치를 <span dir="rtl">”</span>받은 상태”와 <span dir="rtl">”</span>받지 않은 상태”를 동시에 경험할 수 없으므로, 실제로 관측되는 결과 Y는 Y(1)과 Y(0) 중 하나만 된다.</p>
@@ -319,7 +411,9 @@ window.Quarto = {
 <p>처치를 받은 사람에게서는 <span class="math inline">\(Y_{i}(1)\)</span>만 보이고 <span class="math inline">\(Y_{i}(0)\)</span>은 보이지 않으며, 처치를 받지 않은 사람에게서는 <span class="math inline">\(Y_{i}(0)\)</span>만 보이고 <span class="math inline">\(Y_{i}(1)\)</span>은 보이지 않는다. 따라서 <span class="math inline">\(\tau_{i}\)</span>는 두 값을 모두 알아야 계산할 수 있는데, 관측자료에서는 두 값 중 하나가 항상 결측이 되므로 개별 인과효과는 직접 관측 불가능한 양이 된다.</p>
 <p>이 때문에 인과추론에서는 개별 효과를 그대로 계산하는 대신, 적절한 가정(예: 무작위배정, 또는 교란변수를 충분히 통제할 수 있다는 가정) 하에서 평균처치효과와 같은 집단 수준의 평균 효과를 추정하는 방향으로 문제를 설정하게 된다.</p>
 <p>따라서 보통은 평균 효과를 추정한다. 평균처치효과(ATE)는 <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack Y(1) - Y(0)\rbrack\)</span>, 처치받은 집단 평균처치효과(ATT)는 <span class="math inline">\(\text{ATT} = \mathbb{E}\lbrack Y(1) - Y(0) \mid T = 1\rbrack\)</span>이다. 인과 질문은 이처럼 <span dir="rtl">”</span>T를 바꾸면 Y가 얼마나 변하는가”라는 대안적 세계의 비교로 정의되는 양이다.</p>
-<p>4. <span dir="rtl">”</span>상관 vs 개입”의 핵심 차이</p>
+</section>
+<section id="상관-vs-개입의-핵심-차이" class="level4">
+<h4 class="anchored" data-anchor-id="상관-vs-개입의-핵심-차이">4. <span dir="rtl">”</span>상관 vs 개입”의 핵심 차이</h4>
 <p>상관(관측조건화): <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span></p>
 <p>관측자료에서 흔히 계산하는 차이는 <span class="math inline">\(\Delta_{\text{obs}} = \mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span>이다. 이것은 <span dir="rtl">”</span>처치집단과 비처치집단의 평균 결과 차이”이며, 예측이나 집단 비교에는 유용하다.</p>
 <p>그러나 이 값은 일반적으로 ATE와 다르다. 왜냐하면 처치집단과 비처치집단은 보통 처치 이전부터 다르게 구성되어 있기 때문이다.</p>
@@ -328,25 +422,31 @@ window.Quarto = {
 <p>개입(처치 설정): <span class="math inline">\(\mathbb{E}\lbrack Y(1)\rbrack - \mathbb{E}\lbrack Y(0)\rbrack\)</span></p>
 <p>인과효과는 <span class="math inline">\(\Delta_{\text{causal}} = \mathbb{E}\lbrack Y(1)\rbrack - \mathbb{E}\lbrack Y(0)\rbrack\)</span>이다. 이는 <span dir="rtl">”</span>모든 단위에게 T=1을 강제로 부여한 세계”와 <span dir="rtl">”</span>모든 단위에게 T=0을 강제로 부여한 세계”의 차이이다.</p>
 <p>표현을 더 강조하면, 인과는 종종 do-표기법으로 나타낸다. <span class="math inline">\(\mathbb{E}\lbrack Y \mid do(T = 1)\rbrack - \mathbb{E}\lbrack Y \mid do(T = 0)\rbrack\)</span>, 여기서 <span class="math inline">\(do(T = t)\)</span>는 <span dir="rtl">”</span>관측된 T=t인 사람을 고른다”가 아니라, <span dir="rtl">”</span>정책/실험으로 T를 t로 설정한다”라는 의미이다.</p>
-<p>5. 왜 관측 차이(상관)가 인과가 아닌가: 교란과 선택편의</p>
-<p>교란(confounding)에 의한 편향</p>
+</section>
+<section id="왜-관측-차이상관가-인과가-아닌가-교란과-선택편의" class="level4">
+<h4 class="anchored" data-anchor-id="왜-관측-차이상관가-인과가-아닌가-교란과-선택편의">5. 왜 관측 차이(상관)가 인과가 아닌가: 교란과 선택편의</h4>
+<p><strong>교란(confounding)에 의한 편향</strong></p>
 <p>교란변수 X가 처치 T와 결과 Y에 모두 영향을 주면, 단순한 평균 차이는 인과효과가 아니다. 전형 구조는 <span class="math inline">\(X \rightarrow T,X \rightarrow Y\)</span>이다.</p>
 <p>이 경우, <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span>에는 X의 구성 차이가 섞인다.</p>
 <p>가정을 통해 편향을 분해하면 다음처럼 이해할 수 있다. 만약 다음의 조건부 교환가능성(ignorability)이 성립한다면, <span class="math inline">\((Y(1),Y(0))\bot T \mid X\)</span>, 즉, X를 고정하면 처치배정이 <span dir="rtl">”</span>사실상 무작위”라면, <span class="math inline">\(\mathbb{E}\lbrack Y(1) - Y(0)\rbrack = \mathbb{E}\lbrack\mathbb{E}\lbrack Y \mid T = 1,X\rbrack - \mathbb{E}\lbrack Y \mid T = 0,X\rbrack\rbrack\)</span>이다. 즉 X로 층화한 후 차이를 평균내면 ATE가 된다.</p>
 <p>반대로 이 가정이 깨지면(관측되지 않은 교란 U가 존재하면) 회귀조정이나 성향점수로도 편향이 남는다.</p>
-<p>선택편의(selection bias)의 핵심</p>
+<p><strong>선택편의(selection bias)의 핵심</strong></p>
 <p>선택편의는 <span dir="rtl">”</span>처치를 받은 집단이 원래부터 다르게 선발되는 구조”가 있어, 처치효과가 아닌 차이가 관측되는 상황이다. 특히 정책에서 흔한 패턴은 다음이다.</p>
 <p><span dir="rtl">”</span>원래 잘 될 사람”이 프로그램에 더 많이 들어오는 경우</p>
 <p><span dir="rtl">”</span>원래 더 어려운 사람”이 지원대상으로 더 많이 들어오는 경우</p>
 <p>둘 다 관측차이를 왜곡한다. 전자는 효과를 과대평가하기 쉽고, 후자는 효과를 과소평가하거나 심지어 음(-)으로 보이게 만들 수도 있다.</p>
-<p>6. 정책 오류 사례(전형 패턴) 3가지</p>
+</section>
+<section id="정책-오류-사례전형-패턴-3가지" class="level4">
+<h4 class="anchored" data-anchor-id="정책-오류-사례전형-패턴-3가지">6. 정책 오류 사례(전형 패턴) 3가지</h4>
 <p>사례 1. 상관을 원인으로 착각해 잘못된 정책수단을 선택하는 경우이다</p>
 <p>예를 들어 <span dir="rtl">”</span>어떤 교육 프로그램 참여자들이 시험 점수가 높다”는 상관이 관측되었다고 하자. 이를 근거로 <span dir="rtl">”</span>프로그램이 점수를 올린다”고 결론 내리고 확대하면 오류가 될 수 있다. 참여자는 원래 동기가 높거나 가정환경이 좋은 학생일 수 있으며, 이는 X가 T와 Y에 동시에 영향을 주는 교란 구조이다.</p>
 <p>사례 2. 교란 때문에 효과를 과대/과소평가하는 경우이다</p>
 <p>의료에서 <span dir="rtl">”</span>약을 복용한 사람이 더 아프다”는 관측이 나오기도 한다. 중증도가 높은 사람이 약을 더 많이 복용하기 때문이다(역인과 혹은 confounding by indication이다). 이때 단순 비교는 약이 해롭다는 결론을 낼 수 있으나, 실제로는 중증도 X를 통제해야 한다.</p>
 <p>사례 3. 선택편의로 <span dir="rtl">’</span>원래 잘 될 집단<span dir="rtl">’</span>의 성과를 개입 덕으로 착각하는 경우이다</p>
 <p>취업지원 프로그램에서 적극적인 구직자가 더 많이 참여하면, 참여자 집단의 취업률은 원래부터 높다. 단순 비교는 프로그램 효과를 과대평가한다. 반대로 어려운 대상만 선별해 지원하면 효과가 과소평가될 수 있다.</p>
-<p>7. 파이썬 예제</p>
+</section>
+<section id="파이썬-예제" class="level4">
+<h4 class="anchored" data-anchor-id="파이썬-예제">7. 파이썬 예제</h4>
 <p>이 코드는 <span dir="rtl">”</span>처치 여부 T와 결과 Y 사이에 관찰되는 평균 차이가 인과효과가 아니라 교란에서 비롯될 수 있음”을 시뮬레이션으로 확인하는 것이 목적이다. 특히 X를 교란변수로 설정하여 X가 T와 Y 모두에 영향을 주도록 설계한 뒤, 단순 평균 차이와 교란 통제(회귀 조정) 결과가 어떻게 달라지는지를 비교하는 구성이다.</p>
 <p>먼저 np.random.seed(7)은 난수 생성의 재현성을 확보하기 위한 설정이며, n=5000은 표본 크기를 5000으로 정한 것이다. 이어서 X = np.random.normal(0, 1, n)은 평균 0, 분산 1의 정규분포로부터 X를 생성하는 단계이며, X는 <span dir="rtl">”</span>능력/동기”처럼 처치 선택과 결과에 동시에 영향을 줄 수 있는 교란변수로 해석되는 변수이다.</p>
 <p>다음으로 처치 변수 T는 무작위 배정이 아니라 X에 의해 좌우되도록 생성되는 구조이다. <span class="math inline">\(p = 1/(1 + np.exp( - 1.2*X))\)</span>는 로지스틱 함수를 사용해 X가 클수록 <span class="math inline">\(p = P(T = 1 \mid X)\)</span>가 커지게 만든 확률 모형이며, <span class="math inline">\(T = np.random.binomial(1,p,n)\)</span>은 각 개인이 확률 p로 처치를 받을지(1) 받지 않을지(0)를 베르누이 시행으로 생성하는 단계이다.</p>
@@ -358,36 +458,35 @@ window.Quarto = {
 <p>이 회귀에서 <span class="math inline">\(\beta_{T}\)</span></p>
 <p>는 “X가 같은 수준에서 비교했을 때 T의 추가적인 영향”을 의미하므로, 데이터 생성에서 T의 인과효과를 0으로 두었기 때문에 <span class="math inline">\(\beta_{T}\)</span> 는 0 근처로 추정되는 것이 정상이다. 반면, <span class="math inline">\(\beta_{X}\)</span>는 생성식에서의 계수 2.0을 회복하는 방향으로 추정되는 것이 기대되는 결과이다.</p>
 <p>마지막 출력부는 단순 평균 차이 naive_diff와 회귀 조정 결과표를 제시함으로써, <span dir="rtl">”</span>단순 비교에서는 효과처럼 보이는 값이 나타날 수 있으나, 교란변수를 통제하면 처치의 효과가 사라질 수 있음”을 확인하는 역할을 한다. 즉, 본 코드는 상관 기반 비교와 인과적 해석을 위한 통제(조정)의 차이를 한 번에 보여주는 시뮬레이션 코드이다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>import statsmodels.api as sm</p>
-<p>np.random.seed(7)</p>
-<p>n = 5000</p>
-<p># confounder: 능력/동기</p>
-<p>X = np.random.normal(0, 1, n)</p>
-<p># 처치 배정: X가 클수록 참여 확률이 큼</p>
-<p>p = 1 / (1 + np.exp(-1.2 * X))</p>
-<p>T = np.random.binomial(1, p, n)</p>
-<p># 결과: X만 영향을 주고, T의 인과효과는 0</p>
-<p>eps = np.random.normal(0, 1, n)</p>
-<p>Y = 2.0 * X + eps</p>
-<p>df = pd.DataFrame({"Y": Y, "T": T, "X": X})</p>
-<p># (1) 단순 비교: 상관 기반 효과</p>
-<p>naive_diff = df.loc[df["T"] == 1, "Y"].mean() - df.loc[df["T"] == 0, "Y"].mean()</p>
-<p># (2) 회귀 조정: Y ~ T + X</p>
-<p>X_design = sm.add_constant(df[["T", "X"]])</p>
-<p>model_adj = sm.OLS(df["Y"], X_design).fit()</p>
-<p>print("Naive difference (E[Y|T=1]-E[Y|T=0]) =", round(naive_diff, 4))</p>
-<p>print(model_adj.summary().tables[1])</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">7</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">5000</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># confounder: 능력/동기</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 처치 배정: X가 클수록 참여 확률이 큼</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span><span class="fl">1.2</span> <span class="op">*</span> X))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> np.random.binomial(<span class="dv">1</span>, p, n)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과: X만 영향을 주고, T의 인과효과는 0</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>eps <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> <span class="fl">2.0</span> <span class="op">*</span> X <span class="op">+</span> eps</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">"Y"</span>: Y, <span class="st">"T"</span>: T, <span class="st">"X"</span>: X})</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (1) 단순 비교: 상관 기반 효과</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>naive_diff <span class="op">=</span> df.loc[df[<span class="st">"T"</span>] <span class="op">==</span> <span class="dv">1</span>, <span class="st">"Y"</span>].mean() <span class="op">-</span> df.loc[df[<span class="st">"T"</span>] <span class="op">==</span> <span class="dv">0</span>, <span class="st">"Y"</span>].mean()</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># (2) 회귀 조정: Y ~ T + X</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>X_design <span class="op">=</span> sm.add_constant(df[[<span class="st">"T"</span>, <span class="st">"X"</span>]])</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>model_adj <span class="op">=</span> sm.OLS(df[<span class="st">"Y"</span>], X_design).fit()</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Naive difference (E[Y|T=1]-E[Y|T=0]) ="</span>, <span class="bu">round</span>(naive_diff, <span class="dv">4</span>))</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model_adj.summary().tables[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>출력된 결과는 <span dir="rtl">”</span>단순 집단 비교로 보면 처치 T가 큰 효과를 내는 것처럼 보이지만, 교란변수 X를 통제하면 T의 효과는 거의 0으로 사라진다”는 메시지를 매우 선명하게 보여준다.</p>
 <p>먼저 Naive difference <span class="math inline">\((E\lbrack Y|T = 1\rbrack - E\lbrack Y|T = 0\rbrack) = 1.8438\)</span>은 처치군(T=1)의 평균 Y가 비교군(T=0)의 평균 Y보다 약 1.84만큼 높게 관찰된다는 뜻이다. 즉, 아무런 통제 없이 두 집단의 평균만 비교하면 <span dir="rtl">”</span>처치가 결과를 1.84 정도 증가시킨 것처럼” 보인다.</p>
 <p>그러나 이 값은 인과효과라기보다, 처치가 무작위로 배정되지 않고 X에 의해 선택적으로 배정된 상황에서 생기는 상관(선택편향 포함)의 결과로 해석되는 값이다.</p>
@@ -399,91 +498,107 @@ window.Quarto = {
 <p>정리하면, 단순 평균 차이 1.8438은 <span dir="rtl">”</span>처치군이 원래부터 X가 큰 사람들로 더 많이 구성되어 있어 Y도 크게 관찰된 것”을 반영한 값이고, X를 통제한 회귀에서는 T의 효과가 0으로 수렴하면서 X의 효과만이 강하게 남는다. 이는 상관 기반 비교와 인과적 해석을 위한 통제(조정)의 차이를 한 번에 보여주는 전형적인 교란(confounding) 사례라고 해석된다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="media/image3.png" style="width:4.5in;height:1.01184in" class="figure-img"></p>
-<figcaption>붙여넣은 동영상.png</figcaption>
+<p><img src="images/xai_explainable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<p>Chapter 2. 통계적 인과추론 프레임</p>
+</section>
+</section>
+<section id="chapter-2.-통계적-인과추론-프레임" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-통계적-인과추론-프레임">Chapter 2. 통계적 인과추론 프레임</h3>
 <p>인과추론은 <span dir="rtl">”</span>처치를 하면 결과가 어떻게 바뀌는가”라는 개입의 효과를 정량화하는 학문적·실무적 틀이다. 이전 절에서 예측이 조건부분포 <span class="math inline">\(P(Y \mid X)\)</span>를 학습하는 문제라면, 인과는 처치 T를 인위적으로 설정했을 때의 결과 분포를 비교하는 문제라는 점을 확인하였다.</p>
 <p>여기서는 이러한 인과 질문을 수식으로 명확히 정의하는 표준 프레임인 잠재결과(potential outcomes) 관점을 상세히 서술한다. 잠재결과 프레임의 핵심은 동일한 단위에 대해 <span dir="rtl">”</span>처치를 받은 세계”와 <span dir="rtl">”</span>처치를 받지 않은 세계”를 동시에 상정한다는 점이며, 현실에서는 둘 중 하나만 관측된다는 점에서 인과추론이 근본적으로 결측(missing) 문제를 포함한다는 점이다. 이후의 모든 인과기법은 결국 이 결측된 잠재결과를 설계와 가정으로 대체하여 평균 효과를 식별·추정하는 방법으로 이해된다.</p>
 <p>잠재결과 프레임은 인과효과를 <span dir="rtl">”</span>처치 여부에 따른 두 잠재결과의 차이”로 정의하여 인과 질문을 엄밀하게 만든다. 그러나 한 단위에서 Y(1)과 Y(0)을 동시에 관측할 수 없으므로 개별 인과효과는 직접 관측 불가능하며, 평균 효과(ATE, ATT)를 중심으로 식별과 추정을 수행하게 된다.</p>
 <p>관측자료에서 단순 평균 차이는 대개 편향을 포함하며, ATE와 ATT를 식별하기 위해서는 교환가능성과 겹침 같은 가정이 필요하다. 다음 절의 회귀 조정, 성향점수, DiD는 이러한 식별식을 데이터 분석 절차로 구현하는 방법들이다.</p>
-<p>1. 기본 설정과 표기이다</p>
+<section id="기본-설정과-표기" class="level4">
+<h4 class="anchored" data-anchor-id="기본-설정과-표기">1. 기본 설정과 표기</h4>
 <p>분석 단위는 개인, 가구, 기업, 지역, 시점 등 무엇이든 될 수 있으며 이를 통상 단위(unit)라 부른다. 표본 크기를 n이라 하고, <span class="math inline">\(i = 1,\ldots,n\)</span>으로 각 단위를 표기한다.</p>
 <p>처치변수 <span class="math inline">\(T_{i}\)</span>는 단위 i가 처치를 받았는지 여부를 나타내며, 단순화를 위해 이 절에서는 이진 처치 <span class="math inline">\(T_{i} \in \{ 0,1\}\)</span>를 기본으로 한다. 결과변수 <span class="math inline">\(Y_{i}\)</span>는 처치 이후 관측되는 관심 결과이며, 공변량 <span class="math inline">\(X_{i}\)</span>는 처치 이전에 관측된 특성(나이, 소득, 기초상태 등)으로 둔다. 이때 <span class="math inline">\(X_{i}\)</span>는 처치에 의해 영향을 받지 않는 <span dir="rtl">”</span>사전 공변량”이라는 점이 중요하다.</p>
 <p>인과추론에서는 관측세계에서의 결과 Y_i와는 별개로, 처치 상태별 잠재결과를 정의한다. <span class="math inline">\(Y_{i}(1),Y_{i}(0)\)</span>. 여기서 <span class="math inline">\(Y_{i}(1)\)</span>은 단위 i가 처치를 받았다고 가정할 때의 결과이며, <span class="math inline">\(Y_{i}(0)\)</span>은 처치를 받지 않았다고 가정할 때의 결과이다. 이 두 값은 현실에서 동시에 관측되는 데이터가 아니라, 인과효과를 정의하기 위한 개념적 구성물이다.</p>
-<p>2. 관측결과의 구성식이다</p>
+</section>
+<section id="관측결과의-구성식" class="level4">
+<h4 class="anchored" data-anchor-id="관측결과의-구성식">2. 관측결과의 구성식</h4>
 <p>현실에서 관측되는 결과는 처치 상태에 따라 잠재결과 중 하나가 선택된 값이다. 이를 다음과 같이 쓴다. <span class="math inline">\(Y_{i} = T_{i}Y_{i}(1) + (1 - T_{i})Y_{i}(0)\)</span></p>
 <p>이 식은 단순하지만 매우 중요한 의미를 가진다. <span class="math inline">\(T_{i} = 1\)</span>이면 <span class="math inline">\(Y_{i} = Y_{i}(1)\)</span>만 관측되고 <span class="math inline">\(Y_{i}(0)\)</span>은 관측되지 않는다. <span class="math inline">\(T_{i} = 0\)</span>이면 <span class="math inline">\(Y_{i} = Y_{i}(0)\)</span>만 관측되고 <span class="math inline">\(Y_{i}(1)\)</span>은 관측되지 않는다. 즉 각 단위마다 두 잠재결과 중 하나는 구조적으로 결측이다.</p>
 <p>이를 표로 나타내면 다음과 같다.</p>
 <p><span class="math inline">\(T_{i} = 1\)</span>인 단위: <span class="math inline">\(Y_{i}(1)\)</span> 관측, <span class="math inline">\(Y_{i}(0)\)</span> 결측</p>
 <p><span class="math inline">\(T_{i} = 0\)</span>인 단위: <span class="math inline">\(Y_{i}(0)\)</span> 관측, <span class="math inline">\(Y_{i}(1)\)</span> 결측</p>
 <p>따라서 인과추론에서의 결측은 <span dir="rtl">”</span>우연히 빠진 데이터”가 아니라 <span dir="rtl">”</span>동일 단위에 대해 두 상태를 동시에 관측할 수 없다는 논리적 제약”에서 발생한다.</p>
-<p>3. 근본적 인과추론 문제이다</p>
+</section>
+<section id="근본적-인과추론-문제" class="level4">
+<h4 class="anchored" data-anchor-id="근본적-인과추론-문제">3. 근본적 인과추론 문제</h4>
 <p>개별 인과효과는 단위 i에 대해 다음과 같이 정의된다. <span class="math inline">\(\tau_{i} = Y_{i}(1) - Y_{i}(0)\)</span></p>
 <p>개별 효과는 가장 직접적인 인과 정의이지만, 현실에서는 <span class="math inline">\(Y_{i}(1)\)</span>과 <span class="math inline">\(Y_{i}(0)\)</span>을 동시에 관측할 수 없으므로 <span class="math inline">\(\tau_{i}\)</span>를 직접 계산할 수 없다. 이 사실은 인과추론의 근본적 문제(fundamental problem of causal inference)라고 부른다.</p>
 <p>이 지점에서 자주 생기는 오해는 <span dir="rtl">”</span>그러면 인과효과는 애초에 구할 수 없는가”라는 질문이다. 결론적으로 개별 효과 자체를 동일 단위에서 직접 계산하는 것은 원칙적으로 불가능하지만, 평균 효과는 집단 비교와 적절한 설계·가정 하에서 추정 가능하다. 인과추론은 바로 이 평균 효과를 중심으로 <span dir="rtl">”</span>무엇을 가정하면 어떤 평균 효과가 관측자료로부터 식별되는가”를 정교하게 다룬다.</p>
-<p>4. 평균 효과의 정의이다</p>
-<p>평균처치효과(ATE)이다</p>
+</section>
+<section id="평균-효과의-정의" class="level4">
+<h4 class="anchored" data-anchor-id="평균-효과의-정의">4. 평균 효과의 정의</h4>
+<p><strong>평균처치효과(ATE)</strong></p>
 <p>ATE는 모집단 전체에서 처치의 평균적 효과를 의미하며 다음과 같이 정의된다. <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack Y(1) - Y(0)\rbrack\)</span>(표현은 <span dir="rtl">’</span>두 세계의 평균 차이<span dir="rtl">’</span>라는 인과의 본질을 그대로 드러낸다). 이는 <span dir="rtl">”</span>모든 사람에게 처치를 했을 때의 평균 결과”와 <span dir="rtl">”</span>아무에게도 처치를 하지 않았을 때의 평균 결과”의 차이로 해석된다.</p>
-<p>처치집단 평균처치효과(ATT)이다</p>
+<p><strong>처치집단 평균처치효과(ATT)</strong></p>
 <p>ATT는 실제로 처치를 받은 사람들 집단에서의 평균 효과이며 다음과 같이 정의된다. <span class="math inline">\(\text{ATT} = \mathbb{E}\lbrack Y(1) - Y(0) \mid T = 1\rbrack\)</span></p>
 <p>ATT는 <span dir="rtl">”</span>수혜자에게 실제로 도움이 되었는가”를 묻는 사업평가의 질문과 직결된다. 예컨대 취업지원 프로그램의 성과를 평가할 때, 프로그램에 실제 참여한 사람들에게 참여가 평균적으로 취업확률을 얼마나 높였는지 묻는 것이 ATT이다.</p>
-<p>ATE와 ATT의 차이가 의미하는 바이다</p>
+<p><strong>ATE와 ATT의 차이</strong></p>
 <p>ATE와 ATT는 정의부터 조건이 다르다. ATE는 모집단 평균이지만 ATT는 T=1이라는 조건 하의 평균이다. 따라서 처치가 무작위가 아니라면, 처치집단은 모집단의 임의 부분집합이 아니며, 이때 효과가 개인별로 달라지면(효과 이질성) ATE와 ATT는 달라질 수 있다.</p>
 <p>효과 이질성을 수식으로 표현하면 <span class="math inline">\(\tau_{i} = Y_{i}(1) - Y_{i}(0)\)</span>가 개인마다 다른 값이라는 뜻이며, 이 경우 <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack\tau\rbrack,\text{ATT} = \mathbb{E}\lbrack\tau \mid T = 1\rbrack\)</span>로 해석된다. 즉 ATT는 <span dir="rtl">”</span>처치받은 사람들이 평균적으로 어떤 효과를 갖는가”이며, 이 값은 처치받는 경향이 있는 사람들의 특성에 의해 달라질 수 있다.</p>
-<p>5. 인과효과와 관측차이의 관계이다</p>
+</section>
+<section id="인과효과와-관측차이의-관계" class="level4">
+<h4 class="anchored" data-anchor-id="인과효과와-관측차이의-관계">5. 인과효과와 관측차이의 관계</h4>
 <p>관측자료에서 가장 단순한 비교는 다음이다. <span class="math inline">\(\Delta_{\text{obs}} = \mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span>. 이 값은 흔히 <span dir="rtl">”</span>처치집단과 비처치집단의 평균 결과 차이”로 계산된다. 그러나 일반적으로 <span class="math inline">\(\Delta_{\text{obs}} \neq \text{ATE}\)</span>이다. 그 이유는 처치집단과 비처치집단이 처치 이전부터 다르게 구성되기 때문이다.</p>
 <p>이 차이를 조금 더 구조적으로 보면 다음과 같다. 관측차이는 잠재결과를 이용해 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T = 1\rbrack = \mathbb{E}\lbrack Y(1) \mid T = 1\rbrack,\mathbb{E}\lbrack Y \mid T = 0\rbrack = \mathbb{E}\lbrack Y(0) \mid T = 0\rbrack\)</span>로 쓸 수 있다. 따라서 <span class="math inline">\(\Delta_{\text{obs}} = \mathbb{E}\lbrack Y(1) \mid T = 1\rbrack - \mathbb{E}\lbrack Y(0) \mid T = 0\rbrack\)</span>, 여기에 <span class="math inline">\(\mathbb{E}\lbrack Y(0) \mid T = 1\rbrack\)</span>을 더했다가 빼면 다음처럼 분해된다.</p>
 <p><span class="math display">\[\Delta_{\text{obs}} = \underset{\text{ATT}}{\underbrace{\mathbb{E}\lbrack Y(1) - Y(0) \mid T = 1\rbrack}} + \underset{\text{선택편의(교란)에 의한 편향}}{\underbrace{(\mathbb{E}\lbrack Y(0) \mid T = 1\rbrack - \mathbb{E}\lbrack Y(0) \mid T = 0\rbrack)}}\]</span></p>
 <p>즉, 관측차이는 <span dir="rtl">”</span>수혜자 효과(ATT)“와 <span dir="rtl">”</span>처치집단과 비처치집단의 기본수준 차이(편향)”가 합쳐진 값이다. 여기서 두 번째 항이 0이면 관측차이는 ATT가 된다. 이 항이 0이라는 것은 처치 여부와 무관하게 결과의 기본수준(특히 Y(0))이 두 집단에서 같다는 뜻이며, 이는 무작위배정이나 강한 교환가능성 가정이 필요함을 의미한다.</p>
-<p>6. 식별(identification)이라는 단계이다</p>
+</section>
+<section id="식별identification이라는-단계" class="level4">
+<h4 class="anchored" data-anchor-id="식별identification이라는-단계">6. 식별(identification)이라는 단계</h4>
 <p>인과추론에서는 추정 전에 식별(identification)을 먼저 논의한다. 식별이란, 관심 인과량(ATE, ATT 등)이 관측가능한 분포 P(Y,T,X)만으로 유일하게 결정되는가를 뜻한다. 식별이 되지 않으면 표본을 무한히 늘려도 인과효과를 결정할 수 없다.</p>
-<p>RCT에서의 식별이다</p>
+<p><strong>RCT에서의 식별</strong></p>
 <p>무작위배정에서는 처치가 잠재결과와 독립이 된다. <span class="math inline">\((Y(1),Y(0))\bot T\)</span>. 이때 ATE는 단순 평균 차이로 식별된다. <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack Y \mid T = 1\rbrack - \mathbb{E}\lbrack Y \mid T = 0\rbrack\)</span>. 따라서 RCT에서는 <span dir="rtl">”</span>설계가 곧 식별”인 구조가 된다.</p>
-<p>관측자료에서의 식별이다</p>
+<p><strong>관측자료에서의 식별</strong></p>
 <p>관측자료에서는 보통 공변량 X에 대해 다음을 가정한다. <span class="math inline">\((Y(1),Y(0))\bot T \mid X\)</span>. 이는 X로 층화하면 처치 배정이 사실상 무작위처럼 된다는 뜻이다. 또한 겹침(positivity) 조건 <span class="math inline">\(0 &lt; \mathbb{P}(T = 1 \mid X = x) &lt; 1\)</span>이 필요하다. 이 두 조건이 성립하면 ATE는 다음과 같이 식별된다.</p>
 <p><span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack\mathbb{E}\lbrack Y \mid T = 1,X\rbrack - \mathbb{E}\lbrack Y \mid T = 0,X\rbrack\rbrack\)</span> ATT도 유사하게 식별되며, ATT는 처치집단 분포로 평균을 낸다는 점에서 다음 형태로 쓸 수 있다.</p>
 <p><span class="math inline">\(\text{ATT} = \mathbb{E}\lbrack\mathbb{E}\lbrack Y \mid T = 1,X\rbrack - \mathbb{E}\lbrack Y \mid T = 0,X\rbrack|T = 1\rbrack\)</span>. 이 식들은 다음 절에서 다루는 회귀 조정, 성향점수, 가중(IPW), 매칭이 결국 구현하려는 목표식이다.</p>
-<p>7. 정책 질문과 ATE/ATT의 연결이다</p>
+</section>
+<section id="정책-질문과-ateatt의-연결" class="level4">
+<h4 class="anchored" data-anchor-id="정책-질문과-ateatt의-연결">7. 정책 질문과 ATE/ATT의 연결</h4>
 <p>정책이 보편 적용되는 상황에서는 ATE가 직접적이다. 이는 <span dir="rtl">”</span>전체에 적용했을 때 평균적으로 결과가 얼마나 변하는가”를 요약하기 때문이다. 반면 선별지원 사업이나 수혜자 중심 성과평가에서는 ATT가 직접적이다.</p>
 <p>이는 <span dir="rtl">”</span>실제로 지원받은 사람에게 얼마나 도움이 되었는가”라는 질문이 곧 <span class="math inline">\(\mathbb{E}\lbrack Y(1) - Y(0) \mid T = 1\rbrack\)</span>과 일치하기 때문이다. 다만 정책 결정에서는 보통 보편 확대 여부와 대상자 선정 기준이 동시에 논의되므로, ATE와 ATT를 함께 보고 효과 이질성까지 점검하는 것이 바람직하다.</p>
-<p>8. 관측차이, ATE, ATT가 서로 달라질 수 있음을 확인하는 시뮬레이션</p>
+</section>
+<section id="관측차이-ate-att가-서로-달라질-수-있음을-확인하는-시뮬레이션" class="level4">
+<h4 class="anchored" data-anchor-id="관측차이-ate-att가-서로-달라질-수-있음을-확인하는-시뮬레이션">8. 관측차이, ATE, ATT가 서로 달라질 수 있음을 확인하는 시뮬레이션</h4>
 <p>아래 예제는 (i) 잠재결과를 먼저 생성하고, (ii) 교란 X에 따라 처치 확률이 달라지게 하여, (iii) 관측차이, ATE, ATT를 동시에 비교한다. ATE는 <span dir="rtl">”</span>모집단 평균 효과”이고, ATT는 <span dir="rtl">”</span>처치받은 집단 평균 효과”이며, 관측차이는 대개 편향을 포함한다는 점이 확인된다.</p>
 <p>이 코드는 교란(confounding)과 효과 이질성(treatment effect heterogeneity)이 함께 있을 때, 관측자료에서 흔히 쓰는 단순 평균차(naive diff)가 진짜 인과효과(ATE, ATT)와 얼마나 달라질 수 있는지를 시뮬레이션으로 보여주는 코드이다. 즉, <span dir="rtl">”</span>관측된 처치군–비처치군 평균 차이”가 인과효과가 아니라 선택편향 + 교란을 포함한 값임을 확인하는 목적이다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import numpy as np</p>
-<p>import pandas as pd</p>
-<p>np.random.seed(1)</p>
-<p>n = 200000</p>
-<p># 교란변수(사전 특성)</p>
-<p>X = np.random.normal(0, 1, n)</p>
-<p># 개인별 처치효과(효과 이질성) 설정: X가 클수록 효과가 조금 더 큼</p>
-<p>tau = 1.0 + 0.5*(X &gt; 0) # X&gt;0이면 효과 1.5, 아니면 1.0</p>
-<p># 잠재결과 생성</p>
-<p>eps0 = np.random.normal(0, 1, n)</p>
-<p>Y0 = 2*X + eps0 # Y(0)</p>
-<p>Y1 = Y0 + tau # Y(1)</p>
-<p># 진짜 ATE, ATT 계산을 위해 처치 배정 먼저 생성</p>
-<p>p = 1/(1 + np.exp(-1.2*X)) # X가 클수록 처치받을 확률 증가</p>
-<p>T = np.random.binomial(1, p, n)</p>
-<p># 관측결과</p>
-<p>Y = T*Y1 + (1-T)*Y0</p>
-<p># 계산</p>
-<p>true_ate = np.mean(Y1 - Y0)</p>
-<p>true_att = np.mean((Y1 - Y0)[T==1])</p>
-<p>naive_diff = np.mean(Y[T==1]) - np.mean(Y[T==0])</p>
-<p>print("True ATE :", round(true_ate, 4))</p>
-<p>print("True ATT :", round(true_att, 4))</p>
-<p>print("Naive diff:", round(naive_diff, 4))</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200000</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 교란변수(사전 특성)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 개인별 처치효과(효과 이질성) 설정: X가 클수록 효과가 조금 더 큼</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>tau <span class="op">=</span> <span class="fl">1.0</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">*</span>(X <span class="op">&gt;</span> <span class="dv">0</span>)   <span class="co"># X&gt;0이면 효과 1.5, 아니면 1.0</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 잠재결과 생성</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>eps0 <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, n)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>Y0 <span class="op">=</span> <span class="dv">2</span><span class="op">*</span>X <span class="op">+</span> eps0           <span class="co"># Y(0)</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>Y1 <span class="op">=</span> Y0 <span class="op">+</span> tau             <span class="co"># Y(1)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 진짜 ATE, ATT 계산을 위해 처치 배정 먼저 생성</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span><span class="fl">1.2</span><span class="op">*</span>X))  <span class="co"># X가 클수록 처치받을 확률 증가</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> np.random.binomial(<span class="dv">1</span>, p, n)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 관측결과</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>Y <span class="op">=</span> T<span class="op">*</span>Y1 <span class="op">+</span> (<span class="dv">1</span><span class="op">-</span>T)<span class="op">*</span>Y0</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 계산</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>true_ate <span class="op">=</span> np.mean(Y1 <span class="op">-</span> Y0)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>true_att <span class="op">=</span> np.mean((Y1 <span class="op">-</span> Y0)[T<span class="op">==</span><span class="dv">1</span>])</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>naive_diff <span class="op">=</span> np.mean(Y[T<span class="op">==</span><span class="dv">1</span>]) <span class="op">-</span> np.mean(Y[T<span class="op">==</span><span class="dv">0</span>])</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"True ATE :"</span>, <span class="bu">round</span>(true_ate, <span class="dv">4</span>))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"True ATT :"</span>, <span class="bu">round</span>(true_att, <span class="dv">4</span>))</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Naive diff:"</span>, <span class="bu">round</span>(naive_diff, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>이번 출력은 잠재결과를 알고 있는 시뮬레이션 환경에서, <span dir="rtl">”</span>진짜 인과효과(ATE·ATT)“와 <span dir="rtl">”</span>관측자료에서 단순히 계산한 평균 차이(naive diff)”가 서로 어떻게 달라지는지를 보여준다.</p>
 <p>먼저 True ATE가 1.2508로 나온 것은 모집단 전체에서 처치가 평균적으로 약 1.25 정도의 증가 효과를 가진다는 뜻이다. 이 코드에서는 개인별 처치효과를 X&gt;0이면 1.5, <span class="math inline">\(X \leq 0\)</span>이면 1.0으로 설정했는데, X가 평균 0인 정규분포이므로 대략 절반은 1.0의 효과를, 나머지 절반은 1.5의 효과를 갖게 된다. 따라서 전체 평균 효과가 약 <span class="math inline">\(0.5 \times 1.0 + 0.5 \times 1.5 \approx 1.25\)</span>로 형성되며, 1.2508은 그 이론적 구조가 표본에서 매우 안정적으로 구현되었다는 결과이다.</p>
 <p>True ATT가 1.3509로 ATE보다 더 크게 나온 것은 처치를 실제로 받은 집단에서 평균 효과가 더 크다는 의미이다. 본 코드에서는 처치 배정 확률이 X가 클수록 증가하도록 설계되어 있어, 처치군 T=1에는 X가 상대적으로 큰 사람들이 더 많이 포함된다. 동시에 X&gt;0인 경우 처치효과 자체가 1.5로 더 크도록 설정되어 있으므로, 처치군은 <span dir="rtl">”</span>효과가 큰 사람들”이 더 많이 모인 집단이 된다.</p>
@@ -492,20 +607,26 @@ window.Quarto = {
 <p>그런데 처치 배정은 X가 클수록 처치를 받을 확률이 커지게 되어 있으므로, 처치군은 비교군보다 평균적으로 X가 큰 사람들로 구성되고, 그만큼 <span dir="rtl">’</span>원래부터<span dir="rtl">’</span> Y도 크게 관측된다. 여기에 더해 X&gt;0인 사람은 처치효과 <span class="math inline">\(\tau\)</span> 자체도 더 크므로, 처치군에는 효과가 큰 사람까지 더 많이 포함되는 구조가 겹친다.</p>
 <p>이 때문에 단순 평균 차이는 진짜 인과효과(약 1.25~1.35)에 더해, X 분포 차이에서 오는 선택편향과 교란 효과가 함께 섞여 과대추정된 값으로 나타나며, 그 결과가 3.2045처럼 실제 효과보다 훨씬 크게 관측된다.</p>
 <p>정리하면, ATE 1.2508은 <span dir="rtl">”</span>전체 평균 처치효과”를, ATT 1.3509는 <span dir="rtl">”</span>처치받은 사람들에 대한 평균 효과”를 의미하며, 두 값의 차이는 효과 이질성과 선택적 처치 배정 때문에 발생한다. 반면 naive diff 3.2045는 인과효과가 아니라 교란과 선택편향까지 포함한 관측 평균 차이이므로, 실제 인과효과를 크게 왜곡한 결과로 해석된다.</p>
-<p>True ATE : 1.2508</p>
-<p>True ATT : 1.3509</p>
-<p>Naive diff: 3.2045</p>
-<p>Chapter 3. 관측자료 기반 인과기법</p>
+<pre class="text"><code>True ATE : 1.2508
+True ATT : 1.3509
+Naive diff: 3.2045</code></pre>
+</section>
+</section>
+<section id="chapter-3.-관측자료-기반-인과기법" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-관측자료-기반-인과기법">Chapter 3. 관측자료 기반 인과기법</h3>
 <p>실험(RCT)은 처치가 무작위로 배정되므로 처치집단과 비교집단이 평균적으로 동일한 분포를 갖게 되고, 단순한 평균 차이도 인과효과로 해석될 수 있다는 장점이 있다. 그러나 현실의 정책·사회·의료·경제 문제에서는 무작위배정이 윤리적으로 불가능하거나 행정적으로 어렵거나 비용이 과도하게 크기 때문에 관측자료를 이용하게 되는 경우가 많다.</p>
 <p>관측자료에서의 가장 큰 문제는 처치 T가 <span dir="rtl">”</span>누가 선택되었는가”라는 과정의 결과라는 점이며, 그 선택 과정이 결과 Y와도 연관되어 있을 가능성이 매우 높다는 점이다.</p>
 <p>따라서 관측자료 인과추론은 단순히 모형을 하나 적합하는 작업이 아니라, 가능한 한 실험과 유사한 비교 상황을 만들기 위한 설계를 먼저 수행하고, 그 설계를 정당화하는 가정을 명시하며, 마지막으로 가정이 충분히 그럴듯한지 진단하는 과정을 포함한다. 이 때문에 관측자료 인과추론은 <span dir="rtl">”</span>가정 + 설계 + 진단”이 하나의 패키지로 이해되어야 한다.</p>
-<p>1. 관측자료 인과추론의 기본 가정과 식별식</p>
+<section id="관측자료-인과추론의-기본-가정과-식별식" class="level4">
+<h4 class="anchored" data-anchor-id="관측자료-인과추론의-기본-가정과-식별식">1. 관측자료 인과추론의 기본 가정과 식별식</h4>
 <p>관측자료에서 ATE를 추정하기 위해 가장 널리 사용되는 출발점은 조건부 교환가능성(ignorability) 가정이다. 이는 공변량 X를 충분히 포함하여 층화하면, 처치 배정이 잠재결과와 독립이 된다고 보는 가정이다.</p>
 <p><span class="math inline">\((Y(1),Y(0))\bot T \mid X\)</span>. 이 가정은 <span dir="rtl">”</span>관측되지 않은 교란이 없다”는 의미로 해석될 수 있으므로 매우 강하다. 그럼에도 불구하고 현실에서 인과분석을 수행할 때는 최소한 어떤 변수를 교란으로 보고 통제할 것인지 명시하고, 가능한 범위에서 사전 공변량을 충실히 포함시키는 전략을 취한다.</p>
 <p>두 번째로 필요한 조건은 겹침(positivity, overlap) 조건이다. <span class="math inline">\(0 &lt; \mathbb{P}(T = 1 \mid X = x) &lt; 1\)</span>. 이는 어떤 X 값에서도 처치집단과 비교집단이 동시에 존재해야 한다는 뜻이다. 겹침이 부족하면 해당 X 영역에서는 <span dir="rtl">”</span>비교 가능한 상대가 없다”는 의미가 되며, 그 영역에서의 인과효과는 사실상 데이터로부터 학습할 수 없다.</p>
 <p>이 두 조건이 성립하면 ATE는 다음 식으로 식별된다.<span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack\mathbb{E}\lbrack Y \mid T = 1,X\rbrack - \mathbb{E}\lbrack Y \mid T = 0,X\rbrack\rbrack\)</span></p>
 <p>이 식은 관측자료 인과기법의 공통 목표를 보여준다. 즉 X를 고정한 상태에서 처치집단과 비교집단의 평균 결과 차이를 계산하고, 그 차이를 전체 X 분포에 대해 평균내면 ATE가 된다는 뜻이다. 회귀 조정과 성향점수 방법은 이 식을 서로 다른 형태로 구현하는 방식이며, DiD는 시간축을 이용하여 다른 형태의 식별 논리를 구축하는 방법이다.</p>
-<p>2. 회귀 조정(regression adjustment)</p>
+</section>
+<section id="회귀-조정regression-adjustment" class="level4">
+<h4 class="anchored" data-anchor-id="회귀-조정regression-adjustment">2. 회귀 조정(regression adjustment)</h4>
 <p>회귀 조정은 관측자료 인과분석에서 가장 기본적인 접근이다. 처치효과를 추정할 때 <span dir="rtl">”</span>처치 여부만 비교하면 집단이 다르므로, 관측된 공변량 X를 통제한 뒤 비교하자”는 아이디어이다. 가장 단순한 형태는 선형회귀이다.</p>
 <p><span class="math inline">\(Y_{i} = \alpha + \tau T_{i} + \beta^{\top}X_{i} + \varepsilon_{i}\)</span>. 여기서 <span class="math inline">\(\tau\)</span>는 X를 통제한 상태에서 T가 1 증가할 때 Y의 평균이 얼마나 변하는지 나타내는 계수이다. 조건부 교환가능성 가정이 성립하고, 또한 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T,X\rbrack\)</span>를 설명하는 모형이 충분히 잘 지정되었다면, <span class="math inline">\(\tau\)</span>는 인과효과(특히 ATE 또는 조건부 평균 효과의 평균)로 해석될 수 있다.</p>
 <p>그러나 회귀 조정을 단순히 <span dir="rtl">”</span>계수 하나 뽑는 방법”으로 이해하면 위험하다. 회귀 조정은 실제로 다음과 같은 g-계산(g-computation) 절차로 이해하는 것이 더 정확하다. 먼저 결과모형을 적합하여 <span class="math inline">\(\widehat{m}(t,x) \approx \mathbb{E}\lbrack Y \mid T = t,X = x\rbrack\)</span>를 얻는다. 다음으로 모든 관측치에 대해 <span dir="rtl">”</span>처치를 했을 때”와 <span dir="rtl">”</span>처치를 하지 않았을 때”의 예측값을 계산한다. <span class="math inline">\({\widehat{Y}}_{i}(1) = \widehat{m}(1,X_{i}),{\widehat{Y}}_{i}(0) = \widehat{m}(0,X_{i})\)</span></p>
@@ -514,7 +635,9 @@ window.Quarto = {
 <p>회귀 조정의 장점은 구현이 단순하고 설명이 직관적이라는 점이다. 그러나 회귀 조정의 약점은 모형 의존성이 크다는 점이다. 실제 <span class="math inline">\(\mathbb{E}\lbrack Y \mid T,X\rbrack\)</span>가 비선형이거나 상호작용이 강한데 이를 선형으로 단순화하면 편향이 생길 수 있다.</p>
 <p>예를 들어 T의 효과가 X에 따라 달라지는 상황(효과 이질성)에서 <span class="math inline">\(T \times X\)</span>상호작용을 누락하면, 조정된 효과가 잘못 요약될 수 있다. 또한 공변량 선택에도 원칙이 필요하다.</p>
 <p>교란변수는 반드시 포함되어야 하지만, 처치 이후에 형성되는 중간변수(매개변수)를 통제하면 총효과(total effect) 대신 직접효과(direct effect)에 가까운 양을 추정하게 되며, 때로는 편향을 더 크게 만들 수 있다. 따라서 회귀 조정은 <span dir="rtl">”</span>무엇을 통제해야 하는가”에 대한 인과적 사고(DAG 기반 판단)가 함께 요구되는 방법이다.</p>
-<p>3. 성향점수(propensity score) 기반 방법이다</p>
+</section>
+<section id="성향점수propensity-score-기반-방법" class="level4">
+<h4 class="anchored" data-anchor-id="성향점수propensity-score-기반-방법">3. 성향점수(propensity score) 기반 방법</h4>
 <p>성향점수는 <span dir="rtl">”</span>처치를 받을 확률”을 공변량으로 조건화하여 요약한 값이다. <span class="math inline">\(e(X) = \mathbb{P}(T = 1 \mid X)\)</span></p>
 <p>성향점수의 이론적 중요성은 다음 명제에 있다. 조건부 교환가능성이 X에서 성립하면, 성향점수 하나만 조건으로 두어도 교환가능성이 성립한다는 점이다. <span class="math inline">\((Y(1),Y(0))\bot T \mid X \Rightarrow (Y(1),Y(0))\bot T \mid e(X)\)</span>. 이는 고차원의 X 전체를 <span dir="rtl">”</span>완벽히 동일하게 맞추는” 대신, 1차원 스칼라 값 <span class="math inline">\(e(X)\)</span>를 기준으로 처치집단과 비교집단을 비슷하게 만들 수 있다는 뜻이다.</p>
 <p>따라서 성향점수 방법은 본질적으로 <span dir="rtl">”</span>추정 이전의 설계 도구”로 이해하는 것이 적절하다. 즉 성향점수는 효과를 자동으로 만들어 주는 것이 아니라, 비교가능한 표본을 구성하거나 가중을 통해 가상의 무작위배정 표본을 만드는 데 사용된다.</p>
@@ -527,7 +650,9 @@ window.Quarto = {
 <p>층화는 성향점수를 몇 개 구간(예: 5분위)으로 나누고, 각 구간 내에서 처치집단과 비교집단의 평균 차이를 계산한 뒤 구간 비중으로 가중평균하는 방식이다. 구현이 단순하고 안정적이지만, 구간 내에서 균형이 충분한지 확인이 필요하다.</p>
 <p>성향점수 방법에서 균형 진단은 표준화 평균차(SMD)로 자주 수행된다. 연속형 공변량의 SMD는 <span class="math inline">\(\text{SMD} = \frac{{\overline{X}}_{1} - {\overline{X}}_{0}}{s_{\text{pooled}}}\)</span>로 정의되며, |\text{SMD}|\le 0.1을 하나의 실무적 기준으로 삼는 경우가 많다.</p>
 <p>또한 처치집단과 비교집단의 성향점수 분포를 시각화하여 겹침이 충분한지 확인하는 것이 필수이다. 성향점수 분포가 거의 겹치지 않는다면 해당 데이터는 그 영역에서 인과비교를 수행할 기반이 부족하다는 뜻이 된다.</p>
-<p>4. DiD(Difference-in-Differences)이다</p>
+</section>
+<section id="diddifference-in-differences" class="level4">
+<h4 class="anchored" data-anchor-id="diddifference-in-differences">4. DiD(Difference-in-Differences</h4>
 <p>DiD는 관측자료 인과기법 중에서도 시간축을 적극적으로 활용하는 방법이다. 정책이 특정 시점에 도입되고, 그 정책의 영향을 받는 집단과 받지 않는 집단이 존재하며, 정책 전후의 결과가 관측될 때 DiD는 강력한 도구가 된다. DiD의 기본 계산식은 다음과 같다.</p>
 <p><span class="math inline">\(\begin{array}{r}
 \text{DiD} = (\mathbb{E}\lbrack Y \mid G = 1,t = 1\rbrack - \mathbb{E}\lbrack Y \mid G = 1,t = 0\rbrack) \\
@@ -543,10 +668,10 @@ window.Quarto = {
 <p><span class="math display">\[Y_{it} = \alpha + \mu_{i} + \lambda_{t} + \delta(G_{i} \times Post_{t}) + \varepsilon_{it}\]</span></p>
 <p>평행추세 가정은 직접 증명할 수 없지만, 정책 이전 기간의 데이터를 활용하여 사전 추세가 유사한지 점검하는 것은 가능하다. 이를 위해 이벤트 스터디(event study)를 수행한다.</p>
 <p>이벤트 스터디는 정책 시점을 기준으로 여러 시점 더미와 집단 상호작용을 포함시켜 사전 계수가 0 근처인지 확인하는 방식이며, 사전 계수들이 체계적으로 0에서 벗어나면 평행추세 가정이 약하다는 신호로 해석된다.</p>
-<p>5. 예제 포함 실습 구성이다</p>
-<p>관측자료 인과기법의 차이를 이해하려면, <span dir="rtl">”</span>진짜 효과가 알려진 데이터”를 만들어 보고 각 방법이 무엇을 회복하는지 확인하는 것이 가장 빠르다. 아래에서는 (i) 교란 X가 처치에 영향을 주는 상황에서 단순 비교가 왜 실패하는지, (ii) 회귀 조정과 IPW가 어떤 조건에서 이를 보정하는지, (iii) DiD가 시간축을 통해 어떻게 효과를 식별하는지 확인한다.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

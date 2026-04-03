@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>explainable_ai – 세상의 모든 통계 이야기</title>
+<title>설명가능 AI() – 세상의 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -144,7 +144,7 @@ window.Quarto = {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="../../notes/data_reduction/index.html" aria-current="page"> 
-<span class="menu-text">차원축소|군집|인과추론|XAI</span></a>
+<span class="menu-text">차원축소|군집|인과추론・XAI</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../cardnews/index.html"> 
@@ -254,58 +254,107 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-ml과-인과의-결합" id="toc-chapter-1.-ml과-인과의-결합" class="nav-link active" data-scroll-target="#chapter-1.-ml과-인과의-결합">Chapter 1. ML과 인과의 결합</a>
+  <ul>
+  <li><a href="#배경-인과효과는-평균의-차이이며-ml은-예측오차-최소화-문제이다" id="toc-배경-인과효과는-평균의-차이이며-ml은-예측오차-최소화-문제이다" class="nav-link" data-scroll-target="#배경-인과효과는-평균의-차이이며-ml은-예측오차-최소화-문제이다">1. 배경: 인과효과는 평균의 차이이며, ML은 예측오차 최소화 문제이다</a></li>
+  <li><a href="#causal-forest-개념" id="toc-causal-forest-개념" class="nav-link" data-scroll-target="#causal-forest-개념">2. Causal Forest 개념</a></li>
+  <li><a href="#double-machine-learningdml" id="toc-double-machine-learningdml" class="nav-link" data-scroll-target="#double-machine-learningdml">3. Double Machine Learning(DML)</a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-설명가능-ai-xai" id="toc-chapter-2.-설명가능-ai-xai" class="nav-link" data-scroll-target="#chapter-2.-설명가능-ai-xai">Chapter 2. 설명가능 AI (XAI)</a>
+  <ul>
+  <li><a href="#예측-설명과-인과-설명의-구분이다" id="toc-예측-설명과-인과-설명의-구분이다" class="nav-link" data-scroll-target="#예측-설명과-인과-설명의-구분이다">1. 예측 설명과 인과 설명의 구분이다</a></li>
+  <li><a href="#feature-importance" id="toc-feature-importance" class="nav-link" data-scroll-target="#feature-importance">2. Feature importance</a></li>
+  <li><a href="#lime" id="toc-lime" class="nav-link" data-scroll-target="#lime">3. LIME</a></li>
+  <li><a href="#shap" id="toc-shap" class="nav-link" data-scroll-target="#shap">4. SHAP</a></li>
+  <li><a href="#현장에서-중요한-기준이다-번역-가능성과-안정성이다" id="toc-현장에서-중요한-기준이다-번역-가능성과-안정성이다" class="nav-link" data-scroll-target="#현장에서-중요한-기준이다-번역-가능성과-안정성이다">5. 현장에서 중요한 기준이다: 번역 가능성과 안정성이다</a></li>
+  </ul></li>
+  <li><a href="#chapter-3.-책임-있는-ai" id="toc-chapter-3.-책임-있는-ai" class="nav-link" data-scroll-target="#chapter-3.-책임-있는-ai">Chapter 3. 책임 있는 AI</a>
+  <ul>
+  <li><a href="#편향bias은-어디에서-생기는가" id="toc-편향bias은-어디에서-생기는가" class="nav-link" data-scroll-target="#편향bias은-어디에서-생기는가">1. 편향(bias)은 어디에서 생기는가</a></li>
+  <li><a href="#공정성fairness의-다원성과-불가능성의-문제이다" id="toc-공정성fairness의-다원성과-불가능성의-문제이다" class="nav-link" data-scroll-target="#공정성fairness의-다원성과-불가능성의-문제이다">2. 공정성(fairness)의 다원성과 불가능성의 문제이다</a></li>
+  <li><a href="#정책-적용-가능성operationalization과-책임-구조이다" id="toc-정책-적용-가능성operationalization과-책임-구조이다" class="nav-link" data-scroll-target="#정책-적용-가능성operationalization과-책임-구조이다">3. 정책 적용 가능성(operationalization)과 책임 구조이다</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">설명가능 AI()</h1>
+</div>
 
 
 
+<div class="quarto-title-meta column-body">
 
-<p>Chapter 1. ML과 인과의 결합</p>
-<p>권세혁교수 통계 사전 【인과추론・설명가능 AI-2】</p>
-<p>s<a href="https://sites.google.com/view/wolfpack61"><u>https://sites.google.com/view/wolfpack61</u></a></p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="chapter-1.-ml과-인과의-결합" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-1.-ml과-인과의-결합">Chapter 1. ML과 인과의 결합</h3>
 <p>머신러닝(ML)은 <span class="math inline">\(\mathbb{E}\lbrack Y \mid X\rbrack\)</span> 또는 <span class="math inline">\(\mathbb{P}(Y = 1 \mid X)\)</span> 같은 예측 문제에서 뛰어난 성능을 보인다. 그러나 ML 모델을 그대로 인과효과 추정에 사용하면 편향이 생길 수 있다.</p>
 <p>그 이유는 첫째, ML은 예측오차를 최소화하도록 학습되므로 인과효과처럼 <span dir="rtl">”</span>미세한 평균 차이”를 안정적으로 식별하는 목표와 일치하지 않을 수 있기 때문이다.</p>
 <p>둘째, 관측자료에서는 처치 T가 선택적으로 배정되므로 선택편의가 존재하며, 이를 제거하지 않은 채 예측력을 높이면 오히려 편향이 강화될 수 있다.</p>
 <p>셋째, Lasso나 규제(regul.) 기반 학습은 모형을 안정화하는 대신 계수를 수축(shrinkage)시키므로, 인과모수(특히 <span class="math inline">\(\tau\)</span>)에 직접 적용하면 정규화 편향이 발생할 수 있다.</p>
 <p>이 때문에 최근의 인과-ML 방법들은 <span dir="rtl">”</span>인과식에서 관심 모수”와 <span dir="rtl">”</span>복잡한 함수(교란/예측 부분)“를 분리하고, 함수 추정은 ML로 유연하게 수행하되 관심 모수는 편향에 둔감한 형태로 추정하도록 설계한다.</p>
 <p>이 절에서는 대표적으로 Causal Forest(이질적 효과 추정)와 Double Machine Learning(DML, 이중/직교화 추정)을 다룬다.</p>
-<p>1. 배경: 인과효과는 평균의 차이이며, ML은 예측오차 최소화 문제이다</p>
+<section id="배경-인과효과는-평균의-차이이며-ml은-예측오차-최소화-문제이다" class="level4">
+<h4 class="anchored" data-anchor-id="배경-인과효과는-평균의-차이이며-ml은-예측오차-최소화-문제이다">1. 배경: 인과효과는 평균의 차이이며, ML은 예측오차 최소화 문제이다</h4>
 <p>관측자료에서 ATE는 잠재결과 관점으로 <span class="math inline">\(\mathbb{E}\lbrack Y(1) - Y(0)\rbrack\)</span>이고, 식별 가정 하에서는 <span class="math inline">\(\text{ATE} = \mathbb{E}\lbrack\mathbb{E}(Y \mid T = 1,X) - \mathbb{E}(Y \mid T = 0,X)\rbrack\)</span>로 표현된다.</p>
 <p>이 식은 결과모형 <span class="math inline">\(m(t,x) = \mathbb{E}\lbrack Y \mid T = t,X = x\rbrack\)</span>을 정확히 추정하면 ATE를 구할 수 있음을 의미하지만, 실제로는 <span class="math inline">\(m(t,x)\)</span>가 복잡하고 고차원일 수 있으며, 또한 단순히 m을 잘 맞춘다고 해서 <span class="math inline">\(\tau\)</span>가 자동으로 편향 없이 추정되는 것은 아니다.</p>
 <p>특히 T와 X의 관계(처치 배정 메커니즘)까지 고려해야 하며, 이 과정에서 과적합, 변수선택, 정규화가 인과효과 추정에 부정적 영향을 줄 수 있다. 따라서 <span dir="rtl">”</span>예측은 ML”이라는 사실만으로 <span dir="rtl">”</span>인과도 ML”이 되지는 않는다.</p>
-<p>2. Causal Forest(개념)이다</p>
-<p>목표는 평균효과가 아니라 이질적 효과이다</p>
+</section>
+<section id="causal-forest-개념" class="level4">
+<h4 class="anchored" data-anchor-id="causal-forest-개념">2. Causal Forest 개념</h4>
+<p><strong>목표는 평균효과가 아니라 이질적 효과이다</strong></p>
 <p>Causal Forest는 ATE 하나를 추정하는 데서 더 나아가, 공변량 X=x를 가진 집단에서의 조건부 평균 처치효과(CATE)를 추정하는 것을 목표로 한다.</p>
 <p><span class="math inline">\(\tau(x) = \mathbb{E}\lbrack Y(1) - Y(0) \mid X = x\rbrack\)</span>. 이는 <span dir="rtl">”</span>누구에게 정책이 더 잘 듣는가”라는 질문을 정량화하는 방식이다. 예컨대 동일한 정책이라도 저소득층, 고령층, 특정 지역에서 효과가 더 클 수 있으며, 이러한 이질성을 탐색하는 것이 정책 설계와 타게팅에 중요해질 수 있다.</p>
 <p>기본 아이디어는 <span dir="rtl">’</span>효과가 비슷한 사람들끼리<span dir="rtl">’</span> 비교하는 것이다</p>
 <p>랜덤포레스트는 예측을 위해 X 공간을 분할하여 비슷한 관측치들을 같은 잎(leaf)에 모으고 평균을 내는 방식이다. Causal Forest는 예측값 자체가 아니라 <span dir="rtl">”</span>처치에 따른 결과 차이”가 잎 내부에서 잘 비교되도록 분할을 설계한다.</p>
 <p>즉, 잎 노드 안에서는 처치집단과 비처치집단이 충분히 섞여 있고(겹침), 공변량이 유사하므로, 잎 내부의 차이가 그 지역의 국소적 인과효과를 반영하도록 만든다.</p>
 <p>간단한 형태로는 다음과 같이 생각할 수 있다. <span class="math inline">\(X = x\)</span> 주변의 가중치 <span class="math inline">\(w_{i}(x)\)</span>를 포레스트가 만들어 준다고 하면, <span class="math inline">\(\widehat{\tau}(x) = \overset{n}{\sum_{i = 1}}w_{i}(x) \cdot {\widehat{\psi}}_{i}\)</span>. 여기서 <span class="math inline">\({\widehat{\psi}}_{i}\)</span>는 관측치 i가 기여하는 <span dir="rtl">”</span>국소적 효과 정보”이다. 실제 구현에서는 잎 내부에서의 처치-비처치 평균 차이, 혹은 잔차 기반의 점수 등을 이용한다.</p>
-<p>해석 포인트이다</p>
+<p><strong>해석 포인트이다</strong></p>
 <p>Causal Forest의 결과는 <span dir="rtl">”</span>개별 단위의 확정적 효과”가 아니라, <span class="math inline">\(X = x\)</span> 근방에서의 평균적 효과 <span class="math inline">\(\tau(x)\)</span>에 대한 추정이다. 즉 <span class="math inline">\(\widehat{\tau}(x)\)</span>는 개인별 운명처럼 결정된 값이 아니라, <span dir="rtl">”</span>비슷한 특성을 가진 집단에서의 평균 효과”로 읽어야 한다.</p>
 <p>또한 Causal Forest는 탐색적 성격이 강하므로, 도출된 이질성 패턴을 정책으로 바로 적용하면 과대해석 위험이 크다. 따라서 교차검증, 홀드아웃 검증, 외부자료 재현, 사전가설(pre-analysis plan) 등으로 탐색 결과의 안정성을 확인하는 절차가 필요하다. 특히 다수의 하위집단을 뒤진 뒤 <span dir="rtl">”</span>효과가 큰 집단”을 선택하면 다중비교 문제로 인해 우연한 패턴을 과학적 사실로 오인할 수 있다.</p>
-<p>3. Double Machine Learning(DML)이다</p>
+</section>
+<section id="double-machine-learningdml" class="level4">
+<h4 class="anchored" data-anchor-id="double-machine-learningdml">3. Double Machine Learning(DML)</h4>
 <p>문제의 핵심은 <span dir="rtl">’</span>교란을 제거하는 함수<span dir="rtl">’</span>가 고차원이라는 점이다</p>
 <p>관측자료에서 처치효과를 추정할 때는 결과모형과 처치모형을 동시에 고려해야 한다. 다음 두 함수를 정의한다.</p>
 <p>결과모형(회귀함수): <span class="math inline">\(m(x) = \mathbb{E}\lbrack Y \mid X = x\rbrack\)</span></p>
 <p>처치모형(성향점수 또는 처치회귀) <span class="math inline">\(e(x) = \mathbb{E}\lbrack T \mid X = x\rbrack = \mathbb{P}(T = 1 \mid X = x)\)</span></p>
 <p>전통적 방법에서는 m(x)나 e(x)를 단순 모형으로 두었지만, 고차원 X에서는 단순 모형이 오지정될 가능성이 크다. 이때 ML로 m,e를 유연하게 추정하고 싶어지지만, ML의 과적합과 정규화 편향이 인과모수 추정을 망칠 수 있다. DML은 이를 해결하기 위해 <span dir="rtl">”</span>직교화(orthogonalization)“와 <span dir="rtl">”</span>교차적합(cross-fitting)”을 사용한다.</p>
-<p>직교화(orthogonalization)의 직관이다</p>
+<p><strong>직교화(orthogonalization)의 직관이다</strong></p>
 <p>가장 표준적인 설정은 부분선형모형(partially linear model)이다. <span class="math inline">\(Y = \theta T + g(X) + \varepsilon,\mathbb{E}\lbrack\varepsilon \mid X,T\rbrack = 0\)</span>. 여기서 <span class="math inline">\(\theta\)</span>가 관심 인과모수(평균적 처치효과)이고, g(X)는 복잡한 교란 구조를 담는 함수이다. 또한 처치도 X로 설명되는 부분이 있다.</p>
 <p><span class="math inline">\(T = m(X) + \nu,\mathbb{E}\lbrack\nu \mid X\rbrack = 0\)</span>. DML의 핵심은 Y와 T에서 X로 설명되는 부분을 제거한 잔차끼리 회귀하면 \theta를 안정적으로 추정할 수 있다는 점이다. 잔차를 <span class="math inline">\(\overset{˜}{Y} = Y - \widehat{g}(X),\overset{˜}{T} = T - \widehat{m}(X)\)</span>로 두면, 이상적으로는 <span class="math inline">\(\overset{˜}{Y} \approx \theta\overset{˜}{T} + \text{noise}\)</span>가 되며, 따라서 <span class="math inline">\(\overset{˜}{Y}\)</span>를 <span class="math inline">\(\overset{˜}{T}\)</span>에 회귀한 계수가 <span class="math inline">\(\theta\)</span>를 추정한다.</p>
 <p><span class="math inline">\(\widehat{\theta} = \frac{\sum_{i}{\overset{˜}{T}}_{i}{\overset{˜}{Y}}_{i}}{\sum_{i}^{}{\overset{˜}{T}}_{i}^{2}}\)</span>. 이때 중요한 점은 <span class="math inline">\(\widehat{g},\widehat{m}\)</span>을 ML로 추정하더라도, 위 추정식이 <span dir="rtl">”</span>1차 편향에 둔감”하도록 설계되어 있다는 것이다. 이를 직교화된(moment) 조건이라고 부르며, 직관적으로는 <span dir="rtl">”</span>교란 제거 함수의 작은 오차가 <span class="math inline">\(\theta\)</span>에 크게 전이되지 않도록” 만든 구조이다.</p>
-<p>교차적합(cross-fitting)의 역할이다</p>
+<p><strong>교차적합(cross-fitting)의 역할이다</strong></p>
 <p>잔차를 만들기 위해 같은 데이터로 <span class="math inline">\(\widehat{g},\widehat{m}\)</span>을 학습하고 다시 그 데이터에서 잔차 회귀를 하면, 과적합이 잔차 구조에 스며들어 편향이 발생할 수 있다. 이를 줄이기 위해 DML은 표본을 K개 폴드로 나누어, 각 폴드에서는 나머지 폴드로 학습한 <span class="math inline">\(\widehat{g},\widehat{m}\)</span>을 이용해 잔차를 계산한다. 즉 <span dir="rtl">”</span>학습 데이터”와 <span dir="rtl">”</span>잔차 계산 데이터”를 분리하여 예측오차의 누수를 줄인다. 이것이 교차적합이며, DML의 실무적 성능을 좌우하는 요소이다.</p>
-<p>DML이 주는 메시지이다</p>
+<p><strong>DML이 주는 메시지이다</strong></p>
 <p>DML의 메시지는 다음과 같다. 고차원 교란을 다루기 위해 ML이 필요하지만, 관심은 예측이 아니라 인과모수 <span class="math inline">\(\theta\)</span>이므로, <span class="math inline">\(\theta\)</span>를 추정하는 마지막 단계는 편향에 둔감한(직교화된) 형태로 구성해야 한다. 요약하면 <span dir="rtl">”</span>예측은 ML에게 맡기고, 인과효과는 직교화된 잔차 회귀로 뽑는다”는 철학이다.</p>
 <p>ML은 예측을 위해 설계된 도구이므로 이를 그대로 인과효과 추정에 적용하면 선택편의, 과적합, 정규화 편향이 인과모수로 전이될 수 있다. Causal Forest는 조건부 평균 처치효과 <span class="math inline">\(\tau(x)\)</span>를 추정하여 효과 이질성을 탐색하고 정책 타게팅을 가능하게 하지만, 탐색 결과의 과대해석을 막기 위한 검증 절차가 필수다. DML은 결과모형과 처치모형을 ML로 유연하게 추정하되, 직교화된 잔차 회귀와 교차적합을 통해 인과모수 추정을 편향에 둔감하게 만드는 방법이다. 따라서 현대의 인과-ML 결합은 <span dir="rtl">”</span>인과모수는 견고하게, 교란 함수는 유연하게”라는 원칙으로 요약된다.</p>
-<p>Chapter 2. 설명가능 AI (XAI)</p>
+</section>
+</section>
+<section id="chapter-2.-설명가능-ai-xai" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-2.-설명가능-ai-xai">Chapter 2. 설명가능 AI (XAI)</h3>
 <p>예측모형의 성능이 아무리 높아도, 그 예측이 어떤 근거로 도출되었는지가 설명되지 않으면 실제 의사결정에서 활용되기 어렵다. 특히 정책, 의료, 금융처럼 결정의 결과가 개인과 사회에 큰 영향을 미치는 영역에서는 <span dir="rtl">”</span>정확한 예측”만으로는 충분하지 않고, 그 예측이 합리적이며 재현 가능하고 설명 책임(accountability)을 충족하는지까지 요구된다.</p>
 <p>설명가능 AI(XAI)는 블랙박스 모델이 내린 예측을 사람이 이해할 수 있는 형태로 변환하거나, 모델의 의사결정 구조를 요약하여 제공하는 방법들의 집합이다. 다만 XAI는 <span dir="rtl">”</span>왜 그렇게 되었는가(인과)“를 직접 말해 주는 도구가 아니라, <span dir="rtl">”</span>모델이 무엇을 근거로 그렇게 예측했는가(예측 기여)”를 해석하는 도구라는 점을 명확히 해야 한다. 즉 XAI의 설명은 일반적으로 인과효과가 아니라 예측모형 내부의 의존 구조를 드러내는 것이다.</p>
-<p>1. 예측 설명과 인과 설명의 구분이다</p>
+<section id="예측-설명과-인과-설명의-구분이다" class="level4">
+<h4 class="anchored" data-anchor-id="예측-설명과-인과-설명의-구분이다">1. 예측 설명과 인과 설명의 구분이다</h4>
 <p>예측모형 <span class="math inline">\(f( \cdot )\)</span>가 입력 x에 대해 <span class="math inline">\(\widehat{y} = f(x)\)</span>를 산출할 때, XAI는 보통 다음과 같은 질문에 답한다.</p>
 <p>이 예측값 <span class="math inline">\(\widehat{y}\)</span>는 입력 변수들 중 무엇에 의해 크게 좌우되었는가</p>
 <p>어떤 변수 변화가 예측을 크게 바꾸는가(민감도)</p>
@@ -313,79 +362,97 @@ window.Quarto = {
 <p>이때 중요한 점은 XAI가 제공하는 <span dir="rtl">”</span>기여도(contribution)” 또는 <span dir="rtl">”</span>중요도(importance)“가 다음을 의미하지 않는다는 사실이다.</p>
 <p><span class="math display">\[\text{(XAI 중요도)} \neq \text{(인과효과)}\mathbb{E}\lbrack Y \mid do(X_{j} = x)\rbrack\]</span></p>
 <p>대부분의 XAI 방법은 관측분포에서의 함수 f의 구조를 요약하는 것이며, 변수 간 상관관계와 데이터 분포의 편향에 크게 영향을 받는다. 따라서 XAI 결과를 정책의 개입 레버로 바로 해석하면 앞에서 논의한 인과적 오류가 그대로 발생할 수 있다.</p>
-<p>2. Feature importance이다</p>
-<p>전역(global) 중요도의 의미이다</p>
+</section>
+<section id="feature-importance" class="level4">
+<h4 class="anchored" data-anchor-id="feature-importance">2. Feature importance</h4>
+<p><strong>전역(global) 중요도의 의미이다</strong></p>
 <p>전역 중요도는 <span dir="rtl">”</span>전체 데이터에서 어떤 변수가 평균적으로 모델 예측에 크게 기여했는가”를 요약하는 지표이다. 트리 기반 모델(랜덤포레스트, GBDT 등)에서는 불순도 감소(impurity decrease) 기반 중요도가 널리 쓰이며, 보다 모델-불문(model-agnostic)한 방식으로는 퍼뮤테이션 중요도(permutation importance)가 많이 사용된다.</p>
 <p>퍼뮤테이션 중요도는 직관적으로 다음 절차이다. 특정 변수 <span class="math inline">\(X_{j}\)</span>의 값을 표본 간에 무작위로 섞어(즉 <span class="math inline">\(X_{j}\)</span>와 Y의 관계를 끊어) 모델 성능이 얼마나 떨어지는지 측정한다. 성능이 크게 떨어지면 해당 변수가 예측에 중요하다고 판단한다.</p>
 <p>이를 수식으로 개념화하면, 손실함수 L에 대해 <span class="math inline">\(\text{Imp}(j) = \mathbb{E}\lbrack L(Y,f(X))\rbrack - \mathbb{E}\lbrack L(Y,f(X^{\pi(j)}))\rbrack\)</span>로 생각할 수 있다. 여기서 <span class="math inline">\(X^{\pi(j)}\)</span>는 j번째 변수만 샘플 간 무작위로 섞인 데이터이다.</p>
-<p>전역 중요도의 한계이다</p>
+<p><strong>전역 중요도의 한계이다</strong></p>
 <p>전역 중요도는 <span dir="rtl">”</span>예측에 유용한 변수”를 알려주지만, 다음 이유로 해석에 주의가 필요하다.</p>
 <p>첫째, 변수 간 상관관계가 강하면 중요도가 왜곡될 수 있다. 예를 들어 <span class="math inline">\(X_{1}\)</span>과 <span class="math inline">\(X_{2}\)</span>가 거의 같은 정보를 담고 있으면, 모델은 둘 중 하나만 사용해도 예측이 가능하므로 중요도가 두 변수 사이에서 임의로 분산되거나 한쪽으로 쏠릴 수 있다.</p>
 <p>둘째, 중요도는 데이터 분포에 의존한다. 어떤 변수는 특정 구간에서만 결정적일 수 있는데 전역 평균으로 요약하면 그 구조가 사라질 수 있다. 셋째, 중요도는 인과적 영향이 아니라 예측 기여이므로 <span dir="rtl">”</span>이 변수를 정책으로 바꾸면 결과가 개선된다”는 결론으로 직행하면 안 된다.</p>
-<p>3. LIME이다</p>
-<p>로컬(local) 설명의 목표이다</p>
+</section>
+<section id="lime" class="level4">
+<h4 class="anchored" data-anchor-id="lime">3. LIME</h4>
+<p><strong>로컬(local) 설명의 목표이다</strong></p>
 <p>LIME(Local Interpretable Model-agnostic Explanations)은 특정 관측치 <span class="math inline">\(x_{0}\)</span>에서 모델 예측 <span class="math inline">\(f(x_{0})\)</span>가 왜 그렇게 나왔는지를 설명하는 방법이다. 핵심 아이디어는 전역적으로 복잡한 모델이라도, <span class="math inline">\(x_{0}\)</span> 근방에서는 단순한 모형(예: 선형모형)으로 근사할 수 있다는 가정이다.</p>
-<p>LIME의 최적화 문제이다</p>
+<p><strong>LIME의 최적화 문제이다</strong></p>
 <p>LIME은 <span class="math inline">\(x_{0}\)</span> 주변에서 데이터점을 인위적으로 생성하고, 복잡한 모델 f의 출력값을 라벨처럼 사용하여, 해석 가능한 모형 g를 적합한다. 이때 <span class="math inline">\(x_{0}\)</span>에 가까운 점일수록 더 큰 가중치를 주어 <span dir="rtl">”</span>국소 근사”를 만든다.</p>
 <p>개념적으로는 다음을 최소화한다. <span class="math inline">\(\widehat{g} = \arg\min_{g \in \mathcal{G}}\sum_{i}\pi_{x_{0}}(z_{i})(f(z_{i}) - g(z_{i}))^{2} + \Omega(g)\)</span>. 여기서 <span class="math inline">\(z_{i}\)</span>는 <span class="math inline">\(x_{0}\)</span> 근방의 교란(perturbation)으로 생성된 샘플, <span class="math inline">\(\pi_{x_{0}}( \cdot )\)</span>는 <span class="math inline">\(x_{0}\)</span> 와의 거리 기반 가중치, <span class="math inline">\(\Omega(g)\)</span>는 설명의 단순성을 강제하는 패널티(예: 사용 변수 수 제한)이다.</p>
-<p>장점과 주의점이다</p>
+<p><strong>장점과 주의점</strong></p>
 <p>LIME은 빠르고 직관적이며, 모델 종류에 상관없이 적용 가능하다는 장점이 있다. 그러나 설정(근방 샘플 생성 방식, 거리함수, 가중치 폭, 변수 선택 규칙)에 민감하며, 동일한 관측치라도 시드(seed)나 샘플 생성에 따라 설명이 달라질 수 있다. 따라서 LIME 설명을 단일 정답처럼 제시하기보다, 안정성(재현성) 점검과 함께 보조적 근거로 사용하는 것이 안전하다.</p>
-<p>4. SHAP이다</p>
-<p>기본 개념이다</p>
+</section>
+<section id="shap" class="level4">
+<h4 class="anchored" data-anchor-id="shap">4. SHAP</h4>
+<p><strong>기본 개념</strong></p>
 <p>SHAP(SHapley Additive exPlanations)은 게임이론의 Shapley value를 이용하여, 예측값을 변수별 기여도로 분해하는 방식이다. 목표는 다음과 같은 가법(additive) 분해이다.</p>
 <p><span class="math inline">\(f(x) = \phi_{0} + \overset{p}{\sum_{j = 1}}\phi_{j}(x)\)</span>. 여기서 <span class="math inline">\(\phi_{0}\)</span>는 기준값(예: 전체 평균 예측), <span class="math inline">\(\phi_{j}(x)\)</span>는 관측치 x에서 변수 j가 예측에 기여한 정도이다.</p>
-<p>Shapley value의 정의이다</p>
+<p><strong>Shapley value의 정의</strong></p>
 <p>변수 집합 <span class="math inline">\(S \subseteq \{ 1,\ldots,p\}\)</span>에 대해, 변수 j의 Shapley 값은 <span dir="rtl">”</span>j를 추가했을 때 예측이 얼마나 개선되는가”를 모든 부분집합에 대해 평균낸 값이다.</p>
 <p><span class="math display">\[\phi_{j}(x) = \sum_{S \subseteq \{ 1,\ldots,p\} \smallsetminus \{ j\}}\frac{|S|!(p - |S| - 1)!}{p!}(v(S \cup \{ j\}) - v(S))\]</span></p>
 <p>여기서 <span class="math inline">\(v(S)\)</span>는 변수 부분집합 S만 알고 있을 때의 예측값(기대값)으로 정의된다. 직관적으로는 <span dir="rtl">”</span>변수들이 협력하여 예측이라는 보상을 만들 때, 각 변수에게 공정하게 기여도를 배분한다”는 원리이다.</p>
-<p>장점과 한계이다</p>
+<p><strong>장점과 한계</strong></p>
 <p>SHAP의 강점은 일관성(consistency)과 비교 가능성이다. 변수 기여도를 더하면 예측을 정확히 재구성하는 가법 구조를 갖고, 서로 다른 모델 간에도 설명값을 비교하기가 상대적으로 용이하다. 그러나 Shapley 값을 엄밀히 계산하려면 모든 부분집합을 고려해야 하므로 계산 비용이 매우 크다.</p>
 <p>실무에서는 트리 모델에 대한 효율적 알고리즘(TreeSHAP)이나 샘플링 기반 근사(KernelSHAP)를 사용한다. 또한 SHAP은 <span dir="rtl">”</span>변수를 모르는 상황의 기대값”을 어떻게 정의하는지에 따라 결과가 달라질 수 있으며, 변수들 간 상관관계가 강한 경우 기여도 분배가 해석적으로 까다로워질 수 있다.</p>
-<p>5. 현장에서 중요한 기준이다: 번역 가능성과 안정성이다</p>
+</section>
+<section id="현장에서-중요한-기준이다-번역-가능성과-안정성이다" class="level4">
+<h4 class="anchored" data-anchor-id="현장에서-중요한-기준이다-번역-가능성과-안정성이다">5. 현장에서 중요한 기준이다: 번역 가능성과 안정성이다</h4>
 <p>실무에서 XAI를 적용할 때는 방법 자체보다 <span dir="rtl">”</span>설명이 의사결정에 연결되는 방식”이 중요하다. 특히 두 가지가 핵심이다.</p>
 <p>첫째, 설명 결과가 정책 언어로 번역 가능한지 점검해야 한다. 예를 들어 SHAP에서 <span dir="rtl">”</span>소득 변수가 +0.7만큼 기여했다”는 설명은 모델 내부 언어이며, 정책 담당자는 이를 <span dir="rtl">”</span>어떤 소득 구간에서 위험이 높아지고, 어떤 조치가 가능한가”로 번역해야 한다. 따라서 변수 정의, 단위, 임계값, 구간별 패턴을 함께 제시하여 설명을 의사결정 문장으로 변환하는 작업이 필요하다.</p>
 <p>둘째, 설명이 안정적인지 점검해야 한다. LIME은 시드와 근방 샘플 생성에 따라 달라질 수 있고, SHAP도 데이터 샘플링이나 모델 업데이트에 따라 설명이 변할 수 있다. 또한 작은 데이터 변화로 설명이 크게 뒤집히는 경우는 그 모델이 의사결정에 사용되기 위험하다는 신호일 수 있다. 따라서 반복 실험을 통한 설명의 분산 측정, 부트스트랩 기반 신뢰구간, 모델 버전별 설명 비교 같은 안정성 점검이 필요하다.</p>
 <p>설명가능 AI는 블랙박스 예측모형의 판단 근거를 사람이 이해 가능한 형태로 제공하는 도구 모음이다. 전역 중요도는 전체적으로 어떤 변수가 예측에 유용했는지를 요약하지만, 인과효과가 아니라 예측 기여도라는 점을 항상 전제해야 한다. LIME은 특정 관측치 주변에서 로컬 선형 근사로 설명을 제공하나 설정에 민감하며, SHAP는 Shapley value 기반의 일관된 기여도 분해를 제공하나 계산 비용과 상관구조 해석의 어려움이 있다. 실제 현장에서는 설명의 <span dir="rtl">”</span>정책 언어로의 번역 가능성”과 <span dir="rtl">”</span>설명의 안정성”을 함께 점검해야 하며, XAI 결과는 인과추론과 결합될 때 비로소 개입 판단의 근거로 강화될 수 있다.</p>
-<p>Chapter 3. 책임 있는 AI</p>
+</section>
+</section>
+<section id="chapter-3.-책임-있는-ai" class="level3">
+<h3 class="anchored" data-anchor-id="chapter-3.-책임-있는-ai">Chapter 3. 책임 있는 AI</h3>
 <p>책임 있는 AI(responsible AI)는 모델의 예측 정확도가 높다는 사실만으로 달성되지 않는다. AI가 현실의 의사결정에 사용되는 순간, 그 모델은 개인과 집단의 기회, 자원 배분, 위험 부담에 직접적인 영향을 미치게 되며, 따라서 데이터 편향과 집단 간 불평등 가능성, 설명 책임, 운영 절차의 정당성까지 함께 요구된다.</p>
 <p>특히 정책·의료·금융·채용처럼 고위험(high-stakes) 영역에서는 <span dir="rtl">”</span>맞추는 모델”보다 <span dir="rtl">”</span>정당화 가능한 모델”이 더 중요해질 수 있다. 이 절에서는 책임 있는 AI를 구성하는 핵심 요소로 편향(bias), 공정성(fairness), 정책 적용 가능성(operationalization)을 서술한다.</p>
-<p>1. 편향(bias)은 어디에서 생기는가</p>
+<section id="편향bias은-어디에서-생기는가" class="level4">
+<h4 class="anchored" data-anchor-id="편향bias은-어디에서-생기는가">1. 편향(bias)은 어디에서 생기는가</h4>
 <p>AI의 편향은 대개 <span dir="rtl">”</span>모델이 나빠서”라기보다 <span dir="rtl">”</span>데이터 생성 과정이 이미 편향되어 있기 때문”에 발생한다. 데이터는 사회의 관측 결과이며, 관측 자체가 선택과 제도의 산물이다. 따라서 책임 있는 AI의 첫 단계는 편향이 들어오는 경로를 분해하여 점검하는 것이다.</p>
-<p>표본편향(sample selection bias)이다</p>
+<p><strong>표본편향(sample selection bias)</strong></p>
 <p>표본편향은 학습 데이터가 모집단을 대표하지 못할 때 발생한다. 예컨대 온라인 설문으로 수집된 데이터는 디지털 접근성이 낮은 집단을 과소대표할 수 있고, 특정 지역·연령층의 표본이 충분히 확보되지 않으면 모델은 그 집단에서 성능이 떨어질 수 있다.</p>
 <p>수식적으로는 학습분포 <span class="math inline">\(P_{\text{train}}(X,Y)\)</span>와 적용분포 <span class="math inline">\(P_{\text{deploy}}(X,Y)\)</span>가 다를 때 발생하는 분포 이동(dataset shift)의 문제로 이해할 수 있다. 이 경우 전체 정확도가 높더라도 특정 집단에서는 오류가 체계적으로 증가할 수 있다.</p>
-<p>측정편향(measurement bias)이다</p>
+<p><strong>측정편향(measurement bias)</strong></p>
 <p>측정편향은 변수 X나 결과 Y가 집단마다 다른 방식으로 측정될 때 발생한다. 예컨대 같은 <span dir="rtl">”</span>소득”이라도 비정규 노동이 많은 집단에서는 측정오차가 크고 누락이 잦을 수 있다.</p>
 <p>결과적으로 모델은 특정 집단에서 더 큰 불확실성을 갖거나, 잘못된 패턴을 학습할 수 있다. 이는 관측값이 진짜 값의 잡음 섞인 버전이라는 관점에서 <span class="math inline">\(X^{\text{obs}} = X^{\text{true}} + u\)</span>와 같은 오차모형으로 이해할 수 있으며, 오차 분포 u가 집단별로 다르면 집단별 예측성능 격차가 발생할 수 있다.</p>
-<p>레이블 편향(label bias)이다</p>
+<p><strong>레이블 편향(label bias)</strong></p>
 <p>레이블 편향은 타깃 Y 자체가 공정하지 않은 판단이나 제도적 관행을 반영하고 있을 때 발생한다. 예를 들어 <span dir="rtl">”</span>재범 위험”을 예측한다면서 실제로는 <span dir="rtl">”</span>경찰 단속 빈도”와 같은 관측 시스템의 편향이 결과로 기록되는 상황이 있을 수 있다.</p>
 <p>이때 모델은 현실의 불평등 구조를 <span dir="rtl">’</span>정확히 재현<span dir="rtl">’</span>하는 방식으로 높은 성능을 보일 수 있으며, 바로 그 점이 사회적 위험이 된다. 즉 높은 정확도는 곧 정당성을 의미하지 않는다.</p>
-<p>역사적 편향(historical bias)이다</p>
+<p><strong>역사적 편향(historical bias)</strong></p>
 <p>역사적 편향은 과거의 차별과 불평등이 데이터에 축적되어 있는 경우이다. 예컨대 과거 채용·대출·승진 기록이 특정 집단에 불리하게 누적되어 있다면, 모델은 그 패턴을 학습하여 미래에도 동일한 불평등을 재생산할 수 있다.</p>
 <p>이때 책임 있는 AI는 단순히 <span dir="rtl">”</span>데이터대로 학습”하는 것을 넘어, 어떤 목표를 사회적으로 채택할 것인지(예: 기회 확대, 위험 분산, 차별 감소)를 명시해야 한다.</p>
-<p>2. 공정성(fairness)의 다원성과 불가능성의 문제이다</p>
+</section>
+<section id="공정성fairness의-다원성과-불가능성의-문제이다" class="level4">
+<h4 class="anchored" data-anchor-id="공정성fairness의-다원성과-불가능성의-문제이다">2. 공정성(fairness)의 다원성과 불가능성의 문제이다</h4>
 <p>공정성은 하나의 수치로 단일하게 정의되기 어렵다. 현실에서는 <span dir="rtl">”</span>어떤 공정성을 원하는가”가 곧 가치 판단이며 정책 선택이다. 또한 여러 공정성 기준은 동시에 만족되기 어려운 경우가 많다. 따라서 책임 있는 AI에서는 공정성 지표를 계산하는 것보다, 어떤 지표를 채택하고 무엇을 포기하는지에 대한 설명이 핵심이다.</p>
-<p>집단 공정성의 대표 지표들이다</p>
+<p><strong>집단 공정성의 대표 지표들이다</strong></p>
 <p>이진 분류(예: 승인/거절) 문제에서 예측값 <span class="math inline">\(\widehat{Y} \in \{ 0,1\}\)</span>, 실제값 <span class="math inline">\(Y \in \{ 0,1\}\)</span>, 보호집단 변수 <span class="math inline">\(A \in \{ a,b\}\)</span>가 있다고 하자.</p>
-<p>인구통계적 동등성(demographic parity)이다. <span class="math inline">\(\mathbb{P}(\widehat{Y} = 1 \mid A = a) = \mathbb{P}(\widehat{Y} = 1 \mid A = b)\)</span> 승인율(긍정 예측률)이 집단 간 같아야 한다는 기준이다.</p>
-<p>기회균등(equal opportunity)이다. <span class="math inline">\(\mathbb{P}(\widehat{Y} = 1 \mid Y = 1,A = a) = \mathbb{P}(\widehat{Y} = 1 \mid Y = 1,A = b)\)</span> 진짜로 <span dir="rtl">”</span>자격이 있는 사람(Y=1)“을 놓치지 않는 비율(민감도, TPR)이 집단 간 같아야 한다는 기준이다.</p>
-<p>오즈의 동등성(equalized odds)이다. <span class="math inline">\(\mathbb{P}(\widehat{Y} = 1 \mid Y = y,A = a) = \mathbb{P}(\widehat{Y} = 1 \mid Y = y,A = b),y \in \{ 0,1\}\)</span>TPR과 FPR이 모두 집단 간 같아야 한다는 기준이다.</p>
+<ul>
+<li><p>인구통계적 동등성(demographic parity)이다. <span class="math inline">\(\mathbb{P}(\widehat{Y} = 1 \mid A = a) = \mathbb{P}(\widehat{Y} = 1 \mid A = b)\)</span> 승인율(긍정 예측률)이 집단 간 같아야 한다는 기준이다.</p></li>
+<li><p>기회균등(equal opportunity)이다. <span class="math inline">\(\mathbb{P}(\widehat{Y} = 1 \mid Y = 1,A = a) = \mathbb{P}(\widehat{Y} = 1 \mid Y = 1,A = b)\)</span> 진짜로 <span dir="rtl">”</span>자격이 있는 사람(Y=1)“을 놓치지 않는 비율(민감도, TPR)이 집단 간 같아야 한다는 기준이다.</p></li>
+<li><p>오즈의 동등성(equalized odds)이다. <span class="math inline">\(\mathbb{P}(\widehat{Y} = 1 \mid Y = y,A = a) = \mathbb{P}(\widehat{Y} = 1 \mid Y = y,A = b),y \in \{ 0,1\}\)</span>TPR과 FPR이 모두 집단 간 같아야 한다는 기준이다.</p></li>
+</ul>
 <p>예측값 보정(calibration)이다. 확률 예측 <span class="math inline">\(S \in \lbrack 0,1\rbrack\)</span>에 대해 <span class="math inline">\(\mathbb{P}(Y = 1 \mid S = s,A = a) = s\)</span> 가 집단별로 성립해야 한다는 기준이다. 즉 <span dir="rtl">”</span>점수 0.7이면 실제 양성 확률이 0.7”이라는 의미가 집단마다 동일해야 한다는 뜻이다.</p>
-<p>공정성 기준은 동시에 만족되기 어렵다</p>
+<p><strong>공정성 기준은 동시에 만족되기 어렵다</strong></p>
 <p>현실에서는 집단별 기본률(base rate) <span class="math inline">\(\mathbb{P}(Y = 1 \mid A = a) \neq \mathbb{P}(Y = 1 \mid A = b)\)</span>이 다를 때가 많다. 이 경우 여러 공정성 조건은 동시에 만족될 수 없다는 결과들이 알려져 있으며, 실무적으로도 한 기준을 맞추면 다른 기준이 깨지는 상황이 흔하다. 따라서 공정성은 <span dir="rtl">”</span>한 지표를 계산해 맞추는 기술 문제”라기보다 <span dir="rtl">”</span>어떤 정의를 채택할지 결정하는 정책 문제”로 이해하는 것이 타당하다.</p>
-<p>공정성 개입은 비용과 효과의 분배 문제이다</p>
+<p><strong>공정성 개입은 비용과 효과의 분배 문제이다</strong></p>
 <p>공정성 제약을 도입하면 전체 정확도나 효율이 감소할 수 있고, 오류의 종류(FP/FN)와 부담이 집단 간에 재분배된다. 예컨대 금융에서 대출 승인 모델에 공정성 제약을 걸면, 어떤 집단의 승인률은 올라가지만 연체율 관리가 어려워질 수 있다. 따라서 공정성 설계는 <span dir="rtl">”</span>누가 어떤 오류를 부담하는가”라는 사회적 합의와 연결되어야 한다.</p>
-<p>3. 정책 적용 가능성(operationalization)과 책임 구조이다</p>
+</section>
+<section id="정책-적용-가능성operationalization과-책임-구조이다" class="level4">
+<h4 class="anchored" data-anchor-id="정책-적용-가능성operationalization과-책임-구조이다">3. 정책 적용 가능성(operationalization)과 책임 구조이다</h4>
 <p>AI 모델이 정책이나 현장에 적용되려면 수학적 정의나 코드 수준의 성능만으로는 부족하다. 모델이 제안하는 기준이 실제 제도와 행정 절차에서 구현 가능해야 하며, 그 과정에서 책임과 권한의 구조가 명확해야 한다.</p>
-<p>모델 기준의 구현 가능성이다</p>
+<p><strong>모델 기준의 구현 가능성이다</strong></p>
 <p>모델이 사용하는 변수들이 실제 행정 데이터에서 안정적으로 수집 가능한지, 업데이트 주기가 정책 의사결정 주기와 맞는지, 결측과 오류가 발생했을 때 대체 규칙이 있는지 등을 검토해야 한다.</p>
 <p>또한 모델이 산출하는 점수 S를 실제 의사결정으로 옮기려면 임계값(threshold) \tau를 설정해야 하며, <span class="math inline">\(\widehat{Y} = 1\{ S \geq \tau\}\)</span>. 이때 임계값 설정은 단순한 기술적 선택이 아니라, 위험과 자원의 배분을 결정하는 정책 선택이 된다.</p>
-<p>설명 책임과 의사결정 책임이다</p>
+<p><strong>설명 책임과 의사결정 책임이다</strong></p>
 <p>현장에서 <span dir="rtl">”</span>모델이 그렇게 나왔다”는 말은 책임을 대신해 주지 않는다. 의사결정 책임이 누구에게 있는지, 모델의 권고를 언제 따르고 언제 배제할지, 인간 검토(human-in-the-loop)의 범위가 어디까지인지 명확해야 한다. 특히 고위험 결정에서는 모델을 <span dir="rtl">”</span>결정자”가 아니라 <span dir="rtl">”</span>보조자”로 위치시키고, 최종 판단은 인간이 책임지는 구조를 제도적으로 설계해야 한다.</p>
-<p>이의제기 절차와 사후 모니터링이다</p>
+<p><strong>이의제기 절차와 사후 모니터링이다</strong></p>
 <p>책임 있는 AI에는 이의제기(appeal) 절차가 포함된다. 예측 결과가 불리하게 작동한 개인이 왜 그런 결과가 나왔는지 설명을 요구할 수 있어야 하며, 데이터 오류나 예외 상황을 정정할 수 있어야 한다.</p>
 <p>또한 모델은 배포 시점의 성능만 중요한 것이 아니라, 시간이 지나면서 분포가 바뀌는 상황(정책 변화, 경기 변화, 신규 제도 도입 등)에서 성능과 공정성이 어떻게 변하는지를 지속적으로 모니터링해야 한다. 이는 단발성 분석이 아니라 운영 체계(MLOps + 정책 거버넌스)의 문제이다.</p>
-<p>(예제) 공정성 지표 계산의 기본 형태이다</p>
+<p><strong>(예제) 공정성 지표 계산의 기본 형태이다</strong></p>
 <p>이진 분류에서 집단별 혼동행렬(confusion matrix)을 기반으로 공정성 지표를 계산하는 것이 출발점이 된다.</p>
 <p>집단 A=a에서 TPR(민감도)은 <span class="math inline">\(\text{TPR}_{a} = \mathbb{P}(\widehat{Y} = 1 \mid Y = 1,A = a)\)</span>이고 FPR(위양성률)은 <span class="math inline">\(\text{FPR}_{a} = \mathbb{P}(\widehat{Y} = 1 \mid Y = 0,A = a)\)</span>이며, 기회균등은 <span class="math inline">\(\text{TPR}_{a} = \text{TPR}_{b}\)</span>를 요구하고, 오즈의 동등성은 <span class="math inline">\(\text{TPR}_{a} = \text{TPR}_{b}\)</span>와 <span class="math inline">\(\text{FPR}_{a} = \text{FPR}_{b}\)</span>를 동시에 요구한다.</p>
 <p>이때 어떤 지표를 우선시할지, 그리고 허용 가능한 차이의 범위를 어느 정도로 둘지(예: <span class="math inline">\(|\text{TPR}_{a} - \text{TPR}_{b}| \leq \epsilon\)</span>)는 기술의 문제가 아니라 정책의 문제로 다루어져야 한다.</p>
@@ -393,6 +460,8 @@ window.Quarto = {
 <p>편향은 표본·측정·레이블·역사적 경로로 유입되며, 공정성은 여러 정의가 공존하고 상충할 수 있으므로 어떤 정의를 채택할지 자체가 정책 선택이다. 또한 모델의 기준은 구현 가능해야 하고, 설명 책임과 의사결정 책임은 명확히 분리·규정되어야 하며, 이의제기 절차와 운영 단계의 지속 모니터링이 갖추어질 때 비로소 AI는 사회적으로 정당화될 수 있다.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
