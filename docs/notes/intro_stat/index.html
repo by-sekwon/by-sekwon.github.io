@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="권세혁">
 
-<title>기초통계 &amp; 조사방법론 – 세상 모든 통계 이야기</title>
+<title>기초통계·회귀분석·다변량분석 강의노트 – 세상 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -54,17 +55,17 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색",
+    "search-label": "검색"
   }
 }</script>
 
@@ -83,8 +84,8 @@ ul.task-list li input[type="checkbox"] {
     <span class="navbar-title">세상 모든 통계 이야기</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="검색"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="탐색 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -121,11 +122,11 @@ ul.task-list li input[type="checkbox"] {
     </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="사이드바 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">기초통계 &amp; 조사방법론</li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">기초통계·회귀분석·다변량분석 강의노트</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="사이드바 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
   </nav>
@@ -278,21 +279,66 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#강의노트-소개" id="toc-강의노트-소개" class="nav-link active" data-scroll-target="#강의노트-소개"><span class="header-section-number">1</span> 강의노트 소개</a></li>
+  <li><a href="#기초통계" id="toc-기초통계" class="nav-link" data-scroll-target="#기초통계"><span class="header-section-number">2</span> 기초통계</a>
+  <ul class="collapse">
+  <li><a href="#통계학의-개념" id="toc-통계학의-개념" class="nav-link" data-scroll-target="#통계학의-개념"><span class="header-section-number">2.1</span> 통계학의 개념</a></li>
+  <li><a href="#데이터와-통계" id="toc-데이터와-통계" class="nav-link" data-scroll-target="#데이터와-통계"><span class="header-section-number">2.2</span> 데이터와 통계</a></li>
+  <li><a href="#일변량-분석" id="toc-일변량-분석" class="nav-link" data-scroll-target="#일변량-분석"><span class="header-section-number">2.3</span> 일변량 분석</a></li>
+  <li><a href="#교차표-분석" id="toc-교차표-분석" class="nav-link" data-scroll-target="#교차표-분석"><span class="header-section-number">2.4</span> 교차표 분석</a></li>
+  <li><a href="#적합성-검정" id="toc-적합성-검정" class="nav-link" data-scroll-target="#적합성-검정"><span class="header-section-number">2.5</span> 적합성 검정</a></li>
+  <li><a href="#정규성-검정" id="toc-정규성-검정" class="nav-link" data-scroll-target="#정규성-검정"><span class="header-section-number">2.6</span> 정규성 검정</a></li>
+  <li><a href="#상관분석" id="toc-상관분석" class="nav-link" data-scroll-target="#상관분석"><span class="header-section-number">2.7</span> 상관분석</a></li>
+  <li><a href="#분산분석anova" id="toc-분산분석anova" class="nav-link" data-scroll-target="#분산분석anova"><span class="header-section-number">2.8</span> 분산분석(ANOVA)</a></li>
+  <li><a href="#시계열-분석" id="toc-시계열-분석" class="nav-link" data-scroll-target="#시계열-분석"><span class="header-section-number">2.9</span> 시계열 분석</a></li>
+  </ul></li>
+  <li><a href="#회귀분석" id="toc-회귀분석" class="nav-link" data-scroll-target="#회귀분석"><span class="header-section-number">3</span> 회귀분석</a>
+  <ul class="collapse">
+  <li><a href="#개념추정" id="toc-개념추정" class="nav-link" data-scroll-target="#개념추정"><span class="header-section-number">3.1</span> 개념·추정</a></li>
+  <li><a href="#변수선택" id="toc-변수선택" class="nav-link" data-scroll-target="#변수선택"><span class="header-section-number">3.2</span> 변수선택</a></li>
+  <li><a href="#다중공선성" id="toc-다중공선성" class="nav-link" data-scroll-target="#다중공선성"><span class="header-section-number">3.3</span> 다중공선성</a></li>
+  <li><a href="#회귀진단" id="toc-회귀진단" class="nav-link" data-scroll-target="#회귀진단"><span class="header-section-number">3.4</span> 회귀진단</a></li>
+  <li><a href="#로지스틱회귀" id="toc-로지스틱회귀" class="nav-link" data-scroll-target="#로지스틱회귀"><span class="header-section-number">3.5</span> 로지스틱회귀</a></li>
+  </ul></li>
+  <li><a href="#다변량분석" id="toc-다변량분석" class="nav-link" data-scroll-target="#다변량분석"><span class="header-section-number">4</span> 다변량분석</a>
+  <ul class="collapse">
+  <li><a href="#개요" id="toc-개요" class="nav-link" data-scroll-target="#개요"><span class="header-section-number">4.1</span> 개요</a></li>
+  <li><a href="#pca" id="toc-pca" class="nav-link" data-scroll-target="#pca"><span class="header-section-number">4.2</span> PCA</a></li>
+  <li><a href="#요인분석" id="toc-요인분석" class="nav-link" data-scroll-target="#요인분석"><span class="header-section-number">4.3</span> 요인분석</a></li>
+  <li><a href="#군집분석" id="toc-군집분석" class="nav-link" data-scroll-target="#군집분석"><span class="header-section-number">4.4</span> 군집분석</a></li>
+  <li><a href="#판별분석" id="toc-판별분석" class="nav-link" data-scroll-target="#판별분석"><span class="header-section-number">4.5</span> 판별분석</a></li>
+  <li><a href="#다차원척도대응분석" id="toc-다차원척도대응분석" class="nav-link" data-scroll-target="#다차원척도대응분석"><span class="header-section-number">4.6</span> 다차원척도·대응분석</a></li>
+  <li><a href="#정준상관manova" id="toc-정준상관manova" class="nav-link" data-scroll-target="#정준상관manova"><span class="header-section-number">4.7</span> 정준상관·MANOVA</a></li>
+  </ul></li>
+  <li><a href="#학습-목표" id="toc-학습-목표" class="nav-link" data-scroll-target="#학습-목표"><span class="header-section-number">5</span> 학습 목표</a></li>
+  <li><a href="#활용-분야" id="toc-활용-분야" class="nav-link" data-scroll-target="#활용-분야"><span class="header-section-number">6</span> 활용 분야</a></li>
+  <li><a href="#마무리" id="toc-마무리" class="nav-link" data-scroll-target="#마무리"><span class="header-section-number">7</span> 마무리</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content column-page-right" id="quarto-document-content">
+<main class="content column-body" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">기초통계 &amp; 조사방법론</h1>
+<h1 class="title">기초통계·회귀분석·다변량분석 강의노트</h1>
 </div>
 
 
 
-<div class="quarto-title-meta column-page-right">
+<div class="quarto-title-meta column-body">
 
+    <div>
+    <div class="quarto-title-meta-heading">저자</div>
+    <div class="quarto-title-meta-contents">
+             <p>권세혁 </p>
+          </div>
+  </div>
     
   
     
@@ -303,65 +349,258 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="기초통계-섹션-메인기초통계" class="level5">
-<h5 class="anchored" data-anchor-id="기초통계-섹션-메인기초통계">[기초통계] 섹션 메인(기초통계)</h5>
-<p>기초통계는 데이터를 요약·시각화·해석하는 통계의 기초를 다룬다. <br> 이 섹션에서는 기술통계, 분포의 특성, 변수 간 관계, 기본 검정 절차를 정리하여 <br> 이후의 추론통계와 모형 분석을 이해하기 위한 기반을 마련한다.</p>
-<p>⸻</p>
-<p>[기초통계] 통계학의 개념</p>
-<p>통계학은 불확실한 현실에서 데이터를 근거로 현상을 이해하고 의사결정하는 학문이다. <br> 모집단–표본, 모수–통계량, 기술통계–추론통계의 구분을 통해 통계적 사고의 틀을 정리한다. <br> 또한 상관과 인과의 차이, 분석 목적에 따른 방법 선택의 원리를 소개한다.</p>
-<p>⸻</p>
-<p>[기초통계] 데이터와 통계</p>
-<p>데이터는 변수(특성)와 관측치(사례)로 구성되며, 변수의 측정 수준에 따라 분석 방법이 달라진다. <br> 질적/양적 변수, 척도(명목·서열·등간·비율), 자료 형태(단면·시계열·패널)를 구분한다. <br> 기초적인 데이터 품질 점검(결측·이상치·입력 오류)도 함께 다룬다.</p>
-<p>⸻</p>
-<p>[기초통계] 일변량 분석</p>
-<p>하나의 변수를 대상으로 분포의 형태와 중심·산포를 요약한다. <br> 평균·중앙값·분산·표준편차·사분위수 등 요약 통계량과 <br> 히스토그램·박스플롯 등을 통해 데이터의 특성을 해석한다.</p>
-<p>⸻</p>
-<p>[기초통계] 교차표 분석</p>
-<p>두 범주형 변수의 관계를 교차표로 정리하고 <strong>연관성(의존성)</strong>을 파악한다. <br> 행/열 비율을 비교하여 패턴을 읽고, 기대도수 기반 해석으로 <br> 관계의 방향과 크기를 직관적으로 설명하는 방법을 학습한다.</p>
-<p>⸻</p>
-<p>[기초통계] 적합성 검정</p>
-<p>관측된 범주 빈도가 특정 이론 분포(또는 기대 비율)와 일치하는지 검정한다. <br> 카이제곱 통계량의 원리와 검정 절차(가설 설정–유의수준–기각/채택)를 정리한다. <br> 적용 조건(기대도수 크기 등)과 해석상의 주의점도 함께 다룬다.</p>
-<p>⸻</p>
-<p>[기초통계] 정규성 검정</p>
-<p>정규성은 t-검정, ANOVA, 회귀 등 많은 방법의 기본 가정으로 사용된다. <br> Q-Q plot 등 시각적 진단과 함께 Shapiro–Wilk 등 대표 검정의 의미를 소개한다. <br> 표본 크기에 따른 해석(“통계적으로 유의”와 “실질적 차이”의 구분)도 강조한다.</p>
-<p>⸻</p>
-<p>[기초통계] 상관분석</p>
-<p>두 연속형 변수 사이의 선형적 관련성을 상관계수로 요약한다. <br> 피어슨/스피어만 상관의 차이와 산점도 기반 해석을 통해 관계의 형태를 점검한다. <br> 상관이 인과를 의미하지 않는다는 점과 교란변수 가능성을 함께 설명한다.</p>
-<p>⸻</p>
-<p>[기초통계] 분산분석(ANOVA)</p>
-<p>여러 집단의 평균 차이를 한 번에 비교하는 방법으로, “집단 간 변동 vs 집단 내 변동”의 비율을 이용한다. <br> 일원분산분석의 가정(정규성·등분산성·독립성)과 F-검정의 해석을 정리한다. <br> 유의할 때는 사후검정으로 어떤 집단 간 차이가 있는지 추가 확인한다.</p>
-<p>⸻</p>
-<p>[기초통계] 시계열 분석</p>
-<p>시간 순서로 관측된 데이터의 추세·계절성·변동성을 파악한다. <br> 이동평균 등 기초적 평활화와 자기상관 개념을 소개하고, 예측을 위한 기본 접근을 정리한다. <br> 단면자료와 달리 “시간 의존성”을 고려해야 하는 이유를 강조한다.</p>
-<p>⸻</p>
+<section id="강의노트-소개" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> 강의노트 소개</h1>
+<p>본 강의노트는 통계분석의 기초부터 회귀분석 및 고급 다변량분석까지 체계적으로 학습할 수 있도록 구성한 자료이다.<br>
+데이터 이해와 탐색적 분석, 통계적 추론, 예측모형 및 차원축소 기법 등을 단계적으로 학습하며 실제 데이터분석 실무에 적용할 수 있는 능력을 기르는 것을 목표로 한다.</p>
+<p>특히 다음과 같은 학습자를 대상으로 한다.</p>
+<ul>
+<li>통계학 및 데이터분석 입문자</li>
+<li>사회과학·경영학 연구자</li>
+<li>머신러닝 및 AI 분석 입문자</li>
+<li>논문통계 및 실증분석 수행자</li>
+<li>공공·산업 데이터 분석 실무자</li>
+</ul>
+<hr>
 </section>
-<section id="조사방법론-섹션-메인조사방법론" class="level5">
-<h5 class="anchored" data-anchor-id="조사방법론-섹션-메인조사방법론">[조사방법론] 섹션 메인(조사방법론)</h5>
-<p>조사방법론은 설문·관측·실험 등을 통해 데이터를 수집할 때 필요한 설계 원리와 품질 관리를 다룬다. <br> 표본설계, 설문지 구성, 무응답 처리, 척도 설계 등 실무적 절차를 체계화하여 <br> 신뢰할 수 있는 데이터 기반 분석이 가능하도록 한다.</p>
-<p>⸻</p>
-<p>[조사방법론] 조사방법 기초</p>
-<p>조사는 연구문제에 맞게 자료를 수집하는 체계적 절차이며, 대표성·정확성이 핵심이다. <br> 조사의 유형(전수/표본, 단면/종단, 면접/전화/온라인 등)을 구분하고 <br> 오차(표본오차·비표본오차)의 개념을 정리한다.</p>
-<p>⸻</p>
-<p>[조사방법론] 표본설계</p>
-<p>표본설계는 모집단을 대표하는 표본을 뽑기 위한 규칙을 정하는 과정이다. <br> 단순임의·층화·집락·다단계 표본추출의 특징과 장단점을 비교한다. <br> 표본크기 결정의 기본 원리와 가중치(추정에서의 반영)도 함께 다룬다.</p>
-<p>⸻</p>
-<p>[조사방법론] 설문지</p>
-<p>설문지는 측정 도구이며, 문항 설계가 데이터 품질을 좌우한다. <br> 문항 유형(개방형/폐쇄형), 질문 순서, 응답 범주 설계, 문항 편향(유도·이중질문 등)을 점검한다. <br> 사전조사(파일럿)와 신뢰도·타당도 관점의 개선 방법도 소개한다.</p>
-<p>⸻</p>
-<p>[조사방법론] 무응답 대체</p>
-<p>무응답은 표본의 대표성과 추정의 편의를 훼손할 수 있는 중요한 문제다. <br> 결측 메커니즘(MCAR/MAR/MNAR) 개념을 바탕으로 <br> 평균대체·회귀대체·다중대체 등 대표적 대체 방법과 해석상의 주의점을 정리한다.</p>
-<p>⸻</p>
-<p>[조사방법론] 데이터 처리</p>
-<p>수집된 데이터는 분석 전에 정제·코딩·검증 과정을 거쳐야 한다. <br> 코드북 작성, 범주 통합, 이상치/논리 오류 점검, 가중치 적용, 데이터 문서화를 다룬다. <br> 재현 가능한 분석을 위해 처리 단계의 기록과 버전 관리를 강조한다.</p>
-<p>⸻</p>
-<p>[조사방법론] 조사척도</p>
-<p>측정 척도는 “무엇을 어떤 수준으로 재는가”를 결정하며 분석 가능 범위를 좌우한다. <br> 명목·서열·등간·비율 척도와 리커트 척도의 설계 원리를 정리한다. <br> 신뢰도(예: Cronbach’s alpha)와 타당도의 개념을 함께 연결한다.</p>
-<p>⸻</p>
-<p>[조사방법론] 델파이·AHP·컨조인트</p>
-<p>전문가 판단과 선호를 구조화해 의사결정을 지원하는 대표 기법들을 다룬다. 델파이는 반복적 합의를 통해 예측·정책 우선순위를 도출하고, AHP는 계층구조와 쌍대비교로 가중치를 산출하며, 컨조인트는 속성 조합에 대한 선택을 통해 선호 구조를 추정한다.</p>
-<p>⸻</p>
-<p>[조사방법론] PSM 성향점수매칭</p>
-<p>관찰자료에서 처치(정책/프로그램) 효과를 추정할 때, 집단 간 차이를 보정하는 방법이다. <br> 성향점수(처치 확률)를 추정한 뒤 유사한 관측치를 매칭하여 비교 가능성을 높인다. <br> 매칭 품질 진단(균형성 점검)과 결과 해석의 한계를 함께 설명한다.</p>
+<section id="기초통계" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> 기초통계</h1>
+<p>통계학의 기본 개념과 데이터 분석 방법을 학습한다.</p>
+<section id="통계학의-개념" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="통계학의-개념"><span class="header-section-number">2.1</span> 통계학의 개념</h2>
+<ul>
+<li>기술통계와 추론통계</li>
+<li>모집단과 표본</li>
+<li>통계적 사고</li>
+<li>데이터 기반 의사결정</li>
+</ul>
+</section>
+<section id="데이터와-통계" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="데이터와-통계"><span class="header-section-number">2.2</span> 데이터와 통계</h2>
+<ul>
+<li>데이터의 종류</li>
+<li>척도 수준</li>
+<li>데이터 수집 방법</li>
+<li>데이터 전처리 기초</li>
+</ul>
+</section>
+<section id="일변량-분석" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="일변량-분석"><span class="header-section-number">2.3</span> 일변량 분석</h2>
+<ul>
+<li>평균·중앙값·최빈값</li>
+<li>분산과 표준편차</li>
+<li>왜도와 첨도</li>
+<li>히스토그램과 박스플롯</li>
+</ul>
+</section>
+<section id="교차표-분석" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="교차표-분석"><span class="header-section-number">2.4</span> 교차표 분석</h2>
+<ul>
+<li>범주형 자료 분석</li>
+<li>교차표 작성</li>
+<li>카이제곱 검정</li>
+<li>연관성 분석</li>
+</ul>
+</section>
+<section id="적합성-검정" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="적합성-검정"><span class="header-section-number">2.5</span> 적합성 검정</h2>
+<ul>
+<li>적합도 검정</li>
+<li>카이제곱 적합성 검정</li>
+<li>기대빈도 계산</li>
+<li>모형 적합성 평가</li>
+</ul>
+</section>
+<section id="정규성-검정" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="정규성-검정"><span class="header-section-number">2.6</span> 정규성 검정</h2>
+<ul>
+<li>정규분포 개념</li>
+<li>Shapiro-Wilk 검정</li>
+<li>Kolmogorov-Smirnov 검정</li>
+<li>QQ Plot 해석</li>
+</ul>
+</section>
+<section id="상관분석" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="상관분석"><span class="header-section-number">2.7</span> 상관분석</h2>
+<ul>
+<li>공분산</li>
+<li>Pearson 상관계수</li>
+<li>Spearman 순위상관</li>
+<li>상관과 인과관계</li>
+</ul>
+</section>
+<section id="분산분석anova" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="분산분석anova"><span class="header-section-number">2.8</span> 분산분석(ANOVA)</h2>
+<ul>
+<li>집단 평균 비교</li>
+<li>일원분산분석</li>
+<li>이원분산분석</li>
+<li>사후검정(Post Hoc)</li>
+</ul>
+</section>
+<section id="시계열-분석" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="시계열-분석"><span class="header-section-number">2.9</span> 시계열 분석</h2>
+<ul>
+<li>시계열 데이터 개념</li>
+<li>추세·계절성</li>
+<li>이동평균</li>
+<li>자기상관</li>
+<li>ARIMA 기초</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="회귀분석" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> 회귀분석</h1>
+<p>변수 간 관계를 설명하고 예측하는 회귀모형을 학습한다.</p>
+<section id="개념추정" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="개념추정"><span class="header-section-number">3.1</span> 개념·추정</h2>
+<ul>
+<li>단순회귀분석</li>
+<li>다중회귀분석</li>
+<li>최소제곱법(OLS)</li>
+<li>회귀계수 해석</li>
+<li>결정계수(R²)</li>
+</ul>
+</section>
+<section id="변수선택" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="변수선택"><span class="header-section-number">3.2</span> 변수선택</h2>
+<ul>
+<li>Forward Selection</li>
+<li>Backward Elimination</li>
+<li>Stepwise 방법</li>
+<li>변수선택 기준(AIC/BIC)</li>
+</ul>
+</section>
+<section id="다중공선성" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="다중공선성"><span class="header-section-number">3.3</span> 다중공선성</h2>
+<ul>
+<li>공선성의 개념</li>
+<li>분산팽창계수(VIF)</li>
+<li>조건수(Condition Number)</li>
+<li>해결 방법</li>
+</ul>
+</section>
+<section id="회귀진단" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="회귀진단"><span class="header-section-number">3.4</span> 회귀진단</h2>
+<ul>
+<li>잔차분석</li>
+<li>이상치 탐지</li>
+<li>영향점 분석</li>
+<li>등분산성 검토</li>
+</ul>
+</section>
+<section id="로지스틱회귀" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="로지스틱회귀"><span class="header-section-number">3.5</span> 로지스틱회귀</h2>
+<ul>
+<li>이항반응변수</li>
+<li>로짓(Logit) 함수</li>
+<li>오즈비(Odds Ratio)</li>
+<li>분류모형 평가</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="다변량분석" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> 다변량분석</h1>
+<p>여러 변수 간 복합적인 관계를 동시에 분석하는 방법을 학습한다.</p>
+<section id="개요" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="개요"><span class="header-section-number">4.1</span> 개요</h2>
+<ul>
+<li>다변량분석의 개념</li>
+<li>고차원 데이터</li>
+<li>변수 간 구조 탐색</li>
+<li>차원축소 개요</li>
+</ul>
+</section>
+<section id="pca" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="pca"><span class="header-section-number">4.2</span> PCA</h2>
+<ul>
+<li>주성분분석 개념</li>
+<li>공분산행렬</li>
+<li>고유값과 고유벡터</li>
+<li>차원축소와 시각화</li>
+</ul>
+</section>
+<section id="요인분석" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="요인분석"><span class="header-section-number">4.3</span> 요인분석</h2>
+<ul>
+<li>잠재요인 개념</li>
+<li>공통요인모형</li>
+<li>요인적재량</li>
+<li>요인회전(Varimax)</li>
+</ul>
+</section>
+<section id="군집분석" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="군집분석"><span class="header-section-number">4.4</span> 군집분석</h2>
+<ul>
+<li>비지도학습 개념</li>
+<li>계층적 군집분석</li>
+<li>K-means 군집화</li>
+<li>군집 타당성 평가</li>
+</ul>
+</section>
+<section id="판별분석" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="판별분석"><span class="header-section-number">4.5</span> 판별분석</h2>
+<ul>
+<li>집단 분류 문제</li>
+<li>선형판별분석(LDA)</li>
+<li>판별함수</li>
+<li>분류 정확도 평가</li>
+</ul>
+</section>
+<section id="다차원척도대응분석" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="다차원척도대응분석"><span class="header-section-number">4.6</span> 다차원척도·대응분석</h2>
+<ul>
+<li>거리와 유사성</li>
+<li>다차원척도법(MDS)</li>
+<li>대응분석(CA)</li>
+<li>시각적 관계 해석</li>
+</ul>
+</section>
+<section id="정준상관manova" class="level2" data-number="4.7">
+<h2 data-number="4.7" class="anchored" data-anchor-id="정준상관manova"><span class="header-section-number">4.7</span> 정준상관·MANOVA</h2>
+<ul>
+<li>정준상관분석</li>
+<li>다변량분산분석(MANOVA)</li>
+<li>다변량 가설검정</li>
+<li>변수 집합 간 관계 분석</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="학습-목표" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> 학습 목표</h1>
+<p>본 강의노트를 통해 다음과 같은 역량을 함양하는 것을 목표로 한다.</p>
+<ul>
+<li>데이터 이해 및 탐색 능력 향상</li>
+<li>통계적 추론 및 검정 수행 능력 확보</li>
+<li>회귀모형 구축 및 해석 역량 강화</li>
+<li>다변량 데이터 분석 능력 함양</li>
+<li>머신러닝 및 AI 학습을 위한 통계 기반 확보</li>
+</ul>
+<hr>
+</section>
+<section id="활용-분야" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> 활용 분야</h1>
+<p>본 자료는 다음과 같은 분야에서 활용할 수 있다.</p>
+<ul>
+<li>통계학</li>
+<li>데이터사이언스</li>
+<li>머신러닝</li>
+<li>인공지능</li>
+<li>경영분석</li>
+<li>사회조사분석</li>
+<li>정책평가</li>
+<li>금융데이터분석</li>
+<li>의료·바이오 통계</li>
+</ul>
+<hr>
+</section>
+<section id="마무리" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> 마무리</h1>
+<p>현대 데이터분석에서는 단순 통계처리를 넘어 복합적 데이터 구조를 이해하고 예측하는 능력이 중요하다.<br>
+본 강의노트가 통계학적 사고력과 데이터분석 역량을 체계적으로 향상시키는 데 도움이 되기를 바란다.</p>
 
 
 </section>
@@ -392,12 +631,12 @@ ul.task-list li input[type="checkbox"] {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "복사완료!");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "복사완료!");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
