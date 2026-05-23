@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>part2 – 세상 모든 통계 이야기</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-44962e3d41ec9ccc254fd50f1af5efbe.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">세상 모든 통계 이야기</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/math_stat/index.html"> 
+<span class="menu-text">기초수학·수리통계·조사방법</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/intro_stat/index.html"> 
+<span class="menu-text">기초통계·회귀·다변량분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/mldl_intro/index.html"> 
+<span class="menu-text">머신러닝·딥러닝</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../notes/inference_xai/index.html"> 
+<span class="menu-text">인과추론・XAI・감성분석</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../cardnews/index.html"> 
+<span class="menu-text">카드뉴스</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../consult.html"> 
+<span class="menu-text">통계상담</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#chapter-1.-불필요-문자-정리" id="toc-chapter-1.-불필요-문자-정리" class="nav-link active" data-scroll-target="#chapter-1.-불필요-문자-정리">Chapter 1. 불필요 문자 정리</a>
+  <ul>
+  <li><a href="#문자열string-불필요-문자-정리" id="toc-문자열string-불필요-문자-정리" class="nav-link" data-scroll-target="#문자열string-불필요-문자-정리">1.1 문자열(String) 불필요 문자 정리</a></li>
+  <li><a href="#데이터프레임dataframe-불필요-문자-정리" id="toc-데이터프레임dataframe-불필요-문자-정리" class="nav-link" data-scroll-target="#데이터프레임dataframe-불필요-문자-정리">1.2 데이터프레임(DataFrame) 불필요 문자 정리</a></li>
+  </ul></li>
+  <li><a href="#chapter-2.-형태소-분석-morphological-analysis" id="toc-chapter-2.-형태소-분석-morphological-analysis" class="nav-link" data-scroll-target="#chapter-2.-형태소-분석-morphological-analysis">Chapter 2. 형태소 분석 (Morphological Analysis)</a>
+  <ul>
+  <li><a href="#형태소morpheme의-정의" id="toc-형태소morpheme의-정의" class="nav-link" data-scroll-target="#형태소morpheme의-정의">2.1 형태소(Morpheme)의 정의</a>
+  <ul class="collapse">
+  <li><a href="#실질형태소와-형식형태소" id="toc-실질형태소와-형식형태소" class="nav-link" data-scroll-target="#실질형태소와-형식형태소">실질형태소와 형식형태소</a></li>
+  </ul></li>
+  <li><a href="#형태소-분석의-정의와-과정" id="toc-형태소-분석의-정의와-과정" class="nav-link" data-scroll-target="#형태소-분석의-정의와-과정">2.2 형태소 분석의 정의와 과정</a>
+  <ul class="collapse">
+  <li><a href="#형태소-분석-과정" id="toc-형태소-분석-과정" class="nav-link" data-scroll-target="#형태소-분석-과정">형태소 분석 과정</a></li>
+  </ul></li>
+  <li><a href="#형태소-분석의-관점" id="toc-형태소-분석의-관점" class="nav-link" data-scroll-target="#형태소-분석의-관점">2.3 형태소 분석의 관점</a>
+  <ul class="collapse">
+  <li><a href="#전산-언어학-관점의-평가-기준" id="toc-전산-언어학-관점의-평가-기준" class="nav-link" data-scroll-target="#전산-언어학-관점의-평가-기준">전산 언어학 관점의 평가 기준</a></li>
+  <li><a href="#형태소-정의" id="toc-형태소-정의" class="nav-link" data-scroll-target="#형태소-정의">형태소 정의</a></li>
+  </ul></li>
+  <li><a href="#konlpy를-이용한-한국어-형태소-분석" id="toc-konlpy를-이용한-한국어-형태소-분석" class="nav-link" data-scroll-target="#konlpy를-이용한-한국어-형태소-분석">2.4 KoNLPy를 이용한 한국어 형태소 분석</a>
+  <ul class="collapse">
+  <li><a href="#konlpy-설치-및-품사-태그-체계" id="toc-konlpy-설치-및-품사-태그-체계" class="nav-link" data-scroll-target="#konlpy-설치-및-품사-태그-체계">KoNLPy 설치 및 품사 태그 체계</a></li>
+  <li><a href="#데이터프레임에서-명사만-추출하기" id="toc-데이터프레임에서-명사만-추출하기" class="nav-link" data-scroll-target="#데이터프레임에서-명사만-추출하기">데이터프레임에서 명사만 추출하기</a></li>
+  <li><a href="#품사-태깅-pos-tagging" id="toc-품사-태깅-pos-tagging" class="nav-link" data-scroll-target="#품사-태깅-pos-tagging">품사 태깅 (POS Tagging)</a></li>
+  <li><a href="#문자열-전체-형태소-분석" id="toc-문자열-전체-형태소-분석" class="nav-link" data-scroll-target="#문자열-전체-형태소-분석">문자열 전체 형태소 분석</a></li>
+  <li><a href="#원하는-품사만-필터링하기" id="toc-원하는-품사만-필터링하기" class="nav-link" data-scroll-target="#원하는-품사만-필터링하기">원하는 품사만 필터링하기</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#chapter-3.-단어-분석-word-analysis" id="toc-chapter-3.-단어-분석-word-analysis" class="nav-link" data-scroll-target="#chapter-3.-단어-분석-word-analysis">Chapter 3. 단어 분석 (Word Analysis)</a>
+  <ul>
+  <li><a href="#단어-빈도-분석-word-frequency" id="toc-단어-빈도-분석-word-frequency" class="nav-link" data-scroll-target="#단어-빈도-분석-word-frequency">3.1 단어 빈도 분석 (Word Frequency)</a>
+  <ul class="collapse">
+  <li><a href="#단어장vocabulary-구성-및-불용어-처리" id="toc-단어장vocabulary-구성-및-불용어-처리" class="nav-link" data-scroll-target="#단어장vocabulary-구성-및-불용어-처리">단어장(Vocabulary) 구성 및 불용어 처리</a></li>
+  <li><a href="#단어-빈도-계산-및-데이터프레임-저장" id="toc-단어-빈도-계산-및-데이터프레임-저장" class="nav-link" data-scroll-target="#단어-빈도-계산-및-데이터프레임-저장">단어 빈도 계산 및 데이터프레임 저장</a></li>
+  </ul></li>
+  <li><a href="#단어-동시-발생-빈도-co-occurrence-matrix" id="toc-단어-동시-발생-빈도-co-occurrence-matrix" class="nav-link" data-scroll-target="#단어-동시-발생-빈도-co-occurrence-matrix">3.2 단어 동시 발생 빈도 (Co-occurrence Matrix)</a>
+  <ul class="collapse">
+  <li><a href="#동시-발생-행렬-생성-함수" id="toc-동시-발생-행렬-생성-함수" class="nav-link" data-scroll-target="#동시-발생-행렬-생성-함수">동시 발생 행렬 생성 함수</a></li>
+  <li><a href="#특정-키워드-연관어-분석" id="toc-특정-키워드-연관어-분석" class="nav-link" data-scroll-target="#특정-키워드-연관어-분석">특정 키워드 연관어 분석</a></li>
+  </ul></li>
+  <li><a href="#워드클라우드-시각화-word-cloud" id="toc-워드클라우드-시각화-word-cloud" class="nav-link" data-scroll-target="#워드클라우드-시각화-word-cloud">3.3 워드클라우드 시각화 (Word Cloud)</a></li>
+  </ul></li>
+  <li><a href="#chapter-4.-형태소-분석-전체-파이프라인-심화" id="toc-chapter-4.-형태소-분석-전체-파이프라인-심화" class="nav-link" data-scroll-target="#chapter-4.-형태소-분석-전체-파이프라인-심화">Chapter 4. 형태소 분석 전체 파이프라인 ★ 심화</a></li>
+  <li><a href="#chapter-5.-주요-함수-및-라이브러리-요약" id="toc-chapter-5.-주요-함수-및-라이브러리-요약" class="nav-link" data-scroll-target="#chapter-5.-주요-함수-및-라이브러리-요약">Chapter 5. 주요 함수 및 라이브러리 요약</a></li>
+  <li><a href="#참고-문헌" id="toc-참고-문헌" class="nav-link" data-scroll-target="#참고-문헌">참고 문헌</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<p>통계 사전</p>
+<p><strong>형 태 소 분 석</strong></p>
+<p><em>Morphological Analysis &amp; Word Frequency</em></p>
+<p><strong>권세혁 교수</strong></p>
+<p>한남대학교 통계학과</p>
+<p>https://by-sekwon.github.io</p>
+<section id="chapter-1.-불필요-문자-정리" class="level1">
+<h1>Chapter 1. 불필요 문자 정리</h1>
+<p>텍스트 데이터를 형태소 분석하기 전에 숫자, 특수문자, 분석에 불필요한 패턴 등을 사전에 제거하는 전처리 단계가 필요하다. Python에서는 정규표현식(Regular Expression)을 활용하여 효율적으로 불필요한 문자를 제거할 수 있다.</p>
+<section id="문자열string-불필요-문자-정리" class="level2">
+<h2 class="anchored" data-anchor-id="문자열string-불필요-문자-정리">1.1 문자열(String) 불필요 문자 정리</h2>
+<p>문자열 형태로 저장된 텍스트에서 한글 이외의 문자(숫자, 특수문자, 영문자 등)를 제거한다. Python의 `str.replace()` 메서드와 정규표현식을 조합하여 처리한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">📌 처리 방법: 정규표현식 [^ㄱ-ㅎㅏ-ㅣ가-힣 ]을 사용하면 한글 자모와 완성형 한글, 공백을 제외한 모든 문자를 한 번에 제거할 수 있다.</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># 문자열 불필요 문자 제거</p>
+<p>import re</p>
+<p># 한글, 공백을 제외한 모든 문자 제거</p>
+<p>ds_str2 = re.sub('[^ㄱ-ㅎㅏ-ㅣ가-힣 ]', '', pdf_str)</p>
+<p># 특정 패턴 추가 제거 (예: 마태복음 장절 표기 '(마 1 )' 형식)</p>
+<p>ds_str2 = ds_str2.replace('(마', '')</p>
+<p>ds_str2 = ds_str2.replace(')', '')</p>
+<p>ds_str2 = ds_str2.replace(':', '')</p>
+<p># 결과 확인 (처음 41자)</p>
+<p>print(ds_str2[0:41])</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="데이터프레임dataframe-불필요-문자-정리" class="level2">
+<h2 class="anchored" data-anchor-id="데이터프레임dataframe-불필요-문자-정리">1.2 데이터프레임(DataFrame) 불필요 문자 정리</h2>
+<p>pandas DataFrame의 열(column)에 저장된 텍스트를 일괄적으로 정제할 때는 `Series.str.replace()` 메서드를 사용한다. 문자열과 달리 데이터프레임 방식은 '(마 1 )' 형식의 패턴까지 한 번에 정규표현식으로 제거할 수 있다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>import pandas as pd</p>
+<p># 데이터프레임 열에서 불필요한 문자 일괄 제거</p>
+<p># 1단계: 마태복음 장절 표기 패턴 제거 ('\(마' 이스케이프 처리)</p>
+<p>txt = ds_df['verse'].str.replace(r'\(마', '', regex=True)</p>
+<p># 2단계: 한글, 공백 이외의 문자 제거</p>
+<p>txt = txt.str.replace('[^ㄱ-ㅎㅏ-ㅣ가-힣 ]', '', regex=True)</p>
+<p># 결과 확인</p>
+<p>print(type(txt))</p>
+<p>print(txt.head(3))</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt;class 'pandas.core.series.Series'&gt;</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0 (비어 있음)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1 아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2 웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">💡 참고: 문자열(str)과 데이터프레임(DataFrame)의 차이 - 문자열: 모든 문서가 하나의 단위로 연결되어 있어 문장 단위 분석이 불가능하다. - 데이터프레임: 각 행(row)이 하나의 문장(절)이므로 문장 단위 분석이 가능하다. 형태소 분석 시 데이터프레임 방식을 권장한다.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="chapter-2.-형태소-분석-morphological-analysis" class="level1">
+<h1>Chapter 2. 형태소 분석 (Morphological Analysis)</h1>
+<section id="형태소morpheme의-정의" class="level2">
+<h2 class="anchored" data-anchor-id="형태소morpheme의-정의">2.1 형태소(Morpheme)의 정의</h2>
+<p>형태소(morpheme)는 언어학에서 일정한 의미가 있는 가장 작은 말의 단위로, 더 분석하면 뜻이 없어지는 말의 단위이다. 음소와 마찬가지로 형태소는 추상적인 실체이며, 문장에서 다양한 형태로 실현될 수 있다.</p>
+<ul>
+<li><p>의미가 있는 최소의 단위 (minimally meaningful unit)</p></li>
+<li><p>문법적·관계적인 뜻을 나타내는 단어 또는 단어의 부분</p></li>
+</ul>
+<section id="실질형태소와-형식형태소" class="level3">
+<h3 class="anchored" data-anchor-id="실질형태소와-형식형태소">실질형태소와 형식형태소</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>구분</strong></th>
+<th style="text-align: left;"><strong>별칭</strong></th>
+<th style="text-align: left;"><strong>정의</strong></th>
+<th style="text-align: left;"><strong>품사</strong></th>
+<th style="text-align: left;"><strong>예시</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">실질형태소</td>
+<td style="text-align: left;">어휘형태소</td>
+<td style="text-align: left;">어휘적 의미를 갖는 형태소</td>
+<td style="text-align: left;">명사, 동사, 형용사, 부사</td>
+<td style="text-align: left;">"좋-", "정보", "많-"</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">형식형태소</td>
+<td style="text-align: left;">문법형태소</td>
+<td style="text-align: left;">문법적 관계를 나타내는 형태소</td>
+<td style="text-align: left;">조사, 어미</td>
+<td style="text-align: left;">"-에", "-는", "-가", "-다"</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">📌 예시: "위키백과에는 좋은 정보가 많다." - 어휘형태소: 위키, 백과, 좋-, 정보, 많- - 문법형태소: -에는, -은, -가, -다</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="형태소-분석의-정의와-과정" class="level2">
+<h2 class="anchored" data-anchor-id="형태소-분석의-정의와-과정">2.2 형태소 분석의 정의와 과정</h2>
+<ul>
+<li><p>단어(또는 어절)를 구성하는 각 형태소를 분리한다.</p></li>
+<li><p>분리된 형태소의 기본형 및 품사 정보를 추출한다.</p></li>
+</ul>
+<section id="형태소-분석-과정" class="level3">
+<h3 class="anchored" data-anchor-id="형태소-분석-과정">형태소 분석 과정</h3>
+<ul>
+<li><p><strong>분석 후보 생성:</strong> (1) 문법 규칙에 맞는 후보 생성, (2) 형태소 분리와 기본형 추정</p></li>
+<li><p><strong>분석 후보 선택:</strong> (1) 형태소끼리의 결합 제약 조건 만족, (2) 사전에서 기본형 확인</p></li>
+</ul>
+<p><img src="media/image1.png" style="width:6.51806in;height:4.25694in"></p>
+</section>
+</section>
+<section id="형태소-분석의-관점" class="level2">
+<h2 class="anchored" data-anchor-id="형태소-분석의-관점">2.3 형태소 분석의 관점</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>관점</strong></th>
+<th style="text-align: left;"><strong>목표</strong></th>
+<th style="text-align: left;"><strong>방법</strong></th>
+<th style="text-align: left;"><strong>특징</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">언어학/국어학</td>
+<td style="text-align: left;">형태론적 언어 현상의 발견·규명</td>
+<td style="text-align: left;">인간의 언어 능력 기반</td>
+<td style="text-align: left;">정성적(qualitative)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">전산 언어학</td>
+<td style="text-align: left;">컴퓨터 프로그램으로 형태소 분석</td>
+<td style="text-align: left;">알고리즘·통계 기반</td>
+<td style="text-align: left;">정량적(quantitative)</td>
+</tr>
+</tbody>
+</table>
+<section id="전산-언어학-관점의-평가-기준" class="level3">
+<h3 class="anchored" data-anchor-id="전산-언어학-관점의-평가-기준">전산 언어학 관점의 평가 기준</h3>
+<ul>
+<li><p><strong>처리 범위 (분석률):</strong> 다양한 형태론적 현상들을 컴퓨터로 처리할 수 있는가</p></li>
+<li><p><strong>정확성:</strong> 얼마나 정확한 분석을 수행하는가</p></li>
+<li><p><strong>처리 속도:</strong> 시스템이 얼마나 효율적으로 동작하는가</p></li>
+<li><p><strong>기억 공간:</strong> 메모리를 효율적으로 사용하는가</p></li>
+</ul>
+</section>
+<section id="형태소-정의" class="level3">
+<h3 class="anchored" data-anchor-id="형태소-정의">형태소 정의</h3>
+<p>형태소(morpheme)는&nbsp;언어학에서 (일반적인 정의를 따르면) 일정한 의미가 있는 가장 작은 말의 단위로&nbsp;더 분석하면 뜻이 없어지는 말의 단위이다.&nbsp;음소와 마찬가지로 형태소는 추상적인 실체이며 문장에서 다양한 형태로 실현될 수 있다.</p>
+<p>형태소는 그것이 가지는 의미 또는 기능에 따라 크게&nbsp;문법(=형식)형태소와&nbsp;어휘(=실질)형태소로 나눌 수 있다.</p>
+<ul>
+<li><p>실질형태소(實質形態素)는&nbsp;어휘형태소(語彙形態素)라고도 하며, 어휘적 의미가 있는 형태소로 어떤 대상이나 상태, 동작을 가리키는 형태소를 말한다. 일반적으로&nbsp;명사,&nbsp;동사,&nbsp;형용사,&nbsp;부사가 이에 속한다. 예를 들어, “위키백과에는 좋은 정보가 많다.”라는 말에서 “위키”, “백과”, “좋-”, “정보”, “많-”이 어휘형태소에 해당한다.</p></li>
+<li><p>형식형태소(形式形態素)는&nbsp;문법형태소(文法形態素)라고도 하며, 문법적 의미가 있는 형태소로 어휘형태소와 함께 쓰여 그들 사이의 관계를 나타내는 기능을 하는 형태소를 말한다. 대표적으로&nbsp;조사,&nbsp;어미가 이에 속한다. 앞의 예에서 “위키백과에는”에서 “-에”와 “-는”; “좋은”에서 “-은”; “정보가”에서 “-가”; “많다”에서 “-다”가 문법형태소에 해당한다.</p></li>
+</ul>
+</section>
+</section>
+<section id="konlpy를-이용한-한국어-형태소-분석" class="level2">
+<h2 class="anchored" data-anchor-id="konlpy를-이용한-한국어-형태소-분석">2.4 KoNLPy를 이용한 한국어 형태소 분석</h2>
+<p>KoNLPy(Korean Natural Language Processing in Python)는 한국어 형태소 분석을 위한 대표적인 Python 라이브러리이다. 내부적으로 여러 형태소 분석기를 지원하며, 그 중 Okt(Open Korean Text)는 트위터에서 개발한 오픈소스 한국어 처리 라이브러리로 소셜 미디어 텍스트 분석에 특히 효과적이다.</p>
+<section id="konlpy-설치-및-품사-태그-체계" class="level3">
+<h3 class="anchored" data-anchor-id="konlpy-설치-및-품사-태그-체계">KoNLPy 설치 및 품사 태그 체계</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># KoNLPy 설치</p>
+<p>!pip install konlpy</p>
+<p># Okt 품사 태그 체계 확인</p>
+<p>from konlpy.tag import Okt</p>
+<p>okt = Okt()</p>
+<p>print(okt.tagset)</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">{</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Adjective' : '형용사',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Adverb' : '부사',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Alpha' : '알파벳',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Conjunction' : '접속사',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Determiner' : '관형사',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Eomi' : '어미',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Exclamation' : '감탄사',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Foreign' : '외국어, 한자 및 기타 기호',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Hashtag' : '트위터 해시태그',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Josa' : '조사',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'KoreanParticle': '(예: ㅋㅋ)',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Noun' : '명사',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Number' : '숫자',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'PreEomi' : '선어말어미',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Punctuation' : '구두점',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'ScreenName' : '트위터 아이디',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Suffix' : '접미사',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">'Unknown' : '미등록어',</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">'Verb' : '동사'</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">}</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="데이터프레임에서-명사만-추출하기" class="level3">
+<h3 class="anchored" data-anchor-id="데이터프레임에서-명사만-추출하기">데이터프레임에서 명사만 추출하기</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>from konlpy.tag import Okt</p>
+<p>text = [] # 분석 결과를 저장할 리스트</p>
+<p>okt = Okt() # Okt 형태소 분석기 초기화</p>
+<p># 각 문장(행)에서 명사만 추출</p>
+<p>for k in range(0, txt.shape[0]):</p>
+<p>nouns = okt.nouns(str(txt[k])) # 명사만 추출</p>
+<p>text.append(nouns)</p>
+<p># phrases: 문단 전체 / nouns: 명사만 / pos: 품사 태깅</p>
+<p># okt.pos(text) 로 품사 태깅 결과 확인 가능</p>
+<p>print(type(text))</p>
+<p>print(text[0:5]) # 첫 5개 문장 결과 출력</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt;class 'list'&gt;</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">[],</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">['아사', '여호사밧', '여호사밧', '요람', '요람', '웃시야'],</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">['웃시야', '요담', '요담', '아하스', '아하스', '히스기야'],</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">['히스기야', '므낫세', '므낫세', '아몬', '아몬', '요시야'],</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">['바벨론', '거', '때', '요시야', '여고', '그', '형제']</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">]</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="품사-태깅-pos-tagging" class="level3">
+<h3 class="anchored" data-anchor-id="품사-태깅-pos-tagging">품사 태깅 (POS Tagging)</h3>
+<p>okt.pos()를 사용하면 각 형태소에 품사 태그가 부여된 튜플 리스트를 반환한다. norm=True 옵션은 맞춤법 정규화, stem=True 옵션은 어간 추출을 수행한다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>from konlpy.tag import Okt</p>
+<p>text2 = []</p>
+<p>okt = Okt()</p>
+<p># 각 문장에서 품사 태깅 수행</p>
+<p>for k in range(0, txt.shape[0]):</p>
+<p>tagged = okt.pos(str(txt[k])) # 모든 품사 태깅</p>
+<p>text2.append(tagged)</p>
+<p>print(text2[1]) # 두 번째 문장 태깅 결과</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">[('아사', 'Noun'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">('는', 'Josa'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('여호사밧', 'Noun'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">('을', 'Josa'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('낳고', 'Verb'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">...]</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="문자열-전체-형태소-분석" class="level3">
+<h3 class="anchored" data-anchor-id="문자열-전체-형태소-분석">문자열 전체 형태소 분석</h3>
+<p>문자열(string) 데이터에 대해 형태소 분석을 수행할 때는 정규화(norm)와 어간 추출(stem) 옵션을 활용하면 더 일관된 분석 결과를 얻을 수 있다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>from konlpy.tag import Okt</td>
+</tr>
+<tr class="even">
+<td></td>
+</tr>
+<tr class="odd">
+<td><p># 문자열 전체에 형태소 분석 적용</p>
+<p># norm=True: 맞춤법 정규화 / stem=True: 어간 추출</p>
+<p>okt_pos = Okt().pos(ds_str2, norm=True, stem=True)</p>
+<p>print(type(okt_pos))</p>
+<p>print(okt_pos[0:10]) # 처음 10개 결과 출력</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt;class 'list'&gt;</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">[('아사', 'Noun'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('는', 'Josa'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">('여호사밧', 'Noun'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('을', 'Josa'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">('낳다', 'Verb'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('여호사밧', 'Noun'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">('은', 'Josa'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('요람', 'Noun'),</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">('을', 'Josa'),</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">('낳다', 'Verb')]</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="원하는-품사만-필터링하기" class="level3">
+<h3 class="anchored" data-anchor-id="원하는-품사만-필터링하기">원하는 품사만 필터링하기</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># 명사(Noun)만 필터링</p>
+<p>okt_nouns = [word for word, pos in okt_pos if pos == 'Noun']</p>
+<p># 복수 품사 필터링 (명사 + 형용사 + 동사)</p>
+<p>target_pos = ['Noun', 'Adjective', 'Verb']</p>
+<p>okt_filtering = [word for word, pos in okt_pos if pos in target_pos]</p>
+<p>print(type(okt_filtering))</p>
+<p>print(okt_filtering[0:5])</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt;class 'list'&gt;</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">['아사', '여호사밧', '여호사밧', '요람', '낳다']</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">💡 문자열 vs 데이터프레임 형태소 분석 비교 - 문자열: 전체 문서를 하나의 단위로 처리 → 문장 단위 분석 불가 - 데이터프레임: 각 행을 개별 문장으로 처리 → 문장 단위 분석 가능 → 문맥 보존이 중요한 분석(동시 발생 빈도, 감성분석 등)에는 데이터프레임 방식 권장</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+<section id="chapter-3.-단어-분석-word-analysis" class="level1">
+<h1>Chapter 3. 단어 분석 (Word Analysis)</h1>
+<section id="단어-빈도-분석-word-frequency" class="level2">
+<h2 class="anchored" data-anchor-id="단어-빈도-분석-word-frequency">3.1 단어 빈도 분석 (Word Frequency)</h2>
+<p>형태소 분석으로 추출된 명사 리스트에서 각 단어의 출현 빈도를 계산한다. Python의 collections.Counter 클래스를 사용하면 단어 빈도를 효율적으로 계산하고, most_common() 메서드로 상위 빈도 단어를 선택할 수 있다.</p>
+<section id="단어장vocabulary-구성-및-불용어-처리" class="level3">
+<h3 class="anchored" data-anchor-id="단어장vocabulary-구성-및-불용어-처리">단어장(Vocabulary) 구성 및 불용어 처리</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>import itertools</p>
+<p>import collections</p>
+<p>import pandas as pd</p>
+<p># 중첩 리스트(list of lists)를 단일 리스트로 평탄화(flatten)</p>
+<p>all_words = list(itertools.chain(*text))</p>
+<p># 도메인 불용어 설정 (분석 목적에 맞지 않는 단어 제거)</p>
+<p># 여러 단어를 제외할 경우 띄어쓰기로 구분</p>
+<p>stop_words = '아사 때'</p>
+<p>stop_words = set(stop_words.split(' '))</p>
+<p># 불용어 제거</p>
+<p>words = [w for w in all_words if w not in stop_words]</p>
+<p># 단어 길이 1 이하 제거 (의미 없는 단어 정리)</p>
+<p>words = [w for w in words if len(w) &gt; 1]</p>
+<p>print(type(words))</p>
+<p>print(words[0:10])</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt;class 'list'&gt;</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">['여호사밧', '여호사밧', '요람', '요람', '웃시야', '웃시야', '요담', '요담', '아하스', '아하스']</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="단어-빈도-계산-및-데이터프레임-저장" class="level3">
+<h3 class="anchored" data-anchor-id="단어-빈도-계산-및-데이터프레임-저장">단어 빈도 계산 및 데이터프레임 저장</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># 상위 k개 단어 빈도 분석</p>
+<p>k = 20 # 빈도 상위 k개 단어 출력</p>
+<p>word_count = collections.Counter(words)</p>
+<p>word_freq = pd.DataFrame(</p>
+<p>word_count.most_common(k),</p>
+<p>columns=['words', 'count']</p>
+<p>)</p>
+<p>word_freq = word_freq.dropna() # 결측값 제거</p>
+<p>print(type(word_freq))</p>
+<p>print(word_freq.head(5))</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">&lt;class 'pandas.core.frame.DataFrame'&gt;</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">words count</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0 마리아 5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 요셉 5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2 예수 5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3 다윗 4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4 아브라함 3</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="단어-동시-발생-빈도-co-occurrence-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="단어-동시-발생-빈도-co-occurrence-matrix">3.2 단어 동시 발생 빈도 (Co-occurrence Matrix)</h2>
+<p>동시 발생 행렬(Co-occurrence Matrix)은 두 단어가 같은 문장(또는 문서) 안에서 함께 등장하는 빈도를 행렬 형태로 표현한 것이다. 단어 간의 연관성을 파악하는 연관어 분석, 키워드 네트워크 분석 등에 활용된다.</p>
+<section id="동시-발생-행렬-생성-함수" class="level3">
+<h3 class="anchored" data-anchor-id="동시-발생-행렬-생성-함수">동시 발생 행렬 생성 함수</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>import numpy as np</td>
+</tr>
+<tr class="even">
+<td>import pandas as pd</td>
+</tr>
+<tr class="odd">
+<td>import nltk</td>
+</tr>
+<tr class="even">
+<td><p>from nltk import bigrams</p>
+<p>import itertools</p>
+<p>def generate_co_occurrence_matrix(corpus):</p>
+<p>"""</p>
+<p>단어 리스트(corpus)로부터 Bigram 기반 동시 발생 행렬을 생성한다.</p>
+<p>Returns:</p>
+<p>co_occurrence_matrix : numpy.matrix (단어 x 단어 빈도 행렬)</p>
+<p>vocab_index : dict (단어 → 행렬 인덱스)</p>
+<p>"""</p>
+<p>vocab = list(set(corpus))</p>
+<p>vocab_index = {word: i for i, word in enumerate(vocab)}</p>
+<p># Bigram 생성 및 빈도 계산</p>
+<p>bi_grams = list(bigrams(corpus))</p>
+<p>bigram_freq = nltk.FreqDist(bi_grams).most_common(len(bi_grams))</p>
+<p># 동시 발생 행렬 초기화</p>
+<p>co_matrix = np.zeros((len(vocab), len(vocab)))</p>
+<p># 빈도 채우기</p>
+<p>for bigram in bigram_freq:</p>
+<p>current = bigram[0][1]</p>
+<p>previous = bigram[0][0]</p>
+<p>count = bigram[1]</p>
+<p>pos_cur = vocab_index[current]</p>
+<p>pos_prev = vocab_index[previous]</p>
+<p>co_matrix[pos_cur][pos_prev] = count</p>
+<p>return np.matrix(co_matrix), vocab_index</p>
+<p># 동시 발생 행렬 생성</p>
+<p>matrix, vocab_index = generate_co_occurrence_matrix(words)</p>
+<p>data_matrix = pd.DataFrame(matrix,</p>
+<p>index=vocab_index,</p>
+<p>columns=vocab_index)</p>
+<p>print(data_matrix.shape) # (고유 단어 수 x 고유 단어 수)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="특정-키워드-연관어-분석" class="level3">
+<h3 class="anchored" data-anchor-id="특정-키워드-연관어-분석">특정 키워드 연관어 분석</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p># 특정 키워드와 동시 발생 빈도가 높은 단어 출력</p>
+<p>keyword = '그리스도'</p>
+<p># 해당 키워드와 1회 이상 동시 발생한 단어만 선택, 내림차순 정렬</p>
+<p>result = (data_matrix[data_matrix[keyword] &gt; 0][keyword]</p>
+<p>.sort_values(ascending=False))</p>
+<p>print(f"[ '{keyword}' 연관어 분석 결과 ]")</p>
+<p>print(result.head(10))</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">[ '그리스도' 연관어 분석 결과 ]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">예수 1.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">유대 1.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">칭하 1.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">모친 1.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Name: 그리스도, dtype: float64</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">💡 활용 팁: 동시 발생 행렬을 네트워크 시각화(NetworkX, Gephi 등)와 결합하면 단어 간의 관계를 그래프로 표현할 수 있다. 임계값(threshold) 설정으로 중요한 연관어만 선택적으로 시각화할 수 있다.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="워드클라우드-시각화-word-cloud" class="level2">
+<h2 class="anchored" data-anchor-id="워드클라우드-시각화-word-cloud">3.3 워드클라우드 시각화 (Word Cloud)</h2>
+<p>워드클라우드는 단어 빈도를 글자 크기로 표현하여 주요 단어를 직관적으로 파악할 수 있는 시각화 기법이다. Python의 wordcloud 라이브러리를 사용하면 간단하게 구현할 수 있다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><p>from collections import Counter</p>
+<p>from wordcloud import WordCloud</p>
+<p>import matplotlib.pyplot as plt</p>
+<p># 단어 빈도 딕셔너리 생성</p>
+<p>words_count = Counter(words)</p>
+<p># 워드클라우드 생성</p>
+<p># font_path: 한글 폰트 경로 지정 필수</p>
+<p>wordcloud = WordCloud(</p>
+<p>font_path='/content/drive/MyDrive/fonts/NanumGothic.otf',</p>
+<p># 맥북: font_path='~/Library/Fonts/NanumGothic.ttf'</p>
+<p>background_color='black',</p>
+<p>width=1000,</p>
+<p>height=1000,</p>
+<p>max_words=100,</p>
+<p>max_font_size=200,</p>
+<p>colormap='Set2' # 색상 팔레트</p>
+<p>)</p>
+<p># 단어 빈도로부터 워드클라우드 생성</p>
+<p>wordcloud = wordcloud.generate_from_frequencies(words_count)</p>
+<p># 시각화</p>
+<p>plt.figure(figsize=(10, 10))</p>
+<p>plt.imshow(wordcloud, interpolation='bilinear')</p>
+<p>plt.axis('off')</p>
+<p>plt.title('단어 빈도 워드클라우드', fontsize=18, fontweight='bold')</p>
+<p>plt.tight_layout()</p>
+<p>plt.savefig('wordcloud.png', dpi=150, bbox_inches='tight')</p>
+<p>plt.show()</p></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">📌 한글 폰트 설정 방법 - Google Colab: 나눔폰트를 구글 드라이브에 업로드 후 font_path 설정 - 맥북 로컬: ~/Library/Fonts/NanumGothic.ttf - 윈도우: C:/Windows/Fonts/malgun.ttf (맑은 고딕) - 리눅스: sudo apt-get install fonts-nanum 설치 후 경로 확인</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="chapter-4.-형태소-분석-전체-파이프라인-심화" class="level1">
+<h1>Chapter 4. 형태소 분석 전체 파이프라인 ★ 심화</h1>
+<p>앞서 배운 단계들을 하나로 통합한 전체 분석 파이프라인이다. 데이터 로드부터 워드클라우드 생성까지 순서대로 실행하면 한국어 텍스트 분석을 완성할 수 있다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 97%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"># ================================================</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># 한국어 형태소 분석 전체 파이프라인</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"># ================================================</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">import re</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">import pandas as pd</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">import itertools</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">import collections</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">from konlpy.tag import Okt</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">from wordcloud import WordCloud</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">import matplotlib.pyplot as plt</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"># STEP 1: 데이터 로드 (예시: CSV 파일)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># ds_df = pd.read_csv('data.csv')</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"># STEP 2: 불필요 문자 제거</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">txt = ds_df['verse'].str.replace(r'\(마', '', regex=True)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">txt = txt.str.replace('[^ㄱ-ㅎㅏ-ㅣ가-힣 ]', '', regex=True)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># STEP 3: 형태소 분석 (명사 추출)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">okt = Okt()</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">text = []</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">for k in range(0, txt.shape[0]):</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">nouns = okt.nouns(str(txt[k]))</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">text.append(nouns)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># STEP 4: 단어장 구성 및 불용어 제거</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">all_words = list(itertools.chain(*text))</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">stop_words = set(['아사', '때', '거'])</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">words = [w for w in all_words if w not in stop_words and len(w) &gt; 1]</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># STEP 5: 단어 빈도 분석</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">word_count = collections.Counter(words)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">word_freq = pd.DataFrame(</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">word_count.most_common(20), columns=['words', 'count']</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">print(word_freq)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"># STEP 6: 워드클라우드 시각화</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wc = WordCloud(</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">font_path='~/Library/Fonts/NanumGothic.ttf',</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">background_color='black', width=800, height=800,</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">max_words=100, max_font_size=200</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">).generate_from_frequencies(word_count)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">plt.figure(figsize=(10, 10))</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">plt.imshow(wc, interpolation='bilinear')</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">plt.axis('off')</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">plt.tight_layout()</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">plt.show()</td>
+</tr>
+</tbody>
+</table>
+<p><img src="media/image2.png" style="width:4.34722in;height:4.34722in"></p>
+</section>
+<section id="chapter-5.-주요-함수-및-라이브러리-요약" class="level1">
+<h1>Chapter 5. 주요 함수 및 라이브러리 요약</h1>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 54%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>라이브러리</strong></th>
+<th style="text-align: left;"><strong>주요 함수</strong></th>
+<th style="text-align: left;"><strong>역할</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">re</td>
+<td style="text-align: left;">re.sub(pattern, repl, str)</td>
+<td style="text-align: left;">정규표현식 기반 문자열 치환</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pandas</td>
+<td style="text-align: left;">str.replace(pattern, repl)</td>
+<td style="text-align: left;">DataFrame 열 문자열 일괄 치환</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">konlpy.Okt</td>
+<td style="text-align: left;">okt.nouns(text)</td>
+<td style="text-align: left;">명사만 추출</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">konlpy.Okt</td>
+<td style="text-align: left;">okt.pos(text, norm, stem)</td>
+<td style="text-align: left;">품사 태깅 (정규화·어간 추출 옵션)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">konlpy.Okt</td>
+<td style="text-align: left;">okt.morphs(text)</td>
+<td style="text-align: left;">형태소 단위로 분리</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">itertools</td>
+<td style="text-align: left;">itertools.chain(*list)</td>
+<td style="text-align: left;">중첩 리스트를 단일 리스트로 평탄화</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">collections</td>
+<td style="text-align: left;">Counter(words)</td>
+<td style="text-align: left;">단어 빈도 계산</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">collections</td>
+<td style="text-align: left;">counter.most_common(k)</td>
+<td style="text-align: left;">상위 k개 빈도 단어 선택</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nltk</td>
+<td style="text-align: left;">bigrams(corpus)</td>
+<td style="text-align: left;">Bigram(연속된 두 단어 쌍) 생성</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wordcloud</td>
+<td style="text-align: left;">WordCloud(...).generate_from_frequencies()</td>
+<td style="text-align: left;">단어 빈도 기반 워드클라우드 생성</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="참고-문헌" class="level1">
+<h1>참고 문헌</h1>
+<ul>
+<li><p>강승식 (2002). 한국어 형태소 분석과 정보 검색. 홍릉과학출판사.</p></li>
+<li><p>박상길 외 (2020). 파이썬으로 배우는 자연어처리 인 액션. 위키북스.</p></li>
+<li><p>KoNLPy 공식 문서: https://konlpy.org/ko/latest/</p></li>
+<li><p>Open Korean Text (Okt): https://github.com/open-korean-text/open-korean-text</p></li>
+<li><p>Shin, J. (2014). Open Korean Text Processor. GitHub.</p></li>
+<li><p>NLTK Book: https://www.nltk.org/book/</p></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
