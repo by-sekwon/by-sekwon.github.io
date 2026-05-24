@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -124,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/sentiment_analysis/part1.html">📄 txt/pdf 읽기</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/sentiment_analysis/sentiment_readdata.html">📄 txt/pdf 읽기</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -157,7 +192,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notes/sentiment_analysis/part1.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../notes/sentiment_analysis/sentiment_readdata.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📄 txt/pdf 읽기</span></a>
   </div>
 </li>
@@ -171,10 +206,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#외부-데이터-읽기" id="toc-외부-데이터-읽기" class="nav-link active" data-scroll-target="#외부-데이터-읽기">외부 데이터 읽기</a>
+  <li><a href="#외부-데이터-읽기" id="toc-외부-데이터-읽기" class="nav-link active" data-scroll-target="#외부-데이터-읽기">1. 외부 데이터 읽기</a>
   <ul>
   <li><a href="#txt-파일-읽기-문자열str" id="toc-txt-파일-읽기-문자열str" class="nav-link" data-scroll-target="#txt-파일-읽기-문자열str">1. TXT 파일 읽기 → 문자열(str)</a></li>
+  <li><a href="#txt-파일-데이터프레임으로-읽기" id="toc-txt-파일-데이터프레임으로-읽기" class="nav-link" data-scroll-target="#txt-파일-데이터프레임으로-읽기">2. TXT 파일 → 데이터프레임으로 읽기</a></li>
+  <li><a href="#txt-파일-읽기-리스트list로-읽기" id="toc-txt-파일-읽기-리스트list로-읽기" class="nav-link" data-scroll-target="#txt-파일-읽기-리스트list로-읽기">3.TXT 파일 읽기 → 리스트(list)로 읽기</a></li>
   </ul></li>
+  <li><a href="#pdf-파일-읽기" id="toc-pdf-파일-읽기" class="nav-link" data-scroll-target="#pdf-파일-읽기">2. PDF 파일 읽기</a></li>
   </ul>
 </nav>
     </div>
@@ -201,236 +239,92 @@ ul.task-list li input[type="checkbox"] {
 
 
 <section id="외부-데이터-읽기" class="level3">
-<h3 class="anchored" data-anchor-id="외부-데이터-읽기">외부 데이터 읽기</h3>
+<h3 class="anchored" data-anchor-id="외부-데이터-읽기">1. 외부 데이터 읽기</h3>
 <p>텍스트 마이닝의 출발점은 원본 텍스트 데이터를 Python으로 불러오는 것이다. TXT 파일은 웹(URL)에서 직접 읽거나 로컬(내부) 파일로 저장된 것을 불러올 수 있으며, 결과 데이터 구조는 문자열(str), 리스트(list), 데이터프레임(DataFrame) 중 하나로 관리한다.</p>
 <section id="txt-파일-읽기-문자열str" class="level4">
 <h4 class="anchored" data-anchor-id="txt-파일-읽기-문자열str">1. TXT 파일 읽기 → 문자열(str)</h4>
-<p>urllib.request 모듈을 사용하면 인터넷에 공개된 TXT 파일을 URL로 직접 가져올 수 있다. 한글 텍스트의 경우 decode('utf-8') 옵션이 필수이며, 읽어온 결과는 하나의 긴 문자열로 저장된다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># 웹페이지 TXT 파일 읽기 → 문자열(str)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">import urllib.request</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">url = ('http://wolfpack.hnu.ac.kr/big_data/data/</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">%EA%B0%9C%EC%97%AD%EA%B0%9C%EC%A0%95.txt')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">request = urllib.request.Request(url)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">response = urllib.request.urlopen(request)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># 한글 문장 읽어오기: decode('utf-8') 필수</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ds_str = response.read().decode('utf-8')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(type(ds_str))</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(ds_str[0:40])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'str'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">태초에 하나님이 천지를 창조하시니라</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">땅이 혼돈하고 공허하며 흑암이 깊...</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>💡 \ufeff(BOM: Byte Order Mark)란?</p>
-<p>출력 결과 앞에 '\ufeff' 문자가 나타나는 경우, 파일이 UTF-8 with BOM 형식으로 저장된 것이다.</p>
-<p>이 문자는 실제 분석 시 노이즈가 되므로 ds_str.lstrip('\ufeff') 또는</p>
-<p>decode('utf-8-sig')로 제거한다.</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>1.2 웹(URL)에서 TXT 파일 읽기 → 데이터프레임(DataFrame)</strong></p>
-<p>pandas의 read_fwf() 함수를 사용하면 URL에서 고정 너비 텍스트 파일을 바로 DataFrame으로 읽을 수 있다. 각 행이 DataFrame의 한 행(row)으로 저장되어 이후 문장 단위 분석이 용이하다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># 웹 TXT 파일 → pandas DataFrame으로 읽기</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">import pandas as pd</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">url = ('http://wolfpack.hnu.ac.kr/big_data/data/</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">%EA%B0%9C%EC%97%AD%EA%B0%9C%EC%A0%95.txt')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># read_fwf: 고정 너비 텍스트 파일 읽기</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">df = pd.read_fwf(url, encoding='utf-8')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(type(df))</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(df.head(3))</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'pandas.core.frame.DataFrame'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">태초에 하나님이 천지를 창조하시니라</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">0 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">1 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사</td>
-</tr>
-</tbody>
-</table>
-<p><strong>1.3 로컬 TXT 파일 읽기 → 리스트(list)</strong></p>
+<p>urllib.request 모듈을 사용하면 인터넷에 공개된 TXT 파일을 URL로 직접 가져올 수 있다. 한글 텍스트의 경우 decode('cp949') 옵션이 필수이며, 읽어온 결과는 하나의 긴 문자열로 저장된다.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://by-sekwon.github.io/api/genesis.txt"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> urllib.request.urlopen(url) <span class="im">as</span> f:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> f.read().decode(<span class="st">'cp949'</span>)  <span class="co"># 인코딩 주의</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text[:<span class="dv">200</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'str'&gt;
+창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라
+창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라
+창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고
+창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사
+창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이</code></pre>
+</section>
+<section id="txt-파일-데이터프레임으로-읽기" class="level4">
+<h4 class="anchored" data-anchor-id="txt-파일-데이터프레임으로-읽기">2. TXT 파일 → 데이터프레임으로 읽기</h4>
+<p>pandas의 urllib.request.urlopen() 함수를 사용하면 URL에서 고정 너비 텍스트 파일을 바로 DataFrame으로 읽을 수 있다. 각 행이 DataFrame의 한 행(row)으로 저장되어 이후 문장 단위 분석이 용이하다.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 외부 txt 데이터 데이터프레임으로 읽기</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># txt 파일 읽기 (URL은 open()으로 읽을 수 없으므로 urllib 사용)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'https://by-sekwon.github.io/api/genesis.txt'</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> urllib.request.urlopen(url) <span class="im">as</span> f:</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> f.read().decode(<span class="st">'cp949'</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 줄 단위 분리</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>lines <span class="op">=</span> text.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임 생성</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(lines, columns<span class="op">=</span>[<span class="st">'text'</span>])</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 공백 제거</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'text'</span>] <span class="op">=</span> df[<span class="st">'text'</span>].<span class="bu">str</span>.strip()</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 빈 행 제거</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[df[<span class="st">'text'</span>] <span class="op">!=</span> <span class="st">''</span>]</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 인덱스 재정렬</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>                                                text
+0                   창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라
+1  창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운...
+2                   창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고
+3             창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사
+4  창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이...
+(1534, 1)</code></pre>
+</section>
+<section id="txt-파일-읽기-리스트list로-읽기" class="level4">
+<h4 class="anchored" data-anchor-id="txt-파일-읽기-리스트list로-읽기">3.TXT 파일 읽기 → 리스트(list)로 읽기</h4>
 <p>open() 함수와 readlines() 메서드를 사용하면 로컬에 저장된 TXT 파일을 줄 단위로 읽어 리스트로 저장할 수 있다. 각 줄의 끝에 줄바꿈 문자('\n')가 포함되므로 분석 전에 strip()으로 제거하는 것이 좋다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># 로컬(내부) TXT 파일 읽기 → 리스트(list)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># Google Colab 경로 예시</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">path = '/content/drive/MyDrive/data/bible_genesis.txt'</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">with open(path, 'r', encoding='utf-8-sig') as file:</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">genesis = file.readlines() # 줄 단위로 읽어 리스트로 저장</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(type(genesis))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(genesis[0:3])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'list'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">['태초에 하나님이 천지를 창조하시니라\n',</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">'땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라\n',</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">'하나님이 이르시되 빛이 있으라 하시니 빛이 있었고\n']</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>📌 encoding='utf-8-sig' vs 'utf-8'</p>
-<p>- utf-8 : BOM 문자(\ufeff)가 포함된 채로 읽힌다.</p>
-<p>- utf-8-sig: BOM 문자를 자동으로 제거하여 읽는다. 한글 TXT 파일에는 utf-8-sig를 권장한다.</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>1.4 TXT 읽기 방법 비교</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 18%">
-<col style="width: 25%">
-<col style="width: 18%">
-<col style="width: 18%">
-<col style="width: 18%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"><strong>방법</strong></th>
-<th style="text-align: left;"><strong>함수</strong></th>
-<th style="text-align: left;"><strong>결과 타입</strong></th>
-<th style="text-align: left;"><strong>문장 단위 분석</strong></th>
-<th style="text-align: left;"><strong>주요 용도</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">URL → 문자열</td>
-<td style="text-align: left;">urllib.request</td>
-<td style="text-align: left;">str</td>
-<td style="text-align: left;">불가</td>
-<td style="text-align: left;">전체 텍스트 처리</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">URL → DataFrame</td>
-<td style="text-align: left;">pd.read_fwf(url)</td>
-<td style="text-align: left;">DataFrame</td>
-<td style="text-align: left;">가능</td>
-<td style="text-align: left;">구조화 분석</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">로컬 → 리스트</td>
-<td style="text-align: left;">open().readlines()</td>
-<td style="text-align: left;">list</td>
-<td style="text-align: left;">가능</td>
-<td style="text-align: left;">줄 단위 처리</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Chapter 2. PDF 파일 읽기</strong></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 외부 txt 데이터를 list 형식으로 읽기</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> urllib.request</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># txt 파일 읽기 (URL은 open()으로 읽을 수 없으므로 urllib 사용)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'https://by-sekwon.github.io/api/genesis.txt'</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> urllib.request.urlopen(url) <span class="im">as</span> f:</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> f.read().decode(<span class="st">'cp949'</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 줄 단위로 list 생성</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>text_list <span class="op">=</span> text.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 공백 제거 + 빈 행 제거</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>text_list <span class="op">=</span> [x.strip() <span class="cf">for</span> x <span class="kw">in</span> text_list <span class="cf">if</span> x.strip() <span class="op">!=</span> <span class="st">''</span>]</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text_list))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_list[:<span class="dv">5</span>])</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(text_list))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'list'&gt;
+['창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라', '창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라', '창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고', '창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사', '창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이 되니 이는 첫째 날이니라']
+1534</code></pre>
+</section>
+</section>
+<section id="pdf-파일-읽기" class="level3">
+<h3 class="anchored" data-anchor-id="pdf-파일-읽기">2. PDF 파일 읽기</h3>
 <p>PDF 파일에서 텍스트를 추출하려면 전용 라이브러리가 필요하다. 대표적으로 PyMuPDF(fitz)와 PyPDF2 두 가지 방법이 있으며, 최신 환경에서는 PyMuPDF가 더 안정적이고 정확한 텍스트 추출을 제공한다.</p>
 <p><strong>2.1 방법 1 — PyMuPDF (fitz) 사용 ★ 권장</strong></p>
 <p>PyMuPDF는 빠르고 정확한 텍스트 추출 성능을 제공하는 라이브러리이다. 다국어(한글 포함)를 안정적으로 처리하며, 페이지 단위로 순회하여 전체 내용을 하나의 문자열로 합칠 수 있다.</p>
@@ -1132,7 +1026,6 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
