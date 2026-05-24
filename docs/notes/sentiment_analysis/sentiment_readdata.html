@@ -213,6 +213,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#txt-파일-읽기-리스트list로-읽기" id="toc-txt-파일-읽기-리스트list로-읽기" class="nav-link" data-scroll-target="#txt-파일-읽기-리스트list로-읽기">3.TXT 파일 읽기 → 리스트(list)로 읽기</a></li>
   </ul></li>
   <li><a href="#pdf-파일-읽기" id="toc-pdf-파일-읽기" class="nav-link" data-scroll-target="#pdf-파일-읽기">2. PDF 파일 읽기</a></li>
+  <li><a href="#데이터-유형-변환" id="toc-데이터-유형-변환" class="nav-link" data-scroll-target="#데이터-유형-변환">3. 데이터 유형 변환</a>
+  <ul>
+  <li><a href="#문자열-리스트-변환" id="toc-문자열-리스트-변환" class="nav-link" data-scroll-target="#문자열-리스트-변환">1. 문자열 → 리스트 변환</a></li>
+  <li><a href="#리스트-문자열-변환" id="toc-리스트-문자열-변환" class="nav-link" data-scroll-target="#리스트-문자열-변환">2. 리스트 → 문자열 변환</a></li>
+  <li><a href="#리스트-데이터프레임-변환" id="toc-리스트-데이터프레임-변환" class="nav-link" data-scroll-target="#리스트-데이터프레임-변환">3. 리스트 → 데이터프레임 변환</a></li>
+  </ul></li>
+  <li><a href="#전체-흐름-pdf-읽기-문자열-리스트-데이터프레임" id="toc-전체-흐름-pdf-읽기-문자열-리스트-데이터프레임" class="nav-link" data-scroll-target="#전체-흐름-pdf-읽기-문자열-리스트-데이터프레임">4. 전체 흐름: PDF 읽기 → 문자열 → 리스트 → 데이터프레임</a>
+  <ul>
+  <li><a href="#텍스트-추출-전처리-형태소-분석용-dataframe-만들기" id="toc-텍스트-추출-전처리-형태소-분석용-dataframe-만들기" class="nav-link" data-scroll-target="#텍스트-추출-전처리-형태소-분석용-dataframe-만들기">2. 텍스트 추출 → 전처리 → 형태소 분석용 DataFrame 만들기</a></li>
+  </ul></li>
+  <li><a href="#감성분석" id="toc-감성분석" class="nav-link" data-scroll-target="#감성분석">5. 감성분석</a>
+  <ul>
+  <li><a href="#긍정부정-단어사전-기반-감성점수-계산" id="toc-긍정부정-단어사전-기반-감성점수-계산" class="nav-link" data-scroll-target="#긍정부정-단어사전-기반-감성점수-계산">1. 긍정/부정 단어사전 기반 감성점수 계산</a></li>
+  <li><a href="#워드-클라우드" id="toc-워드-클라우드" class="nav-link" data-scroll-target="#워드-클라우드">2. 워드 클라우드</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -325,707 +340,1033 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="pdf-파일-읽기" class="level3">
 <h3 class="anchored" data-anchor-id="pdf-파일-읽기">2. PDF 파일 읽기</h3>
-<p>PDF 파일에서 텍스트를 추출하려면 전용 라이브러리가 필요하다. 대표적으로 PyMuPDF(fitz)와 PyPDF2 두 가지 방법이 있으며, 최신 환경에서는 PyMuPDF가 더 안정적이고 정확한 텍스트 추출을 제공한다.</p>
-<p><strong>2.1 방법 1 — PyMuPDF (fitz) 사용 ★ 권장</strong></p>
-<p>PyMuPDF는 빠르고 정확한 텍스트 추출 성능을 제공하는 라이브러리이다. 다국어(한글 포함)를 안정적으로 처리하며, 페이지 단위로 순회하여 전체 내용을 하나의 문자열로 합칠 수 있다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># PyMuPDF 설치</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">!pip install pymupdf</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># PDF 파일 → 문자열(str) 추출</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">import fitz # pymupdf의 import 이름은 fitz</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">path = '/content/drive/MyDrive/data/bible_matthew.pdf'</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ds_str = ''</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">with fitz.open(path) as doc:</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">for page in doc:</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ds_str += page.get_text() # 페이지별 텍스트 추출 후 합치기</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(type(ds_str))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(ds_str[0:50])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'str'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>💡 PyMuPDF 추가 기능</p>
-<p>- page.get_text('blocks') : 텍스트 블록(단락) 단위 추출</p>
-<p>- page.get_text('words') : 단어 단위 추출</p>
-<p>- page.get_text('dict') : 폰트, 좌표 등 상세 정보 포함 딕셔너리 형태로 추출</p>
-<p>- doc.page_count : 전체 페이지 수 확인</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>2.2 방법 2 — PyPDF2 사용</strong></p>
-<p>PyPDF2는 순수 Python으로 작성된 PDF 처리 라이브러리이다. 단, PyPDF2 3.0 이후 버전부터 API가 변경되어 PdfFileReader 대신 PdfReader를 사용해야 한다. 복잡한 레이아웃이나 한글이 포함된 PDF에서는 PyMuPDF에 비해 추출 정확도가 낮을 수 있다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># PyPDF2 설치</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">!pip install PyPDF2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">import PyPDF2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">path = '/content/drive/MyDrive/data/bible_matthew.pdf'</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># PyPDF2 3.0+ 최신 API</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">with open(path, 'rb') as pdfFileObj:</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pdfReader = PyPDF2.PdfReader(pdfFileObj) # 구버전: PdfFileReader()</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print('전체 페이지 수:', len(pdfReader.pages))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># 전체 페이지 텍스트 합치기</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pdf_str = ''</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">for page in pdfReader.pages:</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pdf_str += page.extract_text() # 구버전: extractText()</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(type(pdf_str))</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(pdf_str[0:50])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">전체 페이지 수: 3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">&lt;class 'str'&gt;</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를</td>
-</tr>
-</tbody>
-</table>
-<p><strong>2.3 PyMuPDF vs PyPDF2 비교</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 32%">
-<col style="width: 32%">
-<col style="width: 32%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"><strong>항목</strong></th>
-<th style="text-align: left;"><strong>PyMuPDF (fitz)</strong></th>
-<th style="text-align: left;"><strong>PyPDF2</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">설치</td>
-<td style="text-align: left;">pip install pymupdf</td>
-<td style="text-align: left;">pip install PyPDF2</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">한글 처리</td>
-<td style="text-align: left;">안정적 (권장)</td>
-<td style="text-align: left;">불안정할 수 있음</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">추출 정확도</td>
-<td style="text-align: left;">높음</td>
-<td style="text-align: left;">중간</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">속도</td>
-<td style="text-align: left;">빠름</td>
-<td style="text-align: left;">보통</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">추가 기능</td>
-<td style="text-align: left;">이미지, 메타데이터, 페이지 렌더링</td>
-<td style="text-align: left;">암호화/복호화 지원</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">최신 API</td>
-<td style="text-align: left;">page.get_text()</td>
-<td style="text-align: left;">page.extract_text()</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Chapter 3. 데이터 유형 변환</strong></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 설치 (최초 1회만 실행)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pdfplumber requests</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pdfplumber</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> BytesIO</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 파일 URL</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>pdf_url <span class="op">=</span> <span class="st">'https://by-sekwon.github.io/api/genesis.pdf'</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># URL에서 PDF 다운로드 → 메모리(BytesIO)로 읽기</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(pdf_url)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>response.raise_for_status()  <span class="co"># 다운로드 실패 시 예외 발생</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>pdf_file <span class="op">=</span> BytesIO(response.content)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 텍스트 저장 변수</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 읽기</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pdfplumber.<span class="bu">open</span>(pdf_file) <span class="im">as</span> pdf:</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 페이지별 텍스트 추출</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> page <span class="kw">in</span> pdf.pages:</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        page_text <span class="op">=</span> page.extract_text()</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># None 방지</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> page_text:</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>            text <span class="op">+=</span> page_text <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text))      <span class="co"># &lt;class 'str'&gt;</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text[:<span class="dv">1000</span>])     <span class="co"># 앞 1000자 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'str'&gt;
+창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라
+창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라
+창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고
+창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사
+창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이 되니 이는 첫째 날
+이니라 (생략)</code></pre>
+</section>
+<section id="데이터-유형-변환" class="level3">
+<h3 class="anchored" data-anchor-id="데이터-유형-변환">3. 데이터 유형 변환</h3>
 <p>Python에서 텍스트 데이터는 문자열(str), 리스트(list), 데이터프레임(DataFrame) 세 가지 형태로 관리된다. 분석 목적에 따라 적합한 형태로 상호 변환하는 방법을 숙지해야 한다.</p>
-<p><strong>3.1 문자열 → 리스트 변환</strong></p>
-<p>PDF에서 추출한 문자열은 줄바꿈('\n')이 없어 splitlines()로 분리되지 않는 경우가 있다. 이때는 문장 경계를 나타내는 특정 패턴 앞에 '\n'을 삽입한 후 분리한다.</p>
-<p><strong>① splitlines() 직접 시도 — 분리 안 되는 경우</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># PDF 추출 문자열에는 줄바꿈(\n)이 없는 경우가 많다</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pdf_lst = pdf_str.splitlines()</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(type(pdf_lst))</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(pdf_lst[0]) # 전체가 하나로 붙어있음</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'list'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># 문장이 분리되지 않고 하나의 긴 문자열로 출력됨</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">(마1:8)아사는 여호사밧을 낳고 ... (마1:9)웃시야는 요담을 낳고 ...</td>
-</tr>
-</tbody>
-</table>
-<p><strong>② 구분자 삽입 후 splitlines() — 해결 방법</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># 문장 경계 패턴 '(마' 앞에 줄바꿈 삽입</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pdf_str2 = pdf_str.replace('(마', '\n(마')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(pdf_str2[0:100]) # 줄바꿈이 삽입되었는지 확인</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># 줄바꿈 기준으로 리스트 분리</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pdf_lst2 = pdf_str2.splitlines()</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(type(pdf_lst2))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(pdf_lst2[0:3])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">'\n(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">\n(마1:9)웃시야는...'</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'list'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">['',</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">'(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고',</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">'(마1:9)웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고']</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>💡 더 나은 방법: re.split() 활용</p>
-<p>import re</p>
-<p>pdf_lst2 = re.split(r'(?=\(마)', pdf_str) # '(마' 앞에서 분리 (look-ahead)</p>
-<p>pdf_lst2 = [s.strip() for s in pdf_lst2 if s.strip()] # 빈 항목 제거</p>
-<p>→ replace + splitlines() 조합보다 정규표현식 방식이 더 정확하고 간결하다.</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>3.2 리스트 → 문자열 변환</strong></p>
-<p>리스트를 다시 하나의 문자열로 합칠 때는 join() 메서드를 사용하는 것이 가장 간결하다. 구분자(separator)를 원하는 형식으로 지정할 수 있다.</p>
-<p><strong>방법 A — join() 메서드 (권장)</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># join()을 이용한 리스트 → 문자열 변환 (권장)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">separator = ','</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ds_str2 = separator.join(pdf_lst2)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(type(ds_str2))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(ds_str2[0:50])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'str'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">,(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야</td>
-</tr>
-</tbody>
-</table>
-<p><strong>방법 B — for문 반복 (원본 코드 방식)</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># for문을 이용한 리스트 → 문자열 변환</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ds_str2 = ''</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">separator = ','</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">for idx, val in enumerate(pdf_lst2):</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># 마지막 원소 뒤에는 구분자를 붙이지 않음</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ds_str2 += val + ('' if idx == len(pdf_lst2) - 1 else separator)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(type(ds_str2))</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(ds_str2[0:50])</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'str'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">,(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>📌 join() vs for문 비교</p>
-<p>- join() : 한 줄로 간결, 메모리 효율적, Python 권장 방식</p>
-<p>- for문 : 각 원소별 추가 처리가 필요할 때 유용 (조건부 변환 등)</p></td>
-</tr>
-</tbody>
-</table>
-<p><strong>3.3 리스트 → 데이터프레임 변환</strong></p>
-<p>형태소 분석 등 문장 단위 처리를 위해 리스트를 pandas DataFrame으로 변환한다. 각 문장이 하나의 행(row)으로 저장되어 필터링, 그룹화, 열 추가 등 다양한 데이터 처리가 가능해진다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">import pandas as pd</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># 리스트 → DataFrame 변환</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ds_df = pd.DataFrame(pdf_lst2, columns=['verse'], dtype='str')</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># 빈 행 제거 (권장)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ds_df = ds_df[ds_df['verse'].str.strip() != ''].reset_index(drop=True)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(type(ds_df))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(ds_df.head(3))</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">&lt;class 'pandas.core.frame.DataFrame'&gt;</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">verse</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">0 (마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">1 (마1:9)웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">2 (마1:10)히스기야는 므낫세를 낳고 므낫세는 아몬을 낳고 아몬은 요시야를 낳고</td>
-</tr>
-</tbody>
-</table>
-<p><strong>3.4 데이터 유형 변환 전체 요약</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 22%">
-<col style="width: 30%">
-<col style="width: 22%">
-<col style="width: 22%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"><strong>변환 방향</strong></th>
-<th style="text-align: left;"><strong>주요 함수/방법</strong></th>
-<th style="text-align: left;"><strong>결과</strong></th>
-<th style="text-align: left;"><strong>비고</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">문자열 → 리스트</td>
-<td style="text-align: left;">str.splitlines()</td>
-<td style="text-align: left;">줄 단위 리스트</td>
-<td style="text-align: left;">줄바꿈(\n) 기준 분리</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">문자열 → 리스트</td>
-<td style="text-align: left;">str.split(sep)</td>
-<td style="text-align: left;">구분자 기준 리스트</td>
-<td style="text-align: left;">sep 지정 가능</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">문자열 → 리스트</td>
-<td style="text-align: left;">re.split(pattern, str)</td>
-<td style="text-align: left;">정규식 기준 리스트</td>
-<td style="text-align: left;">복잡한 패턴 처리</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">리스트 → 문자열</td>
-<td style="text-align: left;">sep.join(list)</td>
-<td style="text-align: left;">하나의 문자열</td>
-<td style="text-align: left;">가장 권장되는 방법</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">리스트 → DataFrame</td>
-<td style="text-align: left;">pd.DataFrame(list, columns)</td>
-<td style="text-align: left;">DataFrame</td>
-<td style="text-align: left;">열 이름 지정 필수</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">DataFrame → 리스트</td>
-<td style="text-align: left;">df['col'].tolist()</td>
-<td style="text-align: left;">리스트</td>
-<td style="text-align: left;">특정 열을 리스트로</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">문자열 → DataFrame</td>
-<td style="text-align: left;">pd.read_fwf(url)</td>
-<td style="text-align: left;">DataFrame</td>
-<td style="text-align: left;">URL 직접 읽기</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Chapter 4. 전체 데이터 수집 파이프라인 ★ 심화</strong></p>
-<p>PDF 파일을 읽어 텍스트를 추출하고, 전처리를 거쳐 형태소 분석에 적합한 DataFrame으로 만드는 전체 흐름을 하나의 파이프라인으로 구성한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"># ================================================</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># PDF → 문자열 → 리스트 → DataFrame 전체 파이프라인</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># ================================================</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">import fitz</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">import re</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">import pandas as pd</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># STEP 1: PDF 읽기 → 문자열</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">path = '/content/drive/MyDrive/data/bible_matthew.pdf'</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ds_str = ''</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">with fitz.open(path) as doc:</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">for page in doc:</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ds_str += page.get_text()</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(f'[STEP 1] 문자열 길이: {len(ds_str)}자')</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># STEP 2: 문장 경계 삽입 → 리스트 분리</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"># 방법 A (정규표현식 권장)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pdf_lst = re.split(r'(?=\(마)', ds_str)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pdf_lst = [s.strip() for s in pdf_lst if s.strip()]</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(f'[STEP 2] 문장 수: {len(pdf_lst)}개')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(f' 첫 문장: {pdf_lst[0]}')</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"># STEP 3: 리스트 → DataFrame</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ds_df = pd.DataFrame(pdf_lst, columns=['verse'], dtype='str')</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">print(f'[STEP 3] DataFrame 크기: {ds_df.shape}')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">print(ds_df.head(3))</td>
-</tr>
-</tbody>
-</table>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">[STEP 1] 문자열 길이: 4823자</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">[STEP 2] 문장 수: 48개</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">첫 문장: (마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">[STEP 3] DataFrame 크기: (48, 1)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">verse</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">0 (마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">1 (마1:9)웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">2 (마1:10)히스기야는 므낫세를 낳고 므낫세는 아몬을 낳고 아몬은 요시야를 낳고</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Chapter 5. 주요 함수 및 라이브러리 요약</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 46%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;"><strong>라이브러리</strong></th>
-<th style="text-align: left;"><strong>주요 함수</strong></th>
-<th style="text-align: left;"><strong>역할</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">urllib.request</td>
-<td style="text-align: left;">urlopen(request).read().decode('utf-8')</td>
-<td style="text-align: left;">URL에서 TXT 읽기 → 문자열</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pandas</td>
-<td style="text-align: left;">pd.read_fwf(url)</td>
-<td style="text-align: left;">URL에서 TXT 읽기 → DataFrame</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">내장 함수</td>
-<td style="text-align: left;">open(path, 'r', encoding='utf-8-sig')</td>
-<td style="text-align: left;">로컬 TXT 읽기</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">내장 함수</td>
-<td style="text-align: left;">file.readlines()</td>
-<td style="text-align: left;">줄 단위 읽기 → 리스트</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pymupdf</td>
-<td style="text-align: left;">fitz.open(path)</td>
-<td style="text-align: left;">PDF 파일 열기</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pymupdf</td>
-<td style="text-align: left;">page.get_text()</td>
-<td style="text-align: left;">PDF 페이지 텍스트 추출</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">PyPDF2</td>
-<td style="text-align: left;">PdfReader(file)</td>
-<td style="text-align: left;">PDF 파일 읽기 (3.0+ 최신 API)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">PyPDF2</td>
-<td style="text-align: left;">page.extract_text()</td>
-<td style="text-align: left;">PDF 페이지 텍스트 추출</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">str 내장</td>
-<td style="text-align: left;">str.splitlines()</td>
-<td style="text-align: left;">문자열 → 줄 단위 리스트</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">str 내장</td>
-<td style="text-align: left;">str.split(sep)</td>
-<td style="text-align: left;">문자열 → 구분자 기준 리스트</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">str 내장</td>
-<td style="text-align: left;">sep.join(list)</td>
-<td style="text-align: left;">리스트 → 문자열 (권장)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">re</td>
-<td style="text-align: left;">re.split(pattern, str)</td>
-<td style="text-align: left;">정규식 기반 문자열 분리</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pandas</td>
-<td style="text-align: left;">pd.DataFrame(list, columns)</td>
-<td style="text-align: left;">리스트 → DataFrame</td>
-</tr>
-</tbody>
-</table>
-<p><strong>참고 문헌</strong></p>
-<ul>
-<li><p>McKinney, W. (2022). Python for Data Analysis (3rd ed.). O'Reilly.</p></li>
-<li><p>pandas 공식 문서: https://pandas.pydata.org/docs/</p></li>
-<li><p>PyMuPDF 공식 문서: https://pymupdf.readthedocs.io/</p></li>
-<li><p>PyPDF2 공식 문서: https://pypdf2.readthedocs.io/</p></li>
-<li><p>Python 공식 문서 - urllib.request: https://docs.python.org/3/library/urllib.request.html</p></li>
-</ul>
+<section id="문자열-리스트-변환" class="level4">
+<h4 class="anchored" data-anchor-id="문자열-리스트-변환">1. 문자열 → 리스트 변환</h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 문자열(str) 데이터 -&gt; 리스트(list) 변환</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 줄 단위로 리스트 생성</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>text_list <span class="op">=</span> text.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 공백 제거 + 빈 행 제거</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>text_list <span class="op">=</span> [x.strip() <span class="cf">for</span> x <span class="kw">in</span> text_list <span class="cf">if</span> x.strip() <span class="op">!=</span> <span class="st">''</span>]</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text_list))   <span class="co"># &lt;class 'list'&gt;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_list[:<span class="dv">5</span>])     <span class="co"># 앞 5개 출력</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(text_list))    <span class="co"># 전체 개수</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'list'&gt;
+['창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라', '창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라', '창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고', '창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사', '창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이 되니 이는 첫째 날']
+2398</code></pre>
+</section>
+<section id="리스트-문자열-변환" class="level4">
+<h4 class="anchored" data-anchor-id="리스트-문자열-변환">2. 리스트 → 문자열 변환</h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 리스트(list) -&gt; 문자열(str) 재변환</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>text_recovered <span class="op">=</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(text_list)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text_recovered))   <span class="co"># &lt;class 'str'&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text_recovered[:<span class="dv">200</span>])  <span class="co"># 앞 200자 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'str'&gt;
+창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라
+창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라
+창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고
+창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사
+창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 </code></pre>
+</section>
+<section id="리스트-데이터프레임-변환" class="level4">
+<h4 class="anchored" data-anchor-id="리스트-데이터프레임-변환">3. 리스트 → 데이터프레임 변환</h4>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 리스트(list) -&gt; 데이터프레임(DataFrame) 변환</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임 생성</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(text_list, columns<span class="op">=</span>[<span class="st">'text'</span>])</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(df))      <span class="co"># &lt;class 'pandas.core.frame.DataFrame'&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head())     <span class="co"># 상위 5개 출력</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.shape)      <span class="co"># 행, 열 개수</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+                                                text
+0                   창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라
+1  창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운...
+2                   창1:3 하나님이 이르시되 빛이 있으라 하시니 빛이 있었고
+3             창1:4 빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사
+4  창1:5 하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이...
+(2398, 1)</code></pre>
+</section>
+</section>
+<section id="전체-흐름-pdf-읽기-문자열-리스트-데이터프레임" class="level3">
+<h3 class="anchored" data-anchor-id="전체-흐름-pdf-읽기-문자열-리스트-데이터프레임">4. 전체 흐름: PDF 읽기 → 문자열 → 리스트 → 데이터프레임</h3>
+<p>창세기.pdf 읽어 텍스트를 추출하고 전처리를 거쳐 형태소 분석에 적합한 데이터프레임으로 만드는 전체 흐름의 파이프라인을 구축해보자.</p>
+<section id="colab-한글-폰트-설정-선택-사항" class="level5">
+<h5 class="anchored" data-anchor-id="colab-한글-폰트-설정-선택-사항">1. Colab 한글 폰트 설정 (선택 사항)</h5>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Colab 한글 폰트 강제 재설정</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get update <span class="op">-</span>qq</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get install <span class="op">-</span>y fonts<span class="op">-</span>nanum fonts<span class="op">-</span>nanum<span class="op">-</span>extra <span class="op">&gt;</span> <span class="op">/</span>dev<span class="op">/</span>null</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>fc<span class="op">-</span>cache <span class="op">-</span>fv <span class="op">&gt;</span> <span class="op">/</span>dev<span class="op">/</span>null</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>rm <span class="op">-</span>rf <span class="op">~/</span>.cache<span class="op">/</span>matplotlib</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>os.kill(os.getpid(), <span class="dv">9</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.font_manager <span class="im">as</span> fm</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>font_path <span class="op">=</span> <span class="st">'/usr/share/fonts/truetype/nanum/NanumGothic.ttf'</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>fm.fontManager.addfont(font_path)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.family'</span>] <span class="op">=</span> <span class="st">'NanumGothic'</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'axes.unicode_minus'</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"현재 폰트:"</span>, plt.rcParams[<span class="st">'font.family'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>런타임 -&gt; 다시 시작한 후</p>
+</section>
+<section id="텍스트-추출-전처리-형태소-분석용-dataframe-만들기" class="level4">
+<h4 class="anchored" data-anchor-id="텍스트-추출-전처리-형태소-분석용-dataframe-만들기">2. 텍스트 추출 → 전처리 → 형태소 분석용 DataFrame 만들기</h4>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 창세기.pdf → 텍스트 추출 → 전처리 → 형태소 분석용 DataFrame</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pdfplumber konlpy requests</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pdfplumber</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> BytesIO</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. PDF 경로 (URL)</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>pdf_url <span class="op">=</span> <span class="st">'https://by-sekwon.github.io/api/genesis.pdf'</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co"># URL에서 PDF 다운로드 → BytesIO 객체로 변환</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(pdf_url)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>response.raise_for_status()</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>pdf_file <span class="op">=</span> BytesIO(response.content)</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. PDF에서 문자열 추출</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pdfplumber.<span class="bu">open</span>(pdf_file) <span class="im">as</span> pdf:</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> page <span class="kw">in</span> pdf.pages:</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        page_text <span class="op">=</span> page.extract_text()</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> page_text:</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>            text <span class="op">+=</span> page_text <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text))</span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text[:<span class="dv">500</span>])</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 기본 전처리</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>text_clean <span class="op">=</span> text.replace(<span class="st">'</span><span class="ch">\xa0</span><span class="st">'</span>, <span class="st">' '</span>)</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>text_clean <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="pp">[ </span><span class="ch">\t</span><span class="pp">]</span><span class="op">+</span><span class="vs">'</span>, <span class="st">' '</span>, text_clean)</span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 줄바꿈 때문에 끊어진 구절 이어붙이기</span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>text_clean <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="ch">\n</span><span class="ex">(</span><span class="fu">?!</span><span class="vs">창</span><span class="dv">\d</span><span class="op">+</span><span class="vs">:</span><span class="dv">\d</span><span class="op">+</span><span class="ex">)</span><span class="vs">'</span>, <span class="st">' '</span>, text_clean)</span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 절 앞에서 줄바꿈 넣기</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>text_clean <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="kw">(</span><span class="vs">창</span><span class="dv">\d</span><span class="op">+</span><span class="vs">:</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="vs">'</span>, <span class="vs">r'</span><span class="ch">\n\1</span><span class="vs">'</span>, text_clean)</span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>text_clean <span class="op">=</span> text_clean.strip()</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 줄 단위 리스트 변환</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a>lines <span class="op">=</span> text_clean.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>lines <span class="op">=</span> [line.strip() <span class="cf">for</span> line <span class="kw">in</span> lines <span class="cf">if</span> line.strip()]</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(lines))</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(lines[:<span class="dv">5</span>])</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. DataFrame 생성</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(lines, columns<span class="op">=</span>[<span class="st">'raw_text'</span>])</span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 장, 절, 본문 분리</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a>pattern <span class="op">=</span> <span class="vs">r'</span><span class="dv">^</span><span class="vs">창</span><span class="kw">(</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="vs">:</span><span class="kw">(</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">*</span><span class="kw">(</span><span class="dv">.</span><span class="op">*</span><span class="kw">)</span><span class="dv">$</span><span class="vs">'</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">'chapter'</span>, <span class="st">'verse'</span>, <span class="st">'text'</span>]] <span class="op">=</span> df[<span class="st">'raw_text'</span>].<span class="bu">str</span>.extract(pattern)</span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 패턴 매칭 실패(NaN) 행 제거</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">'chapter'</span>, <span class="st">'verse'</span>]).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="co"># 장/절 숫자형 변환</span></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'chapter'</span>] <span class="op">=</span> df[<span class="st">'chapter'</span>].astype(<span class="bu">int</span>)</span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'verse'</span>] <span class="op">=</span> df[<span class="st">'verse'</span>].astype(<span class="bu">int</span>)</span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. 제목 분리</span></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'section_title'</span>] <span class="op">=</span> df[<span class="st">'text'</span>].<span class="bu">str</span>.extract(<span class="vs">r'&lt;</span><span class="kw">(</span><span class="pp">[^&gt;]</span><span class="op">+</span><span class="kw">)</span><span class="vs">&gt;'</span>)</span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="co"># 본문에서 제목 제거</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'text'</span>] <span class="op">=</span> df[<span class="st">'text'</span>].<span class="bu">str</span>.replace(<span class="vs">r'&lt;</span><span class="pp">[^&gt;]</span><span class="op">+</span><span class="vs">&gt;'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>).<span class="bu">str</span>.strip()</span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. NLP용 텍스트 전처리</span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'text_clean'</span>] <span class="op">=</span> df[<span class="st">'text'</span>].fillna(<span class="st">''</span>)</span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a><span class="co"># 한글, 숫자, 공백만 남기기</span></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'text_clean'</span>] <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">str</span>.replace(<span class="vs">r'</span><span class="pp">[^가-힣0-9</span><span class="dv">\s</span><span class="pp">]</span><span class="vs">'</span>, <span class="st">' '</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="co"># 중복 공백 제거</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'text_clean'</span>] <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">str</span>.replace(<span class="vs">r'</span><span class="dv">\s</span><span class="op">+</span><span class="vs">'</span>, <span class="st">' '</span>, regex<span class="op">=</span><span class="va">True</span>).<span class="bu">str</span>.strip()</span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="co"># 글자 수, 단어 수</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'char_count'</span>] <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">str</span>.<span class="bu">len</span>()</span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'word_count'</span>] <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.<span class="bu">len</span>().fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. 형태소 분석</span></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'morphs'</span>] <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: okt.morphs(x) <span class="cf">if</span> x <span class="cf">else</span> [])</span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'nouns'</span>]  <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: okt.nouns(x)  <span class="cf">if</span> x <span class="cf">else</span> [])</span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'pos'</span>]    <span class="op">=</span> df[<span class="st">'text_clean'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: okt.pos(x)    <span class="cf">if</span> x <span class="cf">else</span> [])</span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="co"># 10. 확인</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.shape)</span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>display(df.head())</span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="co"># 11. 형태소 분석용 최종 컬럼</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a>df_nlp <span class="op">=</span> df[[</span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a>    <span class="st">'chapter'</span>,</span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a>    <span class="st">'verse'</span>,</span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>    <span class="st">'section_title'</span>,</span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>    <span class="st">'text'</span>,</span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a>    <span class="st">'text_clean'</span>,</span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a>    <span class="st">'morphs'</span>,</span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a>    <span class="st">'nouns'</span>,</span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pos'</span>,</span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a>    <span class="st">'char_count'</span>,</span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a>    <span class="st">'word_count'</span></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a>]]</span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a>display(df_nlp.head())</span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a><span class="co"># 12. 저장</span></span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb17-139"><a href="#cb17-139" aria-hidden="true" tabindex="-1"></a><span class="co"># save_path = '/content/drive/MyDrive/eBook python codes/genesis_nlp_df.csv'</span></span>
+<span id="cb17-140"><a href="#cb17-140" aria-hidden="true" tabindex="-1"></a><span class="co"># df_nlp.to_csv(save_path, index=False, encoding='utf-8-sig')</span></span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="co"># print("저장 완료:", save_path)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>&lt;class 'str'&gt;
+창1:1 &lt;천지 창조&gt; 태초에 하나님이 천지를 창조하시니라
+창1:2 땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라.</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_pipeline.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="감성분석" class="level3">
+<h3 class="anchored" data-anchor-id="감성분석">5. 감성분석</h3>
+<section id="긍정부정-단어사전-기반-감성점수-계산" class="level4">
+<h4 class="anchored" data-anchor-id="긍정부정-단어사전-기반-감성점수-계산">1. 긍정/부정 단어사전 기반 감성점수 계산</h4>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 감성분석 예제: 긍정/부정 단어사전 기반</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 간단한 감성사전 만들기</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>positive_words <span class="op">=</span> [</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'좋다'</span>, <span class="st">'좋았더라'</span>, <span class="st">'복'</span>, <span class="st">'생명'</span>, <span class="st">'창조'</span>, <span class="st">'번성'</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'충만'</span>, <span class="st">'은혜'</span>, <span class="st">'사랑'</span>, <span class="st">'기쁨'</span>, <span class="st">'평안'</span>, <span class="st">'구원'</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>negative_words <span class="op">=</span> [</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'혼돈'</span>, <span class="st">'공허'</span>, <span class="st">'흑암'</span>, <span class="st">'저주'</span>, <span class="st">'죽음'</span>, <span class="st">'죄'</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'악'</span>, <span class="st">'두려움'</span>, <span class="st">'근심'</span>, <span class="st">'고통'</span>, <span class="st">'심판'</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 감성점수 계산 함수</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sentiment_score(text):</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    pos_count <span class="op">=</span> <span class="bu">sum</span>(word <span class="kw">in</span> text <span class="cf">for</span> word <span class="kw">in</span> positive_words)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    neg_count <span class="op">=</span> <span class="bu">sum</span>(word <span class="kw">in</span> text <span class="cf">for</span> word <span class="kw">in</span> negative_words)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> pos_count <span class="op">-</span> neg_count</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> score <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="st">'긍정'</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> score <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="st">'부정'</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>        label <span class="op">=</span> <span class="st">'중립'</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.Series([pos_count, neg_count, score, label])</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 감성분석 적용</span></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>df_nlp[[<span class="st">'positive_count'</span>, <span class="st">'negative_count'</span>, <span class="st">'sentiment_score'</span>, <span class="st">'sentiment_label'</span>]] <span class="op">=</span> (</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>    df_nlp[<span class="st">'text_clean'</span>].<span class="bu">apply</span>(sentiment_score)</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 결과 확인</span></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>df_nlp.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_score.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 장별 감성점수 요약</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>chapter_sentiment <span class="op">=</span> (</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    df_nlp</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    .groupby(<span class="st">'chapter'</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    .agg(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        verse_count<span class="op">=</span>(<span class="st">'verse'</span>, <span class="st">'count'</span>),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        positive_total<span class="op">=</span>(<span class="st">'positive_count'</span>, <span class="st">'sum'</span>),</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        negative_total<span class="op">=</span>(<span class="st">'negative_count'</span>, <span class="st">'sum'</span>),</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        sentiment_total<span class="op">=</span>(<span class="st">'sentiment_score'</span>, <span class="st">'sum'</span>),</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        sentiment_mean<span class="op">=</span>(<span class="st">'sentiment_score'</span>, <span class="st">'mean'</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>chapter_sentiment.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>chapter verse_count positive_total  negative_total  sentiment_total sentiment_mean
+0   1   31  19  3   16  0.516129
+1   2   25  3   2   1   0.040000
+2   3   24  2   5   -3  -0.125000
+3   4   26  0   3   -3  -0.115385
+4   5   32  3   1   2   0.062500</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">5</span>))</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>plt.plot(chapter_sentiment[<span class="st">'chapter'</span>], chapter_sentiment[<span class="st">'sentiment_total'</span>], marker<span class="op">=</span><span class="st">'o'</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">0</span>, linestyle<span class="op">=</span><span class="st">'--'</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Chapter'</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Sentiment Score'</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Genesis Sentiment Score by Chapter'</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_score02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 형태소 기반 빈도분석 예제</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 전체 명사 리스트 만들기</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>all_nouns <span class="op">=</span> []</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nouns <span class="kw">in</span> df_nlp[<span class="st">'nouns'</span>]:</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    all_nouns.extend(nouns)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(all_nouns[:<span class="dv">20</span>])</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 불용어 제거</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> [</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">'하나님'</span>, <span class="st">'이르시되'</span>, <span class="st">'그'</span>, <span class="st">'저'</span>, <span class="st">'것'</span>,</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'수'</span>, <span class="st">'자기'</span>, <span class="st">'때'</span>, <span class="st">'곳'</span>, <span class="st">'날'</span>, <span class="st">'사람'</span></span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>filtered_nouns <span class="op">=</span> [</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>    word <span class="cf">for</span> word <span class="kw">in</span> all_nouns</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(word) <span class="op">&gt;=</span> <span class="dv">2</span> <span class="kw">and</span> word <span class="kw">not</span> <span class="kw">in</span> stopwords</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 단어 빈도 계산</span></span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>word_freq <span class="op">=</span> Counter(filtered_nouns)</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 20개</span></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>top20 <span class="op">=</span> word_freq.most_common(<span class="dv">20</span>)</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(top20)</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 데이터프레임 변환</span></span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>freq_df <span class="op">=</span> pd.DataFrame(top20, columns<span class="op">=</span>[<span class="st">'word'</span>, <span class="st">'frequency'</span>])</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>display(freq_df)</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 막대그래프 시각화</span></span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>plt.bar(freq_df[<span class="st">'word'</span>], freq_df[<span class="st">'frequency'</span>])</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'단어'</span>)</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'빈도수'</span>)</span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'창세기 상위 빈도 단어'</span>)</span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>['태초', '하나님', '천지', '창조', '땅', '혼돈', '흑암', '위', '하나님', '영은', '수면', '위', '운행', '하나님', '빛', '빛', '빛', '하나님', '하나님', '빛과']
+[('아들', 247), ('아버지', 219), ('야곱', 209), ('우리', 203), ('요셉', 188), ('너희', 174), ('여호와', 162), ('모든', 154), ('아브라함', 132), ('아내', 113), ('이름', 108), ('이삭', 105), ('애굽', 95), ('바로', 93), ('당신', 91), ('족속', 78), ('하리', 74), ('거기', 69), ('아브람', 65), ('라반', 60)]
+word    frequency
+0   아들  247
+1   아버지 219
+2   야곱  209
+3   우리  203
+4   요셉  188
+5   너희  174
+6   여호와 162
+7   모든  154
+8   아브라함    132
+9   아내  113
+10  이름  108
+11  이삭  105
+12  애굽  95
+13  바로  93
+14  당신  91
+15  족속  78
+16  하리  74
+17  거기  69
+18  아브람 65
+19  라반  60</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_frequency.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="워드-클라우드" class="level4">
+<h4 class="anchored" data-anchor-id="워드-클라우드">2. 워드 클라우드</h4>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 워드클라우드</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install wordcloud</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> wordcloud <span class="im">import</span> WordCloud</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>wordcloud <span class="op">=</span> WordCloud(</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    font_path<span class="op">=</span><span class="st">'/usr/share/fonts/truetype/nanum/NanumGothic.ttf'</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">800</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    background_color<span class="op">=</span><span class="st">'white'</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>).generate_from_frequencies(word_freq)</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">8</span>))</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>plt.imshow(wordcloud, interpolation<span class="op">=</span><span class="st">'bilinear'</span>)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_wordcloud.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<section id="감성점수-분포-시각화" class="level5">
+<h5 class="anchored" data-anchor-id="감성점수-분포-시각화">3. 감성점수 분포 시각화</h5>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 장별 키워드 변화 분석</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 불용어 정의</span></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> [</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'하나님'</span>, <span class="st">'이르시되'</span>, <span class="st">'그'</span>, <span class="st">'저'</span>, <span class="st">'것'</span>,</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'수'</span>, <span class="st">'자기'</span>, <span class="st">'때'</span>, <span class="st">'곳'</span>, <span class="st">'날'</span>, <span class="st">'사람'</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 장별 상위 키워드 추출</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>chapter_keywords <span class="op">=</span> []</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> chapter <span class="kw">in</span> <span class="bu">sorted</span>(df_nlp[<span class="st">'chapter'</span>].unique()):</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 해당 장 데이터</span></span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> df_nlp[df_nlp[<span class="st">'chapter'</span>] <span class="op">==</span> chapter]</span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 명사 수집</span></span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    nouns <span class="op">=</span> []</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> n <span class="kw">in</span> temp[<span class="st">'nouns'</span>]:</span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>        nouns.extend(n)</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 불용어 제거</span></span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>    nouns <span class="op">=</span> [</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a>        word <span class="cf">for</span> word <span class="kw">in</span> nouns</span>
+<span id="cb26-38"><a href="#cb26-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(word) <span class="op">&gt;=</span> <span class="dv">2</span> <span class="kw">and</span> word <span class="kw">not</span> <span class="kw">in</span> stopwords</span>
+<span id="cb26-39"><a href="#cb26-39" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb26-40"><a href="#cb26-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-41"><a href="#cb26-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 빈도 계산</span></span>
+<span id="cb26-42"><a href="#cb26-42" aria-hidden="true" tabindex="-1"></a>    freq <span class="op">=</span> Counter(nouns)</span>
+<span id="cb26-43"><a href="#cb26-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-44"><a href="#cb26-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 상위 10개</span></span>
+<span id="cb26-45"><a href="#cb26-45" aria-hidden="true" tabindex="-1"></a>    top10 <span class="op">=</span> freq.most_common(<span class="dv">10</span>)</span>
+<span id="cb26-46"><a href="#cb26-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-47"><a href="#cb26-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 저장</span></span>
+<span id="cb26-48"><a href="#cb26-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word, count <span class="kw">in</span> top10:</span>
+<span id="cb26-49"><a href="#cb26-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-50"><a href="#cb26-50" aria-hidden="true" tabindex="-1"></a>        chapter_keywords.append({</span>
+<span id="cb26-51"><a href="#cb26-51" aria-hidden="true" tabindex="-1"></a>            <span class="st">'chapter'</span>: chapter,</span>
+<span id="cb26-52"><a href="#cb26-52" aria-hidden="true" tabindex="-1"></a>            <span class="st">'word'</span>: word,</span>
+<span id="cb26-53"><a href="#cb26-53" aria-hidden="true" tabindex="-1"></a>            <span class="st">'frequency'</span>: count</span>
+<span id="cb26-54"><a href="#cb26-54" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb26-55"><a href="#cb26-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-56"><a href="#cb26-56" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-57"><a href="#cb26-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 데이터프레임 생성</span></span>
+<span id="cb26-58"><a href="#cb26-58" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-59"><a href="#cb26-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-60"><a href="#cb26-60" aria-hidden="true" tabindex="-1"></a>chapter_keyword_df <span class="op">=</span> pd.DataFrame(chapter_keywords)</span>
+<span id="cb26-61"><a href="#cb26-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-62"><a href="#cb26-62" aria-hidden="true" tabindex="-1"></a>display(chapter_keyword_df.head(<span class="dv">20</span>))</span>
+<span id="cb26-63"><a href="#cb26-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-64"><a href="#cb26-64" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-65"><a href="#cb26-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 특정 키워드 장별 변화</span></span>
+<span id="cb26-66"><a href="#cb26-66" aria-hidden="true" tabindex="-1"></a><span class="co"># -----------------------------------------------------</span></span>
+<span id="cb26-67"><a href="#cb26-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-68"><a href="#cb26-68" aria-hidden="true" tabindex="-1"></a>target_word <span class="op">=</span> <span class="st">'아브라함'</span></span>
+<span id="cb26-69"><a href="#cb26-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-70"><a href="#cb26-70" aria-hidden="true" tabindex="-1"></a>target_df <span class="op">=</span> (</span>
+<span id="cb26-71"><a href="#cb26-71" aria-hidden="true" tabindex="-1"></a>    chapter_keyword_df[</span>
+<span id="cb26-72"><a href="#cb26-72" aria-hidden="true" tabindex="-1"></a>        chapter_keyword_df[<span class="st">'word'</span>] <span class="op">==</span> target_word</span>
+<span id="cb26-73"><a href="#cb26-73" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb26-74"><a href="#cb26-74" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-75"><a href="#cb26-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-76"><a href="#cb26-76" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">6</span>))</span>
+<span id="cb26-77"><a href="#cb26-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-78"><a href="#cb26-78" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb26-79"><a href="#cb26-79" aria-hidden="true" tabindex="-1"></a>    target_df[<span class="st">'chapter'</span>],</span>
+<span id="cb26-80"><a href="#cb26-80" aria-hidden="true" tabindex="-1"></a>    target_df[<span class="st">'frequency'</span>],</span>
+<span id="cb26-81"><a href="#cb26-81" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">'o'</span></span>
+<span id="cb26-82"><a href="#cb26-82" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-83"><a href="#cb26-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-84"><a href="#cb26-84" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'장'</span>)</span>
+<span id="cb26-85"><a href="#cb26-85" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'빈도수'</span>)</span>
+<span id="cb26-86"><a href="#cb26-86" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="ss">f'</span><span class="sc">{</span>target_word<span class="sc">}</span><span class="ss"> 장별 등장 빈도 변화'</span>)</span>
+<span id="cb26-87"><a href="#cb26-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-88"><a href="#cb26-88" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb26-89"><a href="#cb26-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-90"><a href="#cb26-90" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>    chapter word    frequency
+0   1   모든  12
+1   1   종류  10
+2   1   궁창  9
+3   1   하늘  8
+4   1   저녁  6
+5   1   아침  6
+6   1   그대로 6
+7   1   광명체 5
+8   1   번성  5
+9   1   창조  4
+10  2   여호와 11
+11  2   아담  9
+12  2   동산  5
+13  2   나무  5
+14  2   이름  5
+15  2   모든  4
+16  2   에덴  3
+17  2   각종  3
+18  2   취하  3
+19  2   천지  2</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_frequency.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</section>
+<section id="토픽모델링-lda" class="level5">
+<h5 class="anchored" data-anchor-id="토픽모델링-lda">4. 토픽모델링 LDA</h5>
+<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 토픽모델링: LDA</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install gensim pyLDAvis</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gensim <span class="im">import</span> corpora</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> gensim.models.ldamodel <span class="im">import</span> LdaModel</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 불용어</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> [</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'하나님'</span>, <span class="st">'이르시되'</span>, <span class="st">'그'</span>, <span class="st">'저'</span>, <span class="st">'것'</span>,</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'수'</span>, <span class="st">'자기'</span>, <span class="st">'때'</span>, <span class="st">'곳'</span>, <span class="st">'날'</span>, <span class="st">'사람'</span>,</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'모든'</span>, <span class="st">'그대로'</span>, <span class="st">'여호와'</span></span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 명사 기반 토픽 분석용 단어 리스트</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>texts_for_lda <span class="op">=</span> []</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nouns <span class="kw">in</span> df_nlp[<span class="st">'nouns'</span>]:</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> [</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>        w <span class="cf">for</span> w <span class="kw">in</span> nouns</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(w) <span class="op">&gt;=</span> <span class="dv">2</span> <span class="kw">and</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>    texts_for_lda.append(words)</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 사전과 말뭉치 생성</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>dictionary <span class="op">=</span> corpora.Dictionary(texts_for_lda)</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>dictionary.filter_extremes(no_below<span class="op">=</span><span class="dv">2</span>, no_above<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a>corpus <span class="op">=</span> [dictionary.doc2bow(text) <span class="cf">for</span> text <span class="kw">in</span> texts_for_lda]</span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a><span class="co"># LDA 모델</span></span>
+<span id="cb28-35"><a href="#cb28-35" aria-hidden="true" tabindex="-1"></a>num_topics <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb28-36"><a href="#cb28-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a>lda_model <span class="op">=</span> LdaModel(</span>
+<span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>    corpus<span class="op">=</span>corpus,</span>
+<span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>    id2word<span class="op">=</span>dictionary,</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    num_topics<span class="op">=</span>num_topics,</span>
+<span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>    passes<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>    iterations<span class="op">=</span><span class="dv">200</span></span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a><span class="co"># 토픽 출력</span></span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> topic_id, topic_words <span class="kw">in</span> lda_model.print_topics(num_words<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Topic </span><span class="sc">{</span>topic_id<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(topic_words)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 문서별 대표 토픽 추출</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_dominant_topic(bow):</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    topics <span class="op">=</span> lda_model.get_document_topics(bow)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(topics) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span>, <span class="dv">0</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    topic_id, prob <span class="op">=</span> <span class="bu">max</span>(topics, key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="dv">1</span>])</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> topic_id, prob</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>topic_results <span class="op">=</span> [get_dominant_topic(bow) <span class="cf">for</span> bow <span class="kw">in</span> corpus]</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>df_nlp[<span class="st">'lda_topic'</span>] <span class="op">=</span> [x[<span class="dv">0</span>] <span class="cf">for</span> x <span class="kw">in</span> topic_results]</span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>df_nlp[<span class="st">'lda_topic_prob'</span>] <span class="op">=</span> [x[<span class="dv">1</span>] <span class="cf">for</span> x <span class="kw">in</span> topic_results]</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>df_nlp[[<span class="st">'chapter'</span>, <span class="st">'verse'</span>, <span class="st">'text_clean'</span>, <span class="st">'lda_topic'</span>, <span class="st">'lda_topic_prob'</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+chapter verse   text_clean  lda_topic   lda_topic_prob
+0   1   1   태초에 하나님이 천지를 창조하시니라 3   0.399643
+1   1   2   땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라  2   0.599910
+2   1   3   하나님이 이르시되 빛이 있으라 하시니 빛이 있었고 0   0.200000
+3   1   4   빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사   0   0.732417
+4   1   5   하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이 되니 이...   4   0.839185</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>chapter_topic <span class="op">=</span> (</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    df_nlp</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    .groupby([<span class="st">'chapter'</span>, <span class="st">'lda_topic'</span>])</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    .size()</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    .reset_index(name<span class="op">=</span><span class="st">'count'</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>display(chapter_topic.head())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>chapter lda_topic   count
+0   1   0   5
+1   1   1   4
+2   1   2   3
+3   1   3   1
+4   1   4   18</code></pre>
+</section>
+<section id="문장-임베딩-bert" class="level5">
+<h5 class="anchored" data-anchor-id="문장-임베딩-bert">5. 문장 임베딩 BERT</h5>
+<div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 문장 임베딩: BERT / Sentence-BERT</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install sentence<span class="op">-</span>transformers</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 한국어 문장 임베딩 모델</span></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SentenceTransformer(<span class="st">'jhgan/ko-sroberta-multitask'</span>)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>sentences <span class="op">=</span> df_nlp[<span class="st">'text_clean'</span>].fillna(<span class="st">''</span>).tolist()</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>embeddings <span class="op">=</span> model.encode(</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    sentences,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    batch_size<span class="op">=</span><span class="dv">32</span>,</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>    show_progress_bar<span class="op">=</span><span class="va">True</span></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(embeddings))</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(embeddings.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>embedding_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    embeddings,</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>df_nlp.index</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>embedding_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+0   1   2   3   4   5   6   7   8   9   ... 758 759 760 761 762 763 764 765 766 767
+0   0.657276    -0.546065   0.575320    -0.760937   0.052703    -0.351884   0.611507    -0.762040   0.006926    -0.484765   ... -0.554226   -0.117167   0.219536    -0.019683   0.214115    -0.203540   -0.255385   -0.475184   -0.099631   -0.493210
+1   -0.184553   -0.351501   0.380491    -0.427170   -0.079727   -0.090988   0.187182    -0.844924   0.293355    -0.017009   ... 0.120744    0.434955    0.002489    -0.019682   -0.349013   -0.045691   -0.147259   -0.075594   0.246253    0.380888
+2   0.758370    -0.652263   1.108464    -0.855262   0.231008    -0.236906   0.378050    -0.542576   -0.106845   -0.343743   ... 0.148581    0.577243    -0.050418   -0.080464   -0.240892   -0.304653   -0.135681   -0.544312   0.023646    -0.319404
+3   0.434095    -0.498303   0.427033    -0.359444   -0.100046   -0.019342   0.540328    -0.493921   -0.261359   -0.635831   ... 0.172899    0.765188    -0.364649   0.066002    0.201110    -0.355595   -0.298475   -0.571206   -0.213117   -0.488300
+4   0.408631    -0.339974   0.427144    -0.245519   0.395403    -0.183349   0.022358    -0.597163   -0.100317   -0.637899   ... 0.512158    0.185646    -0.150315   -0.027679   -0.667175   -0.317640   -0.279046   -0.577720   -0.074026   -0.081071</code></pre>
+</section>
+<section id="군집화" class="level5">
+<h5 class="anchored" data-anchor-id="군집화">6. 군집화</h5>
+<div class="sourceCode" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 문장 임베딩 기반 군집화</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> embeddings</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>cluster_results <span class="op">=</span> []</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">11</span>):</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    kmeans <span class="op">=</span> KMeans(</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>        n_clusters<span class="op">=</span>k,</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>        random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>        n_init<span class="op">=</span><span class="dv">10</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> kmeans.fit_predict(X)</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    score <span class="op">=</span> silhouette_score(X, labels)</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    cluster_results.append({</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">'k'</span>: k,</span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">'silhouette_score'</span>: score</span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>cluster_score_df <span class="op">=</span> pd.DataFrame(cluster_results)</span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>display(cluster_score_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+k   silhouette_score
+0   2   0.041970
+1   3   0.036374
+2   4   0.041329
+3   5   0.039459
+4   6   0.039548
+5   7   0.041848
+6   8   0.041340
+7   9   0.040706
+8   10  0.044076</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 실루엣 점수 시각화</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>plt.plot(</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    cluster_score_df[<span class="st">'k'</span>],</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    cluster_score_df[<span class="st">'silhouette_score'</span>],</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="st">'o'</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'군집 수 k'</span>)</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Silhouette Score'</span>)</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'군집 수별 실루엣 점수'</span>)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_silhouette.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#최종 군집화</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 원하는 군집 수 선택</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>best_k <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    n_clusters<span class="op">=</span>best_k,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span>,</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    n_init<span class="op">=</span><span class="dv">10</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>df_nlp[<span class="st">'cluster'</span>] <span class="op">=</span> kmeans.fit_predict(X)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>df_nlp[[<span class="st">'chapter'</span>, <span class="st">'verse'</span>, <span class="st">'text_clean'</span>, <span class="st">'lda_topic'</span>, <span class="st">'cluster'</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+chapter verse   text_clean  lda_topic   cluster
+0   1   1   태초에 하나님이 천지를 창조하시니라 3   2
+1   1   2   땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라  2   2
+2   1   3   하나님이 이르시되 빛이 있으라 하시니 빛이 있었고 0   2
+3   1   4   빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사   0   2
+4   1   5   하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이 되니 이...   4   2</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 군집별 대표 문장 보기</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> <span class="bu">sorted</span>(df_nlp[<span class="st">'cluster'</span>].unique()):</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">=============================="</span>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Cluster </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"=============================="</span>)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    sample_texts <span class="op">=</span> (</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>        df_nlp[df_nlp[<span class="st">'cluster'</span>] <span class="op">==</span> c]</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>        [[<span class="st">'chapter'</span>, <span class="st">'verse'</span>, <span class="st">'text_clean'</span>]]</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>        .head(<span class="dv">10</span>)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    display(sample_texts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+==============================
+Cluster 0
+==============================
+chapter verse   text_clean
+41  2   11  첫째의 이름은 비손이라 금이 있는 하윌라 온 땅을 둘렀으며
+75  3   20  아담이 그의 아내의 이름을 하와라 불렀으니 그는 모든 산 자의 어머니가 됨이더라
+81  4   2   그가 또 가인의 아우 아벨을 낳았는데 아벨은 양 치는 자였고 가인은 농사하는 자였더라
+96  4   17  아내와 동침하매 그가 임신하여 에녹을 낳은지라 가인이 성을 쌓고 그의 아들의 이름으...
+97  4   18  에녹이 이랏을 낳고 이랏은 므후야엘을 낳고 므후야엘은 므드사엘을 낳고 므드사엘은 라...
+98  4   19  라멕이 두 아내를 맞이하였으니 하나의 이름은 아다요 하나의 이름은 씰라였더라
+99  4   20  아다는 야발을 낳았으니 그는 장막에 거주하며 가축을 치는 자의 조상이 되었고
+101 4   22  씰라는 두발가인을 낳았으니 그는 구리와 쇠로 여러 가지 기구를 만드는 자요 두발가인...
+104 4   25  아담이 다시 자기 아내와 동침하매 그가 아들을 낳아 그의 이름을 셋이라 하였으니 이...
+105 4   26  셋도 아들을 낳고 그의 이름을 에노스라 하였으며 그 때에 사람들이 비로소 여호와의 ...
+
+==============================
+Cluster 1
+==============================
+chapter verse   text_clean
+64  3   9   여호와 하나님이 아담을 부르시며 그에게 이르시되 네가 어디 있느냐
+76  3   21  여호와 하나님이 아담과 그의 아내를 위하여 가죽옷을 지어 입히시니라
+80  4   1   아담이 그의 아내 하와와 동침하매 하와가 임신하여 가인을 낳고 이르되 내가 여호 와...
+83  4   4   아벨은 자기도 양의 첫 새끼와 그 기름으로 드렸더니 여호와께서 아벨과 그의 제물은 ...
+85  4   6   여호와께서 가인에게 이르시되 네가 분하여 함은 어찌 됨이며 안색이 변함은 어찌 됨이냐
+95  4   16  가인이 여호와 앞을 떠나서 에덴 동쪽 놋 땅에 거주하더니
+134 5   29  이름을 노아라 하여 이르되 여호와께서 땅을 저주하시므로 수고롭게 일하는 우리를 이 ...
+145 6   8   그러나 노아는 여호와께 은혜를 입었더라
+160 7   1   여호와께서 노아에게 이르시되 너와 네 온 집은 방주로 들어가라 이 세대에서 네가 내...
+198 8   15  하나님이 노아에게 말씀하여 이르시되
+
+==============================
+Cluster 2
+==============================
+chapter verse   text_clean
+0   1   1   태초에 하나님이 천지를 창조하시니라
+1   1   2   땅이 혼돈하고 공허하며 흑암이 깊음 위에 있고 하나님의 영은 수면 위에 운행하시니라
+2   1   3   하나님이 이르시되 빛이 있으라 하시니 빛이 있었고
+3   1   4   빛이 하나님이 보시기에 좋았더라 하나님이 빛과 어둠을 나누사
+4   1   5   하나님이 빛을 낮이라 부르시고 어둠을 밤이라 부르시니라 저녁이 되고 아침이 되니 이...
+5   1   6   하나님이 이르시되 물 가운데에 궁창이 있어 물과 물로 나뉘라 하시고
+6   1   7   하나님이 궁창을 만드사 궁창 아래의 물과 궁창 위의 물로 나뉘게 하시니 그대로 되니라
+7   1   8   하나님이 궁창을 하늘이라 부르시니라 저녁이 되고 아침이 되니 이는 둘째 날이니라
+8   1   9   하나님이 이르시되 천하의 물이 한 곳으로 모이고 뭍이 드러나라 하시니 그대로 되니라
+9   1   10  하나님이 뭍을 땅이라 부르시고 모인 물을 바다라 부르시니 하나님이 보시기에 좋았더라
+
+==============================
+Cluster 3
+==============================
+chapter verse   text_clean
+48  2   18  여호와 하나님이 이르시되 사람이 혼자 사는 것이 좋지 아니하니 내가 그를 위하여 돕...
+53  2   23  아담이 이르되 이는 내 뼈 중의 뼈요 살 중의 살이라 이것을 남자에게서 취하였은즉 ...
+54  2   24  이러므로 남자가 부모를 떠나 그의 아내와 합하여 둘이 한 몸을 이룰지로다
+59  3   4   뱀이 여자에게 이르되 너희가 결코 죽지 아니하리라
+66  3   11  이르시되 누가 너의 벗었음을 네게 알렸느냐 내가 네게 먹지 말라 명한 그 나무 열매...
+70  3   15  내가 너로 여자와 원수가 되게 하고 네 후손도 여자의 후손과 원수가 되게 하리니 여...
+71  3   16  또 여자에게 이르시되 내가 네게 임신하는 고통을 크게 더하리니 네가 수고하고 자식을...
+84  4   5   가인과 그의 제물은 받지 아니하신지라 가인이 몹시 분하여 안색이 변하니
+86  4   7   네가 선을 행하면 어찌 낯을 들지 못하겠느냐 선을 행하지 아니하면 죄가 문에 엎드려...
+87  4   8   가인이 그의 아우 아벨에게 말하고 그들이 들에 있을 때에 가인이 그의 아우 아벨을 ...
+
+==============================
+Cluster 4
+==============================
+chapter verse   text_clean
+854 30  24  그 이름을 요셉이라 하니 여호와는 다시 다른 아들을 내게 더하시기를 원하노라 하였더라
+855 30  25  라헬이 요셉을 낳았을 때에 야곱이 라반에게 이르되 나를 보내어 내 고향 나의 땅으로...
+967 33  7   레아도 그의 자식들과 더불어 나아와 절하고 그 후에 요셉이 라헬과 더불어 나아와 절하니
+1035    35  24  라헬의 아들들은 요셉과 베냐민이며
+1085    37  2   야곱의 족보는 이러하니라 요셉이 십칠 세의 소년으로서 그의 형들과 함께 양을 칠 때...
+1086    37  3   요셉은 노년에 얻은 아들이므로 이스라엘이 여러 아들들보다 그를 더 사랑하므로 그를 ...
+1088    37  5   요셉이 꿈을 꾸고 자기 형들에게 말하매 그들이 그를 더욱 미워하였더라
+1089    37  6   요셉이 그들에게 이르되 청하건대 내가 꾼 꿈을 들으시오
+1092    37  9   요셉이 다시 꿈을 꾸고 그의 형들에게 말하여 이르되 내가 또 꿈을 꾼즉 해와 달과 ...
+1096    37  13  이스라엘이 요셉에게 이르되 네 형들이 세겜에서 양을 치지 아니하느냐 너를 그들에게로...</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#군집별 주요 명사</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>cluster_keywords <span class="op">=</span> []</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> <span class="bu">sorted</span>(df_nlp[<span class="st">'cluster'</span>].unique()):</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> df_nlp[df_nlp[<span class="st">'cluster'</span>] <span class="op">==</span> c]</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> []</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> nouns <span class="kw">in</span> temp[<span class="st">'nouns'</span>]:</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>        words.extend([</span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>            w <span class="cf">for</span> w <span class="kw">in</span> nouns</span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="bu">len</span>(w) <span class="op">&gt;=</span> <span class="dv">2</span> <span class="kw">and</span> w <span class="kw">not</span> <span class="kw">in</span> stopwords</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>    freq <span class="op">=</span> Counter(words).most_common(<span class="dv">10</span>)</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-20"><a href="#cb43-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word, count <span class="kw">in</span> freq:</span>
+<span id="cb43-21"><a href="#cb43-21" aria-hidden="true" tabindex="-1"></a>        cluster_keywords.append({</span>
+<span id="cb43-22"><a href="#cb43-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">'cluster'</span>: c,</span>
+<span id="cb43-23"><a href="#cb43-23" aria-hidden="true" tabindex="-1"></a>            <span class="st">'word'</span>: word,</span>
+<span id="cb43-24"><a href="#cb43-24" aria-hidden="true" tabindex="-1"></a>            <span class="st">'frequency'</span>: count</span>
+<span id="cb43-25"><a href="#cb43-25" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb43-26"><a href="#cb43-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-27"><a href="#cb43-27" aria-hidden="true" tabindex="-1"></a>cluster_keyword_df <span class="op">=</span> pd.DataFrame(cluster_keywords)</span>
+<span id="cb43-28"><a href="#cb43-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-29"><a href="#cb43-29" aria-hidden="true" tabindex="-1"></a>display(cluster_keyword_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>
+cluster word    frequency
+0   0   아들  100
+1   0   이름  46
+2   0   족속  44
+3   0   족장  42
+4   0   아내  36
+5   0   자녀  25
+6   0   자손  25
+7   0   아브람 23
+8   0   야곱  17
+9   0   애굽  15
+10  1   야곱  160
+11  1   아브라함    105
+12  1   아들  70
+13  1   이삭  67
+14  1   아버지 49
+15  1   이름  39
+16  1   라반  38
+17  1   아브람 34
+18  1   아내  33
+19  1   거기  33
+20  2   우리  30
+21  2   일곱  28
+22  2   너희  27
+23  2   나무  25
+24  2   하늘  22
+25  2   노아  21
+26  2   물이  19
+27  2   짐승  19
+28  2   하리  19
+29  2   종류  18
+30  3   우리  135
+31  3   아버지 115
+32  3   너희  98
+33  3   당신  63
+34  3   아들  54
+35  3   하리  34
+36  3   아내  33
+37  3   하라  26
+38  3   아우  21
+39  3   바로  21
+40  4   요셉  183
+41  4   애굽  42
+42  4   바로  41
+43  4   아버지 37
+44  4   너희  29
+45  4   아들  20
+46  4   우리  17
+47  4   이스라엘    14
+48  4   야곱  13
+49  4   당신  11</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 군집을 PCA 2차원 시각화</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>X_pca <span class="op">=</span> pca.fit_transform(X)</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>df_nlp[<span class="st">'pca1'</span>] <span class="op">=</span> X_pca[:, <span class="dv">0</span>]</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>df_nlp[<span class="st">'pca2'</span>] <span class="op">=</span> X_pca[:, <span class="dv">1</span>]</span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> <span class="bu">sorted</span>(df_nlp[<span class="st">'cluster'</span>].unique()):</span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a>    temp <span class="op">=</span> df_nlp[df_nlp[<span class="st">'cluster'</span>] <span class="op">==</span> c]</span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a>    plt.scatter(</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>        temp[<span class="st">'pca1'</span>],</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a>        temp[<span class="st">'pca2'</span>],</span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a>        label<span class="op">=</span><span class="ss">f'Cluster </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">'</span>,</span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a>        alpha<span class="op">=</span><span class="fl">0.7</span></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'PCA1'</span>)</span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'PCA2'</span>)</span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'창세기 문장 임베딩 기반 군집화'</span>)</span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>)</span>
+<span id="cb45-29"><a href="#cb45-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_embeding.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
