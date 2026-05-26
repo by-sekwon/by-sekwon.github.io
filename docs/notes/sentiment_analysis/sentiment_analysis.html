@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>sentiment_analysis – 세상 모든 통계 이야기</title>
+<title>감성분석 | 영엄문장 분석 – 세상 모든 통계 이야기</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -129,94 +164,90 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#chapter-1.-감성분석의-개념" id="toc-chapter-1.-감성분석의-개념" class="nav-link active" data-scroll-target="#chapter-1.-감성분석의-개념">Chapter 1. 감성분석의 개념</a>
+  <li><a href="#감성분석의-개념" id="toc-감성분석의-개념" class="nav-link active" data-scroll-target="#감성분석의-개념">1. 감성분석의 개념</a></li>
+  <li><a href="#자연어-처리nlp와-감성분석" id="toc-자연어-처리nlp와-감성분석" class="nav-link" data-scroll-target="#자연어-처리nlp와-감성분석">1. 자연어 처리(NLP)와 감성분석</a></li>
+  <li><a href="#감성분석의-활용-분야" id="toc-감성분석의-활용-분야" class="nav-link" data-scroll-target="#감성분석의-활용-분야">2. 감성분석의 활용 분야</a></li>
+  <li><a href="#감성분석-단계" id="toc-감성분석-단계" class="nav-link" data-scroll-target="#감성분석-단계">2. 감성분석 단계</a>
   <ul>
-  <li><a href="#자연어-처리nlp와-감성분석" id="toc-자연어-처리nlp와-감성분석" class="nav-link" data-scroll-target="#자연어-처리nlp와-감성분석">1.1 자연어 처리(NLP)와 감성분석</a></li>
-  <li><a href="#감성분석의-활용-분야" id="toc-감성분석의-활용-분야" class="nav-link" data-scroll-target="#감성분석의-활용-분야">1.2 감성분석의 활용 분야</a></li>
+  <li><a href="#데이터-수집-data-collection" id="toc-데이터-수집-data-collection" class="nav-link" data-scroll-target="#데이터-수집-data-collection">1. 데이터 수집 (Data Collection)</a></li>
+  <li><a href="#주관성-탐지-subjectivity-detection-data-cleansing" id="toc-주관성-탐지-subjectivity-detection-data-cleansing" class="nav-link" data-scroll-target="#주관성-탐지-subjectivity-detection-data-cleansing">2. 주관성 탐지 (Subjectivity Detection) — Data Cleansing</a></li>
+  <li><a href="#극성-탐지-polarity-detection-감성분석텍스트-마이닝" id="toc-극성-탐지-polarity-detection-감성분석텍스트-마이닝" class="nav-link" data-scroll-target="#극성-탐지-polarity-detection-감성분석텍스트-마이닝">3. 극성 탐지 (Polarity Detection) — 감성분석·텍스트 마이닝</a></li>
   </ul></li>
-  <li><a href="#chapter-2.-감성분석-단계" id="toc-chapter-2.-감성분석-단계" class="nav-link" data-scroll-target="#chapter-2.-감성분석-단계">Chapter 2. 감성분석 단계</a>
-  <ul>
-  <li><a href="#데이터-수집-data-collection" id="toc-데이터-수집-data-collection" class="nav-link" data-scroll-target="#데이터-수집-data-collection">2.1 데이터 수집 (Data Collection)</a></li>
-  <li><a href="#주관성-탐지-subjectivity-detection-data-cleansing" id="toc-주관성-탐지-subjectivity-detection-data-cleansing" class="nav-link" data-scroll-target="#주관성-탐지-subjectivity-detection-data-cleansing">2.2 주관성 탐지 (Subjectivity Detection) — Data Cleansing</a></li>
-  <li><a href="#극성-탐지-polarity-detection-감성분석텍스트-마이닝" id="toc-극성-탐지-polarity-detection-감성분석텍스트-마이닝" class="nav-link" data-scroll-target="#극성-탐지-polarity-detection-감성분석텍스트-마이닝">2.3 극성 탐지 (Polarity Detection) — 감성분석·텍스트 마이닝</a>
-  <ul class="collapse">
   <li><a href="#오피니언-정의-opinion-definition" id="toc-오피니언-정의-opinion-definition" class="nav-link" data-scroll-target="#오피니언-정의-opinion-definition">오피니언 정의 (Opinion Definition)</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#chapter-3.-방법론" id="toc-chapter-3.-방법론" class="nav-link" data-scroll-target="#chapter-3.-방법론">Chapter 3. 방법론</a>
+  <li><a href="#방법론" id="toc-방법론" class="nav-link" data-scroll-target="#방법론">3. 방법론</a>
   <ul>
-  <li><a href="#어휘-기반-감성분석-lexicon-based-규칙-기반" id="toc-어휘-기반-감성분석-lexicon-based-규칙-기반" class="nav-link" data-scroll-target="#어휘-기반-감성분석-lexicon-based-규칙-기반">3.1 어휘 기반 감성분석 (Lexicon-based) — 규칙 기반</a>
-  <ul class="collapse">
-  <li><a href="#텍스트-전처리-절차" id="toc-텍스트-전처리-절차" class="nav-link" data-scroll-target="#텍스트-전처리-절차">텍스트 전처리 절차</a></li>
-  <li><a href="#감성사전-구축-방법" id="toc-감성사전-구축-방법" class="nav-link" data-scroll-target="#감성사전-구축-방법">감성사전 구축 방법</a></li>
+  <li><a href="#어휘-기반-감성분석-lexicon-based-규칙-기반" id="toc-어휘-기반-감성분석-lexicon-based-규칙-기반" class="nav-link" data-scroll-target="#어휘-기반-감성분석-lexicon-based-규칙-기반">1. 어휘 기반 감성분석 (Lexicon-based) — 규칙 기반</a></li>
   </ul></li>
-  <li><a href="#머신러닝-감성분석" id="toc-머신러닝-감성분석" class="nav-link" data-scroll-target="#머신러닝-감성분석">3.2 머신러닝 감성분석</a>
-  <ul class="collapse">
-  <li><a href="#단계-특징-추출-feature-extraction" id="toc-단계-특징-추출-feature-extraction" class="nav-link" data-scroll-target="#단계-특징-추출-feature-extraction">1단계: 특징 추출 (Feature Extraction)</a></li>
+  <li><a href="#감성사전-구축-방법" id="toc-감성사전-구축-방법" class="nav-link" data-scroll-target="#감성사전-구축-방법">감성사전 구축 방법</a>
+  <ul>
+  <li><a href="#머신러닝-감성분석" id="toc-머신러닝-감성분석" class="nav-link" data-scroll-target="#머신러닝-감성분석">2. 머신러닝 감성분석</a></li>
+  </ul></li>
   <li><a href="#단계-학습-및-예측-training-prediction" id="toc-단계-학습-및-예측-training-prediction" class="nav-link" data-scroll-target="#단계-학습-및-예측-training-prediction">2단계: 학습 및 예측 (Training &amp; Prediction)</a></li>
-  <li><a href="#단계-예측-inference" id="toc-단계-예측-inference" class="nav-link" data-scroll-target="#단계-예측-inference">3단계: 예측 (Inference)</a></li>
-  </ul></li>
-  </ul></li>
-  <li><a href="#chapter-4.-딥러닝-감성분석" id="toc-chapter-4.-딥러닝-감성분석" class="nav-link" data-scroll-target="#chapter-4.-딥러닝-감성분석">Chapter 4. 딥러닝 감성분석</a>
+  <li><a href="#딥러닝-감성분석" id="toc-딥러닝-감성분석" class="nav-link" data-scroll-target="#딥러닝-감성분석">2. 딥러닝 감성분석</a>
   <ul>
-  <li><a href="#lstm-long-short-term-memory" id="toc-lstm-long-short-term-memory" class="nav-link" data-scroll-target="#lstm-long-short-term-memory">4.1 LSTM (Long Short-Term Memory)</a></li>
-  <li><a href="#transformer와-bert-기반-감성분석-심화" id="toc-transformer와-bert-기반-감성분석-심화" class="nav-link" data-scroll-target="#transformer와-bert-기반-감성분석-심화">4.2 Transformer와 BERT 기반 감성분석 ★ 심화</a>
-  <ul class="collapse">
-  <li><a href="#bert의-핵심-특징" id="toc-bert의-핵심-특징" class="nav-link" data-scroll-target="#bert의-핵심-특징">BERT의 핵심 특징</a></li>
-  <li><a href="#bert-기반-감성분석-모델-비교" id="toc-bert-기반-감성분석-모델-비교" class="nav-link" data-scroll-target="#bert-기반-감성분석-모델-비교">BERT 기반 감성분석 모델 비교</a></li>
-  <li><a href="#transformer-self-attention-원리" id="toc-transformer-self-attention-원리" class="nav-link" data-scroll-target="#transformer-self-attention-원리">Transformer Self-Attention 원리</a></li>
+  <li><a href="#lstm-long-short-term-memory" id="toc-lstm-long-short-term-memory" class="nav-link" data-scroll-target="#lstm-long-short-term-memory">1. LSTM (Long Short-Term Memory)</a></li>
+  <li><a href="#transformer와-bert-기반-감성분석-심화" id="toc-transformer와-bert-기반-감성분석-심화" class="nav-link" data-scroll-target="#transformer와-bert-기반-감성분석-심화">2. Transformer와 BERT 기반 감성분석 ★ 심화</a></li>
   </ul></li>
-  <li><a href="#최신-대형-언어-모델llm-기반-감성분석" id="toc-최신-대형-언어-모델llm-기반-감성분석" class="nav-link" data-scroll-target="#최신-대형-언어-모델llm-기반-감성분석">4.3 최신 대형 언어 모델(LLM) 기반 감성분석</a></li>
-  </ul></li>
-  <li><a href="#chapter-5.-python-실습-코드" id="toc-chapter-5.-python-실습-코드" class="nav-link" data-scroll-target="#chapter-5.-python-실습-코드">Chapter 5. Python 실습 코드</a>
+  <li><a href="#bert-기반-감성분석-모델-비교" id="toc-bert-기반-감성분석-모델-비교" class="nav-link" data-scroll-target="#bert-기반-감성분석-모델-비교">BERT 기반 감성분석 모델 비교</a>
   <ul>
-  <li><a href="#환경-설정" id="toc-환경-설정" class="nav-link" data-scroll-target="#환경-설정">5.1 환경 설정</a></li>
-  <li><a href="#vader를-이용한-영어-감성분석" id="toc-vader를-이용한-영어-감성분석" class="nav-link" data-scroll-target="#vader를-이용한-영어-감성분석">5.2 VADER를 이용한 영어 감성분석</a></li>
-  <li><a href="#konlpy를-이용한-한국어-전처리" id="toc-konlpy를-이용한-한국어-전처리" class="nav-link" data-scroll-target="#konlpy를-이용한-한국어-전처리">5.3 KoNLPy를 이용한 한국어 전처리</a></li>
-  <li><a href="#머신러닝-기반-감성분석-tf-idf-logistic-regression" id="toc-머신러닝-기반-감성분석-tf-idf-logistic-regression" class="nav-link" data-scroll-target="#머신러닝-기반-감성분석-tf-idf-logistic-regression">5.4 머신러닝 기반 감성분석 (TF-IDF + Logistic Regression)</a></li>
-  <li><a href="#bert-기반-감성분석-huggingface-transformers" id="toc-bert-기반-감성분석-huggingface-transformers" class="nav-link" data-scroll-target="#bert-기반-감성분석-huggingface-transformers">5.5 BERT 기반 감성분석 (HuggingFace Transformers)</a></li>
-  <li><a href="#워드클라우드-시각화" id="toc-워드클라우드-시각화" class="nav-link" data-scroll-target="#워드클라우드-시각화">5.6 워드클라우드 시각화</a></li>
+  <li><a href="#최신-대형-언어-모델llm-기반-감성분석" id="toc-최신-대형-언어-모델llm-기반-감성분석" class="nav-link" data-scroll-target="#최신-대형-언어-모델llm-기반-감성분석">3. 최신 대형 언어 모델(LLM) 기반 감성분석</a></li>
   </ul></li>
-  <li><a href="#chapter-6.-방법론-비교-및-선택-가이드" id="toc-chapter-6.-방법론-비교-및-선택-가이드" class="nav-link" data-scroll-target="#chapter-6.-방법론-비교-및-선택-가이드">Chapter 6. 방법론 비교 및 선택 가이드</a>
+  <li><a href="#파이썬-실습" id="toc-파이썬-실습" class="nav-link" data-scroll-target="#파이썬-실습">3. 파이썬 실습</a>
   <ul>
-  <li><a href="#방법론별-비교" id="toc-방법론별-비교" class="nav-link" data-scroll-target="#방법론별-비교">6.1 방법론별 비교</a></li>
-  <li><a href="#분석-목적별-방법론-선택-가이드" id="toc-분석-목적별-방법론-선택-가이드" class="nav-link" data-scroll-target="#분석-목적별-방법론-선택-가이드">6.2 분석 목적별 방법론 선택 가이드</a></li>
+  <li><a href="#방법론-비교-및-선택-가이드" id="toc-방법론-비교-및-선택-가이드" class="nav-link" data-scroll-target="#방법론-비교-및-선택-가이드">4. 방법론 비교 및 선택 가이드</a></li>
+  <li><a href="#분석-목적별-방법론-선택-가이드" id="toc-분석-목적별-방법론-선택-가이드" class="nav-link" data-scroll-target="#분석-목적별-방법론-선택-가이드">분석 목적별 방법론 선택 가이드</a></li>
   </ul></li>
-  <li><a href="#참고-문헌-및-자료" id="toc-참고-문헌-및-자료" class="nav-link" data-scroll-target="#참고-문헌-및-자료">참고 문헌 및 자료</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content column-page-left" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">감성분석 | 영엄문장 분석</h1>
+</div>
 
 
 
+<div class="quarto-title-meta column-page-left">
 
-<p>통계 사전</p>
-<p><strong>감 성 분 석</strong></p>
-<p><em>Sentiment Analysis</em></p>
-<p><strong>권세혁 교수</strong></p>
-<p>한남대학교 통계학과</p>
-<p>https://sites.google.com/view/wolfpack61</p>
-<section id="chapter-1.-감성분석의-개념" class="level1">
-<h1>Chapter 1. 감성분석의 개념</h1>
-<section id="자연어-처리nlp와-감성분석" class="level2">
-<h2 class="anchored" data-anchor-id="자연어-처리nlp와-감성분석">1.1 자연어 처리(NLP)와 감성분석</h2>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="감성분석의-개념" class="level4">
+<h4 class="anchored" data-anchor-id="감성분석의-개념">1. 감성분석의 개념</h4>
+</section>
+<section id="자연어-처리nlp와-감성분석" class="level4">
+<h4 class="anchored" data-anchor-id="자연어-처리nlp와-감성분석">1. 자연어 처리(NLP)와 감성분석</h4>
 <p>자연어 처리(NLP: Natural Language Processing)는 컴퓨터가 인간의 언어를 이해하고 처리할 수 있도록 하는 인공지능의 한 분야로, 일상생활과 머신러닝에서 매우 중요하게 활용된다. 스마트폰에서 문자를 입력할 때 단어를 자동으로 제안하거나 맞춤법 오류를 자동으로 수정하는 기능은 NLP와 머신러닝이 융합된 대표적인 예이다.</p>
 <p>텍스트 마이닝(text mining)으로도 불리는 감성분석(Sentiment Analysis)은 텍스트(문장)에 나타난 의견, 태도, 성향 등의 주관적인 정보를 추출하는 머신러닝 기법이다. 감성분석은 텍스트에서 긍정적이거나 부정적인 감정을 감지하여 텍스트 이면에 숨겨진 감정을 해석하는 자동화된 프로세스로, 텍스트의 극성(긍정, 부정, 중립)에 초점을 맞추는 것을 넘어서 특정 느낌과 감정(화남, 행복, 슬픔 등), 응급상황 및 의도까지 감지할 수 있다.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">📌 사례: 2012년 미국 대통령 선거에서 오바마 캠프는 선거 2년 전부터 빅데이터 팀을 구성하여 나이·성별·지역별 사회경제 지표뿐만 아니라 개인의 정치 성향, 취미, 관심 분야가 담긴 소셜 데이터를 수집·수치화하여 선거 전략 수립의 근거로 활용하였다.</td>
+<td style="text-align: left;">📌 사례: 2012년 미국 대통령 선거에서 오바마 캠프는 선거 2년 전부터</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">빅데이터 팀을 구성하여 나이·성별·지역별 사회경제 지표뿐만 아니라 개인의</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">정치 성향, 취미, 관심 분야가 담긴 소셜 데이터를 수집·수치화하여 선거</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">전략 수립의 근거로 활용하였다.</td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="감성분석의-활용-분야" class="level2">
-<h2 class="anchored" data-anchor-id="감성분석의-활용-분야">1.2 감성분석의 활용 분야</h2>
+<section id="감성분석의-활용-분야" class="level4">
+<h4 class="anchored" data-anchor-id="감성분석의-활용-분야">2. 감성분석의 활용 분야</h4>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 32%">
@@ -259,17 +290,24 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-</section>
-<section id="chapter-2.-감성분석-단계" class="level1">
-<h1>Chapter 2. 감성분석 단계</h1>
-<p><img src="media/image1.png" style="width:3.65278in;height:3.65278in"></p>
-<p><img src="media/image2.png" style="width:5.51389in;height:1.77778in"></p>
-<section id="데이터-수집-data-collection" class="level2">
-<h2 class="anchored" data-anchor-id="데이터-수집-data-collection">2.1 데이터 수집 (Data Collection)</h2>
+<section id="감성분석-단계" class="level3">
+<h3 class="anchored" data-anchor-id="감성분석-단계">2. 감성분석 단계</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_analysis_contents.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_analysis_contents02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%"></p>
+</figure>
+</div>
+<section id="데이터-수집-data-collection" class="level4">
+<h4 class="anchored" data-anchor-id="데이터-수집-data-collection">1. 데이터 수집 (Data Collection)</h4>
 <p>인터넷 상의 자유게시판, 제품 만족도 평가 같은 공개 데이터 소스뿐만 아니라 블로그, 유튜브, 트위터, 페이스북과 같은 UCC 데이터 및 소셜 네트워크 사이트에서도 데이터를 수집할 수 있다. 감성분석 기술을 적용할 데이터를 수집하기 위해서는 일반적으로 검색 엔진이나 크롤러(crawler)를 활용한다.</p>
 </section>
-<section id="주관성-탐지-subjectivity-detection-data-cleansing" class="level2">
-<h2 class="anchored" data-anchor-id="주관성-탐지-subjectivity-detection-data-cleansing">2.2 주관성 탐지 (Subjectivity Detection) — Data Cleansing</h2>
+<section id="주관성-탐지-subjectivity-detection-data-cleansing" class="level4">
+<h4 class="anchored" data-anchor-id="주관성-탐지-subjectivity-detection-data-cleansing">2. 주관성 탐지 (Subjectivity Detection) — Data Cleansing</h4>
 <p>텍스트 데이터를 수집한 뒤에는 감성분석에 사용할 텍스트 요소만 분리하는 작업이 필요하다. 웹에서 수집된 텍스트 중 '감성'과 무관한 요소를 제거하고, 다음 단계를 거쳐 데이터를 정제한다.</p>
 <ul>
 <li><p><strong>불용어 제거:</strong> a, and, or, but, how, what 등 의미적 가치가 낮은 단어를 제거한다.</p></li>
@@ -277,9 +315,11 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>형태소 분석:</strong> 단어를 기본 형태(원형)로 변환하여 분석 준비를 완료한다.</p></li>
 </ul>
 </section>
-<section id="극성-탐지-polarity-detection-감성분석텍스트-마이닝" class="level2">
-<h2 class="anchored" data-anchor-id="극성-탐지-polarity-detection-감성분석텍스트-마이닝">2.3 극성 탐지 (Polarity Detection) — 감성분석·텍스트 마이닝</h2>
+<section id="극성-탐지-polarity-detection-감성분석텍스트-마이닝" class="level4">
+<h4 class="anchored" data-anchor-id="극성-탐지-polarity-detection-감성분석텍스트-마이닝">3. 극성 탐지 (Polarity Detection) — 감성분석·텍스트 마이닝</h4>
 <p>텍스트(단어)가 '긍정'인지 '부정'인지를 판단하는 단계이다. 감성분석에서는 텍스트 안에 있는 긍정적·부정적 단어를 탐지하고 이를 정량화한 뒤 통계적 기법을 적용한다. 문서에서 각 단어가 나타나는 '빈도'나 '긍정/부정' 속성에 따라 점수나 가중치를 부여한 후, 각 단어 점수의 총합이나 평균을 구해 전체 텍스트가 긍정적인지 부정적인지 판별한다.</p>
+</section>
+</section>
 <section id="오피니언-정의-opinion-definition" class="level3">
 <h3 class="anchored" data-anchor-id="오피니언-정의-opinion-definition">오피니언 정의 (Opinion Definition)</h3>
 <p>문서에서 의견을 찾아내는 과정으로, 분석에 필요한 4가지 요소는 다음과 같다.</p>
@@ -290,13 +330,15 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>시점(Time):</strong> 의견이 표현된 시간</p></li>
 </ul>
 </section>
-</section>
-</section>
-<section id="chapter-3.-방법론" class="level1">
-<h1>Chapter 3. 방법론</h1>
-<p><img src="media/image3.png" style="width:6.51806in;height:3.94306in"></p>
-<section id="어휘-기반-감성분석-lexicon-based-규칙-기반" class="level2">
-<h2 class="anchored" data-anchor-id="어휘-기반-감성분석-lexicon-based-규칙-기반">3.1 어휘 기반 감성분석 (Lexicon-based) — 규칙 기반</h2>
+<section id="방법론" class="level3">
+<h3 class="anchored" data-anchor-id="방법론">3. 방법론</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_analysis_method.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<section id="어휘-기반-감성분석-lexicon-based-규칙-기반" class="level4">
+<h4 class="anchored" data-anchor-id="어휘-기반-감성분석-lexicon-based-규칙-기반">1. 어휘 기반 감성분석 (Lexicon-based) — 규칙 기반</h4>
 <p>감성을 표현하는 긍정적·부정적 단어 목록인 감성사전(Sentiment Lexicon)을 구축하여 분석하는 방식이다. 감성사전은 문서의 각 단어가 가지는 긍정·부정의 정도를 −1(부정)부터 +1(긍정) 사이의 점수로 척도화한 레이블이다.</p>
 <p>분석 절차는 다음과 같다.</p>
 <ul>
@@ -304,8 +346,8 @@ ul.task-list li input[type="checkbox"] {
 <li><p>추출된 키워드에 긍·부정 레이블링(labeling)을 수행한다.</p></li>
 <li><p>감성사전을 이용하여 개체별 극성이나 긍·부정을 시각화하고, 연관어 분석을 통해 어떤 단어와 함께 사용되었는지 파악한다.</p></li>
 </ul>
-<section id="텍스트-전처리-절차" class="level3">
-<h3 class="anchored" data-anchor-id="텍스트-전처리-절차">텍스트 전처리 절차</h3>
+<section id="텍스트-전처리-절차" class="level5">
+<h5 class="anchored" data-anchor-id="텍스트-전처리-절차">텍스트 전처리 절차</h5>
 <ul>
 <li><p><strong>토큰화 (Tokenization):</strong> 텍스트를 토큰(token)이라는 작은 단위로 분리한다. 문장 토큰화는 텍스트를 문장 단위로, 단어 토큰화는 문장을 개별 단어로 분리한다.</p></li>
 <li><p><strong>표제어화 (Lemmatization):</strong> 단어를 기본형(어근)으로 변환한다. 예) is, are, am, was, been → be</p></li>
@@ -313,6 +355,8 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>부정어 처리 (Negation Handling):</strong> "not good"과 "not terrible"의 점수화 기준이 상이하다. "not good"이 "bad"와 동일한 점수인가? 부정어 처리는 감성분석의 핵심 난제이다.</p></li>
 <li><p><strong>형태소 분석 (Stemming):</strong> 단어의 접미사를 제거하여 기본 단어 형태로 변환하는 정규화 기술이다. PorterStemmer, SnowballStemmer 등의 라이브러리를 활용한다.</p></li>
 </ul>
+</section>
+</section>
 </section>
 <section id="감성사전-구축-방법" class="level3">
 <h3 class="anchored" data-anchor-id="감성사전-구축-방법">감성사전 구축 방법</h3>
@@ -357,13 +401,13 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="머신러닝-감성분석" class="level2">
-<h2 class="anchored" data-anchor-id="머신러닝-감성분석">3.2 머신러닝 감성분석</h2>
-<section id="단계-특징-추출-feature-extraction" class="level3">
-<h3 class="anchored" data-anchor-id="단계-특징-추출-feature-extraction">1단계: 특징 추출 (Feature Extraction)</h3>
+<section id="머신러닝-감성분석" class="level4">
+<h4 class="anchored" data-anchor-id="머신러닝-감성분석">2. 머신러닝 감성분석</h4>
+<section id="단계-특징-추출-feature-extraction" class="level5">
+<h5 class="anchored" data-anchor-id="단계-특징-추출-feature-extraction">1단계: 특징 추출 (Feature Extraction)</h5>
 <p>모델이 텍스트를 분류하려면 먼저 텍스트를 컴퓨터가 읽을 수 있는 형태로 변환해야 한다. 토큰화, 표제어 추출, 불용어 제거 과정을 거친 후, 벡터화(vectorization) 과정을 통해 텍스트를 숫자로 변환한다. 이러한 숫자 표현을 '특징(feature)'이라 하며, 대표적인 방법으로는 Bag-of-Words, Bag-of-Ngrams, TF-IDF 등이 있다. 최근에는 딥러닝 기반의 Word2Vec 알고리즘을 통해 단어 간 의미적 유사성을 반영한 벡터화가 가능해졌다.</p>
+</section>
+</section>
 </section>
 <section id="단계-학습-및-예측-training-prediction" class="level3">
 <h3 class="anchored" data-anchor-id="단계-학습-및-예측-training-prediction">2단계: 학습 및 예측 (Training &amp; Prediction)</h3>
@@ -374,17 +418,15 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>서포트 벡터 머신 (SVM):</strong> 고차원 텍스트 특징 공간에서 탁월한 성능을 보인다.</p></li>
 <li><p><strong>랜덤 포레스트 (Random Forest):</strong> 앙상블 기법으로 과적합을 방지하고 안정적인 성능을 제공한다.</p></li>
 </ul>
-</section>
-<section id="단계-예측-inference" class="level3">
-<h3 class="anchored" data-anchor-id="단계-예측-inference">3단계: 예측 (Inference)</h3>
+<section id="단계-예측-inference" class="level5">
+<h5 class="anchored" data-anchor-id="단계-예측-inference">3단계: 예측 (Inference)</h5>
 <p>새로운 텍스트가 모델에 입력되면 학습된 모델이 해당 텍스트의 감성 레이블을 예측한다. 규칙 기반 방식과 달리 사전 정의된 사전이 필요하지 않으며, 보다 복잡한 언어 패턴도 처리할 수 있다는 장점이 있다.</p>
 </section>
 </section>
-</section>
-<section id="chapter-4.-딥러닝-감성분석" class="level1">
-<h1>Chapter 4. 딥러닝 감성분석</h1>
-<section id="lstm-long-short-term-memory" class="level2">
-<h2 class="anchored" data-anchor-id="lstm-long-short-term-memory">4.1 LSTM (Long Short-Term Memory)</h2>
+<section id="딥러닝-감성분석" class="level3">
+<h3 class="anchored" data-anchor-id="딥러닝-감성분석">2. 딥러닝 감성분석</h3>
+<section id="lstm-long-short-term-memory" class="level4">
+<h4 class="anchored" data-anchor-id="lstm-long-short-term-memory">1. LSTM (Long Short-Term Memory)</h4>
 <p>딥러닝 알고리즘은 인간 두뇌의 구조와 기능에서 영감을 받은 접근 방식으로, 감성분석의 정확성과 효율성을 높이고 있다. 딥러닝에서 신경망은 오류가 발생했을 때 스스로 수정하는 방법을 학습할 수 있는 반면, 기존의 머신러닝에서는 사람의 개입을 통해 오류를 수정해야 한다.</p>
 <p>LSTM은 텍스트를 순차적으로 읽으며 작업과 관련된 정보를 저장하는 구조로, 세 가지 게이트(Gate)로 구성된다.</p>
 <ul>
@@ -403,16 +445,18 @@ ul.task-list li input[type="checkbox"] {
 </table></li>
 </ul>
 </section>
-<section id="transformer와-bert-기반-감성분석-심화" class="level2">
-<h2 class="anchored" data-anchor-id="transformer와-bert-기반-감성분석-심화">4.2 Transformer와 BERT 기반 감성분석 ★ 심화</h2>
+<section id="transformer와-bert-기반-감성분석-심화" class="level4">
+<h4 class="anchored" data-anchor-id="transformer와-bert-기반-감성분석-심화">2. Transformer와 BERT 기반 감성분석 ★ 심화</h4>
 <p>2017년 Google이 발표한 Transformer 아키텍처는 자기 주의 메커니즘(Self-Attention Mechanism)을 통해 문장 내 단어 간의 관계를 병렬로 처리한다. 이를 기반으로 2018년 Google이 개발한 BERT(Bidirectional Encoder Representations from Transformers)는 문장을 양방향(좌→우, 우→좌)으로 동시에 이해함으로써 기존 단방향 모델의 한계를 극복하였다.</p>
-<section id="bert의-핵심-특징" class="level3">
-<h3 class="anchored" data-anchor-id="bert의-핵심-특징">BERT의 핵심 특징</h3>
+<section id="bert의-핵심-특징" class="level5">
+<h5 class="anchored" data-anchor-id="bert의-핵심-특징">BERT의 핵심 특징</h5>
 <ul>
 <li><p><strong>양방향 문맥 이해:</strong> 문장의 앞뒤 맥락을 동시에 고려하여 단어의 의미를 정확하게 파악한다.</p></li>
 <li><p><strong>사전 학습 + 미세 조정 (Pre-training + Fine-tuning):</strong> 대규모 말뭉치로 사전 학습 후, 소규모 레이블 데이터로 미세 조정하여 다양한 태스크에 적용한다.</p></li>
 <li><p><strong>서브워드 토큰화 (WordPiece):</strong> 미등록 단어 문제를 해결하기 위해 단어를 서브워드 단위로 분리한다. 예) "playing" → "play" + "##ing"</p></li>
 </ul>
+</section>
+</section>
 </section>
 <section id="bert-기반-감성분석-모델-비교" class="level3">
 <h3 class="anchored" data-anchor-id="bert-기반-감성분석-모델-비교">BERT 기반 감성분석 모델 비교</h3>
@@ -457,9 +501,8 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-</section>
-<section id="transformer-self-attention-원리" class="level3">
-<h3 class="anchored" data-anchor-id="transformer-self-attention-원리">Transformer Self-Attention 원리</h3>
+<section id="transformer-self-attention-원리" class="level5">
+<h5 class="anchored" data-anchor-id="transformer-self-attention-원리">Transformer Self-Attention 원리</h5>
 <p>Self-Attention은 입력 시퀀스의 각 토큰이 다른 모든 토큰과의 관련성(주의 가중치)을 계산하는 메커니즘이다.</p>
 <table class="caption-top table">
 <colgroup>
@@ -498,9 +541,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-</section>
-<section id="최신-대형-언어-모델llm-기반-감성분석" class="level2">
-<h2 class="anchored" data-anchor-id="최신-대형-언어-모델llm-기반-감성분석">4.3 최신 대형 언어 모델(LLM) 기반 감성분석</h2>
+<section id="최신-대형-언어-모델llm-기반-감성분석" class="level4">
+<h4 class="anchored" data-anchor-id="최신-대형-언어-모델llm-기반-감성분석">3. 최신 대형 언어 모델(LLM) 기반 감성분석</h4>
 <p>GPT-4, Claude, LLaMA 등 대형 언어 모델(LLM)은 Few-shot 또는 Zero-shot 방식으로 감성분석에 활용된다. 별도의 파인튜닝 없이 프롬프트(prompt) 엔지니어링만으로도 높은 성능을 달성할 수 있으며, 특히 Aspect-Based Sentiment Analysis(ABSA) 등 세밀한 감성 분류에 효과적이다.</p>
 <table class="caption-top table">
 <colgroup>
@@ -540,248 +582,267 @@ ul.task-list li input[type="checkbox"] {
 </table>
 </section>
 </section>
-<section id="chapter-5.-python-실습-코드" class="level1">
-<h1>Chapter 5. Python 실습 코드</h1>
-<section id="환경-설정" class="level2">
-<h2 class="anchored" data-anchor-id="환경-설정">5.1 환경 설정</h2>
+<section id="파이썬-실습" class="level3">
+<h3 class="anchored" data-anchor-id="파이썬-실습">3. 파이썬 실습</h3>
+<section id="환경-설정" class="level5">
+<h5 class="anchored" data-anchor-id="환경-설정">환경 설정</h5>
 <p>다음 패키지를 설치한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p># 패키지 설치</p>
-<p>pip install nltk textblob vaderSentiment</p>
-<p>pip install transformers torch</p>
-<p>pip install konlpy # 한국어 형태소 분석</p>
-<p>pip install pandas matplotlib seaborn wordcloud</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 패키지 설치</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install nltk textblob vaderSentiment</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install transformers torch</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install konlpy <span class="co"># 한국어 형태소 분석</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pandas matplotlib seaborn wordcloud</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="vader를-이용한-영어-감성분석" class="level2">
-<h2 class="anchored" data-anchor-id="vader를-이용한-영어-감성분석">5.2 VADER를 이용한 영어 감성분석</h2>
+<section id="vader를-이용한-영어-감성분석" class="level5">
+<h5 class="anchored" data-anchor-id="vader를-이용한-영어-감성분석">VADER를 이용한 영어 감성분석</h5>
 <p>VADER(Valence Aware Dictionary and sEntiment Reasoner)는 소셜 미디어 텍스트에 최적화된 규칙 기반 감성분석 도구이다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer</p>
-<p>import pandas as pd</p>
-<p>analyzer = SentimentIntensityAnalyzer()</p>
-<p>texts = [</p>
-<p>"This product is absolutely amazing! Best purchase ever.",</p>
-<p>"Terrible quality. Completely disappointed with this item.",</p>
-<p>"The product arrived on time. It works as described.",</p>
-<p>"Not bad, but could be better. Average performance.",</p>
-<p>]</p>
-<p>results = []</p>
-<p>for text in texts:</p>
-<p>scores = analyzer.polarity_scores(text)</p>
-<p>sentiment = 'Positive' if scores['compound'] &gt;= 0.05 else \</p>
-<p>'Negative' if scores['compound'] &lt;= -0.05 else 'Neutral'</p>
-<p>results.append({</p>
-<p>'text': text[:40] + '...',</p>
-<p>'neg': scores['neg'],</p>
-<p>'neu': scores['neu'],</p>
-<p>'pos': scores['pos'],</p>
-<p>'compound': scores['compound'],</p>
-<p>'sentiment': sentiment</p>
-<p>})</p>
-<p>df = pd.DataFrame(results)</p>
-<p>print(df.to_string(index=False))</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># VADER를 이용한 영어 감성분석</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vaderSentiment.vaderSentiment <span class="im">import</span> SentimentIntensityAnalyzer</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>analyzer <span class="op">=</span> SentimentIntensityAnalyzer()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> [<span class="st">"This product is absolutely amazing! Best purchase ever."</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>         <span class="st">"Terrible quality. Completely disappointed with this item."</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">"The product arrived on time. It works as described."</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          <span class="st">"Not bad, but could be better. Average performance."</span>,]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> []</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> text <span class="kw">in</span> texts:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  scores <span class="op">=</span> analyzer.polarity_scores(text)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  sentiment <span class="op">=</span> <span class="st">'Positive'</span> <span class="cf">if</span> scores[<span class="st">'compound'</span>] <span class="op">&gt;=</span> <span class="fl">0.05</span> <span class="cf">else</span> <span class="op">\</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>              <span class="st">'Negative'</span> <span class="cf">if</span> scores[<span class="st">'compound'</span>] <span class="op">&lt;=</span> <span class="op">-</span><span class="fl">0.05</span> <span class="cf">else</span> <span class="st">'Neutral'</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  results.append({</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'text'</span>: text[:<span class="dv">40</span>] <span class="op">+</span> <span class="st">'...'</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'neg'</span>: scores[<span class="st">'neg'</span>],</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'neu'</span>: scores[<span class="st">'neu'</span>],</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pos'</span>: scores[<span class="st">'pos'</span>],</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'compound'</span>: scores[<span class="st">'compound'</span>],</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sentiment'</span>: sentiment</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(results)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.to_string(index<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>                                       text   neg   neu   pos  compound sentiment
+This product is absolutely amazing! Best... 0.000 0.404 0.596    0.8709  Positive
+Terrible quality. Completely disappointe... 0.565 0.435 0.000   -0.7574  Negative
+The product arrived on time. It works as... 0.000 1.000 0.000    0.0000   Neutral
+Not bad, but could be better. Average pe... 0.000 0.510 0.490    0.6980  Positive</code></pre>
 </section>
-<section id="konlpy를-이용한-한국어-전처리" class="level2">
-<h2 class="anchored" data-anchor-id="konlpy를-이용한-한국어-전처리">5.3 KoNLPy를 이용한 한국어 전처리</h2>
+<section id="konlpy를-이용한-한국어-전처리" class="level5">
+<h5 class="anchored" data-anchor-id="konlpy를-이용한-한국어-전처리">KoNLPy를 이용한 한국어 전처리</h5>
 <p>한국어 텍스트 감성분석을 위해 KoNLPy의 Okt(Open Korean Text) 형태소 분석기를 사용한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from konlpy.tag import Okt</p>
-<p>import re</p>
-<p>okt = Okt()</p>
-<p>def preprocess_korean(text):</p>
-<p># 특수문자 및 숫자 제거</p>
-<p>text = re.sub(r'[^가-힣\s]', ' ', text)</p>
-<p>text = re.sub(r'\s+', ' ', text).strip()</p>
-<p># 형태소 분석 (명사, 형용사, 동사만 추출)</p>
-<p>tokens = okt.pos(text, norm=True, stem=True)</p>
-<p>words = [word for word, pos in tokens</p>
-<p>if pos in ['Noun', 'Adjective', 'Verb']]</p>
-<p>return ' '.join(words)</p>
-<p># 한국어 불용어 목록</p>
-<p>stopwords = ['것', '수', '등', '및', '또는', '그리고', '하지만']</p>
-<p>texts = [</p>
-<p>"이 제품은 정말 훌륭합니다. 배송도 빠르고 품질도 최고예요!",</p>
-<p>"너무 실망스럽습니다. 품질이 형편없고 고객 서비스도 최악이에요.",</p>
-<p>"그냥 평범한 제품입니다. 딱히 나쁘지는 않아요.",</p>
-<p>]</p>
-<p>for text in texts:</p>
-<p>processed = preprocess_korean(text)</p>
-<p>print(f'원문: {text[:30]}...')</p>
-<p>print(f'전처리: {processed}')</p>
-<p>print()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KoNLPy를 이용한 한국어 전처리</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> preprocess_korean(text):</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 특수문자 및 숫자 제거</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  text <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="pp">[^가-힣</span><span class="dv">\s</span><span class="pp">]</span><span class="vs">'</span>, <span class="st">' '</span>, text)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  text <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="dv">\s</span><span class="op">+</span><span class="vs">'</span>, <span class="st">' '</span>, text).strip()</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 형태소 분석 (명사, 형용사, 동사만 추출)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  tokens <span class="op">=</span> okt.pos(text, norm<span class="op">=</span><span class="va">True</span>, stem<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  words <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> tokens</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pos <span class="kw">in</span> [<span class="st">'Noun'</span>, <span class="st">'Adjective'</span>, <span class="st">'Verb'</span>]]</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="st">' '</span>.join(words)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 한국어 불용어 목록</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>stopwords <span class="op">=</span> [<span class="st">'것'</span>, <span class="st">'수'</span>, <span class="st">'등'</span>, <span class="st">'및'</span>, <span class="st">'또는'</span>, <span class="st">'그리고'</span>, <span class="st">'하지만'</span>]</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>texts <span class="op">=</span> [<span class="st">"이 제품은 정말 훌륭합니다. 배송도 빠르고 품질도 최고예요!"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>         <span class="st">"너무 실망스럽습니다. 품질이 형편없고 고객 서비스도 최악이에요."</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>         <span class="st">"그냥 평범한 제품입니다. 딱히 나쁘지는 않아요."</span>,]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> text <span class="kw">in</span> texts:</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  processed <span class="op">=</span> preprocess_korean(text)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="ss">f'원문: </span><span class="sc">{</span>text[:<span class="dv">30</span>]<span class="sc">}</span><span class="ss">...'</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="ss">f'전처리: </span><span class="sc">{</span>processed<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>원문: 이 제품은 정말 훌륭합니다. 배송도 빠르고 품질도 최고...
+전처리: 이 제품 정말 훌륭하다 배송 빠르다 품질 최고
+
+원문: 너무 실망스럽습니다. 품질이 형편없고 고객 서비스도 최...
+전처리: 실망 스럽다 품질 형편 없다 고객 서비스 최악
+
+원문: 그냥 평범한 제품입니다. 딱히 나쁘지는 않아요....
+전처리: 그냥 평범하다 제품 이다 딱하다 나쁘다 않다</code></pre>
 </section>
-<section id="머신러닝-기반-감성분석-tf-idf-logistic-regression" class="level2">
-<h2 class="anchored" data-anchor-id="머신러닝-기반-감성분석-tf-idf-logistic-regression">5.4 머신러닝 기반 감성분석 (TF-IDF + Logistic Regression)</h2>
+<section id="머신러닝-기반-감성분석-tf-idf-logistic-regression" class="level5">
+<h5 class="anchored" data-anchor-id="머신러닝-기반-감성분석-tf-idf-logistic-regression">머신러닝 기반 감성분석 (TF-IDF + Logistic Regression)</h5>
 <p>Naver 영화 리뷰 데이터셋(NSMC)을 활용한 한국어 감성분석 분류 모델을 구축한다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>import pandas as pd</p>
-<p>from sklearn.model_selection import train_test_split</p>
-<p>from sklearn.feature_extraction.text import TfidfVectorizer</p>
-<p>from sklearn.linear_model import LogisticRegression</p>
-<p>from sklearn.metrics import classification_report, confusion_matrix</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>import seaborn as sns</p>
-<p># 데이터 로드 (NSMC: Naver Sentiment Movie Corpus)</p>
-<p># https://github.com/e9t/nsmc</p>
-<p>train_df = pd.read_csv('ratings_train.txt', sep='\t')</p>
-<p>test_df = pd.read_csv('ratings_test.txt', sep='\t')</p>
-<p># 결측치 제거</p>
-<p>train_df = train_df.dropna(subset=['document'])</p>
-<p>test_df = test_df.dropna(subset=['document'])</p>
-<p># TF-IDF 벡터화</p>
-<p>tfidf = TfidfVectorizer(max_features=30000, ngram_range=(1,2))</p>
-<p>X_train = tfidf.fit_transform(train_df['document'])</p>
-<p>X_test = tfidf.transform(test_df['document'])</p>
-<p>y_train = train_df['label']</p>
-<p>y_test = test_df['label']</p>
-<p># 로지스틱 회귀 모델 학습</p>
-<p>model = LogisticRegression(C=5, max_iter=1000, random_state=42)</p>
-<p>model.fit(X_train, y_train)</p>
-<p># 평가</p>
-<p>y_pred = model.predict(X_test)</p>
-<p>print(classification_report(y_test, y_pred,</p>
-<p>target_names=['부정(0)', '긍정(1)']))</p>
-<p># 혼동 행렬 시각화</p>
-<p>cm = confusion_matrix(y_test, y_pred)</p>
-<p>plt.figure(figsize=(6,5))</p>
-<p>sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',</p>
-<p>xticklabels=['부정','긍정'],</p>
-<p>yticklabels=['부정','긍정'])</p>
-<p>plt.title('혼동 행렬 (Confusion Matrix)')</p>
-<p>plt.ylabel('실제값'); plt.xlabel('예측값')</p>
-<p>plt.tight_layout(); plt.savefig('confusion_matrix.png', dpi=150)</p>
-<p>plt.show()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 머신러닝 기반 감성분석 (TF-IDF + Logistic Regression)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> classification_report, confusion_matrix</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 로드 (NSMC: Naver Sentiment Movie Corpus)</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># https://github.com/e9t/nsmc</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>train_df <span class="op">=</span> pd.read_csv(<span class="st">'/content/drive/MyDrive/eBook python codes/ratings_train.txt'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>test_df <span class="op">=</span> pd.read_csv(<span class="st">'/content/drive/MyDrive/eBook python codes/ratings_test.txt'</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측치 제거</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>train_df <span class="op">=</span> train_df.dropna(subset<span class="op">=</span>[<span class="st">'document'</span>])</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>test_df <span class="op">=</span> test_df.dropna(subset<span class="op">=</span>[<span class="st">'document'</span>])</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># TF-IDF 벡터화</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>tfidf <span class="op">=</span> TfidfVectorizer(max_features<span class="op">=</span><span class="dv">30000</span>, ngram_range<span class="op">=</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> tfidf.fit_transform(train_df[<span class="st">'document'</span>])</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> tfidf.transform(test_df[<span class="st">'document'</span>])</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> train_df[<span class="st">'label'</span>]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> test_df[<span class="st">'label'</span>]</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 로지스틱 회귀 모델 학습</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LogisticRegression(C<span class="op">=</span><span class="dv">5</span>, max_iter<span class="op">=</span><span class="dv">1000</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 평가</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_test)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(classification_report(y_test, y_pred,target_names<span class="op">=</span>[<span class="st">'negative(0)'</span>, <span class="st">'positive(1)'</span>]))</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 혼동 행렬 시각화</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>,<span class="dv">5</span>))</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>sns.heatmap(cm, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>,xticklabels<span class="op">=</span>[<span class="st">'negative'</span>,<span class="st">'positive'</span>],yticklabels<span class="op">=</span>[<span class="st">'negative'</span>,<span class="st">'positive'</span>])</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'(Confusion Matrix)'</span>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'state'</span>)<span class="op">;</span> plt.xlabel(<span class="st">'prediction'</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()<span class="op">;</span> plt.savefig(<span class="st">'confusion_matrix.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>              precision    recall  f1-score   support
+
+ negative(0)       0.78      0.84      0.81     24826
+ positive(1)       0.83      0.77      0.80     25171
+
+    accuracy                           0.80     49997
+   macro avg       0.81      0.80      0.80     49997
+weighted avg       0.81      0.80      0.80     49997</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_analysis_confusion.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
 </section>
-<section id="bert-기반-감성분석-huggingface-transformers" class="level2">
-<h2 class="anchored" data-anchor-id="bert-기반-감성분석-huggingface-transformers">5.5 BERT 기반 감성분석 (HuggingFace Transformers)</h2>
+<section id="bert-기반-감성분석-huggingface-transformers" class="level5">
+<h5 class="anchored" data-anchor-id="bert-기반-감성분석-huggingface-transformers">BERT 기반 감성분석 (HuggingFace Transformers)</h5>
 <p>HuggingFace의 pipeline을 사용하면 사전 학습된 BERT 모델을 손쉽게 활용할 수 있다.</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 100%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification</p>
-<p>import torch</p>
-<p># ── 방법 1: pipeline API (간단한 추론) ────────────────────────</p>
-<p># 영어 감성분석</p>
-<p>classifier_en = pipeline('sentiment-analysis',</p>
-<p>model='distilbert-base-uncased-finetuned-sst-2-english')</p>
-<p>texts_en = ['This movie is fantastic!',</p>
-<p>'I really hated the ending.',</p>
-<p>'It was okay, nothing special.']</p>
-<p>results = classifier_en(texts_en)</p>
-<p>for text, result in zip(texts_en, results):</p>
-<p>print(f'Text : {text}')</p>
-<p>print(f'Label : {result["label"]}, Score: {result["score"]:.4f}')</p>
-<p>print()</p>
-<p># ── 방법 2: KoELECTRA 한국어 감성분석 ─────────────────────────</p>
-<p>model_name = 'snunlp/KR-FinBert-SC' # 한국어 금융 감성 모델</p>
-<p>tokenizer = AutoTokenizer.from_pretrained(model_name)</p>
-<p>model = AutoModelForSequenceClassification.from_pretrained(model_name)</p>
-<p>def predict_sentiment(text):</p>
-<p>inputs = tokenizer(text, return_tensors='pt',</p>
-<p>truncation=True, max_length=512)</p>
-<p>with torch.no_grad():</p>
-<p>logits = model(**inputs).logits</p>
-<p>probs = torch.softmax(logits, dim=1).squeeze().tolist()</p>
-<p>labels = model.config.id2label</p>
-<p>return {labels[i]: round(p, 4) for i, p in enumerate(probs)}</p>
-<p>korean_texts = [</p>
-<p>"이번 분기 실적이 예상치를 크게 상회하며 주가가 급등했습니다.",</p>
-<p>"경기 침체 우려로 소비 심리가 위축되고 있습니다.",</p>
-<p>"신제품 출시 일정이 예정대로 진행될 것으로 보입니다.",</p>
-<p>]</p>
-<p>for text in korean_texts:</p>
-<p>result = predict_sentiment(text)</p>
-<p>print(f'텍스트: {text[:35]}...')</p>
-<p>print(f'결과 : {result}')</p>
-<p>print()</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline, AutoTokenizer, AutoModelForSequenceClassification</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ── 방법 1: pipeline API (간단한 추론) ────────────────────────</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 영어 감성분석</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>classifier_en <span class="op">=</span> pipeline(<span class="st">'sentiment-analysis'</span>, model<span class="op">=</span><span class="st">'distilbert-base-uncased-finetuned-sst-2-english'</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>texts_en <span class="op">=</span> [<span class="st">'This movie is fantastic!'</span>, <span class="st">'I really hated the ending.'</span>, <span class="st">'It was okay, nothing special.'</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> classifier_en(texts_en)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> text, result <span class="kw">in</span> <span class="bu">zip</span>(texts_en, results):</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="ss">f'Text&nbsp;&nbsp; : </span><span class="sc">{</span>text<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="ss">f'Label&nbsp; : </span><span class="sc">{</span>result[<span class="st">"label"</span>]<span class="sc">}</span><span class="ss">, Score: </span><span class="sc">{</span>result[<span class="st">"score"</span>]<span class="sc">:.4f}</span><span class="ss">'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># ── 방법 2: KoELECTRA 한국어 감성분석 ─────────────────────────</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>model_name <span class="op">=</span> <span class="st">'snunlp/KR-FinBert-SC'</span> <span class="co"># 한국어 금융 감성 모델</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> AutoTokenizer.from_pretrained(model_name)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> AutoModelForSequenceClassification.from_pretrained(model_name)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_sentiment(text):</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  inputs <span class="op">=</span> tokenizer(text, return_tensors<span class="op">=</span><span class="st">'pt'</span>, truncation<span class="op">=</span><span class="va">True</span>, max_length<span class="op">=</span><span class="dv">512</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> model(<span class="op">**</span>inputs).logits</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  probs <span class="op">=</span> torch.softmax(logits, dim<span class="op">=</span><span class="dv">1</span>).squeeze().tolist()</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> model.config.id2label</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> {labels[i]: <span class="bu">round</span>(p, <span class="dv">4</span>) <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(probs)}</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>korean_texts <span class="op">=</span> [ <span class="st">"이번 분기 실적이 예상치를 크게 상회하며 주가가 급등했습니다."</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">"경기 침체 우려로 소비 심리가 위축되고 있습니다."</span>,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"신제품 출시 일정이 예정대로 진행될 것으로 보입니다."</span>]</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> text <span class="kw">in</span> korean_texts:</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  result <span class="op">=</span> predict_sentiment(text)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="ss">f'텍스트: </span><span class="sc">{</span>text[:<span class="dv">35</span>]<span class="sc">}</span><span class="ss">...'</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(<span class="ss">f'결과&nbsp; : </span><span class="sc">{</span>result<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>BertForSequenceClassification LOAD REPORT from: snunlp/KR-FinBert-SC
+Key                          | Status     |  | 
+-----------------------------+------------+--+-
+bert.embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED    :can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+텍스트: 이번 분기 실적이 예상치를 크게 상회하며 주가가 급등했습니다....
+결과  : {'negative': 0.0001, 'neutral': 0.0001, 'positive': 0.9999}
+
+텍스트: 경기 침체 우려로 소비 심리가 위축되고 있습니다....
+결과  : {'negative': 0.8352, 'neutral': 0.1644, 'positive': 0.0004}
+
+텍스트: 신제품 출시 일정이 예정대로 진행될 것으로 보입니다....
+결과  : {'negative': 0.0007, 'neutral': 0.0012, 'positive': 0.9981}</code></pre>
 </section>
-<section id="워드클라우드-시각화" class="level2">
-<h2 class="anchored" data-anchor-id="워드클라우드-시각화">5.6 워드클라우드 시각화</h2>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 101%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td><p>from wordcloud import WordCloud</p>
-<p>import matplotlib.pyplot as plt</p>
-<p>from collections import Counter</p>
-<p>from konlpy.tag import Okt</p>
-<p>okt = Okt()</p>
-<p># 샘플 리뷰 텍스트</p>
-<p>reviews = [</p>
-<p>"배송이 정말 빠르고 제품 품질도 훌륭합니다. 매우 만족합니다.",</p>
-<p>"포장이 꼼꼼하고 제품 상태가 완벽했습니다. 재구매 의사 있습니다.",</p>
-<p>"가격 대비 품질이 매우 우수합니다. 강력 추천합니다!",</p>
-<p>]</p>
-<p># 형용사·명사 추출</p>
-<p>all_words = []</p>
-<p>for review in reviews:</p>
-<p>pos_tags = okt.pos(review, norm=True, stem=True)</p>
-<p>words = [w for w, p in pos_tags if p in ['Adjective','Noun'] and len(w) &gt; 1]</p>
-<p>all_words.extend(words)</p>
-<p>word_freq = Counter(all_words)</p>
-<p># 워드클라우드 생성</p>
-<p>wc = WordCloud(font_path='/usr/share/fonts/truetype/nanum/NanumGothic.ttf',</p>
-<p>background_color='white', width=800, height=400,</p>
-<p>max_words=50, colormap='Blues')</p>
-<p>wc.generate_from_frequencies(word_freq)</p>
-<p>plt.figure(figsize=(12, 6))</p>
-<p>plt.imshow(wc, interpolation='bilinear')</p>
-<p>plt.axis('off')</p>
-<p>plt.title('긍정 리뷰 주요 단어', fontsize=16, fontweight='bold')</p>
-<p>plt.tight_layout()</p>
-<p>plt.savefig('wordcloud.png', dpi=150)</p></td>
-</tr>
-<tr class="even">
-<td>plt.show()</td>
-</tr>
-</tbody>
-</table>
+<section id="워드-클라우드-시각화" class="level5">
+<h5 class="anchored" data-anchor-id="워드-클라우드-시각화">워드 클라우드 시각화</h5>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 패키지 설치 (Colab에서 최초 1회 실행)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install wordcloud konlpy <span class="op">-</span>q</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>apt<span class="op">-</span>get install <span class="op">-</span>y fonts<span class="op">-</span>nanum <span class="op">-</span>q</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>fc<span class="op">-</span>cache <span class="op">-</span>fv</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.font_manager <span class="im">import</span> FontProperties</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 폰트 캐시 초기화 (설치 후 필요)</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>matplotlib.font_manager._load_fontmanager(try_read_cache<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 워드클라우드 시각화</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> wordcloud <span class="im">import</span> WordCloud</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.font_manager <span class="im">as</span> fm</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 나눔 폰트 경로 확인 및 설정</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>font_path <span class="op">=</span> <span class="st">'/usr/share/fonts/truetype/nanum/NanumGothic.ttf'</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 샘플 리뷰 텍스트</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>reviews <span class="op">=</span> [</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"배송이 정말 빠르고 제품 품질도 훌륭합니다. 매우 만족합니다."</span>,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"포장이 꼼꼼하고 제품 상태가 완벽했습니다. 재구매 의사 있습니다."</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">"가격 대비 품질이 매우 우수합니다. 강력 추천합니다!"</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 형용사·명사 추출</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>all_words <span class="op">=</span> []</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> review <span class="kw">in</span> reviews:</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    pos_tags <span class="op">=</span> okt.pos(review, norm<span class="op">=</span><span class="va">True</span>, stem<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    words <span class="op">=</span> [w <span class="cf">for</span> w, p <span class="kw">in</span> pos_tags <span class="cf">if</span> p <span class="kw">in</span> [<span class="st">'Adjective'</span>, <span class="st">'Noun'</span>] <span class="kw">and</span> <span class="bu">len</span>(w) <span class="op">&gt;</span> <span class="dv">1</span>]</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    all_words.extend(words)</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>word_freq <span class="op">=</span> Counter(all_words)</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"추출된 단어 빈도:"</span>, word_freq)  <span class="co"># 디버깅용</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 워드클라우드 생성</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>wc <span class="op">=</span> WordCloud(</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    font_path<span class="op">=</span>font_path,</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    background_color<span class="op">=</span><span class="st">'white'</span>,</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">800</span>,</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">400</span>,</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    max_words<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    colormap<span class="op">=</span><span class="st">'Blues'</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>wc.generate_from_frequencies(word_freq)</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 폰트 경로 직접 지정</span></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>font_path <span class="op">=</span> <span class="st">'/usr/share/fonts/truetype/nanum/NanumGothic.ttf'</span></span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>font_prop <span class="op">=</span> FontProperties(fname<span class="op">=</span>font_path, size<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>plt.imshow(wc, interpolation<span class="op">=</span><span class="st">'bilinear'</span>)</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a><span class="co"># fontproperties로 한글 폰트 직접 적용</span></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'긍정 리뷰 주요 단어'</span>, fontproperties<span class="op">=</span>font_prop, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'wordcloud.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/sentiment_analysis_wordcloud.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
+</figure>
+</div>
 </section>
-</section>
-<section id="chapter-6.-방법론-비교-및-선택-가이드" class="level1">
-<h1>Chapter 6. 방법론 비교 및 선택 가이드</h1>
-<section id="방법론별-비교" class="level2">
-<h2 class="anchored" data-anchor-id="방법론별-비교">6.1 방법론별 비교</h2>
+<section id="방법론-비교-및-선택-가이드" class="level4">
+<h4 class="anchored" data-anchor-id="방법론-비교-및-선택-가이드">4. 방법론 비교 및 선택 가이드</h4>
+<section id="방법론별-비교" class="level5">
+<h5 class="anchored" data-anchor-id="방법론별-비교">방법론별 비교</h5>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 18%">
@@ -853,8 +914,9 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="분석-목적별-방법론-선택-가이드" class="level2">
-<h2 class="anchored" data-anchor-id="분석-목적별-방법론-선택-가이드">6.2 분석 목적별 방법론 선택 가이드</h2>
+</section>
+<section id="분석-목적별-방법론-선택-가이드" class="level4">
+<h4 class="anchored" data-anchor-id="분석-목적별-방법론-선택-가이드">분석 목적별 방법론 선택 가이드</h4>
 <ul>
 <li><p><strong>레이블 데이터가 없는 경우:</strong> Lexicon-based 방법 또는 LLM Zero-shot 활용</p></li>
 <li><p><strong>소규모 레이블 데이터 (수천 건):</strong> BERT Fine-tuning 또는 Few-shot 학습</p></li>
@@ -862,20 +924,9 @@ ul.task-list li input[type="checkbox"] {
 <li><p><strong>실시간 스트리밍 처리 필요:</strong> 경량화된 Logistic Regression 또는 DistilBERT</p></li>
 <li><p><strong>도메인 특화 분석 (금융, 의료 등):</strong> 도메인 특화 사전 학습 모델(KR-FinBERT 등)</p></li>
 </ul>
-</section>
-</section>
-<section id="참고-문헌-및-자료" class="level1">
-<h1>참고 문헌 및 자료</h1>
-<ul>
-<li><p>Bird, S., Klein, E., &amp; Loper, E. (2009). Natural Language Processing with Python. O'Reilly.</p></li>
-<li><p>Devlin, J., Chang, M., Lee, K., &amp; Toutanova, K. (2019). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. NAACL-HLT.</p></li>
-<li><p>Hutto, C. J., &amp; Gilbert, E. (2014). VADER: A Parsimonious Rule-Based Model for Sentiment Analysis of Social Media Text. ICWSM.</p></li>
-<li><p>Liu, B. (2015). Sentiment Analysis: Mining Opinions, Sentiments, and Emotions. Cambridge University Press.</p></li>
-<li><p>박찬성 외 (2020). KoELECTRA: Pretrained Electra Model for Korean. GitHub.</p></li>
-<li><p>Vaswani, A., et al.&nbsp;(2017). Attention is All You Need. NeurIPS.</p></li>
-</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
