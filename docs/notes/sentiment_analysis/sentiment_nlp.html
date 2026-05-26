@@ -103,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -204,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../notes/sentiment_analysis/sentiment_anlysis.qmd" class="sidebar-item-text sidebar-link">
+  <a href="../../notes/sentiment_analysis/sentiment_analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📄 감성분석</span></a>
   </div>
 </li>
@@ -218,27 +247,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#데이터-읽어오기-pdf-문자열" id="toc-데이터-읽어오기-pdf-문자열" class="nav-link active" data-scroll-target="#데이터-읽어오기-pdf-문자열">1. 데이터 읽어오기 pdf ➝ 문자열</a>
+  <li><a href="#자연어-처리nlp-개요" id="toc-자연어-처리nlp-개요" class="nav-link active" data-scroll-target="#자연어-처리nlp-개요">자연어 처리(NLP) 개요</a>
   <ul>
+  <li><a href="#데이터-읽어오기-pdf-문자열" id="toc-데이터-읽어오기-pdf-문자열" class="nav-link" data-scroll-target="#데이터-읽어오기-pdf-문자열">1. 데이터 읽어오기 pdf ➝ 문자열</a>
+  <ul class="collapse">
   <li><a href="#pdf-문자열" id="toc-pdf-문자열" class="nav-link" data-scroll-target="#pdf-문자열">1. pdf ➝ 문자열</a></li>
   <li><a href="#문자열string-불필요-문자-정리" id="toc-문자열string-불필요-문자-정리" class="nav-link" data-scroll-target="#문자열string-불필요-문자-정리">2. 문자열(String) 불필요 문자 정리</a></li>
   </ul></li>
   <li><a href="#한국어-형태소-분석-morphological-analysis" id="toc-한국어-형태소-분석-morphological-analysis" class="nav-link" data-scroll-target="#한국어-형태소-분석-morphological-analysis">2. 한국어 형태소 분석 (Morphological Analysis)</a>
-  <ul>
+  <ul class="collapse">
   <li><a href="#형태소morpheme의-정의" id="toc-형태소morpheme의-정의" class="nav-link" data-scroll-target="#형태소morpheme의-정의">1. 형태소(Morpheme)의 정의</a></li>
   <li><a href="#형태소-분석의-관점" id="toc-형태소-분석의-관점" class="nav-link" data-scroll-target="#형태소-분석의-관점">2. 형태소 분석의 관점</a></li>
-  </ul></li>
-  <li><a href="#전산-언어학-관점의-평가-기준" id="toc-전산-언어학-관점의-평가-기준" class="nav-link" data-scroll-target="#전산-언어학-관점의-평가-기준">전산 언어학 관점의 평가 기준</a></li>
-  <li><a href="#형태소-정의" id="toc-형태소-정의" class="nav-link" data-scroll-target="#형태소-정의">형태소 정의</a>
-  <ul>
   <li><a href="#konlpy를-이용한-한국어-형태소-분석" id="toc-konlpy를-이용한-한국어-형태소-분석" class="nav-link" data-scroll-target="#konlpy를-이용한-한국어-형태소-분석">3. KoNLPy를 이용한 한국어 형태소 분석</a></li>
   </ul></li>
   <li><a href="#품사-태깅-pos-tagging" id="toc-품사-태깅-pos-tagging" class="nav-link" data-scroll-target="#품사-태깅-pos-tagging">품사 태깅 (POS Tagging)</a></li>
   <li><a href="#단어-분석-word-analysis" id="toc-단어-분석-word-analysis" class="nav-link" data-scroll-target="#단어-분석-word-analysis">3. 단어 분석 (Word Analysis)</a>
-  <ul>
+  <ul class="collapse">
   <li><a href="#단어-빈도-분석-word-frequency" id="toc-단어-빈도-분석-word-frequency" class="nav-link" data-scroll-target="#단어-빈도-분석-word-frequency">1. 단어 빈도 분석 (Word Frequency)</a></li>
   <li><a href="#단어-동시-발생-빈도-co-occurrence-matrix" id="toc-단어-동시-발생-빈도-co-occurrence-matrix" class="nav-link" data-scroll-target="#단어-동시-발생-빈도-co-occurrence-matrix">2. 단어 동시 발생 빈도 (Co-occurrence Matrix)</a></li>
   <li><a href="#워드클라우드-시각화-word-cloud" id="toc-워드클라우드-시각화-word-cloud" class="nav-link" data-scroll-target="#워드클라우드-시각화-word-cloud">3. 워드클라우드 시각화 (Word Cloud)</a></li>
+  </ul></li>
   <li><a href="#주요-함수-및-라이브러리-요약" id="toc-주요-함수-및-라이브러리-요약" class="nav-link" data-scroll-target="#주요-함수-및-라이브러리-요약">주요 함수 및 라이브러리 요약</a></li>
   </ul></li>
   </ul>
@@ -266,138 +294,488 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="자연어-처리nlp-개요" class="level2">
+<h2 class="anchored" data-anchor-id="자연어-처리nlp-개요">자연어 처리(NLP) 개요</h2>
+<p>자연어 처리(Natural Language Processing, NLP)는 인간의 언어를 컴퓨터가 이해하고 처리할 수 있도록 하는 인공지능의 핵심 분야이다. 텍스트 데이터에서 의미 있는 정보를 추출하고, 언어 구조를 분석하며, 기계가 인간의 언어를 생성·번역·요약할 수 있게 한다.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="텍스트 마이닝(Text Mining) 처리 흐름">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+텍스트 마이닝(Text Mining) 처리 흐름
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<pre><code>원시 텍스트 → 전처리(Preprocessing) → 형태소 분석 →
+특징 추출(Feature Extraction) → 분석/모델링 → 결과 해석</code></pre>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>단계</th>
+<th>주요 작업</th>
+<th>도구</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>데이터 수집</td>
+<td>PDF, 웹 크롤링, API</td>
+<td>PyPDF2, pdfplumber, requests</td>
+</tr>
+<tr class="even">
+<td>전처리</td>
+<td>노이즈 제거, 정규화</td>
+<td>re, pandas</td>
+</tr>
+<tr class="odd">
+<td>형태소 분석</td>
+<td>토크나이징, 품사 태깅</td>
+<td>KoNLPy, MeCab</td>
+</tr>
+<tr class="even">
+<td>특징 추출</td>
+<td>빈도, TF-IDF, 임베딩</td>
+<td>sklearn, gensim</td>
+</tr>
+<tr class="odd">
+<td>시각화</td>
+<td>워드클라우드, 네트워크</td>
+<td>wordcloud, networkx</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
 <section id="데이터-읽어오기-pdf-문자열" class="level3">
 <h3 class="anchored" data-anchor-id="데이터-읽어오기-pdf-문자열">1. 데이터 읽어오기 pdf ➝ 문자열</h3>
+<p>텍스트 마이닝의 출발점은 원시(raw) 데이터를 파이썬이 처리할 수 있는 <strong>문자열(string)</strong> 형태로 변환하는 것이다. PDF는 가장 흔한 문서 형식 중 하나로, Python에서는 PyPDF2와 pdfplumber 두 가지 주요 라이브러리를 통해 텍스트를 추출할 수 있다.</p>
 <section id="pdf-문자열" class="level4">
 <h4 class="anchored" data-anchor-id="pdf-문자열">1. pdf ➝ 문자열</h4>
-<section id="url-데이터" class="level5">
-<h5 class="anchored" data-anchor-id="url-데이터">url 데이터</h5>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf 데이터 문자열 읽기</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install PyPDF2</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># importing required modules</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> PyPDF2</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'/content/drive/MyDrive/eBook python codes/mathew.pdf'</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>pdfFileObj <span class="op">=</span> <span class="bu">open</span>(url, <span class="st">'rb'</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>pdfReader <span class="op">=</span> PyPDF2.PdfReader(pdfFileObj)  <span class="co"># PdfFileReader → PdfReader</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(pdfReader.pages))  <span class="co"># numPages → len(pages)</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>pageObj <span class="op">=</span> pdfReader.pages[<span class="dv">0</span>]  <span class="co"># getPage(0) → pages[0]</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>pdf_str <span class="op">=</span> pageObj.extract_text()  <span class="co"># extractText() → extract_text()</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pdf_str)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="PyPDF2 vs pdfplumber 비교">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+PyPDF2 vs pdfplumber 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>PyPDF2</th>
+<th>pdfplumber</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>속도</td>
+<td>빠름</td>
+<td>보통</td>
+</tr>
+<tr class="even">
+<td>정확도</td>
+<td>보통</td>
+<td>높음</td>
+</tr>
+<tr class="odd">
+<td>표·레이아웃 처리</td>
+<td>미지원</td>
+<td>지원</td>
+</tr>
+<tr class="even">
+<td>한글 처리</td>
+<td>불안정</td>
+<td>안정적</td>
+</tr>
+<tr class="odd">
+<td>권장 용도</td>
+<td>간단한 영문 PDF</td>
+<td>복잡한 레이아웃, 한글 PDF</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="로컬drive-데이터" class="level5">
+<h5 class="anchored" data-anchor-id="로컬drive-데이터">로컬/Drive 데이터</h5>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pdf 데이터 문자열 읽기</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install PyPDF2</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># importing required modules</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> PyPDF2</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">'/content/drive/MyDrive/eBook python codes/mathew.pdf'</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>pdfFileObj <span class="op">=</span> <span class="bu">open</span>(url, <span class="st">'rb'</span>)           <span class="co"># 'rb': read binary — PDF는 이진 파일</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>pdfReader <span class="op">=</span> PyPDF2.PdfReader(pdfFileObj)  <span class="co"># PdfFileReader → PdfReader (v3.x 변경)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(pdfReader.pages))               <span class="co"># numPages → len(pages) (v3.x 변경)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>pageObj <span class="op">=</span> pdfReader.pages[<span class="dv">0</span>]              <span class="co"># getPage(0) → pages[0] (v3.x 변경)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>pdf_str <span class="op">=</span> pageObj.extract_text()  <span class="co"># extractText() → extract_text() (v3.x 변경)</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pdf_str)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고
 (마1:9)웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고
 (마1:10)히스기야는 므낫세를 낳고 므낫세는 아몬을 낳고 아몬은 요시야를 낳고(마1:11)바벨론으로 이거할 때에 요시야는 여고냐와 그의 형제를 낳으니라</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — PyPDF2">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — PyPDF2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>open(url, 'rb')</code>: 파일을 <strong>이진 읽기(read binary)</strong> 모드로 열기. PDF는 텍스트가 아닌 이진 파일이므로 <code>'rb'</code> 필수.</li>
+<li><code>PdfReader</code>: PDF 문서 전체를 파싱하는 객체. <code>.pages</code>로 페이지 리스트에 접근.</li>
+<li><code>extract_text()</code>: 페이지 내 텍스트를 문자열로 반환. 레이아웃 정보는 손실됨.</li>
+<li><strong>PyPDF2 버전 주의</strong>: v3.x 이후 API가 대폭 변경되어 구버전 코드(<code>PdfFileReader</code>, <code>numPages</code>, <code>extractText</code>)는 동작하지 않음.</li>
+</ul>
+</div>
+</div>
 </section>
-<section id="내부-데이터" class="level5">
-<h5 class="anchored" data-anchor-id="내부-데이터">내부 데이터</h5>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 설치 (최초 1회만 실행)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pdfplumber requests</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pdfplumber</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> BytesIO</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 파일 URL</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>pdf_url <span class="op">=</span> <span class="st">'https://by-sekwon.github.io/api/mathew.pdf'</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># URL에서 PDF 다운로드 → 메모리(BytesIO)로 읽기</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(pdf_url)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>response.raise_for_status()  <span class="co"># 다운로드 실패 시 예외 발생</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>pdf_file <span class="op">=</span> BytesIO(response.content)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 텍스트 저장 변수</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>pdf_str <span class="op">=</span> <span class="st">""</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 읽기</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pdfplumber.<span class="bu">open</span>(pdf_file) <span class="im">as</span> pdf:</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 페이지별 텍스트 추출</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> page <span class="kw">in</span> pdf.pages:</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        page_text <span class="op">=</span> page.extract_text()</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># None 방지</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> page_text:</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>            pdf_str <span class="op">+=</span> page_text <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(pdf_str))      <span class="co"># &lt;class 'str'&gt;</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pdf_str[:<span class="dv">1000</span>])     <span class="co"># 앞 1000자 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="웹-url-데이터" class="level5">
+<h5 class="anchored" data-anchor-id="웹-url-데이터">웹 URL 데이터</h5>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 설치 (최초 1회만 실행)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install pdfplumber requests</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pdfplumber</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> io <span class="im">import</span> BytesIO</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 파일 URL</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>pdf_url <span class="op">=</span> <span class="st">'https://by-sekwon.github.io/api/mathew.pdf'</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># URL에서 PDF 다운로드 → 메모리(BytesIO)로 읽기</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(pdf_url)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>response.raise_for_status()  <span class="co"># 다운로드 실패(4xx, 5xx) 시 예외 발생</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>pdf_file <span class="op">=</span> BytesIO(response.content)  <span class="co"># 바이트 스트림을 파일 객체처럼 취급</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 텍스트 저장 변수</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>pdf_str <span class="op">=</span> <span class="st">""</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co"># PDF 읽기</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pdfplumber.<span class="bu">open</span>(pdf_file) <span class="im">as</span> pdf:</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 페이지별 텍스트 추출</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> page <span class="kw">in</span> pdf.pages:</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        page_text <span class="op">=</span> page.extract_text()</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># None 방지: 빈 페이지(이미지만 있는 페이지)는 None 반환</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> page_text:</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            pdf_str <span class="op">+=</span> page_text <span class="op">+</span> <span class="st">"</span><span class="ch">\n</span><span class="st">"</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 확인</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(pdf_str))      <span class="co"># &lt;class 'str'&gt;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pdf_str[:<span class="dv">1000</span>])     <span class="co"># 앞 1000자 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>(마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고
 (마1:9)웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고
 (마1:10)히스기야는 므낫세를 낳고 므낫세는 아몬을 낳고 아몬은 요시야를 낳고</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — pdfplumber + requests">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — pdfplumber + requests
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>requests.get(url)</code>: HTTP GET 요청으로 파일을 바이트(bytes) 형태로 다운로드.</li>
+<li><code>raise_for_status()</code>: 4xx(클라이언트 오류), 5xx(서버 오류) 응답 시 즉시 예외를 발생시켜 오류를 빠르게 감지.</li>
+<li><code>BytesIO(response.content)</code>: 메모리상의 바이트 데이터를 파일처럼 다루는 버퍼 객체. 디스크에 저장하지 않고 바로 PDF 파서에 전달 가능.</li>
+<li><code>pdfplumber.open()</code>: <code>with</code> 문으로 열어 사용 후 자동으로 파일을 닫아 메모리 누수 방지.</li>
+<li><code>page.extract_text()</code>: 페이지 레이아웃을 고려하여 텍스트 추출. 빈 페이지는 <code>None</code> 반환.</li>
+<li><code>if page_text</code>: <code>None</code>이나 빈 문자열일 때를 방어하는 조건 처리.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>추출된 텍스트에는 <code>(마1:8)</code>, <code>(마1:9)</code> 같은 <strong>장절 표기</strong>가 포함되어 있다. 이는 자연어 분석에 불필요한 노이즈이므로 다음 단계인 전처리에서 제거해야 한다. <code>pdf_str</code>은 모든 페이지의 텍스트가 하나의 긴 문자열로 연결된 상태이다.</p>
+</div>
+</div>
+<hr>
 </section>
 </section>
 <section id="문자열string-불필요-문자-정리" class="level4">
 <h4 class="anchored" data-anchor-id="문자열string-불필요-문자-정리">2. 문자열(String) 불필요 문자 정리</h4>
-<p>텍스트 데이터를 형태소 분석하기 전에 숫자, 특수문자, 분석에 불필요한 패턴 등을 사전에 제거하는 전처리 단계가 필요하다. Python에서는 정규표현식(Regular Expression)을 활용하여 효율적으로 불필요한 문자를 제거할 수 있다.</p>
-<p>문자열 형태로 저장된 텍스트에서 한글 이외의 문자(숫자, 특수문자, 영문자등)를 제거한다. Python의 `str.replace()` 메서드와 정규표현식을 조합하여 처리한다.</p>
+<p>텍스트 데이터를 형태소 분석하기 전에 숫자, 특수문자, 분석에 불필요한 패턴 등을 사전에 제거하는 <strong>전처리(Preprocessing)</strong> 단계가 필요하다. Python에서는 <strong>정규표현식(Regular Expression)</strong> 을 활용하여 효율적으로 불필요한 문자를 제거할 수 있다.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="정규표현식(Regex) 핵심 패턴">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+정규표현식(Regex) 핵심 패턴
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
+<thead>
+<tr class="header">
+<th>패턴</th>
+<th>의미</th>
+<th>예시</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">📌 처리 방법: 정규표현식 [^ㄱ-ㅎㅏ-ㅣ가-힣 ]을 사용하면 한글 자모와 완성형 한글, 공백을 제외한 모든 문자를 한 번에 제거할 수 있다.</td>
+<td><code>[가-힣]</code></td>
+<td>완성형 한글 범위</td>
+<td>‘아’ ~ ‘힣’</td>
+</tr>
+<tr class="even">
+<td><code>[ㄱ-ㅎ]</code></td>
+<td>한글 자음 범위</td>
+<td>ㄱ, ㄴ, ㄷ …</td>
+</tr>
+<tr class="odd">
+<td><code>[ㅏ-ㅣ]</code></td>
+<td>한글 모음 범위</td>
+<td>ㅏ, ㅑ, ㅓ …</td>
+</tr>
+<tr class="even">
+<td><code>[^...]</code></td>
+<td>대괄호 안 문자 <strong>이외</strong></td>
+<td><code>[^가-힣]</code> = 한글 제외 모두</td>
+</tr>
+<tr class="odd">
+<td><code>\d</code></td>
+<td>숫자(0-9)</td>
+<td><code>\d+</code> = 연속 숫자</td>
+</tr>
+<tr class="even">
+<td><code>\s</code></td>
+<td>공백 문자</td>
+<td>스페이스, 탭, 줄바꿈</td>
+</tr>
+<tr class="odd">
+<td><code>+</code></td>
+<td>1회 이상 반복</td>
+<td><code>a+</code> = ‘a’, ‘aa’, ‘aaa’</td>
+</tr>
+<tr class="even">
+<td><code>*</code></td>
+<td>0회 이상 반복</td>
+<td><code>a*</code> = ’‘, ’a’, ‘aa’</td>
+</tr>
+<tr class="odd">
+<td><code>?</code></td>
+<td>0 또는 1회</td>
+<td><code>a?</code> = ’‘, ’a’</td>
+</tr>
+<tr class="even">
+<td><code>\(?</code></td>
+<td>괄호 <code>(</code> 이 있을 수도 없을 수도</td>
+<td>선택적 매칭</td>
 </tr>
 </tbody>
 </table>
-<p>pandas DataFrame의 열(column)에 저장된 텍스트를 일괄적으로 정제할 때는 `Series.str.replace()` 메서드를 사용한다. 문자열과 달리 데이터프레임 방식은 '(마 1 )' 형식의 패턴까지 한 번에 정규표현식으로 제거할 수 있다.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 줄바꿈을 먼저 공백으로 변환</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> pdf_str.replace(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>, <span class="st">' '</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 장절 표기 패턴 제거: (마 1), 마1, 마 1 등 "마+숫자" 형태 모두 제거</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="ch">\(</span><span class="op">?</span><span class="dv">\s</span><span class="op">*</span><span class="vs">마</span><span class="dv">\s</span><span class="op">*</span><span class="dv">\d</span><span class="op">+</span><span class="dv">\s</span><span class="op">*</span><span class="ch">\)</span><span class="op">?</span><span class="vs">'</span>, <span class="st">' '</span>, ds_str2)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 한글, 공백을 제외한 모든 문자 제거</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> re.sub(<span class="st">'[^ㄱ-ㅎㅏ-ㅣ가-힣 ]'</span>, <span class="st">''</span>, ds_str2)</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 연속된 공백을 하나로 정리</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> re.sub(<span class="st">' +'</span>, <span class="st">' '</span>, ds_str2).strip()</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 확인</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ds_str2[<span class="dv">0</span>:<span class="dv">100</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>문자열 형태로 저장된 텍스트에서 한글 이외의 문자(숫자, 특수문자, 영문자 등)를 제거한다. Python의 <code>re.sub()</code> 함수로 처리한다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 줄바꿈을 먼저 공백으로 변환</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> pdf_str.replace(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>, <span class="st">' '</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 장절 표기 패턴 제거: (마 1), 마1, 마 1 등 "마+숫자" 형태 모두 제거</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> re.sub(<span class="vs">r'</span><span class="ch">\(</span><span class="op">?</span><span class="dv">\s</span><span class="op">*</span><span class="vs">마</span><span class="dv">\s</span><span class="op">*</span><span class="dv">\d</span><span class="op">+</span><span class="dv">\s</span><span class="op">*</span><span class="ch">\)</span><span class="op">?</span><span class="vs">'</span>, <span class="st">' '</span>, ds_str2)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 한글, 공백을 제외한 모든 문자 제거</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> re.sub(<span class="st">'[^ㄱ-ㅎㅏ-ㅣ가-힣 ]'</span>, <span class="st">''</span>, ds_str2)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 연속된 공백을 하나로 정리</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>ds_str2 <span class="op">=</span> re.sub(<span class="st">' +'</span>, <span class="st">' '</span>, ds_str2).strip()</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 확인</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ds_str2[<span class="dv">0</span>:<span class="dv">100</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고 웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고 히스기야는 므낫세를 낳고 므낫세는 아몬을 낳</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — 정규표현식 전처리">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — 정규표현식 전처리
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>각 단계별 역할:</strong></p>
+<ol type="1">
+<li><p><code>replace('\n', ' ')</code>: 줄바꿈 문자를 공백으로 치환. 줄바꿈이 남아있으면 이후 분석에서 단어가 분리될 수 있음.</p></li>
+<li><p><code>re.sub(r'\(?\s*마\s*\d+\s*\)?', ' ', ds_str2)</code>:</p>
+<ul>
+<li><code>\(?</code> : 여는 괄호 <code>(</code> 가 있을 수도, 없을 수도 있음 (<code>?</code> = 선택)</li>
+<li><code>\s*</code> : 공백이 0개 이상 (공백 유연하게 처리)</li>
+<li><code>마</code> : 고정 문자 ‘마’</li>
+<li><code>\d+</code> : 숫자 1개 이상 (장 번호)</li>
+<li><code>\)?</code> : 닫는 괄호가 있을 수도, 없을 수도 있음</li>
+</ul></li>
+<li><p><code>re.sub('[^ㄱ-ㅎㅏ-ㅣ가-힣 ]', '', ds_str2)</code>:</p>
+<ul>
+<li><code>^</code> (대괄호 내부): <strong>부정(NOT)</strong> 의 의미</li>
+<li><code>ㄱ-ㅎ</code>: 한글 자음 전체</li>
+<li><code>ㅏ-ㅣ</code>: 한글 모음 전체</li>
+<li><code>가-힣</code>: 완성형 한글 전체</li>
+<li>마지막 <code></code>: 공백 유지</li>
+<li>결론: 한글과 공백 <strong>이외의 모든 문자</strong> 를 제거</li>
+</ul></li>
+<li><p><code>re.sub(' +', ' ', ...).strip()</code>: 여러 개의 연속 공백을 하나로 압축하고 양쪽 공백 제거.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>(마1:8)</code>, <code>(마1:9)</code> 같은 장절 표기와 <code>:</code>, 숫자가 모두 제거되고 <strong>순수 한글 텍스트</strong>만 남았다. 단, 이 방식은 모든 내용이 하나의 긴 문자열로 이어지므로 <strong>문장 단위 분석이 불가능</strong>하다는 한계가 있다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="문자열(str) vs 데이터프레임(DataFrame) 방식 비교">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+문자열(str) vs 데이터프레임(DataFrame) 방식 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <table class="caption-top table">
 <colgroup>
-<col style="width: 97%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 41%">
 </colgroup>
+<thead>
+<tr class="header">
+<th>방식</th>
+<th>장점</th>
+<th>단점</th>
+<th>적합한 분석</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">💡 참고: 문자열(str)과 데이터프레임(DataFrame)의 차이 - 문자열: 모든 문서가 하나의 단위로 연결되어 있어 문장 단위 분석이 불가능하다. - 데이터프레임: 각 행(row)이 하나의 문장(절)이므로 문장 단위 분석이 가능하다. 형태소 분석 시 데이터프레임 방식을 권장한다.</td>
+<td>문자열(str)</td>
+<td>처리 간단, 전체 빈도 파악 용이</td>
+<td>문장 단위 분석 불가</td>
+<td>전체 빈도 분석, 워드클라우드</td>
+</tr>
+<tr class="even">
+<td>데이터프레임</td>
+<td>문장 단위 분석 가능, 필터링 용이</td>
+<td>처리 복잡</td>
+<td>감성분석, TF-IDF, 문서 분류</td>
 </tr>
 </tbody>
 </table>
+<blockquote class="blockquote">
+<p><strong>형태소 분석 시 데이터프레임 방식을 권장한다.</strong></p>
+</blockquote>
+</div>
+</div>
 <section id="데이터프레임에서-불필요-문자-정리" class="level5">
 <h5 class="anchored" data-anchor-id="데이터프레임에서-불필요-문자-정리">데이터프레임에서 불필요 문자 정리</h5>
-<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임으로 읽어오기</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>verse_list <span class="op">=</span> [v.strip() <span class="cf">for</span> v <span class="kw">in</span> pdf_str.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>) <span class="cf">if</span> v.strip()]</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ds_df <span class="op">=</span> pd.DataFrame(verse_list, columns<span class="op">=</span>[<span class="st">'verse'</span>], dtype<span class="op">=</span><span class="st">'str'</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(ds_df), ds_df.head(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임으로 읽어오기</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 줄바꿈으로 각 절(verse)을 분리 → 빈 문자열 제거 → 양쪽 공백 제거</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>verse_list <span class="op">=</span> [v.strip() <span class="cf">for</span> v <span class="kw">in</span> pdf_str.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>) <span class="cf">if</span> v.strip()]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ds_df <span class="op">=</span> pd.DataFrame(verse_list, columns<span class="op">=</span>[<span class="st">'verse'</span>], dtype<span class="op">=</span><span class="st">'str'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(ds_df), ds_df.head(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>(pandas.core.frame.DataFrame,
                                                 verse
  0        (마1:8)아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고
  1        (마1:9)웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고
  2  (마1:10)히스기야는 므낫세를 낳고 므낫세는 아몬을 낳고 아몬은 요시야를 낳고(마...)</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임 열에서 불필요한 문자 일괄 제거</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1단계: 마태복음 장절 표기 패턴 제거 ('\(마' 이스케이프 처리)</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> ds_df[<span class="st">'verse'</span>].<span class="bu">str</span>.replace(<span class="vs">r'</span><span class="ch">\(</span><span class="vs">마'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2단계: 한글, 공백 이외의 문자 제거</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> txt.<span class="bu">str</span>.replace(<span class="st">'[^ㄱ-ㅎㅏ-ㅣ가-힣 ]'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 확인</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(txt))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(txt.head(<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — 리스트 컴프리헨션으로 DataFrame 생성">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — 리스트 컴프리헨션으로 DataFrame 생성
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>pdf_str.split('\n')</code>: 줄바꿈 기준으로 분리 → 각 절(verse)이 하나의 원소가 됨.</li>
+<li><code>v.strip()</code>: 양쪽 공백 제거. <code>if v.strip()</code>으로 빈 줄 자동 제거.</li>
+<li><code>pd.DataFrame(..., columns=['verse'])</code>: 리스트를 단일 열 DataFrame으로 변환.</li>
+<li>결과: 각 행(row)이 성경의 한 절(verse)에 해당하는 구조.</li>
+</ul>
+</div>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터프레임 열에서 불필요한 문자 일괄 제거</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1단계: 마태복음 장절 표기 패턴 제거 ('\(마' 이스케이프 처리)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> ds_df[<span class="st">'verse'</span>].<span class="bu">str</span>.replace(<span class="vs">r'</span><span class="ch">\(</span><span class="vs">마'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2단계: 한글, 공백 이외의 문자 제거</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>txt <span class="op">=</span> txt.<span class="bu">str</span>.replace(<span class="st">'[^ㄱ-ㅎㅏ-ㅣ가-힣 ]'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과 확인</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(txt))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(txt.head(<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>&lt;class 'pandas.core.series.Series'&gt;
 0                아사는 여호사밧을 낳고 여호사밧은 요람을 낳고 요람은 웃시야를 낳고
 1                웃시야는 요담을 낳고 요담은 아하스를 낳고 아하스는 히스기야를 낳고
 2    히스기야는 므낫세를 낳고 므낫세는 아몬을 낳고 아몬은 요시야를 낳고바벨론으로 이거할...
 Name: verse, dtype: object</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — Series.str 메서드">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — Series.str 메서드
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>Series.str.replace()</code>: pandas의 벡터화 문자열 연산. <code>for</code> 루프 없이 모든 행에 일괄 적용.</li>
+<li><code>regex=True</code>: 정규표현식 패턴으로 처리 (기본값은 리터럴 문자열 치환).</li>
+<li><strong>반환 타입</strong>: 결과는 DataFrame이 아닌 <strong>pandas Series</strong> (<code>&lt;class 'pandas.core.series.Series'&gt;</code>).</li>
+<li><code>.str</code> 접근자: <code>Series</code> 객체에서 문자열 메서드를 사용하기 위한 진입점.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>각 행이 하나의 절로 유지되면서 불필요한 문자만 제거되었다. 이 구조를 유지하면 이후 절(verse) 단위로 감성 점수를 계산하거나 TF-IDF를 적용하는 등 <strong>문장 레벨 분석</strong>이 가능해진다.</p>
+</div>
+</div>
+<hr>
 </section>
 </section>
 </section>
@@ -405,63 +783,98 @@ Name: verse, dtype: object</code></pre>
 <h3 class="anchored" data-anchor-id="한국어-형태소-분석-morphological-analysis">2. 한국어 형태소 분석 (Morphological Analysis)</h3>
 <section id="형태소morpheme의-정의" class="level4">
 <h4 class="anchored" data-anchor-id="형태소morpheme의-정의">1. 형태소(Morpheme)의 정의</h4>
-<p>형태소(morpheme)는 언어학에서 일정한 의미가 있는 가장 작은 말의 단위로, 더 분석하면 뜻이 없어지는 말의 단위이다. 음소와 마찬가지로 형태소는 추상적인 실체이며, 문장에서 다양한 형태로 실현될 수 있다.</p>
+<p>형태소(morpheme)는 언어학에서 <strong>일정한 의미가 있는 가장 작은 말의 단위</strong>로, 더 분석하면 뜻이 없어지는 말의 단위이다. 음소와 마찬가지로 형태소는 추상적인 실체이며, 문장에서 다양한 형태로 실현될 수 있다.</p>
 <ul>
 <li>의미가 있는 최소의 단위 (minimally meaningful unit)</li>
 <li>문법적·관계적인 뜻을 나타내는 단어 또는 단어의 부분</li>
 </ul>
+<p>예를 들어 “먹었다”는 <strong>먹-(어간) + -었-(과거 시제 선어말어미) + -다(종결 어미)</strong> 세 개의 형태소로 분석된다.</p>
 <section id="실질형태소와-형식형태소" class="level5">
 <h5 class="anchored" data-anchor-id="실질형태소와-형식형태소">실질형태소와 형식형태소</h5>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
-<col style="width: 19%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;"><strong>구분</strong></th>
-<th style="text-align: left;"><strong>별칭</strong></th>
-<th style="text-align: left;"><strong>정의</strong></th>
-<th style="text-align: left;"><strong>품사</strong></th>
-<th style="text-align: left;"><strong>예시</strong></th>
+<th><strong>구분</strong></th>
+<th><strong>별칭</strong></th>
+<th><strong>정의</strong></th>
+<th><strong>품사</strong></th>
+<th><strong>예시</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">실질형태소</td>
-<td style="text-align: left;">어휘형태소</td>
-<td style="text-align: left;">어휘적 의미를 갖는 형태소</td>
-<td style="text-align: left;">명사, 동사, 형용사, 부사</td>
-<td style="text-align: left;">"좋-", "정보", "많-"</td>
+<td>실질형태소</td>
+<td>어휘형태소</td>
+<td>어휘적 의미를 갖는 형태소</td>
+<td>명사, 동사, 형용사, 부사</td>
+<td>“좋-”, “정보”, “많-”</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">형식형태소</td>
-<td style="text-align: left;">문법형태소</td>
-<td style="text-align: left;">문법적 관계를 나타내는 형태소</td>
-<td style="text-align: left;">조사, 어미</td>
-<td style="text-align: left;">"-에", "-는", "-가", "-다"</td>
+<td>형식형태소</td>
+<td>문법형태소</td>
+<td>문법적 관계를 나타내는 형태소</td>
+<td>조사, 어미</td>
+<td>“-에”, “-는”, “-가”, “-다”</td>
 </tr>
 </tbody>
 </table>
+<div class="callout callout-style-default callout-note callout-titled" title="예시: 형태소 분석">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+예시: 형태소 분석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>문장: <strong>“위키백과에는 좋은 정보가 많다.”</strong></p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
+<thead>
+<tr class="header">
+<th>어절</th>
+<th>형태소 분리</th>
+<th>종류</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">📌 예시: "위키백과에는 좋은 정보가 많다." - 어휘형태소: 위키, 백과, 좋-, 정보, 많- - 문법형태소: -에는, -은, -가, -다</td>
+<td>위키백과에는</td>
+<td>위키 + 백과 + 에는</td>
+<td>어휘 + 어휘 + 문법(조사)</td>
+</tr>
+<tr class="even">
+<td>좋은</td>
+<td>좋- + -은</td>
+<td>어휘(형용사 어간) + 문법(관형사형 어미)</td>
+</tr>
+<tr class="odd">
+<td>정보가</td>
+<td>정보 + -가</td>
+<td>어휘(명사) + 문법(주격 조사)</td>
+</tr>
+<tr class="even">
+<td>많다</td>
+<td>많- + -다</td>
+<td>어휘(형용사 어간) + 문법(종결 어미)</td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
 </section>
 <section id="형태소-분석의-과정" class="level5">
 <h5 class="anchored" data-anchor-id="형태소-분석의-과정">형태소 분석의 과정</h5>
 <ul>
 <li>단어(또는 어절)를 구성하는 각 형태소를 분리한다.</li>
-<li>분리된 형태소의 기본형 및 품사 정보를 추출한다.</li>
+<li>분리된 형태소의 기본형(lemma) 및 품사(POS) 정보를 추출한다.</li>
 <li><strong>분석 후보 생성:</strong> (1) 문법 규칙에 맞는 후보 생성, (2) 형태소 분리와 기본형 추정</li>
 <li><strong>분석 후보 선택:</strong> (1) 형태소끼리의 결합 제약 조건 만족, (2) 사전에서 기본형 확인</li>
 </ul>
@@ -476,167 +889,496 @@ Name: verse, dtype: object</code></pre>
 <h4 class="anchored" data-anchor-id="형태소-분석의-관점">2. 형태소 분석의 관점</h4>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 22%">
-<col style="width: 22%">
-<col style="width: 22%">
-<col style="width: 29%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;"><strong>관점</strong></th>
-<th style="text-align: left;"><strong>목표</strong></th>
-<th style="text-align: left;"><strong>방법</strong></th>
-<th style="text-align: left;"><strong>특징</strong></th>
+<th><strong>관점</strong></th>
+<th><strong>목표</strong></th>
+<th><strong>방법</strong></th>
+<th><strong>특징</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">언어학/국어학</td>
-<td style="text-align: left;">형태론적 언어 현상의 발견·규명</td>
-<td style="text-align: left;">인간의 언어 능력 기반</td>
-<td style="text-align: left;">정성적(qualitative)</td>
+<td>언어학/국어학</td>
+<td>형태론적 언어 현상의 발견·규명</td>
+<td>인간의 언어 능력 기반</td>
+<td>정성적(qualitative)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">전산 언어학</td>
-<td style="text-align: left;">컴퓨터 프로그램으로 형태소 분석</td>
-<td style="text-align: left;">알고리즘·통계 기반</td>
-<td style="text-align: left;">정량적(quantitative)</td>
+<td>전산 언어학</td>
+<td>컴퓨터 프로그램으로 형태소 분석</td>
+<td>알고리즘·통계 기반</td>
+<td>정량적(quantitative)</td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
-<section id="전산-언어학-관점의-평가-기준" class="level3">
-<h3 class="anchored" data-anchor-id="전산-언어학-관점의-평가-기준">전산 언어학 관점의 평가 기준</h3>
+<section id="전산-언어학-관점의-평가-기준" class="level5">
+<h5 class="anchored" data-anchor-id="전산-언어학-관점의-평가-기준">전산 언어학 관점의 평가 기준</h5>
 <ul>
-<li><p><strong>처리 범위 (분석률):</strong> 다양한 형태론적 현상들을 컴퓨터로 처리할 수 있는가</p></li>
-<li><p><strong>정확성:</strong> 얼마나 정확한 분석을 수행하는가</p></li>
-<li><p><strong>처리 속도:</strong> 시스템이 얼마나 효율적으로 동작하는가</p></li>
-<li><p><strong>기억 공간:</strong> 메모리를 효율적으로 사용하는가</p></li>
+<li><strong>처리 범위 (분석률):</strong> 다양한 형태론적 현상들을 컴퓨터로 처리할 수 있는가</li>
+<li><strong>정확성:</strong> 얼마나 정확한 분석을 수행하는가</li>
+<li><strong>처리 속도:</strong> 시스템이 얼마나 효율적으로 동작하는가</li>
+<li><strong>기억 공간:</strong> 메모리를 효율적으로 사용하는가</li>
 </ul>
-</section>
-<section id="형태소-정의" class="level3">
-<h3 class="anchored" data-anchor-id="형태소-정의">형태소 정의</h3>
-<p>형태소(morpheme)는&nbsp;언어학에서 (일반적인 정의를 따르면) 일정한 의미가 있는 가장 작은 말의 단위로&nbsp;더 분석하면 뜻이 없어지는 말의 단위이다.&nbsp;음소와 마찬가지로 형태소는 추상적인 실체이며 문장에서 다양한 형태로 실현될 수 있다.</p>
-<p>형태소는 그것이 가지는 의미 또는 기능에 따라 크게&nbsp;문법(=형식)형태소와&nbsp;어휘(=실질)형태소로 나눌 수 있다.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="한국어가 형태소 분석이 어려운 이유">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+한국어가 형태소 분석이 어려운 이유
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>한국어는 <strong>교착어(agglutinative language)</strong> 로, 어간에 다양한 어미·조사가 결합하여 의미를 변화시킨다. 같은 어근이라도 결합하는 형태소에 따라 음운 변화(연음, 축약, 탈락)가 발생하기 때문에 영어보다 형태소 분석이 훨씬 복잡하다.</p>
 <ul>
-<li><p>실질형태소(實質形態素)는&nbsp;어휘형태소(語彙形態素)라고도 하며, 어휘적 의미가 있는 형태소로 어떤 대상이나 상태, 동작을 가리키는 형태소를 말한다. 일반적으로&nbsp;명사,&nbsp;동사,&nbsp;형용사,&nbsp;부사가 이에 속한다. 예를 들어, “위키백과에는 좋은 정보가 많다.”라는 말에서 “위키”, “백과”, “좋-”, “정보”, “많-”이 어휘형태소에 해당한다.</p></li>
-<li><p>형식형태소(形式形態素)는&nbsp;문법형태소(文法形態素)라고도 하며, 문법적 의미가 있는 형태소로 어휘형태소와 함께 쓰여 그들 사이의 관계를 나타내는 기능을 하는 형태소를 말한다. 대표적으로&nbsp;조사,&nbsp;어미가 이에 속한다. 앞의 예에서 “위키백과에는”에서 “-에”와 “-는”; “좋은”에서 “-은”; “정보가”에서 “-가”; “많다”에서 “-다”가 문법형태소에 해당한다.</p></li>
+<li>예: “먹다” → 먹어, 먹으니, 먹고, 먹어서, 먹겠다, 먹히다…</li>
 </ul>
+</div>
+</div>
+</section>
+</section>
 <section id="konlpy를-이용한-한국어-형태소-분석" class="level4">
 <h4 class="anchored" data-anchor-id="konlpy를-이용한-한국어-형태소-분석">3. KoNLPy를 이용한 한국어 형태소 분석</h4>
-<p>KoNLPy(Korean Natural Language Processing in Python)는 한국어 형태소 분석을 위한 대표적인 Python 라이브러리이다. 내부적으로 여러 형태소 분석기를 지원하며, 그 중 Okt(Open Korean Text)는 트위터에서 개발한 오픈소스 한국어 처리 라이브러리로 소셜 미디어 텍스트 분석에 특히 효과적이다.</p>
+<p>KoNLPy(Korean Natural Language Processing in Python)는 한국어 형태소 분석을 위한 대표적인 Python 라이브러리이다. 내부적으로 여러 형태소 분석기를 지원하며, 그 중 <strong>Okt(Open Korean Text)</strong> 는 트위터에서 개발한 오픈소스 한국어 처리 라이브러리로 소셜 미디어 텍스트 분석에 특히 효과적이다.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="KoNLPy 주요 형태소 분석기 비교">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+KoNLPy 주요 형태소 분석기 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>분석기</th>
+<th>기반</th>
+<th>특징</th>
+<th>속도</th>
+<th>정확도</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Okt</strong> (구 Twitter)</td>
+<td>Java</td>
+<td>SNS 텍스트 특화, 신조어 처리 강점</td>
+<td>빠름</td>
+<td>중상</td>
+</tr>
+<tr class="even">
+<td><strong>Kkma</strong></td>
+<td>Java</td>
+<td>세밀한 품사 체계(57개), 오분석 적음</td>
+<td>느림</td>
+<td>높음</td>
+</tr>
+<tr class="odd">
+<td><strong>Hannanum</strong></td>
+<td>Java</td>
+<td>KAIST 개발, 표준 국어 분석</td>
+<td>보통</td>
+<td>높음</td>
+</tr>
+<tr class="even">
+<td><strong>Komoran</strong></td>
+<td>Java</td>
+<td>미등록어 처리 강점, 사용자 사전 지원</td>
+<td>빠름</td>
+<td>높음</td>
+</tr>
+<tr class="odd">
+<td><strong>MeCab</strong></td>
+<td>C++</td>
+<td>가장 빠름, 형태소 분석 정확도 높음</td>
+<td>매우 빠름</td>
+<td>매우 높음</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="blockquote">
+<p>일반적인 한국어 텍스트 분석에는 <strong>Okt</strong> 또는 <strong>Komoran</strong> 을 권장.</p>
+</blockquote>
+</div>
+</div>
 <section id="konlpy-설치-및-품사-태그-체계" class="level5">
 <h5 class="anchored" data-anchor-id="konlpy-설치-및-품사-태그-체계">KoNLPy 설치 및 품사 태그 체계</h5>
-<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KoNLPy 설치</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install konlpy</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Okt 품사 태그 체계 확인</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt.tagset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="text"><code>{'Adjective': '형용사', 'Adverb': '부사', 'Determiner': '관형사', 'Exclamation': '감탄사', 'Josa': '조사', 'Noun': '명사', 'Verb': '동사', 'Alpha': '영문자', 'Punctuation': '구두점', 'Foreign': '외국어', 'Number': '숫자', 'Unknown': '알 수 없는 단어'}</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># KoNLPy 설치</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>pip install konlpy</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Okt 품사 태그 체계 확인</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt.tagset)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>{'Adjective': '형용사', 'Adverb': '부사', 'Determiner': '관형사',
+ 'Exclamation': '감탄사', 'Josa': '조사', 'Noun': '명사',
+ 'Verb': '동사', 'Alpha': '영문자', 'Punctuation': '구두점',
+ 'Foreign': '외국어', 'Number': '숫자', 'Unknown': '알 수 없는 단어'}</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="Okt 품사 태그 활용 가이드">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Okt 품사 태그 활용 가이드
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>태그</th>
+<th>한국어</th>
+<th>텍스트 분석 활용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Noun</td>
+<td>명사</td>
+<td>핵심 키워드 추출 — <strong>가장 많이 사용</strong></td>
+</tr>
+<tr class="even">
+<td>Verb</td>
+<td>동사</td>
+<td>행동/사건 분석</td>
+</tr>
+<tr class="odd">
+<td>Adjective</td>
+<td>형용사</td>
+<td><strong>감성분석</strong>에 핵심 (좋다, 나쁘다, 아름답다)</td>
+</tr>
+<tr class="even">
+<td>Adverb</td>
+<td>부사</td>
+<td>강도 분석 (매우, 정말, 별로)</td>
+</tr>
+<tr class="odd">
+<td>Josa</td>
+<td>조사</td>
+<td>일반적으로 불용어 처리</td>
+</tr>
+<tr class="even">
+<td>Unknown</td>
+<td>미등록어</td>
+<td>신조어, 고유명사 — 별도 처리 필요</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 <section id="데이터프레임에서-명사만-추출하기" class="level5">
 <h5 class="anchored" data-anchor-id="데이터프레임에서-명사만-추출하기">데이터프레임에서 명사만 추출하기</h5>
-<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> [] <span class="co"># 분석 결과를 저장할 리스트</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt() <span class="co"># Okt 형태소 분석기 초기화</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 문장(행)에서 명사만 추출</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, txt.shape[<span class="dv">0</span>]):</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  nouns <span class="op">=</span> okt.nouns(<span class="bu">str</span>(txt[k])) <span class="co"># 명사만 추출</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  text.append(nouns)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># phrases: 문단 전체 / nouns: 명사만 / pos: 품사 태깅</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># okt.pos(text) 로 품사 태깅 결과 확인 가능</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text))</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text[<span class="dv">0</span>:<span class="dv">5</span>]) <span class="co"># 첫 5개 문장 결과 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> []    <span class="co"># 분석 결과를 저장할 리스트</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()  <span class="co"># Okt 형태소 분석기 초기화</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 문장(행)에서 명사만 추출</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, txt.shape[<span class="dv">0</span>]):</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    nouns <span class="op">=</span> okt.nouns(<span class="bu">str</span>(txt[k]))  <span class="co"># 명사만 추출</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    text.append(nouns)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 참고: 주요 분석 메서드</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># okt.phrases(text) : 어구(구문) 단위 추출</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># okt.nouns(text)   : 명사만 추출</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># okt.pos(text)     : 모든 형태소 + 품사 태깅</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(text))</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text[<span class="dv">0</span>:<span class="dv">5</span>])  <span class="co"># 첫 5개 문장 결과 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>&lt;class 'list'&gt;
-[['아사', '여호사밧', '여호사밧', '요람', '요람', '웃시야'], ['웃시야', '요담', '요담', '아하스', '아하스', '히스기야'], ['히스기야', '므낫세', '므낫세', '아몬', '아몬', '요시야', '바벨론', '거', '때', '요시야', '여고', '그', '형제'], ['바벨론', '거', '후', '스알디엘', '스알디엘', '스룹바벨'], ['스룹바벨', '아비훗', '아비훗', '엘리', '김', '엘리', '김', '아소르', '르', '사독', '사독', '아킴를', '아킴', '엘리', '웃']]</code></pre>
+[['아사', '여호사밧', '여호사밧', '요람', '요람', '웃시야'],
+ ['웃시야', '요담', '요담', '아하스', '아하스', '히스기야'],
+ ['히스기야', '므낫세', '므낫세', '아몬', '아몬', '요시야', '바벨론', '거', '때', '요시야', '여고', '그', '형제'],
+ ['바벨론', '거', '후', '스알디엘', '스알디엘', '스룹바벨'],
+ ['스룹바벨', '아비훗', '아비훗', '엘리', '김', '엘리', '김', '아소르', '르', '사독', '사독', '아킴를', '아킴', '엘리', '웃']]</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — 명사 추출 루프">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — 명사 추출 루프
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>okt.nouns(str(txt[k]))</code>: k번째 절(행)을 문자열로 변환 후 명사만 추출. 결과는 명사 리스트.</li>
+<li><code>text.append(nouns)</code>: 각 절의 명사 리스트를 상위 리스트에 추가 → <strong>중첩 리스트(list of lists)</strong> 구조 생성.</li>
+<li><code>txt.shape[0]</code>: Series의 행 수(전체 절 개수)로 반복 범위 설정.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>각 절에서 명사만 추출된 중첩 리스트를 얻었다. 고유명사(인명)가 대부분을 차지하며, ‘거’, ‘때’, ‘그’ 같은 <strong>1글자 단어</strong>와 의미가 약한 의존 명사가 포함되어 있다. 이후 불용어 처리와 길이 필터링으로 제거할 필요가 있다.</p>
+</div>
+</div>
 </section>
 </section>
 </section>
 <section id="품사-태깅-pos-tagging" class="level3">
 <h3 class="anchored" data-anchor-id="품사-태깅-pos-tagging">품사 태깅 (POS Tagging)</h3>
-<p>okt.pos()를 사용하면 각 형태소에 품사 태그가 부여된 튜플 리스트를 반환한다. norm=True 옵션은 맞춤법 정규화, stem=True 옵션은 어간 추출을 수행한다.</p>
-<p>문자열(string) 데이터에 대해 형태소 분석을 수행할 때는 정규화(norm)와 어간 추출(stem) 옵션을 활용하면 더 일관된 분석 결과를 얻을 수 있다.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 품사 테깅</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>text2 <span class="op">=</span> []</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 문장에서 품사 태깅 수행</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, txt.shape[<span class="dv">0</span>]):</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  tagged <span class="op">=</span> okt.pos(<span class="bu">str</span>(txt[k])) <span class="co"># 모든 품사 태깅</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  text2.append(tagged)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text2[<span class="dv">1</span>]) <span class="co"># 두 번째 문장 태깅 결과</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="text"><code>[('웃시야', 'Noun'), ('는', 'Josa'), ('요담', 'Noun'), ('을', 'Josa'), ('낳고', 'Verb'), ('요담', 'Noun'), ('은', 'Josa'), ('아하스', 'Noun'), ('를', 'Josa'), ('낳고', 'Verb'), ('아하스', 'Noun'), ('는', 'Josa'), ('히스기야', 'Noun'), ('를', 'Josa'), ('낳고', 'Verb')]</code></pre>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 문자열 전체에 형태소 분석 적용</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># norm=True: 맞춤법 정규화 / stem=True: 어간 추출</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>okt_pos <span class="op">=</span> Okt().pos(ds_str2, norm<span class="op">=</span><span class="va">True</span>, stem<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(okt_pos))</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt_pos[<span class="dv">0</span>:<span class="dv">10</span>]) <span class="co"># 처음 10개 결과 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>품사 태깅(Part-of-Speech Tagging)</strong> 은 텍스트의 각 형태소에 해당하는 품사를 자동으로 부착하는 작업이다. 단순 명사 추출보다 풍부한 언어 정보를 담고 있어 더 정교한 분석이 가능하다.</p>
+<p><code>okt.pos()</code>를 사용하면 각 형태소에 품사 태그가 부여된 <strong>튜플 리스트</strong> 를 반환한다. - <code>norm=True</code> 옵션: 맞춤법 정규화 (예: “않됬다” → “않됐다”) - <code>stem=True</code> 옵션: 어간 추출 (예: “낳고”, “낳아서” → “낳다”)</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 품사 태깅 — 데이터프레임 방식</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>text2 <span class="op">=</span> []</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 각 문장에서 품사 태깅 수행</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, txt.shape[<span class="dv">0</span>]):</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    tagged <span class="op">=</span> okt.pos(<span class="bu">str</span>(txt[k]))  <span class="co"># 모든 형태소 + 품사 태깅</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    text2.append(tagged)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text2[<span class="dv">1</span>])  <span class="co"># 두 번째 문장 태깅 결과</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[('웃시야', 'Noun'), ('는', 'Josa'), ('요담', 'Noun'), ('을', 'Josa'),
+ ('낳고', 'Verb'), ('요담', 'Noun'), ('은', 'Josa'), ('아하스', 'Noun'),
+ ('를', 'Josa'), ('낳고', 'Verb'), ('아하스', 'Noun'), ('는', 'Josa'),
+ ('히스기야', 'Noun'), ('를', 'Josa'), ('낳고', 'Verb')]</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석 — 품사 태깅 결과">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석 — 품사 태깅 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>각 어절이 형태소 단위로 분리되어 <code>(형태소, 품사)</code> 튜플 형태로 반환된다.</p>
+<ul>
+<li>명사(<code>Noun</code>): 웃시야, 요담, 아하스, 히스기야 — 인명(고유명사)</li>
+<li>조사(<code>Josa</code>): 는, 을, 은, 를 — 한국어의 격 관계 표시</li>
+<li>동사(<code>Verb</code>): 낳고 — 행위 표현</li>
+</ul>
+<p>이처럼 품사 태깅 결과를 활용하면 특정 품사만 선택적으로 추출하여 분석 목적에 맞는 어휘 집합을 구성할 수 있다.</p>
+</div>
+</div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 문자열 전체에 형태소 분석 적용</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># norm=True: 맞춤법 정규화 / stem=True: 어간 추출</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>okt_pos <span class="op">=</span> Okt().pos(ds_str2, norm<span class="op">=</span><span class="va">True</span>, stem<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(okt_pos))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt_pos[<span class="dv">0</span>:<span class="dv">10</span>])  <span class="co"># 처음 10개 결과 출력</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>&lt;class 'list'&gt;
-[('아사', 'Noun'), ('는', 'Josa'), ('여호사밧', 'Noun'), ('을', 'Josa'), ('낳다', 'Verb'), ('여호사밧', 'Noun'), ('은', 'Josa'), ('요람', 'Noun'), ('을', 'Josa'), ('낳다', 'Verb')]</code></pre>
+[('아사', 'Noun'), ('는', 'Josa'), ('여호사밧', 'Noun'), ('을', 'Josa'),
+ ('낳다', 'Verb'), ('여호사밧', 'Noun'), ('은', 'Josa'), ('요람', 'Noun'),
+ ('을', 'Josa'), ('낳다', 'Verb')]</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — stem=True 옵션 효과">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — stem=True 옵션 효과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>stem=True</code> 적용 전후를 비교하면:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>원형</th>
+<th>stem=False</th>
+<th>stem=True</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>낳고</td>
+<td>낳고(Verb)</td>
+<td><strong>낳다</strong>(Verb)</td>
+</tr>
+<tr class="even">
+<td>낳아서</td>
+<td>낳아서(Verb)</td>
+<td><strong>낳다</strong>(Verb)</td>
+</tr>
+<tr class="odd">
+<td>낳으니</td>
+<td>낳으니(Verb)</td>
+<td><strong>낳다</strong>(Verb)</td>
+</tr>
+</tbody>
+</table>
+<p>동사의 다양한 활용형이 기본형(낳다)으로 통일되므로 <strong>동일 어휘가 분산되지 않고 합산</strong>된다. 빈도 분석 시 정확도가 높아진다.</p>
+</div>
+</div>
 <section id="원하는-품사만-필터링" class="level5">
 <h5 class="anchored" data-anchor-id="원하는-품사만-필터링">원하는 품사만 필터링</h5>
-<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 명사(Noun)만 필터링</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>okt_nouns <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="op">==</span> <span class="st">'Noun'</span>]</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 복수 품사 필터링 (명사 + 형용사 + 동사)</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>target_pos <span class="op">=</span> [<span class="st">'Noun'</span>, <span class="st">'Adjective'</span>, <span class="st">'Verb'</span>]</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>okt_filtering <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="kw">in</span> target_pos]</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(okt_filtering))</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt_filtering[<span class="dv">0</span>:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 명사(Noun)만 필터링 — 리스트 컴프리헨션 활용</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>okt_nouns <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="op">==</span> <span class="st">'Noun'</span>]</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 복수 품사 필터링 (명사 + 형용사 + 동사)</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>target_pos <span class="op">=</span> [<span class="st">'Noun'</span>, <span class="st">'Adjective'</span>, <span class="st">'Verb'</span>]</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>okt_filtering <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="kw">in</span> target_pos]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(okt_filtering))</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt_filtering[<span class="dv">0</span>:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>&lt;class 'list'&gt;
 ['아사', '여호사밧', '낳다', '여호사밧', '요람']</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — 리스트 컴프리헨션 필터링">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — 리스트 컴프리헨션 필터링
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>[word for word, pos in okt_pos if pos == 'Noun']</code></p>
+<ul>
+<li><code>for word, pos in okt_pos</code>: 튜플 리스트를 <code>word</code>와 <code>pos</code> 두 변수로 언패킹(unpacking)</li>
+<li><code>if pos == 'Noun'</code>: 품사가 명사인 경우만 선택</li>
+<li><code>word</code>: 조건을 만족한 단어만 최종 리스트에 포함</li>
+</ul>
+<p><code>if pos in target_pos</code>는 여러 품사를 동시에 필터링할 때 사용. 감성분석에서는 형용사와 동사까지 포함하면 더 풍부한 감성 표현을 포착할 수 있다.</p>
+</div>
+</div>
+<hr>
 </section>
 </section>
 <section id="단어-분석-word-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="단어-분석-word-analysis">3. 단어 분석 (Word Analysis)</h3>
 <section id="단어-빈도-분석-word-frequency" class="level4">
 <h4 class="anchored" data-anchor-id="단어-빈도-분석-word-frequency">1. 단어 빈도 분석 (Word Frequency)</h4>
-<p>형태소 분석으로 추출된 명사 리스트에서 각 단어의 출현 빈도를 계산한다. Python의 collections.Counter 클래스를 사용하면 단어 빈도를 효율적으로 계산하고, most_common() 메서드로 상위 빈도 단어를 선택할 수 있다.</p>
+<p><strong>단어 빈도 분석(Word Frequency Analysis)</strong> 은 텍스트에서 특정 단어가 얼마나 자주 등장하는지를 계산하는 가장 기본적인 텍스트 분석 방법이다. 어떤 주제나 개념이 문서에서 중요한지를 파악하는 첫 번째 단서가 된다.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="단어 빈도 vs TF-IDF">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+단어 빈도 vs TF-IDF
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>정의</th>
+<th>장점</th>
+<th>단점</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>단어 빈도(TF)</strong></td>
+<td>문서 내 단어 등장 횟수</td>
+<td>직관적, 계산 단순</td>
+<td>‘그’, ‘이’, ‘있다’ 같은 일반 단어가 높은 순위</td>
+</tr>
+<tr class="even">
+<td><strong>TF-IDF</strong></td>
+<td>TF × IDF (역문서빈도)</td>
+<td>해당 문서에서 특별히 중요한 단어 부각</td>
+<td>여러 문서 비교 필요</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\text{TF-IDF}(t, d) = \text{TF}(t, d) \times \log\frac{N}{\text{DF}(t)}\]</span></p>
+<ul>
+<li><span class="math inline">\(t\)</span>: 단어, <span class="math inline">\(d\)</span>: 문서, <span class="math inline">\(N\)</span>: 전체 문서 수, <span class="math inline">\(\text{DF}(t)\)</span>: 단어 <span class="math inline">\(t\)</span>가 등장한 문서 수</li>
+<li><strong>IDF가 높은 단어</strong> = 특정 문서에만 등장 = 해당 문서의 핵심 키워드</li>
+</ul>
+</div>
+</div>
 <section id="단어장vocabulary-구성-및-불용어-처리" class="level5">
 <h5 class="anchored" data-anchor-id="단어장vocabulary-구성-및-불용어-처리">단어장(Vocabulary) 구성 및 불용어 처리</h5>
-<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> collections</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ 이전 단계 변수명에 맞게 통일</span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>okt_pos <span class="op">=</span> okt.pos(ds_str2, norm<span class="op">=</span><span class="va">True</span>, stem<span class="op">=</span><span class="va">True</span>)  <span class="co"># okt.pos(ds_str2) 결과</span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 명사(Noun)만 필터링</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>okt_nouns <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="op">==</span> <span class="st">'Noun'</span>]</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 복수 품사 필터링 (명사 + 형용사 + 동사)</span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>target_pos <span class="op">=</span> [<span class="st">'Noun'</span>, <span class="st">'Adjective'</span>, <span class="st">'Verb'</span>]</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>okt_filtering <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="kw">in</span> target_pos]</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(okt_filtering))</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt_filtering[<span class="dv">0</span>:<span class="dv">5</span>])</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 불용어 설정</span></span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>stop_words <span class="op">=</span> <span class="st">''</span></span>
-<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>stop_words <span class="op">=</span> <span class="bu">set</span>(stop_words.split(<span class="st">' '</span>))</span>
-<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 불용어 제거 + 길이 1 이하 제거</span></span>
-<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> okt_nouns <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stop_words <span class="kw">and</span> <span class="bu">len</span>(w) <span class="op">&gt;</span> <span class="dv">1</span>]</span>
-<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(words))</span>
-<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(words[<span class="dv">0</span>:<span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> collections</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> konlpy.tag <span class="im">import</span> Okt</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>okt <span class="op">=</span> Okt()</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>okt_pos <span class="op">=</span> okt.pos(ds_str2, norm<span class="op">=</span><span class="va">True</span>, stem<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 명사(Noun)만 필터링</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>okt_nouns <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="op">==</span> <span class="st">'Noun'</span>]</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 복수 품사 필터링 (명사 + 형용사 + 동사)</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>target_pos <span class="op">=</span> [<span class="st">'Noun'</span>, <span class="st">'Adjective'</span>, <span class="st">'Verb'</span>]</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>okt_filtering <span class="op">=</span> [word <span class="cf">for</span> word, pos <span class="kw">in</span> okt_pos <span class="cf">if</span> pos <span class="kw">in</span> target_pos]</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(okt_filtering))</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(okt_filtering[<span class="dv">0</span>:<span class="dv">5</span>])</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 불용어(Stop Words) 설정</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 분석 목적에 따라 제거할 단어를 공백으로 구분하여 지정</span></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>stop_words <span class="op">=</span> <span class="st">''</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>stop_words <span class="op">=</span> <span class="bu">set</span>(stop_words.split(<span class="st">' '</span>))</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 불용어 제거 + 길이 1 이하 제거</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>words <span class="op">=</span> [w <span class="cf">for</span> w <span class="kw">in</span> okt_nouns <span class="cf">if</span> w <span class="kw">not</span> <span class="kw">in</span> stop_words <span class="kw">and</span> <span class="bu">len</span>(w) <span class="op">&gt;</span> <span class="dv">1</span>]</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(words))</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(words[<span class="dv">0</span>:<span class="dv">10</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>&lt;class 'list'&gt;
 ['아사', '여호사밧', '낳다', '여호사밧', '요람']
 &lt;class 'list'&gt;
 ['아사', '여호사밧', '여호사밧', '요람', '요람', '웃시야', '웃시야', '요담', '요담', '아하스']</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — 불용어(Stop Words) 처리">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — 불용어(Stop Words) 처리
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>불용어(Stop Words)</strong> 란 분석에서 의미 없이 자주 등장하는 단어로, 분석 전에 제거한다.</p>
+<ul>
+<li>한국어 일반 불용어: 그, 이, 저, 것, 수, 등, 및, 또, 더, 잘, 못</li>
+<li><code>set(stop_words.split(' '))</code>: 공백 구분 문자열을 집합(set)으로 변환 → <strong>O(1) 시간 복잡도</strong>로 빠른 존재 여부 확인</li>
+<li><code>len(w) &gt; 1</code>: 1글자 단어 제거. ‘거’, ‘때’, ‘그’ 같은 불용어성 단음절어 제거 효과</li>
+<li>두 조건을 <code>and</code>로 결합: 불용어이거나 1글자인 단어 모두 제거</li>
+</ul>
+<blockquote class="blockquote">
+<p>실제 프로젝트에서는 도메인에 맞는 불용어 사전을 구축하여 활용한다.</p>
+</blockquote>
+</div>
+</div>
 </section>
 <section id="단어-빈도-계산-및-데이터프레임-저장" class="level5">
 <h5 class="anchored" data-anchor-id="단어-빈도-계산-및-데이터프레임-저장">단어 빈도 계산 및 데이터프레임 저장</h5>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 k개 단어 빈도 분석</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">20</span> <span class="co"># 빈도 상위 k개 단어 출력</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>word_count <span class="op">=</span> collections.Counter(words)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>word_freq <span class="op">=</span> pd.DataFrame( word_count.most_common(k), columns<span class="op">=</span>[<span class="st">'words'</span>, <span class="st">'count'</span>])</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>word_freq <span class="op">=</span> word_freq.dropna() <span class="co"># 결측값 제거</span></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(word_freq))</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(word_freq.head(<span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 상위 k개 단어 빈도 분석</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">20</span>  <span class="co"># 빈도 상위 k개 단어 출력</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>word_count <span class="op">=</span> collections.Counter(words)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>word_freq <span class="op">=</span> pd.DataFrame(word_count.most_common(k), columns<span class="op">=</span>[<span class="st">'words'</span>, <span class="st">'count'</span>])</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>word_freq <span class="op">=</span> word_freq.dropna()  <span class="co"># 결측값 제거</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">type</span>(word_freq))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(word_freq.head(<span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
   words  count
 0   마리아      5
@@ -644,71 +1386,170 @@ Name: verse, dtype: object</code></pre>
 2    예수      5
 3   바벨론      4
 4    엘리      4</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — Counter + most_common()">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — Counter + most_common()
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>collections.Counter(words)</code>: 리스트의 각 원소 빈도를 자동으로 계산. 결과는 딕셔너리형 객체(<code>{단어: 빈도}</code>).</li>
+<li><code>.most_common(k)</code>: 빈도 내림차순으로 상위 k개 <code>(단어, 빈도)</code> 튜플 리스트 반환.</li>
+<li><code>pd.DataFrame(..., columns=['words', 'count'])</code>: 튜플 리스트를 열 이름이 있는 DataFrame으로 변환.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석 — 마태복음 1장 단어 빈도">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석 — 마태복음 1장 단어 빈도
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>상위 빈도 단어가 <code>마리아(5)</code>, <code>요셉(5)</code>, <code>예수(5)</code>, <code>바벨론(4)</code>, <code>엘리(4)</code>인 결과는 마태복음 1장의 내용인 <strong>예수의 족보</strong>와 <strong>탄생 예고</strong> 내러티브를 반영한다.</p>
+<ul>
+<li><strong>마리아, 요셉</strong>: 예수의 어머니와 약혼자로 탄생 장면에서 반복 등장</li>
+<li><strong>예수</strong>: 본문의 핵심 인물</li>
+<li><strong>바벨론</strong>: 족보 중간 지점으로 여러 번 언급</li>
+<li><strong>엘리</strong>: 족보에 등장하는 인명</li>
+</ul>
+<p>이처럼 단어 빈도는 <strong>문서의 주제와 핵심 인물</strong>을 빠르게 파악하는 데 유용하다.</p>
+</div>
+</div>
+<hr>
 </section>
 </section>
 <section id="단어-동시-발생-빈도-co-occurrence-matrix" class="level4">
 <h4 class="anchored" data-anchor-id="단어-동시-발생-빈도-co-occurrence-matrix">2. 단어 동시 발생 빈도 (Co-occurrence Matrix)</h4>
-<p>동시 발생 행렬(Co-occurrence Matrix)은 두 단어가 같은 문장(또는 문서) 안에서 함께 등장하는 빈도를 행렬 형태로 표현한 것이다. 단어 간의 연관성을 파악하는 연관어 분석, 키워드 네트워크 분석 등에 활용된다.</p>
+<p><strong>동시 발생 행렬(Co-occurrence Matrix)</strong> 은 두 단어가 같은 문장(또는 문서) 안에서 함께 등장하는 빈도를 행렬 형태로 표현한 것이다.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Bigram과 동시 발생 행렬 이론">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Bigram과 동시 발생 행렬 이론
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Bigram</strong>: 연속된 두 단어의 쌍. <code>['A', 'B', 'C', 'D']</code> → <code>[('A','B'), ('B','C'), ('C','D')]</code></p>
+<p><strong>동시 발생 행렬의 구조:</strong></p>
+<p><span class="math display">\[M[i][j] = \text{단어 } j \text{ 다음에 단어 } i \text{ 가 등장한 횟수}\]</span></p>
+<pre><code>         아사  여호사밧  요람
+아사      0      1      0
+여호사밧   0      0      1
+요람      0      0      0</code></pre>
+<p>→ “아사 → 여호사밧” 1회, “여호사밧 → 요람” 1회</p>
+<p><strong>활용 분야:</strong> - 연관어 분석: 특정 키워드와 자주 함께 등장하는 단어 파악 - 키워드 네트워크: 단어 간 관계를 그래프로 시각화 - 언어 모델: 단어 예측 확률 계산의 기초</p>
+</div>
+</div>
 <section id="동시-발생-행렬-생성-함수" class="level5">
 <h5 class="anchored" data-anchor-id="동시-발생-행렬-생성-함수">동시 발생 행렬 생성 함수</h5>
-<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nltk</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk <span class="im">import</span> bigrams</span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_co_occurrence_matrix(corpus):</span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="co">    단어 리스트(corpus)로부터 Bigram 기반 동시 발생 행렬을 생성한다.</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="co">        co_occurrence_matrix : numpy.matrix (단어 x 단어 빈도 행렬)</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a><span class="co">        vocab_index          : dict (단어 → 행렬 인덱스)</span></span>
-<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    vocab <span class="op">=</span> <span class="bu">list</span>(<span class="bu">set</span>(corpus))</span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    vocab_index <span class="op">=</span> {word: i <span class="cf">for</span> i, word <span class="kw">in</span> <span class="bu">enumerate</span>(vocab)}</span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bigram 생성 및 빈도 계산</span></span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    bi_grams <span class="op">=</span> <span class="bu">list</span>(bigrams(corpus))</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    bigram_freq <span class="op">=</span> nltk.FreqDist(bi_grams).most_common(<span class="bu">len</span>(bi_grams))</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 동시 발생 행렬 초기화</span></span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    co_matrix <span class="op">=</span> np.zeros((<span class="bu">len</span>(vocab), <span class="bu">len</span>(vocab)))</span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 빈도 채우기 ✅ 들여쓰기 수정 (함수 안으로)</span></span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> bigram <span class="kw">in</span> bigram_freq:</span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>        current  <span class="op">=</span> bigram[<span class="dv">0</span>][<span class="dv">1</span>]</span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>        previous <span class="op">=</span> bigram[<span class="dv">0</span>][<span class="dv">0</span>]</span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        count    <span class="op">=</span> bigram[<span class="dv">1</span>]</span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>        pos_cur  <span class="op">=</span> vocab_index[current]</span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>        pos_prev <span class="op">=</span> vocab_index[previous]</span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>        co_matrix[pos_cur][pos_prev] <span class="op">=</span> count</span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.matrix(co_matrix), vocab_index  <span class="co"># ✅ 들여쓰기 수정</span></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 동시 발생 행렬 생성</span></span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>matrix, vocab_index <span class="op">=</span> generate_co_occurrence_matrix(words)</span>
-<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a><span class="co"># ✅ index/columns에 vocab_index.keys() 사용</span></span>
-<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>data_matrix <span class="op">=</span> pd.DataFrame(</span>
-<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>    matrix,</span>
-<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>vocab_index.keys(),</span>
-<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>vocab_index.keys()</span>
-<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data_matrix)  <span class="co"># (고유 단어 수 x 고유 단어 수)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> nltk</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> itertools</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> nltk <span class="im">import</span> bigrams</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_co_occurrence_matrix(corpus):</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a><span class="co">    단어 리스트(corpus)로부터 Bigram 기반 동시 발생 행렬을 생성한다.</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">        co_occurrence_matrix : numpy.matrix (단어 x 단어 빈도 행렬)</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">        vocab_index          : dict (단어 → 행렬 인덱스)</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    vocab <span class="op">=</span> <span class="bu">list</span>(<span class="bu">set</span>(corpus))                          <span class="co"># 고유 단어 목록 (중복 제거)</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    vocab_index <span class="op">=</span> {word: i <span class="cf">for</span> i, word <span class="kw">in</span> <span class="bu">enumerate</span>(vocab)}  <span class="co"># 단어 → 인덱스 사전</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Bigram 생성 및 빈도 계산</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    bi_grams <span class="op">=</span> <span class="bu">list</span>(bigrams(corpus))                   <span class="co"># 연속된 두 단어 쌍 생성</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    bigram_freq <span class="op">=</span> nltk.FreqDist(bi_grams).most_common(<span class="bu">len</span>(bi_grams))  <span class="co"># 빈도순 정렬</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 동시 발생 행렬 초기화 (모든 값 0)</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>    co_matrix <span class="op">=</span> np.zeros((<span class="bu">len</span>(vocab), <span class="bu">len</span>(vocab)))</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 빈도 채우기</span></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> bigram <span class="kw">in</span> bigram_freq:</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>        current  <span class="op">=</span> bigram[<span class="dv">0</span>][<span class="dv">1</span>]           <span class="co"># 현재 단어 (뒤)</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>        previous <span class="op">=</span> bigram[<span class="dv">0</span>][<span class="dv">0</span>]           <span class="co"># 이전 단어 (앞)</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>        count    <span class="op">=</span> bigram[<span class="dv">1</span>]              <span class="co"># 해당 bigram 등장 횟수</span></span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>        pos_cur  <span class="op">=</span> vocab_index[current]</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>        pos_prev <span class="op">=</span> vocab_index[previous]</span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>        co_matrix[pos_cur][pos_prev] <span class="op">=</span> count  <span class="co"># 행: 현재, 열: 이전</span></span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.matrix(co_matrix), vocab_index</span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 동시 발생 행렬 생성</span></span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>matrix, vocab_index <span class="op">=</span> generate_co_occurrence_matrix(words)</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrame으로 변환 (행/열 레이블 = 단어)</span></span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>data_matrix <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>    matrix,</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>vocab_index.keys(),</span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>vocab_index.keys()</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data_matrix)  <span class="co"># (고유 단어 수 × 고유 단어 수) 크기의 행렬</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>     대접   결코   바니   판결   얼굴   산나   영접   몰약  바리새인   둘째  ...   더욱   여행   안식  \
-대접  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   1.0  0.0  ...  0.0  0.0  0.0   
-결코  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0  0.0  ...  0.0  0.0  0.0   
-바니  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0  0.0  ...  0.0  0.0  0.0   </code></pre>
+대접  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   1.0  0.0  ...  0.0  0.0  0.0
+결코  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0  0.0  ...  0.0  0.0  0.0
+바니  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0   0.0  0.0  ...  0.0  0.0  0.0</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — 동시 발생 행렬 생성 함수">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — 동시 발생 행렬 생성 함수
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><code>set(corpus)</code>: 리스트에서 중복을 제거하여 고유 단어(어휘) 목록 생성.</li>
+<li><code>vocab_index</code>: 각 단어를 행렬의 인덱스 번호로 매핑. <code>{'단어': 0, '단어2': 1, ...}</code></li>
+<li><code>bigrams(corpus)</code>: NLTK의 함수로 연속된 두 단어 쌍 생성. <code>[A, B, C]</code> → <code>[(A,B), (B,C)]</code></li>
+<li><code>FreqDist</code>: NLTK의 빈도 분포 클래스. 각 bigram의 등장 횟수를 자동 계산.</li>
+<li><code>co_matrix[pos_cur][pos_prev] = count</code>: <strong>행은 현재 단어, 열은 이전 단어</strong> 로 방향성 있는 동시 발생 정보를 저장.</li>
+<li><code>np.zeros(...)</code>: 0으로 초기화된 행렬. 행렬 크기 = <code>(고유 단어 수) × (고유 단어 수)</code>.</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석 — 동시 발생 행렬">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석 — 동시 발생 행렬
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>행렬의 대부분이 0으로 채워진 <strong>희소 행렬(sparse matrix)</strong> 이다. 이는 자연어에서 모든 단어 쌍이 함께 등장하지 않기 때문에 자연스러운 현상이다. 0이 아닌 값이 있는 위치가 실제 단어 간 연관 관계를 나타낸다.</p>
+<ul>
+<li><code>data_matrix['대접']['바리새인'] = 1.0</code>: “바리새인” 다음에 “대접”이 1회 등장</li>
+<li>행렬 크기가 <code>(고유단어 수)²</code> 이므로 어휘 크기가 크면 메모리 사용량이 급증한다는 점을 유의.</li>
+</ul>
+</div>
+</div>
 </section>
 <section id="특정-키워드-연관어-분석" class="level5">
 <h5 class="anchored" data-anchor-id="특정-키워드-연관어-분석">특정 키워드 연관어 분석</h5>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 특정 키워드와 동시 발생 빈도가 높은 단어 출력</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>keyword <span class="op">=</span> <span class="st">'그리스도'</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 해당 키워드와 1회 이상 동시 발생한 단어만 선택, 내림차순 정렬</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> (data_matrix[data_matrix[keyword] <span class="op">&gt;</span> <span class="dv">0</span>][keyword].sort_values(ascending<span class="op">=</span><span class="va">False</span>))</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[ '</span><span class="sc">{</span>keyword<span class="sc">}</span><span class="ss">' 연관어 분석 결과 ]"</span>)</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.head(<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 특정 키워드와 동시 발생 빈도가 높은 단어 출력</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>keyword <span class="op">=</span> <span class="st">'그리스도'</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 해당 키워드와 1회 이상 동시 발생한 단어만 선택, 내림차순 정렬</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> (data_matrix[data_matrix[keyword] <span class="op">&gt;</span> <span class="dv">0</span>][keyword]</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>          .sort_values(ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"[ '</span><span class="sc">{</span>keyword<span class="sc">}</span><span class="ss">' 연관어 분석 결과 ]"</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.head(<span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="text"><code>[ '그리스도' 연관어 분석 결과 ]
 예수    4.0
 칭하    3.0
@@ -721,135 +1562,343 @@ Name: verse, dtype: object</code></pre>
 광야    1.0
 여기    1.0
 Name: 그리스도, dtype: float64</code></pre>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">💡 활용 팁: 동시 발생 행렬을 네트워크 시각화(NetworkX, Gephi 등)와 결합하면 단어 간의 관계를 그래프로 표현할 수 있다. 임계값(threshold) 설정으로 중요한 연관어만 선택적으로 시각화할 수 있다.</td>
-</tr>
-</tbody>
-</table>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석 — 그리스도 연관어 분석">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석 — 그리스도 연관어 분석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>‘그리스도’ 앞에 가장 많이 등장한 단어들:</p>
+<ul>
+<li><strong>예수(4)</strong>: “예수 그리스도”가 4번 등장 — 예수의 공식 호칭으로 사용</li>
+<li><strong>칭하(3)</strong>: “그리스도라 칭하는” 표현 — 정체성 선언 맥락</li>
+<li><strong>유대(2)</strong>: “유대인의 왕 그리스도” 맥락 — 정치적·종교적 의미</li>
+<li><strong>모친(2)</strong>: 예수 탄생 관련 절에서 등장</li>
+</ul>
+<p>이 결과는 <strong>텍스트 내 ’그리스도’의 사용 맥락</strong>을 보여준다. 연관어 분석을 통해 단순 빈도보다 풍부한 의미적 관계를 파악할 수 있다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="네트워크 시각화 확장 방법">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+네트워크 시각화 확장 방법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>동시 발생 행렬을 <strong>네트워크 그래프</strong>로 시각화하면 단어 간의 관계 구조를 직관적으로 파악할 수 있다.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 예시 코드 (참고용)</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>G <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="dv">2</span>  <span class="co"># 빈도 임계값</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> word1 <span class="kw">in</span> data_matrix.index:</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word2 <span class="kw">in</span> data_matrix.columns:</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> data_matrix[word2][word1] <span class="op">&gt;=</span> threshold:</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>            G.add_edge(word2, word1, weight<span class="op">=</span>data_matrix[word2][word1])</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>nx.draw_networkx(G, with_labels<span class="op">=</span><span class="va">True</span>, font_family<span class="op">=</span><span class="st">'NanumGothic'</span>)</span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>임계값(threshold)을 높이면 핵심 연관어 관계만 남겨 더 명확한 네트워크를 얻을 수 있다.</p>
+</div>
+</div>
+<hr>
 </section>
 </section>
 <section id="워드클라우드-시각화-word-cloud" class="level4">
 <h4 class="anchored" data-anchor-id="워드클라우드-시각화-word-cloud">3. 워드클라우드 시각화 (Word Cloud)</h4>
-<p>워드클라우드는 단어 빈도를 글자 크기로 표현하여 주요 단어를 직관적으로 파악할 수 있는 시각화 기법이다. Python의 wordcloud 라이브러리를 사용하면 간단하게 구현할 수 있다.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> wordcloud <span class="im">import</span> WordCloud</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter  <span class="co"># ✅ Counter import 추가</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 단어 빈도 딕셔너리 생성</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>words_count <span class="op">=</span> Counter(words)</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 빈도 상위 20개 출력</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(words_count.most_common(<span class="dv">20</span>))</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 워드클라우드 생성</span></span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>wordcloud <span class="op">=</span> WordCloud(</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>    font_path<span class="op">=</span><span class="st">'//content/drive/MyDrive/fonts/NanumGothic-Regular.ttf'</span>,</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>    background_color<span class="op">=</span><span class="st">'black'</span>,</span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">1000</span>,</span>
-<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>    max_words<span class="op">=</span><span class="dv">100</span>,</span>
-<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>    max_font_size<span class="op">=</span><span class="dv">200</span>,</span>
-<span id="cb29-19"><a href="#cb29-19" aria-hidden="true" tabindex="-1"></a>    colormap<span class="op">=</span><span class="st">'Set2'</span></span>
-<span id="cb29-20"><a href="#cb29-20" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-21"><a href="#cb29-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-22"><a href="#cb29-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 단어 빈도로부터 워드클라우드 생성</span></span>
-<span id="cb29-23"><a href="#cb29-23" aria-hidden="true" tabindex="-1"></a>wordcloud <span class="op">=</span> wordcloud.generate_from_frequencies(words_count)</span>
-<span id="cb29-24"><a href="#cb29-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-25"><a href="#cb29-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화</span></span>
-<span id="cb29-26"><a href="#cb29-26" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
-<span id="cb29-27"><a href="#cb29-27" aria-hidden="true" tabindex="-1"></a>plt.imshow(wordcloud, interpolation<span class="op">=</span><span class="st">'bilinear'</span>)</span>
-<span id="cb29-28"><a href="#cb29-28" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)</span>
-<span id="cb29-29"><a href="#cb29-29" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Word Clouds'</span>, fontsize<span class="op">=</span><span class="dv">18</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb29-30"><a href="#cb29-30" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb29-31"><a href="#cb29-31" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'wordcloud.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
-<span id="cb29-32"><a href="#cb29-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="text"><code>[('너희', 323), ('예수', 282), ('사람', 170), ('저희', 138), ('가라사대', 96), ('제자', 88), ('우리', 67), ('모든', 64), ('말씀', 61), ('하나', 60), ('하나님', 59), ('대답', 56), ('자기', 54), ('아들', 51), ('하리', 48), ('무리', 46), ('선지자', 44), ('하늘', 44), ('아버지', 42), ('하라', 41)]</code></pre>
+<p>워드클라우드는 <strong>단어 빈도를 글자 크기</strong>로 표현하여 주요 단어를 직관적으로 파악할 수 있는 시각화 기법이다. 빈도가 높을수록 크게 표시되어 한눈에 문서의 핵심 키워드를 파악할 수 있다.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> wordcloud <span class="im">import</span> WordCloud</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> collections <span class="im">import</span> Counter</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 단어 빈도 딕셔너리 생성</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>words_count <span class="op">=</span> Counter(words)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 빈도 상위 20개 출력</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(words_count.most_common(<span class="dv">20</span>))</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 워드클라우드 생성</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>wordcloud <span class="op">=</span> WordCloud(</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    font_path<span class="op">=</span><span class="st">'//content/drive/MyDrive/fonts/NanumGothic-Regular.ttf'</span>,</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>    background_color<span class="op">=</span><span class="st">'black'</span>,   <span class="co"># 배경색</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    width<span class="op">=</span><span class="dv">1000</span>,                  <span class="co"># 이미지 너비(픽셀)</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">1000</span>,                 <span class="co"># 이미지 높이(픽셀)</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    max_words<span class="op">=</span><span class="dv">100</span>,               <span class="co"># 최대 표시 단어 수</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    max_font_size<span class="op">=</span><span class="dv">200</span>,           <span class="co"># 최대 폰트 크기</span></span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    colormap<span class="op">=</span><span class="st">'Set2'</span>              <span class="co"># matplotlib 색상 팔레트</span></span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 단어 빈도로부터 워드클라우드 생성</span></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>wordcloud <span class="op">=</span> wordcloud.generate_from_frequencies(words_count)</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 시각화</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">10</span>))</span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>plt.imshow(wordcloud, interpolation<span class="op">=</span><span class="st">'bilinear'</span>)</span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'off'</span>)  <span class="co"># 축 숨기기</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Word Clouds'</span>, fontsize<span class="op">=</span><span class="dv">18</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'wordcloud.png'</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="text"><code>[('너희', 323), ('예수', 282), ('사람', 170), ('저희', 138),
+ ('가라사대', 96), ('제자', 88), ('우리', 67), ('모든', 64),
+ ('말씀', 61), ('하나', 60), ('하나님', 59), ('대답', 56),
+ ('자기', 54), ('아들', 51), ('하리', 48), ('무리', 46),
+ ('선지자', 44), ('하늘', 44), ('아버지', 42), ('하라', 41)]</code></pre>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/sentiment_nlp_wordcloud.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
+<div class="callout callout-style-default callout-note callout-titled" title="코드 설명 — WordCloud 주요 파라미터">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+코드 설명 — WordCloud 주요 파라미터
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <table class="caption-top table">
 <colgroup>
-<col style="width: 97%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">📌 한글 폰트 설정 방법 - Google Colab: 나눔폰트를 구글 드라이브에 업로드 후 font_path 설정 - 맥북 로컬: ~/Library/Fonts/NanumGothic.ttf - 윈도우: C:/Windows/Fonts/malgun.ttf (맑은 고딕) - 리눅스: sudo apt-get install fonts-nanum 설치 후 경로 확인</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="주요-함수-및-라이브러리-요약" class="level4">
-<h4 class="anchored" data-anchor-id="주요-함수-및-라이브러리-요약">주요 함수 및 라이브러리 요약</h4>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 21%">
-<col style="width: 54%">
-<col style="width: 21%">
+<col style="width: 37%">
+<col style="width: 22%">
+<col style="width: 40%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;"><strong>라이브러리</strong></th>
-<th style="text-align: left;"><strong>주요 함수</strong></th>
-<th style="text-align: left;"><strong>역할</strong></th>
+<th>파라미터</th>
+<th>설명</th>
+<th>권장 설정</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">re</td>
-<td style="text-align: left;">re.sub(pattern, repl, str)</td>
-<td style="text-align: left;">정규표현식 기반 문자열 치환</td>
+<td><code>font_path</code></td>
+<td>한글 폰트 경로 <strong>(필수)</strong></td>
+<td>시스템에 설치된 한글 폰트 경로</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pandas</td>
-<td style="text-align: left;">str.replace(pattern, repl)</td>
-<td style="text-align: left;">DataFrame 열 문자열 일괄 치환</td>
+<td><code>background_color</code></td>
+<td>배경색</td>
+<td>‘white’ 또는 ‘black’</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">konlpy.Okt</td>
-<td style="text-align: left;">okt.nouns(text)</td>
-<td style="text-align: left;">명사만 추출</td>
+<td><code>max_words</code></td>
+<td>최대 표시 단어 수</td>
+<td>50~200</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">konlpy.Okt</td>
-<td style="text-align: left;">okt.pos(text, norm, stem)</td>
-<td style="text-align: left;">품사 태깅 (정규화·어간 추출 옵션)</td>
+<td><code>max_font_size</code></td>
+<td>가장 큰 단어의 폰트 크기</td>
+<td>100~300</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">konlpy.Okt</td>
-<td style="text-align: left;">okt.morphs(text)</td>
-<td style="text-align: left;">형태소 단위로 분리</td>
+<td><code>colormap</code></td>
+<td>색상 팔레트</td>
+<td>‘Set2’, ‘viridis’, ‘Pastel1’</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">itertools</td>
-<td style="text-align: left;">itertools.chain(*list)</td>
-<td style="text-align: left;">중첩 리스트를 단일 리스트로 평탄화</td>
+<td><code>width/height</code></td>
+<td>출력 이미지 해상도</td>
+<td>1000×1000 이상 권장</td>
+</tr>
+</tbody>
+</table>
+<p><code>generate_from_frequencies(dict)</code>: 미리 계산된 빈도 딕셔너리를 입력받아 워드클라우드 생성. <code>generate(text)</code>는 내부적으로 빈도를 자동 계산.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="결과 해석 — 마태복음 전체 워드클라우드">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결과 해석 — 마태복음 전체 워드클라우드
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>상위 빈도 단어 분석:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>단어</th>
+<th>빈도</th>
+<th>의미 해석</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>너희</td>
+<td>323</td>
+<td>예수의 가르침과 설교에서 청중을 지칭</td>
+</tr>
+<tr class="even">
+<td>예수</td>
+<td>282</td>
+<td>마태복음의 중심 인물</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">collections</td>
-<td style="text-align: left;">Counter(words)</td>
-<td style="text-align: left;">단어 빈도 계산</td>
+<td>사람</td>
+<td>170</td>
+<td>일반적 지칭 — 교훈적 맥락에서 반복</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">collections</td>
-<td style="text-align: left;">counter.most_common(k)</td>
-<td style="text-align: left;">상위 k개 빈도 단어 선택</td>
+<td>저희</td>
+<td>138</td>
+<td>3인칭 복수 — 군중, 바리새인 등 지칭</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">nltk</td>
-<td style="text-align: left;">bigrams(corpus)</td>
-<td style="text-align: left;">Bigram(연속된 두 단어 쌍) 생성</td>
+<td>가라사대</td>
+<td>96</td>
+<td>“가라사대 ~” 형식의 직접 인용 표현</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">wordcloud</td>
-<td style="text-align: left;">WordCloud(...).generate_from_frequencies()</td>
-<td style="text-align: left;">단어 빈도 기반 워드클라우드 생성</td>
+<td>제자</td>
+<td>88</td>
+<td>예수의 제자들 — 핵심 청중</td>
+</tr>
+<tr class="odd">
+<td>하나님</td>
+<td>59</td>
+<td>신학적 핵심 용어</td>
+</tr>
+</tbody>
+</table>
+<p><strong>너희(323)가 예수(282)보다 빈도가 높은 이유</strong>: 예수의 가르침을 전하는 마태복음의 특성상, 직접 대화 형식(“너희에게 이르노니”)이 매우 많기 때문이다. 이처럼 워드클라우드는 문서의 <strong>장르적 특성과 저자의 문체</strong>까지 반영한다.</p>
+<blockquote class="blockquote">
+<p><strong>주의</strong>: ‘너희’, ‘저희’, ‘모든’, ‘자기’ 같은 고빈도 단어는 의미 분석에서 불용어로 처리하는 것이 적절하다.</p>
+</blockquote>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="한글 폰트 설정 방법">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+한글 폰트 설정 방법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 64%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>환경</th>
+<th>폰트 경로</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Google Colab</td>
+<td><code>/content/drive/MyDrive/fonts/NanumGothic-Regular.ttf</code> (구글 드라이브에 업로드 후)</td>
+</tr>
+<tr class="even">
+<td>macOS</td>
+<td><code>~/Library/Fonts/NanumGothic.ttf</code> 또는 <code>/System/Library/Fonts/AppleSDGothicNeo.ttc</code></td>
+</tr>
+<tr class="odd">
+<td>Windows</td>
+<td><code>C:/Windows/Fonts/malgun.ttf</code> (맑은 고딕)</td>
+</tr>
+<tr class="even">
+<td>Linux</td>
+<td><code>sudo apt-get install fonts-nanum</code> 설치 후 <code>/usr/share/fonts/truetype/nanum/NanumGothic.ttf</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS에서 시스템 폰트 자동 탐색</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.font_manager <span class="im">as</span> fm</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>fonts <span class="op">=</span> [f.name <span class="cf">for</span> f <span class="kw">in</span> fm.fontManager.ttflist <span class="cf">if</span> <span class="st">'Gothic'</span> <span class="kw">in</span> f.name <span class="kw">or</span> <span class="st">'Nanum'</span> <span class="kw">in</span> f.name]</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fonts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="주요-함수-및-라이브러리-요약" class="level3">
+<h3 class="anchored" data-anchor-id="주요-함수-및-라이브러리-요약">주요 함수 및 라이브러리 요약</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 35%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>라이브러리</strong></th>
+<th><strong>주요 함수</strong></th>
+<th><strong>역할</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>re</td>
+<td><code>re.sub(pattern, repl, str)</code></td>
+<td>정규표현식 기반 문자열 치환</td>
+</tr>
+<tr class="even">
+<td>pandas</td>
+<td><code>str.replace(pattern, repl)</code></td>
+<td>DataFrame 열 문자열 일괄 치환</td>
+</tr>
+<tr class="odd">
+<td>konlpy.Okt</td>
+<td><code>okt.nouns(text)</code></td>
+<td>명사만 추출</td>
+</tr>
+<tr class="even">
+<td>konlpy.Okt</td>
+<td><code>okt.pos(text, norm, stem)</code></td>
+<td>품사 태깅 (정규화·어간 추출 옵션)</td>
+</tr>
+<tr class="odd">
+<td>konlpy.Okt</td>
+<td><code>okt.morphs(text)</code></td>
+<td>형태소 단위로 분리 (품사 제외)</td>
+</tr>
+<tr class="even">
+<td>itertools</td>
+<td><code>itertools.chain(*list)</code></td>
+<td>중첩 리스트를 단일 리스트로 평탄화</td>
+</tr>
+<tr class="odd">
+<td>collections</td>
+<td><code>Counter(words)</code></td>
+<td>단어 빈도 계산</td>
+</tr>
+<tr class="even">
+<td>collections</td>
+<td><code>counter.most_common(k)</code></td>
+<td>상위 k개 빈도 단어 선택</td>
+</tr>
+<tr class="odd">
+<td>nltk</td>
+<td><code>bigrams(corpus)</code></td>
+<td>Bigram(연속된 두 단어 쌍) 생성</td>
+</tr>
+<tr class="even">
+<td>wordcloud</td>
+<td><code>WordCloud(...).generate_from_frequencies()</code></td>
+<td>단어 빈도 기반 워드클라우드 생성</td>
+</tr>
+<tr class="odd">
+<td>networkx</td>
+<td><code>nx.DiGraph()</code></td>
+<td>방향성 있는 단어 네트워크 그래프 생성</td>
 </tr>
 </tbody>
 </table>
