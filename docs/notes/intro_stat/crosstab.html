@@ -420,14 +420,17 @@ window.Quarto = {
 <section id="개념" class="level4" data-number="1.1.1">
 <h4 data-number="1.1.1" class="anchored" data-anchor-id="개념"><span class="header-section-number">1.1.1</span> 개념</h4>
 <p>변수 간의 관계를 분석할 때는 먼저 예측변수(X)와 목표변수(Y)가 어떤 속성을 가지는지 확인해야 한다. 변수 속성은 크게 범주형(categorical)과 측정형(numerical)으로 나눌 수 있으며, 두 변수의 조합에 따라 적절한 분석 방법이 달라진다.</p>
-<ul>
-<li><strong>X와 Y가 모두 범주형 변수</strong>: 교차표를 작성한 뒤 카이제곱 검정과 같은 방법으로 두 변수 간의 관련성을 검토한다.</li>
-<li><strong>X가 범주형이고 Y가 측정형</strong>: 각 범주 수준별로 Y의 평균을 비교하는 방식이 사용된다. 분산분석(ANOVA)이나 t-검정을 통해 수행된다.</li>
-<li><strong>X가 측정형이고 Y가 범주형</strong>: 로지스틱 회귀분석이나 판별분석을 활용한다.</li>
-<li><strong>X와 Y가 모두 측정형</strong>: 두 변수 간의 연속적인 변화 관계를 파악하는 상관분석이나 회귀분석을 사용한다.</li>
-</ul>
-<table class="table-striped caption-top table">
-<caption>변수 유형별 분석 방법</caption>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+변수 유형별 분석 방법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>X &nbsp;Y</th>
@@ -438,16 +441,24 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>범주형</td>
-<td style="text-align: center;">교차분석</td>
-<td style="text-align: center;">분산분석</td>
+<td style="text-align: center;">교차분석 (카이제곱 검정)</td>
+<td style="text-align: center;">분산분석 (ANOVA), t-검정</td>
 </tr>
 <tr class="even">
 <td>측정형</td>
 <td style="text-align: center;">로지스틱 회귀분석</td>
-<td style="text-align: center;">상관분석/회귀분석</td>
+<td style="text-align: center;">상관분석, 회귀분석</td>
 </tr>
 </tbody>
 </table>
+<ul>
+<li><strong>X와 Y 모두 범주형</strong>: 교차표 작성 후 카이제곱 검정으로 연관성 검토</li>
+<li><strong>X가 범주형, Y가 측정형</strong>: 범주별 Y 평균 비교 (ANOVA, t-검정)</li>
+<li><strong>X가 측정형, Y가 범주형</strong>: 로지스틱 회귀분석 또는 판별분석</li>
+<li><strong>X와 Y 모두 측정형</strong>: 상관분석 또는 회귀분석</li>
+</ul>
+</div>
+</div>
 </section>
 <section id="이차원-교차표-맛보기" class="level4" data-number="1.1.2">
 <h4 data-number="1.1.2" class="anchored" data-anchor-id="이차원-교차표-맛보기"><span class="header-section-number">1.1.2</span> 이차원 교차표 맛보기</h4>
@@ -614,41 +625,144 @@ window.Quarto = {
 <section id="상대위험도-relative-risk와-승산비-odds-ratio" class="level4" data-number="1.2.3">
 <h4 data-number="1.2.3" class="anchored" data-anchor-id="상대위험도-relative-risk와-승산비-odds-ratio"><span class="header-section-number">1.2.3</span> 상대위험도 relative risk와 승산비 odds ratio</h4>
 <p>역학 연구에서 질병의 발생과 특정 위험요인 간의 관련성을 평가하기 위해 사용되는 지표로는 상대위험도와 승산비가 있다.</p>
-<ul>
-<li><strong>상대위험도</strong>: 코호트 연구와 같이 연구자가 시간의 흐름에 따라 질병의 발생을 추적할 수 있는 전향적 연구에서 사용된다.</li>
-<li><strong>승산비</strong>: 사례-대조군 연구는 일반적으로 후향적 연구로 분류되며, 실제 발생률의 직접 비교가 불가능하므로 승산비를 통해 위험요인과 질병 간의 연관성을 추정한다.</li>
-</ul>
-<p><strong>상대위험도 정의</strong></p>
-<p>두 집단 간 비율의 차이가 동일하더라도, 그 해석은 비율의 절대적 크기에 따라 달라질 수 있다. 비율의 절대 차이가 아닌, 비율 간의 상대적 크기를 비교하는 개념이 바로 상대위험도이다.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+상대위험도(RR) vs.&nbsp;오즈비(OR) 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>구분</th>
+<th>상대위험도 (RR)</th>
+<th>오즈비 (OR)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>정의</strong></td>
+<td>발생률의 비율 <span class="math inline">\(P_1/P_2\)</span></td>
+<td>오즈의 비율</td>
+</tr>
+<tr class="even">
+<td><strong>적용 연구</strong></td>
+<td>전향적 연구 (코호트)</td>
+<td>후향적 연구 (사례-대조군)</td>
+</tr>
+<tr class="odd">
+<td><strong>직관성</strong></td>
+<td>높음 (발생 비율)</td>
+<td>낮음 (오즈 비율)</td>
+</tr>
+<tr class="even">
+<td><strong>희귀 질환</strong></td>
+<td>RR ≈ OR</td>
+<td>RR ≈ OR</td>
+</tr>
+<tr class="odd">
+<td><strong>흔한 질환</strong></td>
+<td>RR과 OR 차이 큼</td>
+<td>OR이 RR을 과대추정</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>상대위험도 정의</strong>: 두 집단 간 비율의 차이가 동일하더라도, 그 해석은 비율의 절대적 크기에 따라 달라질 수 있다. 비율의 절대 차이가 아닌, 비율 간의 상대적 크기를 비교하는 개념이 바로 상대위험도이다.</p>
 <p><span class="math display">\[\text{Relative Risk (RR)} = \frac{P_{1}}{P_{2}}\]</span></p>
 <ul>
 <li><span class="math inline">\(P_{1}\)</span>은 위험요인에 노출된 집단에서의 사건 발생률</li>
 <li><span class="math inline">\(P_{2}\)</span>는 위험요인에 노출되지 않은 집단에서의 사건 발생률</li>
 </ul>
-<p>상대위험도 해석:</p>
-<ul>
-<li><span class="math inline">\(RR = 1\)</span>: 두 집단 간 사건 발생률이 동일함을 의미한다.</li>
-<li><span class="math inline">\(RR &gt; 1\)</span>: 노출 집단에서 사건 발생 위험이 더 큼.</li>
-<li><span class="math inline">\(RR &lt; 1\)</span>: 노출 집단에서 사건 발생 위험이 더 낮음(보호 효과 가능).</li>
-</ul>
-<p><strong>방사능 노출여부와 질병 발병 여부 실험</strong></p>
-<p>상대 위험도 추정치: <span class="math inline">\(\frac{{\widehat{\pi}}_{1}}{{\widehat{\pi}}_{2}} = \frac{0.05}{0.01} = 5\)</span>, 방사능 노출집단의 질병 발생율은 미노출 집단보다 5배 높다.</p>
-<p><strong>오즈</strong></p>
-<p>오즈란 어떤 사건이 성공할 확률을 실패할 확률로 나눈 비율로 정의된다. 성공 확률을 <span class="math inline">\(\pi\)</span>라고 할 때, 오즈는 다음과 같이 정의된다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+상대위험도(RR) 해석 기준
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>RR 값</th>
+<th>의미</th>
+<th>해석</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RR = 1</td>
+<td>두 집단 발생률 동일</td>
+<td>연관성 없음</td>
+</tr>
+<tr class="even">
+<td>RR &gt; 1</td>
+<td>노출 집단 위험 더 큼</td>
+<td>위험 요인</td>
+</tr>
+<tr class="odd">
+<td>RR &lt; 1</td>
+<td>노출 집단 위험 더 낮음</td>
+<td>보호 효과 가능</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>방사능 노출여부와 질병 발병 여부 실험</strong>: 상대 위험도 추정치는 <span class="math inline">\(\frac{{\widehat{\pi}}_{1}}{{\widehat{\pi}}_{2}} = \frac{0.05}{0.01} = 5\)</span>로, 방사능 노출집단의 질병 발생율은 미노출 집단보다 5배 높다.</p>
+<p><strong>오즈</strong>: 어떤 사건이 성공할 확률을 실패할 확률로 나눈 비율로 정의된다. 성공 확률을 <span class="math inline">\(\pi\)</span>라고 할 때, 오즈는 다음과 같이 정의된다.</p>
 <p><span class="math display">\[\text{Odds} = \frac{\pi}{1 - \pi}\]</span></p>
 <p>예를 들어, 한국이 폴란드와의 축구 경기에서 이길 확률이 <span class="math inline">\(\pi = 0.1\)</span>이라면, 한국의 오즈는 <span class="math inline">\(\frac{0.1}{1 - 0.1} = \frac{0.1}{0.9} = \frac{1}{9}\)</span>이다. 한국이 한 번 이기기 위해서는 평균적으로 9번 질 것이라는 의미로 해석할 수 있다.</p>
-<p><strong>오즈비의 정의와 해석</strong></p>
-<p>오즈비는 두 집단 간 사건 발생의 상대적인 가능성을 비교하는 지표로, 각 집단의 오즈를 비율로 나타낸 값이다.</p>
+<p><strong>오즈비의 정의와 해석</strong>: 오즈비는 두 집단 간 사건 발생의 상대적인 가능성을 비교하는 지표로, 각 집단의 오즈를 비율로 나타낸 값이다.</p>
 <p><span class="math display">\[\text{OR} = \frac{\frac{\pi_{1}}{1 - \pi_{1}}}{\frac{\pi_{2}}{1 - \pi_{2}}} = \frac{\pi_{1}(1 - \pi_{2})}{\pi_{2}(1 - \pi_{1})}\]</span></p>
-<ul>
-<li><span class="math inline">\(\text{OR} = 1\)</span>: 두 집단의 오즈가 동일함을 의미하며, 두 변수 간 독립성을 시사한다.</li>
-<li><span class="math inline">\(\text{OR} &gt; 1\)</span>: 분자 집단에서 사건 발생의 가능성이 더 높다.</li>
-<li><span class="math inline">\(\text{OR} &lt; 1\)</span>: 분자 집단의 사건 발생 가능성이 더 낮으며, 해당 노출이 사건 발생을 줄이는 보호 효과를 가질 수 있다.</li>
-</ul>
-<p><strong>건강집단과 질병집단 오즈비</strong></p>
-<p><span class="math inline">\(\text{oddsratio} = \frac{(20/6)}{(380/594)} = 5.2\)</span>, 방사능 노출은 질병 발생과 유의한 양의 연관성을 보였으며, 노출군의 질병 오즈는 비노출군에 비해 약 5.2배 높았다.</p>
-<p><strong>오즈비 추론</strong></p>
-<p>두 반응 변수가 서로 독립인지 검정하기 위해 <span class="math inline">\(\ln(OR)\)</span>을 활용한다. 두 변수가 독립이면 <span class="math inline">\(\ln(1) = 0\)</span>이고 좌우 대칭의 형태를 갖는다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+오즈비(OR) 해석 기준
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>OR 값</th>
+<th>의미</th>
+<th>해석</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OR = 1</td>
+<td>두 집단 오즈 동일</td>
+<td>독립 (연관성 없음)</td>
+</tr>
+<tr class="even">
+<td>OR &gt; 1</td>
+<td>분자 집단 사건 발생 가능성 높음</td>
+<td>위험 요인</td>
+</tr>
+<tr class="odd">
+<td>OR &lt; 1</td>
+<td>분자 집단 사건 발생 가능성 낮음</td>
+<td>보호 효과 가능</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>건강집단과 질병집단 오즈비</strong>: <span class="math inline">\(\text{oddsratio} = \frac{(20/6)}{(380/594)} = 5.2\)</span>, 방사능 노출은 질병 발생과 유의한 양의 연관성을 보였으며, 노출군의 질병 오즈는 비노출군에 비해 약 5.2배 높았다.</p>
+<p><strong>오즈비 추론</strong>: 두 반응 변수가 서로 독립인지 검정하기 위해 <span class="math inline">\(\ln(OR)\)</span>을 활용한다. 두 변수가 독립이면 <span class="math inline">\(\ln(1) = 0\)</span>이고 좌우 대칭의 형태를 갖는다.</p>
 <p>표본의 크기가 커지면 <span class="math inline">\(\widehat{\ln(OR)} \sim N(ln(OR),\frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}})\)</span>이므로 신뢰구간은 <span class="math inline">\(\widehat{\ln(OR)} \pm z_{1 - \alpha/2}\sqrt{\frac{1}{n_{11}} + \frac{1}{n_{12}} + \frac{1}{n_{21}} + \frac{1}{n_{22}}}\)</span>이다.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#오즈비 신뢰구간</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> st</span>
@@ -728,6 +842,99 @@ window.Quarto = {
 <li><span class="math inline">\(\pi_{++} = 1\)</span></li>
 <li><span class="math inline">\(O_{ij}\)</span>: 셀 <span class="math inline">\((i,j)\)</span> 관측빈도</li>
 </ul>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+교차표 검정 방법 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 30%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>검정</th>
+<th>목적</th>
+<th>표본 추출</th>
+<th>사용 조건</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>독립성 검정</strong></td>
+<td>두 변수 간 독립 여부</td>
+<td>전체에서 단일 표본</td>
+<td>기대도수 ≥ 5</td>
+</tr>
+<tr class="even">
+<td><strong>동질성 검정</strong></td>
+<td>집단 간 분포 동일 여부</td>
+<td>집단별 독립 표본</td>
+<td>기대도수 ≥ 5</td>
+</tr>
+<tr class="odd">
+<td><strong>Fisher 정확검정</strong></td>
+<td>2×2 소표본 독립 검정</td>
+<td>2×2 소표본</td>
+<td>기대도수 &lt; 5</td>
+</tr>
+<tr class="even">
+<td><strong>McNemar 검정</strong></td>
+<td>짝진 자료 비율 변화</td>
+<td>동일 개체 전·후 측정</td>
+<td>이진형 반복 측정</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+카이제곱 검정 사용 조건
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>조건</th>
+<th>기준</th>
+<th>위반 시 조치</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>기대도수</strong></td>
+<td>모든 셀 <span class="math inline">\(E_{ij} \geq 5\)</span></td>
+<td>Fisher’s exact test 사용</td>
+</tr>
+<tr class="even">
+<td><strong>표본 독립성</strong></td>
+<td>관측값이 서로 독립</td>
+<td>짝진 자료는 McNemar 검정</td>
+</tr>
+<tr class="odd">
+<td><strong>표본 크기</strong></td>
+<td>충분히 커야 함</td>
+<td>소표본이면 Fisher 검정 권장</td>
+</tr>
+</tbody>
+</table>
+<p>기대도수 <span class="math inline">\(E_{ij} = \frac{O_{i+} \cdot O_{+j}}{O_{++}}\)</span> (행 합계 × 열 합계 / 전체)</p>
+</div>
+</div>
 </section>
 <section id="독립성-검정" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="독립성-검정"><span class="header-section-number">2.2</span> 독립성 검정</h3>
@@ -738,11 +945,25 @@ window.Quarto = {
 <li>대립가설: 두 변수는 서로 독립이 아니다 (즉, 관련이 있다).</li>
 </ul>
 <p>독립이라는 것은, 한 변수의 특정 범주에 속하는 비율이 다른 변수의 범주에 관계없이 일정하다는 의미다. 기대도수는 귀무가설이 옳다는 가정 하에서 계산되는 셀의 빈도이다.</p>
-<p><strong>검정통계량</strong></p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+카이제곱 검정통계량
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p><span class="math display">\[ts = \sum_{i,j}\frac{(O_{ij} - E_{ij})^{2}}{E_{ij}} \sim \chi^{2}((R - 1) \times (C - 1))\]</span></p>
-<p>여기서 <span class="math inline">\(E_{ij} = \frac{O_{i+}O_{+j}}{O_{++}}\)</span>이다.</p>
-<p><strong>사례분석</strong></p>
-<p>성별(남, 여)에 따른 선호하는 커피 종류(아메리카노, 라떼, 에스프레소) 간의 관계를 분석하고자 한다.</p>
+<ul>
+<li><span class="math inline">\(O_{ij}\)</span>: 셀 <span class="math inline">\((i,j)\)</span>의 관측빈도</li>
+<li><span class="math inline">\(E_{ij} = \frac{O_{i+}O_{+j}}{O_{++}}\)</span>: 독립 가정 하 기대빈도</li>
+<li>자유도: <span class="math inline">\((R-1) \times (C-1)\)</span></li>
+</ul>
+</div>
+</div>
+<p><strong>사례분석</strong>: 성별(남, 여)에 따른 선호하는 커피 종류(아메리카노, 라떼, 에스프레소) 간의 관계를 분석하고자 한다.</p>
 <table class="table-striped caption-top table">
 <caption>성별 × 커피 선호 교차표</caption>
 <thead>
@@ -802,7 +1023,39 @@ window.Quarto = {
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">📊 행 퍼센트 (%):"</span>)</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(row_percent_rounded)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>✅ 카이제곱 통계량: 6.818 <br> ✅ p-value: 0.0331 <br> 📊 행 퍼센트 (%): <br> Americano Latte Espresso <br> Male 42.86 35.71 21.43 <br> Female 25.00 37.50 37.50</p>
-<p>유의확률(0.0247)이 0.05보다 작으므로 귀무가설은 기각되어 성별과 커피 선호 간에 통계적으로 유의한 연관성이 존재함을 의미한다. 남성은 아메리카노(42.86%)를 가장 많이 선호하는 반면, 여성은 에스프레소(37.5%)와 라떼(37.5%)에 대한 선호가 상대적으로 높다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결론: 성별 × 커피 선호 독립성 검정
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">검정통계량</th>
+<th style="text-align: center;">자유도</th>
+<th style="text-align: center;">유의확률</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">6.818</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.033</td>
+</tr>
+</tbody>
+</table>
+<p>유의확률(0.033) &lt; 유의수준(0.05) → <strong>귀무가설 기각</strong>: 성별과 커피 선호 간에 통계적으로 유의한 연관성이 존재한다.</p>
+<ul>
+<li>남성: 아메리카노(42.86%) 선호 높음</li>
+<li>여성: 에스프레소(37.5%)와 라떼(37.5%) 선호 높음</li>
+</ul>
+</div>
+</div>
 </section>
 <section id="동질성-검정" class="level3" data-number="2.3">
 <h3 data-number="2.3" class="anchored" data-anchor-id="동질성-검정"><span class="header-section-number">2.3</span> 동질성 검정</h3>
@@ -812,10 +1065,9 @@ window.Quarto = {
 <li>귀무가설: <span class="math inline">\(\pi_{ij} = \pi_{kj}\)</span>, 모든 <span class="math inline">\(j = 1,2,...,C\)</span> 그리고 <span class="math inline">\(i \neq k\)</span></li>
 <li>대립가설: 귀무가설은 사실이 아니다.</li>
 </ul>
-<p><strong>Pearson Chi-square Statistic <span class="math inline">\(\chi^2\)</span> -검정 통계량</strong></p>
+<p><strong>Pearson Chi-square Statistic <span class="math inline">\(\chi^2\)</span> -검정 통계량</strong>: 독립성 검정과 동일한 통계량을 사용한다.</p>
 <p><span class="math display">\[ts = \sum_{i,j}\frac{(O_{ij} - E_{ij})^{2}}{E_{ij}} \sim \chi^{2}((R - 1) \times (C - 1))\]</span></p>
-<p><strong>사례분석</strong></p>
-<p>한 음료회사가 지역별(서울, 부산) 소비자들을 대상으로, 선호하는 음료 종류(탄산음료, 주스, 생수)에 대한 조사를 실시하였다. 각 지역에서 100명씩 표본을 추출하여 선호도를 조사한 결과는 다음과 같다.</p>
+<p><strong>사례분석</strong>: 한 음료회사가 지역별(서울, 부산) 소비자들을 대상으로, 선호하는 음료 종류(탄산음료, 주스, 생수)에 대한 조사를 실시하였다. 각 지역에서 100명씩 표본을 추출하여 선호도를 조사한 결과는 다음과 같다.</p>
 <table class="table-striped caption-top table">
 <caption>지역 × 음료 선호 교차표</caption>
 <thead>
@@ -854,11 +1106,81 @@ window.Quarto = {
 <p>귀무가설: 두 지역(서울, 부산)의 음료 선호 분포는 동일하다 (즉, 모집단의 분포가 동질적이다)</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 독립성 검정 코드와 동일함</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>✅ 카이제곱 통계량: 8.81 <br> ✅ p-value: 0.0122 <br> 📊 행 퍼센트 (%): <br> Soda Juice Water <br> Seoul 40.0 35.0 25.0 <br> Busan 30.0 25.0 45.0</p>
-<p>유의확률이 0.012이므로, 귀무가설은 기각되어 서울과 부산의 음료 선호 분포는 동일하지 않으며, 지역 간 분포의 차이가 통계적으로 유의미하다고 볼 수 있다. 서울은 탄산음료와 주스 선호도가 높고, 부산은 생수 선호 비율이 상대적으로 높다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결론: 지역 × 음료 선호 동질성 검정
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">검정통계량</th>
+<th style="text-align: center;">자유도</th>
+<th style="text-align: center;">유의확률</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">8.81</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0.012</td>
+</tr>
+</tbody>
+</table>
+<p>유의확률(0.012) &lt; 유의수준(0.05) → <strong>귀무가설 기각</strong>: 서울과 부산의 음료 선호 분포는 동일하지 않다.</p>
+<ul>
+<li>서울: 탄산음료(40%)와 주스(35%) 선호 높음</li>
+<li>부산: 생수(45%) 선호 상대적으로 높음</li>
+</ul>
+</div>
+</div>
 </section>
 <section id="fishers-정확검정-exact-test" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="fishers-정확검정-exact-test"><span class="header-section-number">2.4</span> Fisher’s 정확검정 exact test</h3>
 <p>Fisher’s exact test는 1934년, 피셔가 유전자 분리비 연구 및 실험설계의 정교화를 위해 고안한 검정이다. 이 검정은 당시의 계산 자원 한계에도 불구하고, “작은 표본에서의 정확한 결론”을 도출할 수 있는 기법으로 주목받았다. 일반적인 <span class="math inline">\(R \times C\)</span> 교차표에서도 이론적으로 수행 가능하지만, 실무에서는 계산량이 급격히 증가하므로 2×2 표 이외에는 거의 사용되지 않는다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Fisher’s Exact Test 사용 시기
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>조건</th>
+<th>권장 검정</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>기대도수 <span class="math inline">\(E_{ij} \geq 5\)</span> (모든 셀)</td>
+<td>카이제곱 검정</td>
+</tr>
+<tr class="even">
+<td>기대도수 <span class="math inline">\(E_{ij} &lt; 5\)</span> (일부 셀)</td>
+<td>Fisher’s exact test</td>
+</tr>
+<tr class="odd">
+<td>2×2 소표본</td>
+<td>Fisher’s exact test</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R \times C\)</span> (R,C &gt; 2) 소표본</td>
+<td>계산 복잡 → 일반적으로 미사용</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Fisher가 이 검정을 소개하면서 사용한 일화로 유명한 것이 바로 “홍차 마시는 여인” 실험이다. 한 여성이 “우유를 먼저 넣은 차”와 “차를 먼저 넣은 우유”를 맛만 보고 구분할 수 있다고 주장하자, Fisher는 8잔 중 4잔씩 두 조건을 섞어 무작위로 제공하고, 이 여성이 구분할 확률을 순열 조합으로 계산하여 검정했다.</p>
 <p><strong>2×2 교차표</strong></p>
 <table class="table-striped caption-top table">
@@ -892,8 +1214,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p><strong>검정통계량</strong></p>
-<p>주어진 행과 열의 합이 고정된 상황에서 셀 a에 특정한 값이 나올 확률은 다음과 같이 초기하분포를 따른다.</p>
+<p><strong>검정통계량</strong>: 주어진 행과 열의 합이 고정된 상황에서 셀 a에 특정한 값이 나올 확률은 다음과 같이 초기하분포를 따른다.</p>
 <p><span class="math display">\[P(a) = \frac{\binom{a + b}{a} \cdot \binom{c + d}{c}}{\binom{n}{a + c}}\]</span></p>
 <p><strong>피셔 사례분석</strong></p>
 <ul>
@@ -944,7 +1265,34 @@ window.Quarto = {
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"오즈비:"</span>, <span class="bu">round</span>(oddsratio, <span class="dv">2</span>))</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"p-value:"</span>, <span class="bu">round</span>(p_value, <span class="dv">4</span>)<span class="op">/</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>오즈비: 9.0 <br> p-value: 0.2429</p>
-<p>여성은 차와 우유 중 어느 것을 먼저 넣었는지 구별할 능력은 없지만(귀무가설 채택), 오즈비가 9라는 것은 이는 그녀가 실제로 차와 우유의 순서를 일정 부분 구분할 수 있었을 가능성을 시사하는 정량적 지표이다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+결론: Fisher’s 정확검정 (홍차 실험)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">오즈비</th>
+<th style="text-align: center;">유의확률</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">9.0</td>
+<td style="text-align: center;">0.243</td>
+</tr>
+</tbody>
+</table>
+<p>유의확률(0.243) &gt; 유의수준(0.05) → <strong>귀무가설 채택</strong>: 이 결과만으로는 여성이 차와 우유의 순서를 구분할 능력이 있다고 통계적으로 입증하기 어렵다.</p>
+<p>단, 오즈비 9.0은 여성이 일정 부분 구분 능력이 있었을 가능성을 정량적으로 시사한다. 4잔 모두 정답이었다면 p ≈ 0.014로 귀무가설이 기각된다.</p>
+</div>
+</div>
 
 
 </section>
