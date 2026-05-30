@@ -463,36 +463,66 @@ window.Quarto = {
 </section>
 <section id="회귀모형" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="회귀모형"><span class="header-section-number">1.2</span> 회귀모형</h3>
-<p><strong>함수관계</strong></p>
-<p>측정형 변수들 사이의 함수적 관계에 관심을 갖는다. 상관분석은 변수들 간의 직선적 연관성을 파악하지만, 원인과 결과의 방향성을 고려하지 않는다.</p>
-<p>반면, 회귀분석은 변수들 간의 관계를 설명할 때 방향성을 명확히 한다. 즉, 어떤 변수를 독립변수(independent variable, input)로 두어 결과에 영향을 주는 원인으로 간주하고, 이에 대응하는 결과 변수를 종속변수(dependent variable, output, 또는 목표변수 target variable)로 설정한다.</p>
-<p><strong>함수 형태 중 선형을 가장 선호</strong></p>
+<p><strong>함수관계</strong>: 측정형 변수들 사이의 함수적 관계에 관심을 갖는다. 상관분석은 변수들 간의 직선적 연관성을 파악하지만, 원인과 결과의 방향성을 고려하지 않는다. 반면, 회귀분석은 변수들 간의 관계를 설명할 때 방향성을 명확히 한다. 즉, 어떤 변수를 독립변수(independent variable, input)로 두어 결과에 영향을 주는 원인으로 간주하고, 이에 대응하는 결과 변수를 종속변수(dependent variable, output, 또는 목표변수 target variable)로 설정한다.</p>
+<p><strong>함수 형태 중 선형을 가장 선호</strong>: 회귀분석에서는 여러 함수 형태 중에서 선형 함수(linear function)를 가장 선호한다.</p>
 <p><span class="math display">\[y = a + b_{1}X_{1} + b_{2}X_{2} + ... + b_{p}X_{p} + e\]</span></p>
-<p>회귀분석에서는 여러 함수 형태 중에서 선형 함수(linear function)를 가장 선호한다. 회귀계수는 함수의 기울기에 해당하므로, 예측변수가 한 단위 증가(또는 감소)할 때 목표변수가 얼마나 변화하는지를 직접적으로 해석할 수 있다.</p>
-<p>비선형 함수 형태의 모형이라 하더라도, 적절한 변환을 통해 선형 함수로 변환할 수 있다.</p>
+<p>회귀계수는 함수의 기울기에 해당하므로, 예측변수가 한 단위 증가(또는 감소)할 때 목표변수가 얼마나 변화하는지를 직접적으로 해석할 수 있다. 비선형 함수 형태의 모형이라 하더라도, 적절한 변환을 통해 선형 함수로 변환할 수 있다.</p>
 <ul>
 <li>Cobb-Douglas 생산함수 <span class="math inline">\(Q = \alpha L^{\beta}L^{\lambda}u\)</span> → 양변을 로그 변환하면 <span class="math inline">\(\ln(Q) = \ln(\alpha) + \beta \ln(L) + \lambda \ln(K) + \ln(u)\)</span></li>
 <li>인구성장모형 <span class="math inline">\(P = \alpha e^{\beta T}u\)</span> → 양변에 로그를 취하여 선형함수로 만들 수 있음 <span class="math inline">\(\ln(P) = \ln(\alpha) + \beta T + \ln(u)\)</span></li>
 </ul>
-<p><strong>목표변수(<span class="math inline">\(Y\)</span>)와 분포 가정</strong></p>
-<p>회귀분석에서 목표변수(종속변수)는 하나이며, 원칙적으로 정규분포를 따르는 측정형 변수이다. 목표변수가 정규분포를 따르지 않는 경우에는 연결함수를 이용하여 종속변수를 정규분포로 변환한 후 선형 회귀모형을 적용한다.</p>
+<p><strong>목표변수(<span class="math inline">\(Y\)</span>)와 분포 가정</strong>: 회귀분석에서 목표변수(종속변수)는 하나이며, 원칙적으로 정규분포를 따르는 측정형 변수이다. 목표변수가 정규분포를 따르지 않는 경우에는 연결함수를 이용하여 종속변수를 정규분포로 변환한 후 선형 회귀모형을 적용한다.</p>
 <ul>
 <li>예를 들어, 종속변수가 성공/실패와 같은 이분형 변수인 경우, 로짓 함수(logit function)를 연결함수로 사용한다.</li>
 <li><span class="math inline">\(\text{logit}(p) = \ln\left( \frac{p}{1 - p} \right)\)</span>. 여기서 <span class="math inline">\(p = P(Y = 1)\)</span>이며, Y는 성공(1) 또는 실패(0) 값을 갖는 이항 변수이다.</li>
 </ul>
 <p><span class="math display">\[\ln\left( \frac{p}{1 - p} \right) = \beta_{0} + \beta_{1}X_{1} + \cdots + \beta_{k}X_{k}\]</span></p>
-<p><strong>회귀분석과 일반화 선형모형(GLM)</strong></p>
-<p>종속변수의 분포에 맞는 확률분포와 연결함수를 선택하여 선형모형의 틀을 확장한 것이 바로 일반화 선형모형(GLM, Generalized Linear Model)이다. GLM은 크게 세 가지 구성요소를 가진다. 첫째, 종속변수는 정규분포, 이항분포, 포아송분포 등 지수분포족에 속한다고 가정한다. 둘째, 독립변수들의 선형 결합을 나타내는 선형예측자(linear predictor)를 정의한다. 셋째, 종속변수의 기댓값과 선형예측자를 연결하는 연결함수를 지정한다.</p>
-<p>고전적 회귀분석은 GLM의 한 특별한 경우라 할 수 있으며, GLM은 회귀분석의 현대적 일반화라고 이해할 수 있다.</p>
-<p><strong>예측변수(<span class="math inline">\(X\)</span>’s)는 다수이고 역시 측정형변수를 원칙으로 한다.</strong></p>
-<p>회귀분석에서 예측변수(독립변수)는 다수일 수 있으며, 원칙적으로 측정형 변수를 사용한다. 예측변수가 하나인 경우를 단순회귀분석이라 하고, 두 개 이상인 경우를 다중회귀분석이라 한다.</p>
-<p>회귀분석은 함수관계에 기반하므로, 범주형 변수는 직접 사용할 수 없다. 이러한 경우 회귀분석에서는 지시변수 또는 더미변수로 변환하여 사용한다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+일반화 선형모형(GLM)의 3가지 구성요소
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 60%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>구성요소</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>확률분포</strong></td>
+<td>종속변수는 정규·이항·포아송 등 지수분포족에 속한다고 가정</td>
+</tr>
+<tr class="even">
+<td><strong>선형예측자</strong></td>
+<td>독립변수들의 선형 결합 <span class="math inline">\(\eta = X\beta\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>연결함수</strong></td>
+<td>종속변수의 기댓값과 선형예측자를 연결 (정규→항등, 이항→로짓, 포아송→로그)</td>
+</tr>
+</tbody>
+</table>
+<p>고전적 회귀분석은 GLM의 특별한 경우(정규분포 + 항등 연결함수)이다.</p>
+</div>
+</div>
+<p><strong>회귀분석과 일반화 선형모형(GLM)</strong>: 종속변수의 분포에 맞는 확률분포와 연결함수를 선택하여 선형모형의 틀을 확장한 것이 바로 일반화 선형모형(GLM, Generalized Linear Model)이다. 고전적 회귀분석은 GLM의 한 특별한 경우라 할 수 있으며, GLM은 회귀분석의 현대적 일반화라고 이해할 수 있다.</p>
+<p><strong>예측변수(<span class="math inline">\(X\)</span>’s)는 다수이고 역시 측정형변수를 원칙으로 한다.</strong>: 예측변수가 하나인 경우를 단순회귀분석이라 하고, 두 개 이상인 경우를 다중회귀분석이라 한다. 회귀분석은 함수관계에 기반하므로, 범주형 변수는 직접 사용할 수 없고 지시변수(더미변수)로 변환하여 사용한다.</p>
 <ul>
 <li>목표변수 <span class="math inline">\(Y\)</span>: 수능성적, 측정형 예측변수 <span class="math inline">\(X\)</span>: 일주일 공부시간, 더미변수 성별 <span class="math inline">\(D = 0\text{male},1\text{female}\)</span>이라 하자.</li>
 <li><span class="math inline">\(Y = a + b_{1}D + b_{2}X + b_{3}(X*D) + e\)</span></li>
 </ul>
-<p><strong>함수관계와 인과관계</strong></p>
-<p>회귀분석은 변수들 사이의 함수적 관계를 밝히는 방법이지, 인과관계를 증명하는 방법은 아니다. 인과관계는 철저한 실험설계를 통해서만 확인할 수 있다.</p>
+<p><strong>함수관계와 인과관계</strong>: 회귀분석은 변수들 사이의 함수적 관계를 밝히는 방법이지, 인과관계를 증명하는 방법은 아니다. 인과관계는 철저한 실험설계를 통해서만 확인할 수 있다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/통제변수.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
@@ -510,8 +540,7 @@ window.Quarto = {
 <li><strong>교락변수(진짜 통제 대상)</strong>: 편의를 없애려는 목적, <span class="math inline">\(Z \rightarrow X\)</span>이고 <span class="math inline">\(Z \rightarrow Y\)</span>이다.</li>
 <li><strong>정밀도 변수</strong>: Y에만 강하게 연관되어 분산을 줄이는 변수(교락은 아님), <span class="math inline">\(Z \rightarrow Y\)</span>이고 <span class="math inline">\(Z \nrightarrow X\)</span>이다.</li>
 </ul>
-<p><strong>모형</strong></p>
-<p>시험점수 예측에서 “이전 학업성취도(중간고사 점수)”는 최종점수 Y의 변동을 설명하므로 정밀도를 높이는 통제변수이다.</p>
+<p><strong>모형</strong>: 시험점수 예측에서 “이전 학업성취도(중간고사 점수)”는 최종점수 Y의 변동을 설명하므로 정밀도를 높이는 통제변수이다.</p>
 <ul>
 <li>통제 전: <span class="math inline">\(Y = \alpha_{0} + \alpha_{1}X + e\)</span></li>
 <li>통제 후: <span class="math inline">\(Y = \beta_{0} + \beta_{1}X + \beta_{2}Z + u\)</span></li>
@@ -522,17 +551,14 @@ window.Quarto = {
 <h4 data-number="1.3.2" class="anchored" data-anchor-id="매개변수-mediator"><span class="header-section-number">1.3.2</span> 매개변수 (mediator)</h4>
 <p>X가 Y에 영향을 미치는 경로 중간에 위치하는 변수이다. <span class="math inline">\(X \rightarrow M \rightarrow Y\)</span> 구조이다. “효과가 어떻게 전달되는가?”를 설명한다.</p>
 <p>운동량 X → “칼로리 소모” M → 체중변화 Y. 칼로리 소모는 매개이므로 총효과 추정에서는 포함하지 않는다.</p>
-<p><strong>직접효과 (Direct Effect) <span class="math inline">\(X \rightarrow Y\)</span></strong></p>
-<p>M을 거치지 않고 바로 Y에 영향을 미치는 효과로 회귀식으로 표현하면, <span class="math inline">\(Y = \beta_{0} + \beta_{1}X + \beta_{2}M + u\)</span>, 여기서 <span class="math inline">\(\beta_{1}\)</span>이 바로 직접효과이다.</p>
-<p><strong>간접효과 (Indirect Effect)</strong></p>
-<p><span class="math inline">\(X \rightarrow M \rightarrow Y\)</span>경로를 따라 전달되는 효과이다.</p>
+<p><strong>직접효과 (Direct Effect) <span class="math inline">\(X \rightarrow Y\)</span></strong>: M을 거치지 않고 바로 Y에 영향을 미치는 효과로 회귀식으로 표현하면, <span class="math inline">\(Y = \beta_{0} + \beta_{1}X + \beta_{2}M + u\)</span>, 여기서 <span class="math inline">\(\beta_{1}\)</span>이 바로 직접효과이다.</p>
+<p><strong>간접효과 (Indirect Effect)</strong>: <span class="math inline">\(X \rightarrow M \rightarrow Y\)</span>경로를 따라 전달되는 효과이다.</p>
 <ul>
 <li>매개변수 방정식: <span class="math inline">\(M = \alpha_{0} + \alpha_{1}X + v\)</span></li>
 <li>종속변수 방정식: <span class="math inline">\(Y = \beta_{0} + \beta_{1}X + \beta_{2}M + u\)</span></li>
 <li>간접효과: <span class="math inline">\(\alpha_{1} \times \beta_{2}\)</span></li>
 </ul>
-<p><strong>총효과 (Total Effect)</strong></p>
-<p>총효과 = 직접효과 + 간접효과 = <span class="math inline">\(\beta_{1} + (\alpha_{1} \times \beta_{2})\)</span></p>
+<p><strong>총효과 (Total Effect)</strong>: 총효과 = 직접효과 + 간접효과 = <span class="math inline">\(\beta_{1} + (\alpha_{1} \times \beta_{2})\)</span></p>
 </section>
 <section id="교락변수-confounder" class="level4" data-number="1.3.3">
 <h4 data-number="1.3.3" class="anchored" data-anchor-id="교락변수-confounder"><span class="header-section-number">1.3.3</span> 교락변수 (confounder)</h4>
@@ -544,8 +570,17 @@ window.Quarto = {
 </section>
 <section id="비교" class="level4" data-number="1.3.4">
 <h4 data-number="1.3.4" class="anchored" data-anchor-id="비교"><span class="header-section-number">1.3.4</span> 비교</h4>
-<table class="table-striped caption-top table">
-<caption>변수 역할별 처리 방법</caption>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+변수 역할별 처리 방법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
 <col style="width: 33%">
@@ -581,12 +616,63 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p><strong>콜라이더 collider</strong></p>
-<p><span class="math inline">\(X \rightarrow C \leftarrow Z\)</span>, 여기서 <span class="math inline">\(C\)</span>가 콜라이더다. 원래는 X와 Z가 독립일 수 있으나 C를 조건부로 통제(회귀모형에 포함, 표본을 C 값으로 제한)하면, X와 Z 사이에 가짜 상관이 생긴다. 이 현상을 콜라이더 편향 또는 선택편의라고 한다.</p>
+</div>
+</div>
+<p><strong>콜라이더 collider</strong>: <span class="math inline">\(X \rightarrow C \leftarrow Z\)</span>, 여기서 <span class="math inline">\(C\)</span>가 콜라이더다. 원래는 X와 Z가 독립일 수 있으나 C를 조건부로 통제(회귀모형에 포함, 표본을 C 값으로 제한)하면, X와 Z 사이에 가짜 상관이 생긴다. 이 현상을 콜라이더 편향 또는 선택편의라고 한다.</p>
 </section>
 </section>
 <section id="회귀분석-절차" class="level3" data-number="1.4">
 <h3 data-number="1.4" class="anchored" data-anchor-id="회귀분석-절차"><span class="header-section-number">1.4</span> 회귀분석 절차</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+회귀분석 6단계 절차
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>단계</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>① 모형 설정</strong></td>
+<td>이론·선행연구 바탕으로 목표변수·예측변수 설정</td>
+</tr>
+<tr class="even">
+<td><strong>② 데이터 전처리</strong></td>
+<td>산점도 탐색, 변수 변환, 결측치·이상치 처리</td>
+</tr>
+<tr class="odd">
+<td><strong>③ 모형 추정</strong></td>
+<td>OLS로 잔차제곱합 <span class="math inline">\(\sum(y_i - \hat y_i)^2\)</span> 최소화</td>
+</tr>
+<tr class="even">
+<td><strong>④ 유의 변수 선택</strong></td>
+<td>t-검정으로 유의한 변수 식별, 필요 시 LASSO 등 활용</td>
+</tr>
+<tr class="odd">
+<td><strong>⑤ 다중공선성 진단</strong></td>
+<td>VIF로 예측변수 간 높은 상관관계 확인</td>
+</tr>
+<tr class="even">
+<td><strong>⑥ 모형 진단 및 활용</strong></td>
+<td>잔차로 선형성·등분산성·독립성·정규성 가정 점검</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <section id="모형-설정" class="level4" data-number="1.4.1">
 <h4 data-number="1.4.1" class="anchored" data-anchor-id="모형-설정"><span class="header-section-number">1.4.1</span> 모형 설정</h4>
 <p>첫 단계는 연구자가 관심을 두는 목표변수(종속변수)와 그것에 영향을 미칠 것으로 가정되는 예측변수(독립변수)를 명확히 설정하는 것이다. 이론적 근거와 선행연구를 바탕으로 “어떤 변수가 결과에 영향을 줄 것인가?”를 합리적으로 규정해야 한다.</p>
@@ -656,13 +742,60 @@ e_{n}
 </section>
 <section id="가정" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="가정"><span class="header-section-number">2.2</span> 가정</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+회귀모형 4가지 오차 가정 <span class="math inline">\(\underset{¯}{e} \sim MNV(\underset{¯}{0},\sigma^{2}I)\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>가정</th>
+<th>내용</th>
+<th>위배 시 문제</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>선형성</strong></td>
+<td><span class="math inline">\(E(Y\|X)\)</span>가 <span class="math inline">\(X\)</span>의 선형 함수</td>
+<td>계수 편의, 예측 오류</td>
+</tr>
+<tr class="even">
+<td><strong>독립성</strong></td>
+<td>오차항이 서로 독립</td>
+<td>표준오차 과소추정 (시계열 특히 중요)</td>
+</tr>
+<tr class="odd">
+<td><strong>정규성</strong></td>
+<td><span class="math inline">\(e_i \sim N(0, \sigma^2)\)</span></td>
+<td>t·F-검정 신뢰성 저하</td>
+</tr>
+<tr class="even">
+<td><strong>등분산성</strong></td>
+<td>모든 <span class="math inline">\(X\)</span> 값에서 오차 분산 동일</td>
+<td>표준오차 왜곡 (이분산성)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <section id="선형성-linearity" class="level4" data-number="2.2.1">
 <h4 data-number="2.2.1" class="anchored" data-anchor-id="선형성-linearity"><span class="header-section-number">2.2.1</span> 선형성 linearity</h4>
 <p>회귀분석은 목표변수(종속변수)와 예측변수(독립변수) 사이의 관계가 직선 형태를 따른다고 가정한다.</p>
 <p><span class="math display">\[E(Y \mid X_{1},X_{2},\ldots,X_{k}) = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k}\]</span></p>
 <p>여기서 “선형”이란 회귀계수가 변수에 곱해져 더해지는 형태라는 뜻이지, 반드시 직선 그래프라는 의미만은 아니다. 예를 들면 <span class="math inline">\(X^{2}\)</span>같은 항을 포함하면 변수 변환을 통해 곡선 관계도 선형회귀의 틀 안에서 다룰 수 있다.</p>
-<p><strong>전체 모형의 선형성 검정</strong></p>
-<p>전체 회귀모형의 선형성은 분산분석 F-검정을 통해 확인한다.</p>
+<p><strong>전체 모형의 선형성 검정</strong>: 전체 회귀모형의 선형성은 분산분석 F-검정을 통해 확인한다.</p>
 <ul>
 <li>귀무가설: 모든 회귀계수 <span class="math inline">\(\beta_{1} = \beta_{2} = \cdots = \beta_{k} = 0\)</span></li>
 <li>대립가설: 적어도 하나의 회귀계수 <span class="math inline">\(\beta_{j} \neq 0\)</span>이다.</li>
@@ -674,29 +807,22 @@ e_{n}
 <li>곡선이나 비선형 모형(예: 로지스틱 회귀, 지수 회귀)</li>
 <li>스플라인 회귀(spline regression)와 같은 유연한 함수형</li>
 </ul>
-<p><strong>선형성 사전 진단도구</strong></p>
-<p>산점도 행렬: 목표변수와 예측변수 간 개별 산점도로 직선관계를 발견한다.</p>
+<p><strong>선형성 사전 진단도구</strong>: 산점도 행렬로 목표변수와 예측변수 간 개별 산점도를 그려 직선관계를 발견한다.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/선형변환.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<p><strong>단순회귀모형에서의 선형변환</strong></p>
-<p>단순회귀모형에서 목표변수 Y, 예측변수 X에 대한 선형변환, 즉 <span class="math inline">\(Y^{*} = a + bx^{*}(b \neq 0)\)</span>를 취하더라도 모형의 구조는 그대로 유지된다. 단순히 회귀계수 <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>의 값만 달라질 뿐, 변수 간의 선형성 자체는 변하지 않는다.</p>
-<p><strong>다중회귀모형에서의 선형변환 문제</strong></p>
+<p><strong>단순회귀모형에서의 선형변환</strong>: 단순회귀모형에서 목표변수 Y, 예측변수 X에 대한 선형변환, 즉 <span class="math inline">\(Y^{*} = a + bx^{*}(b \neq 0)\)</span>를 취하더라도 모형의 구조는 그대로 유지된다. 단순히 회귀계수 <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>의 값만 달라질 뿐, 변수 간의 선형성 자체는 변하지 않는다.</p>
+<p><strong>다중회귀모형에서의 선형변환 문제</strong>: 만약 Y에 대해 임의의 선형변환을 가하면, 특정 예측변수 <span class="math inline">\(X_j\)</span>와의 선형성을 보정하려는 의도가 있더라도, 동시에 다른 예측변수들과의 함수관계까지 함께 변형되므로 전체 모형 해석이 왜곡된다. 따라서 다중모형에서는 목표변수보다는 예측변수의 변환(log, 제곱근, 다항항 추가 등)에 국한해야 한다.</p>
 <p><span class="math display">\[Y = \beta_{0} + \beta_{1}X_{1} + \beta_{2}X_{2} + \cdots + \beta_{k}X_{k} + \varepsilon\]</span></p>
-<p>만약 Y에 대해 임의의 선형변환을 가하면, 특정 예측변수 <span class="math inline">\(X_j\)</span>와의 선형성을 보정하려는 의도가 있더라도, 동시에 다른 예측변수들과의 함수관계까지 함께 변형되므로 전체 모형 해석이 왜곡된다. 따라서 다중모형에서는 목표변수보다는 예측변수의 변환(log, 제곱근, 다항항 추가 등)에 국한해야 한다.</p>
 </section>
 <section id="오차-가정-undersete-sim-mnvunderset0sigma2i" class="level4" data-number="2.2.2">
 <h4 data-number="2.2.2" class="anchored" data-anchor-id="오차-가정-undersete-sim-mnvunderset0sigma2i"><span class="header-section-number">2.2.2</span> 오차 가정 <span class="math inline">\(\underset{¯}{e} \sim MNV(\underset{¯}{0},\sigma^{2}I)\)</span></h4>
 <p>회귀모형에서 오차항은 예측변수들에 의해 설명되지 않는 부분이다.</p>
-<p><strong>독립성(independent)</strong></p>
-<p>오차항은 서로 독립이어야 한다. 즉, 어떤 관측치의 오차가 다른 관측치의 오차에 영향을 주어서는 안 된다. 독립성 가정은 특히 시계열 자료(시간적 순서가 있는 데이터)에서 중요하다.</p>
-<p><strong>정규성(normality)</strong></p>
-<p>회귀분석에서 가장 중요한 오차항 가정 가운데 하나는 정규성이다. 오차항이 정규분포를 따른다고 가정하는 이유는 통계적 검정을 정당화하기 위함이다.</p>
-<p>회귀분석에서 오차항의 정규성 가정은 분산분석 F-검정과 회귀계수의 t-검정을 수행하기 위한 수학적 전제이다. 그러나 실제 연구에서는 정규성이 완벽히 만족되지 않더라도, 표본의 크기가 충분히 크면 큰 문제가 되지 않는 경우가 많다. 그 이유는 중심극한정리(Central Limit Theorem, CLT) 때문이다.</p>
-<p><strong>등분산성(Homoscedasticity)</strong></p>
-<p>등분산성은 모든 예측변수 값에서 오차항의 분산이 동일하다는 가정이다. 이 가정이 위배되면 표준오차 추정이 왜곡되고, 이를 이분산성(heteroscedasticity)이라고 한다.</p>
+<p><strong>독립성(independent)</strong>: 오차항은 서로 독립이어야 한다. 즉, 어떤 관측치의 오차가 다른 관측치의 오차에 영향을 주어서는 안 된다. 독립성 가정은 특히 시계열 자료(시간적 순서가 있는 데이터)에서 중요하다.</p>
+<p><strong>정규성(normality)</strong>: 회귀분석에서 가장 중요한 오차항 가정 가운데 하나는 정규성이다. 오차항이 정규분포를 따른다고 가정하는 이유는 통계적 검정을 정당화하기 위함이다. 그러나 표본의 크기가 충분히 크면 중심극한정리(CLT)에 의해 큰 문제가 되지 않는 경우가 많다.</p>
+<p><strong>등분산성(Homoscedasticity)</strong>: 등분산성은 모든 예측변수 값에서 오차항의 분산이 동일하다는 가정이다. 이 가정이 위배되면 표준오차 추정이 왜곡되고, 이를 이분산성(heteroscedasticity)이라고 한다.</p>
 </section>
 </section>
 <section id="수리적-접근-상관계수-접근" class="level3" data-number="2.3">
@@ -711,12 +837,51 @@ e_{n}
 <section id="범주형-예측변수-처리" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="범주형-예측변수-처리"><span class="header-section-number">2.4</span> 범주형 예측변수 처리</h3>
 <p>회귀분석은 기본적으로 측정형 변수를 전제로 한다. 따라서 범주형 변수는 그대로 사용할 수 없고, 수치형으로 변환해야 한다. 이때 가장 널리 쓰이는 방법이 더미변수(dummy), 지시변수(indicator) 변환이다.</p>
-<p><strong>더미변수의 정의</strong></p>
-<p>범주형 변수가 k개의 수준(level)을 가질 때, 회귀모형에 직접 넣을 수 없으므로 k-1개의 이진(dummy) 변수를 만들어 사용한다. 예를 들어, 성별 변수가 남자/여자 두 수준이라면, 하나의 더미변수를 만들어</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+더미변수 처리 요약
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>k개 수준 → k-1개 더미변수</strong> (기준범주 1개 제외)</p>
+<p><strong>예시: 학력(고졸·대졸·대학원졸)</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>학력</th>
+<th style="text-align: center;">더미1 (대졸)</th>
+<th style="text-align: center;">더미2 (대학원졸)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>고졸 (기준)</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td>대졸</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="odd">
+<td>대학원졸</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>모형: <span class="math inline">\(Y = \beta_{0} + \beta_{1}D_{\text{대졸}} + \beta_{2}D_{\text{대학원}} + u\)</span></p>
+</div>
+</div>
+<p><strong>더미변수의 정의</strong>: 범주형 변수가 k개의 수준(level)을 가질 때, 회귀모형에 직접 넣을 수 없으므로 k-1개의 이진(dummy) 변수를 만들어 사용한다. 예를 들어, 성별 변수가 남자/여자 두 수준이라면, 하나의 더미변수를 만들어</p>
 <p><span class="math display">\[D = \begin{cases}1 &amp; \text{male} \\ 0 &amp; \text{female}\end{cases}\]</span></p>
 <p>라고 정의한다.</p>
-<p><strong>기준범주(reference category)</strong></p>
-<p>범주형 변수의 한 수준은 기준범주로 남기고, 나머지 범주들을 더미변수로 만든다. 예를 들면 학력 변수가 “고졸, 대졸, 대학원졸” 3개 수준이라면:</p>
+<p><strong>기준범주(reference category)</strong>: 범주형 변수의 한 수준은 기준범주로 남기고, 나머지 범주들을 더미변수로 만든다. 예를 들면 학력 변수가 “고졸, 대졸, 대학원졸” 3개 수준이라면:</p>
 <ul>
 <li>기준범주: 고졸</li>
 <li>더미1: 대졸(대졸이면 1, 아니면 0)</li>
@@ -726,13 +891,55 @@ e_{n}
 <p>더미변수와 다른 연속형 변수의 상호작용항을 넣으면, 범주별로 기울기가 다른 모형을 추정할 수도 있다.</p>
 <p><span class="math display">\[Y = \beta_{0} + \beta_{1}X + \beta_{2}D + \beta_{3}(X \times D) + u\]</span></p>
 <p><span class="math display">\[D = 0: Y = \beta_{0} + \beta_{1}X + u, \quad D = 1: Y = \beta_{0} + \beta_{2} + (\beta_{1} + \beta_{3})X + u\]</span></p>
-<p><strong>빅데이터에서의 대안적 처리 방법</strong></p>
-<ol type="1">
-<li><p><strong>차원 축소 기반 방법</strong>: 희귀 수준 통합(빈도가 낮은 범주를 “기타” 범주로 묶음), 빈도/순위 인코딩.</p></li>
-<li><p><strong>목표값(target) 기반 인코딩</strong>: 타깃 인코딩(Target / Mean Encoding): 각 범주를 종속변수의 평균값으로 대체한다. 차원 폭발을 방지할 수 있으나, 데이터 누설(leakage) 가능 → 반드시 교차검증이나 홀드아웃 기반으로 추정한다.</p></li>
-<li><p><strong>해싱 인코딩(Feature Hashing)</strong>: 각 범주 수준을 해시 함수로 고정된 크기의 벡터 공간으로 매핑. 차원이 제한되므로 효율적이나 충돌이 생겨 서로 다른 범주가 같은 벡터로 인코딩될 수 있다.</p></li>
-<li><p><strong>임베딩(embedding)</strong>: 딥러닝 접근: 범주형 변수를 밀집 벡터(dense vector)로 학습한다. 예를 들면 Word2Vec, Entity Embedding → 범주 간의 유사성을 벡터 공간에서 반영한다.</p></li>
-</ol>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+빅데이터 환경에서의 범주형 변수 처리 방법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 42%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>적용 조건</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>더미변수</strong></td>
+<td>수준 10~20개 이하</td>
+<td>해석 용이, 차원 증가</td>
+</tr>
+<tr class="even">
+<td><strong>Target Encoding</strong></td>
+<td>수준 수백 이상</td>
+<td>종속변수 평균으로 대체, 데이터 누설 주의</td>
+</tr>
+<tr class="odd">
+<td><strong>Hash Encoding</strong></td>
+<td>수준 수백~수천</td>
+<td>고정 차원, 범주 충돌 가능</td>
+</tr>
+<tr class="even">
+<td><strong>Embedding</strong></td>
+<td>수준 수천 이상</td>
+<td>딥러닝, 범주 간 유사성 반영</td>
+</tr>
+</tbody>
+</table>
+<p>해석 목적 → 더미 변수 / 예측 목적 → target encoding, 임베딩, 해싱</p>
+</div>
+</div>
 <p><strong>빅데이터 환경에서의 선택 기준</strong></p>
 <ul>
 <li>데이터 수준이 10~20개 정도면 여전히 더미 변수가 적절.</li>
@@ -754,11 +961,9 @@ e_{n}
 <p><img src="images/OLS추정.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
 </figure>
 </div>
-<p><strong>관측점들을 가장 대표하는 직선 (best fit)을 어떻게 구할 것인가?</strong></p>
-<p>데이터 <span class="math inline">\((x_{i},y_{i})\)</span>를 활용하여 점들에 가장 적합한 직선의 회귀계수 <span class="math inline">\((a,b)\)</span>를 추정하고 이를 이용하여 목표변수 추정값을 <span class="math inline">\({\widehat{y}}_{i} = \widehat{a} + \widehat{b}x_{i}\)</span>(fitted value) 구한다.</p>
+<p><strong>관측점들을 가장 대표하는 직선 (best fit)을 어떻게 구할 것인가?</strong> 데이터 <span class="math inline">\((x_{i},y_{i})\)</span>를 활용하여 점들에 가장 적합한 직선의 회귀계수 <span class="math inline">\((a,b)\)</span>를 추정하고 이를 이용하여 목표변수 추정값을 <span class="math inline">\({\widehat{y}}_{i} = \widehat{a} + \widehat{b}x_{i}\)</span>(fitted value) 구한다.</p>
 <p><span class="math display">\[\min_{a,b}\sum(e_{i})^{2} = \min_{a,b}\sum(y_{i} - {\widehat{y}}_{i})^{2}\]</span></p>
-<p><strong>왜 제곱인가?</strong></p>
-<p>잔차 <span class="math inline">\((y_{i} - {\widehat{y}}_{i})\)</span>를 그대로 합하면 0이 되므로 오차 크기를 반영할 수 없다. 제곱은 항상 양수이고, 미분 가능하며, 오차가 클수록 더 큰 페널티를 주기 때문에 회귀분석에서 잔차 제곱합을 최소화하는 방법을 사용한다.</p>
+<p><strong>왜 제곱인가?</strong> 잔차 <span class="math inline">\((y_{i} - {\widehat{y}}_{i})\)</span>를 그대로 합하면 0이 되므로 오차 크기를 반영할 수 없다. 제곱은 항상 양수이고, 미분 가능하며, 오차가 클수록 더 큰 페널티를 주기 때문에 회귀분석에서 잔차 제곱합을 최소화하는 방법을 사용한다.</p>
 </section>
 <section id="단순회귀모형-추정" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="단순회귀모형-추정"><span class="header-section-number">3.2</span> 단순회귀모형 추정</h3>
@@ -766,8 +971,7 @@ e_{n}
 <p>추정 방정식: <span class="math inline">\(\min_{a,b}\overset{n}{\sum_{i = 1}}e_{i}^{2} = \min_{a,b}\overset{n}{\sum_{i = 1}}(y_{i} - a - bx_{i})^{2}\)</span></p>
 <p>OLS 추정치:</p>
 <p><span class="math display">\[\widehat{b} = \frac{\sum(x_{i} - \overline{x})(y_{i} - \overline{y})}{\sum(x_{i} - \overline{x})^{2}}, \quad \widehat{a} = \overline{y} - \widehat{b}\overline{x}\]</span></p>
-<p><strong>최대우도추정량 Maximum Likelihood Estimator</strong></p>
-<p><span class="math inline">\(y_{i} \sim iidN(a + bx_{i},\sigma^{2})\)</span>이므로 우도함수 최대화 = OLS 추정과 동일하다.</p>
+<p><strong>최대우도추정량 Maximum Likelihood Estimator</strong>: <span class="math inline">\(y_{i} \sim iidN(a + bx_{i},\sigma^{2})\)</span>이므로 우도함수 최대화 = OLS 추정과 동일하다.</p>
 <p><span class="math display">\[L(a,b;x_{1},x_{2},...,x_{n}) = \left(\frac{1}{\sqrt{2\pi}\sigma}\right)^{n}\exp\left( - \frac{\sum(y_{i} - a - bx_{i})^{2}}{2\sigma^{2}}\right)\]</span></p>
 <p>회귀계수에 대한 OLS 추정치는 BLUE(Best Linear Unbiased Estimator)이다.</p>
 <p><strong>잔차 = 오차의 추정량</strong></p>
@@ -785,8 +989,54 @@ e_{n}
 <p><span class="math display">\[\min_{a,b_{1},b_{2},\ldots}\sum(e_{i})^{2} \quad \Rightarrow \quad \min_{\underset{¯}{b}} {\underset{¯}{e}}'\underset{¯}{e} = \min_{\underset{¯}{b}} (\underset{¯}{y} - X\underset{¯}{b})'(\underset{¯}{y} - X\underset{¯}{b})\]</span></p>
 <p><span class="math inline">\(Q\)</span>를 최소화 하는 회귀계수(모수) <span class="math inline">\(\underset{¯}{b}\)</span>를 찾기 위한 정규방정식(normal equation)을 정리하면:</p>
 <p><span class="math display">\[\widehat{\underset{¯}{b}} = (X'X)^{- 1}(X'\underset{¯}{y})\]</span></p>
-<p><strong>OLS 추정치 성질: GAUSS-MARKOV Theorem</strong></p>
-<p>회귀계수에 대한 OLS 추정치는 BLUE(Best Linear Unbiased Estimator)이다. 즉 모든 선형, 불편 추정량 중 최소 분산(minimum variance)를 갖는다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+OLS 추정치 주요 성질 (GAUSS-MARKOV Theorem)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>BLUE (Best Linear Unbiased Estimator)</strong>: 모든 선형·불편 추정량 중 최소 분산을 가진다.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>성질</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>불편성</strong></td>
+<td><span class="math inline">\(E(\hat{\underset{¯}{b}}) = \underset{¯}{b}\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>분산</strong></td>
+<td><span class="math inline">\(V(\hat{\underset{¯}{b}}) = \sigma^2(X'X)^{-1}\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>추정 분산</strong></td>
+<td><span class="math inline">\(\hat V(\hat{\underset{¯}{b}}) = MSE(X'X)^{-1}\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>적합치</strong></td>
+<td><span class="math inline">\(\hat{\underset{¯}{y}} = H\underset{¯}{y}\)</span>, Hat 행렬 <span class="math inline">\(H = X(X'X)^{-1}X'\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>잔차</strong></td>
+<td><span class="math inline">\(\underset{¯}{r} = (I-H)\underset{¯}{y}\)</span>, 잔차 분산 <span class="math inline">\(V(\underset{¯}{r}) = \sigma^2(I-H)\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>OLS 추정치 성질: GAUSS-MARKOV Theorem</strong>: 회귀계수에 대한 OLS 추정치는 BLUE(Best Linear Unbiased Estimator)이다. 즉 모든 선형, 불편 추정량 중 최소 분산(minimum variance)를 갖는다.</p>
 <p><strong>OLS 평균과 (추정)분산</strong></p>
 <p><span class="math display">\[E(\widehat{\underset{¯}{b}}) = \underset{¯}{b}, \quad V(\widehat{\underset{¯}{b}}) = \sigma^{2}(X'X)^{- 1}, \quad \widehat{V(\widehat{\underset{¯}{b}})} = MSE(X'X)^{- 1}\]</span></p>
 <p><strong>적합치 <span class="math inline">\({\widehat{y}}_{i}\)</span></strong></p>
@@ -909,24 +1159,20 @@ e_{n}
 <li>대립가설: 예측변수 <span class="math inline">\(X_{k}\)</span>는 유의하다. <span class="math inline">\(H_{0}:b_{k} \neq 0\)</span></li>
 <li>검정통계량: <span class="math inline">\(TS = \frac{{\widehat{b}}_{k}}{s({\widehat{b}}_{k})} \sim t(n - p - 1)\)</span></li>
 </ul>
-<p><strong>두 개 이상 예측변수의 유의성 동시 검정</strong></p>
-<p>검정통계량 <span class="math inline">\(H_{0}:b_{j} = 0,\text{ for } j = 1,2,...,k\)</span></p>
+<p><strong>두 개 이상 예측변수의 유의성 동시 검정</strong>: 검정통계량 <span class="math inline">\(H_{0}:b_{j} = 0,\text{ for } j = 1,2,...,k\)</span></p>
 <p><span class="math display">\[TS = \frac{(SSR_{F} - SSR_{R})/k}{MSE_{F}} \sim F(k,n - p - 1)\]</span></p>
 <p><span class="math inline">\(k\)</span> = 귀무가설에서 설정된 회귀계수 0인 예측변수 개수이다.</p>
-<p><strong>Sequential 순차 자승합 SS, Type I</strong></p>
-<p>회귀모형 삽입 예측모형 순서대로 자승합이 출력된다.</p>
+<p><strong>Sequential 순차 자승합 SS, Type I</strong>: 회귀모형 삽입 예측모형 순서대로 자승합이 출력된다.</p>
 <ul>
 <li><span class="math inline">\(X_{1}\)</span>: <span class="math inline">\(SSR(X_{1}|\mu)\)</span></li>
 <li><span class="math inline">\(X_{2}\)</span>: <span class="math inline">\(SSR(X_{2}|X_{1},\mu)\)</span></li>
 <li><span class="math inline">\(X_{p}\)</span>: <span class="math inline">\(SSR(X_{p}|X_{1},X_{2},...,X_{p - 1},\mu)\)</span></li>
 <li>통제변수 모형에 주로 사용된다.</li>
 </ul>
-<p><strong>Type II: hierarchical or partially sequential 부분 자승합</strong></p>
-<p>다른 모든 예측변수가 고정인 경우 해당 변수의 변동</p>
+<p><strong>Type II: hierarchical or partially sequential 부분 자승합</strong>: 다른 모든 예측변수가 고정인 경우 해당 변수의 변동이다.</p>
 <p><span class="math display">\[SSR(X_{k}|X_{1},...,X_{k - 1},X_{k + 1},...,X_{p},\mu)\]</span></p>
 <p>유의 변수 선택에 사용된다.</p>
-<p><strong>Type III: marginal or orthogonal, partial</strong></p>
-<p>타입 2 자승합과 동일하다. 부분자승합 개념이나 교차항이 있는 경우 상이하다.</p>
+<p><strong>Type III: marginal or orthogonal, partial</strong>: 타입 2 자승합과 동일하다. 부분자승합 개념이나 교차항이 있는 경우 상이하다.</p>
 </section>
 </section>
 </section>
@@ -943,22 +1189,61 @@ e_{n}
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> boston.frame</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>CRIM: per capita crime rate by town → 타운별 1인당 범죄율. <br> ZN: proportion of residential land zoned for lots over 25,000 sq.ft. → 25,000 제곱피트(약 695평) 이상의 부지로 구획된 주거용 토지 비율. <br> INDUS: proportion of non-retail business acres per town → 타운별 비소매(non-retail) 상업용 토지 비율. <br> CHAS: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise) → Charles River 더미 변수, 강을 경계로 하면 1, 아니면 0. <br> NOX: nitric oxides concentration (parts per 10 million, ppm × 10) → 산화질소(NOₓ) 농도, 단위: 10ppm. <br> RM: average number of rooms per dwelling → 주택당 평균 방의 수. <br> AGE: proportion of owner-occupied units built prior to 1940 → 1940년 이전에 건축된 자가 주택 비율. <br> DIS: weighted distances to five Boston employment centres → 보스턴 고용 중심지 5곳까지의 가중 평균 거리. <br> RAD: index of accessibility to radial highways → 방사형(radial) 고속도로 접근성 지수. <br> TAX: full-value property-tax rate per $10,000 → $10,000당 재산세율. <br> PTRATIO: pupil-teacher ratio by town → 타운별 학생-교사 비율. <br> B: 1000(Bk − 0.63)², where Bk is the proportion of Black residents by town → 인종 관련 변수. <br> LSTAT: % lower status of the population → 저소득·사회적 지위가 낮은 계층의 비율(%). <br> MEDV: median value of owner-occupied homes in $1000s → 자가 주택의 중앙값 가격 (단위: $1000).</p>
-<p><strong>산점도 행렬</strong></p>
-<p>2개의 측정형 변수 데이터<span class="math inline">\((x_{i},y_{i})\)</span>를 2차원 공간에 표현하여 두 변수의 함수 관계를 시각적으로 예상한다.</p>
+<p><strong>산점도 행렬</strong>: 2개의 측정형 변수 데이터<span class="math inline">\((x_{i},y_{i})\)</span>를 2차원 공간에 표현하여 두 변수의 함수 관계를 시각적으로 예상한다.</p>
 <ul>
 <li>X-축: 결정(원인) 요인으로 예측변수, 독립변수, 설명변수 등을 불리는 변수를 사용한다.</li>
 <li>Y-축: 결과로 목표변수, 종속변수, 반응변수로 불리는 변수를 사용한다.</li>
 </ul>
-<p><strong>진단내용(1) 함수관계</strong></p>
-<p>산점도는 두 변수 간의 함수 관계를 본다. 두 변수의 함수 관계는 수집된 데이터 범위 내에서만 해석이 가능하다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+산점도 진단 3가지
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>진단</th>
+<th>기준</th>
+<th>처리</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>① 함수관계</strong></td>
+<td>직선·곡선·무관계 등 패턴 확인</td>
+<td>비선형이면 변수 변환 고려</td>
+</tr>
+<tr class="even">
+<td><strong>② 이상치</strong></td>
+<td>표준화 잔차 <span class="math inline">\(\pm 2\)</span> 벗어나는 관측치</td>
+<td>고전적: 삭제 / 빅데이터: 중요 정보로 활용</td>
+</tr>
+<tr class="odd">
+<td><strong>③ 영향치</strong></td>
+<td>X축 범위를 벗어난 관측치 (Hat 통계량)</td>
+<td>순수 영향치(결정계수 왜곡) vs 이상 영향치(기울기 왜곡)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>진단내용(1) 함수관계</strong>: 산점도는 두 변수 간의 함수 관계를 본다. 두 변수의 함수 관계는 수집된 데이터 범위 내에서만 해석이 가능하다.</p>
 <p><strong>진단내용(2) 이상치</strong></p>
-<p>두 변수의 직선 관계에서 특이한 패턴을 보이는 관측치를 시각적으로 진단한다.</p>
 <ul>
 <li>(진단) 오차의 추정치인 (표준화) 잔차가 <span class="math inline">\(\pm 2\)</span> 값을 벗어나면 이를 이상치로 진단한다.</li>
 <li>(해결) 고전적 통계분석에서는 이상치는 삭제하는 것을 원칙으로 한다. 그러나 대용량 데이터에서 이상치는 정상적인 패턴을 벗어나는 관측치여서 향후 시스템 개발에 주요한 정보를 제공하게 된다.</li>
 </ul>
-<p><strong>진단내용(3) 영향치</strong></p>
-<p>X-축(예측변수) 데이터의 범위를 벗어난 관측치를 영향치(influential observation)라 한다.</p>
+<p><strong>진단내용(3) 영향치</strong>: X-축(예측변수) 데이터의 범위를 벗어난 관측치를 영향치(influential observation)라 한다.</p>
 <ul>
 <li><strong>순수 영향치</strong>: 회귀 직선 추정식 상에 있어 함수관계(기울기 변동)에는 영향을 주지 않으나 결정계수 높여 예측변수의 설명 능력을 과다하게 높은 것으로 판단하게 하는 결과를 왜곡한다.</li>
 <li><strong>이상 영향치</strong>: 추정 회귀 직선을 벗어난 관측치로 이상치 개념이다.</li>
@@ -975,8 +1260,7 @@ e_{n}
 <p><img src="images/산점도행렬.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p><strong>추정</strong></p>
-<p>이진형변수 chas가 (1=주변지역, 0=아닌 지역)으로 입력되어 있어 그대로 사용해도 되지만 만약 문자로 입력되었다면 (1,0)으로 변환하여 추정해야 한다.</p>
+<p><strong>추정</strong>: 이진형변수 chas가 (1=주변지역, 0=아닌 지역)으로 입력되어 있어 그대로 사용해도 되지만 만약 문자로 입력되었다면 (1,0)으로 변환하여 추정해야 한다.</p>
 <p><code>pd.get_dummies(boston['chas'],drop_first=True)</code></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Using Pearson Correlation</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df_cor<span class="op">=</span>df.iloc[:,<span class="dv">1</span>:<span class="dv">15</span>].corr(method <span class="op">=</span><span class="st">'pearson'</span>)</span>
@@ -1017,7 +1301,45 @@ e_{n}
 <p><img src="images/보스톤추정결과.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
 </figure>
 </div>
-<p>age 예측변수를 제외하고는 모든 예측변수는 유의하다. 모형의 결정계수는 74.1%로 설명력이 매우 높다. 분석결과 아래 Notes [2]에 보면, 예측변수 간 다중공선성 문제 발생하였다는 경고가 출력되어 있다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+보스턴 주택가격 회귀분석 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>결정계수 (<span class="math inline">\(R^2\)</span>)</strong></td>
+<td>0.741 → 예측변수가 주택가격 변동의 74.1% 설명</td>
+</tr>
+<tr class="even">
+<td><strong>유의하지 않은 변수</strong></td>
+<td>age (p값 &gt; 0.05)</td>
+</tr>
+<tr class="odd">
+<td><strong>주요 유의 변수</strong></td>
+<td>lstat(-), rm(+), ptratio(-), nox(-) 등</td>
+</tr>
+<tr class="even">
+<td><strong>다중공선성 경고</strong></td>
+<td>Notes [2] 경고 출력 → VIF 진단 필요</td>
+</tr>
+</tbody>
+</table>
+<p>age 예측변수를 제외하고는 모든 예측변수는 유의하다. 다중공선성 문제 발생 경고 → 추가 진단 필요.</p>
+</div>
+</div>
 
 
 </section>
