@@ -447,6 +447,78 @@ window.Quarto = {
 <p>독립성분분석(ICA)와 비음수행렬분해(NMF)는 데이터 구조를 바라보는 또 다른 시각을 제공한다. ICA는 변수들 간의 독립성을 극대화하려 하고, NMF는 변수들을 음수가 아닌 조합으로만 표현한다는 제약을 둔다. 두 방법 모두 PCA와 달리 분산 대신 다른 기준을 사용해 차원을 축소하며, 데이터의 성질과 해석 목적에 따라 선택된다.</p>
 <p>부분최소제곱회귀(PLS)나 선형판별분석(LDA)은 PCA와 달리 감독학습 기반의 차원축소 기법이다. 이들은 목표변수(y)의 정보를 활용하여 새로운 축을 찾기 때문에, 예측 성능을 높이고자 할 때 주로 적용된다. PCA가 목표변수를 고려하지 않는 비감독적 방법이라는 점과 대비된다.</p>
 <p>마지막으로 커널 PCA는 비선형 구조를 포착하기 위한 확장판이다. PCA가 선형 변환만으로는 잡아내기 힘든 곡선적·비선형적 패턴을, 고차원 공간에서의 변환을 통해 드러내는 방식이다. 따라서 복잡한 데이터 구조를 다루는 데 유리하다.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+차원축소 기법 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 21%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>기법</th>
+<th>목적</th>
+<th style="text-align: center;">학습 유형</th>
+<th>PCA와의 차이</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>SVD</strong></td>
+<td>행렬 분해·압축</td>
+<td style="text-align: center;">비감독</td>
+<td>계산 엔진; 중심화 후 SVD = PCA</td>
+</tr>
+<tr class="even">
+<td><strong>요인분석 (FA)</strong></td>
+<td>잠재 요인 추출</td>
+<td style="text-align: center;">비감독</td>
+<td>모형 기반, 공통분산만 설명 (특수분산 제외)</td>
+</tr>
+<tr class="odd">
+<td><strong>ICA</strong></td>
+<td>독립 성분 분리</td>
+<td style="text-align: center;">비감독</td>
+<td>비가우시안 독립성 기준 사용</td>
+</tr>
+<tr class="even">
+<td><strong>NMF</strong></td>
+<td>비음수 분해</td>
+<td style="text-align: center;">비감독</td>
+<td>음수 없는 부분적 표현만 허용</td>
+</tr>
+<tr class="odd">
+<td><strong>PLS</strong></td>
+<td>예측·차원축소</td>
+<td style="text-align: center;">감독</td>
+<td>Y 정보 활용, 예측 중심</td>
+</tr>
+<tr class="even">
+<td><strong>LDA</strong></td>
+<td>분류·차원축소</td>
+<td style="text-align: center;">감독</td>
+<td>클래스 간 분산 최대화</td>
+</tr>
+<tr class="odd">
+<td><strong>Kernel PCA</strong></td>
+<td>비선형 구조 포착</td>
+<td style="text-align: center;">비감독</td>
+<td>고차원 매핑 후 PCA — 선형 한계 극복</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>정리하면, PCA는 차원축소의 출발점이자 기본형이고, 다른 기법들은 목적과 데이터의 특성에 따라 PCA의 한계를 보완하거나 대체하는 방식으로 발전해왔다고 볼 수 있다.</p>
 </section>
 </section>
@@ -456,6 +528,46 @@ window.Quarto = {
 <h3 data-number="2.1" class="anchored" data-anchor-id="주성분분석-개념"><span class="header-section-number">2.1</span> 주성분분석 개념</h3>
 <section id="주성분분석-목적" class="level4" data-number="2.1.1">
 <h4 data-number="2.1.1" class="anchored" data-anchor-id="주성분분석-목적"><span class="header-section-number">2.1.1</span> 주성분분석 목적</h4>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+주성분분석(PCA) 정의
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>고차원 데이터 <span class="math inline">\(X \in \mathbb{R}^p\)</span>를 더 적은 차원 <span class="math inline">\(k \ll p\)</span>의 새로운 좌표계로 <strong>선형 변환</strong>하여, 원자료의 핵심 정보(분산)를 최대한 보존한 채 간결하게 요약하는 방법이다.</p>
+<p><span class="math display">\[Z_1 = \phi_{11}X_1 + \phi_{21}X_2 + \cdots + \phi_{p1}X_p \quad \text{(분산이 최대인 선형결합)}\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>목적</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>차원 축소</strong></td>
+<td><span class="math inline">\(p\)</span>개 변수를 <span class="math inline">\(k\)</span>개 주성분으로 요약, 계산·저장 비용 감소</td>
+</tr>
+<tr class="even">
+<td><strong>시각화</strong></td>
+<td>저차원(2–3차원) 공간에서 데이터 구조 파악</td>
+</tr>
+<tr class="odd">
+<td><strong>다중공선성 완화</strong></td>
+<td>직교(비상관) 주성분 사용 → 회귀·분류 수치 안정성 향상</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>주성분분석(PCA)의 목적은, 서로 상관된 여러 변수가 만들어내는 고차원 데이터 <span class="math inline">\(X\in\mathbb{R}^p\)</span> 를 더 적은 차원 <span class="math inline">\(k\ll p\)</span> 의 새로운 좌표계로 선형 변환하여, 원자료가 가진 핵심 정보(변동성, 즉 분산)를 최대한 보존한 채 간결하게 요약하는 데 있다.</p>
 <p>구체적으로 PCA는 데이터가 가장 크게 변하는 방향(분산이 큰 방향)부터 순서대로 새로운 축(주성분)을 구성하고, 상위 몇 개 주성분만 남김으로써 불필요하게 세부적이거나 잡음에 가까운 변동(분산이 작은 방향)을 제거한다. 그 결과 차원이 줄어들어 모델 학습·추론이 빨라지고 저장 및 계산 비용이 감소하며, 저차원 공간(2–3차원)에서 데이터 구조를 시각적으로 파악하기도 쉬워진다.</p>
 <p>또한 강한 상관관계로 인한 다중공선성이 존재할 때, 원변수 대신 서로 직교(비상관)하는 주성분을 사용하면 추정이 더 안정적으로 이루어져 회귀·분류 모델의 수치적 불안정성을 완화하는 데에도 도움이 된다(예: 주성분회귀, PCR).</p>
@@ -492,9 +604,48 @@ window.Quarto = {
 <p><strong>주성분 회귀</strong> 주성분회귀(PCR)는 설명변수 X의 차원이 크거나 변수들 사이 상관이 높아(다중공선성) 일반적인 선형회귀가 불안정해지는 상황에서, 먼저 X를 주성분분석(PCA)으로 요약한 뒤 그 요약된 변수들로 회귀를 수행하는 방법이다.</p>
 <p>구체적으로는, <span class="math inline">\(X_1,\dots,X_p\)</span> 같은 원래 변수들을 그대로 쓰는 대신, X가 가장 크게 변하는 방향부터 순서대로 구성한 서로 직교(비상관)하는 새로운 축들(주성분)을 만들고, 그중 앞부분 k개(kp)만 선택하여 주성분 점수(score)를 예측변수로 사용한다.</p>
 <p>이렇게 하면 원변수들 간 강한 상관 때문에 발생하던 계수의 불안정성(추정치가 크게 흔들리거나 부호가 뒤집히는 현상)이 완화되고, 차원이 줄어들어 과적합 위험과 계산 부담도 함께 낮아질 수 있다. 특히 p가 매우 크거나 <span class="math inline">\(p&gt;n\)</span> 인 경우에도, 적절한 k를 택하면 회귀모형을 안정적으로 적합할 수 있다는 점이 실무적으로 유용하다.</p>
-<p>다만 주의할 점도 분명하다. PCA 단계는 반응변수 Y를 고려하지 않고 오직 X의 분산만을 기준으로 “중요한 방향”을 정하기 때문에, X에서 분산이 큰 방향이 반드시 Y 예측에 중요한 방향이라고 보장할 수 없다.</p>
-<p>따라서 PCR에서 가장 중요한 선택은 “몇 개의 주성분을 사용할 것인가”이며, 단순히 누적 설명분산비(예: 90% 또는 95%)만으로 결정하기보다는, 최종 목적이 예측인 만큼 교차검증 등을 통해 예측 성능이 가장 좋은 k를 선택하는 것이 합리적이다.</p>
-<p>또한 변수 스케일(표준화) 여부에 따라 주성분이 크게 달라질 수 있으므로, 단위가 섞인 데이터에서는 표준화 후 PCR을 수행하는 것이 일반적이다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+주성분회귀(PCR) 핵심 포인트
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>구분</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>장점</strong></td>
+<td>다중공선성 완화, <span class="math inline">\(p &gt; n\)</span> 상황에서도 안정적 적합 가능</td>
+</tr>
+<tr class="even">
+<td><strong>주의</strong></td>
+<td>PCA가 Y를 무시 → X의 고분산 방향이 Y 예측에 중요하다고 보장 불가</td>
+</tr>
+<tr class="odd">
+<td><strong>주성분 수 선택</strong></td>
+<td>설명분산비(90% 등)보다 <strong>교차검증</strong>으로 예측 성능 기준 선택 권장</td>
+</tr>
+<tr class="even">
+<td><strong>표준화</strong></td>
+<td>단위가 다른 변수는 <strong>표준화 후</strong> PCR 수행 필수</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><strong>차원축소 및 개체분류</strong></p>
 <p>주성분분석은 많은 변수로 이루어진 데이터를 소수의 핵심 지표로 요약하는 방법이다. 온라인에서 옷을 구입하는 사례가 좋은 비유가 된다. 상의는 단순히 55사이즈, M사이즈와 같이 하나의 값으로 표현되며, 하의 역시 허리둘레 34인치와 같이 하나의 수치로 표시된다. 그러나 맞춤옷을 구입하려면 어깨 넓이, 어깨에서 손목까지의 길이, 허벅지 두께, 허리에서 무릎까지의 길이, 무릎에서 발꿈치까지의 길이 등 다양한 신체 치수를 측정해야 한다. 이 많은 정보가 결국 하나의 단위로 축약된 것이 바로 55사이즈나 34인치라는 값이다. 이러한 값은 다른 여러 치수 정보를 반영하는 일종의 골든 지표, 즉 주성분이라고 볼 수 있다. 따라서 많은 정보를 하나로 요약하는 과정에서 세부적인 차이가 사라지므로, 온라인에서 구매한 옷이 모든 사람의 체형에 꼭 맞지 않는 것이다. 이 때문에 Big &amp; Tall 매장이나 디자이너 매장이 따로 존재한다.</p>
 <p>이미지 데이터 역시 주성분분석의 활용을 이해하기 좋은 예다. 이미지 데이터는 기본적으로 가로, 세로, 색상 채널을 포함하는 3차원 공간 데이터이다. 그러나 통계 분석이나 기계학습에 활용하려면 이를 2차원 행렬 데이터로 축약해야 한다. 축약 과정을 사람이 직접 설계한다면 학습지도 기법, 즉 전통적 머신러닝에 해당한다. 반대로 컴퓨터가 스스로 중요한 특징을 찾아내는 경우는 비학습지도 기법, 즉 딥러닝에 해당한다. 이러한 학습 과정에서 널리 쓰이는 알고리즘으로는 서포트 벡터 머신(SVM), 아다부스트(AdaBoost) 등이 있다.</p>
@@ -611,9 +762,25 @@ x_{p}
 <p>두 번째 주성분 점수 <span class="math inline">\(z_{12},z_{22},\ldots,z_{n2}\)</span> 는 <span class="math inline">\(z_{i2}=\phi_{12}x_{i1}+\phi_{22}x_{i2}+\cdots+\phi_{p2}x_{ip} ~ (3)\)</span> 의 형태이며, <span class="math inline">\(\phi_2\)</span> 는 두 번째 주성분 적재 벡터이다(<span class="math inline">\(\phi_{12},\phi_{22},\ldots,\phi_{p2}\)</span> 포함).</p>
 <p><span class="math inline">\(Z_2\)</span> 가 <span class="math inline">\(Z_1\)</span> 과 비상관이 되도록 제약하는 것은, 방향 <span class="math inline">\(\phi_2\)</span> 가 <span class="math inline">\(\phi_1\)</span> 에 직교(orthogonal, 수직)하도록 제약하는 것과 동치임이 알려져 있다.</p>
 <p><span class="math inline">\(\phi_2\)</span> 를 찾기 위해서는 (2)과 유사한 문제를 <span class="math inline">\(\phi_1\)</span> 대신 <span class="math inline">\(\phi_2\)</span> 에 대해 풀되, 추가로 <span class="math inline">\(\phi_2\)</span> 가 <span class="math inline">\(\phi_1\)</span> 과 직교하도록 제약한다. p&gt;2인 더 큰 데이터셋에서는 여러 서로 다른 주성분이 존재하며, 유사한 방식으로 정의된다.</p>
-<p><strong>주성분의 유일성(Uniqueness of the Principal Components)</strong></p>
-<p>각 주성분 적재 벡터는 부호를 뒤집는 것(sign flip)까지는 유일하다. 즉, 서로 다른 소프트웨어가 같은 주성분 적재 벡터를 내놓더라도 부호가 다를 수 있다. 부호가 다른 이유는 적재 벡터가 p차원 공간에서의 방향을 지정하는데, 부호를 뒤집어도 방향 자체는 변하지 않기 때문이다.</p>
-<p>마찬가지로 점수 벡터도 부호 반전까지는 유일한데, Z의 분산은 -Z의 분산과 같기 때문이다. 또한 (12.5)로 x_{ij}를 근사할 때 z_{im}과 _{jm}을 곱하므로, 둘 다 부호가 뒤집히면 최종 곱은 변하지 않는다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+주성분의 유일성 (Sign Flip)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>각 주성분 적재 벡터는 <strong>부호 반전(sign flip)까지</strong> 유일하다.</p>
+<ul>
+<li>부호를 뒤집어도 방향은 변하지 않음 (p차원 공간에서 방향은 동일)</li>
+<li><span class="math inline">\(\text{Var}(Z) = \text{Var}(-Z)\)</span> → 점수 벡터도 부호 반전까지 유일</li>
+<li>적재·점수 모두 부호가 뒤집히면 곱(<span class="math inline">\(z_{im} \cdot \phi_{jm}\)</span>)은 불변</li>
+</ul>
+<p>⚠️ 서로 다른 소프트웨어 결과의 부호가 달라도 정상이다.</p>
+</div>
+</div>
 <p><strong>선형계수 (부하) 해석</strong></p>
 <p>성분 적재 벡터를 “데이터가 가장 많이 변하는 방향”, 주성분 점수를 “그 방향으로의 사영”으로 설명했다. 그러나 주성분에 대한 또 다른 해석도 유용하다. 주성분은 관측치들에 가장 가까운(closest) 저차원 선형 표면(linear surface)을 제공한다.</p>
 <p>첫 번째 주성분 적재 벡터는 매우 특별한 성질을 가진다. 그것은 p차원 공간에서 n개의 관측치에 (평균제곱 유클리드 거리 기준으로) 가장 가까운 직선이다. 이 해석의 매력은 분명하다. 즉, 모든 데이터점에 가능한 한 가까이 놓이는 데이터의 단일 차원을 찾는 것이며, 그런 직선은 데이터의 좋은 요약을 제공할 가능성이 크다.</p>
@@ -631,11 +798,24 @@ x_{p}
 <p>각 주성분의 PVE는 양수이며, 처음 M개 주성분의 누적 PVE는 처음 M개에 대해 더하면 된다. 전체적으로 <span class="math inline">\(\min(n-1,p)\)</span> 개의 주성분이 있으며, 그들의 PVE 합은 1이다.</p>
 <p>처음 M개의 주성분 적재/점수 벡터는 잔차제곱합 관점에서 데이터에 대한 최적의 M차원 근사로 해석될 수 있음을 보였다. 실제로 데이터의 분산은 “처음 M개 주성분의 분산”과 “이 M-차원 근사의 평균제곱오차”로 분해될 수 있다.</p>
 <p>첫 항이 고정되어 있으므로, 처음 M개 주성분의 분산을 최대화하는 것은 M-차원 근사의 평균제곱오차를 최소화하는 것과 서로 동치이며(그리고 그 반대도 성립), 이것이 주성분이 “근사오차 최소화” 또는 “분산 최대화”로 동등하게 보일 수 있는 이유다.</p>
-<p>PVE가 <span class="math display">\[1-\frac{\sum_{j=1}^{p}\sum_{i=1}^{n}\left(x_{ij}-\sum_{m=1}^{M} z_{im}\phi_{jm}\right)^{2}}
-{\sum_{j=1}^{p}\sum_{i=1}^{n}x_{ij}^{2}}
-=
-1-\frac{\mathrm{RSS}}{\mathrm{TSS}}\]</span> 와 같음을 볼 수 있다.</p>
-<p>여기서 TSS는 X의 제곱 원소의 총합(총제곱합), RSS는 주성분으로 주어진 M-차원 근사에 대한 잔차제곱합이다. <span class="math inline">\(R^2\)</span> 정의에 의하면, 이는 PVE를 “처음 M개 주성분으로 근사한 X에 대한 <span class="math inline">\(R^2\)</span>”로 해석할 수 있음을 의미한다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+PVE(Proportion of Variance Explained) 핵심 공식
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\text{m번째 주성분의 PVE} = \frac{\sum_{i=1}^{n} z_{im}^{2}}{\sum_{j=1}^{p}\sum_{i=1}^{n}x_{ij}^{2}}\]</span></p>
+<p><span class="math display">\[\text{M개 누적 PVE} = 1 - \frac{\text{RSS}}{\text{TSS}} \quad \text{(M차원 근사의 } R^2 \text{와 동일)}\]</span></p>
+<ul>
+<li>전체 주성분(<span class="math inline">\(\min(n-1,p)\)</span>개)의 PVE 합 = 1</li>
+<li><strong>분산 최대화</strong> ⟺ <strong>RSS 최소화</strong> — 두 해석은 동치</li>
+</ul>
+</div>
+</div>
 <p><strong>왜 고유벡터(선형계수)를 이용하나?</strong></p>
 <p>주성분분석은 데이터가 가장 넓게 퍼져 있는 방향, 즉 분산이 최대가 되는 축을 찾는 것이 목적이다. 공분산행렬은 변수들의 분산과 공분산을 모두 담고 있어 데이터가 어떤 방향으로 크게 퍼져 있는지를 보여주는 지도를 제공한다. 이 공분산행렬을 고유분해하면 고유벡터와 고유값을 얻을 수 있는데, 고유벡터는 데이터가 퍼져 있는 방향을, 고유값은 그 방향으로의 분산 크기를 의미한다.</p>
 <p>따라서 가장 큰 고유값에 대응하는 고유벡터는 데이터가 가장 넓게 퍼진 방향이 되고, 이것이 첫 번째 주성분이 된다. 두 번째로 큰 고유값의 고유벡터는 첫 번째 주성분과 직교하면서 남은 분산을 가장 크게 설명하는 방향이 되고, 이렇게 차례대로 주성분들이 정해진다.</p>
@@ -766,7 +946,26 @@ x_{p}
 <p>따라서 주성분에 이름을 부여하는 과정은, 부하 행렬에서 어떤 변수가 주성분에 강하게 기여하는지를 살펴보고 그 특징을 요약하여 직관적인 이름을 붙이는 것이다.</p>
 <p>그러나 이 과정은 결코 단순하지 않다. 하나의 주성분에 여러 변수가 동시에 기여하거나, 서로 해석이 상충되는 부하 값이 섞여 있을 수 있기 때문이다. 또한 부호 방향에 따라 변수 간의 해석이 달라질 수 있고, 실제 데이터의 맥락과 결합해 해석하지 않으면 오해의 소지가 크다.</p>
 <p>결국 주성분의 이름 부여는 수학적 계산 결과만으로 자동으로 정해지는 것이 아니라, 연구자가 부하 값의 크기와 방향을 바탕으로 변수군의 공통된 의미를 찾아내는 해석 과정이다. 따라서 단순히 부하의 절댓값만 보는 것이 아니라, 해당 데이터의 맥락과 연구 목적을 종합적으로 고려해야 한다.</p>
-<p>즉, 주성분의 이름은 부하 행렬에서 큰 기여를 보이는 변수들의 특성을 요약해 붙이지만, 이는 연구자의 통계적 해석과 도메인 지식이 반드시 결합되어야 하는 작업이다.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+주성분 이름부여 절차
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>부하 행렬 확인</strong> — 각 주성분에서 절댓값 0.4~0.5 이상인 변수 추출</li>
+<li><strong>공통 개념 탐색</strong> — 높은 부하 변수들이 공유하는 의미 파악</li>
+<li><strong>이름 정제</strong> — 간결한 명사구로 표현; 결과변수(예: 만족도) 이름은 피함</li>
+<li><strong>이중 부하 처리</strong> — 두 요인에 걸친 변수는 맥락·도메인 지식으로 판단</li>
+<li><strong>타당성 확인</strong> — 크론바흐 α, 외생변수와의 상관으로 이름 검증</li>
+</ol>
+<p>즉, 주성분의 이름은 수학적 계산 + 통계적 해석 + 도메인 지식의 결합 산물이다.</p>
+</div>
+</div>
 </section>
 </section>
 <section id="주성분-사례분석" class="level3" data-number="2.3">
