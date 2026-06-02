@@ -139,236 +139,241 @@ ul.task-list li input[type="checkbox"] {
 
 
 <style>
+/* ── 전체 래퍼 ── */
+.home-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 /* ── 히어로 배너 ── */
 .hero {
   background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 60%, #3a6b52 100%);
   color: #f5f0e8;
-  padding: 1.8rem 2.5rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-  position: relative;
-  overflow: hidden;
+  padding: 1.2rem 2rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
-.hero::after {
-  content: "";
-  position: absolute;
-  right: -60px; top: -60px;
-  width: 200px; height: 200px;
-  border-radius: 50%;
-  background: rgba(212,160,23,0.08);
-}
-.hero-title {
-  font-size: 1.7rem;
+.hero-left .hero-title {
+  font-size: 1.55rem;
   font-weight: 800;
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.2rem;
   letter-spacing: -0.5px;
 }
-.hero-title span { color: #d4a017; }
-.hero-sub {
-  font-size: 0.93rem;
-  opacity: 0.85;
-  margin: 0 0 0.8rem;
+.hero-left .hero-title span { color: #d4a017; }
+.hero-left .hero-sub {
+  font-size: 0.88rem;
+  opacity: 0.82;
+  margin: 0;
 }
-.hero-motto {
-  display: inline-block;
-  font-size: 0.87rem;
+.hero-right .hero-motto {
+  font-size: 0.82rem;
   font-style: italic;
   border-left: 3px solid #d4a017;
   padding-left: 0.8rem;
-  opacity: 0.9;
+  opacity: 0.88;
   line-height: 1.6;
 }
 
-/* ── 프로필 ── */
-.profile-wrap {
-  display: flex;
-  gap: 2.5rem;
-  align-items: flex-start;
-  background: #fafafa;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  padding: 2rem 2.5rem;
-  margin-bottom: 2.5rem;
-}
-.profile-img {
-  width: 140px;
-  min-width: 140px;
-  border-radius: 10px;
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-}
-.profile-text h3 {
-  color: #1e3a2f !important;
-  margin: 0 0 0.5rem;
-  font-size: 1.3rem;
-}
-.profile-text p { margin: 0.4rem 0; font-size: 0.97rem; color: #444; }
-.profile-badge {
-  display: inline-block;
-  background: #1e3a2f;
-  color: #d4a017;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin: 0.2rem 0.2rem 0 0;
+/* ── 메인 2열 ── */
+.main-row {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+  align-items: start;
 }
 
-/* ── 섹션 카드 그리드 ── */
-.section-grid {
+/* ── 왼쪽: 프로필 + 타임라인 ── */
+.left-col {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 1.2rem;
+}
+.profile-img {
+  width: 80px;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 0.6rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.profile-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e3a2f;
+  margin: 0 0 0.1rem;
+}
+.profile-title {
+  font-size: 0.78rem;
+  color: #666;
+  margin: 0 0 0.7rem;
+}
+.profile-desc {
+  font-size: 0.78rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 0.8rem;
+}
+.tl-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1e3a2f;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.tl-item {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  align-items: baseline;
+}
+.tl-year {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #d4a017;
+  min-width: 72px;
+}
+.tl-content {
+  font-size: 0.75rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* ── 오른쪽: 섹션 카드 ── */
+.right-col {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.2rem;
-  margin-bottom: 2.5rem;
+  gap: 0.8rem;
 }
 .sec-card {
   border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 1.4rem 1.5rem;
+  border-radius: 9px;
+  padding: 1rem 1.1rem;
   text-decoration: none !important;
   color: inherit !important;
   display: block;
   transition: all 0.2s ease;
   background: #fff;
-  border-top: 4px solid #1e3a2f;
+  border-top: 3px solid #1e3a2f;
 }
 .sec-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(30,58,47,0.12);
+  box-shadow: 0 6px 16px rgba(30,58,47,0.12);
   border-top-color: #d4a017;
   text-decoration: none !important;
 }
-.sec-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.sec-card .icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
 .sec-card .card-title {
-  font-size: 1.0rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #1e3a2f;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
-.sec-card .card-desc { font-size: 0.85rem; color: #666; line-height: 1.5; }
+.sec-card .card-desc {
+  font-size: 0.78rem;
+  color: #777;
+  line-height: 1.45;
+}
 
-/* ── 경력 타임라인 ── */
-.timeline-wrap {
-  background: #fafafa;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  padding: 2rem 2.5rem;
+/* ── 반응형 ── */
+@media (max-width: 768px) {
+  .hero { flex-direction: column; }
+  .main-row { grid-template-columns: 1fr; }
+  .right-col { grid-template-columns: repeat(2, 1fr); }
 }
-.timeline-wrap h3 { color: #1e3a2f !important; margin: 0 0 1.2rem; }
-.tl-item {
-  display: flex;
-  gap: 1.2rem;
-  margin-bottom: 0.9rem;
-  align-items: flex-start;
-}
-.tl-year {
-  min-width: 120px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #d4a017;
-  padding-top: 2px;
-}
-.tl-dot {
-  width: 10px; height: 10px;
-  min-width: 10px;
-  background: #1e3a2f;
-  border-radius: 50%;
-  margin-top: 5px;
-}
-.tl-content { font-size: 0.93rem; color: #444; }
 </style>
 
-<!-- 히어로 배너 -->
-<div class="hero">
-  <div class="hero-title">권세혁 교수의 <span>통계 책방</span></div>
-  <div class="hero-sub">한남대학교 통계학과 명예교수 &nbsp;·&nbsp; 데이터 사이언스 강의노트</div>
-  <div class="hero-motto">
-    세상 모든 사람이 통계를 사랑하는 그 날까지<br>
-    put a ding in the universe &nbsp;·&nbsp; pay forward
-  </div>
-</div>
+<div class="home-wrap">
 
-<!-- 프로필 -->
-<div class="profile-wrap">
-  <img class="profile-img" src="myself.png" alt="권세혁 교수">
-  <div class="profile-text">
-    <h3 class="anchored">권세혁 (Kwon Se-Hyug)</h3>
-    <p>1995년부터 한남대학교에서 제공해온 통계학 강의노트를 <strong>데이터 사이언스</strong> 중심으로 새롭게 구성했습니다.</p>
-    <p>MLDL 개념부터는 AI와 공동 집필 중입니다.</p>
-    <p style="margin-top: 0.8rem;">
-      <span class="profile-badge">since 1999.03 초판</span>
-      <span class="profile-badge">2023.01 1st revision</span>
-      <span class="profile-badge">2026.03 2nd revision</span>
-    </p>
+  <!-- 히어로 배너 -->
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-title">권세혁 교수의 <span>통계 책방</span></div>
+      <div class="hero-sub">한남대학교 통계학과 명예교수 &nbsp;·&nbsp; 데이터 사이언스 강의노트</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-motto">
+        세상 모든 사람이 통계를 사랑하는 그 날까지<br>
+        put a ding in the universe &nbsp;·&nbsp; pay forward
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- 섹션 카드 -->
-<div class="section-grid">
-  <a class="sec-card" href="./stat_assay/index.html">
-    <div class="icon">📝</div>
-    <div class="card-title">통계 이야기</div>
-    <div class="card-desc">숫자 뒤에 숨은 이야기, 통계를 쉽게 풀어내는 에세이 공간</div>
-  </a>
-  <a class="sec-card" href="./notes/math_stat/index.html">
-    <div class="icon">📐</div>
-    <div class="card-title">기초수학 · 수리통계 · 조사방법</div>
-    <div class="card-desc">함수·행렬·확률·추정·가설검정·표본설계</div>
-  </a>
-  <a class="sec-card" href="./notes/intro_stat/index.html">
-    <div class="icon">📊</div>
-    <div class="card-title">기초통계 · 회귀 · 다변량분석</div>
-    <div class="card-desc">기술통계·분산분석·회귀분석·PCA·군집분석</div>
-  </a>
-  <a class="sec-card" href="./notes/mldl_intro/index.html">
-    <div class="icon">🤖</div>
-    <div class="card-title">머신러닝 · 딥러닝</div>
-    <div class="card-desc">지도·비지도학습, 예측·분류, 트리·딥러닝</div>
-  </a>
-  <a class="sec-card" href="./notes/inference_xai/index.html">
-    <div class="icon">🧠</div>
-    <div class="card-title">AI · 감성분석</div>
-    <div class="card-desc">인과추론, 설명가능 AI, 텍스트 감성분석</div>
-  </a>
-  <a class="sec-card" href="./consult.html">
-    <div class="icon">💬</div>
-    <div class="card-title">통계 상담</div>
-    <div class="card-desc">논문·프로젝트 통계 분석 방법론 상담</div>
-  </a>
-</div>
+  <!-- 메인 2열 -->
+  <div class="main-row">
 
-<!-- 경력 타임라인 -->
-<div class="timeline-wrap">
-  <h3 class="anchored">👤 학력 &amp; 경력</h3>
-  <div class="tl-item">
-    <div class="tl-year">1979 – 1983</div>
-    <div class="tl-dot"></div>
-    <div class="tl-content">성균관대학교 통계학 학사</div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-year">1983 – 1985</div>
-    <div class="tl-dot"></div>
-    <div class="tl-content">성균관대학교 통계학 석사</div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-year">1986 – 1992</div>
-    <div class="tl-dot"></div>
-    <div class="tl-content">North Carolina State University 통계학 박사 (미국)</div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-year">1993 – 1995</div>
-    <div class="tl-dot"></div>
-    <div class="tl-content">전자통신연구원 선임연구원</div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-year">1995 – 2026</div>
-    <div class="tl-dot"></div>
-    <div class="tl-content">한남대학교 통계학과 교수</div>
-  </div>
-  <div class="tl-item">
-    <div class="tl-year">2026 – 현재</div>
-    <div class="tl-dot"></div>
-    <div class="tl-content" style="font-weight:600; color:#1e3a2f;">한남대학교 명예교수</div>
+    <!-- 왼쪽: 프로필 + 타임라인 -->
+    <div class="left-col">
+      <img class="profile-img" src="myself.png" alt="권세혁 교수">
+      <div class="profile-name">권세혁</div>
+      <div class="profile-title">한남대학교 통계학과 명예교수</div>
+      <div class="profile-desc">
+        1995년부터 통계학 강의노트를 데이터 사이언스 중심으로 구성.<br>
+        MLDL 개념부터는 AI와 공동 집필 중.
+      </div>
+      <div class="tl-title">학력 &amp; 경력</div>
+      <div class="tl-item">
+        <span class="tl-year">1979–1985</span>
+        <span class="tl-content">성균관대 통계학 학·석사</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">1986–1992</span>
+        <span class="tl-content">NC State Univ. 통계학 박사</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">1993–1995</span>
+        <span class="tl-content">전자통신연구원 선임연구원</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">1995–2026</span>
+        <span class="tl-content">한남대학교 통계학과 교수</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-year">2026–현재</span>
+        <span class="tl-content" style="font-weight:600;color:#1e3a2f;">한남대학교 명예교수</span>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 섹션 카드 -->
+    <div class="right-col">
+      <a class="sec-card" href="./stat_assay/index.html">
+        <div class="icon">📝</div>
+        <div class="card-title">통계 이야기</div>
+        <div class="card-desc">숫자 뒤에 숨은 이야기, 통계를 쉽게 풀어내는 에세이</div>
+      </a>
+      <a class="sec-card" href="./notes/math_stat/index.html">
+        <div class="icon">📐</div>
+        <div class="card-title">기초수학 · 수리통계 · 조사방법</div>
+        <div class="card-desc">함수·행렬·확률·추정·가설검정·표본설계</div>
+      </a>
+      <a class="sec-card" href="./notes/intro_stat/index.html">
+        <div class="icon">📊</div>
+        <div class="card-title">기초통계 · 회귀 · 다변량분석</div>
+        <div class="card-desc">기술통계·분산분석·회귀분석·PCA·군집분석</div>
+      </a>
+      <a class="sec-card" href="./notes/mldl_intro/index.html">
+        <div class="icon">🤖</div>
+        <div class="card-title">머신러닝 · 딥러닝</div>
+        <div class="card-desc">지도·비지도학습, 예측·분류, 트리·딥러닝</div>
+      </a>
+      <a class="sec-card" href="./notes/inference_xai/index.html">
+        <div class="icon">🧠</div>
+        <div class="card-title">AI · 감성분석</div>
+        <div class="card-desc">인과추론, 설명가능 AI, 텍스트 감성분석</div>
+      </a>
+      <a class="sec-card" href="./consult.html">
+        <div class="icon">💬</div>
+        <div class="card-title">통계 상담</div>
+        <div class="card-desc">논문·프로젝트 통계 분석 방법론 상담</div>
+      </a>
+    </div>
+
   </div>
 </div>
 
