@@ -207,7 +207,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_intro/mldl_concepts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 개요</span></a>
+ <span class="menu-text">📄 머신러닝과 통계적사고</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -434,10 +434,25 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#머신러닝-분류-k-nn-svm-이진형-분류-사례분석" id="toc-머신러닝-분류-k-nn-svm-이진형-분류-사례분석" class="nav-link active" data-scroll-target="#머신러닝-분류-k-nn-svm-이진형-분류-사례분석">머신러닝 분류 (k-NN | SVM) 이진형 분류 사례분석</a>
+  <li><a href="#머신러닝-분류-k-nn-svm-이진형-분류-사례분석" id="toc-머신러닝-분류-k-nn-svm-이진형-분류-사례분석" class="nav-link active" data-scroll-target="#머신러닝-분류-k-nn-svm-이진형-분류-사례분석"><span class="header-section-number">1</span> 머신러닝 분류 (k-NN | SVM) 이진형 분류 사례분석</a>
   <ul>
-  <li><a href="#사례분석-이진분류" id="toc-사례분석-이진분류" class="nav-link" data-scroll-target="#사례분석-이진분류">1. 사례분석 (이진분류)</a></li>
-  <li><a href="#사례분석이진분류-회소성공-불균형" id="toc-사례분석이진분류-회소성공-불균형" class="nav-link" data-scroll-target="#사례분석이진분류-회소성공-불균형">2. 사례분석(이진분류, 회소성공-불균형)</a></li>
+  <li><a href="#사례분석-이진분류" id="toc-사례분석-이진분류" class="nav-link" data-scroll-target="#사례분석-이진분류"><span class="header-section-number">1.1</span> 사례분석 (이진분류)</a>
+  <ul class="collapse">
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터"><span class="header-section-number">1.1.1</span> 데이터</a></li>
+  <li><a href="#전처리" id="toc-전처리" class="nav-link" data-scroll-target="#전처리"><span class="header-section-number">1.1.2</span> 전처리</a></li>
+  <li><a href="#knn" id="toc-knn" class="nav-link" data-scroll-target="#knn"><span class="header-section-number">1.1.3</span> KNN</a></li>
+  <li><a href="#svm" id="toc-svm" class="nav-link" data-scroll-target="#svm"><span class="header-section-number">1.1.4</span> SVM</a></li>
+  <li><a href="#knn-vs.svm-비교" id="toc-knn-vs.svm-비교" class="nav-link" data-scroll-target="#knn-vs.svm-비교"><span class="header-section-number">1.1.5</span> knn vs.SVM 비교</a></li>
+  <li><a href="#회귀기반-분류" id="toc-회귀기반-분류" class="nav-link" data-scroll-target="#회귀기반-분류"><span class="header-section-number">1.1.6</span> 회귀기반 분류</a></li>
+  <li><a href="#트리기반단일-분류" id="toc-트리기반단일-분류" class="nav-link" data-scroll-target="#트리기반단일-분류"><span class="header-section-number">1.1.7</span> 트리기반(단일) 분류</a></li>
+  <li><a href="#앙상블-기법" id="toc-앙상블-기법" class="nav-link" data-scroll-target="#앙상블-기법"><span class="header-section-number">1.1.8</span> 앙상블 기법</a></li>
+  </ul></li>
+  <li><a href="#사례분석-이진분류-희소성공-불균형" id="toc-사례분석-이진분류-희소성공-불균형" class="nav-link" data-scroll-target="#사례분석-이진분류-희소성공-불균형"><span class="header-section-number">1.2</span> 사례분석 (이진분류, 희소성공-불균형)</a>
+  <ul class="collapse">
+  <li><a href="#데이터-1" id="toc-데이터-1" class="nav-link" data-scroll-target="#데이터-1"><span class="header-section-number">1.2.1</span> 데이터</a></li>
+  <li><a href="#모델-학습-k-nn-svm" id="toc-모델-학습-k-nn-svm" class="nav-link" data-scroll-target="#모델-학습-k-nn-svm"><span class="header-section-number">1.2.2</span> 모델 학습 (k-NN / SVM)</a></li>
+  <li><a href="#모델-학습-회귀기반-트리기반-앙상블" id="toc-모델-학습-회귀기반-트리기반-앙상블" class="nav-link" data-scroll-target="#모델-학습-회귀기반-트리기반-앙상블"><span class="header-section-number">1.2.3</span> 모델 학습 (회귀기반 트리기반 앙상블)</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -470,12 +485,55 @@ window.Quarto = {
 </header>
 
 
-<section id="머신러닝-분류-k-nn-svm-이진형-분류-사례분석" class="level3">
-<h3 class="anchored" data-anchor-id="머신러닝-분류-k-nn-svm-이진형-분류-사례분석">머신러닝 분류 (k-NN | SVM) 이진형 분류 사례분석</h3>
-<section id="사례분석-이진분류" class="level4">
-<h4 class="anchored" data-anchor-id="사례분석-이진분류">1. 사례분석 (이진분류)</h4>
-<section id="데이터" class="level5">
-<h5 class="anchored" data-anchor-id="데이터">(1) 데이터</h5>
+<section id="머신러닝-분류-k-nn-svm-이진형-분류-사례분석" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="머신러닝-분류-k-nn-svm-이진형-분류-사례분석"><span class="header-section-number">1</span> 머신러닝 분류 (k-NN | SVM) 이진형 분류 사례분석</h2>
+<section id="사례분석-이진분류" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="사례분석-이진분류"><span class="header-section-number">1.1</span> 사례분석 (이진분류)</h3>
+<section id="데이터" class="level4" data-number="1.1.1">
+<h4 data-number="1.1.1" class="anchored" data-anchor-id="데이터"><span class="header-section-number">1.1.1</span> 데이터</h4>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Breast Cancer Wisconsin 데이터셋 개요
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>목적</strong></td>
+<td>유방 종양 악성(malignant=0)/양성(benign=1) 이진 분류</td>
+</tr>
+<tr class="even">
+<td><strong>표본 수</strong></td>
+<td>n = 569</td>
+</tr>
+<tr class="odd">
+<td><strong>변수 수</strong></td>
+<td>p = 30 (모두 연속형)</td>
+</tr>
+<tr class="even">
+<td><strong>변수 유형</strong></td>
+<td>mean / error / worst 유형의 세포핵 형태 통계</td>
+</tr>
+<tr class="odd">
+<td><strong>예시 변수</strong></td>
+<td>mean radius, mean perimeter, mean area 등</td>
+</tr>
+</tbody>
+</table>
+<p>클래스가 균형에 가까운 <strong>표준 이진분류 벤치마크</strong> 데이터이다.</p>
+</div>
+</div>
 <p>본 실습에서는 이진분류 예제로 널리 사용되는 Breast Cancer Wisconsin (Diagnostic) 데이터를 사용한다. 이 데이터는 유방 종양의 세포핵(nucleus) 형태 특성으로부터 종양이 악성(malignant 0) 인지 양성(benign 1) 인지를 분류하는 문제를 다룬다. 표본 수는 𝑛 = 569, 변수(특징) 수는 p=30이다.</p>
 <p>30개의 입력 변수는 모두 연속형 수치 변수로, 종양의 형태를 요약한 통계적 특성들이다. 예를 들어 평균 반지름(mean radius), 둘레(mean perimeter), 면적(mean area) 등 “mean / error / worst” 유형의 파생 특징들이 포함된다.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) 데이터 불러오기: Breast Cancer Wisconsin (Diagnostic)</span></span>
@@ -500,8 +558,26 @@ window.Quarto = {
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"target"</span>] <span class="op">=</span> y</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="전처리" class="level5">
-<h5 class="anchored" data-anchor-id="전처리">(2) 전처리</h5>
+<section id="전처리" class="level4" data-number="1.1.2">
+<h4 data-number="1.1.2" class="anchored" data-anchor-id="전처리"><span class="header-section-number">1.1.2</span> 전처리</h4>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이진분류 전처리 3원칙
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Train/Test 분리 먼저</strong>: 테스트는 학습에 절대 사용 금지 — 75% 학습 / 25% 테스트</li>
+<li><strong>층화 분할(stratify=y)</strong>: 클래스 비율 유지 (악성:양성 = 212:357 불균형 보정)</li>
+<li><strong>표준화는 Pipeline 내에서</strong>: train에만 <code>fit</code> → test에는 <code>transform</code>만 (데이터 누수 방지)</li>
+</ol>
+<p>SVM(RBF 커널)과 k-NN은 거리/내적 기반 → <strong>변수 스케일에 매우 민감</strong> → 표준화 필수</p>
+</div>
+</div>
 <p><strong>왜 train/test 분할을 먼저 하는가?</strong></p>
 <p>모형 성능 평가는 “새로운 데이터에서 얼마나 잘 맞추는가”를 보는 것이므로, 전체 데이터를 학습용(train) 과 평가용(test) 으로 나눈다. 이때 핵심 원칙은 테스트 데이터는 학습 과정에 절대 사용되지 않아야 한다는 점이다. (데이터 누수 방지)</p>
 <p>코드에서는 다음처럼 75%는 학습, 25%는 테스트로 분할했다.</p>
@@ -552,8 +628,8 @@ window.Quarto = {
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>X_test_scaled  <span class="op">=</span> scaler_pipe.transform(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>[Split] X_train: (426, 30) X_test: (143, 30) <br> y_train counts: {np.int64(0): np.int64(159), np.int64(1): np.int64(267)} <br> y_test counts: {np.int64(0): np.int64(53), np.int64(1): np.int64(90)}</p>
 </section>
-<section id="knn" class="level5">
-<h5 class="anchored" data-anchor-id="knn">(3) KNN</h5>
+<section id="knn" class="level4" data-number="1.1.3">
+<h4 data-number="1.1.3" class="anchored" data-anchor-id="knn"><span class="header-section-number">1.1.3</span> KNN</h4>
 <p><strong>kNN 분석 및 성능 출력</strong></p>
 <p>이 코드는 Breast Cancer Wisconsin 데이터에 대해 k-NN 분류기를 학습하고, 테스트셋에서 기본 성능(정확도/혼동행렬/분류리포트)을 확인하는 절차를 구현한다. 특히 k-NN은 거리 기반 방법이므로 표준화(Standardization) 를 반드시 포함해야 하며, 이를 누수 없이 수행하기 위해 Pipeline을 사용한다.</p>
 <p>먼저 Pipeline([(“scaler”, StandardScaler()), (“knn”, KNeighborsClassifier(…))]) 형태로 전처리와 모델을 하나의 흐름으로 묶는다. 여기서 StandardScaler()는 각 변수를 훈련 데이터 기준 평균, 표준편차로 정규화 변환한다.</p>
@@ -843,8 +919,8 @@ P(malignant)    P(benign)
 <p>[FPR constraint] <br> alpha = 0.02 best t = 0.7527356507381722 <br> {‘t’: 0.7527356507381722, ‘tn’: 53, ‘fp’: 0, ‘fn’: 11, ‘tp’: 79, ‘recall(tpr)’: 0.8777777777777778, ‘fpr’: 0.0, ‘precision’: 1.0, ‘accuracy’: 0.9230769230769231}</p>
 <p>[Cost-based] <br> best t = 0.5563197878398277 cost = 4.0 <br> {‘t’: 0.5563197878398277, ‘tn’: 49, ‘fp’: 4, ‘fn’: 0, ‘tp’: 90, ‘recall(tpr)’: 1.0, ‘fpr’: 0.07547169811320754, ‘precision’: 0.9574468085106383, ‘accuracy’: 0.972027972027972}</p>
 </section>
-<section id="svm" class="level5">
-<h5 class="anchored" data-anchor-id="svm">(4) SVM</h5>
+<section id="svm" class="level4" data-number="1.1.4">
+<h4 data-number="1.1.4" class="anchored" data-anchor-id="svm"><span class="header-section-number">1.1.4</span> SVM</h4>
 <p>이 코드는 Breast Cancer Wisconsin 데이터에 대해 SVM(서포트 벡터 머신) 분류기를 학습하고, 테스트 데이터에서 기본 분류 성능(정확도·혼동행렬·분류리포트) 을 확인하는 절차를 구현한다.</p>
 <p>특히 SVM은 입력 변수의 스케일에 민감하므로, 표준화(Standardization) 와 모델을 Pipeline으로 묶어 전처리와 학습·예측 과정을 한 번에 처리하도록 구성하였다.</p>
 <p>먼저 Pipeline([(“scaler”, StandardScaler()), (“svm”, SVC(…))]) 형태로 파이프라인을 정의한다. 여기서 StandardScaler()는 훈련 데이터에서 각 변수의 평균과 표준편차를 추정한 뒤, 모든 변수를 정규 변환하여 평균 0, 분산 1 수준으로 맞춘다.</p>
@@ -1021,8 +1097,8 @@ weighted avg       0.98      0.98      0.98       143</code></pre>
 <p>[Cost-based] best t = 0.2980459103264749 cost = 3.0</p>
 <p>{‘t’: 0.2980459103264749, ‘tn’: 50, ‘fp’: 3, ‘fn’: 0, ‘tp’: 90, ‘recall(tpr)’: 1.0, ‘fpr’: 0.05660377358490566, ‘precision’: 0.967741935483871, ‘accuracy’: 0.9790209790209791}</p>
 </section>
-<section id="knn-vs.svm-비교" class="level5">
-<h5 class="anchored" data-anchor-id="knn-vs.svm-비교">(5) knn vs.SVM 비교</h5>
+<section id="knn-vs.svm-비교" class="level4" data-number="1.1.5">
+<h4 data-number="1.1.5" class="anchored" data-anchor-id="knn-vs.svm-비교"><span class="header-section-number">1.1.5</span> knn vs.SVM 비교</h4>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> roc_curve, confusion_matrix</span>
@@ -1145,6 +1221,79 @@ weighted avg       0.98      0.98      0.98       143</code></pre>
 <span id="cb11-120"><a href="#cb11-120" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-121"><a href="#cb11-121" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"== 악성(malignant=0)을 positive(=1)로 통일한 임계값 비교표 =="</span>)</span>
 <span id="cb11-122"><a href="#cb11-122" aria-hidden="true" tabindex="-1"></a>display(df_cmp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+kNN vs SVM 임계값 전략 비교 결론
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>전략</th>
+<th>모델</th>
+<th>t</th>
+<th>FP</th>
+<th>FN</th>
+<th>Recall</th>
+<th>FPR</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Youden/FPR≤0.02</strong></td>
+<td>SVM</td>
+<td>0.593</td>
+<td>1</td>
+<td>1</td>
+<td>0.981</td>
+<td>0.011</td>
+<td>균형형 최적점</td>
+</tr>
+<tr class="even">
+<td><strong>비용기반</strong> (c_FN=10)</td>
+<td>kNN</td>
+<td>0.254</td>
+<td>11</td>
+<td><strong>0</strong></td>
+<td><strong>1.000</strong></td>
+<td>0.122</td>
+<td>놓침 제로, 오경보 큼</td>
+</tr>
+<tr class="odd">
+<td>FPR≤0.02</td>
+<td>kNN</td>
+<td>0.423</td>
+<td>1</td>
+<td>3</td>
+<td>0.943</td>
+<td>0.011</td>
+<td>오경보 ↓, 놓침 ↑</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>일반 균형 성능</strong>: SVM 우세 — FP=1, FN=1로 동시에 낮음</li>
+<li><strong>악성 절대 놓침 금지</strong>: kNN 비용기반 — FN=0 달성, 단 FP=11 감수</li>
+</ul>
+<p><strong>핵심</strong>: 임계값은 운영 정책(비용 구조)에 의해 결정된다. 동일 모델도 임계값에 따라 운영 특성이 완전히 달라진다.</p>
+</div>
+</div>
 <p>SVM은 t≈0.593에서 TN=89, FP=1, FN=1, TP=52로 나타나며, 이는 악성 53건 중 52건을 찾아 재현율(Recall)=0.981을 달성하면서도, 양성 90건 중 오경보는 1건뿐이라 FPR=0.011로 매우 낮다는 뜻이다. 정확도도 0.986으로 높다.</p>
 <p>즉 SVM은 놓침(FN)과 오경보(FP)를 동시에 작게 유지하는 균형형 운영점을 제공한다. 또한 이 데이터에서는 Youden 기준과 FPR≤0.02 제약 기준이 같은 임계값(동일한 ROC 구간의 최적점)으로 수렴하여, “오경보를 2% 이내로 제한”하더라도 성능 저하 없이 같은 운영점이 선택되었다고 해석할 수 있다. (표본이 유한하면 ROC가 계단형이어서 여러 규칙이 같은 점을 선택하는 일이 흔하다.)</p>
 <p>반면 k-NN은 비용기반(c_FN=10, c_FP=1)에서 t≈0.254로 임계값이 낮게 선택되며, 이때 FN=0이 되어 악성 놓침이 발생하지 않는다(Recall=1.0). 하지만 그 대가로 FP=11이 발생해 FPR이 0.122로 커지고, 정확도도 0.923으로 떨어진다. 즉 k-NN의 비용기반 선택은 “악성을 절대 놓치지 않는 것”을 우선하는 대신, 양성에 대한 오경보를 많이 감수하는 운영점이다.</p>
@@ -1157,8 +1306,8 @@ weighted avg       0.98      0.98      0.98       143</code></pre>
 </figure>
 </div>
 </section>
-<section id="회귀기반-분류" class="level5">
-<h5 class="anchored" data-anchor-id="회귀기반-분류">(6) 회귀기반 분류</h5>
+<section id="회귀기반-분류" class="level4" data-number="1.1.6">
+<h4 data-number="1.1.6" class="anchored" data-anchor-id="회귀기반-분류"><span class="header-section-number">1.1.6</span> 회귀기반 분류</h4>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
@@ -1365,8 +1514,8 @@ weighted avg       0.99      0.99      0.99       143</code></pre>
 </figure>
 </div>
 </section>
-<section id="트리기반단일-분류" class="level5">
-<h5 class="anchored" data-anchor-id="트리기반단일-분류">(7) 트리기반(단일) 분류</h5>
+<section id="트리기반단일-분류" class="level4" data-number="1.1.7">
+<h4 data-number="1.1.7" class="anchored" data-anchor-id="트리기반단일-분류"><span class="header-section-number">1.1.7</span> 트리기반(단일) 분류</h4>
 <div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, classification_report</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1513,8 +1662,8 @@ weighted avg       0.93      0.93      0.93       143</code></pre>
 <p>[Cost-based] best t = 0.4 cost = 47.0</p>
 <p>{‘t’: 0.4, ‘tn’: 83, ‘fp’: 7, ‘fn’: 4, ‘tp’: 49, ‘recall(tpr)’: 0.9245283018867925, ‘fpr’: 0.07777777777777778, ‘precision’: 0.875, ‘accuracy’: 0.9230769230769231}</p>
 </section>
-<section id="앙상블-기법" class="level5">
-<h5 class="anchored" data-anchor-id="앙상블-기법">(8) 앙상블 기법</h5>
+<section id="앙상블-기법" class="level4" data-number="1.1.8">
+<h4 data-number="1.1.8" class="anchored" data-anchor-id="앙상블-기법"><span class="header-section-number">1.1.8</span> 앙상블 기법</h4>
 <p><strong>RandomForest 학습</strong></p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, classification_report</span>
@@ -1707,12 +1856,85 @@ weighted avg       0.95      0.95      0.95       143</code></pre>
 </div>
 </section>
 </section>
-<section id="사례분석이진분류-회소성공-불균형" class="level4">
-<h4 class="anchored" data-anchor-id="사례분석이진분류-회소성공-불균형">2. 사례분석(이진분류, 회소성공-불균형)</h4>
-<p>데이터는 표본이 매우 커서 RBF SVM / kNN은 그대로 돌리면 느릴 수 있어 실무적으로는 (1) Linear SVM + calibration 또는 (2) kNN/SVM은 학습 샘플을 일부만 사용을 권장합니다(코드에 반영).</p>
-<section id="데이터-1" class="level5">
-<h5 class="anchored" data-anchor-id="데이터-1">(1) 데이터</h5>
+<section id="사례분석-이진분류-희소성공-불균형" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="사례분석-이진분류-희소성공-불균형"><span class="header-section-number">1.2</span> 사례분석 (이진분류, 희소성공-불균형)</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+대규모 불균형 데이터에서 모델 선택 전략
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>이 데이터는 표본이 매우 커서 RBF SVM / kNN을 그대로 적용하면 학습이 매우 느리다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>전략</th>
+<th>권장 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>속도 최적화</strong></td>
+<td>Linear SVM + calibration</td>
+</tr>
+<tr class="even">
+<td><strong>kNN/SVM</strong></td>
+<td>학습 샘플 일부만 사용 (서브샘플링)</td>
+</tr>
+<tr class="odd">
+<td><strong>앙상블</strong></td>
+<td>RandomForest, GradientBoosting — 불균형에 강건</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="데이터-1" class="level4" data-number="1.2.1">
+<h4 data-number="1.2.1" class="anchored" data-anchor-id="데이터-1"><span class="header-section-number">1.2.1</span> 데이터</h4>
 <p><strong>데이터 불러오기</strong></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Credit Card Fraud 데이터셋 개요
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>총 거래</strong></td>
+<td>284,807건</td>
+</tr>
+<tr class="even">
+<td><strong>변수</strong></td>
+<td>31개 (V1~V28: PCA 변환, Time, Amount, Class)</td>
+</tr>
+<tr class="odd">
+<td><strong>정상(0)</strong></td>
+<td>284,315건 (99.827%)</td>
+</tr>
+<tr class="even">
+<td><strong>사기(1)</strong></td>
+<td>492건 (<strong>0.173%</strong>) — 극심한 불균형</td>
+</tr>
+</tbody>
+</table>
+<p>V1~V28은 PCA 변환으로 원래 변수 해석 불가. Accuracy만으로는 “모두 정상” 예측도 99.8% → <strong>PR-AUC, Recall, 비용기반 임계값</strong>이 핵심 지표.</p>
+</div>
+</div>
 <p>Credit Card Fraud(creditcard.csv) 데이터는 대표적인 이진 분류(surveillance / fraud detection) 벤치마크로, 한 건의 거래가 사기(Fraud) 인지 정상(Normal) 인지를 판정하는 문제를 다룬다.</p>
 <p>반응변수는 Class 하나이며 보통 Class=0을 정상(negative), Class=1을 사기(positive)로 정의한다. 즉 목표는 각 거래 <span class="math inline">\(P(Y=1∣X=x)\)</span> 을 추정하고, 운영 목적(오탐/미탐 비용, 검토량 등)에 맞는 임계값 t를 정해 <span class="math inline">\(\hat y =1{p(x)≥t}\)</span> 형태로 의사결정을 내리는 것이다.</p>
 <p>데이터 규모는 284,807건의 거래로 구성되며, 총 31개 변수를 가진다. 이 중 Class가 타깃(y)이고 나머지 30개가 입력 변수(X) 다. 입력 변수는 Time, V1~V28, Amount로 이루어진다. 자료형 관점에서 입력 변수들은 대부분 연속형이며(실수형), Class만 정수형 라벨이다.</p>
@@ -1789,8 +2011,8 @@ Fraud rate = 0.001727485630620034</code></pre>
 <span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 표준화 파이프라인(모델마다 붙여 쓰기 위해 scaler만 따로 정의)</span></span>
 <span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="모델-학습-k-nn-svm" class="level5">
-<h5 class="anchored" data-anchor-id="모델-학습-k-nn-svm">(2) 모델 학습 (k-NN / SVM)</h5>
+<section id="모델-학습-k-nn-svm" class="level4" data-number="1.2.2">
+<h4 data-number="1.2.2" class="anchored" data-anchor-id="모델-학습-k-nn-svm"><span class="header-section-number">1.2.2</span> 모델 학습 (k-NN / SVM)</h4>
 <p><strong>k-NN (대용량이라 학습 샘플 일부만 사용 권장)</strong></p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
@@ -2090,8 +2312,8 @@ weighted avg     0.9989    0.9990    0.9990     56962</code></pre>
 </figure>
 </div>
 </section>
-<section id="모델-학습-회귀기반-트리기반-앙상블" class="level5">
-<h5 class="anchored" data-anchor-id="모델-학습-회귀기반-트리기반-앙상블">(3) 모델 학습 (회귀기반 트리기반 앙상블)</h5>
+<section id="모델-학습-회귀기반-트리기반-앙상블" class="level4" data-number="1.2.3">
+<h4 data-number="1.2.3" class="anchored" data-anchor-id="모델-학습-회귀기반-트리기반-앙상블"><span class="header-section-number">1.2.3</span> 모델 학습 (회귀기반 트리기반 앙상블)</h4>
 <p><strong>회귀기반</strong></p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
