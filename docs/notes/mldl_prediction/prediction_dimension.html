@@ -171,8 +171,8 @@ window.Quarto = {
 <span class="menu-text">AI・감성분석</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../../cardnews/index.html"> 
-<span class="menu-text">카드뉴스</span></a>
+    <a class="nav-link" href="../../stat_assay/index.html"> 
+<span class="menu-text">통계이야기</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../consult.html"> 
@@ -461,6 +461,16 @@ window.Quarto = {
   <li><a href="#mca-해석" id="toc-mca-해석" class="nav-link" data-scroll-target="#mca-해석"><span class="header-section-number">1.5.4</span> MCA 해석</a></li>
   <li><a href="#혼합형-차원축소-famd-factor-analysis-of-mixed-data" id="toc-혼합형-차원축소-famd-factor-analysis-of-mixed-data" class="nav-link" data-scroll-target="#혼합형-차원축소-famd-factor-analysis-of-mixed-data"><span class="header-section-number">1.5.5</span> 혼합형 차원축소: FAMD (Factor Analysis of Mixed Data)</a></li>
   <li><a href="#famd-개념" id="toc-famd-개념" class="nav-link" data-scroll-target="#famd-개념"><span class="header-section-number">1.5.6</span> FAMD 개념</a></li>
+  <li><a href="#famd-방법" id="toc-famd-방법" class="nav-link" data-scroll-target="#famd-방법"><span class="header-section-number">1.5.7</span> FAMD 방법</a></li>
+  <li><a href="#famd-특성" id="toc-famd-특성" class="nav-link" data-scroll-target="#famd-특성"><span class="header-section-number">1.5.8</span> FAMD 특성</a></li>
+  <li><a href="#famd-회귀혼합형-pcr" id="toc-famd-회귀혼합형-pcr" class="nav-link" data-scroll-target="#famd-회귀혼합형-pcr"><span class="header-section-number">1.5.9</span> FAMD → 회귀(혼합형 PCR)</a></li>
+  </ul></li>
+  <li><a href="#사례분석" id="toc-사례분석" class="nav-link" data-scroll-target="#사례분석"><span class="header-section-number">1.6</span> 사례분석</a>
+  <ul class="collapse">
+  <li><a href="#데이터-개요" id="toc-데이터-개요" class="nav-link" data-scroll-target="#데이터-개요"><span class="header-section-number">1.6.1</span> 데이터 개요</a></li>
+  <li><a href="#주성분-회귀측정형-분석" id="toc-주성분-회귀측정형-분석" class="nav-link" data-scroll-target="#주성분-회귀측정형-분석"><span class="header-section-number">1.6.2</span> 주성분 회귀(측정형 분석)</a></li>
+  <li><a href="#pls-부분-최소제곱방법" id="toc-pls-부분-최소제곱방법" class="nav-link" data-scroll-target="#pls-부분-최소제곱방법"><span class="header-section-number">1.6.3</span> PLS 부분 최소제곱방법</a></li>
+  <li><a href="#famd-주성분-회귀" id="toc-famd-주성분-회귀" class="nav-link" data-scroll-target="#famd-주성분-회귀"><span class="header-section-number">1.6.4</span> FAMD + 주성분 회귀</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -811,7 +821,7 @@ MCA 한계 요약
 <h4 data-number="1.5.5" class="anchored" data-anchor-id="혼합형-차원축소-famd-factor-analysis-of-mixed-data"><span class="header-section-number">1.5.5</span> 혼합형 차원축소: FAMD (Factor Analysis of Mixed Data)</h4>
 </section>
 <section id="famd-개념" class="level4" data-number="1.5.6">
-<h4 data-number="1.5.6" class="anchored"><span class="header-section-number">1.5.6</span> FAMD 개념</h4>
+<h4 data-number="1.5.6" class="anchored" data-anchor-id="famd-개념"><span class="header-section-number">1.5.6</span> FAMD 개념</h4>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -845,7 +855,11 @@ FAMD 핵심 원리
 </tr>
 </tbody>
 </table>
-<p>연속형 변수 <strong>하나</strong>와 범주형 변수 <strong>하나(묶음)</strong>가 동일한 수준으로 기여하도록 설계 → 특정 변수군의 과도한 지배 완화 ::: 혼합형 데이터에서는 연속형 변수는 자연스럽게 분산과 거리 개념을 갖지만, 범주형 변수는 라벨에 불과하므로 분산 기반의 PCA를 그대로 적용하기 어렵다. 범주형 변수를 더미로 변환해 PCA를 적용하는 방식도 가능하나, 범주 빈도와 스케일링 방식에 따라 결과가 왜곡될 수 있고, 범주 수준이 많은 변수가 과도한 영향력을 갖는 문제가 생긴다. 이러한 한계를 피하면서 혼합형 데이터의 구조를 안정적으로 요약하기 위해 FAMD가 사용된다.</p>
+<p>연속형 변수 <strong>하나</strong>와 범주형 변수 <strong>하나(묶음)</strong>가 동일한 수준으로 기여하도록 설계 → 특정 변수군의 과도한 지배 완화</p>
+</div>
+</div>
+<p>혼합형 데이터에서는 연속형 변수는 자연스럽게 분산과 거리 개념을 갖지만, 범주형 변수는 라벨에 불과하므로 분산 기반의 PCA를 그대로 적용하기 어렵다. 범주형 변수를 더미로 변환해 PCA를 적용하는 방식도 가능하나, 범주 빈도와 스케일링 방식에 따라 결과가 왜곡될 수 있고, 범주 수준이 많은 변수가 과도한 영향력을 갖는 문제가 생긴다. 이러한 한계를 피하면서 혼합형 데이터의 구조를 안정적으로 요약하기 위해 FAMD가 사용된다.</p>
+</section>
 <section id="famd-방법" class="level4" data-number="1.5.7">
 <h4 data-number="1.5.7" class="anchored" data-anchor-id="famd-방법"><span class="header-section-number">1.5.7</span> FAMD 방법</h4>
 <p>FAMD의 핵심은 연속형 변수는 PCA처럼, 범주형 변수는 MCA처럼 다루되, 두 변수군이 차원축소 결과에 균형 있게 기여하도록 결합하는 데 있다. 먼저 연속형 변수는 평균 0, 분산 1이 되도록 표준화하여 변수 스케일 차이를 제거한 뒤, PCA와 동일한 방식으로 변동 구조가 반영되도록 한다. 반면 범주형 변수는 더미(지시) 변수로 변환하지만, 단순히 0/1 행렬로 취급하지 않고 각 범주의 출현 빈도를 고려하여 가중치를 부여한다. 구체적으로는 범주 빈도의 역수에 기반한 가중을 통해 드문 범주와 흔한 범주가 적절히 균형을 이루도록 조정하며, MCA에서 사용되는 χ² 거리 개념이 자연스럽게 반영되도록 만든다. 이렇게 연속형과 범주형을 각각 적절히 전처리한 뒤, 가중된 전체 행렬에 대해 단일 SVD(특이값 분해)를 수행함으로써 하나의 공통 좌표계에서 두 종류 변수 정보를 동시에 요약한다.</p>
@@ -863,6 +877,7 @@ FAMD 핵심 원리
 <p>혼합형 PCR은 이러한 FAMD 축을 설명변수로 사용하여 회귀모형을 구성하는 접근이다. 절차는 개념적으로 단순하다. 먼저 반응변수 (Y)를 제외한 설명변수 집합 (X)에 대해 FAMD를 수행하여 저차원 축 점수(score)를 계산한다. 그 다음, 선택된 일부 FAMD 축들만을 새로운 설명변수로 사용하여 선형회귀모형을 적합한다. 이때 회귀의 대상이 되는 것은 원래의 연속형 변수나 더미 변수들이 아니라, 혼합형 데이터 구조를 요약한 FAMD 축이다.</p>
 <p>이 접근의 장점은 여러 측면에서 드러난다. 첫째, 차원축소를 통해 설명변수의 수가 크게 줄어들어 다중공선성 문제가 완화되고, 회귀계수의 추정이 안정된다. 둘째, 범주형 변수를 더미로 확장한 뒤 임의적으로 스케일링하여 PCA를 적용하는 방식과 달리, FAMD는 범주 빈도와 구조를 고려하므로 이론적으로 더 정당한 전처리를 제공한다. 셋째, 회귀에 사용되는 축의 개수는 교차검증이나 검증오차를 기준으로 선택할 수 있어, 과적합을 제어하는 체계적인 기준을 제시한다.</p>
 <p>다만 혼합형 PCR의 해석은 고전적인 회귀계수 해석과는 성격이 다르다. 개별 회귀계수는 특정 원변수의 직접적인 효과를 의미하지 않으며, 대신 각 FAMD 축이 반응변수와 얼마나 강하게 연관되는지를 해석의 중심에 두어야 한다. 따라서 “어떤 변수가 얼마만큼 영향을 미치는가”보다는, “어떤 연속형·범주형 구조가 반응변수와 관련되는가”를 이해하는 관점이 중요해진다.</p>
+</section>
 </section>
 <section id="사례분석" class="level3" data-number="1.6">
 <h3 data-number="1.6" class="anchored" data-anchor-id="사례분석"><span class="header-section-number">1.6</span> 사례분석</h3>
@@ -1902,10 +1917,6 @@ FAMD 기반 회귀 결론 요약
 </table>
 
 
-</section>
-</section>
-</div>
-</div>
 </section>
 </section>
 </section>
