@@ -178,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_intro/mldl_concepts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 개요</span></a>
+ <span class="menu-text">📄 머신러닝과 통계적사고</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -405,10 +405,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#딥러닝-분류-사례분석-이미지-분류" id="toc-딥러닝-분류-사례분석-이미지-분류" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석-이미지-분류">딥러닝 분류 사례분석 (이미지 분류)</a>
+  <li><a href="#딥러닝-분류-사례분석-이미지-분류" id="toc-딥러닝-분류-사례분석-이미지-분류" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석-이미지-분류"><span class="header-section-number">1</span> 딥러닝 분류 사례분석 (이미지 분류)</a>
   <ul>
-  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터">1. 데이터</a></li>
-  <li><a href="#cnn-모델-학습-및-평가" id="toc-cnn-모델-학습-및-평가" class="nav-link" data-scroll-target="#cnn-모델-학습-및-평가">2. CNN 모델 학습 및 평가</a></li>
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터"><span class="header-section-number">1.1</span> 데이터</a>
+  <ul class="collapse">
+  <li><a href="#메타-데이터-및-데이터-분할" id="toc-메타-데이터-및-데이터-분할" class="nav-link" data-scroll-target="#메타-데이터-및-데이터-분할"><span class="header-section-number">1.1.1</span> 메타 데이터 및 데이터 분할</a></li>
+  <li><a href="#원본-이미지-보기optional" id="toc-원본-이미지-보기optional" class="nav-link" data-scroll-target="#원본-이미지-보기optional"><span class="header-section-number">1.1.2</span> 원본 이미지 보기(optional)</a></li>
+  <li><a href="#전처리-정규화-01-trainvalid-분리-augmentation" id="toc-전처리-정규화-01-trainvalid-분리-augmentation" class="nav-link" data-scroll-target="#전처리-정규화-01-trainvalid-분리-augmentation"><span class="header-section-number">1.1.3</span> 전처리: 정규화 0~1 + train/valid 분리 + augmentation</a></li>
+  </ul></li>
+  <li><a href="#cnn-모델-학습-및-평가" id="toc-cnn-모델-학습-및-평가" class="nav-link" data-scroll-target="#cnn-모델-학습-및-평가"><span class="header-section-number">1.2</span> CNN 모델 학습 및 평가</a>
+  <ul class="collapse">
+  <li><a href="#baseline-cnn" id="toc-baseline-cnn" class="nav-link" data-scroll-target="#baseline-cnn"><span class="header-section-number">1.2.1</span> Baseline CNN</a></li>
+  <li><a href="#improved-cnn" id="toc-improved-cnn" class="nav-link" data-scroll-target="#improved-cnn"><span class="header-section-number">1.2.2</span> Improved CNN</a></li>
+  <li><a href="#학습-결과-비교" id="toc-학습-결과-비교" class="nav-link" data-scroll-target="#학습-결과-비교"><span class="header-section-number">1.2.3</span> 학습 결과 비교</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -441,12 +451,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="딥러닝-분류-사례분석-이미지-분류" class="level3">
-<h3 class="anchored" data-anchor-id="딥러닝-분류-사례분석-이미지-분류">딥러닝 분류 사례분석 (이미지 분류)</h3>
-<section id="데이터" class="level4">
-<h4 class="anchored" data-anchor-id="데이터">1. 데이터</h4>
-<section id="메타-데이터-및-데이터-분할" class="level5">
-<h5 class="anchored" data-anchor-id="메타-데이터-및-데이터-분할">메타 데이터 및 데이터 분할</h5>
+<section id="딥러닝-분류-사례분석-이미지-분류" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="딥러닝-분류-사례분석-이미지-분류"><span class="header-section-number">1</span> 딥러닝 분류 사례분석 (이미지 분류)</h2>
+<section id="데이터" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="데이터"><span class="header-section-number">1.1</span> 데이터</h3>
+<section id="메타-데이터-및-데이터-분할" class="level4" data-number="1.1.1">
+<h4 data-number="1.1.1" class="anchored" data-anchor-id="메타-데이터-및-데이터-분할"><span class="header-section-number">1.1.1</span> 메타 데이터 및 데이터 분할</h4>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+CIFAR-10 데이터셋 개요
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>이미지 크기</strong></td>
+<td>32×32 픽셀, RGB 3채널 (NHWC 포맷)</td>
+</tr>
+<tr class="even">
+<td><strong>학습 데이터</strong></td>
+<td>50,000장</td>
+</tr>
+<tr class="odd">
+<td><strong>테스트 데이터</strong></td>
+<td>10,000장</td>
+</tr>
+<tr class="even">
+<td><strong>클래스 수</strong></td>
+<td>10개 (균형 분포)</td>
+</tr>
+<tr class="odd">
+<td><strong>픽셀 범위</strong></td>
+<td>0~255 (uint8 원시값)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>클래스 라벨</strong>: 0=airplane, 1=automobile, 2=bird, 3=cat, 4=deer, 5=dog, 6=frog, 7=horse, 8=ship, 9=truck</p>
+</div>
+</div>
 <p>본 실습에서는 TensorFlow/Keras에서 제공하는 내장 데이터셋인 CIFAR-10을 사용한다. CIFAR-10은 32×32 크기의 RGB 컬러 이미지로 구성된 10개 클래스 분류 문제이며, 각 이미지는 (높이 32, 너비 32, 채널 3)의 형태를 가진다(NHWC 포맷).</p>
 <p>코드에서 keras.datasets.cifar10.load_data()를 통해 학습용 데이터 50,000장과 테스트 데이터 10,000장을 로드하였다. 로드 직후 입력 데이터는 x_train_raw의 크기가 (50000, 32, 32, 3), x_test_raw의 크기가 (10000, 32, 32, 3)이며, 자료형(dtype)은 uint8이다. 이는 각 픽셀이 0~255 범위의 정수 값(원시 이미지 값)으로 저장되어 있음을 의미한다.</p>
 <p>정답 레이블은 y_train, y_test로 제공되며, 원래 (N, 1) 형태로 로드되기 때문에 reshape(-1)을 적용해 (N,) 형태의 1차원 벡터로 변환하였다. 변환 이후 y_train의 크기는 (50000,), y_test의 크기는 (10000,)이며, 레이블 값은 0부터 9까지의 정수로 구성된다. 각 정수 레이블은 class_names 리스트에 따라 0=airplane, 1=automobile, 2=bird, 3=cat, 4=deer, 5=dog, 6=frog, 7=horse, 8=ship, 9=truck에 대응한다.</p>
@@ -477,8 +530,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Test  raw: (10000, 32, 32, 3) (10000,) uint8
 Labels: [0 1 2 3 4 5 6 7 8 9]</code></pre>
 </section>
-<section id="원본-이미지-보기optional" class="level5">
-<h5 class="anchored" data-anchor-id="원본-이미지-보기optional">원본 이미지 보기(optional)</h5>
+<section id="원본-이미지-보기optional" class="level4" data-number="1.1.2">
+<h4 data-number="1.1.2" class="anchored" data-anchor-id="원본-이미지-보기optional"><span class="header-section-number">1.1.2</span> 원본 이미지 보기(optional)</h4>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
@@ -529,8 +582,26 @@ Labels: [0 1 2 3 4 5 6 7 8 9]</code></pre>
 </figure>
 </div>
 </section>
-<section id="전처리-전처리-정규화-01-trainvalid-분리-augmentation" class="level5">
-<h5 class="anchored" data-anchor-id="전처리-전처리-정규화-01-trainvalid-분리-augmentation">전처리: 전처리 (정규화 0~1 + train/valid 분리 + augmentation)</h5>
+<section id="전처리-정규화-01-trainvalid-분리-augmentation" class="level4" data-number="1.1.3">
+<h4 data-number="1.1.3" class="anchored" data-anchor-id="전처리-정규화-01-trainvalid-분리-augmentation"><span class="header-section-number">1.1.3</span> 전처리: 정규화 0~1 + train/valid 분리 + augmentation</h4>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+전처리 3단계 원칙
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>픽셀 정규화</strong> (딱 1번만): <code>float32</code> 변환 후 <code>/ 255.0</code> → 0~1 범위 → 최적화 수치 안정성 확보</li>
+<li><strong>층화 분리</strong> (stratify): train 80% / val 20% — 클래스 비율 유지로 공정한 성능 비교</li>
+<li><strong>데이터 증강</strong> (훈련시에만): RandomFlip + RandomRotation + RandomZoom → 모델 내부에서 적용, 검증/테스트에는 미적용</li>
+</ol>
+<p><strong>핵심 원칙</strong>: 정규화 중복 금지 · 검증/테스트에 증강 미적용 · 재현성 위한 seed 고정</p>
+</div>
+</div>
 <p>이 코드는 CIFAR-10 이미지 분류 실험을 위해 학습/평가에 사용할 입력 데이터를 전처리하는 단계로, (1) 픽셀값 정규화, (2) 학습/검증 분리, (3) 학습용 데이터 증강 모듈 정의의 세 부분으로 구성된다.</p>
 <p>먼저 x_train_raw, x_test_raw는 원본 이미지 배열(자료형 uint8, 픽셀 범위 0~255)로 유지해 두고, 모델 학습에 사용할 x_train, x_test를 새로 만든다. 이때 x_train_raw와 x_test_raw를 float32로 변환한 뒤 255.0으로 나누어 픽셀 값을 0~1 범위로 스케일링한다. 이렇게 정규화를 하면 입력 스케일이 안정화되어 최적화(경사하강) 과정이 수치적으로 더 안정적이고, 학습 속도 및 수렴 특성이 좋아지는 경향이 있다. 코드에 “정규화는 딱 1번만”이라고 주석을 둔 이유는, 이미 0~1로 스케일링된 데이터를 이후 단계에서 다시 나누거나 변환하는 중복 처리가 생기면 입력 분포가 의도와 다르게 바뀌어 성능 저하나 비교 불가능 문제가 발생할 수 있기 때문이다.</p>
 <p>다음으로 정규화가 올바르게 되었는지 확인하기 위해 x_train과 x_test의 최소값/최대값을 출력한다. 정상적인 경우 최소값은 0.0, 최대값은 1.0 근처(정확히 1.0까지 가능)가 되어야 하며, 이 출력은 전처리 오류(예: 정규화 누락, 자료형 문제, 잘못된 스케일링)가 없는지 빠르게 점검하는 안전장치 역할을 한다.</p>
@@ -577,10 +648,59 @@ Train sub: (40000, 32, 32, 3) (40000,)
 Valid    : (10000, 32, 32, 3) (10000,)</code></pre>
 </section>
 </section>
-<section id="cnn-모델-학습-및-평가" class="level4">
-<h4 class="anchored" data-anchor-id="cnn-모델-학습-및-평가">2. CNN 모델 학습 및 평가</h4>
-<section id="baseline-cnn" class="level5">
-<h5 class="anchored" data-anchor-id="baseline-cnn">(1) Baseline CNN</h5>
+<section id="cnn-모델-학습-및-평가" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="cnn-모델-학습-및-평가"><span class="header-section-number">1.2</span> CNN 모델 학습 및 평가</h3>
+<section id="baseline-cnn" class="level4" data-number="1.2.1">
+<h4 data-number="1.2.1" class="anchored" data-anchor-id="baseline-cnn"><span class="header-section-number">1.2.1</span> Baseline CNN</h4>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Baseline CNN 구조 요약
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>단계</th>
+<th>구성</th>
+<th>목적</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>합성곱 블록 1</strong></td>
+<td>Conv2D(32, 3×3, ReLU) + MaxPooling</td>
+<td>저수준 특징(엣지, 색상) 추출</td>
+</tr>
+<tr class="even">
+<td><strong>합성곱 블록 2</strong></td>
+<td>Conv2D(64, 3×3, ReLU) + MaxPooling</td>
+<td>중간 수준 특징 추출</td>
+</tr>
+<tr class="odd">
+<td><strong>합성곱 블록 3</strong></td>
+<td>Conv2D(128, 3×3, ReLU) + MaxPooling</td>
+<td>고수준 추상 특징 추출</td>
+</tr>
+<tr class="even">
+<td><strong>분류 헤드</strong></td>
+<td>Flatten → Dense(128, ReLU) → Dropout(0.3) → Dense(10, softmax)</td>
+<td>클래스 확률 출력</td>
+</tr>
+</tbody>
+</table>
+<p><strong>학습 설정</strong>: Adam(lr=1e-3) · SparseCategoricalCrossentropy · EarlyStopping(patience=6) · ReduceLROnPlateau</p>
+</div>
+</div>
 <p><strong>모델 학습</strong></p>
 <p>이 코드는 CIFAR-10 이미지 분류를 위한 기본형(Baseline) CNN을 구성하고, 학습용/검증용 데이터로 학습을 수행하는 전체 흐름을 담고 있다. 코드의 목적은 간단한 합성곱 신경망을 기준선 모델로 학습시켜 이후 개선 모델과 성능을 비교할 수 있도록 하는 것이다.</p>
 <ol type="1">
@@ -847,8 +967,23 @@ p_airplane  p_automobile    p_bird  p_cat   p_deer  p_dog   p_frog  p_horse p_sh
 3   9.783342e-01    2.495502e-03    2.775183e-04    1.507238e-05    1.984747e-04    7.650324e-08    8.786704e-06    1.045343e-09    1.819358e-02    4.767261e-04
 4   1.966741e-10    7.218498e-08    1.572623e-03    2.843625e-01    4.154720e-03    6.576478e-05    7.098442e-01    1.100643e-08    3.614207e-08    7.421475e-08</code></pre>
 </section>
-<section id="improved-cnn" class="level5">
-<h5 class="anchored" data-anchor-id="improved-cnn">(2) improved CNN</h5>
+<section id="improved-cnn" class="level4" data-number="1.2.2">
+<h4 data-number="1.2.2" class="anchored" data-anchor-id="improved-cnn"><span class="header-section-number">1.2.2</span> Improved CNN</h4>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Improved CNN의 설계 전략
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>속도 개선</strong> - <code>WIDTH_MULT</code>로 채널 폭 축소 → FLOPs 감소 - 블록당 합성곱 1회로 경량화 - <code>tf.data</code> cache/prefetch → 입력 파이프라인 병목 완화 - Mixed precision → GPU 연산·메모리 효율 개선</p>
+<p><strong>일반화 개선</strong> - BatchNormalization → 학습 안정화 - L2 가중치 감쇠 + Dropout → 과적합 완화 - 데이터 증강(RandomFlip/Rotation/Zoom) 적용 - <strong>Flatten 대신 GAP</strong> → 파라미터 수 대폭 감소</p>
+<p><strong>핵심 차이</strong>: Baseline은 Flatten, Improved는 Global Average Pooling(GAP) 사용</p>
+</div>
+</div>
 <p>본 개선형 CNN은 baseline_cnn 대비 정확도를 유지하면서 학습 시간을 줄이기 위해 계산량과 학습 병목을 동시에 축소한 설계이다. 속도 측면에서는 (i) WIDTH_MULT로 채널 폭을 줄여 합성곱 연산량을 직접 감소시키고, (ii) 블록당 합성곱을 1회로 경량화하여 레이어 수 대비 FLOPs를 낮추며, (iii) tf.data의 cache/prefetch로 입력 파이프라인 병목을 줄이고, (iv) mixed precision을 통해 GPU에서 연산과 메모리 효율을 개선하며, (v) steps_per_epoch/validation_steps로 에폭당 처리 스텝을 제한해 학습 시간을 상한 관리하는 구조이다.</p>
 <p>일반화 측면에서는 BatchNormalization과 L2 가중치 감쇠, Dropout, 데이터 증강이 과적합을 완화하고, Flatten 대신 GAP를 사용해 파라미터 수를 줄여 작은 이미지 분류에서의 안정적인 일반화에 기여하는 구성이다.</p>
 <p><strong>학습</strong></p>
@@ -1089,8 +1224,8 @@ True_truck  21  123 1   0   7   0   64  12  65  707
    macro avg     0.5519    0.4845    0.4493     10000
 weighted avg     0.5519    0.4845    0.4493     10000</code></pre>
 </section>
-<section id="학습-결과-비교" class="level5">
-<h5 class="anchored" data-anchor-id="학습-결과-비교">(5) 학습 결과 비교</h5>
+<section id="학습-결과-비교" class="level4" data-number="1.2.3">
+<h4 data-number="1.2.3" class="anchored" data-anchor-id="학습-결과-비교"><span class="header-section-number">1.2.3</span> 학습 결과 비교</h4>
 <div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix, classification_report</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1120,8 +1255,75 @@ weighted avg     0.5519    0.4845    0.4493     10000</code></pre>
 <span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    digits<span class="op">=</span><span class="dv">4</span>,</span>
 <span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    zero_division<span class="op">=</span><span class="dv">0</span></span>
 <span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+두 모델 성능 비교 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 26%">
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>모델</th>
+<th>테스트 정확도</th>
+<th>macro F1</th>
+<th>weighted F1</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Baseline CNN</strong></td>
+<td><strong>0.7531</strong></td>
+<td><strong>0.7531</strong></td>
+<td><strong>0.7531</strong></td>
+<td>안정적, 전반적으로 고른 성능</td>
+</tr>
+<tr class="even">
+<td>Improved CNN</td>
+<td>0.4845</td>
+<td>0.4493</td>
+<td>0.4493</td>
+<td>성능 저하 — 설정 재검토 필요</td>
+</tr>
+</tbody>
+</table>
+<p><strong>결론</strong>: 현재 설정에서 Improved CNN은 개선이 아닌 <strong>성능 저하</strong> — BN/L2/GAP 자체가 나쁜 것이 아니라, 모델 폭 축소 + 규제 강도 + 학습 스텝 제한의 복합 조건으로 <strong>과소적합(underfitting)</strong> 발생 가능성이 큼. 실무적으로는 현 시점에서 <strong>Baseline CNN 채택이 더 합리적</strong>.</p>
+</div>
+</div>
 <p>비교표 결과만 놓고 보면, Baseline CNN이 Improved CNN(BN+L2+GAP)보다 테스트 성능이 훨씬 안정적이고 우수합니다. Baseline CNN은 테스트 정확도(test_acc)가 0.7531로 10개 클래스 분류에서 약 75% 수준의 예측 성공률을 보였고, macro F1과 weighted F1도 0.7531로 동일하게 나타났다. CIFAR-10처럼 각 클래스가 거의 동일한 비중(클래스 균형)인 데이터에서는 macro/weighted F1이 서로 비슷하게 나오는 것이 자연스러운데, 이 값이 accuracy와도 비슷하다는 점은 Baseline 모델이 특정 클래스에만 편향되지 않고 전반적으로 비교적 고르게 분류하고 있음을 시사한다.</p>
 <p>반대로 Improved CNN은 테스트 정확도가 0.4845로 크게 낮아졌고, macro F1(0.4493)과 weighted F1(0.4493)도 함께 하락하였다. 이는 단순히 “맞춘 비율이 줄었다”를 넘어, 클래스별로 정밀도·재현율의 균형까지 나빠져서 클래스 전반에서 예측 품질이 떨어졌음을 의미한다. 특히 균형 데이터에서 weighted F1과 macro F1이 동일하게 낮게 나온 점은 “일부 클래스만 유독 나쁜 게 아니라, 전체적으로 분류 성능이 약화된 상태”에 가깝다는 해석이 가능하다.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Improved CNN 성능 저하 원인 분석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Improved CNN이 Baseline보다 낮은 성능을 보인 이유:</p>
+<ul>
+<li><strong>모델 폭 축소</strong> (<code>WIDTH_MULT=0.75</code>): 채널 수 감소로 표현력 제한</li>
+<li><strong>학습 스텝 제한</strong> (<code>STEPS_PER_EPOCH=200</code>): 에폭당 학습 데이터 40,000장 중 일부만 사용</li>
+<li><strong>강한 규제</strong> (BN + L2 + Dropout): 작은 모델에 과도한 규제 → 과소적합</li>
+<li><strong>증강 강도</strong>: 32×32 소형 이미지에서 회전/줌이 오히려 정보 손실 유발 가능</li>
+</ul>
+<p><strong>개선 방향</strong>: WIDTH_MULT=1.0 유지 + STEPS_PER_EPOCH=None + 규제 강도 완화</p>
+</div>
+</div>
 <p>따라서 이 비교표의 결론은 명확히 ’개선 모델’이 현재 설정에서는 개선이 아니라 성능 저하를 가져왔다는 것이다. 즉, BN/L2/GAP 자체가 나쁘다기보다는, 현재 구성(예: 모델 폭 축소, 규제 강도, 증강 강도, 학습 스텝 제한 등)에서 모델이 충분히 학습하지 못해 과소적합(underfitting) 또는 학습 조건 불리가 발생했을 가능성이 크며, 실무적으로는 현 시점에서 Baseline CNN을 채택하는 것이 더 합리적이라고 정리할 수 있다.</p>
 <pre class="text"><code>[Improved CNN] Test accuracy: 0.4845
 [Improved CNN] Confusion Matrix
