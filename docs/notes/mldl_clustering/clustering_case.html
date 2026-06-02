@@ -207,7 +207,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_intro/mldl_concepts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 개요</span></a>
+ <span class="menu-text">📄 머신러닝과 통계적사고</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -434,15 +434,62 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#군집비지도학습-사례분석" id="toc-군집비지도학습-사례분석" class="nav-link active" data-scroll-target="#군집비지도학습-사례분석">군집・비지도학습 사례분석</a>
+  <li><a href="#digits-데이터-불러오기-및-설명" id="toc-digits-데이터-불러오기-및-설명" class="nav-link active" data-scroll-target="#digits-데이터-불러오기-및-설명"><span class="header-section-number">1</span> Digits 데이터 불러오기 및 설명</a>
   <ul>
-  <li><a href="#digits-데이터-불러오기-및-설명" id="toc-digits-데이터-불러오기-및-설명" class="nav-link" data-scroll-target="#digits-데이터-불러오기-및-설명">1. Digits 데이터 불러오기 및 설명</a></li>
-  <li><a href="#모델기반-군집gmm" id="toc-모델기반-군집gmm" class="nav-link" data-scroll-target="#모델기반-군집gmm">2. 모델기반 군집(GMM)</a></li>
-  <li><a href="#전통적-군집분석traditional-clustering" id="toc-전통적-군집분석traditional-clustering" class="nav-link" data-scroll-target="#전통적-군집분석traditional-clustering">3. 전통적 군집분석(Traditional Clustering)</a></li>
-  <li><a href="#표현기반-군집representation-based-clustering" id="toc-표현기반-군집representation-based-clustering" class="nav-link" data-scroll-target="#표현기반-군집representation-based-clustering">4. 표현기반 군집(Representation-based Clustering)</a></li>
-  <li><a href="#오토인코더-기반-표현-군집autoencoder-clustering-deep-clustering-개념-실험" id="toc-오토인코더-기반-표현-군집autoencoder-clustering-deep-clustering-개념-실험" class="nav-link" data-scroll-target="#오토인코더-기반-표현-군집autoencoder-clustering-deep-clustering-개념-실험">5. 오토인코더 기반 표현 군집(AutoEncoder + Clustering) deep clustering 개념 실험</a></li>
-  <li><a href="#deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화" id="toc-deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화" class="nav-link" data-scroll-target="#deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화">6. Deep clustering (DEC 개념 실험): AE 임베딩 + KL(군집) 동시 최적화</a></li>
-  <li><a href="#최종-보고서-생성-상위-3개-방법의-교차표-대표숫자-대표이미지-시각화" id="toc-최종-보고서-생성-상위-3개-방법의-교차표-대표숫자-대표이미지-시각화" class="nav-link" data-scroll-target="#최종-보고서-생성-상위-3개-방법의-교차표-대표숫자-대표이미지-시각화">7. 최종 보고서 생성: 상위 3개 방법의 교차표, 대표숫자, 대표이미지 시각화</a></li>
+  <li><a href="#전처리-표준화" id="toc-전처리-표준화" class="nav-link" data-scroll-target="#전처리-표준화"><span class="header-section-number">1.1</span> 전처리: 표준화</a></li>
+  </ul></li>
+  <li><a href="#모델기반-군집-gmm" id="toc-모델기반-군집-gmm" class="nav-link" data-scroll-target="#모델기반-군집-gmm"><span class="header-section-number">2</span> 모델기반 군집 (GMM)</a>
+  <ul>
+  <li><a href="#분석-설정" id="toc-분석-설정" class="nav-link" data-scroll-target="#분석-설정"><span class="header-section-number">2.1</span> 분석 설정</a></li>
+  <li><a href="#aicbic-기반-최적-조합-선택" id="toc-aicbic-기반-최적-조합-선택" class="nav-link" data-scroll-target="#aicbic-기반-최적-조합-선택"><span class="header-section-number">2.2</span> AIC/BIC 기반 최적 조합 선택</a></li>
+  <li><a href="#최적-모형-재학습-및-군집-라벨-생성" id="toc-최적-모형-재학습-및-군집-라벨-생성" class="nav-link" data-scroll-target="#최적-모형-재학습-및-군집-라벨-생성"><span class="header-section-number">2.3</span> 최적 모형 재학습 및 군집 라벨 생성</a></li>
+  <li><a href="#외부평가-및-시각화" id="toc-외부평가-및-시각화" class="nav-link" data-scroll-target="#외부평가-및-시각화"><span class="header-section-number">2.4</span> 외부평가 및 시각화</a></li>
+  <li><a href="#gmmbic-best-군집-결과-해석" id="toc-gmmbic-best-군집-결과-해석" class="nav-link" data-scroll-target="#gmmbic-best-군집-결과-해석"><span class="header-section-number">2.5</span> GMM(BIC-best) 군집 결과 해석</a></li>
+  <li><a href="#군집-실제-숫자-교차표" id="toc-군집-실제-숫자-교차표" class="nav-link" data-scroll-target="#군집-실제-숫자-교차표"><span class="header-section-number">2.6</span> 군집 × 실제 숫자 교차표</a></li>
+  <li><a href="#군집별-대표-숫자와-순도purity" id="toc-군집별-대표-숫자와-순도purity" class="nav-link" data-scroll-target="#군집별-대표-숫자와-순도purity"><span class="header-section-number">2.7</span> 군집별 대표 숫자와 순도(purity)</a></li>
+  <li><a href="#전체-순도overall-purity" id="toc-전체-순도overall-purity" class="nav-link" data-scroll-target="#전체-순도overall-purity"><span class="header-section-number">2.8</span> 전체 순도(Overall Purity)</a></li>
+  <li><a href="#숫자별-쪼개짐분할-정량화" id="toc-숫자별-쪼개짐분할-정량화" class="nav-link" data-scroll-target="#숫자별-쪼개짐분할-정량화"><span class="header-section-number">2.9</span> 숫자별 “쪼개짐(분할)” 정량화</a></li>
+  <li><a href="#히트맵으로-섞임쪼개짐-시각화" id="toc-히트맵으로-섞임쪼개짐-시각화" class="nav-link" data-scroll-target="#히트맵으로-섞임쪼개짐-시각화"><span class="header-section-number">2.10</span> 히트맵으로 섞임·쪼개짐 시각화</a></li>
+  <li><a href="#숫자별-상위-군집-비중top3-share" id="toc-숫자별-상위-군집-비중top3-share" class="nav-link" data-scroll-target="#숫자별-상위-군집-비중top3-share"><span class="header-section-number">2.11</span> 숫자별 상위 군집 비중(top3 share)</a></li>
+  </ul></li>
+  <li><a href="#전통적-군집분석" id="toc-전통적-군집분석" class="nav-link" data-scroll-target="#전통적-군집분석"><span class="header-section-number">3</span> 전통적 군집분석</a>
+  <ul>
+  <li><a href="#기본-설정과-데이터-준비" id="toc-기본-설정과-데이터-준비" class="nav-link" data-scroll-target="#기본-설정과-데이터-준비"><span class="header-section-number">3.1</span> 기본 설정과 데이터 준비</a></li>
+  <li><a href="#wss-계산-함수" id="toc-wss-계산-함수" class="nav-link" data-scroll-target="#wss-계산-함수"><span class="header-section-number">3.2</span> WSS 계산 함수</a></li>
+  <li><a href="#elbow-자동-선택-함수" id="toc-elbow-자동-선택-함수" class="nav-link" data-scroll-target="#elbow-자동-선택-함수"><span class="header-section-number">3.3</span> Elbow 자동 선택 함수</a></li>
+  <li><a href="#k별-군집-수행-및-지표-계산" id="toc-k별-군집-수행-및-지표-계산" class="nav-link" data-scroll-target="#k별-군집-수행-및-지표-계산"><span class="header-section-number">3.4</span> K별 군집 수행 및 지표 계산</a></li>
+  <li><a href="#k-선택-기준-비교" id="toc-k-선택-기준-비교" class="nav-link" data-scroll-target="#k-선택-기준-비교"><span class="header-section-number">3.5</span> K 선택 기준 비교</a></li>
+  <li><a href="#hierarchicalcomplete-결과-해석" id="toc-hierarchicalcomplete-결과-해석" class="nav-link" data-scroll-target="#hierarchicalcomplete-결과-해석"><span class="header-section-number">3.6</span> Hierarchical(Complete) 결과 해석</a></li>
+  <li><a href="#hierarchicalward-결과-해석" id="toc-hierarchicalward-결과-해석" class="nav-link" data-scroll-target="#hierarchicalward-결과-해석"><span class="header-section-number">3.7</span> Hierarchical(Ward) 결과 해석</a></li>
+  <li><a href="#kmeans-결과-해석" id="toc-kmeans-결과-해석" class="nav-link" data-scroll-target="#kmeans-결과-해석"><span class="header-section-number">3.8</span> KMeans 결과 해석</a></li>
+  <li><a href="#전통적-방법-간-종합-비교" id="toc-전통적-방법-간-종합-비교" class="nav-link" data-scroll-target="#전통적-방법-간-종합-비교"><span class="header-section-number">3.9</span> 전통적 방법 간 종합 비교</a></li>
+  </ul></li>
+  <li><a href="#표현기반-군집-pca-clustering" id="toc-표현기반-군집-pca-clustering" class="nav-link" data-scroll-target="#표현기반-군집-pca-clustering"><span class="header-section-number">4</span> 표현기반 군집 (PCA + Clustering)</a>
+  <ul>
+  <li><a href="#공통-설정" id="toc-공통-설정" class="nav-link" data-scroll-target="#공통-설정"><span class="header-section-number">4.1</span> 공통 설정</a></li>
+  <li><a href="#pca-임베딩-생성과-설명력ev" id="toc-pca-임베딩-생성과-설명력ev" class="nav-link" data-scroll-target="#pca-임베딩-생성과-설명력ev"><span class="header-section-number">4.2</span> PCA 임베딩 생성과 설명력(EV)</a></li>
+  <li><a href="#pca-kmeans" id="toc-pca-kmeans" class="nav-link" data-scroll-target="#pca-kmeans"><span class="header-section-number">4.3</span> PCA + KMeans</a></li>
+  <li><a href="#pca-gmm-bic-기반-모델-선택" id="toc-pca-gmm-bic-기반-모델-선택" class="nav-link" data-scroll-target="#pca-gmm-bic-기반-모델-선택"><span class="header-section-number">4.4</span> PCA + GMM (BIC 기반 모델 선택)</a></li>
+  <li><a href="#표현기반-군집-결과-해석" id="toc-표현기반-군집-결과-해석" class="nav-link" data-scroll-target="#표현기반-군집-결과-해석"><span class="header-section-number">4.5</span> 표현기반 군집 결과 해석</a></li>
+  </ul></li>
+  <li><a href="#오토인코더-기반-표현-군집-deep-clustering-개념-실험" id="toc-오토인코더-기반-표현-군집-deep-clustering-개념-실험" class="nav-link" data-scroll-target="#오토인코더-기반-표현-군집-deep-clustering-개념-실험"><span class="header-section-number">5</span> 오토인코더 기반 표현 군집 (Deep Clustering 개념 실험)</a>
+  <ul>
+  <li><a href="#잠재표현z-추출" id="toc-잠재표현z-추출" class="nav-link" data-scroll-target="#잠재표현z-추출"><span class="header-section-number">5.1</span> 잠재표현(Z) 추출</a></li>
+  <li><a href="#잠재공간에서의-군집" id="toc-잠재공간에서의-군집" class="nav-link" data-scroll-target="#잠재공간에서의-군집"><span class="header-section-number">5.2</span> 잠재공간에서의 군집</a></li>
+  <li><a href="#오토인코더-임베딩-kmeans-결과-해석" id="toc-오토인코더-임베딩-kmeans-결과-해석" class="nav-link" data-scroll-target="#오토인코더-임베딩-kmeans-결과-해석"><span class="header-section-number">5.3</span> 오토인코더 임베딩 + KMeans 결과 해석</a></li>
+  </ul></li>
+  <li><a href="#deep-clustering-ae-임베딩-kl군집-동시-최적화-dec-개념-실험" id="toc-deep-clustering-ae-임베딩-kl군집-동시-최적화-dec-개념-실험" class="nav-link" data-scroll-target="#deep-clustering-ae-임베딩-kl군집-동시-최적화-dec-개념-실험"><span class="header-section-number">6</span> Deep Clustering: AE 임베딩 + KL(군집) 동시 최적화 (DEC 개념 실험)</a>
+  <ul>
+  <li><a href="#decdeep-embedded-clustering-절차" id="toc-decdeep-embedded-clustering-절차" class="nav-link" data-scroll-target="#decdeep-embedded-clustering-절차"><span class="header-section-number">6.1</span> DEC(Deep Embedded Clustering) 절차</a></li>
+  <li><a href="#dec-결과-해석" id="toc-dec-결과-해석" class="nav-link" data-scroll-target="#dec-결과-해석"><span class="header-section-number">6.2</span> DEC 결과 해석</a></li>
+  </ul></li>
+  <li><a href="#최종-보고서-상위-방법-비교-및-시각화" id="toc-최종-보고서-상위-방법-비교-및-시각화" class="nav-link" data-scroll-target="#최종-보고서-상위-방법-비교-및-시각화"><span class="header-section-number">7</span> 최종 보고서: 상위 방법 비교 및 시각화</a>
+  <ul>
+  <li><a href="#주요-함수-설명" id="toc-주요-함수-설명" class="nav-link" data-scroll-target="#주요-함수-설명"><span class="header-section-number">7.1</span> 주요 함수 설명</a></li>
+  <li><a href="#군집-결과-해석-교차표-읽는-법" id="toc-군집-결과-해석-교차표-읽는-법" class="nav-link" data-scroll-target="#군집-결과-해석-교차표-읽는-법"><span class="header-section-number">7.2</span> 군집 결과 해석: 교차표 읽는 법</a></li>
+  <li><a href="#hierarchicalward-k20" id="toc-hierarchicalward-k20" class="nav-link" data-scroll-target="#hierarchicalward-k20"><span class="header-section-number">7.3</span> Hierarchical(Ward), K=20</a></li>
+  <li><a href="#autoencoder10d-임베딩-kmeans-k9" id="toc-autoencoder10d-임베딩-kmeans-k9" class="nav-link" data-scroll-target="#autoencoder10d-임베딩-kmeans-k9"><span class="header-section-number">7.4</span> AutoEncoder(10D) 임베딩 + KMeans, K=9</a></li>
+  <li><a href="#kmeans원공간-k15" id="toc-kmeans원공간-k15" class="nav-link" data-scroll-target="#kmeans원공간-k15"><span class="header-section-number">7.5</span> KMeans(원공간), K=15</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -475,20 +522,65 @@ window.Quarto = {
 </header>
 
 
-<section id="군집비지도학습-사례분석" class="level3">
-<h3 class="anchored" data-anchor-id="군집비지도학습-사례분석">군집・비지도학습 사례분석</h3>
-<section id="digits-데이터-불러오기-및-설명" class="level4">
-<h4 class="anchored" data-anchor-id="digits-데이터-불러오기-및-설명">1. Digits 데이터 불러오기 및 설명</h4>
-<p>Digits 데이터셋은 UCI의 Optical Recognition of Handwritten Digits 자료(원래 5,620개 중 scikit-learn에는 테스트셋 1,797개가 수록됨)에서 가져온 것으로, 손글씨 숫자를 미리 인쇄된 양식에 작성하게 한 뒤 이미지를 전처리하여 구축된 것이다.</p>
-<p>구체적으로 각 손글씨는 NIST 전처리 프로그램으로 정규화된 32×32 비트맵으로 만든 다음, 이를 겹치지 않는 4×4 블록으로 나누어 각 블록에서 ‘켜진 픽셀(on pixel)’ 개수를 세어 0~16 범위의 값을 얻고, 이렇게 계산된 8×8(=64개) 값이 한 관측치의 특징벡터가 된다.</p>
-<p>따라서 Digits의 “픽셀값”은 일반 회색조 밝기라기보다, 해당 영역에서 글씨가 차지하는 정도를 요약한 블록 단위 밀도(density) 지표이며, 이 특성 때문에 거리 기반 군집, 혼합모형(GMM), PCA/딥 임베딩 기반 군집 비교 실습에 적절한 표준 사례로 사용된다.</p>
-<p>scikit-learn의 Digits 데이터셋은 0~9 손글씨 숫자를 8×8 흑백 이미지로 표현한 자료이다. 각 관측치는 64개의 픽셀 강도(feature)로 구성된 벡터이며, 픽셀 값의 범위는 대략 0~16이다. 표본 크기는 1,797개이며, 비지도학습 군집 사례에 적절한 이유는 다음과 같다.</p>
+<section id="digits-데이터-불러오기-및-설명" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="digits-데이터-불러오기-및-설명"><span class="header-section-number">1</span> Digits 데이터 불러오기 및 설명</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Digits 데이터셋 소개
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Digits 데이터셋은 UCI의 Optical Recognition of Handwritten Digits 자료(원래 5,620개 중 scikit-learn에는 테스트셋 1,797개가 수록됨)로, 손글씨 숫자를 미리 인쇄된 양식에 작성하게 한 뒤 이미지를 전처리하여 구축된 것이다.</p>
 <ul>
-<li>차원이 64로 적절하여(고차원 효과가 있으나 과도하지 않음) 군집 기법 비교가 용이하다.</li>
-<li>원자료 공간(픽셀)에서의 군집, 확률모형 기반(GMM) 군집, PCA/딥 임베딩 기반 군집을 모두 적용하기 쉽다.</li>
-<li>정답 라벨(숫자 0~9)이 존재하므로, 학습에는 숨기고 최종 비교에서만 외부평가(ARI, NMI 등)에 사용할 수 있다.</li>
+<li>각 손글씨는 NIST 전처리 프로그램으로 정규화된 32×32 비트맵으로 만든 다음, 겹치지 않는 4×4 블록으로 나누어 각 블록에서 ‘켜진 픽셀(on pixel)’ 개수를 세어 0~16 범위의 값을 얻는다.</li>
+<li>이렇게 계산된 <strong>8×8(=64개) 값이 한 관측치의 특징벡터</strong>가 된다.</li>
+<li>“픽셀값”은 일반 회색조 밝기라기보다, 해당 영역에서 글씨가 차지하는 정도를 요약한 <strong>블록 단위 밀도(density) 지표</strong>이다.</li>
 </ul>
-<p>이후 분석에서는 입력 데이터는 <span class="math inline">\(X \in \mathbb{R}^{n\times p}\)</span> 로 두고(<span class="math inline">\(n=1797, p=64\)</span>), 라벨 <span class="math inline">\(y\)</span> 는 평가용 보조정보로만 사용한다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이 데이터를 군집 실습에 쓰는 이유
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>특성</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(n = 1{,}797\)</span>, <span class="math inline">\(p = 64\)</span></td>
+<td>고차원 효과가 있으나 과도하지 않아 기법 비교에 적합</td>
+</tr>
+<tr class="even">
+<td>다양한 군집 방법 적용 가능</td>
+<td>거리 기반, GMM, PCA/딥 임베딩 기반 비교 실습 용이</td>
+</tr>
+<tr class="odd">
+<td>정답 라벨(0~9) 존재</td>
+<td>학습에는 숨기고, 최종 평가에만 외부지표(ARI, NMI)로 활용</td>
+</tr>
+</tbody>
+</table>
+<p>이후 분석에서 입력 데이터는 <span class="math inline">\(X \in \mathbb{R}^{n \times p}\)</span> (<span class="math inline">\(n=1797, p=64\)</span>), 라벨 <span class="math inline">\(y\)</span>는 평가용 보조정보로만 사용한다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -558,10 +650,25 @@ count   proportion
 7   179 0.099610
 8   174 0.096828
 9   180 0.100167</code></pre>
-<p>이 그림은 Digits 데이터셋이 어떤 형태의 입력 X 로 구성되어 있는지를 “눈으로 확인”하기 위한 대표 샘플 시각화이다.</p>
-<p>각 작은 패널(예: label=0, label=1, …, label=9)은 숫자 클래스별로 관측치 1개씩을 골라 보여준 것이다. (코드에서 idx = np.where(y==digit_label)[0][0]로 해당 숫자 라벨 중 ’첫 번째 샘플’을 선택한 결과이다.)</p>
-<p>한 장의 이미지는 8×8 격자이며, 즉 한 관측치가 64개의 변수(픽셀/블록 값) 로 이루어진다는 뜻이다. 색의 의미는 밝을수록 값이 크다는 의미이다. Digits의 값은 보통 0~16 범위이며, 값이 클수록 그 위치(블록)에 글씨 획이 많이 포함되어 있다는 뜻이다. 따라서 흰색에 가까운 칸은 글씨가 많이 지나간 영역, 검은 칸은 거의 비어 있는 영역이다.</p>
-<p>이 그림은 “각 숫자가 대략 어떤 획 구조를 갖는가”를 보여주는 동시에, 예를 들어 3과 8, 4와 9처럼 모양이 비슷해 보이는 클래스가 존재함을 보여주므로, 이후 군집에서 군집 간 분리가 완벽하지 않을 수 있음을 미리 시사하는 역할도 한다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+샘플 이미지 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>각 패널(label=0~9)은 숫자 클래스별로 관측치 1개씩을 선택하여 보여준 것이다.</li>
+<li>한 장의 이미지는 8×8 격자이며, 한 관측치가 <strong>64개의 변수(픽셀/블록 값)</strong>로 이루어진다.</li>
+<li><strong>밝을수록</strong> 값이 크다: 해당 위치(블록)에 글씨 획이 많이 포함됨을 의미한다.</li>
+<li>흰색 → 글씨가 많이 지나간 영역 / 검은색 → 거의 비어 있는 영역</li>
+</ul>
+<p>3과 8, 4와 9처럼 <strong>모양이 비슷한 클래스</strong>가 존재하므로, 이후 군집에서 군집 간 분리가 완벽하지 않을 수 있음을 미리 시사한다.</p>
+</div>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/clustering_case_dataimage.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
@@ -573,9 +680,22 @@ count   proportion
 2   5.204786    4.754826    0.0 16.0
 3   11.835838   4.248842    0.0 16.0
 4   11.848080   4.287388    0.0 16.0</code></pre>
-<section id="전처리-표준화" class="level5">
-<h5 class="anchored" data-anchor-id="전처리-표준화">전처리: 표준화</h5>
-<p>Digits 데이터는 픽셀 값이 0~16 범위로 제한되어 있고, 각 픽셀의 분포도 유사한 형태를 띠므로, 표준화(평균 0, 표준편차 1)와 같은 스케일링이 반드시 필요한 것은 아니다. 그러나 이후 군집 기법에서 거리 계산이 포함되는 경우(예: K-means, GMM)에는 스케일링이 성능에 영향을 줄 수 있으므로, 표준화는 일반적으로 권장되는 전처리 단계이다. 표준화를 적용하면 각 픽셀의 평균이 0, 표준편차가 1이 되어, 모든 픽셀이 동일한 스케일로 비교될 수 있다.</p>
+<section id="전처리-표준화" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="전처리-표준화"><span class="header-section-number">1.1</span> 전처리: 표준화</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+표준화 적용 판단 기준
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Digits 데이터는 픽셀 값이 0~16 범위로 제한되어 있어 표준화가 반드시 필요하지는 않다. 그러나 <strong>거리 계산이 포함되는 군집 기법(K-means, GMM)</strong>에서는 스케일링이 성능에 영향을 주므로, 표준화는 일반적으로 권장되는 전처리 단계이다.</p>
+<p>표준화를 적용하면 각 픽셀의 평균이 0, 표준편차가 1이 되어 모든 픽셀이 동일한 스케일로 비교된다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#(선택) 표준화 데이터도 함께 준비(2단계부터 비교용으로 유용)</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -587,60 +707,116 @@ count   proportion
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"std  (approx):"</span>, X_std.std(axis<span class="op">=</span><span class="dv">0</span>)[:<span class="dv">5</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="모델기반-군집gmm" class="level4">
-<h4 class="anchored" data-anchor-id="모델기반-군집gmm">2. 모델기반 군집(GMM)</h4>
-<p>이 코드는 Digits 데이터에 대해 Gaussian Mixture Model(GMM)을 적합하여 군집을 수행하고, 군집 수 (K)와 공분산 형태(covariance type)를 바꿔가며 AIC/BIC로 최적 조합을 선택한 뒤, 선택된 모형의 군집 성능을 외부지표(ARI/NMI)로 요약하고 AIC/BIC 곡선을 시각화하는 절차이다.</p>
-<section id="설정데이터-k-후보-공분산-형태-수치-안정화-파라미터이다" class="level5">
-<h5 class="anchored" data-anchor-id="설정데이터-k-후보-공분산-형태-수치-안정화-파라미터이다">설정(데이터, K 후보, 공분산 형태, 수치 안정화 파라미터)이다</h5>
+<section id="모델기반-군집-gmm" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="모델기반-군집-gmm"><span class="header-section-number">2</span> 모델기반 군집 (GMM)</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이 절의 목적
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Digits 데이터에 대해 Gaussian Mixture Model(GMM)을 적합하여 군집을 수행하고, 군집 수 <span class="math inline">\(K\)</span>와 공분산 형태(covariance type)를 바꿔가며 AIC/BIC로 최적 조합을 선택한다. 선택된 모형의 군집 성능을 외부지표(ARI/NMI)로 요약하고, AIC/BIC 곡선을 시각화한다.</p>
+</div>
+</div>
+<section id="분석-설정" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="분석-설정"><span class="header-section-number">2.1</span> 분석 설정</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+주요 파라미터 설명
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 33%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>파라미터</th>
+<th>설정값</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>X_use</code></td>
+<td><code>X_std</code></td>
+<td>표준화된 데이터 — GMM은 공분산 추정 시 스케일 차이에 민감</td>
+</tr>
+<tr class="even">
+<td><code>K_list</code></td>
+<td><code>range(2, 21)</code></td>
+<td>군집 수 후보 <span class="math inline">\(K = 2, \ldots, 20\)</span></td>
+</tr>
+<tr class="odd">
+<td><code>cov_types</code></td>
+<td>4종</td>
+<td>구형/축정렬/공유/자유 공분산 가정 비교</td>
+</tr>
+<tr class="even">
+<td><code>N_INIT</code></td>
+<td><code>10</code></td>
+<td>EM을 여러 초기값으로 반복, 더 좋은 해 선택</td>
+</tr>
+<tr class="odd">
+<td><code>MAX_ITER</code></td>
+<td><code>500</code></td>
+<td>EM 반복 횟수 상한</td>
+</tr>
+<tr class="even">
+<td><code>REG_COVAR</code></td>
+<td><code>1e-6</code></td>
+<td>공분산 특이(singularity) 문제 완화 정규화 항</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="aicbic-기반-최적-조합-선택" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="aicbic-기반-최적-조합-선택"><span class="header-section-number">2.2</span> AIC/BIC 기반 최적 조합 선택</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+AIC vs BIC 차이
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li><code>X_use = X_std</code>는 표준화된 데이터를 분석 대상으로 선택하는 부분이다. GMM은 공분산을 추정하므로 스케일 차이가 크면 수치적으로 불안정해질 수 있어 표준화가 일반적으로 안정적이다.</li>
-<li><code>K_list = range(2, 21)</code>은 군집 수 후보 (K)를 2부터 20까지로 두는 설정이다.</li>
-<li><code>cov_types = ["spherical","diag","tied","full"]</code>은 공분산 형태를 네 가지로 비교하는 설정이다. 이는 군집의 모양(구형/축정렬/공유공분산/자유공분산)을 달리 가정하는 것이다.</li>
-<li><code>N_INIT=10</code>은 초기값을 여러 번 달리하여 EM을 반복 실행하고, 그 중 더 좋은 해를 선택하기 위한 설정이다.</li>
-<li><code>MAX_ITER=500</code>은 EM 반복 횟수 상한이다.</li>
-<li><code>REG_COVAR=1e-6</code>은 공분산 특이(singularity) 문제를 완화하기 위한 정규화 항이다.</li>
+<li>이중 반복문으로 모든 <span class="math inline">\((K, \text{covariance\_type})\)</span> 조합에 대해 <code>GaussianMixture(...).fit(X_use)</code> 수행</li>
+<li>적합 후 <code>gmm.aic()</code>, <code>gmm.bic()</code> 계산 → <code>best_bic_row</code>, <code>best_aic_row</code> 선택</li>
+<li><strong>BIC는 복잡도 패널티가 더 강하여</strong> AIC보다 보수적인 <span class="math inline">\(K\)</span>를 선택하는 경향이 있다.</li>
+<li><code>converged</code> 값으로 EM 수렴 여부를 진단한다.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="최적-모형-재학습-및-군집-라벨-생성" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="최적-모형-재학습-및-군집-라벨-생성"><span class="header-section-number">2.3</span> 최적 모형 재학습 및 군집 라벨 생성</h3>
+<ul>
+<li><code>z_hat = gmm.predict(X_use)</code>: 사후확률 최대 성분에 배정한 <strong>hard assignment</strong> 군집 라벨</li>
+<li><code>resp = gmm.predict_proba(X_use)</code>: 관측치별 군집 소속확률(<strong>책임도</strong>) 행렬</li>
+<li>BIC-best와 AIC-best 각각에 대해 <code>z_bic</code>, <code>z_aic</code> 및 책임도 생성</li>
 </ul>
 </section>
-<section id="k-공분산-형태-조합별로-gmm을-적합하고-aicbic를-계산한다" class="level5">
-<h5 class="anchored" data-anchor-id="k-공분산-형태-조합별로-gmm을-적합하고-aicbic를-계산한다">(K, 공분산 형태) 조합별로 GMM을 적합하고 AIC/BIC를 계산한다</h5>
+<section id="외부평가-및-시각화" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="외부평가-및-시각화"><span class="header-section-number">2.4</span> 외부평가 및 시각화</h3>
 <ul>
-<li>이중 반복문은 모든 조합 ((K, ))에 대해 <code>GaussianMixture(...).fit(X_use)</code>를 수행한다.</li>
-<li>적합 이후 <code>gmm.aic(X_use)</code>와 <code>gmm.bic(X_use)</code>를 계산하여 <code>records</code>에 저장한다.</li>
-<li><code>log_likelihood = gmm.score(X_use) * n</code>은 관측치당 평균 로그우도(score)에 표본 수를 곱해 전체 로그우도를 기록한 것이다.</li>
-<li><code>converged</code>는 EM이 수렴했는지 여부를 나타내는 진단값이다.</li>
-<li>최종적으로 <code>results</code> 데이터프레임은 (공분산 형태, K)별 AIC/BIC/로그우도/수렴여부를 정리한 표이다.</li>
-</ul>
-</section>
-<section id="aicbic-기준으로-최적-조합을-선택한다" class="level5">
-<h5 class="anchored" data-anchor-id="aicbic-기준으로-최적-조합을-선택한다">AIC/BIC 기준으로 최적 조합을 선택한다</h5>
-<ul>
-<li><code>best_bic_row</code>는 <code>results</code>에서 BIC가 최소인 행을 선택한 것이다. 이는 BIC 기준 최적의 ((K,)) 조합이다.</li>
-<li><code>best_aic_row</code>는 AIC가 최소인 행을 선택한 것이다.</li>
-<li>일반적으로 BIC는 복잡도 패널티가 더 강하여(AIC보다) 더 보수적인 (K)를 선택하는 경향이 있다.</li>
-</ul>
-</section>
-<section id="선택된-최적-모형으로-재학습하여-군집-라벨과-소속확률을-만든다" class="level5">
-<h5 class="anchored" data-anchor-id="선택된-최적-모형으로-재학습하여-군집-라벨과-소속확률을-만든다">선택된 최적 모형으로 재학습하여 군집 라벨과 소속확률을 만든다</h5>
-<ul>
-<li><code>fit_best_gmm(row)</code> 함수는 선택된 설정(행에 들어 있는 (K), 공분산 형태)으로 GMM을 다시 적합하는 함수이다.</li>
-<li><code>z_hat = gmm.predict(X_use)</code>는 각 관측치를 사후확률이 가장 큰 성분에 배정한 hard assignment 군집 라벨이다.</li>
-<li><code>resp = gmm.predict_proba(X_use)</code>는 각 관측치가 각 군집에 속할 확률(책임도, responsibility) 행렬이다.</li>
-<li>코드에서는 BIC-best, AIC-best 각각에 대해 <code>z_bic</code>, <code>z_aic</code>와 책임도 <code>resp_bic</code>, <code>resp_aic</code>를 생성한다.</li>
-</ul>
-</section>
-<section id="외부평가arinmi로-방법-비교를-정리한다" class="level5">
-<h5 class="anchored" data-anchor-id="외부평가arinmi로-방법-비교를-정리한다">외부평가(ARI/NMI)로 방법 비교를 정리한다</h5>
-<ul>
-<li><code>adjusted_rand_score(y, z_*)</code>와 <code>normalized_mutual_info_score(y, z_*)</code>는 실제 숫자 라벨 (y)와 군집 결과 (z)의 일치도를 계산하는 부분이다.</li>
-<li>이는 군집 학습에 라벨을 사용한 것이 아니라, 동일 데이터에서 방법을 비교하기 위한 사후 평가 지표로 사용한 것이다.</li>
-</ul>
-</section>
-<section id="공분산-형태별-aicbic-곡선을-시각화한다" class="level5">
-<h5 class="anchored" data-anchor-id="공분산-형태별-aicbic-곡선을-시각화한다">공분산 형태별 AIC/BIC 곡선을 시각화한다</h5>
-<ul>
-<li><code>pivot_bic</code>, <code>pivot_aic</code>는 K(행) × 공분산 형태(열) 구조로 BIC/AIC를 재배열한 표이다.</li>
-<li>마지막 두 그래프는 (K)에 따른 BIC/AIC 변화가 공분산 형태별로 어떻게 달라지는지를 보여준다.</li>
-<li>이 시각화는 (i) 어떤 공분산 구조가 유리한지, (ii) 선택되는 (K)가 어디인지, (iii) AIC와 BIC가 얼마나 다른 선택을 하는지 확인하는 진단 단계이다.</li>
+<li><code>adjusted_rand_score(y, z_*)</code>, <code>normalized_mutual_info_score(y, z_*)</code>: 실제 숫자 라벨 <span class="math inline">\(y\)</span>와 군집 결과의 일치도 (사후 평가용, 학습에 라벨 사용 안 함)</li>
+<li>공분산 형태별 AIC/BIC 곡선: (i) 어떤 공분산 구조가 유리한지, (ii) 최적 <span class="math inline">\(K\)</span> 위치, (iii) AIC vs BIC 선택 차이 확인</li>
 </ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -868,19 +1044,43 @@ count   proportion
 <span id="cb6-224"><a href="#cb6-224" aria-hidden="true" tabindex="-1"></a>comparison_sorted <span class="op">=</span> comparison.sort_values([<span class="st">"ARI"</span>, <span class="st">"silhouette"</span>], ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb6-225"><a href="#cb6-225" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-226"><a href="#cb6-226" aria-hidden="true" tabindex="-1"></a>display(comparison_sorted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>BIC 기준으로 선택된 GMM은 대각 공분산(diag)과 K=20을 택하여 숫자 10종을 직접 재현하기보다 숫자 내부의 필기체 변이를 포함한 더 세분화된 잠재집단 구조를 제안하였으며, 그 결과 ARI/NMI는 중간 수준의 외부 일치도를 보이는 반면 군집 간 거리 분리도(silhouette)는 낮게 나타나 군집들이 공간상으로 겹치는 경향이 있음을 시사한다.</p>
-<p>반면, 전통적 군집에서는 실루엣 지표가 가장 높은 계층군집(Complete, K=2)이 가장 낮은 ARI/NMI를 보이는 반면, 실루엣이 낮은 Ward 군집(K=20)이 가장 높은 ARI/NMI를 보여, 실루엣과 외부 일치도 간의 트레이드오프가 존재함을 보여준다.</p>
-<p><strong>왜 K=20이 “숫자 10종”이 아니라 “더 잘게 쪼갠 구조”라는 뜻인가?</strong></p>
-<p>Digits의 진짜 숫자 라벨은 0~9, 총 10개입니다. 그런데 GMM이 BIC로 고른 군집 수는 K=20 이다.</p>
-<p>이 말은 GMM이 “0,1,2,…,9를 하나씩 군집으로 만들겠다”가 아니라 예를 들어 ‘0을 두 부류(둥근 0 / 찌그러진 0)’, ‘1을 두 부류(가느다란 1 / 굵은 1)’ 처럼 같은 숫자 안에서도 필기 스타일 차이를 따로 군집으로 분리했을 가능성이 크다는 뜻이다. 즉, 숫자(10개) 보다 더 세분화된 잠재집단(20개) 을 제안한 것입니다.</p>
-<p><strong>ARI/NMI가 “중간”이라는 뜻은?</strong></p>
-<p>ARI/NMI는 군집 결과가 실제 숫자 라벨(0~9)과 얼마나 비슷한지를 보는 점수이다. 그런데 GMM은 K=20으로 숫자 하나를 여러 군집으로 쪼갤 수 있으니, “숫자 10개와 1:1로 딱 맞는 군집”이 되기 어렵다.</p>
-<p>그래서 ARI/NMI가 완벽(1에 가까움)하게 나오기보다는, 그래도 숫자 구분을 어느 정도 반영하면 중간 정도 점수가 나온다.</p>
-<p>즉 “완전한 숫자 분류는 아니지만, 숫자 구조와 어느 정도 관련은 있다”는 의미이다.</p>
-<p><strong>그런데 왜 silhouette는 낮게 나오나?</strong></p>
-<p>silhouette는 “군집끼리 거리상으로 얼마나 분리되어 있나” 를 보는 지표이다. silhouette가 높다 → 군집들이 멀리 떨어져 있고 서로 잘 구분됨 silhouette가 낮다 → 군집들이 서로 가까이 섞여 있음(겹침)</p>
-<p>Digits는 애초에 3과 8, 4와 9처럼 모양이 비슷한 숫자도 있고, 또 같은 숫자 안에서도 다양한 필기체가 있어서 데이터가 공간상 겹치기 쉽다. 그래서 GMM이 20개로 잘게 쪼개도 각 군집이 “멀리 떨어진 섬”처럼 분리되지 않고, 가까운 곳에 겹쳐 있는 상태가 될 수 있다 → silhouette가 낮게 나온다.</p>
-<p>한 줄로 다시 말하면 GMM(BIC-best)은 숫자 10개를 그대로 맞추려 하기보다, 숫자 안의 스타일 차이까지 반영해 20개로 세분화했는데, 그 세분화된 군집들이 거리 공간에서는 서로 많이 겹쳐 보여 silhouette가 낮게 나온다는 뜻이다.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+GMM(BIC-best) 결과 핵심 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>BIC 기준으로 선택된 GMM은 <strong>대각 공분산(diag), K=20</strong>을 택하였다. 이는 숫자 10종을 직접 재현하기보다, 숫자 내부 필기체 변이를 포함한 더 세분화된 잠재집단 구조를 제안한 것이다.</p>
+<ul>
+<li>ARI/NMI: 중간 수준 외부 일치도</li>
+<li>silhouette: 낮게 나타남 → 군집들이 공간상 겹치는 경향</li>
+</ul>
+<p>전통적 군집에서는 <strong>실루엣이 가장 높은 Complete(K=2)이 ARI/NMI는 거의 0</strong>, 실루엣이 낮은 <strong>Ward(K=20)이 ARI/NMI는 가장 높다</strong> → 실루엣과 외부 일치도 간의 트레이드오프.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+K=20의 의미: “숫자 10종”이 아닌 “세분화된 구조”
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Digits의 실제 숫자 라벨은 0~9, 총 10개이다. GMM이 BIC로 고른 군집 수는 K=20이다.</p>
+<ul>
+<li>‘0을 두 부류(둥근 0 / 찌그러진 0)’, ‘1을 두 부류(가느다란 1 / 굵은 1)’ 처럼, <strong>같은 숫자 안에서도 필기 스타일 차이</strong>를 따로 군집으로 분리한 것이다.</li>
+<li>즉, 숫자(10개)보다 더 세분화된 잠재집단(20개)을 제안한 결과이다.</li>
+</ul>
+<p><strong>ARI/NMI가 “중간”인 이유</strong>: GMM은 숫자 하나를 여러 군집으로 쪼갤 수 있어 “숫자 10개와 1:1로 딱 맞는 군집”이 되기 어렵다. “완전한 숫자 분류는 아니지만, 숫자 구조와 어느 정도 관련은 있다”는 의미이다.</p>
+<p><strong>silhouette가 낮은 이유</strong>: 3과 8, 4와 9처럼 모양이 비슷한 숫자가 있고, 같은 숫자 안에서도 다양한 필기체가 있어 데이터가 공간상 겹치기 쉽다. GMM이 20개로 잘게 쪼개도 군집들이 “멀리 떨어진 섬”처럼 분리되지 않고 가까운 곳에 겹쳐 있는 상태가 된다.</p>
+</div>
+</div>
 <pre class="text"><code>method  K   silhouette  wss ARI NMI
 0   Hierarchical(Complete)  2   0.784424    106721.094913   0.000002    0.001556
 1   Hierarchical(Complete)  3   0.779755    105134.196220   0.000002    0.002223
@@ -912,83 +1112,110 @@ method  K_sil_best  silhouette_sil_best wss_sil_best    ARI_sil_best    NMI_sil_
 2   GMM(BIC-best, diag) 20  0.093540    62457.729652    0.437694    0.596951    -232769.805429  -218601.104675
 3   Hierarchical(Complete) (Sil-best)   2   0.784424    106721.094913   0.000002    0.001556    NaN NaN</code></pre>
 </section>
-<section id="gmmbic-best-군집-결과-해석-숫자-10개가-얼마나-쪼개졌는가" class="level5">
-<h5 class="anchored" data-anchor-id="gmmbic-best-군집-결과-해석-숫자-10개가-얼마나-쪼개졌는가">GMM(BIC-best) 군집 결과 해석: “숫자 10개가 얼마나 쪼개졌는가?”</h5>
-<p>여기서는 GMM(BIC-best) 로 얻은 군집 라벨 <code>z_bic</code>이 실제 숫자 라벨 <code>y(0~9)</code>와 어떻게 대응되는지를 해석한다. 분석의 초점은 “군집 수가 10개인가?”가 아니라, 각 군집이 얼마나 한 숫자에 ‘순수하게’ 대응하는가(섞임/혼합), 각 숫자가 몇 개의 군집으로 ’분해’되는가(쪼개짐/분할)를 동시에 파악하는 데 있다.</p>
+<section id="gmmbic-best-군집-결과-해석" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="gmmbic-best-군집-결과-해석"><span class="header-section-number">2.5</span> GMM(BIC-best) 군집 결과 해석</h3>
+<p>GMM(BIC-best)로 얻은 군집 라벨 <code>z_bic</code>이 실제 숫자 라벨 <code>y(0~9)</code>와 어떻게 대응되는지 해석한다. 분석의 초점은 “군집 수가 10개인가?”가 아니라, 각 군집이 얼마나 한 숫자에 순수하게 대응하는가(섞임/혼합), 각 숫자가 몇 개의 군집으로 분해되는가(쪼개짐/분할)에 있다.</p>
 </section>
-<section id="군집-실제-숫자-교차표-만들기" class="level5">
-<h5 class="anchored" data-anchor-id="군집-실제-숫자-교차표-만들기">군집 × 실제 숫자 교차표 만들기</h5>
-<p>먼저 다음 교차표를 만든다. <span class="math inline">\(ct = \text{crosstab}(z_{\text{bic}}, y)\)</span></p>
+<section id="군집-실제-숫자-교차표" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="군집-실제-숫자-교차표"><span class="header-section-number">2.6</span> 군집 × 실제 숫자 교차표</h3>
+<p><span class="math inline">\(ct = \text{crosstab}(z_{\text{bic}}, y)\)</span></p>
 <ul>
-<li>행(row): GMM이 만든 cluster</li>
-<li>열(column): 실제 숫자 digit(0~9)</li>
-<li>원소 (ct_{k,d}): “군집 (k)에 속한 표본 중 실제 숫자가 (d)인 개수”</li>
+<li><strong>행(row)</strong>: GMM이 만든 cluster</li>
+<li><strong>열(column)</strong>: 실제 숫자 digit(0~9)</li>
+<li><strong>원소 <span class="math inline">\(ct_{k,d}\)</span></strong>: “군집 <span class="math inline">\(k\)</span>에 속한 표본 중 실제 숫자가 <span class="math inline">\(d\)</span>인 개수”</li>
 </ul>
-<p>이 표는 한눈에 두 가지를 보여준다.</p>
-<ul>
-<li>군집 혼합(mixing): 한 군집이 여러 숫자를 동시에 포함하는가?</li>
-<li>숫자 분할(splitting): 한 숫자가 여러 군집에 흩어져 있는가?</li>
-</ul>
+<p>이 표는 두 가지를 동시에 보여준다: <strong>군집 혼합(mixing)</strong>과 <strong>숫자 분할(splitting)</strong>.</p>
 </section>
-<section id="군집별-대표-숫자와-순도purity" class="level5">
-<h5 class="anchored" data-anchor-id="군집별-대표-숫자와-순도purity">군집별 대표 숫자와 순도(purity)</h5>
-<p>군집 (k)에 대해 다음을 계산한다.</p>
+<section id="군집별-대표-숫자와-순도purity" class="level3" data-number="2.7">
+<h3 data-number="2.7" class="anchored" data-anchor-id="군집별-대표-숫자와-순도purity"><span class="header-section-number">2.7</span> 군집별 대표 숫자와 순도(purity)</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+순도(Purity) 정의
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>군집 <span class="math inline">\(k\)</span>에 대해:</p>
+<p><span class="math display">\[n_k = \sum_{d=0}^{9} ct_{k,d}, \quad d_k^* = \arg\max_d ct_{k,d}, \quad m_k = \max_d ct_{k,d}\]</span></p>
+<p><span class="math display">\[\text{purity}_k = \frac{m_k}{n_k}\]</span></p>
 <ul>
-<li>군집 크기(표본 수): <span class="math inline">\(n_k = \sum_{d=0}^{9} ct_{k,d}\)</span></li>
-<li>대표 숫자(다수결): <span class="math inline">\(d_k^* = \arg\max_d ct_{k,d}\)</span></li>
-<li>대표 숫자의 개수: <span class="math inline">\(m_k = \max_d ct_{k,d}\)</span></li>
-<li>군집 순도(purity): <span class="math inline">\(\text{purity}_k = \frac{m_k}{n_k}\)</span></li>
+<li><span class="math inline">\(\text{purity}_k \approx 1\)</span> → 군집 <span class="math inline">\(k\)</span>는 거의 하나의 숫자에 대응하는 <strong>순수 군집</strong></li>
+<li><span class="math inline">\(\text{purity}_k\)</span> 낮음 → 여러 숫자가 섞인 <strong>혼합 군집</strong></li>
 </ul>
-<p><strong>해석</strong></p>
-<ul>
-<li><span class="math inline">\(\text{purity}_k \approx 1\)</span> 이면 → 군집 (k)는 거의 하나의 숫자에 대응하는 순수 군집이다.</li>
-<li><span class="math inline">\(\text{purity}_k\)</span> 가 낮으면 → 군집 (k)는 여러 숫자가 섞인 혼합 군집이다.</li>
-</ul>
-<p>실제 코드에서는 <code>cluster_summary</code> 표로 (군집 크기, 대표 숫자, 순도)를 정리해 군집 해석의 출발점으로 삼는다.</p>
+</div>
+</div>
 </section>
-<section id="전체-순도overall-purity-다수결-기준-단일-요약-지표" class="level5">
-<h5 class="anchored" data-anchor-id="전체-순도overall-purity-다수결-기준-단일-요약-지표">전체 순도(Overall Purity): 다수결 기준 단일 요약 지표</h5>
-<p>군집별 순도를 한 줄로 요약한 지표가 overall purity(majority-vote overall purity)이다.</p>
-<p><span class="math inline">\(\frac{\sum_k m_k}{n}\)</span></p>
-<ul>
-<li><span class="math inline">\(\sum_k m_k\)</span> : 각 군집에서 가장 많이 등장한 숫자의 개수를 모두 합한 값</li>
-<li>n: 전체 표본 수</li>
-</ul>
-<p><strong>의미(강의용 직관)</strong></p>
-<p>“각 군집에 대표 숫자 라벨을 하나 붙이고(다수결), 그렇게 분류했다고 생각하면 전체적으로 얼마나 맞는가?” 즉, 군집 결과를 가장 단순한 방식으로 숫자와 매핑했을 때의 전체 정확도에 해당하는 요약값이다.</p>
+<section id="전체-순도overall-purity" class="level3" data-number="2.8">
+<h3 data-number="2.8" class="anchored" data-anchor-id="전체-순도overall-purity"><span class="header-section-number">2.8</span> 전체 순도(Overall Purity)</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Overall Purity의 직관적 의미
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\text{Overall Purity} = \frac{\sum_k m_k}{n}\]</span></p>
+<p>“각 군집에 대표 숫자 라벨을 하나 붙이고(다수결), 그렇게 분류했다고 생각하면 전체적으로 얼마나 맞는가?” — 군집 결과를 가장 단순한 방식으로 숫자와 매핑했을 때의 전체 정확도에 해당하는 요약 지표이다.</p>
+</div>
+</div>
 </section>
-<section id="숫자별-쪼개짐분할을-정량화하기" class="level5">
-<h5 class="anchored" data-anchor-id="숫자별-쪼개짐분할을-정량화하기">숫자별 “쪼개짐(분할)”을 정량화하기</h5>
-<p>이번에는 군집 관점이 아니라 숫자 관점으로 본다. 각 숫자 (d)가 군집들에 어떻게 분포하는지를 보고, “몇 개 군집으로 분해되는가?”를 계산한다.</p>
-<p><strong>(A) 80%를 설명하는 최소 군집 수</strong></p>
-<p>숫자 (d) 표본을 많이 담고 있는 군집부터 정렬한 뒤, 누적 비율이 80%를 넘는 데 필요한 군집 개수를 계산한다. <span class="math inline">\(k_{80\%}(d)\)</span></p>
+<section id="숫자별-쪼개짐분할-정량화" class="level3" data-number="2.9">
+<h3 data-number="2.9" class="anchored" data-anchor-id="숫자별-쪼개짐분할-정량화"><span class="header-section-number">2.9</span> 숫자별 “쪼개짐(분할)” 정량화</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+분할 지표 두 가지
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>(A) 80%를 설명하는 최소 군집 수</strong> <span class="math inline">\(k_{80\%}(d)\)</span></p>
+<p>숫자 <span class="math inline">\(d\)</span> 표본을 많이 담고 있는 군집부터 정렬한 뒤, 누적 비율이 80%를 넘는 데 필요한 군집 개수를 계산한다.</p>
 <ul>
-<li>값이 1이면 → 거의 한 군집에 집중(쪼개짐이 작음)</li>
-<li>값이 크면 → 여러 군집으로 분산(쪼개짐이 큼)</li>
+<li>값이 1 → 거의 한 군집에 집중(쪼개짐이 작음)</li>
+<li>값이 크다 → 여러 군집으로 분산(쪼개짐이 큼)</li>
 </ul>
-<p><strong>(B) 유의미한 분할 군집 수(예: 10개 이상 포함)</strong></p>
-<p>아주 소량(몇 개) 흩어진 것은 노이즈일 수 있으므로, 예를 들어 “해당 숫자가 10개 이상 들어있는 군집이 몇 개인가”를 함께 본다.</p>
+<p><strong>(B) 유의미한 분할 군집 수</strong> (표본이 10개 이상인 군집 수)</p>
+<p>소량(몇 개) 흩어진 것은 노이즈일 수 있으므로 함께 확인한다.</p>
+</div>
+</div>
 </section>
-<section id="히트맵으로-섞임쪼개짐을-한-번에-보기" class="level5">
-<h5 class="anchored" data-anchor-id="히트맵으로-섞임쪼개짐을-한-번에-보기">히트맵으로 “섞임/쪼개짐”을 한 번에 보기</h5>
-<p>교차표 (ct)를 히트맵으로 그리면,</p>
+<section id="히트맵으로-섞임쪼개짐-시각화" class="level3" data-number="2.10">
+<h3 data-number="2.10" class="anchored" data-anchor-id="히트맵으로-섞임쪼개짐-시각화"><span class="header-section-number">2.10</span> 히트맵으로 섞임·쪼개짐 시각화</h3>
+<p>교차표를 히트맵으로 그리면:</p>
 <ul>
-<li>특정 숫자 열(column)이 여러 군집 행(row)으로 퍼져 있으면 → 그 숫자는 쪼개짐</li>
-<li>특정 군집 행(row)이 여러 숫자 열(column)에 걸쳐 있으면 → 그 군집은 섞임</li>
+<li>특정 숫자 <strong>열</strong>이 여러 군집 <strong>행</strong>으로 퍼져 있으면 → 그 숫자는 쪼개짐</li>
+<li>특정 군집 <strong>행</strong>이 여러 숫자 <strong>열</strong>에 걸쳐 있으면 → 그 군집은 섞임</li>
 </ul>
-<p>또한 군집 번호는 임의이므로, 보기 좋게 대표 숫자 → 순도 → 크기 순으로 군집을 정렬해 시각화하면 해석이 훨씬 쉬워진다.</p>
+<p>군집 번호는 임의이므로 대표 숫자 → 순도 → 크기 순으로 정렬해 시각화하면 해석이 용이해진다.</p>
 </section>
-<section id="숫자별-상위-군집-비중top3-share-출력의-의미" class="level5">
-<h5 class="anchored" data-anchor-id="숫자별-상위-군집-비중top3-share-출력의-의미">숫자별 상위 군집 비중(top3 share) 출력의 의미</h5>
-<p>각 숫자 (d)에 대해, 그 숫자 표본을 가장 많이 담는 상위 3개 군집의 비율을 출력한다.</p>
+<section id="숫자별-상위-군집-비중top3-share" class="level3" data-number="2.11">
+<h3 data-number="2.11" class="anchored" data-anchor-id="숫자별-상위-군집-비중top3-share"><span class="header-section-number">2.11</span> 숫자별 상위 군집 비중(top3 share)</h3>
 <ul>
-<li>상위 1~3개 비중이 매우 높다 → 해당 숫자는 소수 군집에 집중(쪼개짐이 작음)</li>
-<li>상위 3개 비중이 낮고 군집이 많이 등장한다 → 해당 숫자는 다양한 형태로 여러 군집에 분해(쪼개짐이 큼)</li>
+<li>상위 1~3개 비중이 높다 → 해당 숫자는 소수 군집에 집중(쪼개짐 작음)</li>
+<li>상위 3개 비중이 낮다 → 다양한 형태로 여러 군집에 분해(쪼개짐 큼)</li>
 </ul>
-</section>
-<section id="핵심-정리한-문단" class="level5">
-<h5 class="anchored" data-anchor-id="핵심-정리한-문단">핵심 정리(한 문단)</h5>
-<p>GMM(BIC-best) 군집 결과는 단순히 “10개 숫자를 10개 군집으로 맞췄는가”보다, 숫자별 형태 다양성 때문에 하나의 숫자가 여러 군집으로 분해되는 현상과 군집 내부에 여러 숫자가 섞이는 현상을 함께 보여준다. 이때 군집별 순도는 “군집이 얼마나 순수한가”를, 숫자별 분할 지표는 “숫자가 얼마나 쪼개졌는가”를 나타내며, overall purity(majority vote) 는 전체적인 구조 대응 수준을 한 줄로 요약한다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+핵심 정리
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>GMM(BIC-best) 군집 결과는 “10개 숫자를 10개 군집으로 맞췄는가”보다, 숫자별 형태 다양성 때문에 <strong>하나의 숫자가 여러 군집으로 분해되는 현상</strong>과 <strong>군집 내부에 여러 숫자가 섞이는 현상</strong>을 함께 보여준다. 군집별 순도는 “군집이 얼마나 순수한가”를, 숫자별 분할 지표는 “숫자가 얼마나 쪼개졌는가”를, overall purity는 전체 구조 대응 수준을 한 줄로 요약한다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1013,7 +1240,7 @@ method  K_sil_best  silhouette_sil_best wss_sil_best    ARI_sil_best    NMI_sil_
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Cluster summary (major digit &amp; purity) ==="</span>)</span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>display(cluster_summary)</span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 2) “한 숫자(digit)가 몇 개 클러스터로 쪼개졌는가?” =====</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 2) "한 숫자(digit)가 몇 개 클러스터로 쪼개졌는가?" =====</span></span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 기준 A: 그 숫자 샘플 중 80%를 설명하는 데 필요한 클러스터 개수</span></span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 기준 B: 그 숫자에서 표본이 일정 이상(예: &gt;=10개) 들어있는 클러스터 개수</span></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="dv">10</span></span>
@@ -1051,7 +1278,7 @@ method  K_sil_best  silhouette_sil_best wss_sil_best    ARI_sil_best    NMI_sil_
 <span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"=== Digit split summary ==="</span>)</span>
 <span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>display(digit_split)</span>
 <span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 3) 히트맵(클러스터 x 숫자)로 “쪼개짐/섞임” 시각화 =====</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 3) 히트맵(클러스터 x 숫자)로 "쪼개짐/섞임" 시각화 =====</span></span>
 <span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co"># 보기 좋게: 클러스터를 대표숫자→순도→크기 순으로 정렬</span></span>
 <span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>order <span class="op">=</span> cluster_summary.sort_values([<span class="st">"major_digit"</span>,<span class="st">"purity"</span>,<span class="st">"size"</span>], ascending<span class="op">=</span>[<span class="va">True</span>, <span class="va">False</span>, <span class="va">False</span>]).index</span>
 <span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>ct_ordered <span class="op">=</span> ct.loc[order]</span>
@@ -1066,7 +1293,7 @@ method  K_sil_best  silhouette_sil_best wss_sil_best    ARI_sil_best    NMI_sil_
 <span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>plt.yticks([])  <span class="co"># 클러스터가 많으니 y축 라벨은 생략</span></span>
 <span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
 <span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 4) (선택) “숫자별로 상위 클러스터 3개” 출력 =====</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="co"># ===== 4) (선택) "숫자별로 상위 클러스터 3개" 출력 =====</span></span>
 <span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10</span>):</span>
 <span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> ct[d].sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> s.<span class="bu">sum</span>()</span>
@@ -1146,79 +1373,129 @@ digit 8: top3 clusters shares -&gt; {6: 0.483, 7: 0.207, 0: 0.109}
 digit 9: top3 clusters shares -&gt; {9: 0.367, 7: 0.211, 6: 0.117}</code></pre>
 </section>
 </section>
-<section id="전통적-군집분석traditional-clustering" class="level4">
-<h4 class="anchored" data-anchor-id="전통적-군집분석traditional-clustering">3. 전통적 군집분석(Traditional Clustering)</h4>
-<p>이 절의 코드는 거리 기반 전통적 군집방법인 K-means와 계층적 군집(Agglomerative Clustering: Ward, Complete)을 동일 데이터에서 비교한다. 비교 기준은 내부 평가 지표인 Silhouette와 WSS(Within-cluster Sum of Squares), 그리고 실제 라벨이 존재하는 경우에만 계산 가능한 외부 평가 지표 ARI와 NMI이다. 외부 지표는 비지도 학습의 일반적 상황에서는 사용할 수 없으며, 여기서는 평가 목적으로만 활용된다.</p>
-<section id="기본-설정과-데이터-준비" class="level5">
-<h5 class="anchored" data-anchor-id="기본-설정과-데이터-준비">기본 설정과 데이터 준비</h5>
-<p>코드는 numpy, pandas, matplotlib을 불러오고 군집 알고리즘과 평가 지표를 import한다.</p>
+<section id="전통적-군집분석" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="전통적-군집분석"><span class="header-section-number">3</span> 전통적 군집분석</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이 절의 목적
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>거리 기반 전통적 군집방법인 K-means와 계층적 군집(Ward, Complete)을 동일 데이터에서 비교한다. 비교 기준:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>지표 유형</th>
+<th>지표</th>
+<th>비고</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>내부 지표</td>
+<td>Silhouette, WSS</td>
+<td>정답 라벨 없이도 계산 가능</td>
+</tr>
+<tr class="even">
+<td>외부 지표</td>
+<td>ARI, NMI</td>
+<td>정답 라벨이 있을 때만 사용 가능 — 여기서는 평가 목적으로만 활용</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="기본-설정과-데이터-준비" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="기본-설정과-데이터-준비"><span class="header-section-number">3.1</span> 기본 설정과 데이터 준비</h3>
 <ul>
-<li>군집 알고리즘: KMeans, AgglomerativeClustering</li>
-<li>평가 지표: silhouette_score, adjusted_rand_score, normalized_mutual_info_score</li>
+<li>군집 알고리즘: <code>KMeans</code>, <code>AgglomerativeClustering</code></li>
+<li>평가 지표: <code>silhouette_score</code>, <code>adjusted_rand_score</code>, <code>normalized_mutual_info_score</code></li>
+<li><code>RANDOM_STATE = 42</code> 설정으로 결과 재현성 확보</li>
+<li>거리 기반 군집은 스케일에 민감하므로 표준화된 <code>X_std</code> 사용</li>
+<li>군집 수 후보: <span class="math inline">\(K = 2, \ldots, 20\)</span></li>
 </ul>
-<p>난수 고정값 RANDOM_STATE=42를 설정하여 결과 재현성을 확보한다.</p>
-<p>거리 기반 군집은 변수 스케일의 영향을 크게 받으므로, 분석에는 표준화된 데이터 X_std를 사용한다. 또한 군집 수 후보는 K=2부터 K=20까지 설정하여 최적 K를 탐색한다.</p>
 </section>
-<section id="wss-계산-함수의-의미" class="level5">
-<h5 class="anchored" data-anchor-id="wss-계산-함수의-의미">WSS 계산 함수의 의미</h5>
-<p>WSS는 군집 내부 응집도를 나타내는 대표적인 지표이다. <span class="math inline">\(WSS = \sum_{k=1}^{K}\sum_{i \in C_k} |x_i - \mu_k|^2\)</span>. 여기서 <span class="math inline">\(\mu_k\)</span> 는 군집 k의 중심이다.</p>
-<p>K-means는 inertia_로 WSS를 직접 제공하지만, 계층군집은 그렇지 않다. 따라서 compute_wss(X, labels) 함수를 만들어 모든 방법에 동일한 정의의 WSS를 적용한다. 이렇게 하면 서로 다른 알고리즘을 공정하게 비교할 수 있다.</p>
+<section id="wss-계산-함수" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="wss-계산-함수"><span class="header-section-number">3.2</span> WSS 계산 함수</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+WSS 정의
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[WSS = \sum_{k=1}^{K} \sum_{i \in C_k} \|x_i - \mu_k\|^2, \quad \mu_k \text{: 군집 } k \text{의 중심}\]</span></p>
+<p>K-means는 <code>inertia_</code>로 WSS를 직접 제공하지만, 계층군집은 그렇지 않다. <code>compute_wss(X, labels)</code> 함수를 만들어 <strong>모든 방법에 동일한 WSS 정의를 적용</strong>하면 공정한 비교가 가능하다.</p>
+</div>
+</div>
 </section>
-<section id="elbow-자동-선택-함수" class="level5">
-<h5 class="anchored" data-anchor-id="elbow-자동-선택-함수">Elbow 자동 선택 함수</h5>
-<p>Elbow 방법은 WSS 감소 곡선에서 꺾이는 지점을 찾아 적절한 K를 선택하는 방식이다. 일반적으로는 그래프를 보고 사람이 판단하지만, 코드에서는 2차 차분을 이용해 자동으로 꺾임이 큰 지점을 찾는다.</p>
-<p>절차는 다음과 같다.</p>
-<ul>
+<section id="elbow-자동-선택-함수" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="elbow-자동-선택-함수"><span class="header-section-number">3.3</span> Elbow 자동 선택 함수</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Elbow 자동화 절차
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>WSS 감소 곡선에서 꺾이는 지점을 찾아 적절한 <span class="math inline">\(K\)</span>를 자동 선택한다.</p>
+<ol type="1">
 <li>WSS 값을 0~1 범위로 정규화</li>
 <li>1차 차분과 2차 차분 계산</li>
-<li>2차 차분 절댓값이 가장 큰 지점을 Elbow로 선택</li>
-</ul>
+<li><strong>2차 차분 절댓값이 가장 큰 지점을 Elbow로 선택</strong></li>
+</ol>
 <p>이는 WSS 감소 속도가 급격히 완만해지는 지점을 수치적으로 탐지하는 방법이다.</p>
+</div>
+</div>
 </section>
-<section id="k별-군집-수행-및-지표-계산" class="level5">
-<h5 class="anchored" data-anchor-id="k별-군집-수행-및-지표-계산">K별 군집 수행 및 지표 계산</h5>
-<p>각 K(2~20)에 대해 다음 과정을 수행한다.</p>
-<p><strong>(1) K-means</strong></p>
-<p>각 K에 대해 KMeans를 실행하고 군집 라벨 z를 얻는다.</p>
-<ul>
-<li>Silhouette 계산</li>
-<li>WSS는 inertia_ 사용</li>
-<li>ARI, NMI는 실제 라벨 y와 비교하여 계산</li>
-</ul>
-<p>Silhouette는 군집 내부 응집도와 군집 간 분리도를 동시에 반영하며 값이 클수록 좋다. WSS는 작을수록 좋다. ARI와 NMI는 실제 구조와의 일치도를 나타내며 클수록 좋다.</p>
-<p><strong>(2) 계층군집: Ward, Complete</strong></p>
-<p>AgglomerativeClustering을 사용하여 군집을 생성한다. Ward는 분산 증가를 최소화하는 방식이며, Complete는 최대 거리 기준으로 군집을 병합한다.</p>
-<p>계층군집은 inertia가 없으므로 compute_wss로 WSS를 계산한다. Silhouette와 외부 지표 역시 동일하게 계산한다.</p>
-<p>이 과정을 통해 방법 × K 조합별 성능이 trad_results에 저장된다.</p>
+<section id="k별-군집-수행-및-지표-계산" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="k별-군집-수행-및-지표-계산"><span class="header-section-number">3.4</span> K별 군집 수행 및 지표 계산</h3>
+<p>각 <span class="math inline">\(K(2 \sim 20)\)</span>에 대해 다음을 수행한다.</p>
+<p><strong>K-means</strong>: <code>KMeans</code> 실행 → silhouette, WSS(<code>inertia_</code>), ARI, NMI 계산</p>
+<p><strong>계층군집(Ward, Complete)</strong>: <code>AgglomerativeClustering</code> 실행 → <code>compute_wss</code>로 WSS 계산, silhouette·외부지표 동일하게 계산</p>
+<p>방법 × K 조합별 성능이 <code>trad_results</code>에 저장된다.</p>
 </section>
-<section id="k-선택-기준-비교" class="level5">
-<h5 class="anchored" data-anchor-id="k-선택-기준-비교">K 선택 기준 비교</h5>
-<p>방법별로 두 가지 기준을 적용한다.</p>
+<section id="k-선택-기준-비교" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="k-선택-기준-비교"><span class="header-section-number">3.5</span> K 선택 기준 비교</h3>
 <ul>
-<li>Silhouette가 최대가 되는 K 선택: <span class="math inline">\(K^*_{sil} = \arg\max_K silhouette(K)\)</span></li>
-<li>Elbow 자동 선택 K: 이 두 기준으로 선택된 K와 그때의 지표를 selection_table에 정리한다.</li>
+<li><strong>Silhouette-best</strong>: <span class="math inline">\(K^*_{sil} = \arg\max_K \text{silhouette}(K)\)</span> — 분리도 중심</li>
+<li><strong>Elbow-best</strong>: 2차 차분 자동 선택 — 응집도 감소 패턴 중심</li>
 </ul>
-<p>Silhouette 기준은 분리도 중심의 선택이며, Elbow 기준은 응집도 감소 패턴 중심의 선택이다.</p>
-</section>
-<section id="시각화-해석" class="level5">
-<h5 class="anchored" data-anchor-id="시각화-해석">시각화 해석</h5>
-<p>코드는 방법별로 다음 두 곡선을 그린다.</p>
+<p>두 기준이 같은 <span class="math inline">\(K\)</span>를 제시하면 선택이 명확하지만, 다를 경우 해석과 분석 목적을 고려해야 한다.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이 분석의 의미
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>단순한 알고리즘 실행이 아니라, <strong>“군집 수 선택”과 “지표 해석”</strong>이라는 군집분석의 핵심 문제를 학습하기 위한 구조이다.</p>
 <ul>
-<li>WSS Elbow curve</li>
-<li>Silhouette curve</li>
+<li>동일 데이터에서 여러 방법 비교</li>
+<li><strong>내부 지표와 외부 지표의 차이</strong> 이해</li>
+<li>K 선택이 단일 기준으로 결정되지 않음을 확인</li>
+<li>이후 GMM 등 확률모형 기반 군집과의 구조적 비교 준비</li>
 </ul>
-<p>WSS는 K 증가에 따라 항상 감소한다. 따라서 감소 속도가 둔화되는 지점이 중요하다. Silhouette는 반드시 단조 증가하지 않으며, 데이터 구조에 따라 특정 K에서 최대값을 가진다. 두 기준이 동일한 K를 제시하면 선택이 명확하지만, 다를 경우 해석과 분석 목적을 고려해야 한다.</p>
-</section>
-<section id="분석적-의미" class="level5">
-<h5 class="anchored" data-anchor-id="분석적-의미">분석적 의미</h5>
-<p>이 전통적 군집 분석 코드는 단순히 알고리즘을 실행하는 데 목적이 있지 않다.</p>
-<ul>
-<li>동일한 데이터에서 여러 방법을 비교한다.</li>
-<li>내부 지표와 외부 지표의 차이를 이해한다.</li>
-<li>K 선택이 단일 기준으로 결정되지 않음을 보여준다.</li>
-<li>이후 GMM과 같은 확률모형 기반 군집과 구조적으로 비교할 준비를 한다.</li>
-</ul>
-<p>즉, 이 코드는 군집 알고리즘의 성능 비교를 넘어, “군집 수 선택”과 “지표 해석”이라는 군집분석의 핵심 문제를 학습하기 위한 구조를 갖고 있다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -1447,39 +1724,130 @@ digit 9: top3 clusters shares -&gt; {9: 0.367, 7: 0.211, 6: 0.117}</code></pre>
 <span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a>display(comparison_sorted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>이 절에서는 표준화된 digits 데이터(X_std)를 대상으로 전통적 군집방법 세 가지(KMeans, Hierarchical(Ward), Hierarchical(Complete))를 적용했을 때의 성능 지표를 해석한다. 비교는 내부 지표(silhouette, WSS)와 외부 지표(ARI, NMI)를 함께 사용한다. 내부 지표는 실제 라벨이 없는 일반적 군집 상황에서도 사용 가능한 반면, 외부 지표는 digits처럼 정답 라벨이 존재하는 데이터에서만 계산 가능하므로 여기서는 평가 목적의 참고값으로 이해한다.</p>
 </section>
-<section id="hierarchicalcomplete의-특징적-결과-해석" class="level5">
-<h5 class="anchored" data-anchor-id="hierarchicalcomplete의-특징적-결과-해석">Hierarchical(Complete)의 특징적 결과 해석</h5>
-<p>Hierarchical(Complete)는 silhouette 값이 K=2에서 0.7844로 매우 크게 나타난다. 이는 군집 간 분리가 매우 명확하다는 뜻처럼 보이지만, digits 데이터에서 이 값은 실제 의미 있는 “숫자 10개 분류”와는 거의 무관한 형태로 얻어졌다고 해석해야 한다. 실제로 ARI는 0.000002, NMI는 0.001556으로 거의 0에 가깝다. 즉, complete linkage는 두 개 군집으로 나눌 때 데이터의 어떤 거친 구조(예: 전체 밝기, 획의 양, 특정 픽셀의 총합 등)를 기준으로 크게 분리할 수는 있으나, 그 분리가 숫자 라벨(0~9)과는 일치하지 않는다.</p>
-<p>K를 늘려도 이 경향은 크게 바뀌지 않는다. 예를 들어 K=3에서도 silhouette 0.7798로 매우 높지만 ARI/NMI는 여전히 거의 0이다. K가 5~11로 증가하면 silhouette는 0.43 수준 또는 0.38 수준까지 내려가지만, ARI/NMI가 의미 있게 올라가지 않는다. 따라서 이 결과는 complete linkage가 내부 분리도(silhouette) 관점에서는 “큰 덩어리 분리”를 잘 만들 수 있으나, digits의 실제 클래스 구조를 복원하는 군집으로는 부적합하다는 점을 보여준다.</p>
-<p>요약하면, complete linkage에서는 silhouette가 매우 높게 나오는 구간이 존재하더라도 그것만으로 군집이 “잘 되었다”고 결론내리면 안 된다. 특히 실제 라벨 구조가 존재하는 벤치마크에서는 ARI/NMI 같은 외부 지표를 함께 확인해야 하며, 내부 지표가 높지만 외부 지표가 0에 가까운 경우는 데이터의 다른 요인(크기/강도/밀도 등)에 의해 단순 분리만 된 상황으로 해석하는 것이 타당하다.</p>
-</section>
-<section id="hierarchicalward의-결과-해석" class="level5">
-<h5 class="anchored" data-anchor-id="hierarchicalward의-결과-해석">Hierarchical(Ward)의 결과 해석</h5>
-<p>Hierarchical(Ward)는 silhouette가 가장 큰 K가 20이며, 이때 silhouette는 0.1528로 크지 않다. 그러나 ARI는 0.6881, NMI는 0.7950으로 매우 높다. 이는 Ward 방식이 digits의 실제 숫자 구조를 상당히 잘 반영하는 군집을 만들었음을 의미한다. 여기에서 silhouette가 낮게 나오는 이유는 digits 데이터가 본질적으로 고차원(64차원)이고 클래스 간 경계가 단순히 “가까운 거리로 뭉쳐지는 형태”만으로 설명되기 어렵기 때문이다. 즉, 실제 클래스와의 대응이 좋더라도 군집 간 분리도가 단순 거리 기반으로 크게 벌어지지 않으면 silhouette는 높게 나오지 않을 수 있다.</p>
-<p>또한 Ward의 elbow 선택 결과는 K=3인데, 이때 silhouette 0.0916, ARI 0.2761, NMI 0.4934로 성능이 Silhouette-best(K=20) 대비 크게 떨어진다. 이는 WSS의 꺾임(응집도 감소 패턴)을 기준으로 선택한 K가 digits의 클래스 구조(10개)를 반영하는데 충분히 세분화되지 못했음을 의미한다. 따라서 이 데이터에서는 elbow 자동 선택이 지나치게 작은 K를 제안할 수 있고, 그 결과 외부 지표 관점에서 성능이 크게 저하될 수 있음을 보여준다.</p>
-<p>정리하면 Ward 결과는 내부 지표만 보면 그다지 인상적이지 않지만, 외부 지표 관점에서는 가장 강력한 전통적 방법으로 나타난다. 이는 “군집 품질을 무엇으로 정의하느냐”에 따라 해석이 달라지는 전형적인 사례이다.</p>
-</section>
-<section id="kmeans의-결과-해석" class="level5">
-<h5 class="anchored" data-anchor-id="kmeans의-결과-해석">KMeans의 결과 해석</h5>
-<p>KMeans는 silhouette 기준 최적 K가 15이며, 이때 silhouette는 0.1583으로 Ward(K=20)의 silhouette 0.1528과 비슷한 수준이다. 그러나 외부 지표는 ARI 0.5683, NMI 0.6882로 Ward보다 낮다. 이는 KMeans가 digits 구조를 어느 정도 반영하긴 하지만, 군집의 모양이 구형(spherical)이고 분산이 비슷하다는 가정에 가까운 형태로 작동하기 때문에 digits의 복잡한 변형(필기체 다양성, 특정 숫자 간 모양 유사성)을 완전히 반영하기는 어렵다는 점을 시사한다.</p>
-<p>KMeans의 elbow 선택 결과는 K=18이며, 이때 silhouette 0.1555, ARI 0.5241, NMI 0.6832로 silhouette-best(K=15)와 큰 차이가 없다. 즉, KMeans에서는 Silhouette-best와 Elbow-best가 비교적 가까운 K를 제안하고, 외부 지표도 큰 폭으로 흔들리지 않는다. 이는 KMeans가 WSS 기반의 목적함수(inertia)를 직접 최소화하는 알고리즘이어서 WSS 기반 선택과의 정합성이 상대적으로 더 높은 편이기 때문이다.</p>
-</section>
-<section id="전통적-방법-간-종합-비교요약" class="level5">
-<h5 class="anchored" data-anchor-id="전통적-방법-간-종합-비교요약">전통적 방법 간 종합 비교(요약)</h5>
-<p>전통적 군집 결과를 종합하면 다음과 같은 결론이 자연스럽다.</p>
-<p><strong>complete linkage</strong>는 silhouette 값이 매우 높게 나올 수 있으나, digits의 실제 숫자 구조와의 대응(ARI/NMI)은 거의 0에 가깝다. 내부 지표의 높음이 곧바로 유의미한 군집을 의미하지 않음을 보여준다.</p>
-<p><strong>Ward linkage</strong>는 silhouette는 낮지만 ARI/NMI가 매우 높아, digits의 클래스 구조를 가장 잘 반영한다. 고차원 이미지형 데이터에서는 “클래스 복원 성능”과 “거리 기반 분리도”가 반드시 같은 방향으로 움직이지 않을 수 있음을 시사한다.</p>
-<p><strong>KMeans</strong>는 Ward보다 외부 지표가 낮지만 전반적으로 안정적이며, elbow 선택과 silhouette 선택의 차이가 비교적 작다. 다만 digits와 같은 복잡한 형태 데이터에서는 Ward에 비해 구조 복원력이 떨어질 수 있다.</p>
-</section>
-<section id="비교표와의-연결" class="level5">
-<h5 class="anchored" data-anchor-id="비교표와의-연결">비교표와의 연결</h5>
-<p>요약 비교표에서는 silhouette-best 기준으로 각 방법을 한 줄로 대표시켰을 때,</p>
+<section id="hierarchicalcomplete-결과-해석" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="hierarchicalcomplete-결과-해석"><span class="header-section-number">3.6</span> Hierarchical(Complete) 결과 해석</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Complete Linkage의 함정: silhouette 높음 ≠ 좋은 군집
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>Hierarchical(Ward) (Sil-best): K=20, ARI=0.6881, NMI=0.7950</li>
-<li>KMeans (Sil-best): K=15, ARI=0.5683, NMI=0.6882</li>
-<li>Hierarchical(Complete) (Sil-best): K=2, ARI≈0, NMI≈0</li>
+<li>K=2에서 silhouette <strong>0.7844로 매우 높음</strong> — 그러나 ARI=0.000002, NMI=0.001556으로 <strong>거의 0</strong></li>
+<li>Complete linkage는 “큰 덩어리 분리(전체 밝기, 획의 양 등)”는 잘 만들 수 있으나, <strong>digits의 실제 클래스 구조와 일치하지 않는다.</strong></li>
+<li>K를 늘려도(K=3: silhouette 0.7798, ARI≈0) 이 경향은 크게 바뀌지 않는다.</li>
 </ul>
-<p>과 같은 순서로 나타난다. 따라서 digits 데이터에서 전통적 군집만 놓고 본다면, 실제 라벨 구조를 가장 잘 반영하는 후보는 Ward, 그 다음이 KMeans이며, complete linkage는 내부 지표만 보고 선택할 경우 잘못된 결론으로 이어질 위험이 큰 방법으로 해석된다.</p>
+<p><strong>결론</strong>: 내부 지표(silhouette)가 높더라도 외부 지표(ARI/NMI)가 0에 가까운 경우는, 데이터의 다른 요인(크기/강도/밀도)에 의해 단순 분리만 된 상황으로 해석해야 한다. 외부 지표를 반드시 함께 확인해야 한다.</p>
+</div>
+</div>
+</section>
+<section id="hierarchicalward-결과-해석" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="hierarchicalward-결과-해석"><span class="header-section-number">3.7</span> Hierarchical(Ward) 결과 해석</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Ward: 내부 지표는 낮지만 외부 지표는 최강
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Silhouette-best K=20, silhouette=<strong>0.1528(낮음)</strong> — 그러나 ARI=<strong>0.6881</strong>, NMI=<strong>0.7950(매우 높음)</strong></li>
+<li>digits 데이터는 고차원(64차원)이고 클래스 간 경계가 “단순 거리”만으로 설명되기 어렵기 때문에, 실제 클래스와의 대응이 좋더라도 silhouette는 높게 나오지 않을 수 있다.</li>
+<li>Elbow-best(K=3): silhouette=0.0916, ARI=0.2761, NMI=0.4934 — Sil-best 대비 크게 떨어짐 → elbow 자동 선택이 너무 작은 K를 제안할 수 있음</li>
+</ul>
+<p><strong>결론</strong>: “군집 품질을 무엇으로 정의하느냐”에 따라 해석이 달라지는 전형적인 사례.</p>
+</div>
+</div>
+</section>
+<section id="kmeans-결과-해석" class="level3" data-number="3.8">
+<h3 data-number="3.8" class="anchored" data-anchor-id="kmeans-결과-해석"><span class="header-section-number">3.8</span> KMeans 결과 해석</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+KMeans: 안정적인 베이스라인
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Sil-best K=15, silhouette=0.1583 / ARI=0.5683, NMI=0.6882 — Ward보다 외부 지표 낮음</li>
+<li>구형 군집·동분산 가정 때문에 digits의 복잡한 변형(필기체 다양성, 숫자 간 모양 유사성)을 완전히 반영하기 어렵다.</li>
+<li>Elbow-best(K=18): silhouette=0.1555, ARI=0.5241 → Sil-best와 큰 차이 없음 — KMeans는 WSS 기반 목적함수와 정합성이 높은 편</li>
+</ul>
+<p><strong>결론</strong>: 전반적으로 안정적이며, 이후 임베딩 기반 방법과 비교하는 기준선으로 적합.</p>
+</div>
+</div>
+</section>
+<section id="전통적-방법-간-종합-비교" class="level3" data-number="3.9">
+<h3 data-number="3.9" class="anchored" data-anchor-id="전통적-방법-간-종합-비교"><span class="header-section-number">3.9</span> 전통적 방법 간 종합 비교</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+세 방법 한눈 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 26%">
+<col style="width: 24%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>K(Sil-best)</th>
+<th>silhouette</th>
+<th>ARI</th>
+<th>NMI</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hierarchical(Ward)</td>
+<td>20</td>
+<td>0.153</td>
+<td><strong>0.688</strong></td>
+<td><strong>0.795</strong></td>
+<td>외부 지표 최강, 내부 지표 낮음</td>
+</tr>
+<tr class="even">
+<td>KMeans</td>
+<td>15</td>
+<td>0.158</td>
+<td>0.568</td>
+<td>0.688</td>
+<td>안정적 베이스라인</td>
+</tr>
+<tr class="odd">
+<td>Hierarchical(Complete)</td>
+<td>2</td>
+<td><strong>0.784</strong></td>
+<td>≈0</td>
+<td>≈0</td>
+<td>내부 지표 높음 ≠ 유의미한 군집</td>
+</tr>
+</tbody>
+</table>
+<p>digits 데이터에서 전통적 군집만 놓고 보면: - <strong>실제 라벨 구조를 가장 잘 반영</strong>: Ward → KMeans 순 - <strong>Complete linkage</strong>: 내부 지표만 보고 선택하면 잘못된 결론 도출 위험</p>
+</div>
+</div>
 <pre class="text"><code>
 method  K   silhouette  wss ARI NMI
 0   Hierarchical(Complete)  2   0.784424    106721.094913   0.000002    0.001556
@@ -1513,59 +1881,91 @@ method  K_sil_best  silhouette_sil_best wss_sil_best    ARI_sil_best    NMI_sil_
 3   Hierarchical(Complete) (Sil-best)   2   0.784424    106721.094913   0.000002    0.001556    NaN NaN</code></pre>
 </section>
 </section>
-<section id="표현기반-군집representation-based-clustering" class="level4">
-<h4 class="anchored" data-anchor-id="표현기반-군집representation-based-clustering">4. 표현기반 군집(Representation-based Clustering)</h4>
-<p>이 절의 코드는 원자료 X(64차원 픽셀 벡터)를 그대로 군집화하지 않고, 먼저 차원을 줄이거나(표현을 압축하거나) 의미 있는 잠재표현을 학습한 뒤 그 표현 공간에서 군집을 수행한다. 즉, 군집 품질을 높이기 위해 입력 공간을 표현 공간(embedding space)으로 바꾸는 접근이며, 여기서는 PCA 임베딩과 오토인코더 임베딩을 사용한다. 비교의 공정성을 위해 재현성(random seed)을 고정하고, 결과는 기존 비교표 comparison_sorted에 동일한 형식으로 추가한다.</p>
-<section id="공통-설정과-비교의-기준" class="level5">
-<h5 class="anchored" data-anchor-id="공통-설정과-비교의-기준">공통 설정과 비교의 기준</h5>
-<p>코드는 RANDOM_STATE를 설정하고, 원자료 X를 표준화한 X_std를 기본 입력으로 사용한다. 거리 기반 지표(silhouette, WSS)와 군집 알고리즘이 스케일에 민감하기 때문에 표준화 공간을 기본으로 두는 것이 안정적이다. 또한 군집 수 후보는 K=2부터 K=20까지로 두고, 여러 K 중 내부지표 기준으로 최적 K를 선택하거나(GMM은 BIC로 선택), 그 결과를 요약 테이블에 기록한다.</p>
-<p>또한 dims = [2, 10, 20]을 지정하여 PCA의 차원 수를 여러 수준에서 실험한다. 이 값들은 “극단적으로 낮은 차원(2D)”, “중간 정도 차원(10D)”, “상대적으로 큰 차원(20D)”에서 군집 품질이 어떻게 변하는지 관찰하기 위한 설정이다.</p>
-</section>
-<section id="pca-임베딩-생성과-설명력ev의-의미" class="level5">
-<h5 class="anchored" data-anchor-id="pca-임베딩-생성과-설명력ev의-의미">PCA 임베딩 생성과 설명력(EV)의 의미</h5>
-<p>각 q in dims에 대해 PCA(n_components=q)를 적합하고, 임베딩 Z를 만든다. <span class="math inline">\(Z = \text{PCA}_q(X_{\text{std}})\)</span>.</p>
-<p>그리고 explained_variance_ratio_의 합을 계산하여 EV(설명된 분산 비율의 총합)를 기록한다. <span class="math inline">\(EV(q) = \sum_{j=1}^{q} \text{EVR}_j\)</span></p>
-<p>EV는 “q차원으로 줄였을 때 원래 데이터 변동을 얼마나 보존했는가”를 요약하는 값이다. 코드에서는 method 문자열에 EV를 포함시켜, 동일한 q라도 데이터 보존 정도를 함께 확인할 수 있도록 한다.</p>
-</section>
-<section id="pca-kmeans-표현-공간에서의-군집" class="level5">
-<h5 class="anchored" data-anchor-id="pca-kmeans-표현-공간에서의-군집">PCA + KMeans: 표현 공간에서의 군집</h5>
-<p>PCA로 얻은 Z 공간에서 KMeans를 수행한다. 절차는 다음과 같다.</p>
+<section id="표현기반-군집-pca-clustering" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="표현기반-군집-pca-clustering"><span class="header-section-number">4</span> 표현기반 군집 (PCA + Clustering)</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이 절의 구조
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>원자료 <span class="math inline">\(X\)</span>(64차원 픽셀 벡터)를 그대로 군집화하지 않고, 먼저 차원을 줄인 뒤 그 표현 공간에서 군집을 수행한다. <strong>PCA 임베딩 + KMeans/GMM</strong>으로 구성된다. 결과는 기존 비교표 <code>comparison_sorted</code>에 동일한 형식으로 추가된다.</p>
+</div>
+</div>
+<section id="공통-설정" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="공통-설정"><span class="header-section-number">4.1</span> 공통 설정</h3>
 <ul>
-<li>K=2~20에 대해 KMeans를 각각 적합</li>
-<li>각 K에 대해 silhouette, WSS, ARI, NMI 계산</li>
-<li>silhouette가 최대가 되는 K를 선택(Silhouette-best)</li>
-<li>선택된 결과를 new_rows에 1행으로 요약하여 추가</li>
+<li>기준 공간: <code>X_std</code> (표준화 데이터)</li>
+<li>군집 수 후보: <span class="math inline">\(K = 2, \ldots, 20\)</span></li>
+<li>PCA 차원 수: <code>dims = [2, 10, 20]</code> — 극단적으로 낮음 / 중간 / 상대적으로 큰 차원</li>
 </ul>
-<p>여기서 silhouette는 Z 공간에서 계산된다. 즉, 원공간(X_std)에서의 분리도가 아니라 PCA로 압축된 표현 공간에서의 분리도를 의미한다. 따라서 PCA 차원 수 q가 너무 작으면(예: 2D) 군집이 단순화되어 silhouette가 높아질 수도 있지만, 실제 클래스 구조(ARI/NMI)와의 대응은 오히려 나빠질 수 있다.</p>
-<p>반대로 q가 커지면 정보 보존이 늘어 실제 라벨과의 대응이 좋아질 가능성이 있지만, 거리 기반 분리도(silhouette)는 반드시 함께 증가하지는 않는다. WSS는 KMeans의 inertia_로 얻으며, 역시 Z 공간에서의 응집도를 의미한다.</p>
 </section>
-<section id="pca-gmm-bic-기반-모델-선택" class="level5">
-<h5 class="anchored" data-anchor-id="pca-gmm-bic-기반-모델-선택">PCA + GMM: BIC 기반 모델 선택</h5>
-<p>같은 PCA 임베딩 Z 공간에서 GaussianMixture를 학습한다. 이때는 K를 silhouette로 고르지 않고, 모델 선택 기준인 BIC로 (covariance_type, K) 조합을 선택한다.</p>
+<section id="pca-임베딩-생성과-설명력ev" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="pca-임베딩-생성과-설명력ev"><span class="header-section-number">4.2</span> PCA 임베딩 생성과 설명력(EV)</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+EV(설명된 분산비율 합)의 의미
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[Z = \text{PCA}_q(X_\text{std}), \quad EV(q) = \sum_{j=1}^{q} \text{EVR}_j\]</span></p>
+<p>EV는 “<span class="math inline">\(q\)</span>차원으로 줄였을 때 원래 데이터 변동을 얼마나 보존했는가”를 요약하는 값이다. <code>method</code> 문자열에 EV를 포함시켜, 동일한 <span class="math inline">\(q\)</span>라도 데이터 보존 정도를 함께 확인한다.</p>
+</div>
+</div>
+</section>
+<section id="pca-kmeans" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="pca-kmeans"><span class="header-section-number">4.3</span> PCA + KMeans</h3>
+<p><span class="math inline">\(Z\)</span> 공간에서 KMeans 수행 → 각 K에서 silhouette, WSS, ARI, NMI 계산 → <strong>silhouette 최대 K 선택</strong>.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+PCA 차원 수와 성능의 트레이드오프
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li>covariance_type을 spherical, diag, tied, full로 바꿔가며</li>
-<li>K=2~20에 대해 GMM을 모두 적합</li>
-<li>각 조합에서 AIC와 BIC를 계산</li>
-<li>BIC가 최소가 되는 조합을 선택(BIC-best)</li>
-<li>선택된 설정으로 다시 학습해 hard label z_gmm을 생성</li>
-<li>silhouette, WSS, ARI, NMI를 계산하고 결과를 new_rows에 추가</li>
+<li><span class="math inline">\(q\)</span>가 너무 작으면(2D): 군집이 단순화되어 silhouette는 높아지지만 실제 클래스 구조(ARI/NMI)와의 대응은 나빠질 수 있다.</li>
+<li><span class="math inline">\(q\)</span>가 커지면: 정보 보존이 늘어 ARI/NMI가 좋아질 가능성이 있지만, silhouette는 반드시 함께 증가하지는 않는다.</li>
 </ul>
-<p>BIC는 모델 복잡도(모수 개수)를 벌점으로 부과하므로, K를 무작정 크게 키우기보다 “설명력 대비 복잡도가 적절한 모델”을 선택하도록 유도한다. 특히 GMM에서 covariance_type은 군집의 모양을 결정하므로, BIC-best 결과는 “군집 수”와 “군집 모양 가정”을 동시에 최적화한 결과로 해석한다.</p>
+<p><strong>silhouette는 <span class="math inline">\(Z\)</span> 공간에서 계산됨</strong> — 원공간 분리도가 아닌 PCA 압축 공간에서의 분리도이다.</p>
+</div>
+</div>
 </section>
-<section id="comparison_sorted에-결과를-누적하는-이유" class="level5">
-<h5 class="anchored" data-anchor-id="comparison_sorted에-결과를-누적하는-이유">comparison_sorted에 결과를 누적하는 이유</h5>
-<p>각 q에 대해 PCA+KMeans와 PCA+GMM의 최종 요약 행을 new_rows에 모은 뒤, new_df로 만든 다음 기존 comparison_sorted에 concat하여 붙인다. 이후 ARI와 silhouette 기준으로 재정렬하여, 어떤 표현 기반 방법이 가장 높은 외부 성능(ARI)을 내는지, 또는 내부 분리도(silhouette)가 좋은지 한눈에 비교할 수 있게 한다.</p>
-<p>이 구조는 “방법마다 최적 K 선택 기준이 다르더라도, 최종 결과를 동일한 테이블 형식으로 정리하면 비교가 쉬워진다”는 점을 보여준다.</p>
-</section>
-<section id="해석-포인트강의용" class="level5">
-<h5 class="anchored" data-anchor-id="해석-포인트강의용">해석 포인트(강의용)</h5>
-<p>표현기반 군집에서 중요한 관찰 포인트는 다음과 같다.</p>
+<section id="pca-gmm-bic-기반-모델-선택" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="pca-gmm-bic-기반-모델-선택"><span class="header-section-number">4.4</span> PCA + GMM (BIC 기반 모델 선택)</h3>
 <ul>
-<li>표현 차원(q)이 낮을수록 시각화와 분리도는 좋아 보일 수 있지만, 실제 클래스 구조와의 대응이 좋아진다는 보장은 없다. 따라서 silhouette만 보고 결론을 내리면 위험할 수 있다.</li>
-<li>PCA+GMM은 BIC 기반으로 모델 복잡도를 제어하면서 군집 수와 형태 가정을 함께 선택한다. 이는 단순히 K만 바꾸는 방식보다 더 “모델 선택”의 성격이 강하다.</li>
-<li>결과표(comparison_sorted)를 통해 전통적 방법, 모델 기반(GMM), 표현 기반(PCA/AE) 방법이 같은 기준으로 비교되며, 어떤 조합이 digits 구조를 더 잘 복원하는지(ARI/NMI) 확인할 수 있다.</li>
+<li>covariance_type 4종 × K=2~20 조합을 모두 탐색 → <strong>BIC 최소 조합 선택</strong></li>
+<li>BIC는 모델 복잡도를 벌점으로 부과 → “설명력 대비 적절한 복잡도”의 모델 선택</li>
+<li>BIC-best 결과 = “군집 수”와 “군집 모양 가정”을 <strong>동시에 최적화</strong>한 결과</li>
 </ul>
-<p>이 코드는 PCA로 만든 저차원 표현 공간에서 KMeans 또는 GMM을 수행하여 군집을 구성하고, 내부 지표(silhouette, WSS)와 외부 지표(ARI, NMI)를 계산해 기존 비교표에 추가한다. PCA 차원 수(q)를 변화시키면서 정보 보존(EV)과 군집 성능이 어떻게 달라지는지를 함께 관찰하도록 설계되어 있으며, KMeans는 silhouette-best로 K를 선택하는 반면 GMM은 BIC-best로 (covariance_type, K)를 동시에 선택한다는 점에서 서로 다른 “최적화 철학”을 비교할 수 있다.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+표현기반 군집 핵심 관찰 포인트
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>저차원(<span class="math inline">\(q\)</span> 낮음)</strong>: 시각화·분리도는 좋아 보이나 실제 클래스 구조와의 대응 보장 없음</li>
+<li><strong>PCA+GMM</strong>: BIC 기반으로 모델 복잡도를 제어 — 단순히 K만 바꾸는 방식보다 “모델 선택”의 성격이 강함</li>
+<li><strong>비교표 통합</strong>: 전통 방법 / GMM / PCA 기반 방법이 같은 기준으로 비교됨</li>
+</ol>
+</div>
+</div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1711,14 +2111,84 @@ method  K_sil_best  silhouette_sil_best wss_sil_best    ARI_sil_best    NMI_sil_
 <span id="cb15-143"><a href="#cb15-143" aria-hidden="true" tabindex="-1"></a>display(new_df)              <span class="co"># 이번에 추가된 행만 확인</span></span>
 <span id="cb15-144"><a href="#cb15-144" aria-hidden="true" tabindex="-1"></a>display(comparison_sorted)   <span class="co"># 전체 비교표(전통적 + GMM + PCA기반 확장)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="표현기반-군집-결과-해석" class="level5">
-<h5 class="anchored" data-anchor-id="표현기반-군집-결과-해석">표현기반 군집 결과 해석</h5>
-<p>표현기반 군집은 원자료(64차원 픽셀 공간)에서 바로 군집을 수행하기보다, 먼저 저차원 표현공간을 만든 뒤 그 공간에서 군집을 수행한다. 여기서는 PCA로 2차원, 10차원, 20차원 표현을 만든 뒤 KMeans 또는 GMM을 적용한 결과가 정리되어 있다. 표에 제시된 EV는 PCA가 설명하는 누적 분산비율이며, EV가 클수록 원자료의 변동을 더 많이 보존한 표현이라고 볼 수 있다.</p>
-<p>첫째, 2차원 PCA 기반 결과는 silhouette이 매우 높게 나왔지만(0.37~0.39), ARI와 NMI는 낮게 나타났다(ARI 약 0.20~0.33, NMI 약 0.44~0.47). 이는 2차원으로 강하게 압축하면 군집 간 거리 구조가 단순해져 내부지표(silhouette)는 좋아질 수 있으나, 실제 숫자 라벨의 복잡한 형태 차이를 충분히 담지 못해 외부지표(ARI/NMI)에서 불리해질 수 있음을 시사한다. 즉, “보기 좋은 분리”와 “정답 라벨과의 일치”는 다른 목표이며, 저차원으로 과도하게 축약하면 두 목표가 동시에 만족되기 어렵다.</p>
-<p>둘째, 10차원 PCA 기반 결과는 표현기반 군집 가운데 가장 균형이 좋다. EV가 0.589로, 원자료 변동의 약 59%를 보존하면서 ARI가 0.538~0.565, NMI가 0.670~0.708 수준으로 크게 상승한다. 특히 PCA(10D)+GMM(BIC-best, full)이 ARI 0.5649, NMI 0.7076으로 제시된 표현기반 방법 중 상위권이며, 같은 10차원에서 KMeans도 ARI 0.5381, NMI 0.6695로 충분히 경쟁력 있다. 이는 digits 데이터의 구조가 단순한 선형축 2개로는 설명이 어렵지만, 10차원 정도의 선형 표현에서는 숫자 모양의 주요 변동(획의 굵기, 기울기, 부분 패턴)을 상당 부분 보존하기 때문으로 해석할 수 있다.</p>
-<p>셋째, 20차원 PCA 기반 결과는 EV가 0.793까지 올라가며 정보 보존은 더 좋아지지만, 외부지표는 10차원 대비 뚜렷한 추가 이득이 크지 않다. PCA(20D)+KMeans는 ARI 0.5511, NMI 0.6817이고, PCA(20D)+GMM은 ARI 0.5459, NMI 0.6976으로 10차원 GMM의 성능을 넘지 못한다. 이는 10차원 수준에서 이미 “군집에 유리한 핵심 변동”을 상당히 포착했고, 20차원으로 늘리면서 추가되는 성분이 군집을 더 선명하게 만들기보다는 숫자 내 변형(필기체 차이, 노이즈)을 함께 담아 군집 경계를 다소 흐릴 수 있음을 시사한다. 같은 맥락에서 20차원에서는 K가 11~15까지 커지는데, 이는 클래스(0~9)를 넘어 세부 변형을 여러 군집으로 쪼개는 경향과 연결된다.</p>
-<p>넷째, 동일한 PCA 차원에서 KMeans와 GMM을 비교하면, 10차원에서는 GMM이 KMeans보다 ARI/NMI가 약간 더 높다. 이는 공분산을 허용하는 혼합정규모형이 단순 구형 군집을 가정하는 KMeans보다, 임베딩 공간에서의 타원형 분포나 군집별 분산 차이를 더 잘 반영할 수 있기 때문이다. 반면 2차원에서는 두 방법 모두 외부지표가 낮아, 모델 선택의 이득보다 차원 축소로 인한 정보 손실이 더 지배적이라는 해석이 가능하다.</p>
-<p>요약하면, 표현기반 군집에서는 “차원 축소의 정도”가 성능을 좌우한다. 2차원은 내부지표는 좋지만 정답 라벨과의 정합성이 떨어지고, 10차원은 내부지표와 외부지표의 균형이 가장 좋으며, 20차원은 정보 보존은 더 크지만 군집 성능이 반드시 개선되지는 않는다. 따라서 digits와 같은 형태 기반 데이터에서는 PCA 차원을 너무 낮게 잡기보다, 10차원 내외에서 GMM 또는 KMeans를 비교하는 전략이 합리적이다. 이후 단계로 오토인코더나 DEC류 방법을 도입하면 선형 PCA가 담지 못한 비선형 구조까지 표현공간에 반영할 수 있으므로, 10~20차원대의 임베딩을 학습하면서 군집 목적을 함께 최적화하는 방향으로 확장이 자연스럽게 이어진다.</p>
+<section id="표현기반-군집-결과-해석" class="level3" data-number="4.5">
+<h3 data-number="4.5" class="anchored" data-anchor-id="표현기반-군집-결과-해석"><span class="header-section-number">4.5</span> 표현기반 군집 결과 해석</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+PCA 차원별 성능 요약
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 11%">
+<col style="width: 26%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>PCA 차원</th>
+<th>EV</th>
+<th>silhouette</th>
+<th>ARI</th>
+<th>NMI</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2D</td>
+<td>0.216</td>
+<td>0.37~0.39 (높음)</td>
+<td>0.20~0.33 (낮음)</td>
+<td>0.44~0.47</td>
+<td>과압축 → “보기 좋은 분리” ≠ 정답 일치</td>
+</tr>
+<tr class="even">
+<td><strong>10D</strong></td>
+<td>0.589</td>
+<td>0.25~0.29</td>
+<td><strong>0.54~0.56</strong></td>
+<td><strong>0.67~0.71</strong></td>
+<td><strong>내부·외부 균형 최적</strong></td>
+</tr>
+<tr class="odd">
+<td>20D</td>
+<td>0.793</td>
+<td>0.19~0.22</td>
+<td>0.55</td>
+<td>0.68~0.70</td>
+<td>정보 보존 ↑, 성능 이득은 미미</td>
+</tr>
+</tbody>
+</table>
+<p>10차원에서 이미 군집에 유리한 핵심 변동을 상당히 포착한다. 20차원으로 늘리면 노이즈·필기체 차이까지 함께 담겨 군집 경계가 다소 흐릴 수 있다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+KMeans vs GMM (동일 PCA 차원)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>10차원</strong>: GMM이 KMeans보다 ARI/NMI가 약간 더 높다 — 타원형 분포·군집별 분산 차이를 더 잘 반영</li>
+<li><strong>2차원</strong>: 두 방법 모두 외부지표 낮음 — 모델 선택의 이득보다 <strong>차원 축소 정보 손실이 더 지배적</strong></li>
+</ul>
+<p>digits 형태 기반 데이터에서는 <strong>10차원 내외에서 GMM 또는 KMeans를 비교하는 전략</strong>이 합리적이다. 이후 오토인코더/DEC류 방법을 도입하면 선형 PCA가 담지 못한 비선형 구조까지 반영 가능하다.</p>
+</div>
+</div>
 <pre class="text"><code>
 method  K   silhouette  wss ARI NMI AIC BIC
 0   PCA(2D, EV=0.216) + KMeans (Sil-best)   8   0.392024    3563.424744 0.331101    0.472753    NaN NaN
@@ -1740,73 +2210,102 @@ method  K   silhouette  wss ARI NMI AIC BIC
 9   Hierarchical(Complete) (Sil-best)   2   0.784424    106721.094913   0.000002    0.001556    NaN NaN</code></pre>
 </section>
 </section>
-<section id="오토인코더-기반-표현-군집autoencoder-clustering-deep-clustering-개념-실험" class="level4">
-<h4 class="anchored" data-anchor-id="오토인코더-기반-표현-군집autoencoder-clustering-deep-clustering-개념-실험">5. 오토인코더 기반 표현 군집(AutoEncoder + Clustering) deep clustering 개념 실험</h4>
-<p>이 절의 코드는 원자료 X를 직접 군집화하지 않고, 신경망 기반 오토인코더(AutoEncoder)를 이용하여 잠재표현(latent representation)을 학습한 뒤, 그 잠재공간에서 군집을 수행한다. 이는 단순 선형 차원축소(PCA)와 달리 비선형 구조를 반영할 수 있는 표현을 학습한다는 점에서 의미가 있다.</p>
-<section id="오토인코더의-기본-구조" class="level5">
-<h5 class="anchored" data-anchor-id="오토인코더의-기본-구조">오토인코더의 기본 구조</h5>
-<p>오토인코더는 입력을 복원하도록 학습되는 신경망이다. 구조는 다음과 같다. 입력층 → 인코더 → 잠재공간(latent space) → 디코더 → 복원출력. 학습 목적은 다음 손실함수를 최소화하는 것이다.</p>
-<p><span class="math inline">\(\min_{\theta} \sum_{i=1}^{n} |x_i - \hat{x}_i|^2\)</span>, 여기서 <span class="math inline">\(x_i\)</span> 는 원 입력, <span class="math inline">\(\hat{x}_i\)</span> 는 복원된 출력 잠재공간의 차원은 q로 설정한다. 즉, 입력을 q차원으로 압축했다가 다시 원래 차원으로 복원하도록 학습한다.</p>
+<section id="오토인코더-기반-표현-군집-deep-clustering-개념-실험" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="오토인코더-기반-표현-군집-deep-clustering-개념-실험"><span class="header-section-number">5</span> 오토인코더 기반 표현 군집 (Deep Clustering 개념 실험)</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+오토인코더 기본 구조
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>원자료 <span class="math inline">\(X\)</span>를 직접 군집화하지 않고, 신경망 기반 오토인코더(AutoEncoder)로 <strong>잠재표현(latent representation)</strong>을 학습한 뒤 그 잠재공간에서 군집을 수행한다.</p>
+<p><span class="math display">\[\text{입력층} \to \text{인코더} \to \underbrace{\text{잠재공간(} Z, q\text{차원)}}_{\text{군집 수행}} \to \text{디코더} \to \text{복원출력}\]</span></p>
+<p>학습 목적: <span class="math inline">\(\min_{\theta} \sum_{i=1}^{n} \|x_i - \hat{x}_i\|^2\)</span></p>
+<p>PCA와 달리 <strong>비선형 변환</strong>이므로, 데이터의 복잡한 곡선형 구조를 더 잘 포착할 가능성이 있다.</p>
+</div>
+</div>
+<section id="잠재표현z-추출" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="잠재표현z-추출"><span class="header-section-number">5.1</span> 잠재표현(Z) 추출</h3>
+<p>학습 완료 후 인코더 부분만 사용:</p>
+<p><span class="math display">\[Z = \text{Encoder}(X_\text{std})\]</span></p>
+<p>이 <span class="math inline">\(Z\)</span>는 원자료의 비선형 구조가 반영된 임베딩이다.</p>
 </section>
-<section id="잠재표현z-추출" class="level5">
-<h5 class="anchored" data-anchor-id="잠재표현z-추출">잠재표현(Z) 추출</h5>
-<p>학습이 완료되면 인코더 부분만 사용하여 다음을 얻는다.</p>
-<p><span class="math inline">\(Z = Encoder(X_{\text{std}})\)</span></p>
-<p>이 Z는 원자료의 비선형 구조가 반영된 임베딩이다. 차원 수 q는 실험적으로 여러 값(예: 2, 10, 20 등)으로 설정할 수 있다.</p>
-<p>PCA와 달리 오토인코더는 선형 변환이 아니라 비선형 변환이므로, 데이터의 복잡한 곡선형 구조를 더 잘 포착할 가능성이 있다.</p>
-</section>
-<section id="잠재공간에서의-군집-수행" class="level5">
-<h5 class="anchored" data-anchor-id="잠재공간에서의-군집-수행">잠재공간에서의 군집 수행</h5>
-<p>얻어진 Z 공간에서 다음 두 가지 군집을 수행할 수 있다.</p>
+<section id="잠재공간에서의-군집" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="잠재공간에서의-군집"><span class="header-section-number">5.2</span> 잠재공간에서의 군집</h3>
+<p><strong>AutoEncoder + KMeans</strong>: K=2~20에서 silhouette 최대 K 선택</p>
+<p><strong>AutoEncoder + GMM</strong>: covariance_type × K 조합 → BIC 최소 선택</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+재구성 최적화 ≠ 군집 최적화
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>목적</th>
+<th>잠재공간 구조</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>PCA</td>
+<td>분산 최대화</td>
+<td>선형 변환</td>
+</tr>
+<tr class="even">
+<td>AutoEncoder</td>
+<td><strong>복원 오차 최소화</strong></td>
+<td>비선형 변환</td>
+</tr>
+</tbody>
+</table>
+<p>오토인코더 잠재공간은 “군집하기 좋은 공간”이 된다는 보장이 없다. PCA에서 잘 분리되지 않던 구조가 더 명확해질 수도 있고, 반대로 복원 위주 학습 때문에 군집 분리가 뚜렷하지 않을 수도 있다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+지표 해석 관점
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>지표</th>
+<th>의미</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>silhouette</strong></td>
+<td>잠재공간에서 군집 간 분리도</td>
+</tr>
+<tr class="even">
+<td><strong>ARI, NMI</strong></td>
+<td>실제 숫자 구조와의 일치도</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>KMeans</li>
-<li>GMM</li>
+<li>ARI가 높다 → 잠재표현이 실제 클래스 구조를 잘 반영</li>
+<li>silhouette 높고 ARI 낮다 → 잠재공간에서 <strong>다른 요인</strong>(밝기, 획 두께)에 의해 분리된 가능성</li>
 </ul>
-<p><strong>(1) AutoEncoder + KMeans</strong></p>
-<p>K=2~20에 대해 KMeans를 수행하고 다음 지표를 계산한다.</p>
-<p>silhouette(Z 공간에서 계산), WSS, ARI, NMI</p>
-<p>Silhouette가 최대가 되는 K를 선택하고 그 결과를 비교표에 추가한다. 해석상 중요한 점은 silhouette가 Z 공간에서 계산된다는 것이다. 즉, 원공간에서의 거리 구조가 아니라 학습된 표현 공간에서의 군집 응집도와 분리도를 평가하는 것이다.</p>
-<p><strong>(2) AutoEncoder + GMM</strong></p>
-<p>GMM을 적용할 경우 다음을 수행한다.</p>
-<ul>
-<li>covariance_type을 여러 형태로 설정</li>
-<li>K=2~20 범위에서 모든 조합을 탐색</li>
-<li>BIC 기준 최소값을 선택</li>
-</ul>
-<p>선택된 (covariance_type, K) 조합으로 최종 모델을 적합하고 hard label을 생성한다. 이후 silhouette, WSS, ARI, NMI를 계산한다.</p>
-<p>BIC는 모델 복잡도에 대한 벌점을 포함하므로, 잠재공간에서 과도하게 많은 군집을 선택하는 것을 억제하는 역할을 한다.</p>
-</section>
-<section id="pca-기반-표현과의-구조적-차이" class="level5">
-<h5 class="anchored" data-anchor-id="pca-기반-표현과의-구조적-차이">PCA 기반 표현과의 구조적 차이</h5>
-<p>PCA는 선형 변환이므로 데이터의 공분산 구조를 기반으로 분산을 최대한 보존하는 방향으로 차원을 축소한다. 반면 오토인코더는 다음과 같은 차이를 가진다.</p>
-<ul>
-<li>비선형 변환 가능</li>
-<li>은닉층 구조에 따라 복잡한 표현 학습 가능</li>
-<li>재구성 오차 최소화가 목적</li>
-</ul>
-<p>따라서 오토인코더 잠재공간은 “분산 최대화”가 아니라 “복원 최적화” 관점에서 형성된 공간이다. 이 때문에 PCA에서 잘 분리되지 않던 구조가 오토인코더에서는 더 명확해질 수도 있고, 반대로 복원 위주 학습 때문에 군집 분리가 뚜렷하지 않을 수도 있다.</p>
-</section>
-<section id="지표-해석-관점" class="level5">
-<h5 class="anchored" data-anchor-id="지표-해석-관점">지표 해석 관점</h5>
-<p>AutoEncoder 기반 군집 결과를 해석할 때는 다음 세 가지를 함께 본다.</p>
-<ul>
-<li>silhouette:잠재공간에서 군집 간 분리도가 좋은가</li>
-<li>ARI, NMI: 실제 숫자 구조와 얼마나 일치하는가</li>
-<li>K 선택 방식: silhouette-best인지, BIC-best인지에 따라 해석이 달라질 수 있음</li>
-</ul>
-<p>특히 ARI가 높다면, 잠재표현이 실제 클래스 구조를 잘 반영하고 있음을 의미한다. silhouette가 높지만 ARI가 낮다면, 잠재공간에서 다른 요인(밝기, 획 두께 등)에 의해 분리된 가능성을 고려해야 한다.</p>
-</section>
-<section id="비교표에-추가되는-의미" class="level5">
-<h5 class="anchored" data-anchor-id="비교표에-추가되는-의미">비교표에 추가되는 의미</h5>
-<p>최종적으로 AutoEncoder 기반 군집은 comparison_sorted에 추가된다. 이를 통해 다음을 동시에 비교할 수 있다.</p>
-<ul>
-<li>전통적 군집(KMeans, Ward 등)</li>
-<li>PCA 기반 표현 군집</li>
-<li>AutoEncoder 기반 표현 군집</li>
-<li>GMM 모델 기반 군집</li>
-</ul>
-<p>이 구조는 “표현을 바꾸면 군집 품질이 어떻게 달라지는가”를 실험적으로 보여주기 위한 설계이다.</p>
-<p>오토인코더 기반 군집 코드는 먼저 비선형 잠재공간을 학습한 뒤, 그 공간에서 KMeans 또는 GMM을 수행하여 군집을 생성한다. 잠재표현은 복원 오차 최소화를 통해 학습되므로, 단순 분산 최대화 기반의 PCA와 다른 구조를 가진다. 군집 평가는 잠재공간에서의 silhouette와 실제 라벨과의 일치도(ARI, NMI)를 함께 확인하며, 이를 기존 비교표에 누적하여 다양한 군집 전략 간 성능을 종합적으로 비교하도록 구성되어 있다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =========================</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Deep clustering (개념 실험): AutoEncoder 임베딩 + KMeans</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  - 임베딩 공간에서 KMeans를 수행하고 Silhouette-best K를 선택</span></span>
@@ -1932,15 +2431,40 @@ method  K   silhouette  wss ARI NMI AIC BIC
 <span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>display(comparison_sorted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="오토인코더-임베딩-kmeansdeep-clustering-개념-실험-결과-해석" class="level5">
-<h5 class="anchored" data-anchor-id="오토인코더-임베딩-kmeansdeep-clustering-개념-실험-결과-해석">오토인코더 임베딩 + KMeans(“deep clustering 개념 실험”) 결과 해석</h5>
-<p>이번 실험은 픽셀 원공간(64차원)에서 바로 군집을 수행하는 대신, 오토인코더가 학습한 10차원 임베딩 공간으로 데이터를 옮긴 다음 그 임베딩에서 KMeans를 수행한 결과이다. 즉, “표현(임베딩)을 먼저 학습한 뒤 군집을 하는” 가장 단순한 형태의 deep clustering 실험으로 볼 수 있다.</p>
-<p>오토인코더 학습 성능을 나타내는 best val_loss=0.024130은 0~1로 스케일된 입력(X_nn)을 재구성하는 평균제곱오차 기준으로, digits 규모에서는 재구성 품질이 무난하게 확보되었음을 의미한다. 다만 재구성 손실이 낮다고 해서 군집에 최적인 임베딩이 자동으로 만들어지는 것은 아니며, 군집에 필요한 것은 “재구성에 좋은 표현”이 아니라 “클러스터가 잘 분리되는 표현”이라는 점에서 이후 지표를 함께 해석해야 한다.</p>
-<p>임베딩 공간에서 KMeans를 적용한 뒤 silhouette가 최대가 되는 K를 선택했을 때, 최적 K는 9로 나타났고 silhouette=0.2807을 얻었다. 같은 표에서 PCA(10D)+KMeans의 silhouette(0.2872)와 비교하면 내부지표 수준은 매우 비슷한 편이며, AE 임베딩이 최소한 “거리 기반 분리 구조”를 어느 정도 형성하고 있음을 시사한다. 반면 PCA(10D)+GMM의 silhouette(0.2512)보다는 높아서, 단순 내부 분리도 관점에서는 AE+KMeans 조합이 경쟁력 있는 위치에 있다.</p>
-<p>외부지표 기준으로 보면 AE+KMeans는 ARI=0.5977, NMI=0.7012로 나타났다. 이는 표현기반 방법 중 PCA(10D)+KMeans(ARI=0.5381, NMI=0.6695)보다 분명히 개선된 결과이며, PCA(10D)+GMM(ARI=0.5649, NMI=0.7076)과 비교하면 ARI는 더 높고 NMI는 거의 비슷한 수준이다. 다시 말해, 선형 차원축소(PCA)로 만든 10차원 표현보다 오토인코더의 비선형 표현이 digits의 형태 변동을 더 잘 정리해 주었고, 그 결과 정답 라벨과의 정합성(특히 ARI)이 상승한 것으로 해석할 수 있다.</p>
-<p>또 하나의 관찰 포인트는 선택된 K가 9로 나왔다는 점이다. digits의 실제 클래스는 10개이므로, silhouette 기준 최적 K가 9라는 것은 두 개 숫자 클래스가 임베딩 공간에서 충분히 분리되지 못하고 하나의 군집으로 합쳐졌거나, 혹은 하나의 숫자 클래스 내부 변형이 커서 다른 숫자와 비슷한 형태로 섞였을 가능성을 시사한다. 이런 현상은 특히 필기체 변형이 큰 숫자(예: 1과 7, 3과 8, 4와 9 등)에서 흔히 나타나며, 최종적으로는 cluster×digit 교차표에서 어느 숫자가 합쳐졌는지를 확인하는 것이 해석의 핵심이다.</p>
-<p>전체 비교표의 상단을 보면, 전통적 방법 중 Hierarchical(Ward)가 ARI=0.6881, NMI=0.7950으로 여전히 가장 높다. 따라서 이번 AE+KMeans는 “표현학습을 도입했음에도 최고 성능을 즉시 갱신한 것은 아니지만”, 표현기반 군집(PCA류) 대비 성능을 유의미하게 끌어올렸고, deep clustering으로 확장할 때 출발점으로 충분히 설득력 있는 결과라고 정리할 수 있다. 특히 AE 임베딩은 재구성 중심으로 학습되었기 때문에 군집 목적이 직접 반영되지 않았는데도 ARI가 0.60 수준까지 올라왔다는 점은, 이후 DEC류처럼 임베딩 학습과 군집 목적을 동시에 최적화하면 추가 개선 여지가 있음을 뒷받침한다.</p>
-<p>요약하면, 오토인코더 임베딩 + KMeans는 “선형 PCA 표현보다 정답 구조와 더 잘 맞는 비선형 표현을 제공”했고, 그 결과 외부지표(ARI/NMI)가 개선되었다. 다만 K가 9로 선택된 점은 일부 숫자가 군집 단위에서 병합되었을 가능성을 보여주므로, 대표숫자(다수결)와 overall purity, 그리고 대표 이미지(centroid 근접 표본)를 함께 보면 어떤 숫자쌍이 섞였는지까지 자연스럽게 설명할 수 있다.</p>
+<section id="오토인코더-임베딩-kmeans-결과-해석" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="오토인코더-임베딩-kmeans-결과-해석"><span class="header-section-number">5.3</span> 오토인코더 임베딩 + KMeans 결과 해석</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+AE+KMeans 결과 핵심
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>best val_loss=0.024130</strong>: 재구성 품질은 확보되었으나, “재구성에 좋은 표현” ≠ “군집에 좋은 표현”</li>
+<li><strong>최적 K=9, silhouette=0.2807</strong>: PCA(10D)+KMeans(0.2872)와 비슷한 내부지표 수준</li>
+<li><strong>ARI=0.5977, NMI=0.7012</strong>: PCA(10D)+KMeans(ARI=0.5381)보다 분명히 개선</li>
+</ul>
+<p>비선형 표현이 digits의 형태 변동을 더 잘 정리한 덕분에 정답 라벨과의 정합성(ARI)이 상승하였다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+K=9 선택의 의미
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>digits의 실제 클래스는 10개인데 최적 K=9로 선택된 것은, 필기체 변형이 큰 숫자쌍(1↔︎7, 3↔︎8, 4↔︎9 등)이 임베딩 공간에서 충분히 분리되지 못하고 하나의 군집으로 합쳐졌을 가능성을 시사한다. <strong>cluster×digit 교차표</strong>에서 어느 숫자가 합쳐졌는지 확인하는 것이 해석의 핵심이다.</p>
+<p>전통적 방법 중 Hierarchical(Ward)는 ARI=0.6881로 여전히 최고 성능이다. AE+KMeans는 PCA 기반 대비 성능을 유의미하게 끌어올렸으나, DEC류처럼 임베딩 학습과 군집 목적을 동시에 최적화하면 추가 개선 여지가 있다.</p>
+</div>
+</div>
 <pre class="text"><code>[AE] latent_dim=10, best val_loss=0.024130
 method  K   silhouette  wss ARI NMI AIC BIC
 0   AutoEncoder(10D, val_loss=0.02413) + KMeans (S...   9   0.280719    21491.103516    0.597681    0.70121 NaN NaN
@@ -1958,43 +2482,66 @@ method  K   silhouette  wss ARI NMI AIC BIC
 10  Hierarchical(Complete) (Sil-best)   2   0.784424    106721.094913   0.000002    0.001556    NaN NaN</code></pre>
 </section>
 </section>
-<section id="deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화" class="level4">
-<h4 class="anchored" data-anchor-id="deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화">6. Deep clustering (DEC 개념 실험): AE 임베딩 + KL(군집) 동시 최적화</h4>
-<section id="현재까지의-오토인코더-임베딩-kmeans는-무엇인가" class="level5">
-<h5 class="anchored" data-anchor-id="현재까지의-오토인코더-임베딩-kmeans는-무엇인가">현재까지의 오토인코더 임베딩 + KMeans는 무엇인가</h5>
-<p>현재 구현은 두 단계로 분리된 절차이다.</p>
-<ul>
-<li>오토인코더를 재구성 손실(MSE)로 학습해 잠재표현 Z를 만든다.</li>
-<li>고정된 Z 위에서 KMeans를 수행해 군집 라벨을 얻는다.</li>
-</ul>
-<p>이 방식의 핵심은 임베딩 Z가 군집을 위해 학습된 것이 아니라, 입력을 잘 복원하도록 학습된 결과라는 점이다. 따라서 Z 공간이 군집에 유리하도록 형성된다는 보장은 없다.</p>
-</section>
-<section id="dec류-아이디어는-무엇을-추가하는가" class="level5">
-<h5 class="anchored" data-anchor-id="dec류-아이디어는-무엇을-추가하는가">DEC류 아이디어는 무엇을 추가하는가</h5>
-<p>DEC(Deep Embedded Clustering)는 “임베딩 학습 + 군집 목적”을 동시에 최적화하는 방식이다. 절차는 보통 다음 구조를 가진다.</p>
-<ul>
-<li>오토인코더를 먼저 사전학습(pretrain)해서 초기 임베딩 Z0를 얻는다.</li>
-<li>Z0에서 KMeans로 초기 군집 중심 μ_k를 만든다.</li>
-<li>임베딩 z_i와 군집 중심 μ_k 사이 거리로부터 soft assignment q_ik를 정의한다.</li>
-<li>q_ik를 sharpen한 target distribution p_ik를 만든다.</li>
-<li>KL(P||Q)를 최소화하도록 encoder(임베딩)와 군집 중심을 함께 업데이트한다.</li>
-<li>필요하면 재구성 손실(MSE)을 섞어서 임베딩이 붕괴하는 것을 방지한다.</li>
-</ul>
-<p>결과적으로 임베딩 공간 자체가 군집 구조를 더 잘 드러내도록 학습 과정에서 조정된다.</p>
-</section>
-<section id="노트북의-dec-like-셀은-위-개념과-어떻게-연결되는가" class="level5">
-<h5 class="anchored" data-anchor-id="노트북의-dec-like-셀은-위-개념과-어떻게-연결되는가">노트북의 DEC-like 셀은 위 개념과 어떻게 연결되는가</h5>
-<p>노트북의 DEC-like 셀은 다음 요소들을 포함하고 있어 DEC 확장과 직접 연결된다.</p>
-<ul>
-<li>AE 사전학습(pretrain): MSE로 먼저 임베딩을 안정화한다.</li>
-<li>임베딩에서 K 선택: Z0에서 K를 선택하고 KMeans로 초기 중심을 설정한다.</li>
-<li>ClusteringLayer: Student-t 기반으로 q_ik(soft assignment)을 계산한다.</li>
-<li>target_distribution: q_ik를 제곱하고 군집 빈도로 정규화해 p_ik를 만든다.</li>
-<li>학습 목적함수: KL(P||Q) + gamma*MSE 형태로 군집 손실과 재구성 손실을 함께 최소화한다.</li>
-<li>반복 업데이트: 일정 주기마다 p를 갱신하고 라벨 변화율이 작아지면 조기 종료한다.</li>
-</ul>
-<p>따라서 이 셀은 “임베딩을 만든 뒤 군집”에서 “임베딩 학습과 군집 목적 동시 최적화”로 넘어가는, 가장 전형적인 DEC 방향의 확장 실험이라고 해석할 수 있다.</p>
-<p>오토인코더 임베딩 + KMeans는 사후 군집 방식이고, DEC류는 임베딩 학습 자체에 군집 목적(KL divergence)을 넣어 임베딩과 군집을 함께 최적화하는 확장이다. 따라서 질문의 문장(진짜 deep clustering 형태, 임베딩 학습 + 군집 목적 동시 최적화)은 현재 노트북 흐름과 직접적으로 이어지는 다음 단계라고 볼 수 있다.</p>
+<section id="deep-clustering-ae-임베딩-kl군집-동시-최적화-dec-개념-실험" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="deep-clustering-ae-임베딩-kl군집-동시-최적화-dec-개념-실험"><span class="header-section-number">6</span> Deep Clustering: AE 임베딩 + KL(군집) 동시 최적화 (DEC 개념 실험)</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+AE+KMeans vs DEC: 핵심 차이
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>방식</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AE + KMeans</td>
+<td>AE로 임베딩 학습(MSE) → <strong>고정된 Z</strong> 위에서 KMeans 수행</td>
+</tr>
+<tr class="even">
+<td><strong>DEC류</strong></td>
+<td>임베딩 학습 + 군집 목적을 <strong>동시에 최적화</strong> → Z 공간 자체가 군집에 유리하도록 조정</td>
+</tr>
+</tbody>
+</table>
+<p>AE+KMeans에서 Z는 “군집을 위해” 학습된 것이 아니라 “입력 복원을 위해” 학습된 결과이므로, 군집에 유리한 공간이 된다는 보장이 없다.</p>
+</div>
+</div>
+<section id="decdeep-embedded-clustering-절차" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="decdeep-embedded-clustering-절차"><span class="header-section-number">6.1</span> DEC(Deep Embedded Clustering) 절차</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+DEC 학습 구조
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>AE를 재구성 손실(MSE)로 <strong>사전학습(pretrain)</strong> → 초기 임베딩 <span class="math inline">\(Z_0\)</span></li>
+<li><span class="math inline">\(Z_0\)</span>에서 KMeans로 초기 군집 중심 <span class="math inline">\(\mu_k\)</span> 생성</li>
+<li>Student-t 기반 <strong>soft assignment</strong> <span class="math inline">\(q_{ik}\)</span> 정의</li>
+<li><span class="math inline">\(q_{ik}\)</span>를 sharpen한 <strong>target distribution</strong> <span class="math inline">\(p_{ik}\)</span> 생성</li>
+<li><span class="math inline">\(KL(P \| Q) + \gamma \cdot MSE\)</span>를 최소화 → encoder와 군집 중심을 <strong>함께 업데이트</strong></li>
+<li>라벨 변화율이 <code>tol</code> 미만이면 조기 종료</li>
+</ol>
+<p>임베딩 공간 자체가 군집 구조를 더 잘 드러내도록 학습 과정에서 조정된다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================================</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Deep clustering (DEC 개념 실험): AE 임베딩 + KL(군집) 동시 최적화</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  - AE 사전학습(pretrain) 후</span></span>
@@ -2225,14 +2772,46 @@ method  K   silhouette  wss ARI NMI AIC BIC
 <span id="cb19-228"><a href="#cb19-228" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb19-229"><a href="#cb19-229" aria-hidden="true" tabindex="-1"></a>display(comparison_sorted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화-결과-해석" class="level5">
-<h5 class="anchored" data-anchor-id="deep-clustering-dec-개념-실험-ae-임베딩-kl군집-동시-최적화-결과-해석">Deep clustering (DEC 개념 실험): AE 임베딩 + KL(군집) 동시 최적화 결과 해석</h5>
-<p>이번 결과는 오토인코더(AE)가 만든 임베딩을 고정한 뒤 KMeans를 수행하는 단계에서 한 걸음 더 나아가, 임베딩 표현 자체를 군집 목적에 맞게 함께 조정한 DEC 계열의 개념 실험이다. 절차는 (1) AE를 재구성 손실로 사전학습해 초기 임베딩을 만들고, (2) 그 임베딩에서 silhouette 기준으로 K를 선택한 다음, (3) Student-t 기반 soft assignment q와 target distribution p를 정의하여 KL(P‖Q)을 줄이도록 임베딩과 군집 중심을 동시에 업데이트하는 방식으로 구성된다. 다만 붕괴(collapse)를 방지하고 입력 정보를 일정 부분 유지하기 위해, 이번 구현은 순수 KL만이 아니라 재구성 손실(MSE)을 gamma=1.0 가중치로 함께 최적화하는 형태로 되어 있다.</p>
-<p>사전학습 단계에서 best val_loss=0.018878은 0~1 스케일로 변환된 입력을 AE가 비교적 잘 복원할 수 있는 수준의 재구성 품질을 확보했음을 의미한다. 이어서 사전학습 임베딩에서 silhouette-best로 선택된 K는 9이며(best silhouette=0.2455), digits의 실제 클래스 수(10개)와 비교하면 한 개 숫자 클래스가 다른 클래스와 가까운 형태 변형으로 인해 함께 묶였거나, 일부 클래스 내부 변형이 큰 경우 군집이 완전히 분리되지 못했을 가능성을 시사한다. 이 부분은 최종적으로 cluster×digit 교차표에서 어떤 숫자 쌍이 합쳐졌는지 확인하는 방식으로 해석을 마무리하는 것이 자연스럽다.</p>
-<p>DEC 학습 로그를 보면 epoch=1에서 label_change=0.0000으로 시작해, epoch=6에서 조기 종료(early stop)가 발생했고 label_change가 끝까지 0.0000으로 유지되었다. 이는 첫 target p 업데이트 이후에도 하드 라벨(argmax 기준)이 전혀 바뀌지 않았다는 뜻으로, 이번 설정에서는 KL 기반 최적화가 군집 배정을 실질적으로 재배치하지 못하고 매우 빠르게 고정점에 도달했음을 나타낸다. 보통 이런 현상은 초기 KMeans 배정이 이미 안정적인 경우에도 나타날 수 있지만, 동시에 학습률, update_interval, tol 설정, 그리고 gamma(재구성 손실 가중치)가 상대적으로 커서 임베딩이 군집 목적 방향으로 충분히 움직이지 못한 경우에도 흔히 관찰된다. 결과적으로 “동시 최적화”의 효과가 제한적으로 나타난 상황으로 해석할 수 있다.</p>
-<p>최종 지표를 보면 DEC-like(AE10D, K=9, gamma=1.0)은 silhouette=0.2522, ARI=0.5657, NMI=0.6926이다. 이는 내부지표(silhouette) 측면에서는 AE+KMeans의 0.2807보다 낮지만, PCA(10D)+GMM의 0.2512와는 비슷한 수준이다. 외부지표(ARI/NMI) 기준으로는 AE+KMeans(ARI=0.5977, NMI=0.7012)보다 낮아 “임베딩을 군집 목적에 맞게 조정했는데도” 정답 라벨과의 정합성이 개선되었다고 보기는 어렵다. 다만 KMeans 단독(Sil-best)의 ARI=0.5683과 비교하면 거의 비슷한 수준이며, PCA 기반 표현군집(특히 PCA10D+GMM의 ARI=0.5649)과도 유사한 외부지표를 보인다. 즉, 이번 실행에서 DEC-like는 의미 있는 성능 도약을 만들지는 못했지만, 최소한 표현기반 군집의 상위권 범주에는 머물며 “DEC 개념 실험이 실제로 돌아가고 평가까지 이어진” 상태를 확보했다고 정리할 수 있다.</p>
-<p>또한 WSS는 29944.3으로 AE+KMeans의 21491.1보다 커졌는데, 이는 이번 표에서 WSS가 임베딩 공간에서의 within-cluster 제곱합으로 계산되어 있고, DEC 학습 후 임베딩 공간의 스케일이나 군집 중심 배치가 KMeans 결과와 달라졌음을 반영한다. WSS는 공간 스케일의 영향을 크게 받기 때문에, 재구성 손실을 포함해 임베딩이 변하면 값이 커지거나 작아질 수 있으며, 단독으로 성능을 단정하는 지표로 쓰기보다는 silhouette 및 외부지표와 함께 보조적으로 해석하는 편이 안정적이다.</p>
-<p>정리하면, 이번 DEC-like 결과는 (1) AE 사전학습으로 재구성 품질은 확보했지만, (2) KL 기반 군집 목적이 라벨 재배정을 거의 유도하지 못해 매우 빠르게 수렴했고, (3) 최종 성능은 AE+KMeans보다 다소 낮아졌다. 따라서 “군집 목적을 같이 최적화하면 무조건 좋아진다”가 아니라, 초기화와 손실 가중치, target 업데이트 전략이 성능에 민감하다는 점을 보여주는 사례로 해석할 수 있다. 후속 실험에서는 gamma를 줄여 KL 항의 영향력을 키우거나, update_interval을 크게(예: 5~10 epoch) 하여 p 업데이트의 노이즈를 줄이거나, tol을 더 작게 두어 조기 종료가 너무 빠르게 발생하지 않도록 조정하면 DEC의 장점(군집 경계 강화)이 더 잘 관찰될 가능성이 있다.</p>
+<section id="dec-결과-해석" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="dec-결과-해석"><span class="header-section-number">6.2</span> DEC 결과 해석</h3>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+DEC-like 결과: 빠른 수렴과 제한적 성능 향상
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>학습 로그</strong>: epoch=1에서 label_change=0.0000 → epoch=6에서 조기 종료. 하드 라벨이 전혀 바뀌지 않았다는 뜻으로, KL 기반 최적화가 군집 배정을 실질적으로 재배치하지 못하고 빠르게 고정점에 도달했음을 나타낸다.</p>
+<p><strong>원인 가능성</strong>: gamma(재구성 손실 가중치)=1.0이 상대적으로 커서 임베딩이 군집 목적 방향으로 충분히 움직이지 못했을 수 있다.</p>
+<p><strong>최종 지표</strong>: silhouette=0.2522, ARI=0.5657, NMI=0.6926</p>
+<ul>
+<li>AE+KMeans(ARI=0.5977)보다 낮음 — “동시 최적화”의 효과가 제한적</li>
+<li>PCA(10D)+GMM(ARI=0.5649)과는 유사한 수준</li>
+</ul>
+<p>WSS가 AE+KMeans보다 커진 것(29944 vs 21491)은 DEC 학습 후 임베딩 공간 스케일이 달라졌기 때문이며, silhouette·외부지표와 함께 보조적으로만 해석해야 한다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+DEC 성능 개선을 위한 조정 방향
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>gamma</code> 줄이기 → KL 항의 영향력 증가</li>
+<li><code>update_interval</code> 크게(예: 5~10 epoch) → p 업데이트 노이즈 감소</li>
+<li><code>tol</code> 더 작게 → 조기 종료 방지</li>
+</ul>
+<p>“군집 목적을 같이 최적화하면 무조건 좋아진다”가 아니라, <strong>초기화·손실 가중치·target 업데이트 전략이 성능에 민감하다</strong>는 점이 이번 실험의 핵심 교훈이다.</p>
+</div>
+</div>
 <pre class="text"><code>X_nn shape: (1797, 64)
 [Pretrain AE] latent_dim=10, best val_loss=0.018878
 [K selection on embedding] K_best=9, best silhouette=0.2455
@@ -2257,85 +2836,70 @@ method  K   silhouette  wss ARI NMI AIC BIC
 11  Hierarchical(Complete) (Sil-best)   2   0.784424    106721.094913   0.000002    0.001556    NaN NaN</code></pre>
 </section>
 </section>
-<section id="최종-보고서-생성-상위-3개-방법의-교차표-대표숫자-대표이미지-시각화" class="level4">
-<h4 class="anchored" data-anchor-id="최종-보고서-생성-상위-3개-방법의-교차표-대표숫자-대표이미지-시각화">7. 최종 보고서 생성: 상위 3개 방법의 교차표, 대표숫자, 대표이미지 시각화</h4>
-<p>이 코드는 앞에서 만들어 둔 비교표(comparison_sorted)를 입력으로 받아, 성능이 좋은 상위 3개 군집 방법을 자동으로 선정하고, 각 방법에 대해 군집과 실제 숫자 라벨의 관계를 교차표로 제시하며, 클러스터별 대표 표본 이미지를 시각화한다. 즉, 다양한 군집 실험 결과를 한 번에 보고서 형태로 요약하기 위한 자동 리포팅 셀이다.</p>
-<section id="코드의-입력과-전제" class="level5">
-<h5 class="anchored" data-anchor-id="코드의-입력과-전제">코드의 입력과 전제</h5>
-<p>이 셀은 다음 변수가 이미 세션에 존재한다고 가정한다.</p>
-<ul>
-<li>X, X_std: digits 데이터(원공간 X)와 표준화된 데이터(X_std)</li>
-<li>y: 실제 정답 라벨(0~9)</li>
-<li>images: 8×8 형태로 reshape된 숫자 이미지(대표 이미지 시각화에 사용)</li>
-<li>comparison_sorted: 전통적 군집, 모델기반 군집(GMM), 표현기반 군집(PCA/AE/DEC-like) 등을 한 테이블에 정리해 둔 비교표 method, K, ARI, NMI, silhouette, wss 등이 들어있다고 본다.</li>
-</ul>
-<p>이 코드의 목적은 새로운 군집을 추가로 학습하기보다, 비교표에 기록된 상위 방법을 선택한 뒤 그 방법의 라벨을 재생성하거나 기존 라벨을 재사용하여 보고서용 출력물을 만드는 것이다.</p>
-</section>
-<section id="공통-설정과-기준-공간x_base의-의미" class="level5">
-<h5 class="anchored" data-anchor-id="공통-설정과-기준-공간x_base의-의미">공통 설정과 기준 공간(X_base)의 의미</h5>
-<p>RANDOM_STATE를 고정하고, 비교의 기준 공간으로 X_base = X_std를 둔다. 이는 silhouette이나 WSS 같은 내부 지표를 계산할 때, 서로 다른 방법을 가능한 한 공정한 기준에서 비교하려는 의도이다.</p>
-<p>다만 PCA/AE/DEC 같은 표현기반 방법은 군집이 수행되는 공간이 X_std가 아니라 임베딩 공간 Z이므로, 이 코드에서는 원칙적으로 그 임베딩 공간에서 silhouette과 WSS를 계산하려고 시도한다.</p>
-</section>
-<section id="wss-계산-함수-compute_wss" class="level5">
-<h5 class="anchored" data-anchor-id="wss-계산-함수-compute_wss">WSS 계산 함수 compute_wss</h5>
-<p>compute_wss(Xmat, labels)는 라벨이 주어졌을 때 군집별 평균 벡터(centroid)를 계산하고, 각 표본이 자신이 속한 군집 중심에서 떨어진 제곱거리의 합을 더해 WSS를 구한다.</p>
-<p>이는 k-means처럼 inertia_를 직접 제공하지 않는 방법에서도, 라벨만 있으면 동일한 형태의 WSS를 계산할 수 있도록 만든 보조 함수이다.</p>
-</section>
-<section id="계층군집-라벨-생성-함수-agglomerative_fit_predict" class="level5">
-<h5 class="anchored" data-anchor-id="계층군집-라벨-생성-함수-agglomerative_fit_predict">계층군집 라벨 생성 함수 agglomerative_fit_predict</h5>
-<p>AgglomerativeClustering은 scikit-learn 버전에 따라 metric 파라미터를 지원하기도 하고, affinity로 대체되는 경우가 있다. 이 코드는 try/except로 두 경우를 모두 처리해 호환성을 확보한다.</p>
-<p>이 함수는 linkage에 따라 ward 또는 complete 방식으로 계층군집 라벨을 생성한다.</p>
-</section>
-<section id="get_labels_by_method-방법-이름을-보고-라벨을-재구성하는-핵심-로직" class="level5">
-<h5 class="anchored" data-anchor-id="get_labels_by_method-방법-이름을-보고-라벨을-재구성하는-핵심-로직">get_labels_by_method: 방법 이름을 보고 라벨을 재구성하는 핵심 로직</h5>
-<p>이 셀에서 가장 중요한 부분은 비교표의 method 문자열을 해석하여 해당 방법의 군집 라벨을 다시 생성하는 함수이다. 즉, comparison_sorted의 각 행이 가진 method 문자열을 일종의 규칙으로 보고, 그 규칙에 맞춰 라벨을 얻는다.</p>
-<p>구체적으로 다음과 같은 분기를 가진다.</p>
-<ul>
-<li>GMM(BIC-best, …): 이미 앞 셀에서 구해둔 z_bic이 있다면 이를 재사용한다. 보고서 셀에서 다시 GMM을 학습하지 않도록 하여 실행 시간을 줄인다.</li>
-<li>전통적 군집(KMeans, Hierarchical Ward/Complete): X_base에서 동일한 설정으로 다시 학습하여 라벨을 만든다. 비교표의 K값을 그대로 사용한다.</li>
-<li>PCA 기반 방법: method 문자열에서 PCA 차원 q를 정규표현식으로 뽑아낸 후, X_base를 PCA로 변환해 Z를 만든다. 이후 +KMeans 또는 +GMM인지에 따라 라벨을 재생성한다. GMM의 경우 method 문자열에서 covariance_type을 뽑아내어 동일 설정으로 적합한다.</li>
-<li>AutoEncoder 임베딩 + KMeans: method 문자열에서 latent_dim을 파싱한다. 이미 Z_ae가 같은 차원으로 존재하면 재사용하고, 없다면 간단한 오토인코더를 빠르게 재학습한 뒤 그 임베딩에서 KMeans 라벨을 생성한다.</li>
-<li>DEC-like 방법: 이미 앞에서 DEC 학습을 수행해 labels_final이 존재하면 이를 재사용한다.</li>
-</ul>
-<p>어떤 경우에도 라벨을 만들 수 없다면 None을 반환하여, 보고서 생성 루프에서 해당 방법을 건너뛴다.</p>
-</section>
-<section id="cluster_report-교차표-대표숫자-순도purity-지표-출력" class="level5">
-<h5 class="anchored" data-anchor-id="cluster_report-교차표-대표숫자-순도purity-지표-출력">cluster_report: 교차표, 대표숫자, 순도(purity), 지표 출력</h5>
-<p>cluster_report(labels, title, X_for_wss, Z_for_sil)은 한 방법의 라벨이 주어졌을 때 보고서 핵심 결과를 생성한다.</p>
-<ul>
-<li>교차표 생성: pd.crosstab(labels, y)를 이용해 cluster × true_digit 교차표를 만든다. 이를 통해 군집이 실제 숫자를 어떻게 분할하거나 섞는지 한눈에 확인할 수 있다.</li>
-<li>클러스터 대표숫자(다수결): 각 클러스터에서 가장 많이 나타난 true_digit을 major_digit로 정의한다. major_count는 그 개수이며, cluster_size 대비 비율이 cluster_purity가 된다.</li>
-<li>전체 평균 순도(overall_purity): 각 클러스터의 major_count를 합한 뒤 전체 표본 수 n으로 나눈 값이 overall_purity이다. 이는 majority-vote overall purity에 해당하는 단일 요약 지표로 해석할 수 있다. 즉, 각 클러스터를 다수결로 하나의 숫자로 대표시켰을 때 전체에서 맞춘 비율이다.</li>
-<li>외부 지표(정답 라벨 기반): ARI와 NMI를 계산해 출력한다. 이는 군집 결과가 정답 숫자 구조와 얼마나 일치하는지를 정량화한다.</li>
-<li>내부 지표(거리 기반): silhouette과 WSS는 입력으로 주어진 Z_for_sil, X_for_wss에서 계산한다. 표현기반 방법이라면 보통 임베딩 Z에서, 전통적 방법이라면 X_base에서 계산된다.</li>
-</ul>
-<p>마지막으로 교차표에 major_digit, cluster_size, cluster_purity를 붙인 확장 표(ct_ext)를 출력하여 보고서 표로 사용할 수 있게 한다.</p>
-</section>
-<section id="plot_representatives-클러스터-대표-이미지-시각화" class="level5">
-<h5 class="anchored" data-anchor-id="plot_representatives-클러스터-대표-이미지-시각화">plot_representatives: 클러스터 대표 이미지 시각화</h5>
-<p>plot_representatives(labels, …)는 각 클러스터별로 대표 표본 하나를 선정해 이미지로 보여준다.</p>
-<p>대표 표본은 다음 기준으로 선택된다.</p>
-<ul>
-<li>먼저 해당 클러스터의 원공간 데이터 X_ref에서 평균 벡터 mu를 계산한다.</li>
-<li>각 표본이 mu에서 얼마나 떨어져 있는지 제곱거리(dist)를 구한다.</li>
-<li>dist가 최소인 표본을 그 클러스터의 대표(centroid에 가장 가까운 표본)로 선정한다.</li>
-</ul>
-<p>이 대표 표본을 images 배열에서 꺼내어 8×8 흑백 이미지로 시각화한다. 클러스터 수가 너무 많으면 max_clusters까지만 표시하고, 나머지는 생략했다는 안내문을 출력한다.</p>
-</section>
-<section id="top-3-방법-선정과-리포트-생성-흐름" class="level5">
-<h5 class="anchored" data-anchor-id="top-3-방법-선정과-리포트-생성-흐름">Top-3 방법 선정과 리포트 생성 흐름</h5>
-<p>이 코드는 비교표(comparison_sorted)를 ARI, NMI, silhouette 순으로 내림차순 정렬한 뒤 상위 3개 행을 선택한다. 이후 각 방법에 대해 다음을 반복한다.</p>
-<ul>
-<li>method, K를 읽는다.</li>
-<li>get_labels_by_method로 라벨을 만든다(또는 재사용).</li>
-<li>해당 방법이 군집을 수행한 공간에 맞춰 Z_for_sil과 X_for_wss를 설정한다.</li>
-<li>cluster_report로 교차표, 대표숫자, 순도, ARI/NMI, silhouette/WSS를 출력한다.</li>
-<li>plot_representatives로 대표 이미지를 출력한다.</li>
-<li>요약 지표를 summary_rows에 누적한다.</li>
-</ul>
-<p>마지막에 summary_rows로부터 summary_df를 만들어 상위 3개 방법에 대한 핵심 지표를 한 표로 정리한다.</p>
-<p>이 자동 요약 셀은 단순히 ARI/NMI 상위 방법을 보여주는 수준을 넘어, 군집이 실제 숫자 구조를 어떻게 분할하는지를 교차표와 대표 이미지로 함께 제시한다는 점에서 보고서 작성에 직접적인 도움을 준다.</p>
-<p>특히 overall_purity는 직관적인 단일 요약 지표로, 클러스터를 다수결로 라벨링했을 때의 전체 정확도에 해당한다. ARI/NMI와 함께 제시하면 군집 성능을 해석하는 데 균형을 제공한다.</p>
+<section id="최종-보고서-상위-방법-비교-및-시각화" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="최종-보고서-상위-방법-비교-및-시각화"><span class="header-section-number">7</span> 최종 보고서: 상위 방법 비교 및 시각화</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이 절의 구조
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>비교표 <code>comparison_sorted</code>에서 ARI 상위 3개 방법을 자동 선정하고, 각 방법에 대해 교차표·대표숫자·대표이미지를 생성하는 자동 리포팅 셀이다.</p>
+<p><strong>전제 변수</strong>: <code>X</code>, <code>X_std</code>, <code>y</code>, <code>images</code>, <code>comparison_sorted</code></p>
+</div>
+</div>
+<section id="주요-함수-설명" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="주요-함수-설명"><span class="header-section-number">7.1</span> 주요 함수 설명</h3>
+<p><strong><code>get_labels_by_method</code></strong>: method 문자열을 해석하여 군집 라벨을 재생성한다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>method 유형</th>
+<th>처리 방식</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>GMM(BIC-best, …)</code></td>
+<td>기존 <code>z_bic</code> 재사용</td>
+</tr>
+<tr class="even">
+<td><code>KMeans</code>, <code>Hierarchical</code></td>
+<td><code>X_base</code>에서 동일 설정으로 재학습</td>
+</tr>
+<tr class="odd">
+<td><code>PCA(qD, …)</code></td>
+<td>PCA 변환 후 +KMeans 또는 +GMM 재생성</td>
+</tr>
+<tr class="even">
+<td><code>AutoEncoder(…)</code></td>
+<td><code>Z_ae</code> 재사용 또는 AE 재학습</td>
+</tr>
+<tr class="odd">
+<td><code>DEC-like</code></td>
+<td><code>labels_final</code> 재사용</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>cluster_report</code></strong>: 교차표 + 대표숫자(다수결) + 순도 + ARI/NMI + silhouette/WSS 출력</p>
+<p><strong><code>plot_representatives</code></strong>: 각 군집별로 centroid에 가장 가까운 표본을 선정해 8×8 흑백 이미지로 시각화</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Overall Purity의 역할
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>클러스터를 다수결로 라벨링했을 때의 전체 정확도에 해당하는 직관적 단일 요약 지표이다. ARI/NMI와 함께 제시하면 군집 성능 해석에 균형을 제공한다.</p>
+</div>
+</div>
 <div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================================</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 보고서용 자동 요약:</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - ARI 상위 3개 방법 선택</span></span>
@@ -2635,33 +3199,58 @@ method  K   silhouette  wss ARI NMI AIC BIC
 <span id="cb21-297"><a href="#cb21-297" aria-hidden="true" tabindex="-1"></a>summary_df <span class="op">=</span> pd.DataFrame(summary_rows).sort_values([<span class="st">"ARI"</span>,<span class="st">"NMI"</span>], ascending<span class="op">=</span><span class="va">False</span>).reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb21-298"><a href="#cb21-298" aria-hidden="true" tabindex="-1"></a>display(summary_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="군집-결과-해석-버전-b-표를-읽는-법-중심으로-차근차근" class="level5">
-<h5 class="anchored" data-anchor-id="군집-결과-해석-버전-b-표를-읽는-법-중심으로-차근차근">군집 결과 해석 (버전 B: “표를 읽는 법” 중심으로 차근차근)</h5>
-<p>이번 출력은 군집 성능을 두 관점으로 정리한 것이다.</p>
-<p><strong>내부지표: silhouette, WSS</strong></p>
-<ul>
-<li>silhouette가 높을수록 군집이 내부적으로 더 응집되고(같은 군집끼리 가깝고), 서로 더 분리된다(다른 군집과 멀다).</li>
-<li>WSS는 군집 내 제곱거리 합이라 낮을수록 “각 군집이 더 촘촘하다”는 뜻이지만, K가 커질수록 보통 자동으로 작아진다(그래서 단독으로는 해석이 어렵다).</li>
-</ul>
-<p><strong>외부지표: ARI, NMI, purity(majority vote)</strong></p>
-<ul>
-<li>ARI/NMI는 “군집 결과가 실제 정답 숫자(y)와 얼마나 비슷한가”를 본다. 이 값이 높으면, 군집이 사실상 숫자 분류에 가까운 구조를 만들었다고 볼 수 있다.</li>
-<li>purity는 각 클러스터에서 가장 많은 숫자(major digit)를 대표 숫자로 놓고, 전체가 얼마나 맞았는지(다수결 정확도)를 보는 직관적 지표다.</li>
-</ul>
-<p><strong>ARI/NMI 기준 상위 3개 방법</strong></p>
-<ul>
-<li>Hierarchical(Ward), K=20: ARI=0.688, NMI=0.795, purity=0.840</li>
-<li>AutoEncoder(10D) 임베딩 + KMeans, K=9: ARI=0.598, NMI=0.701, purity=0.717</li>
-<li>KMeans(원공간), K=15: ARI=0.568, NMI=0.688, purity=0.715</li>
-</ul>
-<p>이제 각 방법의 교차표(클러스터 x true_digit)를 읽어보자. 표에서 핵심은 두 가지다.</p>
-<ul>
-<li>어떤 클러스터가 거의 한 숫자만 담고 있는가(순도가 높다)</li>
-<li>어떤 숫자가 여러 클러스터로 쪼개졌는가(분할), 혹은 여러 숫자가 한 클러스터에 섞였는가(혼합)</li>
-</ul>
+<section id="군집-결과-해석-교차표-읽는-법" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="군집-결과-해석-교차표-읽는-법"><span class="header-section-number">7.2</span> 군집 결과 해석: 교차표 읽는 법</h3>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+ARI/NMI 기준 상위 3개 방법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>K</th>
+<th>ARI</th>
+<th>NMI</th>
+<th>purity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hierarchical(Ward)</td>
+<td>20</td>
+<td><strong>0.688</strong></td>
+<td><strong>0.795</strong></td>
+<td><strong>0.840</strong></td>
+</tr>
+<tr class="even">
+<td>AutoEncoder(10D) + KMeans</td>
+<td>9</td>
+<td>0.598</td>
+<td>0.701</td>
+<td>0.717</td>
+</tr>
+<tr class="odd">
+<td>KMeans(원공간)</td>
+<td>15</td>
+<td>0.568</td>
+<td>0.688</td>
+<td>0.715</td>
+</tr>
+</tbody>
+</table>
+<p>교차표에서 핵심은 두 가지다: - <strong>순도(purity)</strong>: 어떤 클러스터가 거의 한 숫자만 담고 있는가 - <strong>분할/혼합</strong>: 어떤 숫자가 여러 클러스터로 쪼개졌는가, 또는 여러 숫자가 한 클러스터에 섞였는가</p>
+</div>
+</div>
 </section>
-<section id="hierarchicalward-k20" class="level5">
-<h5 class="anchored" data-anchor-id="hierarchicalward-k20">Hierarchical(Ward), K=20</h5>
+<section id="hierarchicalward-k20" class="level3" data-number="7.3">
+<h3 data-number="7.3" class="anchored" data-anchor-id="hierarchicalward-k20"><span class="header-section-number">7.3</span> Hierarchical(Ward), K=20</h3>
 <p>전체 purity가 0.84로 가장 높다. 교차표를 보면 “거의 완전 순수” 클러스터가 여럿 있다.</p>
 <ul>
 <li>0만 모인 클러스터(178개)</li>
@@ -2713,8 +3302,8 @@ cluster
 </figure>
 </div>
 </section>
-<section id="autoencoder10d-임베딩-kmeans-k9" class="level5">
-<h5 class="anchored" data-anchor-id="autoencoder10d-임베딩-kmeans-k9">AutoEncoder(10D) 임베딩 + KMeans, K=9</h5>
+<section id="autoencoder10d-임베딩-kmeans-k9" class="level3" data-number="7.4">
+<h3 data-number="7.4" class="anchored" data-anchor-id="autoencoder10d-임베딩-kmeans-k9"><span class="header-section-number">7.4</span> AutoEncoder(10D) 임베딩 + KMeans, K=9</h3>
 <p>이 방법은 먼저 오토인코더가 64차원 픽셀을 10차원 임베딩으로 압축(재구성 손실 최소화)하고, 그 임베딩에서 KMeans를 수행한 것이다. 결과에서 가장 눈에 띄는 건 silhouette가 0.281로 가장 높다는 점이다. 즉, 임베딩 공간에서는 군집이 더 “깔끔하게” 갈라졌다는 뜻이다.</p>
 <p>교차표를 보면 순수도가 높은 클러스터가 몇 개 존재한다.</p>
 <ul>
@@ -2752,8 +3341,8 @@ cluster
 </figure>
 </div>
 </section>
-<section id="kmeans원공간-k15" class="level5">
-<h5 class="anchored" data-anchor-id="kmeans원공간-k15">KMeans(원공간), K=15</h5>
+<section id="kmeans원공간-k15" class="level3" data-number="7.5">
+<h3 data-number="7.5" class="anchored" data-anchor-id="kmeans원공간-k15"><span class="header-section-number">7.5</span> KMeans(원공간), K=15</h3>
 <p>원공간(표준화된 픽셀)에서 바로 KMeans를 돌린 결과는 간단한 베이스라인이다. 일부 숫자는 매우 깨끗하게 잡힌다.</p>
 <ul>
 <li>4 중심 클러스터(154/155)</li>
@@ -2800,8 +3389,21 @@ cluster
 <p><img src="images/clustering_compare_kmeans.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
-<p><strong>세 방법 비교</strong></p>
-<p>세 방법을 한 문장으로 요약하면, Ward는 많이 쪼개서 더 순수한 덩어리를 만들었고, AutoEncoder+KMeans는 표현을 바꿔서 덩어리 사이 간격을 벌렸고, KMeans는 원래 픽셀 공간에서 그냥 거리로만 밀어붙인 결과다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+세 방법 한 문장 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Ward</strong> → 많이 쪼개서 더 순수한 덩어리를 만들었다.</p>
+<p><strong>AutoEncoder+KMeans</strong> → 표현을 바꿔서 덩어리 사이 간격을 벌렸다.</p>
+<p><strong>KMeans</strong> → 원래 픽셀 공간에서 거리로만 밀어붙인 결과다.</p>
+</div>
+</div>
 <p>먼저 Hierarchical(Ward)의 K=20은 숫자가 10개인데 군집이 20개라는 뜻이라, 같은 숫자라도 필기체 모양 차이를 따로 떼어내는 방향으로 작동했다. 예를 들어 9도 어떤 사람은 둥글게 쓰고 어떤 사람은 각지게 쓰는데, Ward는 이런 모양 차이를 별개의 군집으로 만들어버릴 수 있다. 그래서 purity가 0.840으로 높게 나온다.</p>
 <p>“잘게 나누면 덜 섞인다”는 효과가 그대로 반영된 것이다. ARI와 NMI도 가장 높아서, 결과적으로 숫자 라벨과의 정렬이 가장 잘 맞는다. 다만 silhouette가 낮다는 것은, 이렇게 만들어진 20개 덩어리가 내부적으로 아주 멀리 떨어져 있다기보다는, 가까운 덩어리들을 촘촘히 나눈 형태일 수 있음을 시사한다.</p>
 <p>AutoEncoder(10D)+KMeans는 K=9로 선택됐다. silhouette를 기준으로 보면, 임베딩 공간에서 가장 “군집 간 간격이 깔끔해 보이는 K”가 9였다는 뜻이다. 여기서 중요한 직관은, 오토인코더가 픽셀을 그대로 쓰지 않고 “숫자 모양을 설명하는 핵심 요약 좌표”로 눌러 담아 주었다는 점이다.</p>
@@ -2816,7 +3418,6 @@ method  K   purity(majority)    ARI NMI silhouette  WSS
 2   KMeans (Sil-best)   15  0.714524    0.568326    0.688241    0.158307    59534.498937</code></pre>
 
 
-</section>
 </section>
 </section>
 
