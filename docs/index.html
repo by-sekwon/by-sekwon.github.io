@@ -68,35 +68,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -160,38 +131,245 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
 <main class="content column-page" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
 
-<div style="color:green; font-size: 1.4em; font-weight: bold;">
-<p>🎓 Welcome to Prof.&nbsp;Kwon’s 통계 이야기</p>
+<style>
+/* ── 히어로 배너 ── */
+.hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 60%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 3.5rem 3rem 3rem;
+  border-radius: 12px;
+  margin-bottom: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 280px; height: 280px;
+  border-radius: 50%;
+  background: rgba(212,160,23,0.08);
+}
+.hero-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.hero-title span { color: #d4a017; }
+.hero-sub {
+  font-size: 1.05rem;
+  opacity: 0.85;
+  margin: 0 0 1.2rem;
+}
+.hero-motto {
+  display: inline-block;
+  font-size: 0.95rem;
+  font-style: italic;
+  border-left: 3px solid #d4a017;
+  padding-left: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* ── 프로필 ── */
+.profile-wrap {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+}
+.profile-img {
+  width: 140px;
+  min-width: 140px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.profile-text h3 {
+  color: #1e3a2f !important;
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+.profile-text p { margin: 0.4rem 0; font-size: 0.97rem; color: #444; }
+.profile-badge {
+  display: inline-block;
+  background: #1e3a2f;
+  color: #d4a017;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin: 0.2rem 0.2rem 0 0;
+}
+
+/* ── 섹션 카드 그리드 ── */
+.section-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+.sec-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.4rem 1.5rem;
+  text-decoration: none !important;
+  color: inherit !important;
+  display: block;
+  transition: all 0.2s ease;
+  background: #fff;
+  border-top: 4px solid #1e3a2f;
+}
+.sec-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(30,58,47,0.12);
+  border-top-color: #d4a017;
+  text-decoration: none !important;
+}
+.sec-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.sec-card .card-title {
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: #1e3a2f;
+  margin-bottom: 0.3rem;
+}
+.sec-card .card-desc { font-size: 0.85rem; color: #666; line-height: 1.5; }
+
+/* ── 경력 타임라인 ── */
+.timeline-wrap {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+}
+.timeline-wrap h3 { color: #1e3a2f !important; margin: 0 0 1.2rem; }
+.tl-item {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 0.9rem;
+  align-items: flex-start;
+}
+.tl-year {
+  min-width: 120px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #d4a017;
+  padding-top: 2px;
+}
+.tl-dot {
+  width: 10px; height: 10px;
+  min-width: 10px;
+  background: #1e3a2f;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+.tl-content { font-size: 0.93rem; color: #444; }
+</style>
+
+<!-- 히어로 배너 -->
+<div class="hero">
+  <div class="hero-title">권세혁 교수의 <span>통계 세계</span></div>
+  <div class="hero-sub">한남대학교 통계학과 명예교수 &nbsp;·&nbsp; 데이터 사이언스 강의노트</div>
+  <div class="hero-motto">
+    세상 모든 사람이 통계를 사랑하는 그 날까지<br>
+    put a ding in the universe &nbsp;·&nbsp; pay forward
+  </div>
 </div>
-<div class="columns">
-<div class="column" style="width:20%;">
-<p><img src="myself.png" alt="권세혁 교수님 사진" style="border-radius: 10px; width: 60%; margin-right: 1rem;"></p>
-</div><div class="column" style="width:80%;">
-<p>1995년부터 한남대학교에서 제공해온 통계학 강의노트를 <strong>데이터 사이언스</strong> 중심으로 새롭게 구성했습니다.</p>
-<p><strong>since 1999.03</strong>(첫 웹이지 구축) / <strong>2023.01</strong> (<span class="math inline">\(1^{st}\)</span> revision) / <strong>2026.03</strong> (<span class="math inline">\(2^{nd}\)</span> revision)</p>
-<p><em>MLDL 개념부터는 AI와 공동 집필 중.</em></p>
-<div style="color:green; font-size: 1.em; font-weight:bold;">
-<p>| put a ding in the universe | 세상 모든 사람이 통계를 사랑하는 그 날까지 | pay forward |</p>
+
+<!-- 프로필 -->
+<div class="profile-wrap">
+  <img class="profile-img" src="myself.png" alt="권세혁 교수">
+  <div class="profile-text">
+    <h3 class="anchored">권세혁 (Kwon Se-Hyug)</h3>
+    <p>1995년부터 한남대학교에서 제공해온 통계학 강의노트를 <strong>데이터 사이언스</strong> 중심으로 새롭게 구성했습니다.</p>
+    <p>MLDL 개념부터는 AI와 공동 집필 중입니다.</p>
+    <p style="margin-top: 0.8rem;">
+      <span class="profile-badge">since 1999.03 초판</span>
+      <span class="profile-badge">2023.01 1st revision</span>
+      <span class="profile-badge">2026.03 2nd revision</span>
+    </p>
+  </div>
 </div>
+
+<!-- 섹션 카드 -->
+<div class="section-grid">
+  <a class="sec-card" href="./stat_assay/index.html">
+    <div class="icon">📝</div>
+    <div class="card-title">통계 이야기</div>
+    <div class="card-desc">숫자 뒤에 숨은 이야기, 통계를 쉽게 풀어내는 에세이 공간</div>
+  </a>
+  <a class="sec-card" href="./notes/math_stat/index.html">
+    <div class="icon">📐</div>
+    <div class="card-title">기초수학 · 수리통계 · 조사방법</div>
+    <div class="card-desc">함수·행렬·확률·추정·가설검정·표본설계</div>
+  </a>
+  <a class="sec-card" href="./notes/intro_stat/index.html">
+    <div class="icon">📊</div>
+    <div class="card-title">기초통계 · 회귀 · 다변량분석</div>
+    <div class="card-desc">기술통계·분산분석·회귀분석·PCA·군집분석</div>
+  </a>
+  <a class="sec-card" href="./notes/mldl_intro/index.html">
+    <div class="icon">🤖</div>
+    <div class="card-title">머신러닝 · 딥러닝</div>
+    <div class="card-desc">지도·비지도학습, 예측·분류, 트리·딥러닝</div>
+  </a>
+  <a class="sec-card" href="./notes/inference_xai/index.html">
+    <div class="icon">🧠</div>
+    <div class="card-title">AI · 감성분석</div>
+    <div class="card-desc">인과추론, 설명가능 AI, 텍스트 감성분석</div>
+  </a>
+  <a class="sec-card" href="./consult.html">
+    <div class="icon">💬</div>
+    <div class="card-title">통계 상담</div>
+    <div class="card-desc">논문·프로젝트 통계 분석 방법론 상담</div>
+  </a>
 </div>
-</div>
-<div style="color:green; font-size: 1.4em; font-weight: bold;">
-<p>👤 Who am I?</p>
-</div>
-<blockquote class="blockquote">
-<p>1979.03 - 1983.02 성균관대학교 통계학 학사 <br> 1983.03 - 1985.02 성균관대학교 통계학 석사 <br> 1986.09. - 1992.12. 미국 North Carolina State University 통계학 박사 <br> 1993.05 - 1995.02. 전자통신연구원 선임연구원 <br> 1995.03 - 2026.02. 한남대학교 통계학과 교수 <br> 2026.03 - 현재. 한남대학교 명예교수</p>
-</blockquote>
-<div style="display:flex; gap:1rem; align-items:flex-start; flex-wrap:wrap;">
-<p><img src="노무현대통령.jpg" alt="노무현대통령" style="border-radius:10px; width:10%;"> <img src="노무현.png" alt="노무현 명언" style="border-radius:10px; width:20%;"></p>
+
+<!-- 경력 타임라인 -->
+<div class="timeline-wrap">
+  <h3 class="anchored">👤 학력 &amp; 경력</h3>
+  <div class="tl-item">
+    <div class="tl-year">1979 – 1983</div>
+    <div class="tl-dot"></div>
+    <div class="tl-content">성균관대학교 통계학 학사</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-year">1983 – 1985</div>
+    <div class="tl-dot"></div>
+    <div class="tl-content">성균관대학교 통계학 석사</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-year">1986 – 1992</div>
+    <div class="tl-dot"></div>
+    <div class="tl-content">North Carolina State University 통계학 박사 (미국)</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-year">1993 – 1995</div>
+    <div class="tl-dot"></div>
+    <div class="tl-content">전자통신연구원 선임연구원</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-year">1995 – 2026</div>
+    <div class="tl-dot"></div>
+    <div class="tl-content">한남대학교 통계학과 교수</div>
+  </div>
+  <div class="tl-item">
+    <div class="tl-year">2026 – 현재</div>
+    <div class="tl-dot"></div>
+    <div class="tl-content" style="font-weight:600; color:#1e3a2f;">한남대학교 명예교수</div>
+  </div>
 </div>
 
 
