@@ -1,11 +1,27 @@
 ---
 title: "MLDL 딥러닝 분류 - 사례분석 텍스트 분류"
 author: "권세혁"
+number-sections: true
 ---
 
-### 딥러닝 분류 사례분석 (텍스트 분류 Sentiment Analysis)
+## 딥러닝 분류 사례분석 (텍스트 분류 Sentiment Analysis)
 
-#### 1. 데이터
+### 데이터
+
+::: {.callout-note}
+## IMDB 데이터셋 개요
+
+| 항목 | 내용 |
+|------|------|
+| **목적** | 영화 리뷰 감성 분류 (긍정/부정 이진 분류) |
+| **총 샘플** | 50,000건 (학습 25,000 / 테스트 25,000) |
+| **클래스 균형** | 긍정·부정 각 12,500건씩 **완전 균형** |
+| **분할 구조** | Train 20,000 / Valid 5,000 / Test 25,000 |
+| **입력 형태** | 정수 시퀀스 (vocab_size=20,000 — 상위 빈도 단어만) |
+| **고정 길이** | maxlen=300 (짧으면 post 패딩, 길면 post 절단) |
+
+**핵심 목적**: CNN/BiLSTM/Transformer 등 서로 다른 구조가 감성 분류 성능(Accuracy, AUC)에 어떤 차이를 만드는지 비교
+:::
 
 IMDB 데이터셋은 딥러닝 기반 텍스트 분류(감성분석) 모델의 성능을 비교·평가하기 위한 대표적 벤치마크 데이터로, 영화 리뷰 텍스트가 담고 있는 전반적 평가의 극성(polarity)—즉 긍정(positive)인지 부정(negative)인지—을 예측하는 것을 분석목적으로 한다. 본 실습에서는 리뷰 한 편을 하나의 “문서(document)”로 보고, 문서 수준에서 감성을 판별하는 이진 분류(binary classification) 문제로 설정한다.
 
@@ -117,7 +133,7 @@ Label : Negative
 Review: this has to be one of the worst films of the 1990s when my friends i were watching this film being the target audience it was aimed at we just sat watched the first half an hour with our jaws touching the floor at how bad it really was the rest of the time everyone else in the theatre just started talking to each other leaving or generally crying into their popcorn that they actually paid money they had working to watch this feeble excuse for a film it must have looked like a great idea on paper but on film it looks like no one in the film has a clue what is going on crap acting crap costumes i can't get across how this is to watch save yourself an hour a bit of your life
 ```
 
-##### 초기화 + 콜백 + 평가/시각화/오분류 함수
+#### 초기화 + 콜백 + 평가/시각화/오분류 함수
 
 ```python
 import os, random
@@ -214,8 +230,20 @@ def get_misclassified_table(model, x, y, reverse_word_index, topk=20):
     return df[["idx","y_true","y_pred","p_pos","conf","len","text"]].reset_index(drop=True)
 ```
 
-#### 2. 딥러닝 분류
-##### \(1) Avg Embedding + Dense
+### 딥러닝 분류
+
+::: {.callout-tip}
+## 네 가지 텍스트 분류 모델 비교
+
+| 모델 | 핵심 구조 | 단어 순서 반영 | 장점 | 한계 |
+|------|---------|------------|------|------|
+| **Avg Embedding** | Embedding + GlobalAvgPool + Dense | ❌ (거의 없음) | 빠름, 단순 | "not good" ≈ "good" 구분 어려움 |
+| **TextCNN** | Embedding + Conv1D + GlobalMaxPool | ✅ (국소 n-gram) | 감성 문구 포착 강력 | 장거리 의존성 미반영 |
+| **BiLSTM** | Embedding + Bidirectional LSTM | ✅ (양방향 전체) | 문맥 전체 반영 | 학습 느림, 장문 약화 가능 |
+| **Mini Transformer** | Embedding + MultiHeadAttention + FFN | ✅ (전역 self-attention) | 장거리 의존성 강력 | 데이터 적으면 과적합 위험 |
+:::
+
+#### Avg Embedding + Dense
 이 방법은 각 단어를 임베딩 벡터로 변환한 뒤, 문장 전체에 대해 **평균(GlobalAveragePooling)**을 취해 하나의 고정 길이 벡터로 만든 후, 이를 완전연결층(Dense layer)에 입력하여 분류하는 구조이다. 즉, 문장을 구성하는 단어들의 “평균 의미 벡터”를 기반으로 감성을 판별한다.
 
 이 모델의 장점은 구조가 매우 단순하여 계산량이 적고 학습이 빠르며, 과적합 위험도 상대적으로 낮다는 점이다. 특히 대규모 데이터에서 베이스라인 모델로 사용하기에 적합하다. 또한 하이퍼파라미터 튜닝이 비교적 간단하여 안정적인 초기 성능을 확보할 수 있다.
@@ -287,7 +315,15 @@ Epoch 2/10
 (이하 생략)
 ```
 
-##### \(2) TextCNN
+#### TextCNN
+
+::: {.callout-note}
+## TextCNN 구조
+
+Embedding → Conv1D (kernel_size=5, ReLU) → **GlobalMaxPooling** → Dense(64) → Dropout(0.4) → Dense(1, sigmoid)
+
+Conv1D 필터가 연속된 단어 묶음(n-gram)을 탐지 → "not good", "very impressive" 같은 감성 문구 효과적 포착
+:::
 
 TextCNN은 1차원 합성곱(Conv1D)을 이용하여 문장 내의 **지역적 패턴(local n-gram pattern)**을 추출하는 모델이다. 합성곱 필터는 특정 길이의 연속된 단어 묶음(예: 3-gram, 5-gram)을 탐지하며, 이는 “not good”, “very impressive”, “worst movie ever”와 같은 감성 표현을 효과적으로 포착할 수 있다.
 
@@ -334,7 +370,7 @@ results.append(out_cnn)
 models["TextCNN"] = model_cnn
 ```
 
-##### \(3) BiLSTM
+#### BiLSTM
 BiLSTM은 순환신경망(RNN)의 일종으로, 문장을 앞에서 뒤로, 뒤에서 앞으로 동시에 처리하여 문장 흐름과 순서 정보를 반영하는 모델이다. 단어가 등장하는 위치와 이전·이후 맥락을 함께 고려하여 감성을 판단한다.
 
 이 모델의 가장 큰 장점은 문맥 의존성을 자연스럽게 학습할 수 있다는 점이다. 예를 들어 “I thought it would be great, but it was disappointing”과 같은 문장은 앞부분과 뒷부분의 관계를 이해해야 정확히 분류할 수 있는데, BiLSTM은 이러한 순차적 구조를 비교적 잘 반영한다.
@@ -378,7 +414,16 @@ results.append(out_lstm)
 models["BiLSTM"] = model_lstm
 ```
 
-##### \(4) Mini Transformer
+#### Mini Transformer
+
+::: {.callout-note}
+## Mini Transformer 구조
+
+Embedding + Positional Embedding → TransformerBlock(MultiHeadAttention + FFN + LayerNorm) → GlobalAvgPool → Dense → Dropout → Dense(1, sigmoid)
+
+Self-Attention이 문장 내 **모든 단어 쌍 간의 관계**를 동시에 계산 → 장거리 의존성 강력, 소규모 데이터에서는 과적합 주의
+:::
+
 Transformer 기반 모델은 Self-Attention 메커니즘을 사용하여 문장 내 모든 단어 쌍 간의 관계를 동시에 계산한다. 특정 단어가 다른 단어에 얼마나 중요한지를 가중치로 학습하며, 이를 통해 문맥적 의미를 구성한다.
 
 이 구조의 장점은 장거리 의존성을 효과적으로 모델링할 수 있다는 점이다. 문장의 앞과 뒤에 위치한 단어 간 관계도 직접 연결되어 계산되므로, 복잡한 문맥 구조를 잘 반영한다. 또한 병렬 연산이 가능해 이론적으로는 RNN보다 효율적이며, 블록을 쌓아 확장하기 쉽다는 구조적 유연성도 갖는다.
@@ -457,7 +502,20 @@ results.append(out_tr)
 models["Transformer"] = model_tr
 ```
 
-##### 3, 모델평가 비교
+#### 모델평가 비교
+
+::: {.callout-important}
+## 4개 모델 성능 비교 결과
+
+| 모델 | Test ACC | Test AUC | TN | FP | FN | TP | 특이사항 |
+|------|---------|---------|----|----|----|----|---------|
+| **TextCNN** | 0.8673 | **0.9527** | 11,628 | 872 | 2,445 | 10,055 | AUC 최고, FP 가장 적음 |
+| AvgEmbed+Dense | **0.8762** | 0.9443 | 10,731 | 1,769 | 1,327 | 11,173 | ACC 최고, Recall 높음 |
+| Transformer | 0.8235 | 0.9442 | 8,537 | 3,963 | **449** | 12,051 | FN 가장 적음 (Recall 최고), FP 많음 |
+| BiLSTM | 0.8422 | 0.9195 | 10,998 | 1,502 | 2,444 | 10,056 | AUC 최저 |
+
+**결론**: AUC 기준 **TextCNN 최고** — local n-gram 패턴 추출이 IMDB 감성 분류에 효과적. Transformer는 Recall이 높지만 FP 증가.
+:::
 
 **결과표**
 

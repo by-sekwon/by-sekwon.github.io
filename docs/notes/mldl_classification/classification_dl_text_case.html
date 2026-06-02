@@ -178,7 +178,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../notes/mldl_intro/mldl_concepts.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">📄 개요</span></a>
+ <span class="menu-text">📄 머신러닝과 통계적사고</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -405,10 +405,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis" id="toc-딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis">딥러닝 분류 사례분석 (텍스트 분류 Sentiment Analysis)</a>
+  <li><a href="#딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis" id="toc-딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis" class="nav-link active" data-scroll-target="#딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis"><span class="header-section-number">1</span> 딥러닝 분류 사례분석 (텍스트 분류 Sentiment Analysis)</a>
   <ul>
-  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터">1. 데이터</a></li>
-  <li><a href="#딥러닝-분류" id="toc-딥러닝-분류" class="nav-link" data-scroll-target="#딥러닝-분류">2. 딥러닝 분류</a></li>
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터"><span class="header-section-number">1.1</span> 데이터</a>
+  <ul class="collapse">
+  <li><a href="#초기화-콜백-평가시각화오분류-함수" id="toc-초기화-콜백-평가시각화오분류-함수" class="nav-link" data-scroll-target="#초기화-콜백-평가시각화오분류-함수"><span class="header-section-number">1.1.1</span> 초기화 + 콜백 + 평가/시각화/오분류 함수</a></li>
+  </ul></li>
+  <li><a href="#딥러닝-분류" id="toc-딥러닝-분류" class="nav-link" data-scroll-target="#딥러닝-분류"><span class="header-section-number">1.2</span> 딥러닝 분류</a>
+  <ul class="collapse">
+  <li><a href="#avg-embedding-dense" id="toc-avg-embedding-dense" class="nav-link" data-scroll-target="#avg-embedding-dense"><span class="header-section-number">1.2.1</span> Avg Embedding + Dense</a></li>
+  <li><a href="#textcnn" id="toc-textcnn" class="nav-link" data-scroll-target="#textcnn"><span class="header-section-number">1.2.2</span> TextCNN</a></li>
+  <li><a href="#bilstm" id="toc-bilstm" class="nav-link" data-scroll-target="#bilstm"><span class="header-section-number">1.2.3</span> BiLSTM</a></li>
+  <li><a href="#mini-transformer" id="toc-mini-transformer" class="nav-link" data-scroll-target="#mini-transformer"><span class="header-section-number">1.2.4</span> Mini Transformer</a></li>
+  <li><a href="#모델평가-비교" id="toc-모델평가-비교" class="nav-link" data-scroll-target="#모델평가-비교"><span class="header-section-number">1.2.5</span> 모델평가 비교</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -441,10 +451,57 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis" class="level3">
-<h3 class="anchored" data-anchor-id="딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis">딥러닝 분류 사례분석 (텍스트 분류 Sentiment Analysis)</h3>
-<section id="데이터" class="level4">
-<h4 class="anchored" data-anchor-id="데이터">1. 데이터</h4>
+<section id="딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="딥러닝-분류-사례분석-텍스트-분류-sentiment-analysis"><span class="header-section-number">1</span> 딥러닝 분류 사례분석 (텍스트 분류 Sentiment Analysis)</h2>
+<section id="데이터" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="데이터"><span class="header-section-number">1.1</span> 데이터</h3>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+IMDB 데이터셋 개요
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>목적</strong></td>
+<td>영화 리뷰 감성 분류 (긍정/부정 이진 분류)</td>
+</tr>
+<tr class="even">
+<td><strong>총 샘플</strong></td>
+<td>50,000건 (학습 25,000 / 테스트 25,000)</td>
+</tr>
+<tr class="odd">
+<td><strong>클래스 균형</strong></td>
+<td>긍정·부정 각 12,500건씩 <strong>완전 균형</strong></td>
+</tr>
+<tr class="even">
+<td><strong>분할 구조</strong></td>
+<td>Train 20,000 / Valid 5,000 / Test 25,000</td>
+</tr>
+<tr class="odd">
+<td><strong>입력 형태</strong></td>
+<td>정수 시퀀스 (vocab_size=20,000 — 상위 빈도 단어만)</td>
+</tr>
+<tr class="even">
+<td><strong>고정 길이</strong></td>
+<td>maxlen=300 (짧으면 post 패딩, 길면 post 절단)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>핵심 목적</strong>: CNN/BiLSTM/Transformer 등 서로 다른 구조가 감성 분류 성능(Accuracy, AUC)에 어떤 차이를 만드는지 비교</p>
+</div>
+</div>
 <p>IMDB 데이터셋은 딥러닝 기반 텍스트 분류(감성분석) 모델의 성능을 비교·평가하기 위한 대표적 벤치마크 데이터로, 영화 리뷰 텍스트가 담고 있는 전반적 평가의 극성(polarity)—즉 긍정(positive)인지 부정(negative)인지—을 예측하는 것을 분석목적으로 한다. 본 실습에서는 리뷰 한 편을 하나의 “문서(document)”로 보고, 문서 수준에서 감성을 판별하는 이진 분류(binary classification) 문제로 설정한다.</p>
 <p>데이터는 Keras에서 기본 제공되는 IMDB 리뷰 코퍼스를 사용하며, 학습용 25,000개와 테스트용 25,000개로 총 50,000개의 리뷰로 구성된다. 라벨은 0(부정)과 1(긍정) 두 범주로 주어지며, 학습 데이터에서 각 클래스가 12,500개씩으로 <strong>완전 균형(class-balanced)</strong>을 이루어, 모델 비교 시 특정 클래스 편향에 의한 성능 왜곡을 최소화하도록 설계되어 있다. 본 노트에서는 학습 데이터(25,000개) 중 20%를 검증용으로 분리하여 Train 20,000 / Valid 5,000 / Test 25,000 구조로 학습–튜닝–최종평가의 역할을 명확히 분리한다.</p>
 <p>입력 데이터는 원문 텍스트가 아니라, 사전에 구축된 단어 사전(word index)에 따라 단어를 정수 인덱스로 치환한 정수 시퀀스 형태로 제공된다. 이는 모델이 단어 임베딩(Embedding)을 통해 의미 공간으로 매핑한 뒤, CNN·RNN·Transformer 등 다양한 신경망 구조가 분류에 필요한 표현을 학습할 수 있도록 하기 위함이다. 또한 본 분석에서는 상위 빈도 단어 <strong>20,000개(vocab_size=20000)</strong>만 사용하여 희귀어에 따른 잡음을 줄이고, 모델 학습의 안정성과 계산 효율을 높인다. 참고로 Keras가 제공하는 전체 단어 사전 크기는 88,584개이며, 본 실습은 그중 빈도 상위 부분집합을 사용한다.</p>
@@ -541,8 +598,8 @@ Review: big hair big boobs bad music and a giant safety pin these are the words 
 ===== Sample 3 =====
 Label : Negative
 Review: this has to be one of the worst films of the 1990s when my friends i were watching this film being the target audience it was aimed at we just sat watched the first half an hour with our jaws touching the floor at how bad it really was the rest of the time everyone else in the theatre just started talking to each other leaving or generally crying into their popcorn that they actually paid money they had working to watch this feeble excuse for a film it must have looked like a great idea on paper but on film it looks like no one in the film has a clue what is going on crap acting crap costumes i can't get across how this is to watch save yourself an hour a bit of your life</code></pre>
-<section id="초기화-콜백-평가시각화오분류-함수" class="level5">
-<h5 class="anchored" data-anchor-id="초기화-콜백-평가시각화오분류-함수">초기화 + 콜백 + 평가/시각화/오분류 함수</h5>
+<section id="초기화-콜백-평가시각화오분류-함수" class="level4" data-number="1.1.1">
+<h4 data-number="1.1.1" class="anchored" data-anchor-id="초기화-콜백-평가시각화오분류-함수"><span class="header-section-number">1.1.1</span> 초기화 + 콜백 + 평가/시각화/오분류 함수</h4>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os, random</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -637,10 +694,70 @@ Review: this has to be one of the worst films of the 1990s when my friends i wer
 <span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df[[<span class="st">"idx"</span>,<span class="st">"y_true"</span>,<span class="st">"y_pred"</span>,<span class="st">"p_pos"</span>,<span class="st">"conf"</span>,<span class="st">"len"</span>,<span class="st">"text"</span>]].reset_index(drop<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="딥러닝-분류" class="level4">
-<h4 class="anchored" data-anchor-id="딥러닝-분류">2. 딥러닝 분류</h4>
-<section id="avg-embedding-dense" class="level5">
-<h5 class="anchored" data-anchor-id="avg-embedding-dense">(1) Avg Embedding + Dense</h5>
+<section id="딥러닝-분류" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="딥러닝-분류"><span class="header-section-number">1.2</span> 딥러닝 분류</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+네 가지 텍스트 분류 모델 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 23%">
+<col style="width: 30%">
+<col style="width: 15%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>모델</th>
+<th>핵심 구조</th>
+<th>단어 순서 반영</th>
+<th>장점</th>
+<th>한계</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Avg Embedding</strong></td>
+<td>Embedding + GlobalAvgPool + Dense</td>
+<td>❌ (거의 없음)</td>
+<td>빠름, 단순</td>
+<td>“not good” ≈ “good” 구분 어려움</td>
+</tr>
+<tr class="even">
+<td><strong>TextCNN</strong></td>
+<td>Embedding + Conv1D + GlobalMaxPool</td>
+<td>✅ (국소 n-gram)</td>
+<td>감성 문구 포착 강력</td>
+<td>장거리 의존성 미반영</td>
+</tr>
+<tr class="odd">
+<td><strong>BiLSTM</strong></td>
+<td>Embedding + Bidirectional LSTM</td>
+<td>✅ (양방향 전체)</td>
+<td>문맥 전체 반영</td>
+<td>학습 느림, 장문 약화 가능</td>
+</tr>
+<tr class="even">
+<td><strong>Mini Transformer</strong></td>
+<td>Embedding + MultiHeadAttention + FFN</td>
+<td>✅ (전역 self-attention)</td>
+<td>장거리 의존성 강력</td>
+<td>데이터 적으면 과적합 위험</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="avg-embedding-dense" class="level4" data-number="1.2.1">
+<h4 data-number="1.2.1" class="anchored" data-anchor-id="avg-embedding-dense"><span class="header-section-number">1.2.1</span> Avg Embedding + Dense</h4>
 <p>이 방법은 각 단어를 임베딩 벡터로 변환한 뒤, 문장 전체에 대해 <strong>평균(GlobalAveragePooling)</strong>을 취해 하나의 고정 길이 벡터로 만든 후, 이를 완전연결층(Dense layer)에 입력하여 분류하는 구조이다. 즉, 문장을 구성하는 단어들의 “평균 의미 벡터”를 기반으로 감성을 판별한다.</p>
 <p>이 모델의 장점은 구조가 매우 단순하여 계산량이 적고 학습이 빠르며, 과적합 위험도 상대적으로 낮다는 점이다. 특히 대규모 데이터에서 베이스라인 모델로 사용하기에 적합하다. 또한 하이퍼파라미터 튜닝이 비교적 간단하여 안정적인 초기 성능을 확보할 수 있다.</p>
 <p>반면, 가장 큰 한계는 단어 순서 정보를 거의 반영하지 못한다는 점이다. 예를 들어 “not good”과 “good”이 평균 벡터 관점에서는 크게 다르지 않게 표현될 수 있다. 따라서 문맥이나 어순이 중요한 문장에서는 표현력이 제한적이며, 미묘한 감성 차이를 포착하기 어렵다.</p>
@@ -705,8 +822,22 @@ Epoch 2/10
 79/79 ━━━━━━━━━━━━━━━━━━━━ 8s 107ms/step - accuracy: 0.7667 - auc: 0.8515 - loss: 0.5208 - val_accuracy: 0.7898 - val_auc: 0.9092 - val_loss: 0.4285 - learning_rate: 0.0010
 (이하 생략)</code></pre>
 </section>
-<section id="textcnn" class="level5">
-<h5 class="anchored" data-anchor-id="textcnn">(2) TextCNN</h5>
+<section id="textcnn" class="level4" data-number="1.2.2">
+<h4 data-number="1.2.2" class="anchored" data-anchor-id="textcnn"><span class="header-section-number">1.2.2</span> TextCNN</h4>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+TextCNN 구조
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Embedding → Conv1D (kernel_size=5, ReLU) → <strong>GlobalMaxPooling</strong> → Dense(64) → Dropout(0.4) → Dense(1, sigmoid)</p>
+<p>Conv1D 필터가 연속된 단어 묶음(n-gram)을 탐지 → “not good”, “very impressive” 같은 감성 문구 효과적 포착</p>
+</div>
+</div>
 <p>TextCNN은 1차원 합성곱(Conv1D)을 이용하여 문장 내의 <strong>지역적 패턴(local n-gram pattern)</strong>을 추출하는 모델이다. 합성곱 필터는 특정 길이의 연속된 단어 묶음(예: 3-gram, 5-gram)을 탐지하며, 이는 “not good”, “very impressive”, “worst movie ever”와 같은 감성 표현을 효과적으로 포착할 수 있다.</p>
 <p>이 모델의 장점은 비교적 계산 효율이 높으면서도 단순 평균 모델보다 훨씬 풍부한 표현을 학습할 수 있다는 점이다. 특히 짧은 감성 문구나 특정 키워드 조합이 중요한 분류 문제에서 강한 성능을 보인다. 병렬 연산이 가능하므로 RNN 계열보다 학습 속도도 빠른 편이다.</p>
 <p>다만 CNN은 기본적으로 국소적 문맥만 반영하며, 문장 전체의 장거리 의존성(long-range dependency)을 직접적으로 모델링하기는 어렵다. 문맥이 길게 이어지는 문장이나 복잡한 구조에서는 표현력이 제한될 수 있다.</p>
@@ -747,8 +878,8 @@ Epoch 2/10
 <span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>results.append(out_cnn)</span>
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>models[<span class="st">"TextCNN"</span>] <span class="op">=</span> model_cnn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="bilstm" class="level5">
-<h5 class="anchored" data-anchor-id="bilstm">(3) BiLSTM</h5>
+<section id="bilstm" class="level4" data-number="1.2.3">
+<h4 data-number="1.2.3" class="anchored" data-anchor-id="bilstm"><span class="header-section-number">1.2.3</span> BiLSTM</h4>
 <p>BiLSTM은 순환신경망(RNN)의 일종으로, 문장을 앞에서 뒤로, 뒤에서 앞으로 동시에 처리하여 문장 흐름과 순서 정보를 반영하는 모델이다. 단어가 등장하는 위치와 이전·이후 맥락을 함께 고려하여 감성을 판단한다.</p>
 <p>이 모델의 가장 큰 장점은 문맥 의존성을 자연스럽게 학습할 수 있다는 점이다. 예를 들어 “I thought it would be great, but it was disappointing”과 같은 문장은 앞부분과 뒷부분의 관계를 이해해야 정확히 분류할 수 있는데, BiLSTM은 이러한 순차적 구조를 비교적 잘 반영한다.</p>
 <p>그러나 단점도 명확하다. 순차 연산 특성상 병렬 처리가 어렵고 학습 속도가 느리며, 문장이 길어질수록 정보가 희석될 가능성이 있다. 또한 하이퍼파라미터(은닉 유닛 수, 층 수 등)에 따라 성능 변동이 커 튜닝 부담이 존재한다.</p>
@@ -787,8 +918,22 @@ Epoch 2/10
 <span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>results.append(out_lstm)</span>
 <span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>models[<span class="st">"BiLSTM"</span>] <span class="op">=</span> model_lstm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="mini-transformer" class="level5">
-<h5 class="anchored" data-anchor-id="mini-transformer">(4) Mini Transformer</h5>
+<section id="mini-transformer" class="level4" data-number="1.2.4">
+<h4 data-number="1.2.4" class="anchored" data-anchor-id="mini-transformer"><span class="header-section-number">1.2.4</span> Mini Transformer</h4>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mini Transformer 구조
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Embedding + Positional Embedding → TransformerBlock(MultiHeadAttention + FFN + LayerNorm) → GlobalAvgPool → Dense → Dropout → Dense(1, sigmoid)</p>
+<p>Self-Attention이 문장 내 <strong>모든 단어 쌍 간의 관계</strong>를 동시에 계산 → 장거리 의존성 강력, 소규모 데이터에서는 과적합 주의</p>
+</div>
+</div>
 <p>Transformer 기반 모델은 Self-Attention 메커니즘을 사용하여 문장 내 모든 단어 쌍 간의 관계를 동시에 계산한다. 특정 단어가 다른 단어에 얼마나 중요한지를 가중치로 학습하며, 이를 통해 문맥적 의미를 구성한다.</p>
 <p>이 구조의 장점은 장거리 의존성을 효과적으로 모델링할 수 있다는 점이다. 문장의 앞과 뒤에 위치한 단어 간 관계도 직접 연결되어 계산되므로, 복잡한 문맥 구조를 잘 반영한다. 또한 병렬 연산이 가능해 이론적으로는 RNN보다 효율적이며, 블록을 쌓아 확장하기 쉽다는 구조적 유연성도 갖는다.</p>
 <p>하지만 Transformer는 상대적으로 많은 파라미터와 계산량을 요구하며, 충분한 데이터와 적절한 정규화가 없으면 과적합 위험이 있다. 또한 패딩 마스크, 학습률 스케줄링 등 세밀한 학습 설정이 성능에 크게 영향을 미친다. 소규모 데이터에서는 단순 CNN이나 LSTM보다 반드시 우수하다고 보장되지는 않는다.</p>
@@ -862,8 +1007,87 @@ Epoch 2/10
 <span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>results.append(out_tr)</span>
 <span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a>models[<span class="st">"Transformer"</span>] <span class="op">=</span> model_tr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="모델평가-비교" class="level5">
-<h5 class="anchored" data-anchor-id="모델평가-비교">3, 모델평가 비교</h5>
+<section id="모델평가-비교" class="level4" data-number="1.2.5">
+<h4 data-number="1.2.5" class="anchored" data-anchor-id="모델평가-비교"><span class="header-section-number">1.2.5</span> 모델평가 비교</h4>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+4개 모델 성능 비교 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>모델</th>
+<th>Test ACC</th>
+<th>Test AUC</th>
+<th>TN</th>
+<th>FP</th>
+<th>FN</th>
+<th>TP</th>
+<th>특이사항</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>TextCNN</strong></td>
+<td>0.8673</td>
+<td><strong>0.9527</strong></td>
+<td>11,628</td>
+<td>872</td>
+<td>2,445</td>
+<td>10,055</td>
+<td>AUC 최고, FP 가장 적음</td>
+</tr>
+<tr class="even">
+<td>AvgEmbed+Dense</td>
+<td><strong>0.8762</strong></td>
+<td>0.9443</td>
+<td>10,731</td>
+<td>1,769</td>
+<td>1,327</td>
+<td>11,173</td>
+<td>ACC 최고, Recall 높음</td>
+</tr>
+<tr class="odd">
+<td>Transformer</td>
+<td>0.8235</td>
+<td>0.9442</td>
+<td>8,537</td>
+<td>3,963</td>
+<td><strong>449</strong></td>
+<td>12,051</td>
+<td>FN 가장 적음 (Recall 최고), FP 많음</td>
+</tr>
+<tr class="even">
+<td>BiLSTM</td>
+<td>0.8422</td>
+<td>0.9195</td>
+<td>10,998</td>
+<td>1,502</td>
+<td>2,444</td>
+<td>10,056</td>
+<td>AUC 최저</td>
+</tr>
+</tbody>
+</table>
+<p><strong>결론</strong>: AUC 기준 <strong>TextCNN 최고</strong> — local n-gram 패턴 추출이 IMDB 감성 분류에 효과적. Transformer는 Recall이 높지만 FP 증가.</p>
+</div>
+</div>
 <p><strong>결과표</strong></p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 결과표</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df_eval <span class="op">=</span> pd.DataFrame(results)</span>
