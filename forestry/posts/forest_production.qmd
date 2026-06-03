@@ -1,0 +1,186 @@
+---
+title: "한국 임목 생산량 추이 분석 (2000–2022)"
+author: "권세혁"
+date: "2026-06-03"
+description: "산림청 국가산림자원조사 데이터를 기반으로 임목 축적·생장량·수확량의 장기 추세를 분석한다."
+categories: [임목 생산, 시계열 분석, 산림청]
+format:
+  html:
+    sidebar: forestry
+---
+
+## 개요
+
+한국의 임업은 1970~80년대 대규모 조림 사업 이후 산림 자원이 크게 회복되었다. 이 글에서는 산림청 **국가산림자원조사(NFI)** 자료와 **임업통계연보**를 활용해 2000년대 이후 임목 생산량의 주요 추세를 살펴본다.
+
+::: {.callout-note}
+**데이터 출처**: 산림청 임업통계연보, 국가산림자원조사(NFI) 5차~7차 조사 결과
+:::
+
+---
+
+## 1. 임목 축적 추이
+
+국가산림자원조사에 따르면 우리나라 산림의 ha당 임목 축적은 꾸준히 증가해왔다.
+
+```{=html}
+<table class="table table-striped table-hover" style="font-size:14px; max-width:480px; margin-bottom:1rem;">
+  <thead style="background:#2d6b2d; color:white; font-weight:bold;">
+    <tr>
+      <th>조사 연도</th>
+      <th style="text-align:right;">ha당 축적 (m³)</th>
+      <th style="text-align:right;">총 축적 (백만 m³)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>2000년 (5차)</td><td style="text-align:right;">72.6</td><td style="text-align:right;">650</td></tr>
+    <tr><td>2010년 (6차)</td><td style="text-align:right;">125.6</td><td style="text-align:right;">1,128</td></tr>
+    <tr style="font-weight:bold; background:#f0f7f0;">
+      <td>2020년 (7차)</td><td style="text-align:right;">165.2</td><td style="text-align:right;">1,488</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+- 2000년 대비 2020년 ha당 축적이 **2.3배** 증가
+- 총 임목 축적은 1988년 최저치 이후 지속 상승세
+
+---
+
+## 2. 임목 생산량(수확량) 추이
+
+```{ojs}
+//| label: fig-production
+//| echo: false
+
+prod_data = [
+  {year: 2000, v: 2810}, {year: 2001, v: 2734}, {year: 2002, v: 2890},
+  {year: 2003, v: 3020}, {year: 2004, v: 3150}, {year: 2005, v: 3280},
+  {year: 2006, v: 3390}, {year: 2007, v: 3520}, {year: 2008, v: 3680},
+  {year: 2009, v: 3820}, {year: 2010, v: 4010}, {year: 2011, v: 4230},
+  {year: 2012, v: 4580}, {year: 2013, v: 4920}, {year: 2014, v: 5340},
+  {year: 2015, v: 5760}, {year: 2016, v: 6120}, {year: 2017, v: 6450},
+  {year: 2018, v: 6810}, {year: 2019, v: 7020}, {year: 2020, v: 7250},
+  {year: 2021, v: 7480}, {year: 2022, v: 7630}
+]
+
+Plot.plot({
+  title: "한국 임목 생산량 추이 (2000–2022)",
+  caption: "출처: 산림청 임업통계연보",
+  width: 700,
+  height: 360,
+  marginLeft: 60,
+  marginBottom: 50,
+  x: { label: "연도", tickFormat: d => String(d), tickSpacing: 40 },
+  y: { label: "생산량 (천 m³)", grid: true, tickFormat: d => d.toLocaleString() },
+  marks: [
+    Plot.areaY(prod_data, { x: "year", y: "v", fill: "#2d6b2d", fillOpacity: 0.12 }),
+    Plot.lineY(prod_data, { x: "year", y: "v", stroke: "#2d6b2d", strokeWidth: 2.2 }),
+    Plot.dotY(prod_data, {
+      x: "year", y: "v",
+      fill: "white", stroke: "#1a4a1a", strokeWidth: 2, r: 4,
+      tip: true,
+      title: d => `${d.year}년: ${d.v.toLocaleString()} 천 m³`
+    })
+  ]
+})
+```
+
+**주요 관찰 포인트**:
+
+- 2000년대 초반: 연간 약 280만 m³ 수준
+- 2010년대 중반 이후 급증 → 2022년 약 763만 m³
+- 증가 원인: 탄소 중립 정책에 따른 벌채·갱신 확대, 목재 자급률 제고 정책
+
+---
+
+## 3. 수종별 생산 비율 (2022)
+
+```{ojs}
+//| label: fig-species
+//| echo: false
+
+species_data = [
+  {species: "낙엽송",      ratio: 32.4},
+  {species: "잣나무",      ratio: 18.7},
+  {species: "기타침엽",    ratio: 11.2},
+  {species: "편백",        ratio: 12.3},
+  {species: "리기다소나무", ratio:  9.8},
+  {species: "참나무류",    ratio:  8.6},
+  {species: "기타활엽",    ratio:  7.0}
+].sort((a, b) => a.ratio - b.ratio)
+
+Plot.plot({
+  title: "수종별 임목 생산 비율 (2022)",
+  caption: "출처: 산림청 임업통계연보",
+  width: 640,
+  height: 320,
+  marginLeft: 110,
+  marginRight: 60,
+  x: { label: "비율 (%)", domain: [0, 38] },
+  y: { label: null },
+  color: { range: ["#c5edbc","#9edb9e","#6ec96e","#4aad4a","#3a8c3a","#2d6b2d","#1a4a1a"] },
+  marks: [
+    Plot.barX(species_data, {
+      x: "ratio", y: "species",
+      fill: "ratio",
+      sort: { y: "x" }
+    }),
+    Plot.text(species_data, {
+      x: "ratio", y: "species",
+      text: d => d.ratio + "%",
+      dx: 6, textAnchor: "start",
+      fontWeight: "bold", fill: "#1a4a1a"
+    })
+  ]
+})
+```
+
+낙엽송(32.4%)이 가장 큰 비중을 차지하며, 침엽수 위주의 생산 구조가 지속되고 있다.
+
+---
+
+## 4. 기간별 연평균 성장률 (CAGR)
+
+```{=html}
+<table class="table table-striped table-hover" style="font-size:14px; max-width:560px; margin-bottom:1rem;">
+  <thead style="background:#2d6b2d; color:white; font-weight:bold;">
+    <tr>
+      <th>기간</th>
+      <th style="text-align:right;">시작 (천 m³)</th>
+      <th style="text-align:right;">종료 (천 m³)</th>
+      <th style="text-align:right;">CAGR (%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>2000–2010</td><td style="text-align:right;">2,810</td><td style="text-align:right;">4,010</td><td style="text-align:right;">3.63</td></tr>
+    <tr><td>2010–2015</td><td style="text-align:right;">4,010</td><td style="text-align:right;">5,760</td><td style="text-align:right;">7.51</td></tr>
+    <tr><td>2015–2020</td><td style="text-align:right;">5,760</td><td style="text-align:right;">7,250</td><td style="text-align:right;">4.71</td></tr>
+    <tr><td>2020–2022</td><td style="text-align:right;">7,250</td><td style="text-align:right;">7,630</td><td style="text-align:right;">2.59</td></tr>
+    <tr style="font-weight:bold; background:#f0f7f0;">
+      <td>2000–2022 (전체)</td><td style="text-align:right;">2,810</td><td style="text-align:right;">7,630</td><td style="text-align:right;">4.68</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+---
+
+## 5. 해석 및 시사점
+
+1. **자원은 풍부, 이용은 저조**: ha당 축적이 선진국 수준에 근접했음에도 목재 자급률은 여전히 약 17% 수준
+2. **노령림 증가 문제**: 조림 후 40~50년이 지난 노령림 비율 증가 → 생태적 다양성 저하 우려
+3. **탄소 흡수 능력 저하**: 노령림의 탄소 흡수 효율이 중·장령림 대비 낮음 → 갱신 수요 증가
+4. **정책적 방향**: 2030 목재 자급률 30% 달성 목표와 연계한 계획 벌채 확대
+
+---
+
+## 다음 분석 예고
+
+- **목재 수출입 현황**: 원목·제재목·합판 수입 의존도 분석
+- **지역별 임목 생산**: 시도별 생산량 편차와 조림 투자 효율
+- **임산물 가격 동향**: 원목 가격 시계열 및 국제 목재 가격 연동성
+
+::: {.callout-tip}
+데이터·분석 방법에 대한 의견이나 추가 분석 요청은 [통계 상담](../../consult.qmd) 페이지를 이용해 주세요.
+:::
