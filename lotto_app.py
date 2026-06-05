@@ -1,114 +1,302 @@
 import streamlit as st
 import random
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
+import numpy as np
+import requests
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 st.set_page_config(page_title="로또 번호 생성기", page_icon="🎱", layout="wide")
 
 st.markdown("""
 <div style="background:linear-gradient(135deg,#1a2a4a,#2d4a8c);
-            padding:1.2rem 1.6rem; border-radius:10px; color:#f5f0e8; margin-bottom:1.2rem;">
-  <h2 style="margin:0; font-size:1.4rem;">🎱 로또 번호 생성기</h2>
-  <p style="margin:0.3rem 0 0; font-size:0.85rem; opacity:0.85;">
-    통계적으로 완전 무작위 · 1~45 중 6개 추출
+            padding:1.2rem 1.6rem;border-radius:10px;color:#f5f0e8;margin-bottom:1.2rem;">
+  <h2 style="margin:0;font-size:1.4rem;">🎱 로또 번호 생성기 (베이지안 ver.)</h2>
+  <p style="margin:0.3rem 0 0;font-size:0.85rem;opacity:0.85;">
+    동행복권 역대 당첨번호 × Dirichlet-Multinomial 베이지안 모델
   </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ── 번호 색상 ─────────────────────────────────────
-def ball_color(n):
-    if n <= 10:  return "#f5c800"   # 노랑
-    elif n <= 20: return "#69c8f2"  # 파랑
-    elif n <= 30: return "#ff7272"  # 빨강
-    elif n <= 40: return "#aaaaaa"  # 회색
-    else:         return "#b0d840"  # 초록
+# ── 유틸 ──────────────────────────────────────────
+COLORS = {
+    (1,10): "#f5c800", (11,20): "#69c8f2",
+    (21,30): "#ff7272", (31,40): "#aaaaaa", (41,45): "#b0d840"
+}
 
-def draw_balls(numbers):
-    balls = ""
+def ball_color(n):
+    for (lo, hi), c in COLORS.items():
+        if lo <= n <= hi:
+            return c
+
+def balls_html(numbers, scale=48):
+    html = ""
     for n in sorted(numbers):
-        color = ball_color(n)
-        balls += f"""
-        <span style="
-            display:inline-flex; align-items:center; justify-content:center;
-            width:48px; height:48px; border-radius:50%;
-            background:{color}; color:white; font-weight:bold;
-            font-size:1.1rem; margin:4px; box-shadow:2px 2px 6px rgba(0,0,0,0.25);
-        ">{n}</span>"""
-    return f'<div style="margin:0.5rem 0;">{balls}</div>'
+        c = ball_color(n)
+        html += (f'<span style="display:inline-flex;align-items:center;justify-content:center;'
+                 f'width:{scale}px;height:{scale}px;border-radius:50%;background:{c};'
+                 f'color:white;font-weight:bold;font-size:{scale*0.23:.0f}rem;'
+                 f'margin:3px;box-shadow:2px 2px 6px rgba(0,0,0,.25);">{n}</span>')
+    return f'<div style="margin:.4rem 0;">{html}</div>'
+
+# ── API 수집 ──────────────────────────────────────
+def _fetch_one(rnd):
+    try:
+        r = requests.get(
+            f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={rnd}",
+            timeout=6
+        )
+        d = r.json()
+        if d.get("returnValue") == "success":
+            return {
+                "round": rnd,
+                "date":  d["drwNoDate"],
+                "numbers": [d[f"drwtNo{i}"] for i in range(1, 7)],
+                "bonus": d["bnusNo"]
+            }
+    except Exception:
+        pass
+    return None
+
+@st.cache_data(ttl=3600)
+def find_latest_round():
+    lo, hi, latest = 1000, 1500, 1100
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        result = _fetch_one(mid)
+        if result:
+            latest = mid
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return latest
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_history(n_rounds: int, latest: int):
+    start = max(1, latest - n_rounds + 1)
+    rounds = list(range(start, latest + 1))
+    records = []
+    with ThreadPoolExecutor(max_workers=10) as ex:
+        futures = {ex.submit(_fetch_one, r): r for r in rounds}
+        for f in as_completed(futures):
+            res = f.result()
+            if res:
+                records.append(res)
+    return sorted(records, key=lambda x: x["round"])
+
+# ── 베이지안 모델 ─────────────────────────────────
+def compute_posterior(records, alpha: float = 1.0):
+    """Dirichlet(alpha + counts) 사후 분포"""
+    counts = Counter()
+    for rec in records:
+        for n in rec["numbers"]:
+            counts[n] += 1
+    posterior = np.array([alpha + counts.get(i, 0) for i in range(1, 46)], dtype=float)
+    return posterior / posterior.sum(), counts
+
+def weighted_sample(weights, k=6):
+    """가중치 비복원 추출"""
+    w = weights.copy()
+    selected = []
+    for _ in range(k):
+        idx = np.random.choice(45, p=w / w.sum())
+        selected.append(idx + 1)
+        w[idx] = 0.0
+    return sorted(selected)
+
+# ── 데이터 로드 ───────────────────────────────────
+with st.spinner("동행복권 API에서 최신 회차 확인 중..."):
+    latest_round = find_latest_round()
+
+n_rounds = st.sidebar.slider("수집 회차 수", 50, 300, 100, step=50)
+alpha     = st.sidebar.slider("사전분포 집중도 α", 0.1, 5.0, 1.0, step=0.1,
+                               help="α=1: 균등 사전분포 / α↑: 균등에 가깝게 수렴")
+
+with st.spinner(f"최근 {n_rounds}회차 데이터 수집 중..."):
+    history = load_history(n_rounds, latest_round)
+
+if not history:
+    st.error("API 연결 실패. 잠시 후 다시 시도하세요.")
+    st.stop()
+
+posterior, counts = compute_posterior(history, alpha)
+n_loaded = len(history)
+
+st.sidebar.success(f"✅ {n_loaded}회차 로드 완료\n(제{history[0]['round']}회 ~ 제{history[-1]['round']}회)")
 
 # ── 탭 ───────────────────────────────────────────
-tab1, tab2 = st.tabs(["🎱 번호 생성", "📊 통계 분석"])
+tab1, tab2, tab3 = st.tabs(["🎱 번호 생성", "📊 베이지안 분석", "🔬 수렴 시뮬레이션"])
 
-# ── Tab 1: 번호 생성 ──────────────────────────────
+# ════════════════════════════════════════════════
+# Tab 1: 번호 생성
+# ════════════════════════════════════════════════
 with tab1:
-    col1, col2 = st.columns([1, 2])
+    col_left, col_right = st.columns([1, 2])
 
-    with col1:
-        n_draws = st.number_input("생성 게임 수", min_value=1, max_value=20, value=5)
-        exclude = st.text_input("제외 번호 (쉼표 구분)", placeholder="예: 1, 7, 13")
-        gen_btn = st.button("🎱 번호 생성", use_container_width=True, type="primary")
+    with col_left:
+        n_games   = st.number_input("게임 수", 1, 20, 5)
+        exclude   = st.text_input("제외 번호 (쉼표)", placeholder="예: 1, 7, 13")
+        gen_btn   = st.button("🎱 번호 생성", use_container_width=True, type="primary")
 
     if gen_btn:
-        exclude_nums = set()
+        ex_nums = set()
         if exclude.strip():
             try:
-                exclude_nums = {int(x.strip()) for x in exclude.split(",") if x.strip()}
+                ex_nums = {int(x.strip()) for x in exclude.split(",") if x.strip()}
             except ValueError:
-                st.warning("제외 번호는 숫자만 입력하세요.")
+                st.warning("숫자만 입력하세요.")
 
-        pool = [n for n in range(1, 46) if n not in exclude_nums]
-
+        pool = [n for n in range(1, 46) if n not in ex_nums]
         if len(pool) < 6:
-            st.error("제외 번호가 너무 많아 6개를 뽑을 수 없습니다.")
+            st.error("제외 번호가 너무 많습니다.")
         else:
-            st.markdown("### 생성된 번호")
-            all_numbers = []
-            for i in range(n_draws):
-                nums = sorted(random.sample(pool, 6))
-                all_numbers.extend(nums)
-                st.markdown(f"**{i+1}게임**", unsafe_allow_html=False)
-                st.markdown(draw_balls(nums), unsafe_allow_html=True)
+            w_pool    = np.array([posterior[n-1] for n in pool])
+            w_pool   /= w_pool.sum()
 
-            st.session_state["all_numbers"] = all_numbers
+            rand_results  = []
+            bayes_results = []
+            for _ in range(n_games):
+                rand_results.append(sorted(random.sample(pool, 6)))
+                # 베이지안: pool 내 가중치 비복원 추출
+                w = w_pool.copy()
+                sel = []
+                for _ in range(6):
+                    idx = np.random.choice(len(pool), p=w / w.sum())
+                    sel.append(pool[idx])
+                    w[idx] = 0.0
+                bayes_results.append(sorted(sel))
 
-# ── Tab 2: 통계 분석 ──────────────────────────────
+            c1, c2 = st.columns(2)
+            with c1:
+                st.markdown("#### 🎲 순수 무작위")
+                for i, nums in enumerate(rand_results):
+                    st.markdown(f"**{i+1}게임**")
+                    st.markdown(balls_html(nums), unsafe_allow_html=True)
+            with c2:
+                st.markdown("#### 🧠 베이지안 가중 추출")
+                for i, nums in enumerate(bayes_results):
+                    st.markdown(f"**{i+1}게임**")
+                    st.markdown(balls_html(nums), unsafe_allow_html=True)
+
+            st.caption("⚠️ 베이지안 결과도 실제 당첨 확률을 높이지는 않습니다. 교육·오락 목적입니다.")
+
+# ════════════════════════════════════════════════
+# Tab 2: 베이지안 분석
+# ════════════════════════════════════════════════
 with tab2:
-    st.subheader("번호 구간별 출현 분포")
+    st.subheader(f"번호별 사후 확률 vs 균등 확률 (최근 {n_loaded}회 기준)")
 
-    n_sim = st.slider("시뮬레이션 횟수", 100, 10000, 1000, step=100)
-    sim_btn = st.button("📊 시뮬레이션 실행", use_container_width=True)
+    uniform_p = 1 / 45
+    df_post = pd.DataFrame({
+        "번호":    list(range(1, 46)),
+        "사후확률": posterior * 100,
+        "균등확률": [uniform_p * 100] * 45,
+        "출현횟수": [counts.get(i, 0) for i in range(1, 46)],
+        "구간": pd.cut(
+            list(range(1, 46)), bins=[0,10,20,30,40,45],
+            labels=["1~10","11~20","21~30","31~40","41~45"]
+        )
+    })
+
+    color_map = {"1~10":"#f5c800","11~20":"#69c8f2","21~30":"#ff7272",
+                 "31~40":"#aaaaaa","41~45":"#b0d840"}
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=df_post["번호"], y=df_post["사후확률"],
+        name="베이지안 사후확률",
+        marker_color=[ball_color(n) for n in range(1, 46)],
+        hovertemplate="번호 %{x}<br>사후확률: %{y:.3f}%<extra></extra>"
+    ))
+    fig.add_hline(
+        y=uniform_p * 100, line_dash="dash",
+        line_color="#e74c3c", line_width=1.5,
+        annotation_text="균등확률 (1/45)", annotation_position="top right"
+    )
+    fig.update_layout(
+        height=380, plot_bgcolor="white", paper_bgcolor="white",
+        xaxis_title="번호", yaxis_title="확률 (%)",
+        margin=dict(l=10, r=10, t=20, b=10),
+        yaxis=dict(gridcolor="#e8e8e8")
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # 상위/하위 5개
+    c1, c2 = st.columns(2)
+    with c1:
+        st.markdown("**🔥 자주 나온 번호 Top 5**")
+        top5 = df_post.nlargest(5, "출현횟수")[["번호","출현횟수","사후확률"]]
+        top5["사후확률"] = top5["사후확률"].map("{:.3f}%".format)
+        st.dataframe(top5, hide_index=True, use_container_width=True)
+    with c2:
+        st.markdown("**🧊 적게 나온 번호 Bottom 5**")
+        bot5 = df_post.nsmallest(5, "출현횟수")[["번호","출현횟수","사후확률"]]
+        bot5["사후확률"] = bot5["사후확률"].map("{:.3f}%".format)
+        st.dataframe(bot5, hide_index=True, use_container_width=True)
+
+    st.info(
+        f"📌 사후확률 범위: {posterior.min()*100:.3f}% ~ {posterior.max()*100:.3f}%  "
+        f"(균등: {uniform_p*100:.3f}%)\n\n"
+        "차이가 매우 작아 실질적인 예측 우위는 없습니다. "
+        "회차가 쌓일수록 사후확률은 균등확률로 수렴합니다."
+    )
+
+# ════════════════════════════════════════════════
+# Tab 3: 수렴 시뮬레이션
+# ════════════════════════════════════════════════
+with tab3:
+    st.subheader("회차 증가에 따른 사후확률의 균등분포 수렴")
+    st.markdown("베이지안 업데이트를 반복할수록 사후확률이 균등(1/45)에 수렴함을 보여줍니다.")
+
+    target_num = st.selectbox("추적할 번호", list(range(1, 46)), index=6)
+    sim_rounds  = st.slider("시뮬레이션 회차 수", 10, 500, 200, step=10)
+    sim_btn     = st.button("🔬 수렴 시뮬레이션 실행")
 
     if sim_btn:
-        sim_numbers = []
-        for _ in range(n_sim):
-            sim_numbers.extend(random.sample(range(1, 46), 6))
+        np.random.seed(42)
+        uniform_prob  = 1 / 45
+        probs_history = []
+        cnt = 0
+        prior_sum = 45 * alpha
 
-        counter = Counter(sim_numbers)
-        df_freq = pd.DataFrame({
-            "번호": list(range(1, 46)),
-            "출현횟수": [counter.get(i, 0) for i in range(1, 46)]
+        for t in range(1, sim_rounds + 1):
+            drawn = np.random.choice(range(1, 46), size=6, replace=False)
+            if target_num in drawn:
+                cnt += 1
+            # Posterior mean after t rounds
+            p = (alpha + cnt) / (prior_sum + t * 6)
+            probs_history.append(p * 100)
+
+        df_conv = pd.DataFrame({
+            "회차": list(range(1, sim_rounds + 1)),
+            "사후확률(%)": probs_history,
+            "균등확률(%)": [uniform_prob * 100] * sim_rounds
         })
-        df_freq["구간"] = pd.cut(
-            df_freq["번호"],
-            bins=[0, 10, 20, 30, 40, 45],
-            labels=["1~10", "11~20", "21~30", "31~40", "41~45"]
-        )
-        color_map = {"1~10":"#f5c800","11~20":"#69c8f2","21~30":"#ff7272","31~40":"#aaaaaa","41~45":"#b0d840"}
 
-        fig = px.bar(
-            df_freq, x="번호", y="출현횟수",
-            color="구간", color_discrete_map=color_map,
-            title=f"{n_sim:,}회 시뮬레이션 번호별 출현 빈도"
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(
+            x=df_conv["회차"], y=df_conv["사후확률(%)"],
+            name=f"번호 {target_num} 사후확률",
+            line=dict(color=ball_color(target_num), width=2)
+        ))
+        fig2.add_trace(go.Scatter(
+            x=df_conv["회차"], y=df_conv["균등확률(%)"],
+            name="균등확률 (1/45)",
+            line=dict(color="#e74c3c", dash="dash", width=1.5)
+        ))
+        fig2.update_layout(
+            height=360, plot_bgcolor="white", paper_bgcolor="white",
+            xaxis_title="누적 회차", yaxis_title="확률 (%)",
+            margin=dict(l=10, r=10, t=20, b=10),
+            yaxis=dict(gridcolor="#e8e8e8"),
+            legend=dict(x=0.6, y=0.95)
         )
-        fig.update_layout(
-            plot_bgcolor="white", paper_bgcolor="white",
-            legend_title="구간", height=380,
-            margin=dict(l=10, r=10, t=40, b=10)
+        st.plotly_chart(fig2, use_container_width=True)
+
+        st.success(
+            f"번호 {target_num}의 사후확률이 {sim_rounds}회 후 "
+            f"{probs_history[-1]:.3f}%로, 균등확률 {uniform_prob*100:.3f}%에 수렴했습니다.\n\n"
+            "**결론**: 충분한 데이터가 쌓이면 베이지안 사후확률은 균등에 수렴합니다. "
+            "과거 빈도로 미래를 예측하는 것은 통계적으로 타당하지 않습니다."
         )
-        st.plotly_chart(fig, use_container_width=True)
-
-        expected = n_sim * 6 / 45
-        st.caption(f"기댓값: 번호당 약 {expected:.1f}회 · 완전 무작위이므로 모든 번호의 확률은 동일합니다.")
-
-        st.info("💡 로또는 독립 시행입니다. 지난 회차 결과가 이번 회차에 영향을 주지 않습니다.")
