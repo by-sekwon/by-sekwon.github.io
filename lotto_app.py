@@ -134,27 +134,30 @@ def weighted_sample(weights, k=6):
 with st.spinner("동행복권 API에서 최신 회차 확인 중..."):
     latest_round = find_latest_round()
 
-n_rounds = st.sidebar.slider("수집 회차 수", 50, 300, 100, step=50)
-alpha     = st.sidebar.slider("사전분포 집중도 α", 0.1, 5.0, 1.0, step=0.1,
-                               help="α=1: 균등 사전분포 / α↑: 균등에 가깝게 수렴")
+ctrl1, ctrl2, ctrl3 = st.columns([2, 2, 3])
+with ctrl1:
+    n_rounds = st.slider("수집 회차 수", 50, 300, 100, step=50)
+with ctrl2:
+    alpha = st.slider("사전분포 집중도 α", 0.1, 5.0, 1.0, step=0.1,
+                      help="α=1: 균등 사전분포 / α↑: 균등에 가깝게 수렴")
 
 with st.spinner(f"최근 {n_rounds}회차 데이터 수집 중..."):
     history = load_history(n_rounds, latest_round)
 
+with ctrl3:
+    if not history:
+        st.warning("⚠️ 내장 데이터 사용 (1~1125회 누적 빈도)")
+    else:
+        st.success(f"✅ {len(history)}회차 로드 완료 (제{history[0]['round']}~{history[-1]['round']}회)")
+
 if not history:
-    st.warning("⚠️ 동행복권 API 접근 불가 — 내장 역대 통계 데이터(1~1125회)로 대체합니다.")
     posterior = np.array([alpha + FALLBACK_COUNTS.get(i, 0) for i in range(1, 46)], dtype=float)
     posterior /= posterior.sum()
     counts = Counter(FALLBACK_COUNTS)
     n_loaded = FALLBACK_LATEST
-    st.sidebar.warning(f"⚠️ 내장 데이터 사용\n(1 ~ {FALLBACK_LATEST}회 누적 빈도)")
 else:
     posterior, counts = compute_posterior(history, alpha)
     n_loaded = len(history)
-    st.sidebar.success(
-        f"✅ {n_loaded}회차 로드 완료\n"
-        f"(제{history[0]['round']}회 ~ 제{history[-1]['round']}회)"
-    )
 
 # ── 탭 ───────────────────────────────────────────
 tab1, tab2, tab3 = st.tabs(["🎱 번호 생성", "📊 베이지안 분석", "🔬 수렴 시뮬레이션"])
