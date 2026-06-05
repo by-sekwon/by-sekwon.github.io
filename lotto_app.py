@@ -102,13 +102,6 @@ def load_history(n_rounds: int, latest: int):
                 records.append(res)
     return sorted(records, key=lambda x: x["round"])
 
-def make_fallback_history():
-    """API 실패 시 내장 빈도 데이터로 가상 records 생성"""
-    records = []
-    for rnd in range(1, FALLBACK_LATEST + 1):
-        records.append({"round": rnd, "date": "-", "numbers": [], "bonus": 0})
-    return records, Counter(FALLBACK_COUNTS)
-
 # ── 베이지안 모델 ─────────────────────────────────
 def compute_posterior(records, alpha: float = 1.0):
     """Dirichlet(alpha + counts) 사후 분포"""
@@ -118,16 +111,6 @@ def compute_posterior(records, alpha: float = 1.0):
             counts[n] += 1
     posterior = np.array([alpha + counts.get(i, 0) for i in range(1, 46)], dtype=float)
     return posterior / posterior.sum(), counts
-
-def weighted_sample(weights, k=6):
-    """가중치 비복원 추출"""
-    w = weights.copy()
-    selected = []
-    for _ in range(k):
-        idx = np.random.choice(45, p=w / w.sum())
-        selected.append(idx + 1)
-        w[idx] = 0.0
-    return sorted(selected)
 
 # ── 데이터 로드 ───────────────────────────────────
 ALPHA = 0.9
