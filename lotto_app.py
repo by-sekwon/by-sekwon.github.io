@@ -58,11 +58,11 @@ _HEADERS = {
 }
 
 # ── API 수집 ──────────────────────────────────────
-def _fetch_one(rnd):
+def _fetch_one(rnd, timeout=2):
     try:
         r = requests.get(
             f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={rnd}",
-            headers=_HEADERS, timeout=6
+            headers=_HEADERS, timeout=timeout
         )
         d = r.json()
         if d.get("returnValue") == "success":
@@ -77,8 +77,13 @@ def _fetch_one(rnd):
     return None
 
 @st.cache_data(ttl=3600)
+def api_available():
+    """API 1회 빠르게 테스트 — 차단이면 즉시 False 반환"""
+    return _fetch_one(FALLBACK_LATEST, timeout=3) is not None
+
+@st.cache_data(ttl=3600)
 def find_latest_round():
-    lo, hi, latest = 1000, 1500, FALLBACK_LATEST
+    lo, hi, latest = FALLBACK_LATEST, FALLBACK_LATEST + 200, FALLBACK_LATEST
     while lo <= hi:
         mid = (lo + hi) // 2
         result = _fetch_one(mid)
@@ -90,11 +95,10 @@ def find_latest_round():
     return latest
 
 @st.cache_data(ttl=3600, show_spinner=False)
-def load_history(n_rounds: int, latest: int):
-    start = max(1, latest - n_rounds + 1)
-    rounds = list(range(start, latest + 1))
+def load_history(latest: int):
+    rounds = list(range(1, latest + 1))
     records = []
-    with ThreadPoolExecutor(max_workers=10) as ex:
+    with ThreadPoolExecutor(max_workers=30) as ex:
         futures = {ex.submit(_fetch_one, r): r for r in rounds}
         for f in as_completed(futures):
             res = f.result()
@@ -115,9 +119,12 @@ def compute_posterior(records, alpha: float = 1.0):
 # ── 데이터 로드 ───────────────────────────────────
 ALPHA = 0.9
 
-with st.spinner("동행복권 역대 당첨번호 불러오는 중..."):
-    latest_round = find_latest_round()
-    history = load_history(latest_round, latest_round)  # 전체 회차
+with st.spinner("데이터 준비 중..."):
+    if not api_available():
+        history = []
+    else:
+        latest_round = find_latest_round()
+        history = load_history(latest_round)
 
 if not history:
     st.warning("⚠️ 내장 데이터 사용 (1~1125회 누적 빈도)")
