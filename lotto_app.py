@@ -130,33 +130,22 @@ def weighted_sample(weights, k=6):
     return sorted(selected)
 
 # ── 데이터 로드 ───────────────────────────────────
-with st.spinner("동행복권 API에서 최신 회차 확인 중..."):
+ALPHA = 0.9
+
+with st.spinner("동행복권 역대 당첨번호 불러오는 중..."):
     latest_round = find_latest_round()
-
-ctrl1, ctrl2, ctrl3 = st.columns([2, 2, 3])
-with ctrl1:
-    n_rounds = st.slider("수집 회차 수", 50, 300, 100, step=50)
-with ctrl2:
-    alpha = st.slider("사전분포 집중도 α", 0.1, 5.0, 1.0, step=0.1,
-                      help="α=1: 균등 사전분포 / α↑: 균등에 가깝게 수렴")
-
-with st.spinner(f"최근 {n_rounds}회차 데이터 수집 중..."):
-    history = load_history(n_rounds, latest_round)
-
-with ctrl3:
-    if not history:
-        st.warning("⚠️ 내장 데이터 사용 (1~1125회 누적 빈도)")
-    else:
-        st.success(f"✅ {len(history)}회차 로드 완료 (제{history[0]['round']}~{history[-1]['round']}회)")
+    history = load_history(latest_round, latest_round)  # 전체 회차
 
 if not history:
-    posterior = np.array([alpha + FALLBACK_COUNTS.get(i, 0) for i in range(1, 46)], dtype=float)
+    st.warning("⚠️ 내장 데이터 사용 (1~1125회 누적 빈도)")
+    posterior = np.array([ALPHA + FALLBACK_COUNTS.get(i, 0) for i in range(1, 46)], dtype=float)
     posterior /= posterior.sum()
     counts = Counter(FALLBACK_COUNTS)
     n_loaded = FALLBACK_LATEST
 else:
-    posterior, counts = compute_posterior(history, alpha)
+    posterior, counts = compute_posterior(history, ALPHA)
     n_loaded = len(history)
+    st.caption(f"✅ 전체 {n_loaded}회차 데이터 사용 (제1회 ~ 제{history[-1]['round']}회 · α={ALPHA})")
 
 # ── 탭 ───────────────────────────────────────────
 tab1, tab2, tab3 = st.tabs(["🎱 번호 생성", "📊 베이지안 분석", "🔬 수렴 시뮬레이션"])
@@ -276,14 +265,14 @@ with tab3:
         uniform_prob  = 1 / 45
         probs_history = []
         cnt = 0
-        prior_sum = 45 * alpha
+        prior_sum = 45 * ALPHA
 
         for t in range(1, sim_rounds + 1):
             drawn = np.random.choice(range(1, 46), size=6, replace=False)
             if target_num in drawn:
                 cnt += 1
             # Posterior mean after t rounds
-            p = (alpha + cnt) / (prior_sum + t * 6)
+            p = (ALPHA + cnt) / (prior_sum + t * 6)
             probs_history.append(p * 100)
 
         df_conv = pd.DataFrame({
