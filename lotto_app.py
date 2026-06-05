@@ -36,7 +36,7 @@ def balls_html(numbers, scale=48):
         c = ball_color(n)
         html += (f'<span style="display:inline-flex;align-items:center;justify-content:center;'
                  f'width:{scale}px;height:{scale}px;border-radius:50%;background:{c};'
-                 f'color:white;font-weight:bold;font-size:{scale*0.23:.0f}rem;'
+                 f'color:white;font-weight:bold;font-size:{scale*0.38:.0f}px;'
                  f'margin:3px;box-shadow:2px 2px 6px rgba(0,0,0,.25);">{n}</span>')
     return f'<div style="margin:.4rem 0;">{html}</div>'
 
