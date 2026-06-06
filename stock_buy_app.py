@@ -6,16 +6,56 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
 
+# ── 주요 한국 종목명 매핑 ─────────────────────────────────
+_KR_MAP = {
+    # KOSPI 대형주
+    "삼성전자":"005930.KS","sk하이닉스":"000660.KS","하이닉스":"000660.KS",
+    "현대차":"005380.KS","현대자동차":"005380.KS","기아":"000270.KS","기아차":"000270.KS",
+    "lg에너지솔루션":"373220.KS","삼성sdi":"006400.KS","현대모비스":"012330.KS",
+    "posco홀딩스":"005490.KS","포스코홀딩스":"005490.KS","포스코":"005490.KS",
+    "삼성바이오로직스":"207940.KS","lg화학":"051910.KS","카카오":"035720.KS",
+    "네이버":"035420.KS","naver":"035420.KS","삼성물산":"028260.KS",
+    "한국전력":"015760.KS","한전":"015760.KS","신한지주":"055550.KS","신한":"055550.KS",
+    "kb금융":"105560.KS","하나금융지주":"086790.KS","하나금융":"086790.KS",
+    "우리금융지주":"316140.KS","우리금융":"316140.KS","ktg":"033780.KS","kt&g":"033780.KS",
+    "sk텔레콤":"017670.KS","skt":"017670.KS","kt":"030200.KS",
+    "lg전자":"066570.KS","삼성전기":"009150.KS","셀트리온":"068270.KS",
+    "고려아연":"010130.KS","아모레퍼시픽":"090430.KS","아모레":"090430.KS",
+    "한화에어로스페이스":"012450.KS","한화에어로":"012450.KS",
+    "hd현대":"267250.KS","cj제일제당":"097950.KS","크래프톤":"259960.KS",
+    "카카오뱅크":"323410.KS","카카오페이":"377300.KS","lg":"003550.KS",
+    "sk이노베이션":"096770.KS","현대건설":"000720.KS","hmm":"011200.KS",
+    "두산에너빌리티":"034020.KS","롯데케미칼":"011170.KS","gs":"078930.KS",
+    "삼성엔지니어링":"028050.KS","호텔신라":"008770.KS","오리온":"271560.KS",
+    "롯데쇼핑":"023530.KS","sk":"034730.KS","lotte":"023530.KS",
+    # KOSDAQ
+    "에코프로비엠":"247540.KQ","에코프로":"086520.KQ","포스코퓨처엠":"003670.KS",
+    "엔씨소프트":"036570.KS","넷마블":"251270.KS","펄어비스":"263750.KQ",
+    "카카오게임즈":"293490.KS","하이브":"352820.KS","sm":"041510.KQ",
+    "jyp":"035900.KQ","와이지엔터":"122870.KQ","셀트리온헬스케어":"091990.KS",
+    "알테오젠":"196170.KQ","리가켐바이오":"141080.KQ","휴젤":"145020.KQ",
+}
+
 # ── 종목명 → 티커 변환 ────────────────────────────────────
 def resolve_ticker(raw: str) -> str:
     raw = raw.strip()
     has_korean = any('가' <= c <= '힣' for c in raw)
     if not has_korean:
-        # 숫자만이면 한국 코스피로 간주
         if raw.isdigit() or (len(raw) >= 6 and raw[:6].isdigit() and '.' not in raw):
             return raw + ".KS"
         return raw  # AAPL 등 해외 티커
-    # 한국어 종목명 → Yahoo Finance 검색
+
+    # 매핑 테이블 우선 검색 (소문자 비교)
+    key = raw.lower().replace(" ", "")
+    if key in _KR_MAP:
+        return _KR_MAP[key]
+
+    # 부분 일치 검색
+    for k, v in _KR_MAP.items():
+        if key in k or k in key:
+            return v
+
+    # Yahoo Finance 검색 (fallback)
     try:
         resp = requests.get(
             "https://query2.finance.yahoo.com/v1/finance/search",
@@ -383,6 +423,14 @@ with c2:
 
 if run and ticker_input.strip():
     resolved = resolve_ticker(ticker_input.strip())
+    has_korean_resolved = any('가' <= c <= '힣' for c in resolved)
+    if has_korean_resolved:
+        st.error(
+            f"❌ '{ticker_input.strip()}' 종목을 찾지 못했습니다.  \n"
+            "**해결 방법**: 종목코드(예: `005380`)를 직접 입력해 주세요.  \n"
+            "[KRX 종목코드 조회](http://www.krx.co.kr)"
+        )
+        st.stop()
     with st.spinner(f"{ticker_input.strip()} ({resolved}) 분석 중..."):
         try:
             r   = analyze_stock(resolved)
