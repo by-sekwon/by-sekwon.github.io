@@ -217,9 +217,8 @@ def analyze_stock(ticker: str) -> dict:
     verdict = "✅ 매수 추천" if total >= 7 else ("🟠 관망 권고" if total >= 5 else "❌ 매수 비권고")
 
     try:
-        fi   = yf.Ticker(ticker).fast_info
-        name = getattr(fi, "long_name", None) or getattr(fi, "short_name", "") or ""
-        name = name.replace(" ", "")[:16]
+        info = yf.Ticker(ticker).info
+        name = (info.get("longName") or info.get("shortName") or "").strip()[:20]
     except Exception:
         name = ""
 
@@ -255,7 +254,8 @@ def build_chart(ticker: str):
     if df.empty:
         return None
     df = df.copy()
-    df.index = df.index.tz_localize(None)   # Plotly 타임존 호환
+    if df.index.tz is not None:
+        df.index = df.index.tz_convert(None)  # Plotly 타임존 호환
     df['MA20'] = df['Close'].rolling(20).mean()
     df['MA60'] = df['Close'].rolling(60).mean()
 
