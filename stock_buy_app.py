@@ -4,6 +4,32 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import requests
+
+# ── 종목명 → 티커 변환 ────────────────────────────────────
+def resolve_ticker(raw: str) -> str:
+    raw = raw.strip()
+    has_korean = any('가' <= c <= '힣' for c in raw)
+    if not has_korean:
+        # 숫자만이면 한국 코스피로 간주
+        if raw.isdigit() or (len(raw) >= 6 and raw[:6].isdigit() and '.' not in raw):
+            return raw + ".KS"
+        return raw  # AAPL 등 해외 티커
+    # 한국어 종목명 → Yahoo Finance 검색
+    try:
+        resp = requests.get(
+            "https://query2.finance.yahoo.com/v1/finance/search",
+            params={"q": raw, "lang": "ko-KR", "region": "KR", "quotesCount": 10},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=5,
+        )
+        for q in resp.json().get("quotes", []):
+            sym = q.get("symbol", "")
+            if sym.endswith(".KS") or sym.endswith(".KQ"):
+                return sym
+    except Exception:
+        pass
+    return raw
 
 st.set_page_config(page_title="매수적절성 분석기", page_icon="📊", layout="wide")
 
@@ -349,17 +375,18 @@ def build_chart(ticker: str):
 # ── UI ────────────────────────────────────────────────────
 c1, c2, _ = st.columns([2, 1, 3])
 with c1:
-    ticker_input = st.text_input("종목코드", value="005930",
-                                 placeholder="예: 005930 / 035720 / AAPL")
+    ticker_input = st.text_input("종목코드 또는 종목명", value="005930",
+                                 placeholder="예: 005930 / 삼성전자 / AAPL")
 with c2:
     st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
     run = st.button("▶ 분석 실행", type="primary", use_container_width=True)
 
 if run and ticker_input.strip():
-    with st.spinner(f"{ticker_input.strip()} 분석 중..."):
+    resolved = resolve_ticker(ticker_input.strip())
+    with st.spinner(f"{ticker_input.strip()} ({resolved}) 분석 중..."):
         try:
-            r   = analyze_stock(ticker_input.strip())
-            fig = build_chart(ticker_input.strip())
+            r   = analyze_stock(resolved)
+            fig = build_chart(resolved)
         except Exception as e:
             st.error(f"❌ 오류: {e}")
             st.stop()
