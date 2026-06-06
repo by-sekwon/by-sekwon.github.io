@@ -217,9 +217,9 @@ def analyze_stock(ticker: str) -> dict:
     verdict = "✅ 매수 추천" if total >= 7 else ("🟠 관망 권고" if total >= 5 else "❌ 매수 비권고")
 
     try:
-        info = yf.Ticker(ticker).info
-        name = info.get("shortName", info.get("longName", ""))
-        name = name.replace(" ", "")[:12] if name else ""
+        fi   = yf.Ticker(ticker).fast_info
+        name = getattr(fi, "long_name", None) or getattr(fi, "short_name", "") or ""
+        name = name.replace(" ", "")[:16]
     except Exception:
         name = ""
 
@@ -255,6 +255,7 @@ def build_chart(ticker: str):
     if df.empty:
         return None
     df = df.copy()
+    df.index = df.index.tz_localize(None)   # Plotly 타임존 호환
     df['MA20'] = df['Close'].rolling(20).mean()
     df['MA60'] = df['Close'].rolling(60).mean()
 
@@ -374,7 +375,13 @@ if run and ticker_input.strip():
     v_color = next((c for k, c in verdict_color.items() if r['verdict'].startswith(k)), "#555")
 
     # ① 종합 요약
-    st.markdown(f"### {r['ticker']}{name_str}")
+    st.markdown(
+        f"<div style='margin-bottom:.6rem;'>"
+        f"<span style='font-size:1.5rem;font-weight:800;color:#f5f0e8;'>{r['name'] or r['ticker']}</span>"
+        f"<span style='font-size:1rem;color:#aaa;margin-left:.6rem;'>{r['ticker']}</span>"
+        f"</div>",
+        unsafe_allow_html=True
+    )
     st.markdown(
         f"<div style='background:{v_color};color:white;padding:.5rem 1rem;"
         f"border-radius:8px;display:inline-block;font-size:1.1rem;font-weight:700;"
