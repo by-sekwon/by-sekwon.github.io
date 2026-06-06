@@ -23,11 +23,9 @@ def analyze_stock(ticker: str) -> dict:
     if ticker.isdigit() or (ticker[:6].isdigit() and '.' not in ticker):
         ticker = ticker + ".KS"
 
-    df = yf.download(ticker, period="2y", auto_adjust=True, progress=False)
+    df = yf.Ticker(ticker).history(period="2y", auto_adjust=True)
     if df.empty:
         raise ValueError(f"데이터 없음: {ticker}")
-    if isinstance(df.columns, pd.MultiIndex):
-        df.columns = df.columns.get_level_values(0)
 
     close  = df["Close"]
     high   = df["High"]
@@ -253,11 +251,9 @@ def analyze_stock(ticker: str) -> dict:
 def build_chart(ticker: str):
     if ticker.isdigit() or (ticker[:6].isdigit() and '.' not in ticker):
         ticker = ticker + ".KS"
-    df = yf.download(ticker, period="1y", auto_adjust=True, progress=False)
+    df = yf.Ticker(ticker).history(period="1y", auto_adjust=True)
     if df.empty:
         return None
-    if isinstance(df.columns, pd.MultiIndex):
-        df.columns = df.columns.get_level_values(0)
     df = df.copy()
     df['MA20'] = df['Close'].rolling(20).mean()
     df['MA60'] = df['Close'].rolling(60).mean()
