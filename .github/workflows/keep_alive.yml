@@ -1,0 +1,19 @@
+name: Keep Streamlit Apps Awake
+
+on:
+  schedule:
+    - cron: '0 1,13 * * *'   # 매일 오전 1시 · 오후 1시 (UTC) = 한국 오전 10시 · 오후 10시
+  workflow_dispatch:           # 수동 실행 버튼
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping — 로또 번호 생성기
+        run: curl -s -o /dev/null -w "%{http_code}" https://by-sekwonappio-8l9qy39rtnnumlftcp5vev.streamlit.app/
+
+      - name: Ping — 매수적절성 분석기
+        run: curl -s -o /dev/null -w "%{http_code}" https://by-sekwonappio-brhv7z6elu8dakgf7ed6ie.streamlit.app/
+
+      - name: Ping — KRX 매수 추천 스캐너
+        run: curl -s -o /dev/null -w "%{http_code}" https://by-sekwonappio-74lvd7sgtztzyfhztkce9p.streamlit.app/
