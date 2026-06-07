@@ -1,5 +1,13 @@
-import warnings
+import sys, warnings
 warnings.filterwarnings('ignore')
+
+# Streamlit Cloud에서 이 파일을 직접 실행하면 안내 메시지 표시 후 중단
+if "streamlit" in sys.modules or any("streamlit" in a for a in sys.argv):
+    import streamlit as st
+    st.error("⚠️ 이 파일은 **Jupyter Notebook 전용** 분석 파일입니다.")
+    st.info("Streamlit 배포는 `stock_scan_app.py` 를 Main file path로 지정하세요.\n\n"
+            "Streamlit Cloud → 앱 Settings → **Main file path** → `stock_scan_app.py`")
+    st.stop()
 
 import numpy as np
 import pandas as pd
@@ -10,10 +18,7 @@ from datetime import datetime, timedelta
 from IPython.display import HTML, display
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-try:
-    from tqdm.notebook import tqdm
-except ImportError:
-    from tqdm import tqdm
+from tqdm import tqdm
 
 
 def signal_alert(code, chart=True):
