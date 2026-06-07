@@ -36,6 +36,16 @@ with st.sidebar:
     max_workers = st.slider("병렬 스레드 수", 5, 20, 10)
     st.caption("⚠️ 전체 스캔은 5~15분 소요됩니다.\n결과는 세션 내 유지됩니다.")
 
+    st.divider()
+    st.warning(
+        "**⚠️ 투자 위험 고지**\n\n"
+        "본 스캐너는 **기술적 분석** 기반의 참고 도구이며, "
+        "투자 권유나 수익을 보장하지 않습니다.\n\n"
+        "- 과거 패턴이 미래 수익을 보장하지 않습니다.\n"
+        "- 모든 투자 결정과 손익은 **본인 책임**입니다.\n"
+        "- 투자 전 재무제표·공시·거시경제 등을 종합적으로 검토하세요."
+    )
+
 start_date = (datetime.today() - timedelta(days=365)).strftime("%Y-%m-%d")
 
 
