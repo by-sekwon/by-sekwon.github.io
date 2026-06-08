@@ -10,12 +10,14 @@ from playwright.sync_api import sync_playwright
 
 CACHE_FILE = "lotto_cache.json"
 
+# 파일이 없으면 빈 파일 먼저 생성 (git add 실패 방지)
+if not os.path.exists(CACHE_FILE):
+    with open(CACHE_FILE, "w", encoding="utf-8") as f:
+        json.dump([], f)
+
 # ── 기존 캐시 로드 ──────────────────────────────
-if os.path.exists(CACHE_FILE):
-    with open(CACHE_FILE, encoding="utf-8") as f:
-        existing = {r["round"]: r for r in json.load(f)}
-else:
-    existing = {}
+with open(CACHE_FILE, encoding="utf-8") as f:
+    existing = {r["round"]: r for r in json.load(f)}
 
 # ── 최신 회차 추정 ──────────────────────────────
 days = (date.today() - date(2002, 12, 7)).days
