@@ -47,7 +47,13 @@ FALLBACK_COUNTS = {
     31:151, 32:146, 33:158, 34:165, 35:143, 36:152, 37:147, 38:161, 39:140, 40:157,
     41:144, 42:138, 43:159, 44:150, 45:146
 }
-FALLBACK_LATEST = 1125
+def _estimate_latest_round() -> int:
+    from datetime import date
+    # 1회 추첨일: 2002-12-07 (토요일), 이후 매주 토요일
+    days = (date.today() - date(2002, 12, 7)).days
+    return max(1, days // 7 + 1)
+
+FALLBACK_LATEST = _estimate_latest_round()
 
 # ── API 헤더 ───────────────────────────────────────
 _HEADERS = {
@@ -127,7 +133,7 @@ with st.spinner("데이터 준비 중..."):
         history = load_history(latest_round)
 
 if not history:
-    st.warning("⚠️ 내장 데이터 사용 (1~1125회 누적 빈도)")
+    st.warning(f"⚠️ 내장 데이터 사용 (1~{FALLBACK_LATEST}회 누적 빈도)")
     posterior = np.array([ALPHA + FALLBACK_COUNTS.get(i, 0) for i in range(1, 46)], dtype=float)
     posterior /= posterior.sum()
     counts = Counter(FALLBACK_COUNTS)
