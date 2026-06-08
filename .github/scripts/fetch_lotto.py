@@ -1,43 +1,41 @@
 """
 동행복권 당첨번호 수집 스크립트
-- Playwright로 JS를 렌더링해 XHR 응답을 가로채 JSON 데이터 추출
-- JSON이 없으면 렌더된 HTML에서 번호 파싱
-- lotto_cache.json 에 누적 저장 (기존 데이터 재사용, 빈 회차만 보충)
+- Playwright + 봇 감지 회피 설정
+- XHR JSON 가로채기 → HTML 파싱 이중 시도
+- 상세 로그 출력으로 실패 원인 파악 가능
 """
-import json, re, os
+import json, re, os, sys
 from datetime import date
 from playwright.sync_api import sync_playwright
 
 CACHE_FILE = "lotto_cache.json"
+BATCH      = 200   # 1회 실행당 최대 수집 회차
 
-# 파일이 없으면 빈 파일 먼저 생성 (git add 실패 방지)
+# ── 기존 캐시 로드 ──────────────────────────────
 if not os.path.exists(CACHE_FILE):
     with open(CACHE_FILE, "w", encoding="utf-8") as f:
         json.dump([], f)
 
-# ── 기존 캐시 로드 ──────────────────────────────
 with open(CACHE_FILE, encoding="utf-8") as f:
     existing = {r["round"]: r for r in json.load(f)}
 
-# ── 최신 회차 추정 ──────────────────────────────
-days = (date.today() - date(2002, 12, 7)).days
-estimated = max(1, days // 7 + 1)
+print(f"기존 캐시: {len(existing)}회차")
 
-# ── 수집할 회차 결정 ────────────────────────────
-# 이미 있는 회차는 스킵, 추정 최신 +5까지 시도
+# ── 최신 회차 추정 ──────────────────────────────
+days      = (date.today() - date(2002, 12, 7)).days
+estimated = max(1, days // 7 + 1)
 all_rounds = list(range(1, estimated + 6))
 missing    = [r for r in all_rounds if r not in existing]
-print(f"추정 최신 회차: {estimated}, 수집 대상: {len(missing)}회")
+print(f"추정 최신 회차: {estimated} | 수집 대상: {len(missing)}회 | 이번 배치: {min(len(missing), BATCH)}회")
 
 if not missing:
-    print("수집할 회차 없음 → 기존 캐시 유지")
-    exit(0)
+    print("수집할 회차 없음 → 종료")
+    sys.exit(0)
 
 records = dict(existing)
 
-# ── Playwright로 수집 ───────────────────────────
+# ── Playwright 수집 ─────────────────────────────
 def parse_round(page, rnd):
-    """한 회차 페이지에서 당첨번호 추출. 성공 시 dict 반환, 실패 시 None."""
     found = {}
 
     def on_response(resp):
@@ -52,17 +50,20 @@ def parse_round(page, rnd):
 
     page.on("response", on_response)
     try:
-        page.goto(
+        resp = page.goto(
             f"https://www.dhlottery.co.kr/gameResult.do?method=byWin&drwNo={rnd}",
             wait_until="networkidle",
             timeout=20_000,
         )
-    except Exception:
+        status = resp.status if resp else "N/A"
+    except Exception as e:
+        print(f"  [{rnd}회] 페이지 로드 실패: {e}")
+        page.remove_listener("response", on_response)
         return None
     finally:
         page.remove_listener("response", on_response)
 
-    # ① XHR JSON으로 얻은 경우
+    # ① XHR JSON
     if found.get("returnValue") == "success":
         return {
             "round":   found["drwNo"],
@@ -71,10 +72,16 @@ def parse_round(page, rnd):
             "bonus":   found["bnusNo"],
         }
 
-    # ② 렌더된 HTML 파싱 (fallback)
-    html = page.content()
-    nums = [int(t) for t in re.findall(r"class=\"[^\"]*ball[^\"]*\"[^>]*>\s*(\d{1,2})\s*<", html)
-            if 1 <= int(t) <= 45]
+    # ② 렌더된 HTML 파싱
+    html  = page.content()
+    title = re.search(r"<title>(.*?)</title>", html)
+    nums  = [int(t) for t in re.findall(r'class="[^"]*ball[^"]*"[^>]*>\s*(\d{1,2})\s*<', html)
+             if 1 <= int(t) <= 45]
+
+    if rnd <= 3:  # 첫 3회차는 상세 로그
+        print(f"  [{rnd}회] HTTP={status} | title={title.group(1)[:40] if title else 'N/A'}"
+              f" | ball nums found={nums[:10]}")
+
     if len(nums) >= 7:
         d_match = re.search(r"\d{4}[-./]\d{1,2}[-./]\d{1,2}", html)
         return {
@@ -86,19 +93,37 @@ def parse_round(page, rnd):
 
     return None
 
-BATCH = 200  # 한 번에 처리할 최대 회차 수 (GitHub Actions 시간 제한 방어)
 
 with sync_playwright() as pw:
-    browser = pw.chromium.launch(headless=True)
+    browser = pw.chromium.launch(
+        headless=True,
+        args=[
+            "--no-sandbox",
+            "--disable-blink-features=AutomationControlled",
+            "--disable-dev-shm-usage",
+        ],
+    )
     context = browser.new_context(
         user_agent=(
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-        )
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        ),
+        viewport={"width": 1920, "height": 1080},
+        locale="ko-KR",
+        timezone_id="Asia/Seoul",
     )
-    # 메인 페이지 로드 → 세션 쿠키 확보
+    # 봇 감지 회피: navigator.webdriver 제거
+    context.add_init_script(
+        "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+    )
+
     page = context.new_page()
-    page.goto("https://www.dhlottery.co.kr/", wait_until="networkidle", timeout=15_000)
+    print("메인 페이지 접속 중...")
+    try:
+        r = page.goto("https://www.dhlottery.co.kr/", wait_until="networkidle", timeout=15_000)
+        print(f"메인 페이지 HTTP={r.status if r else 'N/A'} | title={page.title()[:50]}")
+    except Exception as e:
+        print(f"메인 페이지 접속 실패: {e}")
 
     success = fail = 0
     for rnd in missing[:BATCH]:
@@ -107,18 +132,19 @@ with sync_playwright() as pw:
             records[rnd] = result
             success += 1
             if success % 50 == 0:
-                print(f"  {success}회차 수집 완료 (마지막: {rnd}회)")
+                print(f"  누적 성공: {success}회 (최근: {rnd}회)")
         else:
             fail += 1
+            if fail <= 5:  # 첫 5개 실패만 로그
+                print(f"  [{rnd}회] 데이터 없음")
 
     browser.close()
 
-print(f"완료 — 성공: {success}, 실패/없음: {fail}")
+print(f"\n완료 — 성공: {success} | 실패/없음: {fail}")
 
 # ── 저장 ────────────────────────────────────────
 sorted_records = sorted(records.values(), key=lambda x: x["round"])
 with open(CACHE_FILE, "w", encoding="utf-8") as f:
     json.dump(sorted_records, f, ensure_ascii=False)
 
-if sorted_records:
-    print(f"저장 완료: {sorted_records[0]['round']}~{sorted_records[-1]['round']}회, 총 {len(sorted_records)}건")
+print(f"저장: {len(sorted_records)}건 → {CACHE_FILE}")
