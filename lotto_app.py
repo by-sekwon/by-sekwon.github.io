@@ -73,27 +73,28 @@ def _fetch_one(rnd, timeout=2):
     return None
 
 
-@st.cache_data(ttl=3600)
-def find_latest_round():
-    # 추정 회차 기준 ±200 범위를 이진 탐색
+_CACHE_URL = ("https://raw.githubusercontent.com/by-sekwon/"
+              "by-sekwon.github.io/main/lotto_cache.json")
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_from_cache():
+    resp = requests.get(_CACHE_URL, timeout=10)
+    resp.raise_for_status()
+    return sorted(resp.json(), key=lambda x: x["round"])
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_from_api():
     estimated = _estimate_latest_round()
-    lo, hi = max(1, estimated - 200), estimated + 10
-    latest = lo
+    lo, hi, latest = max(1, estimated - 200), estimated + 10, 1
     while lo <= hi:
         mid = (lo + hi) // 2
         if _fetch_one(mid) is not None:
-            latest = mid
-            lo = mid + 1
+            latest = mid; lo = mid + 1
         else:
             hi = mid - 1
-    return latest
-
-@st.cache_data(ttl=3600, show_spinner=False)
-def load_history(latest: int):
-    rounds = list(range(1, latest + 1))
     records = []
     with ThreadPoolExecutor(max_workers=30) as ex:
-        futures = {ex.submit(_fetch_one, r): r for r in rounds}
+        futures = {ex.submit(_fetch_one, r): r for r in range(1, latest + 1)}
         for f in as_completed(futures):
             res = f.result()
             if res:
@@ -102,7 +103,6 @@ def load_history(latest: int):
 
 # ── 베이지안 모델 ─────────────────────────────────
 def compute_posterior(records, alpha: float = 1.0):
-    """Dirichlet(alpha + counts) 사후 분포"""
     counts = Counter()
     for rec in records:
         for n in rec["numbers"]:
@@ -114,14 +114,19 @@ def compute_posterior(records, alpha: float = 1.0):
 ALPHA = 0.9
 
 with st.spinner("데이터 준비 중..."):
+    history = []
     try:
-        latest_round = find_latest_round()
-        history = load_history(latest_round)
+        history = load_from_cache()
     except Exception:
-        history = []
+        pass
+    if not history:
+        try:
+            history = load_from_api()
+        except Exception:
+            pass
 
 if not history:
-    st.error("❌ 동행복권 API에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.")
+    st.error("❌ 데이터를 불러올 수 없습니다. 잠시 후 다시 시도해주세요.")
     st.stop()
 
 posterior, counts = compute_posterior(history, ALPHA)

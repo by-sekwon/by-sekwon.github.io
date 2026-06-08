@@ -1,0 +1,34 @@
+name: Update Lotto Cache
+
+on:
+  schedule:
+    - cron: '30 12 * * 6'  # 매주 토요일 21:30 KST (12:30 UTC) — 추첨 후
+  workflow_dispatch:         # 수동 실행 가능
+
+jobs:
+  update-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 패키지 설치
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: 로또 데이터 수집
+        run: python .github/scripts/fetch_lotto.py
+
+      - name: 캐시 파일 커밋 & 푸시
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add lotto_cache.json
+          git diff --staged --quiet || git commit -m "Auto: 로또 캐시 업데이트 ($(date '+%Y-%m-%d'))"
+          git push
