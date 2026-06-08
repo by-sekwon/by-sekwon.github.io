@@ -39,21 +39,11 @@ def balls_html(numbers, scale=48):
                  f'margin:3px;box-shadow:2px 2px 6px rgba(0,0,0,.25);">{n}</span>')
     return f'<div style="margin:.4rem 0;">{html}</div>'
 
-# ── 내장 Fallback 데이터 (1~1100회 누적 출현 빈도, 근사값) ────
-FALLBACK_COUNTS = {
-     1:149,  2:155,  3:142,  4:148,  5:156,  6:144,  7:158,  8:147,  9:151, 10:143,
-    11:160, 12:138, 13:152, 14:146, 15:153, 16:141, 17:157, 18:148, 19:145, 20:162,
-    21:136, 22:150, 23:155, 24:139, 25:148, 26:154, 27:163, 28:142, 29:149, 30:137,
-    31:151, 32:146, 33:158, 34:165, 35:143, 36:152, 37:147, 38:161, 39:140, 40:157,
-    41:144, 42:138, 43:159, 44:150, 45:146
-}
 def _estimate_latest_round() -> int:
     from datetime import date
     # 1회 추첨일: 2002-12-07 (토요일), 이후 매주 토요일
     days = (date.today() - date(2002, 12, 7)).days
     return max(1, days // 7 + 1)
-
-FALLBACK_LATEST = _estimate_latest_round()
 
 # ── API 헤더 ───────────────────────────────────────
 _HEADERS = {
@@ -82,10 +72,6 @@ def _fetch_one(rnd, timeout=2):
         pass
     return None
 
-@st.cache_data(ttl=3600)
-def api_available():
-    """API 1회 빠르게 테스트 — 반드시 존재하는 회차로 확인"""
-    return _fetch_one(1000, timeout=5) is not None
 
 @st.cache_data(ttl=3600)
 def find_latest_round():
@@ -128,22 +114,19 @@ def compute_posterior(records, alpha: float = 1.0):
 ALPHA = 0.9
 
 with st.spinner("데이터 준비 중..."):
-    if not api_available():
-        history = []
-    else:
+    try:
         latest_round = find_latest_round()
         history = load_history(latest_round)
+    except Exception:
+        history = []
 
 if not history:
-    st.warning(f"⚠️ 내장 데이터 사용 (1~{FALLBACK_LATEST}회 누적 빈도)")
-    posterior = np.array([ALPHA + FALLBACK_COUNTS.get(i, 0) for i in range(1, 46)], dtype=float)
-    posterior /= posterior.sum()
-    counts = Counter(FALLBACK_COUNTS)
-    n_loaded = FALLBACK_LATEST
-else:
-    posterior, counts = compute_posterior(history, ALPHA)
-    n_loaded = len(history)
-    st.caption(f"✅ 전체 {n_loaded}회차 데이터 사용 (제1회 ~ 제{history[-1]['round']}회 · α={ALPHA})")
+    st.error("❌ 동행복권 API에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.")
+    st.stop()
+
+posterior, counts = compute_posterior(history, ALPHA)
+n_loaded = len(history)
+st.caption(f"✅ 전체 {n_loaded}회차 데이터 사용 (제1회 ~ 제{history[-1]['round']}회 · α={ALPHA})")
 
 # ── 탭 ───────────────────────────────────────────
 tab1, tab2, tab3 = st.tabs(["🎱 번호 생성", "📊 베이지안 분석", "🔬 수렴 시뮬레이션"])
