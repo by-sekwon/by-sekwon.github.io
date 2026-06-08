@@ -84,16 +84,18 @@ def _fetch_one(rnd, timeout=2):
 
 @st.cache_data(ttl=3600)
 def api_available():
-    """API 1회 빠르게 테스트 — 차단이면 즉시 False 반환"""
-    return _fetch_one(FALLBACK_LATEST, timeout=3) is not None
+    """API 1회 빠르게 테스트 — 반드시 존재하는 회차로 확인"""
+    return _fetch_one(1000, timeout=5) is not None
 
 @st.cache_data(ttl=3600)
 def find_latest_round():
-    lo, hi, latest = FALLBACK_LATEST, FALLBACK_LATEST + 200, FALLBACK_LATEST
+    # 추정 회차 기준 ±200 범위를 이진 탐색
+    estimated = _estimate_latest_round()
+    lo, hi = max(1, estimated - 200), estimated + 10
+    latest = lo
     while lo <= hi:
         mid = (lo + hi) // 2
-        result = _fetch_one(mid)
-        if result:
+        if _fetch_one(mid) is not None:
             latest = mid
             lo = mid + 1
         else:
