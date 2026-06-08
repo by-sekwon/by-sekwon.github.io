@@ -17,8 +17,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
       - uses: actions/setup-python@v5
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           python-version: '3.11'
 
@@ -31,9 +35,12 @@ jobs:
         run: python .github/scripts/fetch_lotto.py
 
       - name: 캐시 파일 커밋 & 푸시
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}
           git add lotto_cache.json || echo "lotto_cache.json 없음, 스킵"
           git diff --staged --quiet || git commit -m "Auto: 로또 캐시 업데이트 ($(date '+%Y-%m-%d'))"
           git push origin main
