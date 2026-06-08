@@ -513,32 +513,16 @@ run_btn = col_btn.button("🚀 스캔 시작", type="primary", use_container_wid
 if run_btn:
     with st.spinner("KRX 종목 목록 로딩 중..."):
         def _load_krx_fdr():
-            df = fdr.StockListing("KRX")
-            df["Close"]  = pd.to_numeric(df["Close"].astype(str).str.replace(",","",regex=False), errors="coerce")
-            df["Volume"] = pd.to_numeric(df["Volume"].astype(str).str.replace(",","",regex=False), errors="coerce")
-            if "Marcap" in df.columns:
-                df["Marcap"] = pd.to_numeric(df["Marcap"].astype(str).str.replace(",","",regex=False), errors="coerce")
-            return df
+            return fdr.StockListing("KRX")
 
-        def _load_krx_pykrx():
-            from pykrx import stock as _pyk
-            today_str = datetime.now().strftime("%Y%m%d")
-            dfs = []
-            for mkt in ["KOSPI", "KOSDAQ"]:
-                ohlcv = _pyk.get_market_ohlcv_by_ticker(today_str, market=mkt)
-                ohlcv = ohlcv.reset_index()
-                ohlcv.rename(columns={"티커": "Code", "종가": "Close", "거래량": "Volume", "시가총액": "Marcap"}, inplace=True)
-                tickers = ohlcv["Code"].tolist()
-                names   = {t: _pyk.get_market_ticker_name(t) for t in tickers}
-                ohlcv["Name"]   = ohlcv["Code"].map(names)
-                ohlcv["Market"] = mkt
-                dfs.append(ohlcv)
-            return pd.concat(dfs, ignore_index=True)
+        def _load_krx_direct():
+            from FinanceDataReader.krx.listing import KrxMarcapListing
+            return KrxMarcapListing("KRX").read()
 
         try:
             krx = _load_krx_fdr()
         except Exception:
-            krx = _load_krx_pykrx()
+            krx = _load_krx_direct()
 
         krx = krx[krx["Market"] != "KONEX"].copy()
         krx["Close"]  = pd.to_numeric(krx["Close"], errors="coerce")
