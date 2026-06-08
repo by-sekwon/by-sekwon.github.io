@@ -512,17 +512,29 @@ run_btn = col_btn.button("🚀 스캔 시작", type="primary", use_container_wid
 
 if run_btn:
     with st.spinner("KRX 종목 목록 로딩 중..."):
-        def _load_krx_fdr():
-            return fdr.StockListing("KRX")
-
-        def _load_krx_direct():
-            from FinanceDataReader.krx.listing import KrxMarcapListing
-            return KrxMarcapListing("KRX").read()
+        def _load_krx_github_cache():
+            import requests
+            from datetime import timedelta
+            base = ("https://raw.githubusercontent.com/FinanceData/"
+                    "fdr_krx_data_cache/refs/heads/master/data/listing/krx/")
+            for days_ago in range(10):
+                dt = datetime.now() - timedelta(days=days_ago)
+                if dt.weekday() >= 5:
+                    continue
+                url = f"{base}{dt.strftime('%Y-%m-%d')}.csv"
+                try:
+                    df = pd.read_csv(url, index_col=0,
+                                     dtype={"Code": str, "Dept": str,
+                                            "ChangeCode": str, "MarketId": str})
+                    return df.reset_index(drop=True)
+                except Exception:
+                    continue
+            raise ValueError("KRX GitHub 캐시에서 최근 데이터를 찾을 수 없습니다")
 
         try:
-            krx = _load_krx_fdr()
+            krx = fdr.StockListing("KRX")
         except Exception:
-            krx = _load_krx_direct()
+            krx = _load_krx_github_cache()
 
         krx = krx[krx["Market"] != "KONEX"].copy()
         krx["Close"]  = pd.to_numeric(krx["Close"], errors="coerce")
