@@ -5,6 +5,9 @@ on:
     - cron: '30 12 * * 6'  # 매주 토요일 21:30 KST (12:30 UTC) — 추첨 후
   workflow_dispatch:         # 수동 실행 가능
 
+permissions:
+  contents: write
+
 jobs:
   update-cache:
     runs-on: ubuntu-latest
@@ -12,6 +15,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v5
         with:
