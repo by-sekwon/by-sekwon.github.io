@@ -1,12 +1,13 @@
 """
-Streamlit app for Statistical Chatbot
+Streamlit app for Statistical Chatbot - Simplified Version
 """
 import streamlit as st
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from chatbot import StatChatbot
+from chatbot import SimpleChatbot
+from loader import load_qmd_files
 
 # Load environment variables
 load_dotenv()
@@ -25,16 +26,13 @@ st.markdown("""
     .main {
         padding: 2rem;
     }
-    .stChatMessage {
-        padding: 1rem;
-        border-radius: 0.5rem;
-    }
 </style>
 """, unsafe_allow_html=True)
 
 # Initialize session state
 if "chatbot" not in st.session_state:
     st.session_state.chatbot = None
+    st.session_state.documents = None
     st.session_state.initialized = False
 
 if "messages" not in st.session_state:
@@ -50,13 +48,17 @@ def initialize_chatbot():
                 st.error("❌ OPENAI_API_KEY 환경 변수가 설정되지 않았습니다.")
                 return False
             
-            chatbot = StatChatbot(api_key=api_key)
-            chatbot.build_vector_store()
-            chatbot.setup_qa_chain()
+            chatbot = SimpleChatbot(api_key=api_key)
+            documents = chatbot.load_documents("../notes")
+            
+            if not documents:
+                st.error("❌ 강의노트를 로드할 수 없습니다.")
+                return False
             
             st.session_state.chatbot = chatbot
+            st.session_state.documents = documents
             st.session_state.initialized = True
-            st.success("✅ 준비가 완료되었습니다!")
+            st.success(f"✅ {len(documents)}개의 강의노트가 준비되었습니다!")
             return True
         except Exception as e:
             st.error(f"❌ 초기화 중 오류 발생: {str(e)}")
@@ -80,7 +82,7 @@ def main():
             initialize_chatbot()
         st.info("""
         ### 사용 방법
-        1. 우측 하단의 'AI 기능 활성화' 버튼으로 챗봇을 시작하세요.
+        1. '챗봇 시작하기' 버튼을 클릭하세요.
         2. 통계학 관련 질문을 입력하세요.
         3. 강의노트 기반의 답변을 받을 수 있습니다.
         
@@ -135,7 +137,10 @@ def main():
         # Get chatbot response
         with st.spinner("⏳ 답변을 생성 중입니다..."):
             try:
-                answer, sources = st.session_state.chatbot.query(user_input)
+                answer, sources = st.session_state.chatbot.query(
+                    user_input, 
+                    st.session_state.documents
+                )
                 st.session_state.messages.append({
                     "role": "assistant",
                     "content": answer,
@@ -150,23 +155,18 @@ def main():
         st.markdown("## ⚙️ 설정")
         st.markdown("---")
         
-        if st.button("🔄 벡터스토어 재생성", use_container_width=True):
-            with st.spinner("벡터스토어를 재생성 중입니다..."):
-                st.session_state.chatbot.build_vector_store(force_rebuild=True)
-                st.success("✅ 재생성 완료")
-        
-        st.markdown("---")
-        st.markdown("## 📚 사용 가능한 강의 주제")
-        st.markdown("""
-        - 기초수학
-        - 수리통계
-        - 조사방법론
-        - 기초통계
-        - 회귀분석
-        - 다변량분석
-        - 머신러닝·딥러닝
-        - 인공지능·감성분석
-        """)
+        st.markdown("### 📊 통계 정보")
+        if st.session_state.documents:
+            st.markdown(f"**로드된 강의노트:** {len(st.session_state.documents)}개")
+            
+            categories = {}
+            for doc in st.session_state.documents:
+                cat = doc.get("category", "기타")
+                categories[cat] = categories.get(cat, 0) + 1
+            
+            st.markdown("**카테고리별 강의노트:**")
+            for cat, count in sorted(categories.items()):
+                st.markdown(f"- {cat}: {count}개")
         
         st.markdown("---")
         st.markdown("## 💡 팁")
@@ -179,3 +179,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
