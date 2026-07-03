@@ -1,12 +1,12 @@
 ---
 title: "통계 챗봇"
-subtitle: "AI 기반 통계학 질문 답변 시스템"
+subtitle: "강의노트 기반 RAG 통계 질문 답변 시스템"
 format: html
 ---
 
 <style>
   .chatbot-container {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -137,7 +137,7 @@ format: html
   }
 
   .message-content {
-    max-width: 70%;
+    max-width: 75%;
     padding: 12px 15px;
     border-radius: 8px;
     line-height: 1.5;
@@ -152,6 +152,45 @@ format: html
   .message.assistant .message-content {
     background-color: #e9ecef;
     color: #212529;
+  }
+
+  .message-sources {
+    max-width: 75%;
+    margin-top: 8px;
+    padding: 10px 12px;
+    background-color: #fff3cd;
+    border-left: 3px solid #ffc107;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+
+  .source-item {
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ffc107;
+  }
+
+  .source-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .source-title {
+    font-weight: 600;
+    color: #856404;
+  }
+
+  .source-category {
+    color: #856404;
+    font-size: 12px;
+  }
+
+  .source-snippet {
+    color: #856404;
+    margin-top: 4px;
+    font-style: italic;
+    font-size: 12px;
   }
 
   .input-area {
@@ -219,6 +258,7 @@ format: html
     <h3>🔑 OpenAI API 키 입력</h3>
     <p style="color: #6c757d; margin-bottom: 15px;">
       OpenAI API 키를 입력하세요. 키는 로컬에만 저장되며 서버에 전송되지 않습니다.
+      강의노트에서 자동으로 관련 내용을 검색하여 답변을 제공합니다.
     </p>
     
     <div class="api-key-input-group">
@@ -241,7 +281,7 @@ format: html
     <h4>📝 사용 안내</h4>
     <ul>
       <li>OpenAI API 키를 먼저 입력해주세요</li>
-      <li>API 키는 브라우저 로컬 스토리지에만 저장됩니다</li>
+      <li>83개의 강의노트 데이터베이스로부터 관련 내용 자동 검색</li>
       <li>통계학 관련 질문을 자유롭게 입력할 수 있습니다</li>
       <li>각 질문당 약 $0.0005의 비용이 발생합니다</li>
     </ul>
@@ -267,6 +307,7 @@ format: html
   // Constants
   const STORAGE_KEY = 'openai_api_key';
   const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+  let lectureNotes = [];
 
   // DOM Elements
   const apiKeyInput = document.getElementById('apiKeyInput');
@@ -280,7 +321,10 @@ format: html
   const infoBox = document.getElementById('infoBox');
 
   // Initialize
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', async function() {
+    // 강의노트 로드
+    await loadLectureNotes();
+
     const savedKey = localStorage.getItem(STORAGE_KEY);
     if (savedKey) {
       apiKeyInput.value = savedKey;
@@ -302,6 +346,18 @@ format: html
       }
     });
   });
+
+  async function loadLectureNotes() {
+    try {
+      const response = await fetch('lecture_notes.json');
+      if (!response.ok) throw new Error('Failed to load lecture notes');
+      lectureNotes = await response.json();
+      console.log(`✅ ${lectureNotes.length}개의 강의노트 로드 완료`);
+    } catch (error) {
+      console.error('강의노트 로드 실패:', error);
+      lectureNotes = [];
+    }
+  }
 
   function showStatus(message, type) {
     statusMessage.textContent = message;
@@ -345,6 +401,29 @@ format: html
     showStatus('✅ API 키가 초기화되었습니다', 'success');
   }
 
+  // RAG: 키워드 기반 강의노트 검색
+  function searchLectureNotes(question, topK = 3) {
+    const questionLower = question.toLowerCase();
+    const words = questionLower.split(/\s+/).filter(w => w.length > 2);
+
+    // 스코어 계산
+    const scored = lectureNotes.map(doc => {
+      const contentLower = doc.content.toLowerCase();
+      let score = 0;
+      
+      words.forEach(word => {
+        const count = (contentLower.match(new RegExp(word, 'g')) || []).length;
+        score += count;
+      });
+      
+      return { doc, score };
+    }).filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+
+    return scored.map(item => item.doc);
+  }
+
   async function sendMessage() {
     const message = chatInput.value.trim();
     if (!message) return;
@@ -361,6 +440,12 @@ format: html
     sendBtn.disabled = true;
     chatInput.disabled = true;
 
+    // 관련 강의노트 검색
+    const relatedDocs = searchLectureNotes(message);
+    const context = relatedDocs
+      .map(doc => `【${doc.title} (${doc.category})】\n${doc.content.substring(0, 500)}`)
+      .join('\n\n');
+
     // Add loading indicator
     const loadingMsg = addMessage('assistant', '생각 중입니다...');
 
@@ -376,7 +461,7 @@ format: html
           messages: [
             {
               role: 'system',
-              content: '당신은 통계학 교수입니다. 질문에 정확하고 이해하기 쉬운 방식으로 답변해주세요.'
+              content: `당신은 통계학 교수입니다. 주어진 강의노트를 참고하여 질문에 정확하고 이해하기 쉬운 방식으로 답변해주세요.\n\n강의노트:\n${context}`
             },
             {
               role: 'user',
@@ -397,7 +482,47 @@ format: html
       const assistantMessage = data.choices[0].message.content;
 
       // Replace loading message with actual response
-      loadingMsg.innerHTML = `<div class="message-content">${escapeHtml(assistantMessage)}</div>`;
+      loadingMsg.textContent = '';
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'message-content';
+      contentDiv.textContent = assistantMessage;
+      loadingMsg.appendChild(contentDiv);
+
+      // Add sources
+      if (relatedDocs.length > 0) {
+        const sourcesDiv = document.createElement('div');
+        sourcesDiv.className = 'message-sources';
+        
+        const titleDiv = document.createElement('div');
+        titleDiv.style.fontWeight = '600';
+        titleDiv.style.marginBottom = '8px';
+        titleDiv.textContent = '📚 참고 자료:';
+        sourcesDiv.appendChild(titleDiv);
+
+        relatedDocs.forEach(doc => {
+          const sourceItem = document.createElement('div');
+          sourceItem.className = 'source-item';
+          
+          const titleSpan = document.createElement('div');
+          titleSpan.className = 'source-title';
+          titleSpan.textContent = `• ${doc.title}`;
+          
+          const categorySpan = document.createElement('div');
+          categorySpan.className = 'source-category';
+          categorySpan.textContent = `[${doc.category}]`;
+          
+          const snippetSpan = document.createElement('div');
+          snippetSpan.className = 'source-snippet';
+          snippetSpan.textContent = doc.content.substring(0, 100) + '...';
+          
+          sourceItem.appendChild(titleSpan);
+          sourceItem.appendChild(categorySpan);
+          sourceItem.appendChild(snippetSpan);
+          sourcesDiv.appendChild(sourceItem);
+        });
+
+        loadingMsg.appendChild(sourcesDiv);
+      }
 
     } catch (error) {
       loadingMsg.innerHTML = `<div class="message-content" style="color: #dc3545;">❌ 오류: ${escapeHtml(error.message)}</div>`;
@@ -411,7 +536,12 @@ format: html
   function addMessage(role, content) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${role}`;
-    messageDiv.innerHTML = `<div class="message-content">${escapeHtml(content)}</div>`;
+    
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'message-content';
+    contentDiv.textContent = content;
+    
+    messageDiv.appendChild(contentDiv);
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
     return messageDiv;
