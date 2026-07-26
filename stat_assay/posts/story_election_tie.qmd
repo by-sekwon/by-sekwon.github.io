@@ -62,6 +62,61 @@ $$P(A = B) = \sum_k P(A = k,\; B = k) \approx \sqrt{\frac{2}{\pi n}}$$
 
 동점을 "특별한 사건"으로 인정하더라도, 그 특별한 사건의 확률 자체가 **전혀 희귀하지 않다**. 이것이 결정타다. 절차적으로 특별한 것과 확률적으로 희귀한 것은 완전히 별개다.
 
+```{python}
+#| echo: false
+#| fig-cap: "총 2,474표를 두 후보가 나눠 가질 때, 득표 차이별 확률(정규근사). 1,237:1,237(차이 0)은 이 완만한 산 전체에서 살짝 튀어나온 한 점일 뿐, 유독 희귀한 사건이 아니다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+n, p = 2474, 0.5
+mu, sigma = n * p, np.sqrt(n * p * (1 - p))
+
+diff = np.arange(-160, 161)
+# 득표차 d(짝수 간격)에 대한 확률밀도(정규근사, 연속성 보정)
+prob = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-((diff) ** 2) / (2 * sigma ** 2)) * 2
+
+fig, ax = plt.subplots(figsize=(7, 3.6))
+ax.plot(diff, prob, color="#1e3a2f", lw=1.6)
+ax.fill_between(diff, prob, color="#1e3a2f", alpha=0.08)
+ax.axvline(0, color="#a8790a", lw=2)
+ax.annotate("1,237 : 1,237\n(득표차 0)", xy=(0, prob.max()), xytext=(35, prob.max()*0.92),
+            fontsize=9, color="#a8790a", arrowprops=dict(arrowstyle="->", color="#a8790a"))
+ax.set_xlabel("두 후보 득표 차이 (A − B)")
+ax.set_ylabel("확률밀도")
+ax.set_title("득표 차이의 분포 — 동점은 봉우리 근처의 평범한 한 점", fontsize=11, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+그래프에서 보듯, 득표 차이가 0(동점)인 지점은 분포의 한가운데, 즉 **가장 있을 법한 결과 중 하나**다. "희귀한 사건"이라는 인상은 여기서부터 이미 틀렸다.
+
+```{python}
+#| echo: false
+#| fig-cap: "점확률(단 하나의 결과)과 사건확률(동점이거나 그보다 접전인 모든 결과의 합)의 차이. 막대는 서로 다른 척도를 가진 두 개념을 비교한 것이다."
+import matplotlib.pyplot as plt
+
+labels = ["점확률\n(1,237 : 1,237\n딱 그 결과)", "사건확률\n(동점 이거나\n더 접전인 모든 경우)"]
+values = [1 / 590_000_000 * 100, 100 * (2 / np.sqrt(2 * np.pi * n * p * (1-p)) * 1)]
+# 사건확률(동점 확률)의 정규근사: P(A=B) ≈ 1/sqrt(pi*n/2) * 100(%)
+event_prob_pct = 100 / np.sqrt(np.pi * n / 2)
+values = [1 / 590_000_000 * 100, event_prob_pct]
+
+fig, ax = plt.subplots(figsize=(6, 3.6))
+bars = ax.bar(labels, values, color=["#a8790a", "#1e3a2f"], width=0.5)
+ax.set_ylabel("확률 (%)")
+ax.set_title("같은 사건, 다른 질문 — 점확률 vs 사건확률", fontsize=11, color="#1e3a2f")
+for b, v in zip(bars, values):
+    label = f"{v:.8f}%" if v < 0.001 else f"약 {v:.1f}%"
+    ax.annotate(label, xy=(b.get_x() + b.get_width()/2, b.get_height()),
+                xytext=(0, 5), textcoords="offset points", ha="center", fontsize=9)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+막대 높이 차이가 전부를 말해준다. 5억 9,000만 분의 1은 왼쪽(점확률)이고, 실제로 검정에 써야 할 값은 오른쪽(사건확률, 수 % 수준)이다. 두 막대는 아예 다른 질문에 대한 답이다.
+
 ## p-값이 아닌 것을 p-값인 척 쓰다
 
 이 주장이 가진 가장 심각한 통계적 오류는 따로 있다.

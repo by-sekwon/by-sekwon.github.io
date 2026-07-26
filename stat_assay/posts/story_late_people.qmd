@@ -31,6 +31,29 @@ description: "약속 시간에 늘 늦는 사람들, 의지가 부족한 걸까�
 만성 지각자의 공통점: 지각이 **의도적이지 않다**. 매번 "이번엔 제시간에 갈 수 있다"고 진심으로 믿는다.
 :::
 
+```{python}
+#| echo: false
+#| fig-cap: "지각 유형별 인구 비율(추정). 만성 지각자는 소수지만, 상황적 지각자까지 합치면 인구 절반 이상이 '가끔은 늦는' 구조 속에 있다."
+import matplotlib.pyplot as plt
+
+labels = ["만성 지각자\n(15~20%)", "상황적 지각자\n(40~50%)", "거의 안 늦는 사람\n(35~40%)"]
+mid = [17.5, 45, 37.5]
+colors = ["#a8790a", "#c9a24b", "#1e3a2f"]
+
+fig, ax = plt.subplots(figsize=(6.4, 3.6))
+bars = ax.barh(labels, mid, color=colors)
+for b, v in zip(bars, mid):
+    ax.annotate(f"{v:.0f}%", xy=(v, b.get_y() + b.get_height()/2),
+                xytext=(6, 0), textcoords="offset points", va="center", fontsize=10)
+ax.set_xlabel("전체 인구 대비 비율 (%)")
+ax.set_title("지각 유형 분포 (추정치의 중간값)", fontsize=11, color="#1e3a2f")
+ax.set_xlim(0, 55)
+ax.invert_yaxis()
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
 ## 계획 오류: "이번엔 다를 거야"의 저주
 
 지각하는 사람들이 공통적으로 저지르는 인지 오류가 있다. 심리학자 대니얼 카너먼(Daniel Kahneman)이 이름 붙인 **계획 오류(Planning Fallacy)**다.
@@ -91,6 +114,33 @@ MBTI 연구들에서 **P형(인식형, Perceiving)**이 **J형(판단형, Judgin
 
 **통계적으로, 이 사람은 94%의 날을 늦게 도착하도록 설계된 일정을 짜고 있는 셈이다.**
 :::
+
+```{python}
+#| echo: false
+#| fig-cap: "50일간 출근 소요시간의 분포. '30분이면 된다'는 계획(주황 점선)은 분포의 왼쪽 끝, 6%만 도달하는 지점에 있다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(3)
+# 평균 42분, 최소 31분, 최대 68분에 가깝도록 감마분포로 근사
+commute = 31 + rng.gamma(shape=2.2, scale=5.0, size=50)
+commute = np.clip(commute, 31, 68)
+
+fig, ax = plt.subplots(figsize=(6.6, 3.8))
+ax.hist(commute, bins=10, color="#1e3a2f", alpha=0.75, edgecolor="white")
+ax.axvline(30, color="#a8790a", lw=2.2, linestyle="--")
+ax.annotate("계획: 30분\n(실제 도달 6%)", xy=(30, ax.get_ylim()[1]*0.85),
+            xytext=(33, ax.get_ylim()[1]*0.85), fontsize=9.5, color="#a8790a")
+ax.axvline(commute.mean(), color="#555", lw=1.6, linestyle=":")
+ax.annotate(f"실제 평균 {commute.mean():.0f}분", xy=(commute.mean(), ax.get_ylim()[1]*0.6),
+            xytext=(commute.mean()+2, ax.get_ylim()[1]*0.6), fontsize=9.5, color="#555")
+ax.set_xlabel("출근 소요 시간 (분)")
+ax.set_ylabel("일수")
+ax.set_title("계획한 시간과 실제 분포는 이렇게 다르다", fontsize=11, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
 
 ## 시간 맹시: 뇌가 시간을 못 보는 경우
 

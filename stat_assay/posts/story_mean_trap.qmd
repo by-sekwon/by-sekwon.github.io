@@ -17,6 +17,28 @@ description: "평균은 가장 친숙한 통계지만, 가장 오해받는 숫�
 
 이것이 **평균의 함정**이다.
 
+```{python}
+#| echo: false
+#| fig-cap: "경제학자 1명과 노숙자 9명의 자산. 평균(주황 점선)은 10억 원이지만, 10명 중 9명은 평균 근처에도 없다."
+import matplotlib.pyplot as plt
+
+people = ["경제학자"] + [f"노숙자 {i}" for i in range(1, 10)]
+assets = [100] + [0] * 9  # 억 원
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+bars = ax.bar(people, assets, color=["#a8790a"] + ["#1e3a2f"] * 9)
+mean_val = sum(assets) / len(assets)
+ax.axhline(mean_val, color="#a8790a", lw=2, linestyle="--")
+ax.annotate(f"평균 = {mean_val:.0f}억 원", xy=(9, mean_val),
+            xytext=(9, mean_val + 6), fontsize=10, color="#a8790a", ha="center")
+ax.set_ylabel("자산 (억 원)")
+ax.set_title("평균은 '10억 원' — 그러나 아무도 10억 원을 갖고 있지 않다", fontsize=10.5, color="#1e3a2f")
+plt.setp(ax.get_xticklabels(), rotation=30, ha="right", fontsize=8)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
 ## 평균이 대표값이 되려면
 
 평균이 집단을 잘 대표하려면 데이터가 **대칭적으로 분포**되어 있어야 한다. 정규분포처럼 좌우가 균형 잡힌 경우라면 평균은 훌륭한 대표값이다. 그러나 현실 데이터는 종종 한쪽으로 치우쳐 있다(왜도, skewness).
@@ -75,6 +97,37 @@ description: "평균은 가장 친숙한 통계지만, 가장 오해받는 숫�
 
 집단 간 구성 비율이 다를 때, 전체 평균은 각 집단의 경향을 왜곡한다. 데이터를 합산하기 전에 **집단 구조를 먼저 파악**해야 한다.
 :::
+
+```{python}
+#| echo: false
+#| fig-cap: "전체 합산(왼쪽)에서는 남성 합격률이 더 높지만, A·B학과로 나눠보면(오른쪽) 두 학과 모두 여성 합격률이 더 높다 — 방향이 뒤집힌다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+groups = ["전체 합산", "A학과", "B학과"]
+male = [44, 62, 25]
+female = [35, 82, 35]
+
+x = np.arange(len(groups))
+w = 0.32
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+b1 = ax.bar(x - w/2, male, w, label="남성", color="#1e3a2f")
+b2 = ax.bar(x + w/2, female, w, label="여성", color="#a8790a")
+for bars in (b1, b2):
+    for b in bars:
+        ax.annotate(f"{b.get_height():.0f}%", xy=(b.get_x()+b.get_width()/2, b.get_height()),
+                    xytext=(0, 3), textcoords="offset points", ha="center", fontsize=9)
+ax.set_xticks(x)
+ax.set_xticklabels(groups)
+ax.set_ylabel("합격률 (%)")
+ax.set_ylim(0, 95)
+ax.set_title("심슨의 역설 — 전체와 부분의 방향이 반대다", fontsize=11, color="#1e3a2f")
+ax.legend(frameon=False)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
 
 ## 평균보다 분포를 보라
 
