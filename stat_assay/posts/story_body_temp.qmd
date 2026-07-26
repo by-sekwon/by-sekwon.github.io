@@ -1,0 +1,124 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "내 체온 36.5도는 정말 정상인가?"
+author: "권세혁"
+date: "2026-07-27"
+categories: [통계기초, 기술통계]
+description: "'정상 체온 36.5도'라는 상식은 어디서 왔을까? 평균이 한 사람 한 사람을 대표하지 못하는 이유를 체온으로 들여다봅니다."
+---
+
+## 체온계가 36.8도를 가리켰다
+
+몸이 좀 으슬으슬한 것 같아 체온계를 꺼냈다. 36.8도. 어? 정상 체온은 36.5도라고 배웠는데, 벌써 미열인가?
+
+주변에 물어보면 다들 "36.5도가 정상"이라고 대답한다. 병원 안내문에도, 초등학교 보건 교과서에도 이 숫자가 적혀 있다. 그런데 이 36.5도라는 숫자, 어디서 왔고 얼마나 믿을 만한 걸까?
+
+## "정상 체온"이라는 숫자의 기원
+
+이 숫자의 뿌리는 무려 1851년으로 거슬러 올라간다. 독일 의사 **카를 분덜리히(Carl Wunderlich)**가 약 25,000명의 환자를 대상으로 겨드랑이 체온을 100만 번 넘게 측정한 뒤, 평균값을 **37.0°C(98.6°F)**로 발표했다. 이후 100년 넘게 이 숫자가 "정상 체온"의 표준으로 굳어졌다.
+
+::: {.callout-note}
+## 평균 하나로 100년을 지배한 숫자
+
+분덜리히의 연구는 당시로서는 획기적인 대규모 조사였다. 그러나 여기서 발표된 것은 **집단 전체의 평균값 하나**였을 뿐, 사람마다 체온이 얼마나 다른지에 대한 정보는 크게 주목받지 못했다.
+
+"평균이 37도다"라는 문장과 "정상 체온은 37도여야 한다"는 문장은 전혀 다른 주장이다. 그런데 오랫동안 이 둘은 같은 말처럼 취급되었다.
+:::
+
+## 평균은 한 사람 한 사람을 대표하지 못한다
+
+1992년, 미국 메릴랜드 의과대학의 필립 마코와이악(Philip Mackowiak) 연구팀이 현대적인 방법으로 148명의 체온을 다시 측정했다. 결과는 평균 **36.8°C(98.2°C)**로 분덜리히의 값보다 약간 낮았고, 무엇보다 중요한 발견은 따로 있었다. **개인차가 생각보다 훨씬 컸다**는 것이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "1,000명의 체온을 가상으로 시뮬레이션한 분포. 평균은 36.8°C 근처지만, 개개인의 체온은 35.7°C에서 37.3°C까지 넓게 흩어져 있다. 전통적인 기준선 36.5°C(주황 점선)는 이 분포의 중간 어딘가에 있을 뿐이다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(11)
+temps = rng.normal(36.8, 0.35, 1000)
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+ax.hist(temps, bins=30, color="#1e3a2f", alpha=0.82, edgecolor="white")
+ax.axvline(36.5, color="#a8790a", lw=2, linestyle="--")
+ax.annotate('Traditional "normal"\n36.5°C', xy=(36.5, ax.get_ylim()[1]*0.88),
+            xytext=(35.75, ax.get_ylim()[1]*0.88), fontsize=9.5, color="#a8790a")
+ax.set_xlabel("Body temperature (°C)")
+ax.set_ylabel("Number of people")
+ax.set_title("Body temperature varies widely across individuals", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+::: {.callout-warning}
+## 평균 체온에 영향을 주는 요인들
+
+| 요인 | 체온에 미치는 영향 |
+|------|------------------|
+| 나이 | 나이가 들수록 평균 체온은 조금씩 낮아지는 경향 |
+| 성별 | 여성은 생리주기에 따라 최대 0.5°C까지 변동 |
+| 측정 부위 | 겨드랑이 < 구강 < 직장·고막 순으로 높게 측정됨 |
+| 측정 시간대 | 하루 중 시간에 따라서도 체온은 계속 변한다 (아래 참고) |
+| 활동량·식사 | 운동 직후, 식사 직후에는 일시적으로 상승 |
+
+한 사람의 "정상 체온"이 다른 사람의 "정상 체온"과 0.5~1°C 이상 차이 나는 것은 전혀 이상한 일이 아니다.
+:::
+
+## 하루 중에도 체온은 계속 변한다
+
+개인차만 문제가 아니다. **같은 사람이라도** 하루 중 시간에 따라 체온은 규칙적으로 오르내린다. 이를 생체리듬(circadian rhythm)이라 부른다. 보통 새벽에 가장 낮고, 늦은 오후에서 초저녁 사이에 가장 높다.
+
+```{python}
+#| echo: false
+#| fig-cap: "한 사람의 하루 동안 체온 변화(모식도). 새벽에 가장 낮고 늦은 오후에 가장 높다. 아침에 잰 체온과 저녁에 잰 체온을 같은 기준으로 비교하면 안 되는 이유가 여기에 있다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+hours = np.linspace(0, 24, 200)
+# 새벽 5시 최저, 오후 5시(17시) 최고인 24시간 주기 곡선
+temp_curve = 36.6 - 0.4 * np.cos(2 * np.pi * (hours - 5) / 24)
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+ax.plot(hours, temp_curve, color="#1e3a2f", lw=2.2)
+ax.fill_between(hours, temp_curve, temp_curve.min() - 0.1, color="#1e3a2f", alpha=0.08)
+
+low_idx, high_idx = np.argmin(temp_curve), np.argmax(temp_curve)
+low_h, high_h = hours[low_idx], hours[high_idx]
+low_t, high_t = temp_curve[low_idx], temp_curve[high_idx]
+ax.scatter([low_h, high_h], [low_t, high_t], color="#a8790a", zorder=5, s=45)
+ax.annotate(f"Lowest ~{low_t:.1f}°C\n(early morning)", xy=(low_h, low_t),
+            xytext=(low_h + 2.2, low_t + 0.22), fontsize=9, color="#a8790a")
+ax.annotate(f"Highest ~{high_t:.1f}°C\n(late afternoon)", xy=(high_h, high_t),
+            xytext=(high_h - 9.5, high_t - 0.42), fontsize=9, color="#a8790a")
+
+ax.set_xlabel("Hour of day")
+ax.set_ylabel("Body temperature (°C)")
+ax.set_xticks(range(0, 25, 4))
+ax.set_ylim(temp_curve.min() - 0.15, temp_curve.max() + 0.25)
+ax.set_title("Even for one person, 'normal' isn't a single fixed number", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+같은 사람이 새벽에 재면 36.2도, 저녁에 재면 36.9도가 나올 수 있다. 두 숫자 모두 "정상"이다. 문제는 우리가 **단 하나의 기준선(36.5도)**과만 비교하려 한다는 데 있다.
+
+## 그렇다면 무엇을 봐야 하는가
+
+::: {.callout-tip}
+## 체온을 통계적으로 해석하는 법
+
+1. **절대 기준보다 나의 평소 체온을 알아두자.** 며칠간 같은 시간대에 재본 나의 평균값이, 교과서 속 36.5도보다 훨씬 믿을 만한 기준이다.
+2. **비교는 같은 조건끼리.** 아침 체온은 아침 체온끼리, 겨드랑이 측정은 겨드랑이 측정끼리 비교해야 의미가 있다.
+3. **평소보다 얼마나 올랐는지가 중요하다.** 평소 36.2도인 사람의 36.8도는, 평소 36.8도인 사람의 36.8도와 전혀 다른 의미를 가진다.
+4. **하나의 숫자보다 범위로 생각하자.** "정상 체온은 36.5도"가 아니라 "정상 체온은 대략 36.1~37.2도 사이, 그리고 그 안에서도 사람마다 다르다"가 통계적으로 더 정확한 문장이다.
+:::
+
+## 결론: 평균은 참고치일 뿐, 기준은 나 자신이다
+
+분덜리히가 남긴 37도, 그리고 이후 굳어진 36.5도는 어디까지나 **집단의 평균**이다. 평균은 유용한 참고점이지만, 그 자체로 "정상과 비정상을 가르는 절대선"은 될 수 없다.
+
+체온계 숫자에 놀라기 전에 먼저 물어야 할 것은 "이 숫자가 교과서 속 평균과 얼마나 다른가"가 아니라, **"내 평소 체온과 비교했을 때 얼마나 달라졌는가"**다. 통계학이 알려주는 가장 실용적인 교훈 중 하나는, 평균 뒤에 숨어 있는 개인차를 먼저 들여다보라는 것이다.
