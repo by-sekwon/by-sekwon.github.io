@@ -36,7 +36,7 @@ description: "약속 시간에 늘 늦는 사람들, 의지가 부족한 걸까�
 #| fig-cap: "지각 유형별 인구 비율(추정). 만성 지각자는 소수지만, 상황적 지각자까지 합치면 인구 절반 이상이 '가끔은 늦는' 구조 속에 있다."
 import matplotlib.pyplot as plt
 
-labels = ["만성 지각자\n(15~20%)", "상황적 지각자\n(40~50%)", "거의 안 늦는 사람\n(35~40%)"]
+labels = ["Chronic latecomers\n(15-20%)", "Situational latecomers\n(40-50%)", "Rarely late\n(35-40%)"]
 mid = [17.5, 45, 37.5]
 colors = ["#a8790a", "#c9a24b", "#1e3a2f"]
 
@@ -45,8 +45,8 @@ bars = ax.barh(labels, mid, color=colors)
 for b, v in zip(bars, mid):
     ax.annotate(f"{v:.0f}%", xy=(v, b.get_y() + b.get_height()/2),
                 xytext=(6, 0), textcoords="offset points", va="center", fontsize=10)
-ax.set_xlabel("전체 인구 대비 비율 (%)")
-ax.set_title("지각 유형 분포 (추정치의 중간값)", fontsize=11, color="#1e3a2f")
+ax.set_xlabel("Share of population (%)")
+ax.set_title("Distribution of latecomer types (midpoint estimates)", fontsize=11, color="#1e3a2f")
 ax.set_xlim(0, 55)
 ax.invert_yaxis()
 ax.spines[["top", "right"]].set_visible(False)
@@ -129,14 +129,14 @@ commute = np.clip(commute, 31, 68)
 fig, ax = plt.subplots(figsize=(6.6, 3.8))
 ax.hist(commute, bins=10, color="#1e3a2f", alpha=0.75, edgecolor="white")
 ax.axvline(30, color="#a8790a", lw=2.2, linestyle="--")
-ax.annotate("계획: 30분\n(실제 도달 6%)", xy=(30, ax.get_ylim()[1]*0.85),
+ax.annotate("Planned: 30 min\n(actually met 6% of days)", xy=(30, ax.get_ylim()[1]*0.85),
             xytext=(33, ax.get_ylim()[1]*0.85), fontsize=9.5, color="#a8790a")
 ax.axvline(commute.mean(), color="#555", lw=1.6, linestyle=":")
-ax.annotate(f"실제 평균 {commute.mean():.0f}분", xy=(commute.mean(), ax.get_ylim()[1]*0.6),
+ax.annotate(f"Actual mean {commute.mean():.0f} min", xy=(commute.mean(), ax.get_ylim()[1]*0.6),
             xytext=(commute.mean()+2, ax.get_ylim()[1]*0.6), fontsize=9.5, color="#555")
-ax.set_xlabel("출근 소요 시간 (분)")
-ax.set_ylabel("일수")
-ax.set_title("계획한 시간과 실제 분포는 이렇게 다르다", fontsize=11, color="#1e3a2f")
+ax.set_xlabel("Commute time (minutes)")
+ax.set_ylabel("Days")
+ax.set_title("Planned time vs. actual distribution", fontsize=11, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()

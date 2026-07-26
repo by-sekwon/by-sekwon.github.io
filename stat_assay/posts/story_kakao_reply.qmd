@@ -56,9 +56,9 @@ xs = np.linspace(reply_min.min(), reply_min.max(), 100)
 ax.plot(xs, np.polyval(coeffs, xs), color="#a8790a", lw=2.2)
 r = np.corrcoef(reply_min, liking)[0, 1]
 ax.annotate(f"r ≈ {r:.2f}", xy=(0.75, 0.9), xycoords="axes fraction", fontsize=11, color="#a8790a")
-ax.set_xlabel("답장까지 걸린 시간 (분)")
-ax.set_ylabel("호감도 (1~10)")
-ax.set_title("약한 음의 상관 — 추세는 있어도 개인 예측력은 낮다", fontsize=11, color="#1e3a2f")
+ax.set_xlabel("Reply delay (minutes)")
+ax.set_ylabel("Liking score (1-10)")
+ax.set_title("Weak negative correlation - a trend exists, but predicts little for individuals", fontsize=10.5, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()
@@ -99,16 +99,16 @@ def box(x, y, text, color):
     ax.add_patch(b)
     ax.text(x, y, text, ha="center", va="center", fontsize=10, color=color, fontweight="bold")
 
-box(5, 5, "여름 (교란변수)", "#a8790a")
-box(1.8, 1, "아이스크림 판매량", "#1e3a2f")
-box(8.2, 1, "익사 사고", "#1e3a2f")
+box(5, 5, "Summer\n(confounder)", "#a8790a")
+box(1.8, 1, "Ice cream sales", "#1e3a2f")
+box(8.2, 1, "Drowning incidents", "#1e3a2f")
 
 for (x0, y0, x1, y1) in [(4.2, 4.6, 2.2, 1.5), (5.8, 4.6, 7.8, 1.5)]:
     ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle="-|>", mutation_scale=16,
                                   color="#a8790a", lw=1.6))
 ax.annotate("", xy=(7.2, 1), xytext=(2.8, 1),
             arrowprops=dict(arrowstyle="<->", color="#888", lw=1.2, linestyle="dashed"))
-ax.text(5, 0.55, "직접 인과 없음, 상관만 존재", fontsize=8.5, color="#888", ha="center")
+ax.text(5, 0.55, "No direct causation, correlation only", fontsize=8.5, color="#888", ha="center")
 plt.tight_layout()
 plt.show()
 ```

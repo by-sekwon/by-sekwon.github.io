@@ -43,7 +43,7 @@ description: "신호등 앞, 엘리베이터 앞에서 왜 항상 내가 더 오
 #| fig-cap: "버스 간격은 평균 10분(5분과 15분이 반반)이지만, 무작위로 도착한 사람이 실제로 속하게 되는 간격은 길이에 비례해 편향된다. 그 결과 '내가 경험하는' 평균 간격은 실제 평균보다 길다."
 import matplotlib.pyplot as plt
 
-labels = ["버스 간격의\n단순 평균", "무작위로 도착한 사람이\n실제로 경험하는 평균"]
+labels = ["Naive average\nof bus intervals", "Average interval actually\nexperienced by random arrival"]
 # 실제 평균: (5+15)/2 = 10분
 # 길이편향(연속 표본) 평균: E[L^2]/E[L] = (5^2*0.5 + 15^2*0.5) / 10 = 13분
 naive_mean = 10
@@ -52,11 +52,11 @@ biased_mean = (5**2 * 0.5 + 15**2 * 0.5) / 10
 fig, ax = plt.subplots(figsize=(6, 3.8))
 bars = ax.bar(labels, [naive_mean, biased_mean], color=["#1e3a2f", "#a8790a"], width=0.5)
 for b, v in zip(bars, [naive_mean, biased_mean]):
-    ax.annotate(f"{v:.0f}분", xy=(b.get_x()+b.get_width()/2, v),
+    ax.annotate(f"{v:.0f} min", xy=(b.get_x()+b.get_width()/2, v),
                 xytext=(0, 5), textcoords="offset points", ha="center", fontsize=11)
-ax.set_ylabel("대기 시간(분)")
+ax.set_ylabel("Wait time (minutes)")
 ax.set_ylim(0, 16)
-ax.set_title("같은 버스 노선, 다른 체감 — 검사 역설", fontsize=11, color="#1e3a2f")
+ax.set_title("Same bus route, different experience - the inspection paradox", fontsize=10.5, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()
@@ -116,13 +116,13 @@ fig, ax = plt.subplots(figsize=(6.6, 3.8))
 bars = ax.bar(floors, prob_down, color="#1e3a2f")
 bars[4].set_color("#a8790a")  # 5층 강조
 ax.axhline(50, color="#888", lw=1, linestyle=":")
-ax.annotate("5층: 약 56%", xy=(5, prob_down[4]), xytext=(5, prob_down[4] + 6),
+ax.annotate("Floor 5: ~56%", xy=(5, prob_down[4]), xytext=(5, prob_down[4] + 6),
             ha="center", fontsize=9.5, color="#a8790a")
-ax.set_xlabel("내가 서 있는 층")
-ax.set_ylabel("엘리베이터가 '내려오는 중'일 확률 (%)")
+ax.set_xlabel("Floor you're on")
+ax.set_ylabel("Probability elevator is going down (%)")
 ax.set_xticks(floors)
 ax.set_ylim(0, 105)
-ax.set_title("높은 층일수록 내려오는 엘리베이터만 보인다", fontsize=11, color="#1e3a2f")
+ax.set_title("The higher the floor, the more only downward elevators appear", fontsize=10.5, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()

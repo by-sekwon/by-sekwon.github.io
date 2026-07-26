@@ -79,11 +79,11 @@ fig, ax = plt.subplots(figsize=(7, 3.6))
 ax.plot(diff, prob, color="#1e3a2f", lw=1.6)
 ax.fill_between(diff, prob, color="#1e3a2f", alpha=0.08)
 ax.axvline(0, color="#a8790a", lw=2)
-ax.annotate("1,237 : 1,237\n(득표차 0)", xy=(0, prob.max()), xytext=(35, prob.max()*0.92),
+ax.annotate("1,237 : 1,237\n(margin = 0)", xy=(0, prob.max()), xytext=(35, prob.max()*0.92),
             fontsize=9, color="#a8790a", arrowprops=dict(arrowstyle="->", color="#a8790a"))
-ax.set_xlabel("두 후보 득표 차이 (A − B)")
-ax.set_ylabel("확률밀도")
-ax.set_title("득표 차이의 분포 — 동점은 봉우리 근처의 평범한 한 점", fontsize=11, color="#1e3a2f")
+ax.set_xlabel("Vote margin (A - B)")
+ax.set_ylabel("Probability density")
+ax.set_title("Distribution of vote margin - a tie is an ordinary point near the peak", fontsize=11, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()
@@ -96,7 +96,7 @@ plt.show()
 #| fig-cap: "점확률(단 하나의 결과)과 사건확률(동점이거나 그보다 접전인 모든 결과의 합)의 차이. 막대는 서로 다른 척도를 가진 두 개념을 비교한 것이다."
 import matplotlib.pyplot as plt
 
-labels = ["점확률\n(1,237 : 1,237\n딱 그 결과)", "사건확률\n(동점 이거나\n더 접전인 모든 경우)"]
+labels = ["Point probability\n(exactly\n1,237 : 1,237)", "Event probability\n(tie or\ncloser)"]
 values = [1 / 590_000_000 * 100, 100 * (2 / np.sqrt(2 * np.pi * n * p * (1-p)) * 1)]
 # 사건확률(동점 확률)의 정규근사: P(A=B) ≈ 1/sqrt(pi*n/2) * 100(%)
 event_prob_pct = 100 / np.sqrt(np.pi * n / 2)
@@ -104,10 +104,10 @@ values = [1 / 590_000_000 * 100, event_prob_pct]
 
 fig, ax = plt.subplots(figsize=(6, 3.6))
 bars = ax.bar(labels, values, color=["#a8790a", "#1e3a2f"], width=0.5)
-ax.set_ylabel("확률 (%)")
-ax.set_title("같은 사건, 다른 질문 — 점확률 vs 사건확률", fontsize=11, color="#1e3a2f")
+ax.set_ylabel("Probability (%)")
+ax.set_title("Same event, different question - point vs. event probability", fontsize=11, color="#1e3a2f")
 for b, v in zip(bars, values):
-    label = f"{v:.8f}%" if v < 0.001 else f"약 {v:.1f}%"
+    label = f"{v:.8f}%" if v < 0.001 else f"~{v:.1f}%"
     ax.annotate(label, xy=(b.get_x() + b.get_width()/2, b.get_height()),
                 xytext=(0, 5), textcoords="offset points", ha="center", fontsize=9)
 ax.spines[["top", "right"]].set_visible(False)
