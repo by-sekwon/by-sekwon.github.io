@@ -1,0 +1,137 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "별점 4.5점짜리 식당은 믿을 만한가?"
+author: "권세혁"
+date: "2026-07-28"
+categories: [통계기초, 기술통계]
+description: "리뷰 8개짜리 평점 4.9와 리뷰 1,200개짜리 평점 4.3, 어느 쪽이 더 믿을 만할까? 평균과 표본 크기의 관계를 다룹니다."
+---
+
+## 두 식당 중 어디를 골라야 할까
+
+지도 앱을 켰다. A 식당은 별점 **4.9(리뷰 8개)**, B 식당은 별점 **4.3(리뷰 1,200개)**. 숫자만 보면 A가 훨씬 나아 보인다. 그런데 정말 A가 더 맛있는 집일까?
+
+## 별점도 결국 표본평균이다
+
+식당 별점은 그 식당에 다녀간 손님들 중 리뷰를 남긴 사람들의 점수를 평균 낸 것이다. 즉, 진짜 궁금한 "이 식당의 진짜 품질"이라는 모집단 값을 몇 명의 표본으로 추정한 **표본평균**에 불과하다.
+
+::: {.callout-note}
+## 리뷰 8개와 리뷰 1,200개의 차이
+
+A 식당의 리뷰가 8개뿐이라면, 다음에 별점 3점짜리 리뷰 하나만 더 달려도 평균은 4.9에서 순식간에 4.6대로 떨어진다. 반면 B 식당은 리뷰가 1,200개이므로, 새 리뷰 하나가 평균을 흔드는 폭은 사실상 0에 가깝다.
+
+**같은 "리뷰 1개"라도 표본 크기에 따라 평균에 미치는 영향력은 전혀 다르다.**
+:::
+
+## 표본이 작을수록 평균은 크게 흔들린다
+
+통계학에서 표본평균의 불확실성, 즉 표준오차(Standard Error)는 다음과 같이 표본 크기의 제곱근에 반비례해서 줄어든다.
+
+$$\text{SE} = \frac{\sigma}{\sqrt{n}}$$
+
+리뷰 개수 $n$이 4배로 늘어나야 표준오차는 절반으로 줄어든다. 리뷰가 몇 개 안 되는 식당은 진짜 실력과 동떨어진 평균이 우연히 찍혀 있을 가능성이 훨씬 크다.
+
+```{python}
+#| echo: false
+#| fig-cap: "리뷰 개수가 늘어날수록 평점 평균의 95% 신뢰구간 폭(오차범위)이 좁아진다. 리뷰 10개 안팎에서는 오차범위가 ±0.5점을 넘지만, 리뷰가 수백 개를 넘으면 오차범위는 거의 사라진다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+sigma = 0.8  # 5점 척도 리뷰의 전형적인 표준편차
+n = np.arange(2, 1500)
+margin = 1.96 * sigma / np.sqrt(n)
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+ax.plot(n, margin, color="#1e3a2f", lw=2)
+ax.fill_between(n, margin, color="#1e3a2f", alpha=0.08)
+
+highlight_n = [8, 45, 1200]
+for hn in highlight_n:
+    hm = 1.96 * sigma / np.sqrt(hn)
+    ax.scatter([hn], [hm], color="#a8790a", zorder=5, s=45)
+    ax.annotate(f"n={hn}\n±{hm:.2f}", xy=(hn, hm), xytext=(hn * 1.15, hm + 0.04),
+                fontsize=9, color="#a8790a")
+
+ax.set_xscale("log")
+ax.set_xlabel("Number of reviews (log scale)")
+ax.set_ylabel("95% margin of error (stars)")
+ax.set_title("More reviews, narrower uncertainty around the average", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+리뷰가 8개인 A 식당은 오차범위가 무려 ±0.55점에 달한다. 진짜 평균이 4.35~5.0 사이 어디든 있을 수 있다는 뜻이다. 반면 리뷰가 1,200개인 B 식당은 오차범위가 ±0.05점 이내로 좁혀진다. **"4.9"라는 숫자와 "4.3"이라는 숫자는 애초에 신뢰도가 다른 숫자다.**
+
+## 플랫폼들의 해법: 베이지안 가중평균
+
+이 문제를 잘 아는 플랫폼들은 단순 평균 대신 **베이지안 가중평균(Bayesian weighted average)**을 쓴다. IMDb 영화 순위가 대표적이다.
+
+::: {.callout-warning}
+## IMDb 공식
+
+$$WR = \frac{v}{v + m} \times R + \frac{m}{v + m} \times C$$
+
+- $R$: 해당 항목의 평균 평점
+- $v$: 해당 항목의 리뷰(투표) 수
+- $m$: "충분히 신뢰할 만하다"고 보는 최소 리뷰 수 (기준값)
+- $C$: 전체 항목의 평균 평점 (사전 기대값)
+
+리뷰 수 $v$가 작으면 가중치가 전체 평균 $C$ 쪽으로 쏠리고, $v$가 크면 원래 평균 $R$을 거의 그대로 인정한다. **적은 표본은 겸손하게, 많은 표본은 있는 그대로** 평가하는 방식이다.
+:::
+
+세 식당에 이 공식을 적용해 보자. 최소 기준 $m=50$, 전체 평균 $C=4.0$으로 가정한다.
+
+| 식당 | 원 평점 | 리뷰 수 | 가중평균 적용 후 |
+|------|:------:|:------:|:---------------:|
+| A (리뷰 소수) | 4.9 | 8 | 4.12 |
+| C (리뷰 보통) | 4.6 | 45 | 4.28 |
+| B (리뷰 다수) | 4.3 | 1,200 | 4.29 |
+
+```{python}
+#| echo: false
+#| fig-cap: "원 평점(연두색)과 베이지안 가중평균 적용 후(주황색) 비교. 리뷰가 적은 A는 크게 낮아지고, 리뷰가 많은 B는 거의 그대로다. 그 결과 원래 꼴찌였던 B가 가중평균에서는 1위로 올라선다."
+import matplotlib.pyplot as plt
+import numpy as np
+
+names = ["A\n(n=8)", "C\n(n=45)", "B\n(n=1200)"]
+raw = [4.9, 4.6, 4.3]
+weighted = [4.12, 4.28, 4.29]
+
+x = np.arange(len(names))
+w = 0.32
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+b1 = ax.bar(x - w/2, raw, w, label="Raw average", color="#1e3a2f")
+b2 = ax.bar(x + w/2, weighted, w, label="Bayesian weighted", color="#a8790a")
+for bars in (b1, b2):
+    for b in bars:
+        ax.annotate(f"{b.get_height():.2f}", xy=(b.get_x()+b.get_width()/2, b.get_height()),
+                    xytext=(0, 3), textcoords="offset points", ha="center", fontsize=9)
+ax.set_xticks(x)
+ax.set_xticklabels(names)
+ax.set_ylim(3.8, 5.15)
+ax.set_ylabel("Rating")
+ax.set_title("The ranking flips after adjusting for sample size", fontsize=10.5, color="#1e3a2f")
+ax.legend(frameon=False, loc="upper right")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+원래 평점만 보면 A > C > B 순이었지만, 표본 크기를 반영하자 **B > C > A로 순위가 완전히 뒤집힌다.** 리뷰 8개짜리 만점에 가까운 평점은, 리뷰 1,200개가 쌓인 4.3점보다 통계적으로 훨씬 근거가 약하다.
+
+## 결론: 별점 앞에는 항상 괄호 속 숫자를 봐야 한다
+
+::: {.callout-tip}
+## 별점을 볼 때 체크할 것
+
+1. **평점만 보지 말고 리뷰 개수를 함께 본다.** 리뷰 10개 미만의 만점은 통계적으로 거의 의미가 없다.
+2. **리뷰가 적은 만점보다 리뷰가 많은 근소한 고득점이 더 안전한 선택이다.**
+3. **플랫폼이 "가중 평점"이나 "정렬 기준"을 제공한다면, 단순 평균보다 그것을 신뢰하자.**
+4. **표본이 작을 때는 극단적인 값이 나오기 쉽다는 것을 항상 염두에 둔다.** 이것은 식당 평점만이 아니라 표본을 다루는 모든 통계에 적용되는 원칙이다.
+:::
+
+숫자 하나(4.9)가 다른 숫자(4.3)보다 커 보인다고 무조건 더 나은 것은 아니다. 그 숫자가 몇 명의 목소리에서 나왔는지를 함께 봐야, 비로소 평균을 제대로 읽을 수 있다.

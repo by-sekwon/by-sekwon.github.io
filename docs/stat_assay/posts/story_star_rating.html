@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-06-03">
-<meta name="description" content="신호등 앞, 엘리베이터 앞에서 왜 항상 내가 더 오래 기다리는 것 같을까? 체감 시간의 통계적 비밀을 들여다봅니다.">
+<meta name="dcterms.date" content="2026-07-28">
+<meta name="description" content="리뷰 8개짜리 평점 4.9와 리뷰 1,200개짜리 평점 4.3, 어느 쪽이 더 믿을 만할까? 평균과 표본 크기의 관계를 다룹니다.">
 
-<title>대기 시간의 비밀 – 권세혁HOME</title>
+<title>별점 4.5점짜리 식당은 믿을 만한가? – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -71,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -138,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_waiting.html">📖 대기 시간의 비밀</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_star_rating.html">📖 별점 4.5점짜리 식당은 믿을 만한가?</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -159,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_star_rating.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_star_rating.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 별점 4.5점짜리 식당은 믿을 만한가?</span></a>
   </div>
 </li>
@@ -177,7 +206,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_waiting.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_waiting.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 대기 시간의 비밀</span></a>
   </div>
 </li>
@@ -209,12 +238,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#왜-나만-항상-오래-기다리는-것-같을까" id="toc-왜-나만-항상-오래-기다리는-것-같을까" class="nav-link active" data-scroll-target="#왜-나만-항상-오래-기다리는-것-같을까">왜 나만 항상 오래 기다리는 것 같을까?</a></li>
-  <li><a href="#검사-역설-항상-긴-쪽에-끼어드는-이유" id="toc-검사-역설-항상-긴-쪽에-끼어드는-이유" class="nav-link" data-scroll-target="#검사-역설-항상-긴-쪽에-끼어드는-이유">검사 역설: 항상 긴 쪽에 끼어드는 이유</a></li>
-  <li><a href="#신호등-내가-도착한-시점의-불운" id="toc-신호등-내가-도착한-시점의-불운" class="nav-link" data-scroll-target="#신호등-내가-도착한-시점의-불운">신호등: 내가 도착한 시점의 불운</a></li>
-  <li><a href="#엘리베이터-항상-반대-방향으로-가는-이유" id="toc-엘리베이터-항상-반대-방향으로-가는-이유" class="nav-link" data-scroll-target="#엘리베이터-항상-반대-방향으로-가는-이유">엘리베이터: 항상 반대 방향으로 가는 이유</a></li>
-  <li><a href="#체감-시간은-실제-시간이-아니다" id="toc-체감-시간은-실제-시간이-아니다" class="nav-link" data-scroll-target="#체감-시간은-실제-시간이-아니다">체감 시간은 실제 시간이 아니다</a></li>
-  <li><a href="#결론-기다림은-불공평하지-않다" id="toc-결론-기다림은-불공평하지-않다" class="nav-link" data-scroll-target="#결론-기다림은-불공평하지-않다">결론: 기다림은 불공평하지 않다</a></li>
+  <li><a href="#두-식당-중-어디를-골라야-할까" id="toc-두-식당-중-어디를-골라야-할까" class="nav-link active" data-scroll-target="#두-식당-중-어디를-골라야-할까">두 식당 중 어디를 골라야 할까</a></li>
+  <li><a href="#별점도-결국-표본평균이다" id="toc-별점도-결국-표본평균이다" class="nav-link" data-scroll-target="#별점도-결국-표본평균이다">별점도 결국 표본평균이다</a></li>
+  <li><a href="#표본이-작을수록-평균은-크게-흔들린다" id="toc-표본이-작을수록-평균은-크게-흔들린다" class="nav-link" data-scroll-target="#표본이-작을수록-평균은-크게-흔들린다">표본이 작을수록 평균은 크게 흔들린다</a></li>
+  <li><a href="#플랫폼들의-해법-베이지안-가중평균" id="toc-플랫폼들의-해법-베이지안-가중평균" class="nav-link" data-scroll-target="#플랫폼들의-해법-베이지안-가중평균">플랫폼들의 해법: 베이지안 가중평균</a></li>
+  <li><a href="#결론-별점-앞에는-항상-괄호-속-숫자를-봐야-한다" id="toc-결론-별점-앞에는-항상-괄호-속-숫자를-봐야-한다" class="nav-link" data-scroll-target="#결론-별점-앞에는-항상-괄호-속-숫자를-봐야-한다">결론: 별점 앞에는 항상 괄호 속 숫자를 봐야 한다</a></li>
   </ul>
 </nav>
     </div>
@@ -223,16 +251,16 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">대기 시간의 비밀</h1>
+<h1 class="title">별점 4.5점짜리 식당은 믿을 만한가?</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
-    <div class="quarto-category">확률</div>
+    <div class="quarto-category">기술통계</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    신호등 앞, 엘리베이터 앞에서 왜 항상 내가 더 오래 기다리는 것 같을까? 체감 시간의 통계적 비밀을 들여다봅니다.
+    리뷰 8개짜리 평점 4.9와 리뷰 1,200개짜리 평점 4.3, 어느 쪽이 더 믿을 만할까? 평균과 표본 크기의 관계를 다룹니다.
   </div>
 </div>
 
@@ -249,7 +277,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 3, 2026</p>
+      <p class="date">July 28, 2026</p>
     </div>
   </div>
   
@@ -261,200 +289,132 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="왜-나만-항상-오래-기다리는-것-같을까" class="level2">
-<h2 class="anchored" data-anchor-id="왜-나만-항상-오래-기다리는-것-같을까">왜 나만 항상 오래 기다리는 것 같을까?</h2>
-<p>신호등 앞에 섰다. 빨간불이다. 언제 바뀔지 모른다. 1분이 2분처럼 느껴진다. 옆 차선은 벌써 출발했다.</p>
-<p>엘리베이터 버튼을 눌렀다. 한참을 기다렸다. 드디어 문이 열렸는데, 안에 사람이 가득하다. 내가 탄 뒤 바로 다음 층에서 멈춘다.</p>
-<p>이 불쾌한 경험은 운이 나쁜 것일까? 아니면 통계적으로 피할 수 없는 구조일까?</p>
+<section id="두-식당-중-어디를-골라야-할까" class="level2">
+<h2 class="anchored" data-anchor-id="두-식당-중-어디를-골라야-할까">두 식당 중 어디를 골라야 할까</h2>
+<p>지도 앱을 켰다. A 식당은 별점 <strong>4.9(리뷰 8개)</strong>, B 식당은 별점 <strong>4.3(리뷰 1,200개)</strong>. 숫자만 보면 A가 훨씬 나아 보인다. 그런데 정말 A가 더 맛있는 집일까?</p>
 </section>
-<section id="검사-역설-항상-긴-쪽에-끼어드는-이유" class="level2">
-<h2 class="anchored" data-anchor-id="검사-역설-항상-긴-쪽에-끼어드는-이유">검사 역설: 항상 긴 쪽에 끼어드는 이유</h2>
-<p>버스를 기다릴 때를 생각해 보자. 버스가 평균 10분 간격으로 온다고 해도, 내가 체감하는 평균 대기 시간은 10분이 아니다.</p>
+<section id="별점도-결국-표본평균이다" class="level2">
+<h2 class="anchored" data-anchor-id="별점도-결국-표본평균이다">별점도 결국 표본평균이다</h2>
+<p>식당 별점은 그 식당에 다녀간 손님들 중 리뷰를 남긴 사람들의 점수를 평균 낸 것이다. 즉, 진짜 궁금한 “이 식당의 진짜 품질”이라는 모집단 값을 몇 명의 표본으로 추정한 <strong>표본평균</strong>에 불과하다.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-검사 역설 (Inspection Paradox)
+리뷰 8개와 리뷰 1,200개의 차이
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>버스가 불규칙한 간격으로 온다고 가정하자. 어떤 날은 5분 간격, 어떤 날은 15분 간격으로 온다.</p>
-<p>내가 <strong>무작위 시점에 도착</strong>하면, 짧은 간격(5분)보다 긴 간격(15분) 안에 도착할 확률이 3배 높다. 긴 간격은 그만큼 더 넓은 시간대를 차지하기 때문이다.</p>
-<p>결과적으로, 평균 간격이 10분이어도 내가 실제로 경험하는 평균 대기 시간은 <strong>10분보다 길다.</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>간격 유형</th>
-<th>실제 간격</th>
-<th>내가 이 간격에 도착할 확률</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>짧은 간격</td>
-<td>5분</td>
-<td>25%</td>
-</tr>
-<tr class="even">
-<td>긴 간격</td>
-<td>15분</td>
-<td>75%</td>
-</tr>
-</tbody>
-</table>
-<p>→ 예상 대기 시간 = 평균 간격보다 항상 길게 느껴진다.</p>
+<p>A 식당의 리뷰가 8개뿐이라면, 다음에 별점 3점짜리 리뷰 하나만 더 달려도 평균은 4.9에서 순식간에 4.6대로 떨어진다. 반면 B 식당은 리뷰가 1,200개이므로, 새 리뷰 하나가 평균을 흔드는 폭은 사실상 0에 가깝다.</p>
+<p><strong>같은 “리뷰 1개”라도 표본 크기에 따라 평균에 미치는 영향력은 전혀 다르다.</strong></p>
 </div>
 </div>
-<div id="88da710d" class="cell" data-execution_count="1">
+</section>
+<section id="표본이-작을수록-평균은-크게-흔들린다" class="level2">
+<h2 class="anchored" data-anchor-id="표본이-작을수록-평균은-크게-흔들린다">표본이 작을수록 평균은 크게 흔들린다</h2>
+<p>통계학에서 표본평균의 불확실성, 즉 표준오차(Standard Error)는 다음과 같이 표본 크기의 제곱근에 반비례해서 줄어든다.</p>
+<p><span class="math display">\[\text{SE} = \frac{\sigma}{\sqrt{n}}\]</span></p>
+<p>리뷰 개수 <span class="math inline">\(n\)</span>이 4배로 늘어나야 표준오차는 절반으로 줄어든다. 리뷰가 몇 개 안 되는 식당은 진짜 실력과 동떨어진 평균이 우연히 찍혀 있을 가능성이 훨씬 크다.</p>
+<div id="584acf2f" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_waiting_files/figure-html/cell-2-output-1.png" width="557" height="355" class="figure-img"></p>
-<figcaption>버스 간격은 평균 10분(5분과 15분이 반반)이지만, 무작위로 도착한 사람이 실제로 속하게 되는 간격은 길이에 비례해 편향된다. 그 결과 ‘내가 경험하는’ 평균 간격은 실제 평균보다 길다.</figcaption>
+<p><img src="story_star_rating_files/figure-html/cell-2-output-1.png" width="659" height="353" class="figure-img"></p>
+<figcaption>리뷰 개수가 늘어날수록 평점 평균의 95% 신뢰구간 폭(오차범위)이 좁아진다. 리뷰 10개 안팎에서는 오차범위가 ±0.5점을 넘지만, 리뷰가 수백 개를 넘으면 오차범위는 거의 사라진다.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>이것이 <strong>검사 역설(Inspection Paradox)</strong>이다. 무작위로 도착한 사람은 평균보다 긴 간격에 더 자주 끼어든다. 버스가 늦는 게 아니라, 통계적으로 내가 긴 쪽에 들어갈 가능성이 더 높은 것이다.</p>
+<p>리뷰가 8개인 A 식당은 오차범위가 무려 ±0.55점에 달한다. 진짜 평균이 4.35~5.0 사이 어디든 있을 수 있다는 뜻이다. 반면 리뷰가 1,200개인 B 식당은 오차범위가 ±0.05점 이내로 좁혀진다. <strong>“4.9”라는 숫자와 “4.3”이라는 숫자는 애초에 신뢰도가 다른 숫자다.</strong></p>
 </section>
-<section id="신호등-내가-도착한-시점의-불운" class="level2">
-<h2 class="anchored" data-anchor-id="신호등-내가-도착한-시점의-불운">신호등: 내가 도착한 시점의 불운</h2>
-<p>신호등 앞에서 느끼는 억울함도 비슷한 원리다. 빨간불로 바뀌는 순간 도착한 사람과, 바뀌기 직전에 도착한 사람은 같은 주기를 기다리지만 체감이 전혀 다르다.</p>
+<section id="플랫폼들의-해법-베이지안-가중평균" class="level2">
+<h2 class="anchored" data-anchor-id="플랫폼들의-해법-베이지안-가중평균">플랫폼들의 해법: 베이지안 가중평균</h2>
+<p>이 문제를 잘 아는 플랫폼들은 단순 평균 대신 <strong>베이지안 가중평균(Bayesian weighted average)</strong>을 쓴다. IMDb 영화 순위가 대표적이다.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-신호등 대기의 통계적 구조
+IMDb 공식
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>신호 주기가 90초(빨간불 60초 + 파란불 30초)인 교차로를 예로 들자.</p>
+<p><span class="math display">\[WR = \frac{v}{v + m} \times R + \frac{m}{v + m} \times C\]</span></p>
+<ul>
+<li><span class="math inline">\(R\)</span>: 해당 항목의 평균 평점</li>
+<li><span class="math inline">\(v\)</span>: 해당 항목의 리뷰(투표) 수</li>
+<li><span class="math inline">\(m\)</span>: “충분히 신뢰할 만하다”고 보는 최소 리뷰 수 (기준값)</li>
+<li><span class="math inline">\(C\)</span>: 전체 항목의 평균 평점 (사전 기대값)</li>
+</ul>
+<p>리뷰 수 <span class="math inline">\(v\)</span>가 작으면 가중치가 전체 평균 <span class="math inline">\(C\)</span> 쪽으로 쏠리고, <span class="math inline">\(v\)</span>가 크면 원래 평균 <span class="math inline">\(R\)</span>을 거의 그대로 인정한다. <strong>적은 표본은 겸손하게, 많은 표본은 있는 그대로</strong> 평가하는 방식이다.</p>
+</div>
+</div>
+<p>세 식당에 이 공식을 적용해 보자. 최소 기준 <span class="math inline">\(m=50\)</span>, 전체 평균 <span class="math inline">\(C=4.0\)</span>으로 가정한다.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th>도착 시점</th>
-<th>실제 대기 시간</th>
-<th>체감</th>
+<th>식당</th>
+<th style="text-align: center;">원 평점</th>
+<th style="text-align: center;">리뷰 수</th>
+<th style="text-align: center;">가중평균 적용 후</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>빨간불로 바뀌자마자 도착</td>
-<td>60초</td>
-<td>“왜 이렇게 길어?”</td>
+<td>A (리뷰 소수)</td>
+<td style="text-align: center;">4.9</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">4.12</td>
 </tr>
 <tr class="even">
-<td>빨간불 끝나기 5초 전 도착</td>
-<td>5초</td>
-<td>“운 좋다!”</td>
+<td>C (리뷰 보통)</td>
+<td style="text-align: center;">4.6</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">4.28</td>
 </tr>
 <tr class="odd">
-<td><strong>무작위 도착 시 평균</strong></td>
-<td><strong>30초</strong></td>
-<td>—</td>
+<td>B (리뷰 다수)</td>
+<td style="text-align: center;">4.3</td>
+<td style="text-align: center;">1,200</td>
+<td style="text-align: center;">4.29</td>
 </tr>
 </tbody>
 </table>
-<p>무작위로 도착했을 때 기대 대기 시간은 30초지만, <strong>긴 대기를 경험한 기억이 짧은 대기보다 머릿속에 더 강하게 남는다.</strong> 이것이 “나만 항상 오래 기다린다”는 착각을 만든다.</p>
-</div>
-</div>
-</section>
-<section id="엘리베이터-항상-반대-방향으로-가는-이유" class="level2">
-<h2 class="anchored" data-anchor-id="엘리베이터-항상-반대-방향으로-가는-이유">엘리베이터: 항상 반대 방향으로 가는 이유</h2>
-<p>빌딩 중간 층에서 엘리베이터를 부른다. 위로 가고 싶은데, 오는 엘리베이터마다 전부 아래로 향한다. 이것도 착각이 아니다.</p>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-엘리베이터 역설
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>10층짜리 건물에서 5층에 서 있다고 하자. 엘리베이터가 무작위 위치에 있을 때, 그 엘리베이터가 <strong>위로 이동 중</strong>일 확률은 얼마일까?</p>
-<ul>
-<li>5층 위 공간: 5개 층 (6~10층)</li>
-<li>5층 아래 공간: 4개 층 (1~4층)</li>
-</ul>
-<p>→ 엘리베이터가 아래로 내려올 확률 = 5/(5+4) ≈ <strong>56%</strong></p>
-<p>내가 중간 층보다 위에 있을수록, 올라오는 엘리베이터를 만날 확률이 낮아진다. <strong>꼭대기 층에 가까울수록 내려오는 엘리베이터만 보이는 것은 구조적 필연이다.</strong></p>
-</div>
-</div>
-<div id="357733c0" class="cell" data-execution_count="2">
+<div id="0cfe8a00" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_waiting_files/figure-html/cell-3-output-1.png" width="624" height="355" class="figure-img"></p>
-<figcaption>10층 건물의 각 층에서, 무작위 위치의 엘리베이터가 ’내려오는 중’일 확률. 높은 층일수록 내려오는 엘리베이터만 만나는 구조다.</figcaption>
+<p><img src="story_star_rating_files/figure-html/cell-3-output-1.png" width="662" height="355" class="figure-img"></p>
+<figcaption>원 평점(연두색)과 베이지안 가중평균 적용 후(주황색) 비교. 리뷰가 적은 A는 크게 낮아지고, 리뷰가 많은 B는 거의 그대로다. 그 결과 원래 꼴찌였던 B가 가중평균에서는 1위로 올라선다.</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>원래 평점만 보면 A &gt; C &gt; B 순이었지만, 표본 크기를 반영하자 <strong>B &gt; C &gt; A로 순위가 완전히 뒤집힌다.</strong> 리뷰 8개짜리 만점에 가까운 평점은, 리뷰 1,200개가 쌓인 4.3점보다 통계적으로 훨씬 근거가 약하다.</p>
 </section>
-<section id="체감-시간은-실제-시간이-아니다" class="level2">
-<h2 class="anchored" data-anchor-id="체감-시간은-실제-시간이-아니다">체감 시간은 실제 시간이 아니다</h2>
-<p>대기 시간에 대한 연구들은 한 가지를 공통적으로 발견했다. 사람들은 <strong>아무것도 하지 않을 때 시간을 1.36배 길게 느낀다</strong>는 것이다.</p>
-<p>1970년대 뉴욕의 한 고층 건물에서 엘리베이터 대기 불만이 폭주했다. 관리자들이 대기 시간을 줄이려 했지만 구조적으로 불가능했다. 해결책은 엘리베이터 속도를 높이는 것이 아니었다. <strong>거울을 설치하는 것</strong>이었다.</p>
-<p>거울을 설치한 뒤 불만이 급격히 줄었다. 실제 대기 시간은 그대로였다. 바뀐 것은 오직 체감 시간이었다.</p>
+<section id="결론-별점-앞에는-항상-괄호-속-숫자를-봐야-한다" class="level2">
+<h2 class="anchored" data-anchor-id="결론-별점-앞에는-항상-괄호-속-숫자를-봐야-한다">결론: 별점 앞에는 항상 괄호 속 숫자를 봐야 한다</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-대기 시간 착각을 줄이는 방법
+별점을 볼 때 체크할 것
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 40%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>상황</th>
-<th>통계적 사실</th>
-<th>심리적 대처</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>버스가 안 온다</td>
-<td>내가 긴 간격에 도착했을 가능성이 높다</td>
-<td>간격의 불균일성을 이해한다</td>
-</tr>
-<tr class="even">
-<td>신호등이 길다</td>
-<td>내 도착 시점이 불운했을 뿐</td>
-<td>평균적으로는 공평하다</td>
-</tr>
-<tr class="odd">
-<td>엘리베이터가 반대 방향</td>
-<td>내 층 위의 공간이 넓을수록 필연</td>
-<td>구조적 확률로 받아들인다</td>
-</tr>
-<tr class="even">
-<td>줄이 안 줄어든다</td>
-<td>빈 손으로 기다리면 시간이 1.36배 길게 느껴진다</td>
-<td>손을 바쁘게 하면 된다</td>
-</tr>
-</tbody>
-</table>
-<p>대기 시간의 불만 대부분은 <strong>통계적 구조에 대한 무지</strong>와 <strong>체감 시간의 왜곡</strong>에서 비롯된다.</p>
+<ol type="1">
+<li><strong>평점만 보지 말고 리뷰 개수를 함께 본다.</strong> 리뷰 10개 미만의 만점은 통계적으로 거의 의미가 없다.</li>
+<li><strong>리뷰가 적은 만점보다 리뷰가 많은 근소한 고득점이 더 안전한 선택이다.</strong></li>
+<li><strong>플랫폼이 “가중 평점”이나 “정렬 기준”을 제공한다면, 단순 평균보다 그것을 신뢰하자.</strong></li>
+<li><strong>표본이 작을 때는 극단적인 값이 나오기 쉽다는 것을 항상 염두에 둔다.</strong> 이것은 식당 평점만이 아니라 표본을 다루는 모든 통계에 적용되는 원칙이다.</li>
+</ol>
 </div>
 </div>
-</section>
-<section id="결론-기다림은-불공평하지-않다" class="level2">
-<h2 class="anchored" data-anchor-id="결론-기다림은-불공평하지-않다">결론: 기다림은 불공평하지 않다</h2>
-<p>신호등이 나를 차별하는 것이 아니다. 엘리베이터가 나를 피하는 것도 아니다. 내가 긴 대기 구간에 도착할 확률이 구조적으로 더 높고, 아무것도 하지 않을 때 시간이 실제보다 길게 느껴질 뿐이다.</p>
-<p>통계를 알면 억울함이 줄어든다. 그리고 억울함이 줄어든 만큼, 기다림도 짧아진다.</p>
+<p>숫자 하나(4.9)가 다른 숫자(4.3)보다 커 보인다고 무조건 더 나은 것은 아니다. 그 숫자가 몇 명의 목소리에서 나왔는지를 함께 봐야, 비로소 평균을 제대로 읽을 수 있다.</p>
 
 
 </section>
