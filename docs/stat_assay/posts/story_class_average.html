@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-06-02">
-<meta name="description" content="가장 많이 쓰이지만 가장 많이 오해되는 통계 숫자, p-값의 의미를 이야기로 풀어봅니다.">
+<meta name="dcterms.date" content="2026-07-29">
+<meta name="description" content="반 평균 점수가 올랐다는 발표에도 대부분의 학생은 시큰둥하다. 평균 하나로는 보이지 않는, 분포 안의 진짜 이야기를 들여다봅니다.">
 
-<title>p-값은 왜 0.05인가? – 권세혁HOME</title>
+<title>우리 반 평균이 올랐는데 학생들은 왜 불만일까? – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -138,7 +138,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_pvalue.html">📖 p-값은 왜 0.05인가?</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_class_average.html">📖 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -159,7 +159,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_class_average.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_class_average.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</span></a>
   </div>
 </li>
@@ -195,7 +195,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_pvalue.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_pvalue.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 p-값은 왜 0.05인가?</span></a>
   </div>
 </li>
@@ -215,10 +215,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#라는-숫자의-기원" id="toc-라는-숫자의-기원" class="nav-link active" data-scroll-target="#라는-숫자의-기원">0.05라는 숫자의 기원</a></li>
-  <li><a href="#p-값이-말하는-것과-말하지-않는-것" id="toc-p-값이-말하는-것과-말하지-않는-것" class="nav-link" data-scroll-target="#p-값이-말하는-것과-말하지-않는-것">p-값이 말하는 것과 말하지 않는 것</a></li>
-  <li><a href="#유의하다와-중요하다는-다르다" id="toc-유의하다와-중요하다는-다르다" class="nav-link" data-scroll-target="#유의하다와-중요하다는-다르다">“유의하다”와 “중요하다”는 다르다</a></li>
-  <li><a href="#결론-숫자보다-이야기가-먼저다" id="toc-결론-숫자보다-이야기가-먼저다" class="nav-link" data-scroll-target="#결론-숫자보다-이야기가-먼저다">결론: 숫자보다 이야기가 먼저다</a></li>
+  <li><a href="#이번-시험-평균이-올랐어요" id="toc-이번-시험-평균이-올랐어요" class="nav-link active" data-scroll-target="#이번-시험-평균이-올랐어요">“이번 시험 평균이 올랐어요!”</a></li>
+  <li><a href="#평균은-어디서-올랐는지-말해주지-않는다" id="toc-평균은-어디서-올랐는지-말해주지-않는다" class="nav-link" data-scroll-target="#평균은-어디서-올랐는지-말해주지-않는다">평균은 ‘어디서’ 올랐는지 말해주지 않는다</a></li>
+  <li><a href="#실제로는-누구의-점수가-올랐을까" id="toc-실제로는-누구의-점수가-올랐을까" class="nav-link" data-scroll-target="#실제로는-누구의-점수가-올랐을까">실제로는 누구의 점수가 올랐을까</a></li>
+  <li><a href="#평균이-올라도-등수는-그대로일-수-있다" id="toc-평균이-올라도-등수는-그대로일-수-있다" class="nav-link" data-scroll-target="#평균이-올라도-등수는-그대로일-수-있다">평균이 올라도 등수는 그대로일 수 있다</a></li>
+  <li><a href="#결론-평균-뒤의-분포를-함께-보라" id="toc-결론-평균-뒤의-분포를-함께-보라" class="nav-link" data-scroll-target="#결론-평균-뒤의-분포를-함께-보라">결론: 평균 뒤의 분포를 함께 보라</a></li>
   </ul>
 </nav>
     </div>
@@ -227,16 +228,16 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">p-값은 왜 0.05인가?</h1>
+<h1 class="title">우리 반 평균이 올랐는데 학생들은 왜 불만일까?</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
-    <div class="quarto-category">가설검정</div>
+    <div class="quarto-category">기술통계</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    가장 많이 쓰이지만 가장 많이 오해되는 통계 숫자, p-값의 의미를 이야기로 풀어봅니다.
+    반 평균 점수가 올랐다는 발표에도 대부분의 학생은 시큰둥하다. 평균 하나로는 보이지 않는, 분포 안의 진짜 이야기를 들여다봅니다.
   </div>
 </div>
 
@@ -253,7 +254,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 2, 2026</p>
+      <p class="date">July 29, 2026</p>
     </div>
   </div>
   
@@ -265,130 +266,120 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="라는-숫자의-기원" class="level2">
-<h2 class="anchored" data-anchor-id="라는-숫자의-기원">0.05라는 숫자의 기원</h2>
-<p>통계학을 조금이라도 공부한 사람이라면 “p &lt; 0.05면 유의하다”는 말을 들어봤을 것이다. 그런데 왜 하필 0.05일까? 0.04는 안 되고, 0.06은 안 되는 이유가 있는 걸까?</p>
-<p>사실 0.05라는 기준은 <strong>로널드 피셔(Ronald Fisher)</strong> 가 1925년 《Statistical Methods for Research Workers》에서 “편의상 기준으로 삼기 좋다”고 제안한 데서 비롯됐다. 엄밀한 수학적 근거가 있는 숫자가 아니다. 피셔 본인도 이 숫자를 절대적인 기준으로 삼으라고 한 것이 아니었다.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-p-값의 정의
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>귀무가설이 참이라고 가정했을 때</strong>, 실제로 관측된 결과 혹은 그보다 더 극단적인 결과가 나올 확률.</p>
-<p>p-값은 “효과의 크기”나 “가설이 옳을 확률”이 아니다. 데이터와 귀무가설 사이의 <strong>양립 가능성</strong>을 나타내는 수치다.</p>
-</div>
-</div>
-<div id="5403de6a" class="cell" data-execution_count="1">
+<section id="이번-시험-평균이-올랐어요" class="level2">
+<h2 class="anchored" data-anchor-id="이번-시험-평균이-올랐어요">“이번 시험 평균이 올랐어요!”</h2>
+<p>담임 선생님이 반가운 소식을 전한다. “이번 중간고사 평균이 지난번보다 올랐습니다!” 그런데 교실 반응은 뜨뜻미지근하다.</p>
+<p><em>“저는 그대로인데요.”</em> <em>“제 등수도 똑같던데요.”</em></p>
+<p>평균이 올랐다는데, 왜 대부분의 학생은 아무 변화도 느끼지 못할까?</p>
+</section>
+<section id="평균은-어디서-올랐는지-말해주지-않는다" class="level2">
+<h2 class="anchored" data-anchor-id="평균은-어디서-올랐는지-말해주지-않는다">평균은 ‘어디서’ 올랐는지 말해주지 않는다</h2>
+<p>평균은 30명, 300명의 점수를 단 하나의 숫자로 요약한 값이다. 그 숫자가 오르는 이유는 두 가지로 나뉜다.</p>
+<ul>
+<li><strong>모두가 골고루 조금씩 올랐다</strong> → 반 전체의 실력이 실제로 향상됐을 가능성</li>
+<li><strong>소수의 점수가 크게 올랐다</strong> → 평균은 오르지만 대부분은 그대로</li>
+</ul>
+<p>문제는, <strong>평균 하나만 봐서는 이 둘을 구분할 수 없다</strong>는 것이다.</p>
+<div id="c97f7aae" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_pvalue_files/figure-html/cell-2-output-1.png" width="652" height="355" class="figure-img"></p>
-<figcaption>귀무가설이 참일 때의 검정통계량 분포(표준정규분포). 관측값(주황 점) 오른쪽으로 더 극단적인 영역의 넓이가 곧 p-값이다.</figcaption>
+<p><img src="story_class_average_files/figure-html/cell-2-output-1.png" width="662" height="355" class="figure-img"></p>
+<figcaption>지난 시험(회색)과 이번 시험(초록) 점수 분포. 평균은 70.0점에서 72.8점으로 올랐지만, 그래프 대부분은 거의 같은 자리에 그대로 겹쳐 있다.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="p-값이-말하는-것과-말하지-않는-것" class="level2">
-<h2 class="anchored" data-anchor-id="p-값이-말하는-것과-말하지-않는-것">p-값이 말하는 것과 말하지 않는 것</h2>
-<p>p-값을 둘러싼 오해는 통계학에서 가장 오래된 논쟁 중 하나다.</p>
+<section id="실제로는-누구의-점수가-올랐을까" class="level2">
+<h2 class="anchored" data-anchor-id="실제로는-누구의-점수가-올랐을까">실제로는 누구의 점수가 올랐을까</h2>
+<p>같은 자료를 학생 개개인 단위로 다시 보자. x축에 지난 시험 점수, y축에 이번 시험에서 오른 폭을 놓으면 그림이 확 달라진다.</p>
+<div id="e76b873a" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_class_average_files/figure-html/cell-3-output-1.png" width="662" height="355" class="figure-img"></p>
+<figcaption>학생 30명 각각의 점수 변화. 대부분(회색, 24명)은 거의 제자리인 반면, 상위권 소수(주황, 6명)만 크게 상승했다.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-흔한 오해 vs 올바른 해석
+숫자로 보면 이렇다
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>잘못된 해석</th>
-<th>올바른 해석</th>
+<th>구분</th>
+<th style="text-align: center;">지난 시험</th>
+<th style="text-align: center;">이번 시험</th>
+<th style="text-align: center;">변화</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>p = 0.03 → “귀무가설이 거짓일 확률 97%”</td>
-<td>p = 0.03 → “귀무가설 하에서 이 데이터가 나올 확률 3% 이하”</td>
+<td>반 평균</td>
+<td style="text-align: center;">70.0점</td>
+<td style="text-align: center;">72.8점</td>
+<td style="text-align: center;"><strong>+2.8점</strong></td>
 </tr>
 <tr class="even">
-<td>p &gt; 0.05 → “효과 없음을 증명”</td>
-<td>p &gt; 0.05 → “귀무가설을 기각할 근거가 충분하지 않음”</td>
+<td>반 중앙값</td>
+<td style="text-align: center;">70.9점</td>
+<td style="text-align: center;">71.1점</td>
+<td style="text-align: center;">+0.2점</td>
 </tr>
 <tr class="odd">
-<td>p가 작을수록 효과가 크다</td>
-<td>p가 작은 것은 표본 크기와도 관련 있음</td>
+<td>상위 6명 평균 변화</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>+15.3점</strong></td>
+</tr>
+<tr class="even">
+<td>나머지 24명 평균 변화</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;"><strong>−0.3점</strong></td>
 </tr>
 </tbody>
 </table>
-<p>p-값은 <strong>효과의 크기(effect size)</strong>를 말하지 않는다.</p>
-</div>
-</div>
-<p>표본이 충분히 크면 아무리 작은 차이도 p &lt; 0.05가 된다. 반대로 표본이 작으면 실질적으로 큰 차이가 있어도 유의하지 않게 나올 수 있다.</p>
-<div id="6e0d2b8c" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="story_pvalue_files/figure-html/cell-3-output-1.png" width="656" height="353" class="figure-img"></p>
-<figcaption>실질적으로는 아주 작은 효과(두 집단 평균 차이가 표준편차의 5%에 불과)라도, 표본크기가 커지면 p-값은 결국 0.05 아래로 떨어진다.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>그래프의 효과 크기는 처음부터 끝까지 단 하나, 표준편차의 5%로 고정돼 있다. 달라진 것은 표본크기뿐인데도 p-값은 표본이 커질수록 계속 작아진다. <strong>작은 p-값이 항상 “큰 효과”를 의미하지 않는 이유</strong>가 여기에 있다.</p>
-</section>
-<section id="유의하다와-중요하다는-다르다" class="level2">
-<h2 class="anchored" data-anchor-id="유의하다와-중요하다는-다르다">“유의하다”와 “중요하다”는 다르다</h2>
-<p>2019년 미국통계학회(ASA)는 p-값만으로 결론을 내리는 관행에 경고하는 성명을 발표했다. 800명 이상의 통계학자가 서명한 이 성명의 핵심 메시지는 하나였다.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-ASA 성명의 핵심 (2019)
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>“통계적 유의성”이라는 이분법적 기준을 버려라.</p>
-<p>효과의 유무는 p-값 하나로 결정할 수 없다. <strong>효과의 크기(effect size), 신뢰구간, 연구 맥락, 반복 가능성</strong>을 함께 고려해야 한다.</p>
+<p>평균은 2.8점이나 올랐지만, 중앙값은 사실상 그대로다. 그리고 반 인원의 80%에 해당하는 24명은 오히려 평균적으로 아주 조금 <strong>떨어졌다</strong>. “평균 상승”이라는 소식의 실체는, 상위권 6명이 크게 뛴 결과였다.</p>
 </div>
 </div>
 </section>
-<section id="결론-숫자보다-이야기가-먼저다" class="level2">
-<h2 class="anchored" data-anchor-id="결론-숫자보다-이야기가-먼저다">결론: 숫자보다 이야기가 먼저다</h2>
-<p>p-값은 분석의 끝이 아니라 출발점이다. “p &lt; 0.05가 나왔으니 됐다”가 아니라, “이 결과가 실질적으로 무슨 의미인가”를 묻는 것이 통계의 본래 역할이다.</p>
+<section id="평균이-올라도-등수는-그대로일-수-있다" class="level2">
+<h2 class="anchored" data-anchor-id="평균이-올라도-등수는-그대로일-수-있다">평균이 올라도 등수는 그대로일 수 있다</h2>
+<p>여기에 학생들이 진짜 신경 쓰는 것 하나가 더 있다. 바로 <strong>등수(상대적 위치)</strong>다.</p>
+<p>설령 모두의 점수가 똑같이 3점씩 올랐다고 해도, 반 안에서의 순서는 하나도 바뀌지 않는다. 평균은 분명히 올랐는데 등수는 그대로이니, 체감하는 변화는 0에 가깝다. 절대적인 점수(평균)와 상대적인 위치(등수)는 서로 다른 질문에 대한 답이라는 것을, 학생들은 본능적으로 알고 있다.</p>
+</section>
+<section id="결론-평균-뒤의-분포를-함께-보라" class="level2">
+<h2 class="anchored" data-anchor-id="결론-평균-뒤의-분포를-함께-보라">결론: 평균 뒤의 분포를 함께 보라</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-실전에서 p-값을 쓸 때
+“평균이 올랐다”는 말을 들었을 때 확인할 것
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li>p-값과 함께 <strong>효과 크기(Cohen’s d, η² 등)</strong>를 항상 보고한다</li>
-<li>p &gt; 0.05를 “효과 없음”으로 결론 내리지 않는다</li>
-<li>표본 크기가 매우 크면 p-값보다 <strong>신뢰구간의 범위</strong>를 더 주목한다</li>
-<li>사전에 유의수준을 정하고(0.05 또는 0.01), 결과를 본 뒤 기준을 바꾸지 않는다</li>
-</ul>
+<ol type="1">
+<li><strong>중앙값도 함께 확인한다.</strong> 평균과 중앙값의 차이가 크다면, 상승분이 일부에게 몰려 있다는 신호다.</li>
+<li><strong>누가 올랐는지 나눠서 본다.</strong> 상위권·중위권·하위권으로 쪼개 보면 숨겨진 그림이 드러난다.</li>
+<li><strong>절대 점수와 상대 순위를 구분한다.</strong> 반 평균이 올라도 내 등수가 그대로라면, “내가 나아졌다”는 뜻은 아니다.</li>
+<li><strong>하나의 요약 숫자를 볼 때는 항상 “분포 전체는 어떤 모양일까”를 함께 묻는다.</strong></li>
+</ol>
 </div>
 </div>
-<p>0.05라는 숫자에 지나치게 매달리지 않고, 데이터가 들려주는 이야기에 귀를 기울이는 것—그것이 좋은 통계 분석의 시작이다.</p>
+<p>평균은 교실 전체를 하나의 숫자로 압축해서 보여주는 편리한 도구다. 그러나 그 압축 과정에서 “누가, 얼마나” 달라졌는지는 사라진다. 학생들의 불만은 틀리지 않았다. 그들은 평균이 아니라 분포를 보고 있었던 것이다.</p>
 
 
 </section>

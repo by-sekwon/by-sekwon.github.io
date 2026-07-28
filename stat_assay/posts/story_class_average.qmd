@@ -1,0 +1,123 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "우리 반 평균이 올랐는데 학생들은 왜 불만일까?"
+author: "권세혁"
+date: "2026-07-29"
+categories: [통계기초, 기술통계]
+description: "반 평균 점수가 올랐다는 발표에도 대부분의 학생은 시큰둥하다. 평균 하나로는 보이지 않는, 분포 안의 진짜 이야기를 들여다봅니다."
+---
+
+## "이번 시험 평균이 올랐어요!"
+
+담임 선생님이 반가운 소식을 전한다. "이번 중간고사 평균이 지난번보다 올랐습니다!" 그런데 교실 반응은 뜨뜻미지근하다.
+
+*"저는 그대로인데요."*
+*"제 등수도 똑같던데요."*
+
+평균이 올랐다는데, 왜 대부분의 학생은 아무 변화도 느끼지 못할까?
+
+## 평균은 '어디서' 올랐는지 말해주지 않는다
+
+평균은 30명, 300명의 점수를 단 하나의 숫자로 요약한 값이다. 그 숫자가 오르는 이유는 두 가지로 나뉜다.
+
+- **모두가 골고루 조금씩 올랐다** → 반 전체의 실력이 실제로 향상됐을 가능성
+- **소수의 점수가 크게 올랐다** → 평균은 오르지만 대부분은 그대로
+
+문제는, **평균 하나만 봐서는 이 둘을 구분할 수 없다**는 것이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "지난 시험(회색)과 이번 시험(초록) 점수 분포. 평균은 70.0점에서 72.8점으로 올랐지만, 그래프 대부분은 거의 같은 자리에 그대로 겹쳐 있다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(21)
+n = 30
+prev = np.clip(rng.normal(68, 10, n), 30, 100)
+order = np.argsort(-prev)
+top_k = order[:6]
+rest = np.setdiff1d(np.arange(n), top_k)
+
+new = prev.copy()
+new[top_k] += rng.uniform(14, 22, 6)
+new[rest] += rng.normal(0, 2.5, len(rest))
+new = np.clip(new, 30, 100)
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+bins = np.linspace(30, 100, 15)
+ax.hist(prev, bins=bins, color="#8a8a8a", alpha=0.55, label="Previous exam")
+ax.hist(new, bins=bins, color="#1e3a2f", alpha=0.65, label="This exam")
+ax.axvline(prev.mean(), color="#666", lw=2, linestyle="--")
+ax.axvline(new.mean(), color="#a8790a", lw=2, linestyle="--")
+ax.set_ylim(0, ax.get_ylim()[1] * 1.25)
+top = ax.get_ylim()[1]
+ax.annotate(f"Prev mean {prev.mean():.1f}", xy=(prev.mean(), top * 0.55),
+            xytext=(prev.mean() - 20, top * 0.55), fontsize=9, color="#666",
+            arrowprops=dict(arrowstyle="->", color="#666"))
+ax.annotate(f"New mean {new.mean():.1f}", xy=(new.mean(), top * 0.68),
+            xytext=(new.mean() + 3, top * 0.68), fontsize=9, color="#a8790a",
+            arrowprops=dict(arrowstyle="->", color="#a8790a"))
+ax.set_xlabel("Score")
+ax.set_ylabel("Number of students")
+ax.set_title("Average rose, but most of the distribution barely moved", fontsize=10.5, color="#1e3a2f")
+ax.legend(frameon=False, loc="upper left")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 실제로는 누구의 점수가 올랐을까
+
+같은 자료를 학생 개개인 단위로 다시 보자. x축에 지난 시험 점수, y축에 이번 시험에서 오른 폭을 놓으면 그림이 확 달라진다.
+
+```{python}
+#| echo: false
+#| fig-cap: "학생 30명 각각의 점수 변화. 대부분(회색, 24명)은 거의 제자리인 반면, 상위권 소수(주황, 6명)만 크게 상승했다."
+diff = new - prev
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+ax.scatter(prev[rest], diff[rest], color="#1e3a2f", s=42, alpha=0.8, label=f"Rest ({len(rest)} students)")
+ax.scatter(prev[top_k], diff[top_k], color="#a8790a", s=58, alpha=0.9, label=f"Top scorers ({len(top_k)} students)")
+ax.axhline(0, color="#999", lw=1.2)
+ax.set_xlabel("Previous score")
+ax.set_ylabel("Change in score (this exam - previous)")
+ax.set_title("Score gains are concentrated in a handful of top students", fontsize=10.5, color="#1e3a2f")
+ax.legend(frameon=False)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+::: {.callout-warning}
+## 숫자로 보면 이렇다
+
+| 구분 | 지난 시험 | 이번 시험 | 변화 |
+|------|:--------:|:--------:|:----:|
+| 반 평균 | 70.0점 | 72.8점 | **+2.8점** |
+| 반 중앙값 | 70.9점 | 71.1점 | +0.2점 |
+| 상위 6명 평균 변화 | — | — | **+15.3점** |
+| 나머지 24명 평균 변화 | — | — | **−0.3점** |
+
+평균은 2.8점이나 올랐지만, 중앙값은 사실상 그대로다. 그리고 반 인원의 80%에 해당하는 24명은 오히려 평균적으로 아주 조금 **떨어졌다**. "평균 상승"이라는 소식의 실체는, 상위권 6명이 크게 뛴 결과였다.
+:::
+
+## 평균이 올라도 등수는 그대로일 수 있다
+
+여기에 학생들이 진짜 신경 쓰는 것 하나가 더 있다. 바로 **등수(상대적 위치)**다.
+
+설령 모두의 점수가 똑같이 3점씩 올랐다고 해도, 반 안에서의 순서는 하나도 바뀌지 않는다. 평균은 분명히 올랐는데 등수는 그대로이니, 체감하는 변화는 0에 가깝다. 절대적인 점수(평균)와 상대적인 위치(등수)는 서로 다른 질문에 대한 답이라는 것을, 학생들은 본능적으로 알고 있다.
+
+## 결론: 평균 뒤의 분포를 함께 보라
+
+::: {.callout-tip}
+## "평균이 올랐다"는 말을 들었을 때 확인할 것
+
+1. **중앙값도 함께 확인한다.** 평균과 중앙값의 차이가 크다면, 상승분이 일부에게 몰려 있다는 신호다.
+2. **누가 올랐는지 나눠서 본다.** 상위권·중위권·하위권으로 쪼개 보면 숨겨진 그림이 드러난다.
+3. **절대 점수와 상대 순위를 구분한다.** 반 평균이 올라도 내 등수가 그대로라면, "내가 나아졌다"는 뜻은 아니다.
+4. **하나의 요약 숫자를 볼 때는 항상 "분포 전체는 어떤 모양일까"를 함께 묻는다.**
+:::
+
+평균은 교실 전체를 하나의 숫자로 압축해서 보여주는 편리한 도구다. 그러나 그 압축 과정에서 "누가, 얼마나" 달라졌는지는 사라진다. 학생들의 불만은 틀리지 않았다. 그들은 평균이 아니라 분포를 보고 있었던 것이다.
