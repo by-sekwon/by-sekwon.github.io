@@ -1,0 +1,120 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "연봉은 평균보다 중앙값으로 보아야 하는 이유"
+author: "권세혁"
+date: "2026-07-30"
+categories: [통계기초, 기술통계]
+description: "'평균 연봉 4천만 원'이라는 기사를 보면 왜 항상 내 연봉이 더 적게 느껴질까? 왜도(skewness)라는 개념으로 그 이유를 풀어봅니다."
+---
+
+## "평균 연봉 4천만 원"이라는 기사, 나는 왜 못 미칠까
+
+포털 뉴스에 "직장인 평균 연봉 4,072만 원"이라는 기사가 떴다. 댓글창은 난리다. *"그 평균, 대체 누구야?"* *"내 주변엔 그렇게 버는 사람이 없는데."*
+
+이상한 일이 아니다. 실제로 계산해보면, **전체 직장인의 61%가 이 "평균"보다 적게 번다.** 어떻게 평균인데 대다수가 평균 아래에 있을 수 있을까?
+
+## 소득 분포는 한쪽으로 길게 늘어져 있다
+
+키나 시험 점수처럼 좌우가 대칭인 데이터라면 평균 근처에 절반, 그 위아래로 사람들이 고르게 퍼져 있다. 그러나 소득은 다르다. 대다수는 중간 어딘가에 몰려 있고, 극소수의 최상위 소득자가 아주 멀리, 아주 길게 꼬리를 늘어뜨린다.
+
+이렇게 분포가 한쪽으로 치우친 정도를 통계학에서는 **왜도(skewness)**라 부른다.
+
+::: {.callout-note}
+## 왜도(Skewness)란
+
+- **왜도 = 0**: 좌우 대칭 (평균 = 중앙값). 정규분포가 대표적.
+- **왜도 > 0 (오른쪽 꼬리)**: 소수의 큰 값이 오른쪽으로 길게 늘어짐. 평균이 중앙값보다 커진다. **소득, 집값, 자산**이 대표적.
+- **왜도 < 0 (왼쪽 꼬리)**: 소수의 작은 값이 왼쪽으로 길게 늘어짐. 평균이 중앙값보다 작아진다. 예: 시험이 너무 쉬워서 대부분 고득점, 일부만 크게 낮은 점수를 받는 경우.
+
+소득처럼 왜도가 큰 데이터에서는, **평균이 대표값 역할을 제대로 하지 못한다.**
+:::
+
+## 가상의 소득 5천여 명을 시뮬레이션해보면
+
+```{python}
+#| echo: false
+#| fig-cap: "가상 직장인 5,000여 명의 연봉 분포. 대부분은 2,000만~5,000만 원 사이에 몰려 있지만, 소수의 고소득층이 오른쪽으로 아주 길게 꼬리를 늘어뜨린다. 그 꼬리가 평균을 중앙값보다 훨씬 오른쪽으로 끌어올린다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(5)
+n = 5000
+mu, sigma = np.log(3500), 0.45
+income = rng.lognormal(mu, sigma, n)
+extra = rng.lognormal(np.log(15000), 0.5, int(n * 0.01))
+income = np.concatenate([income, extra])
+
+mean_income = income.mean()
+median_income = np.median(income)
+pct_below_mean = (income < mean_income).mean() * 100
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+ax.hist(income[income < 15000], bins=40, color="#1e3a2f", alpha=0.8, edgecolor="white")
+ax.axvline(median_income, color="#666", lw=2, linestyle="--")
+ax.axvline(mean_income, color="#a8790a", lw=2, linestyle="--")
+ax.annotate(f"Median: {median_income:,.0f} (×10K KRW)", xy=(median_income, ax.get_ylim()[1]*0.85),
+            xytext=(median_income - 8000, ax.get_ylim()[1]*0.85), fontsize=9.5, color="#666")
+ax.annotate(f"Mean: {mean_income:,.0f} (×10K KRW)", xy=(mean_income, ax.get_ylim()[1]*0.7),
+            xytext=(mean_income + 500, ax.get_ylim()[1]*0.7), fontsize=9.5, color="#a8790a")
+ax.set_xlabel("Annual income (10K KRW)")
+ax.set_ylabel("Number of people")
+ax.set_title("Right-skewed income: a long tail pulls the mean above the median", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 시뮬레이션에서 중앙값은 약 **3,600만 원**, 평균은 약 **4,072만 원**이다. 평균이 중앙값보다 470만 원 가까이 높다. 이유는 단순하다. 아주 소수의 고소득층(그래프 오른쪽 끝, 이 그림에는 다 담기지도 않는 억대 연봉자들)이 평균을 강하게 끌어올리기 때문이다.
+
+## "평균 이하"인 사람이 다수가 되는 이유
+
+```{python}
+#| echo: false
+#| fig-cap: "'평균보다 적게 버는 사람'의 비율. 중앙값 기준으로는 정확히 50%지만, 평균 기준으로는 61%나 된다 — 소수의 고소득층이 평균 자체를 밀어올렸기 때문이다."
+labels = ["Below the median\n(by definition)", "Below the mean\n(actual %)"]
+values = [50.0, pct_below_mean]
+
+fig, ax = plt.subplots(figsize=(6, 3.8))
+bars = ax.bar(labels, values, color=["#1e3a2f", "#a8790a"], width=0.5)
+for b, v in zip(bars, values):
+    ax.annotate(f"{v:.0f}%", xy=(b.get_x()+b.get_width()/2, v),
+                xytext=(0, 5), textcoords="offset points", ha="center", fontsize=11)
+ax.set_ylabel("Share of people (%)")
+ax.set_ylim(0, 80)
+ax.set_title("Most people earn less than 'the average'", fontsize=11, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+중앙값은 정의상 항상 정확히 절반(50%)을 가른다. 그러나 평균은 그렇지 않다. 이 시뮬레이션에서는 **전체의 61%가 평균보다 적게 번다.** "평균 이하"라는 말은, 왜도가 큰 데이터에서는 사실 다수파에 속한다는 뜻이다.
+
+## 그래서 통계청도 중앙값을 함께 발표한다
+
+::: {.callout-warning}
+## 평균 vs 중앙값, 언제 무엇을 봐야 할까
+
+| 상황 | 권장 대표값 | 이유 |
+|------|------------|------|
+| 소득, 자산, 집값 | **중앙값** | 극소수 초고소득층이 평균을 크게 왜곡 |
+| 키, 몸무게, 시험 점수(정상 범위) | 평균 | 좌우 대칭에 가까움 |
+| 회사의 "평균 연봉" 발표 | 중앙값 + 평균 함께 | 경영진 몇 명의 연봉이 평균을 부풀릴 수 있음 |
+| 부동산 "평균 집값" | 중앙값 | 초고가 매물 소수가 평균을 밀어올림 |
+
+실제로 통계청과 OECD의 소득 통계는 대부분 평균이 아니라 **중위소득(median income)**을 기준으로 발표된다. 정책의 기준(기초생활보장, 건강보험료 등)도 대부분 중위소득이다.
+:::
+
+## 결론: 평균 하나만 보고 나를 비교하지 말자
+
+::: {.callout-tip}
+## 소득 관련 통계를 읽는 법
+
+1. **"평균 연봉"이라는 단어를 보면 곧바로 "중앙값은 얼마일까"를 떠올린다.**
+2. **평균과 중앙값의 차이가 클수록, 그 데이터는 왜도가 크다는 뜻이다.** 즉 소수가 전체 그림을 좌우하고 있다.
+3. **내가 "평균 이하"라고 해서 내가 "못 버는 것"은 아니다.** 오히려 그 편이 다수일 가능성이 높다.
+4. **회사나 통계 발표를 볼 때, 평균만 제시하고 중앙값을 감춘다면 의심해봐야 한다.**
+:::
+
+평균은 계산하기 쉽고 익숙한 숫자지만, 꼬리가 긴 데이터 앞에서는 힘을 잃는다. 연봉 이야기를 할 때 우리에게 필요한 숫자는 평균이 아니라, 절반의 절반을 정확히 가르는 **중앙값**이다.
