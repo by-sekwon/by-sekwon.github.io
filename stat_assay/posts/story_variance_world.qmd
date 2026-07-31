@@ -1,0 +1,132 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "같은 평균, 전혀 다른 세상"
+author: "권세혁"
+date: "2026-07-31"
+categories: [통계기초, 기술통계]
+description: "연평균 수익률이 똑같은 두 펀드, 15년 뒤 결과도 똑같을까? 평균 뒤에 숨어 있는 '분산'이라는 숫자를 들여다봅니다."
+---
+
+## 두 펀드, 똑같이 "연평균 수익률 7%"
+
+은행 창구에서 펀드 두 개를 추천받았다. A펀드도 연평균 수익률 7%, B펀드도 연평균 수익률 7%. 안내 자료의 숫자만 보면 완전히 같은 상품처럼 보인다. 둘 중 아무거나 골라도 상관없을까?
+
+## 평균은 '가운데'만 말해줄 뿐이다
+
+평균은 데이터를 대표하는 값이지만, **데이터가 평균 주위에 얼마나 흩어져 있는지는 전혀 알려주지 않는다.** 이 흩어진 정도를 재는 것이 바로 **분산(variance)**과 **표준편차(standard deviation)**다.
+
+::: {.callout-note}
+## 분산과 표준편차
+
+$$\text{분산} = \frac{1}{n}\sum_{i=1}^{n}(x_i - \bar{x})^2, \qquad \text{표준편차} = \sqrt{\text{분산}}$$
+
+각 값이 평균에서 얼마나 떨어져 있는지를 제곱해서 평균 낸 것이 분산이다. 표준편차는 그 값을 다시 제곱근으로 되돌려, 원래 데이터와 같은 단위로 "흩어진 정도"를 나타낸다.
+
+**표준편차가 작다 = 평균 근처에 옹기종기 모여 있다. 표준편차가 크다 = 평균에서 멀리, 넓게 흩어져 있다.**
+:::
+
+## 15년간의 수익률을 나란히 보면
+
+```{python}
+#| echo: false
+#| fig-cap: "두 펀드의 15년간 연도별 수익률. 산술평균은 둘 다 정확히 7.0%(주황 점선)지만, A펀드(초록)는 평균 근처에 얌전히 모여 있고 B펀드(회색)는 -8%에서 +36%까지 요동친다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(3)
+years = 15
+a = rng.normal(7, 1.5, years)
+b = rng.normal(7, 18, years)
+a = a - a.mean() + 7
+b = b - b.mean() + 7
+
+x = np.arange(1, years + 1)
+fig, ax = plt.subplots(figsize=(7.2, 3.8))
+ax.plot(x, a, marker="o", color="#1e3a2f", lw=1.8, label="Fund A (low variance)")
+ax.plot(x, b, marker="o", color="#8a8a8a", lw=1.8, label="Fund B (high variance)")
+ax.axhline(7, color="#a8790a", lw=2, linestyle="--")
+ax.annotate("Both average 7.0%", xy=(years * 0.55, 7), xytext=(years * 0.4, 16),
+            fontsize=9.5, color="#a8790a", arrowprops=dict(arrowstyle="->", color="#a8790a"))
+ax.set_xlabel("Year")
+ax.set_ylabel("Annual return (%)")
+ax.set_title("Same average, very different year-to-year experience", fontsize=10.5, color="#1e3a2f")
+ax.legend(frameon=False, loc="lower right")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| echo: false
+sd_a = a.std(ddof=1)
+sd_b = b.std(ddof=1)
+```
+
+A펀드의 표준편차는 약 `{python} f"{sd_a:.1f}"`%p, B펀드는 약 `{python} f"{sd_b:.1f}"`%p다. 평균은 완전히 같지만, 흩어진 정도는 6배 넘게 차이난다. A펀드에 넣어두면 어느 해든 "대략 7% 안팎이겠거니" 예상할 수 있지만, B펀드는 어느 해에 –8%가 될지, +36%가 될지 짐작하기 어렵다.
+
+## 같은 평균인데 결과는 왜 달라질까 — 복리의 배신
+
+여기서 끝이 아니다. "평균이 같으니 15년 뒤 자산도 비슷하겠지"라고 생각하면 오산이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "100만 원을 투자했을 때 15년간 자산 변화. 두 펀드의 산술평균 수익률은 똑같이 7%였지만, 변동성이 큰 B펀드는 손실이 난 해의 타격을 만회하지 못해 최종 자산이 더 적다."
+wealth_a = 100 * np.cumprod(1 + a / 100)
+wealth_b = 100 * np.cumprod(1 + b / 100)
+wealth_a = np.concatenate([[100], wealth_a])
+wealth_b = np.concatenate([[100], wealth_b])
+xw = np.arange(0, years + 1)
+
+fig, ax = plt.subplots(figsize=(7.2, 3.8))
+ax.plot(xw, wealth_a, color="#1e3a2f", lw=2.2, label="Fund A (low variance)")
+ax.plot(xw, wealth_b, color="#8a8a8a", lw=2.2, label="Fund B (high variance)")
+ax.scatter([years], [wealth_a[-1]], color="#1e3a2f", zorder=5, s=45)
+ax.scatter([years], [wealth_b[-1]], color="#8a8a8a", zorder=5, s=45)
+ax.annotate(f"{wealth_a[-1]:.0f}", xy=(years, wealth_a[-1]), xytext=(years - 2.3, wealth_a[-1] + 12),
+            fontsize=10, color="#1e3a2f")
+ax.annotate(f"{wealth_b[-1]:.0f}", xy=(years, wealth_b[-1]), xytext=(years - 2.3, wealth_b[-1] - 22),
+            fontsize=10, color="#666")
+ax.set_xlabel("Year")
+ax.set_ylabel("Value of 100 (10K KRW)")
+ax.set_title("Identical arithmetic mean, different final wealth", fontsize=10.5, color="#1e3a2f")
+ax.legend(frameon=False, loc="upper left")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+#| echo: false
+geo_a = (wealth_a[-1] / 100) ** (1 / years) - 1
+geo_b = (wealth_b[-1] / 100) ** (1 / years) - 1
+```
+
+100만 원을 넣었다면, A펀드는 15년 뒤 약 `{python} f"{wealth_a[-1]:.0f}"`만 원, B펀드는 약 `{python} f"{wealth_b[-1]:.0f}"`만 원이 된다. **분명 "연평균 7%"로 안내받은 두 상품인데, 실제로 손에 쥐는 돈은 다르다.**
+
+::: {.callout-warning}
+## 산술평균과 기하평균은 다르다
+
+안내 자료의 "연평균 수익률 7%"는 대개 **산술평균**이다. 그러나 실제로 자산이 불어나는 속도를 결정하는 것은 **기하평균(복리수익률)**이다.
+
+- A펀드: 산술평균 7.0% → 기하평균 약 `{python} f"{geo_a*100:.1f}"`%
+- B펀드: 산술평균 7.0% → 기하평균 약 `{python} f"{geo_b*100:.1f}"`%
+
+변동성이 클수록 산술평균과 기하평균의 차이는 벌어진다. 대략 **기하평균 ≈ 산술평균 − 분산/2**로 근사된다. 손실 난 해의 타격이 이후 이득으로도 완전히 메워지지 않기 때문이다 (–20%를 만회하려면 +20%가 아니라 +25%가 필요하다).
+
+**분산이 클수록, 같은 산술평균이라도 실제로 불어나는 돈은 더 적다.**
+:::
+
+## 결론: "평균"만 보고 상품을 고르지 말자
+
+::: {.callout-tip}
+## 평균 뒤에 분산을 함께 보는 법
+
+1. **"연평균 수익률"이라는 말을 들으면 "변동성(표준편차)은 얼마인가"를 함께 묻는다.**
+2. **평균이 같다면 분산이 작은 쪽이 더 안정적으로 그 평균에 가깝다.**
+3. **변동성이 큰 자산은 산술평균보다 실제 복리 성과가 낮아진다는 점을 기억한다.**
+4. **평균 하나로 요약된 숫자는 항상 "이 평균이 얼마나 흩어진 데이터에서 나왔는가"와 함께 읽어야 한다.**
+:::
+
+두 펀드는 안내장 위에서는 똑같은 "7%"였다. 그러나 분산이라는 두 번째 숫자를 더하는 순간, 완전히 다른 두 개의 세상이 드러난다. 평균은 이야기의 절반일 뿐이다.
