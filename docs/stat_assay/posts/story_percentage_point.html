@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-06-03">
-<meta name="description" content="신호등 앞, 엘리베이터 앞에서 왜 항상 내가 더 오래 기다리는 것 같을까? 체감 시간의 통계적 비밀을 들여다봅니다.">
+<meta name="dcterms.date" content="2026-08-04">
+<meta name="description" content="여론조사 지지율이 30%에서 33%로 바뀌었다. 이건 3% 오른 걸까, 3%포인트 오른 걸까? 두 표현이 얼마나 다른 인상을 주는지 살펴봅니다.">
 
-<title>대기 시간의 비밀 – 권세혁HOME</title>
+<title>(비율과 백분율의 함정) 지지율 3% 상승인가, 3%포인트 상승인가? – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -71,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -138,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_waiting.html">📖 대기 시간의 비밀</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_percentage_point.html">📖 (비율과 백분율의 함정) 지지율 3% 상승인가, 3%포인트 상승인가?</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -159,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_percentage_point.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_percentage_point.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (비율과 백분율의 함정) 지지율 3% 상승인가, 3%포인트 상승인가?</span></a>
   </div>
 </li>
@@ -207,7 +236,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_waiting.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_waiting.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 대기 시간의 비밀</span></a>
   </div>
 </li>
@@ -239,12 +268,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#왜-나만-항상-오래-기다리는-것-같을까" id="toc-왜-나만-항상-오래-기다리는-것-같을까" class="nav-link active" data-scroll-target="#왜-나만-항상-오래-기다리는-것-같을까">왜 나만 항상 오래 기다리는 것 같을까?</a></li>
-  <li><a href="#검사-역설-항상-긴-쪽에-끼어드는-이유" id="toc-검사-역설-항상-긴-쪽에-끼어드는-이유" class="nav-link" data-scroll-target="#검사-역설-항상-긴-쪽에-끼어드는-이유">검사 역설: 항상 긴 쪽에 끼어드는 이유</a></li>
-  <li><a href="#신호등-내가-도착한-시점의-불운" id="toc-신호등-내가-도착한-시점의-불운" class="nav-link" data-scroll-target="#신호등-내가-도착한-시점의-불운">신호등: 내가 도착한 시점의 불운</a></li>
-  <li><a href="#엘리베이터-항상-반대-방향으로-가는-이유" id="toc-엘리베이터-항상-반대-방향으로-가는-이유" class="nav-link" data-scroll-target="#엘리베이터-항상-반대-방향으로-가는-이유">엘리베이터: 항상 반대 방향으로 가는 이유</a></li>
-  <li><a href="#체감-시간은-실제-시간이-아니다" id="toc-체감-시간은-실제-시간이-아니다" class="nav-link" data-scroll-target="#체감-시간은-실제-시간이-아니다">체감 시간은 실제 시간이 아니다</a></li>
-  <li><a href="#결론-기다림은-불공평하지-않다" id="toc-결론-기다림은-불공평하지-않다" class="nav-link" data-scroll-target="#결론-기다림은-불공평하지-않다">결론: 기다림은 불공평하지 않다</a></li>
+  <li><a href="#지지율-3-상승이라는-헤드라인" id="toc-지지율-3-상승이라는-헤드라인" class="nav-link active" data-scroll-target="#지지율-3-상승이라는-헤드라인">“지지율 3% 상승”이라는 헤드라인</a></li>
+  <li><a href="#와-p는-전혀-다른-숫자다" id="toc-와-p는-전혀-다른-숫자다" class="nav-link" data-scroll-target="#와-p는-전혀-다른-숫자다">%와 %p는 전혀 다른 숫자다</a></li>
+  <li><a href="#기준값이-작을수록-두-숫자의-격차는-더-벌어진다" id="toc-기준값이-작을수록-두-숫자의-격차는-더-벌어진다" class="nav-link" data-scroll-target="#기준값이-작을수록-두-숫자의-격차는-더-벌어진다">기준값이 작을수록 두 숫자의 격차는 더 벌어진다</a></li>
+  <li><a href="#뉴스-헤드라인에서-자주-벌어지는-일" id="toc-뉴스-헤드라인에서-자주-벌어지는-일" class="nav-link" data-scroll-target="#뉴스-헤드라인에서-자주-벌어지는-일">뉴스 헤드라인에서 자주 벌어지는 일</a></li>
+  <li><a href="#더-깊이-이-3포인트-통계적으로-진짜-차이일까" id="toc-더-깊이-이-3포인트-통계적으로-진짜-차이일까" class="nav-link" data-scroll-target="#더-깊이-이-3포인트-통계적으로-진짜-차이일까">더 깊이: 이 3%포인트, 통계적으로 진짜 차이일까?</a></li>
+  <li><a href="#결론-어느-쪽인지-항상-확인하자" id="toc-결론-어느-쪽인지-항상-확인하자" class="nav-link" data-scroll-target="#결론-어느-쪽인지-항상-확인하자">결론: 어느 쪽인지 항상 확인하자</a></li>
   </ul>
 </nav>
     </div>
@@ -253,16 +282,16 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">대기 시간의 비밀</h1>
+<h1 class="title">(비율과 백분율의 함정) 지지율 3% 상승인가, 3%포인트 상승인가?</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
-    <div class="quarto-category">확률</div>
+    <div class="quarto-category">기술통계</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    신호등 앞, 엘리베이터 앞에서 왜 항상 내가 더 오래 기다리는 것 같을까? 체감 시간의 통계적 비밀을 들여다봅니다.
+    여론조사 지지율이 30%에서 33%로 바뀌었다. 이건 3% 오른 걸까, 3%포인트 오른 걸까? 두 표현이 얼마나 다른 인상을 주는지 살펴봅니다.
   </div>
 </div>
 
@@ -279,7 +308,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 3, 2026</p>
+      <p class="date">August 4, 2026</p>
     </div>
   </div>
   
@@ -291,200 +320,130 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="왜-나만-항상-오래-기다리는-것-같을까" class="level2">
-<h2 class="anchored" data-anchor-id="왜-나만-항상-오래-기다리는-것-같을까">왜 나만 항상 오래 기다리는 것 같을까?</h2>
-<p>신호등 앞에 섰다. 빨간불이다. 언제 바뀔지 모른다. 1분이 2분처럼 느껴진다. 옆 차선은 벌써 출발했다.</p>
-<p>엘리베이터 버튼을 눌렀다. 한참을 기다렸다. 드디어 문이 열렸는데, 안에 사람이 가득하다. 내가 탄 뒤 바로 다음 층에서 멈춘다.</p>
-<p>이 불쾌한 경험은 운이 나쁜 것일까? 아니면 통계적으로 피할 수 없는 구조일까?</p>
+<section id="지지율-3-상승이라는-헤드라인" class="level2">
+<h2 class="anchored" data-anchor-id="지지율-3-상승이라는-헤드라인">“지지율 3% 상승”이라는 헤드라인</h2>
+<p>여론조사 결과가 발표됐다. 지난달 지지율 30%, 이번 달 33%. 어느 신문은 “지지율 3% 상승”이라 쓰고, 다른 신문은 “지지율 3%포인트 상승”이라 쓴다. 같은 조사 결과를 두고 왜 표현이 다를까? 그리고 둘 다 맞는 말일까?</p>
 </section>
-<section id="검사-역설-항상-긴-쪽에-끼어드는-이유" class="level2">
-<h2 class="anchored" data-anchor-id="검사-역설-항상-긴-쪽에-끼어드는-이유">검사 역설: 항상 긴 쪽에 끼어드는 이유</h2>
-<p>버스를 기다릴 때를 생각해 보자. 버스가 평균 10분 간격으로 온다고 해도, 내가 체감하는 평균 대기 시간은 10분이 아니다.</p>
+<section id="와-p는-전혀-다른-숫자다" class="level2">
+<h2 class="anchored" data-anchor-id="와-p는-전혀-다른-숫자다">%와 %p는 전혀 다른 숫자다</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-검사 역설 (Inspection Paradox)
+퍼센트(%) vs 퍼센트포인트(%p)
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>버스가 불규칙한 간격으로 온다고 가정하자. 어떤 날은 5분 간격, 어떤 날은 15분 간격으로 온다.</p>
-<p>내가 <strong>무작위 시점에 도착</strong>하면, 짧은 간격(5분)보다 긴 간격(15분) 안에 도착할 확률이 3배 높다. 긴 간격은 그만큼 더 넓은 시간대를 차지하기 때문이다.</p>
-<p>결과적으로, 평균 간격이 10분이어도 내가 실제로 경험하는 평균 대기 시간은 <strong>10분보다 길다.</strong></p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>간격 유형</th>
-<th>실제 간격</th>
-<th>내가 이 간격에 도착할 확률</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>짧은 간격</td>
-<td>5분</td>
-<td>25%</td>
-</tr>
-<tr class="even">
-<td>긴 간격</td>
-<td>15분</td>
-<td>75%</td>
-</tr>
-</tbody>
-</table>
-<p>→ 예상 대기 시간 = 평균 간격보다 항상 길게 느껴진다.</p>
+<ul>
+<li><strong>%포인트(%p)</strong>: 두 퍼센트 값의 <strong>단순 차이</strong>. <span class="math inline">\(33\% - 30\% = 3\%p\)</span></li>
+<li><strong>%(상대변화율)</strong>: 원래 값 대비 <strong>얼마나 늘었는지의 비율</strong>. <span class="math inline">\(\dfrac{33-30}{30} \times 100 = 10\%\)</span></li>
+</ul>
+<p>지지율이 30%에서 33%가 된 것은 <strong>3%포인트 상승</strong>이 정확한 표현이다. 반면 “3% 상승”이라고 하면, 원래 지지율(30%)이 3%만큼 늘어난 것, 즉 30.9% 정도가 되어야 맞는 말이 된다. 실제로는 33%가 됐으니 “3% 상승”이 아니라 <strong>“10% 상승”</strong>이라고 해야 정확하다.</p>
 </div>
 </div>
-<div id="548559be" class="cell" data-execution_count="1">
+<p>같은 변화를 놓고 “3%포인트 상승”과 “10% 상승”이라는, 숫자부터 다른 두 표현이 동시에 성립한다. 무엇을 강조하느냐에 따라 완전히 다른 인상을 줄 수 있다.</p>
+<div id="3bfbb94c" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_waiting_files/figure-html/cell-2-output-1.png" width="557" height="355" class="figure-img"></p>
-<figcaption>버스 간격은 평균 10분(5분과 15분이 반반)이지만, 무작위로 도착한 사람이 실제로 속하게 되는 간격은 길이에 비례해 편향된다. 그 결과 ‘내가 경험하는’ 평균 간격은 실제 평균보다 길다.</figcaption>
+<p><img src="story_percentage_point_files/figure-html/cell-2-output-1.png" width="566" height="355" class="figure-img"></p>
+<figcaption>지지율 30%→33%, 동일한 변화를 두 가지 방식으로 표현한 것. %p로 말하면 작아 보이고, %(상대변화율)로 말하면 3배 이상 커 보인다.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>이것이 <strong>검사 역설(Inspection Paradox)</strong>이다. 무작위로 도착한 사람은 평균보다 긴 간격에 더 자주 끼어든다. 버스가 늦는 게 아니라, 통계적으로 내가 긴 쪽에 들어갈 가능성이 더 높은 것이다.</p>
 </section>
-<section id="신호등-내가-도착한-시점의-불운" class="level2">
-<h2 class="anchored" data-anchor-id="신호등-내가-도착한-시점의-불운">신호등: 내가 도착한 시점의 불운</h2>
-<p>신호등 앞에서 느끼는 억울함도 비슷한 원리다. 빨간불로 바뀌는 순간 도착한 사람과, 바뀌기 직전에 도착한 사람은 같은 주기를 기다리지만 체감이 전혀 다르다.</p>
+<section id="기준값이-작을수록-두-숫자의-격차는-더-벌어진다" class="level2">
+<h2 class="anchored" data-anchor-id="기준값이-작을수록-두-숫자의-격차는-더-벌어진다">기준값이 작을수록 두 숫자의 격차는 더 벌어진다</h2>
+<p>이 격차는 원래 값(기준값)이 작을수록 훨씬 심해진다. 똑같이 “3%포인트 상승”이어도, 지지율이 40%에서 43%가 된 경우와 3%에서 6%가 된 경우는 상대변화율이 완전히 다르다.</p>
+<div id="21cf0d6d" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_percentage_point_files/figure-html/cell-3-output-1.png" width="662" height="355" class="figure-img"></p>
+<figcaption>똑같이 +3%포인트가 올라도, 시작점(기준값)이 작을수록 상대변화율(%)은 폭발적으로 커진다. 기준값 3%에서 3%p 오르면 상대적으로는 100% 상승이다.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>지지율이 60%에서 63%가 되면 상대적으로는 겨우 5% 상승이지만, 3%에서 6%가 되면 상대적으로는 무려 100% 상승, 즉 지지율이 “두 배”가 된 셈이다. <strong>똑같은 +3%포인트인데, 어디서 출발했느냐에 따라 “상대적으로” 얼마나 커 보이는지는 완전히 달라진다.</strong></p>
+</section>
+<section id="뉴스-헤드라인에서-자주-벌어지는-일" class="level2">
+<h2 class="anchored" data-anchor-id="뉴스-헤드라인에서-자주-벌어지는-일">뉴스 헤드라인에서 자주 벌어지는 일</h2>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-신호등 대기의 통계적 구조
+같은 변화, 다른 헤드라인
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>신호 주기가 90초(빨간불 60초 + 파란불 30초)인 교차로를 예로 들자.</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 23%">
+<col style="width: 51%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>도착 시점</th>
-<th>실제 대기 시간</th>
-<th>체감</th>
+<th>실제 변화</th>
+<th style="text-align: center;">%p로 쓰면</th>
+<th style="text-align: center;">%(상대변화율)로 쓰면</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>빨간불로 바뀌자마자 도착</td>
-<td>60초</td>
-<td>“왜 이렇게 길어?”</td>
+<td>실업률 4% → 5%</td>
+<td style="text-align: center;">“실업률 1%p 상승”</td>
+<td style="text-align: center;">“실업률 <strong>25%</strong> 급증”</td>
 </tr>
 <tr class="even">
-<td>빨간불 끝나기 5초 전 도착</td>
-<td>5초</td>
-<td>“운 좋다!”</td>
+<td>기준금리 2% → 3%</td>
+<td style="text-align: center;">“금리 1%p 인상”</td>
+<td style="text-align: center;">“금리 <strong>50%</strong> 인상”</td>
 </tr>
 <tr class="odd">
-<td><strong>무작위 도착 시 평균</strong></td>
-<td><strong>30초</strong></td>
-<td>—</td>
+<td>신용카드 연체율 1% → 1.5%</td>
+<td style="text-align: center;">“연체율 0.5%p 상승”</td>
+<td style="text-align: center;">“연체율 <strong>50%</strong> 급증”</td>
 </tr>
 </tbody>
 </table>
-<p>무작위로 도착했을 때 기대 대기 시간은 30초지만, <strong>긴 대기를 경험한 기억이 짧은 대기보다 머릿속에 더 강하게 남는다.</strong> 이것이 “나만 항상 오래 기다린다”는 착각을 만든다.</p>
+<p>셋 다 “틀린 계산”은 아니다. 다만 자극적인 헤드라인을 원한다면 상대변화율(%) 쪽을, 차분한 인상을 원한다면 %p 쪽을 고르는 경향이 있다. <strong>숫자가 작은 지표(실업률, 연체율처럼 한 자릿수 %)일수록 상대변화율은 쉽게 부풀려진다.</strong></p>
 </div>
 </div>
 </section>
-<section id="엘리베이터-항상-반대-방향으로-가는-이유" class="level2">
-<h2 class="anchored" data-anchor-id="엘리베이터-항상-반대-방향으로-가는-이유">엘리베이터: 항상 반대 방향으로 가는 이유</h2>
-<p>빌딩 중간 층에서 엘리베이터를 부른다. 위로 가고 싶은데, 오는 엘리베이터마다 전부 아래로 향한다. 이것도 착각이 아니다.</p>
-<div class="callout callout-style-default callout-caution callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-엘리베이터 역설
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>10층짜리 건물에서 5층에 서 있다고 하자. 엘리베이터가 무작위 위치에 있을 때, 그 엘리베이터가 <strong>위로 이동 중</strong>일 확률은 얼마일까?</p>
-<ul>
-<li>5층 위 공간: 5개 층 (6~10층)</li>
-<li>5층 아래 공간: 4개 층 (1~4층)</li>
-</ul>
-<p>→ 엘리베이터가 아래로 내려올 확률 = 5/(5+4) ≈ <strong>56%</strong></p>
-<p>내가 중간 층보다 위에 있을수록, 올라오는 엘리베이터를 만날 확률이 낮아진다. <strong>꼭대기 층에 가까울수록 내려오는 엘리베이터만 보이는 것은 구조적 필연이다.</strong></p>
-</div>
-</div>
-<div id="b90f532a" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="story_waiting_files/figure-html/cell-3-output-1.png" width="624" height="355" class="figure-img"></p>
-<figcaption>10층 건물의 각 층에서, 무작위 위치의 엘리베이터가 ’내려오는 중’일 확률. 높은 층일수록 내려오는 엘리베이터만 만나는 구조다.</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<section id="더-깊이-이-3포인트-통계적으로-진짜-차이일까" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-이-3포인트-통계적으로-진짜-차이일까">더 깊이: 이 3%포인트, 통계적으로 진짜 차이일까?</h2>
+<p>여기까지는 “3%포인트”와 “10%”라는 <strong>표현</strong>의 차이였다. 그런데 한 가지 질문이 남는다. 지지율이 30%에서 33%로 바뀐 것이, 실제로 여론이 움직인 걸까, 아니면 여론조사 특유의 표본 오차 안에서 우연히 흔들린 걸까?</p>
+<p>이걸 판단하려면 단순한 뺄셈(%p)을 넘어, <strong>두 표본비율의 차이가 통계적으로 유의미한지</strong>를 검정해야 한다. 표본크기가 작으면 3%포인트 정도는 오차범위 안에서 얼마든지 발생할 수 있다.</p>
+<p>이 검정 방법은 강의노트 <a href="../../notes/intro_stat/univariate.html#독립인-두-모집단-비율-차이">〈기초통계 3. 일변량분석 — 독립인 두 모집단 비율 차이〉</a>에서 다룬다. 두 표본비율 <span class="math inline">\(\hat p_1, \hat p_2\)</span>의 차이에 대한 검정통계량과 신뢰구간을 구하는 절차인데, “3%포인트 상승”이 우연인지 실제 변화인지를 가려낼 때 정확히 같은 논리가 쓰인다.</p>
 </section>
-<section id="체감-시간은-실제-시간이-아니다" class="level2">
-<h2 class="anchored" data-anchor-id="체감-시간은-실제-시간이-아니다">체감 시간은 실제 시간이 아니다</h2>
-<p>대기 시간에 대한 연구들은 한 가지를 공통적으로 발견했다. 사람들은 <strong>아무것도 하지 않을 때 시간을 1.36배 길게 느낀다</strong>는 것이다.</p>
-<p>1970년대 뉴욕의 한 고층 건물에서 엘리베이터 대기 불만이 폭주했다. 관리자들이 대기 시간을 줄이려 했지만 구조적으로 불가능했다. 해결책은 엘리베이터 속도를 높이는 것이 아니었다. <strong>거울을 설치하는 것</strong>이었다.</p>
-<p>거울을 설치한 뒤 불만이 급격히 줄었다. 실제 대기 시간은 그대로였다. 바뀐 것은 오직 체감 시간이었다.</p>
+<section id="결론-어느-쪽인지-항상-확인하자" class="level2">
+<h2 class="anchored" data-anchor-id="결론-어느-쪽인지-항상-확인하자">결론: 어느 쪽인지 항상 확인하자</h2>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-대기 시간 착각을 줄이는 방법
+%와 %p를 구분해서 읽는 법
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 40%">
-<col style="width: 40%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>상황</th>
-<th>통계적 사실</th>
-<th>심리적 대처</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>버스가 안 온다</td>
-<td>내가 긴 간격에 도착했을 가능성이 높다</td>
-<td>간격의 불균일성을 이해한다</td>
-</tr>
-<tr class="even">
-<td>신호등이 길다</td>
-<td>내 도착 시점이 불운했을 뿐</td>
-<td>평균적으로는 공평하다</td>
-</tr>
-<tr class="odd">
-<td>엘리베이터가 반대 방향</td>
-<td>내 층 위의 공간이 넓을수록 필연</td>
-<td>구조적 확률로 받아들인다</td>
-</tr>
-<tr class="even">
-<td>줄이 안 줄어든다</td>
-<td>빈 손으로 기다리면 시간이 1.36배 길게 느껴진다</td>
-<td>손을 바쁘게 하면 된다</td>
-</tr>
-</tbody>
-</table>
-<p>대기 시간의 불만 대부분은 <strong>통계적 구조에 대한 무지</strong>와 <strong>체감 시간의 왜곡</strong>에서 비롯된다.</p>
+<ol type="1">
+<li><strong>뉴스에 “%”라는 표현이 나오면 그것이 %p(차이)인지, 상대변화율(%)인지부터 확인한다.</strong></li>
+<li><strong>원래 값이 작은 지표일수록, 상대변화율(%)은 실제 변화보다 훨씬 커 보인다.</strong></li>
+<li><strong>여론조사·금리·실업률처럼 오해가 잦은 지표는 특히 %p로 먼저 확인하는 습관을 들인다.</strong></li>
+<li><strong>직접 계산할 때는 “차이”인지 “비율”인지 스스로도 명확히 구분해서 쓴다.</strong> 두 개념을 섞어 쓰면 나부터도 숫자에 속게 된다.</li>
+</ol>
 </div>
 </div>
-</section>
-<section id="결론-기다림은-불공평하지-않다" class="level2">
-<h2 class="anchored" data-anchor-id="결론-기다림은-불공평하지-않다">결론: 기다림은 불공평하지 않다</h2>
-<p>신호등이 나를 차별하는 것이 아니다. 엘리베이터가 나를 피하는 것도 아니다. 내가 긴 대기 구간에 도착할 확률이 구조적으로 더 높고, 아무것도 하지 않을 때 시간이 실제보다 길게 느껴질 뿐이다.</p>
-<p>통계를 알면 억울함이 줄어든다. 그리고 억울함이 줄어든 만큼, 기다림도 짧아진다.</p>
+<p>“3% 올랐다”는 말과 “3%포인트 올랐다”는 말은, 알파벳 한 글자(p) 차이지만 뜻하는 바는 전혀 다르다. 숫자를 정확히 읽으려면, 그 뒤에 숨은 작은 글자 하나까지 놓치지 말아야 한다.</p>
 
 
 </section>
