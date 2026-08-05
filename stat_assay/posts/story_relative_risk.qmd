@@ -1,0 +1,122 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가?"
+author: "권세혁"
+date: "2026-08-05"
+categories: [통계기초, 기술통계]
+description: "'가공육을 매일 먹으면 대장암 위험이 18% 증가한다'는 보도, 실제로 몇 명에게 어떤 의미일까? 상대위험과 절대위험을 구분해서 읽는 법을 다룹니다."
+---
+
+## "위험이 18% 증가했다"는 보도
+
+몇 해 전, 세계보건기구(WHO) 산하 기관이 "가공육을 매일 일정량 이상 먹으면 대장암 위험이 18% 증가한다"고 발표했다. 다음 날 "소시지가 발암물질"이라는 자극적인 제목의 기사가 쏟아졌다.
+
+18%라는 숫자만 보면 상당히 위협적이다. 그런데 이 18%는 정확히 무엇의 18%일까?
+
+## 상대위험(RR)과 절대위험, 같은 숫자 다른 이야기
+
+역학·의학 통계에서는 이런 위험 비교를 **상대위험도(Relative Risk, RR)**라는 지표로 나타낸다.
+
+$$\text{RR} = \frac{\text{노출군의 발생률}}{\text{비노출군의 발생률}}$$
+
+"위험이 18% 증가했다"는 말은, 가공육을 먹는 집단의 대장암 발생률이 먹지 않는 집단보다 **상대적으로** 18% 더 높다는 뜻이다(RR ≈ 1.18). 이 계산 자체는 틀리지 않았다. 문제는, 이 숫자가 **원래 발생률이 얼마였는지를 전혀 알려주지 않는다**는 점이다.
+
+::: {.callout-note}
+## 절대위험이 함께 필요한 이유
+
+건강 커뮤니케이션 전문가들이 실제로 설명에 사용하는 근사치에 따르면, 대장암의 평생 발생 위험은 대략 **100명 중 6명(6%)** 수준이다. 가공육을 매일 먹는 집단에서는 이 위험이 대략 **100명 중 7명(7%)** 정도로 올라가는 것으로 알려져 있다.
+
+$$\frac{7}{6} \approx 1.17 \;(\text{약 } 17{\sim}18\% \text{ 증가})$$
+
+상대적으로는 18% 증가가 맞지만, **절대적으로는 100명 중 1명이 늘어난 것**이다.
+:::
+
+```{python}
+#| echo: false
+#| fig-cap: "100명 중 대장암에 걸리는 사람 수. 왼쪽(가공육을 먹지 않는 집단)은 6명, 오른쪽(매일 먹는 집단)은 7명. 상대적으로는 '18% 증가'지만, 그림으로 보면 딱 1명의 차이다."
+import numpy as np
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(9, 4.3))
+titles = ["Baseline group\n(6 in 100)", "Processed-meat group\n(7 in 100)"]
+counts = [6, 7]
+
+for ax, title, n_sick in zip(axes, titles, counts):
+    grid = np.zeros((10, 10))
+    idx = np.dstack(np.meshgrid(range(10), range(10))).reshape(-1, 2)
+    sick_idx = idx[:n_sick]
+    for x, y in idx:
+        color = "#a8790a" if any((x == sx and y == sy) for sx, sy in sick_idx) else "#dcdcdc"
+        ax.scatter(x, y, s=180, color=color, edgecolor="white", linewidth=0.8)
+    ax.set_xlim(-0.7, 9.7)
+    ax.set_ylim(-0.7, 9.7)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title(title, fontsize=10.5, color="#1e3a2f")
+
+plt.tight_layout()
+plt.show()
+```
+
+## 진짜 조심해야 할 경우: 원래 위험이 아주 작을 때
+
+상대위험이 위험한 착시를 만드는 진짜 이유는 따로 있다. **원래 발생률이 아주 작은 사건일수록, 상대위험은 쉽게 몇 배씩 뛴다.**
+
+```{python}
+#| echo: false
+#| fig-cap: "세 가지 사례 비교. 왼쪽은 상대위험(몇 배 증가), 오른쪽은 절대위험 증가폭(%p, 로그 눈금)이다. 방사능 노출 사례처럼 절대위험도 함께 큰 경우가 있는가 하면, 희귀질환처럼 상대위험은 커도 절대위험은 거의 0에 가까운 경우도 있다."
+cases = ["Processed meat\n& colon cancer", "Radiation exposure\n(lecture note case)", "A rare disease\nexample"]
+baseline = [6.0, 1.0, 0.01]
+exposed = [7.0, 5.0, 0.03]
+rr = [e / b for e, b in zip(exposed, baseline)]
+abs_diff = [e - b for e, b in zip(exposed, baseline)]
+
+fig, axes = plt.subplots(1, 2, figsize=(9, 3.8))
+
+ax1 = axes[0]
+bars1 = ax1.bar(cases, rr, color="#a8790a", width=0.5)
+for b, v in zip(bars1, rr):
+    ax1.annotate(f"{v:.1f}x", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 4),
+                 textcoords="offset points", ha="center", fontsize=10)
+ax1.set_ylabel("Relative risk (fold)")
+ax1.set_title("Relative risk", fontsize=10.5, color="#1e3a2f")
+ax1.spines[["top", "right"]].set_visible(False)
+plt.setp(ax1.get_xticklabels(), fontsize=8)
+
+ax2 = axes[1]
+bars2 = ax2.bar(cases, abs_diff, color="#1e3a2f", width=0.5)
+ax2.set_yscale("log")
+for b, v in zip(bars2, abs_diff):
+    ax2.annotate(f"+{v:.2f}pp", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 4),
+                 textcoords="offset points", ha="center", fontsize=10)
+ax2.set_ylabel("Absolute risk increase (pp, log scale)")
+ax2.set_title("Absolute risk", fontsize=10.5, color="#1e3a2f")
+ax2.spines[["top", "right"]].set_visible(False)
+plt.setp(ax2.get_xticklabels(), fontsize=8)
+
+plt.tight_layout()
+plt.show()
+```
+
+가운데 "방사능 노출" 사례는 비노출군 발생률 1%, 노출군 발생률 5%로 상대위험(RR)이 5배에 달한다. 이때는 절대위험도 4%포인트나 늘어나므로, 상대위험과 절대위험이 함께 심각하다. 반면 오른쪽 "희귀질환" 사례는 상대위험이 3배(200% 증가)로 커 보이지만, 절대위험은 0.01%에서 0.03%로 늘어난 것뿐이라 실제 영향은 미미하다. **상대위험 하나만 보고는 이 둘을 구분할 수 없다.**
+
+::: {.callout-tip}
+## 더 깊이: 상대위험도와 승산비(오즈비)
+
+이 글에서 다룬 상대위험도(RR)는 통계학에서 역학 연구 지표로 정식으로 다뤄진다. 강의노트 [〈기초통계 4. 교차표 검정 — 상대위험도와 승산비〉](../../notes/intro_stat/crosstab.qmd#상대위험도-relative-risk와-승산비-odds-ratio)에서는 방사능 노출과 질병 발생 사례($\hat\pi_1=0.05,\ \hat\pi_2=0.01,\ RR=5$, 이 글의 두 번째 사례와 같은 예제다)를 통해 RR의 정의와 해석 기준, 그리고 사례-대조군 연구에서 대신 쓰이는 **승산비(Odds Ratio)**와의 차이까지 다룬다. 신문 기사의 "몇 배 위험" 뒤에 있는 정식 통계적 정의가 궁금하다면 참고할 만하다.
+:::
+
+## 결론: "몇 배"라는 말을 들으면 "원래 얼마인데?"
+
+::: {.callout-tip}
+## 위험 관련 보도를 읽는 법
+
+1. **"위험이 N% 증가"라는 표현을 보면, 상대위험인지 절대위험인지부터 구분한다.**
+2. **원래 발생률(기저 위험)이 얼마인지 함께 찾아본다.** 기저 위험이 아주 작다면, 상대위험이 커 보여도 실제 영향은 작을 수 있다.
+3. **반대로 기저 위험이 이미 상당히 크다면, 작아 보이는 상대위험 증가도 무시하면 안 된다.**
+4. **"몇 배" "몇 퍼센트 증가"라는 말은 항상 비교 대상(기준값)과 함께 이해한다.** 이는 지난 글의 %와 %p 구분과도 같은 원리다.
+:::
+
+상대위험은 "위험요인이 있는지 없는지"를 알려주는 유용한 신호다. 그러나 "그래서 나에게 실제로 얼마나 위험한지"를 알려주는 것은 절대위험이다. 뉴스의 자극적인 배수(倍數)에 놀라기 전에, 그 뒤에 있는 원래 숫자부터 찾아보자.

@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-07-30">
-<meta name="description" content="통계청 가계동향조사의 실제 평균 소득 통계를 보면, 왜 ’평균’이라는 숫자가 대다수의 체감과 다를까? 왜도(skewness)라는 개념으로 그 이유를 풀어봅니다.">
+<meta name="dcterms.date" content="2026-08-05">
+<meta name="description" content="’가공육을 매일 먹으면 대장암 위험이 18% 증가한다’는 보도, 실제로 몇 명에게 어떤 의미일까? 상대위험과 절대위험을 구분해서 읽는 법을 다룹니다.">
 
-<title>(숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유 – 권세혁HOME</title>
+<title>(비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가? – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -71,6 +71,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -138,7 +167,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_income_median.html">📖 (숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_relative_risk.html">📖 (비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가?</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -159,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_relative_risk.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_relative_risk.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가?</span></a>
   </div>
 </li>
@@ -183,7 +212,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_income_median.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_income_median.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 (숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</span></a>
   </div>
 </li>
@@ -245,12 +274,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#평균-가구소득-548만-원-내-통장은-왜-그만큼이-아닐까" id="toc-평균-가구소득-548만-원-내-통장은-왜-그만큼이-아닐까" class="nav-link active" data-scroll-target="#평균-가구소득-548만-원-내-통장은-왜-그만큼이-아닐까">“평균 가구소득 548만 원”, 내 통장은 왜 그만큼이 아닐까</a></li>
-  <li><a href="#소득-분포는-한쪽으로-길게-늘어져-있다" id="toc-소득-분포는-한쪽으로-길게-늘어져-있다" class="nav-link" data-scroll-target="#소득-분포는-한쪽으로-길게-늘어져-있다">소득 분포는 한쪽으로 길게 늘어져 있다</a></li>
-  <li><a href="#가상의-소득-5천여-명을-시뮬레이션해보면" id="toc-가상의-소득-5천여-명을-시뮬레이션해보면" class="nav-link" data-scroll-target="#가상의-소득-5천여-명을-시뮬레이션해보면">가상의 소득 5천여 명을 시뮬레이션해보면</a></li>
-  <li><a href="#평균-이하인-사람이-다수가-되는-이유" id="toc-평균-이하인-사람이-다수가-되는-이유" class="nav-link" data-scroll-target="#평균-이하인-사람이-다수가-되는-이유">“평균 이하”인 사람이 다수가 되는 이유</a></li>
-  <li><a href="#중위소득이라는-이름의-서로-다른-두-숫자" id="toc-중위소득이라는-이름의-서로-다른-두-숫자" class="nav-link" data-scroll-target="#중위소득이라는-이름의-서로-다른-두-숫자">“중위소득”이라는 이름의 서로 다른 두 숫자</a></li>
-  <li><a href="#결론-평균-하나만-보고-나를-비교하지-말자" id="toc-결론-평균-하나만-보고-나를-비교하지-말자" class="nav-link" data-scroll-target="#결론-평균-하나만-보고-나를-비교하지-말자">결론: 평균 하나만 보고 나를 비교하지 말자</a></li>
+  <li><a href="#위험이-18-증가했다는-보도" id="toc-위험이-18-증가했다는-보도" class="nav-link active" data-scroll-target="#위험이-18-증가했다는-보도">“위험이 18% 증가했다”는 보도</a></li>
+  <li><a href="#상대위험rr과-절대위험-같은-숫자-다른-이야기" id="toc-상대위험rr과-절대위험-같은-숫자-다른-이야기" class="nav-link" data-scroll-target="#상대위험rr과-절대위험-같은-숫자-다른-이야기">상대위험(RR)과 절대위험, 같은 숫자 다른 이야기</a></li>
+  <li><a href="#진짜-조심해야-할-경우-원래-위험이-아주-작을-때" id="toc-진짜-조심해야-할-경우-원래-위험이-아주-작을-때" class="nav-link" data-scroll-target="#진짜-조심해야-할-경우-원래-위험이-아주-작을-때">진짜 조심해야 할 경우: 원래 위험이 아주 작을 때</a></li>
+  <li><a href="#결론-몇-배라는-말을-들으면-원래-얼마인데" id="toc-결론-몇-배라는-말을-들으면-원래-얼마인데" class="nav-link" data-scroll-target="#결론-몇-배라는-말을-들으면-원래-얼마인데">결론: “몇 배”라는 말을 들으면 “원래 얼마인데?”</a></li>
   </ul>
 </nav>
     </div>
@@ -259,7 +286,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">(숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</h1>
+<h1 class="title">(비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가?</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
     <div class="quarto-category">기술통계</div>
@@ -268,7 +295,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    통계청 가계동향조사의 실제 평균 소득 통계를 보면, 왜 ’평균’이라는 숫자가 대다수의 체감과 다를까? 왜도(skewness)라는 개념으로 그 이유를 풀어봅니다.
+    ’가공육을 매일 먹으면 대장암 위험이 18% 증가한다’는 보도, 실제로 몇 명에게 어떤 의미일까? 상대위험과 절대위험을 구분해서 읽는 법을 다룹니다.
   </div>
 </div>
 
@@ -285,7 +312,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 30, 2026</p>
+      <p class="date">August 5, 2026</p>
     </div>
   </div>
   
@@ -297,166 +324,91 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="평균-가구소득-548만-원-내-통장은-왜-그만큼이-아닐까" class="level2">
-<h2 class="anchored" data-anchor-id="평균-가구소득-548만-원-내-통장은-왜-그만큼이-아닐까">“평균 가구소득 548만 원”, 내 통장은 왜 그만큼이 아닐까</h2>
-<p>통계청 KOSIS 가계동향조사 최신 자료(2026년 1/4분기)를 보면, 전체가구의 월평균 소득은 <strong>5,480,864원</strong>이다. 그런데 표를 조금만 더 들여다보면 눈에 띄는 격차가 보인다.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>구분</th>
-<th style="text-align: center;">전체가구</th>
-<th style="text-align: center;">근로자가구</th>
-<th style="text-align: center;">근로자외가구</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>월평균 소득</td>
-<td style="text-align: center;">5,480,864원</td>
-<td style="text-align: center;">6,454,647원</td>
-<td style="text-align: center;">4,086,348원</td>
-</tr>
-<tr class="even">
-<td>가구분포</td>
-<td style="text-align: center;">100%</td>
-<td style="text-align: center;">58.9%</td>
-<td style="text-align: center;">41.1%</td>
-</tr>
-</tbody>
-</table>
-<p><em>(출처: 통계청 KOSIS, 가계동향조사, 2026년 1/4분기)</em></p>
-<p>월급을 받는 근로자가구(645만 원)와 자영업·은퇴가구 등 근로자외가구(409만 원)의 평균은 236만 원 넘게 차이가 난다. “전체가구 평균 548만 원”이라는 숫자 하나는, 성격이 전혀 다른 이 두 집단을 한데 뭉뚱그린 결과다.</p>
-<p>평균은 이렇게 <strong>서로 다른 집단이 섞여 있을 때</strong>도, <strong>같은 집단 안에서 소수가 유난히 많이 벌 때</strong>도 왜곡될 수 있다. 이번 글에서는 후자, 즉 한 집단 안에서 소수의 고소득자가 평균 자체를 얼마나 끌어올릴 수 있는지를 살펴본다.</p>
+<section id="위험이-18-증가했다는-보도" class="level2">
+<h2 class="anchored" data-anchor-id="위험이-18-증가했다는-보도">“위험이 18% 증가했다”는 보도</h2>
+<p>몇 해 전, 세계보건기구(WHO) 산하 기관이 “가공육을 매일 일정량 이상 먹으면 대장암 위험이 18% 증가한다”고 발표했다. 다음 날 “소시지가 발암물질”이라는 자극적인 제목의 기사가 쏟아졌다.</p>
+<p>18%라는 숫자만 보면 상당히 위협적이다. 그런데 이 18%는 정확히 무엇의 18%일까?</p>
 </section>
-<section id="소득-분포는-한쪽으로-길게-늘어져-있다" class="level2">
-<h2 class="anchored" data-anchor-id="소득-분포는-한쪽으로-길게-늘어져-있다">소득 분포는 한쪽으로 길게 늘어져 있다</h2>
-<p>키나 시험 점수처럼 좌우가 대칭인 데이터라면 평균 근처에 절반, 그 위아래로 사람들이 고르게 퍼져 있다. 그러나 소득은 다르다. 대다수는 중간 어딘가에 몰려 있고, 극소수의 최상위 소득자가 아주 멀리, 아주 길게 꼬리를 늘어뜨린다.</p>
-<p>이렇게 분포가 한쪽으로 치우친 정도를 통계학에서는 <strong>왜도(skewness)</strong>라 부른다.</p>
+<section id="상대위험rr과-절대위험-같은-숫자-다른-이야기" class="level2">
+<h2 class="anchored" data-anchor-id="상대위험rr과-절대위험-같은-숫자-다른-이야기">상대위험(RR)과 절대위험, 같은 숫자 다른 이야기</h2>
+<p>역학·의학 통계에서는 이런 위험 비교를 <strong>상대위험도(Relative Risk, RR)</strong>라는 지표로 나타낸다.</p>
+<p><span class="math display">\[\text{RR} = \frac{\text{노출군의 발생률}}{\text{비노출군의 발생률}}\]</span></p>
+<p>“위험이 18% 증가했다”는 말은, 가공육을 먹는 집단의 대장암 발생률이 먹지 않는 집단보다 <strong>상대적으로</strong> 18% 더 높다는 뜻이다(RR ≈ 1.18). 이 계산 자체는 틀리지 않았다. 문제는, 이 숫자가 <strong>원래 발생률이 얼마였는지를 전혀 알려주지 않는다</strong>는 점이다.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-왜도(Skewness)란
+절대위험이 함께 필요한 이유
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li><strong>왜도 = 0</strong>: 좌우 대칭 (평균 = 중앙값). 정규분포가 대표적.</li>
-<li><strong>왜도 &gt; 0 (오른쪽 꼬리)</strong>: 소수의 큰 값이 오른쪽으로 길게 늘어짐. 평균이 중앙값보다 커진다. <strong>소득, 집값, 자산</strong>이 대표적.</li>
-<li><strong>왜도 &lt; 0 (왼쪽 꼬리)</strong>: 소수의 작은 값이 왼쪽으로 길게 늘어짐. 평균이 중앙값보다 작아진다. 예: 시험이 너무 쉬워서 대부분 고득점, 일부만 크게 낮은 점수를 받는 경우.</li>
-</ul>
-<p>소득처럼 왜도가 큰 데이터에서는, <strong>평균이 대표값 역할을 제대로 하지 못한다.</strong></p>
+<p>건강 커뮤니케이션 전문가들이 실제로 설명에 사용하는 근사치에 따르면, 대장암의 평생 발생 위험은 대략 <strong>100명 중 6명(6%)</strong> 수준이다. 가공육을 매일 먹는 집단에서는 이 위험이 대략 <strong>100명 중 7명(7%)</strong> 정도로 올라가는 것으로 알려져 있다.</p>
+<p><span class="math display">\[\frac{7}{6} \approx 1.17 \;(\text{약 } 17{\sim}18\% \text{ 증가})\]</span></p>
+<p>상대적으로는 18% 증가가 맞지만, <strong>절대적으로는 100명 중 1명이 늘어난 것</strong>이다.</p>
 </div>
 </div>
-</section>
-<section id="가상의-소득-5천여-명을-시뮬레이션해보면" class="level2">
-<h2 class="anchored" data-anchor-id="가상의-소득-5천여-명을-시뮬레이션해보면">가상의 소득 5천여 명을 시뮬레이션해보면</h2>
-<blockquote class="blockquote">
-<p>아래 분포는 통계청 실제 자료가 아니라, 왜도가 큰 소득 데이터에서 평균이 어떻게 왜곡되는지 보여주기 위해 만든 <strong>가상의 예시</strong>다. 개인별 근로소득처럼 일부 초고소득자가 존재하는 데이터를 가정해 시뮬레이션했다.</p>
-</blockquote>
-<div id="df44bcdc" class="cell" data-execution_count="1">
+<div id="119d1a88" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_income_median_files/figure-html/cell-2-output-1.png" width="656" height="355" class="figure-img"></p>
-<figcaption>가상 직장인 5,000여 명의 연봉 분포. 대부분은 2,000만~5,000만 원 사이에 몰려 있지만, 소수의 고소득층이 오른쪽으로 아주 길게 꼬리를 늘어뜨린다. 그 꼬리가 평균을 중앙값보다 훨씬 오른쪽으로 끌어올린다.</figcaption>
+<p><img src="story_relative_risk_files/figure-html/cell-2-output-1.png" width="800" height="410" class="figure-img"></p>
+<figcaption>100명 중 대장암에 걸리는 사람 수. 왼쪽(가공육을 먹지 않는 집단)은 6명, 오른쪽(매일 먹는 집단)은 7명. 상대적으로는 ’18% 증가’지만, 그림으로 보면 딱 1명의 차이다.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>이 시뮬레이션에서 중앙값은 약 <strong>3,600만 원</strong>, 평균은 약 <strong>4,072만 원</strong>이다. 평균이 중앙값보다 470만 원 가까이 높다. 이유는 단순하다. 아주 소수의 고소득층(그래프 오른쪽 끝, 이 그림에는 다 담기지도 않는 억대 연봉자들)이 평균을 강하게 끌어올리기 때문이다.</p>
 </section>
-<section id="평균-이하인-사람이-다수가-되는-이유" class="level2">
-<h2 class="anchored" data-anchor-id="평균-이하인-사람이-다수가-되는-이유">“평균 이하”인 사람이 다수가 되는 이유</h2>
-<div id="77d4fe4c" class="cell" data-execution_count="2">
+<section id="진짜-조심해야-할-경우-원래-위험이-아주-작을-때" class="level2">
+<h2 class="anchored" data-anchor-id="진짜-조심해야-할-경우-원래-위험이-아주-작을-때">진짜 조심해야 할 경우: 원래 위험이 아주 작을 때</h2>
+<p>상대위험이 위험한 착시를 만드는 진짜 이유는 따로 있다. <strong>원래 발생률이 아주 작은 사건일수록, 상대위험은 쉽게 몇 배씩 뛴다.</strong></p>
+<div id="0367e523" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_income_median_files/figure-html/cell-3-output-1.png" width="566" height="354" class="figure-img"></p>
-<figcaption>’평균보다 적게 버는 사람’의 비율. 중앙값 기준으로는 정확히 50%지만, 평균 기준으로는 61%나 된다 — 소수의 고소득층이 평균 자체를 밀어올렸기 때문이다.</figcaption>
+<p><img src="story_relative_risk_files/figure-html/cell-3-output-1.png" width="854" height="355" class="figure-img"></p>
+<figcaption>세 가지 사례 비교. 왼쪽은 상대위험(몇 배 증가), 오른쪽은 절대위험 증가폭(%p, 로그 눈금)이다. 방사능 노출 사례처럼 절대위험도 함께 큰 경우가 있는가 하면, 희귀질환처럼 상대위험은 커도 절대위험은 거의 0에 가까운 경우도 있다.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>중앙값은 정의상 항상 정확히 절반(50%)을 가른다. 그러나 평균은 그렇지 않다. 이 시뮬레이션에서는 <strong>전체의 61%가 평균보다 적게 번다.</strong> “평균 이하”라는 말은, 왜도가 큰 데이터에서는 사실 다수파에 속한다는 뜻이다.</p>
-</section>
-<section id="중위소득이라는-이름의-서로-다른-두-숫자" class="level2">
-<h2 class="anchored" data-anchor-id="중위소득이라는-이름의-서로-다른-두-숫자">“중위소득”이라는 이름의 서로 다른 두 숫자</h2>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-평균 vs 중앙값, 언제 무엇을 봐야 할까
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 50%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>상황</th>
-<th>권장 대표값</th>
-<th>이유</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>소득, 자산, 집값</td>
-<td><strong>중앙값</strong></td>
-<td>극소수 초고소득층이 평균을 크게 왜곡</td>
-</tr>
-<tr class="even">
-<td>키, 몸무게, 시험 점수(정상 범위)</td>
-<td>평균</td>
-<td>좌우 대칭에 가까움</td>
-</tr>
-<tr class="odd">
-<td>회사의 “평균 연봉” 발표</td>
-<td>중앙값 + 평균 함께</td>
-<td>경영진 몇 명의 연봉이 평균을 부풀릴 수 있음</td>
-</tr>
-<tr class="even">
-<td>부동산 “평균 집값”</td>
-<td>중앙값</td>
-<td>초고가 매물 소수가 평균을 밀어올림</td>
-</tr>
-</tbody>
-</table>
-<p>여기서 한 가지 헷갈리기 쉬운 지점이 있다. 통계청은 가계금융복지조사 등 표본조사를 바탕으로, 실제 가구를 대상으로 한 <strong>중위소득 통계</strong>를 직접 발표한다. 실측치라는 뜻이다.</p>
-<p>반면 뉴스에서 “기준 중위소득 150% 이하는 지원 대상”처럼 복지 정책의 기준선으로 자주 언급되는 <strong>기준 중위소득(Standard Median Income)</strong>은 통계청이 아니라 <strong>보건복지부</strong>가 매년 별도로 고시하는 값이다. 통계청의 실제 중위소득 통계를 참고하되, 중앙생활보장위원회의 심의·의결을 거쳐 정책적으로 결정되므로 통계청이 발표하는 실측 중위소득과는 다른 숫자다.</p>
-<p>즉 “중위소득”이라는 같은 이름 아래, (1) 통계청이 조사해 발표하는 <strong>실제 통계</strong>와 (2) 보건복지부가 정책적으로 정하는 <strong>기준 중위소득</strong>이라는 서로 다른 두 숫자가 존재한다. 기초생활보장, 건강보험료 감면 같은 복지 기준선을 이야기할 때는 대개 후자를 가리킨다.</p>
-</div>
-</div>
-</section>
-<section id="결론-평균-하나만-보고-나를-비교하지-말자" class="level2">
-<h2 class="anchored" data-anchor-id="결론-평균-하나만-보고-나를-비교하지-말자">결론: 평균 하나만 보고 나를 비교하지 말자</h2>
+<p>가운데 “방사능 노출” 사례는 비노출군 발생률 1%, 노출군 발생률 5%로 상대위험(RR)이 5배에 달한다. 이때는 절대위험도 4%포인트나 늘어나므로, 상대위험과 절대위험이 함께 심각하다. 반면 오른쪽 “희귀질환” 사례는 상대위험이 3배(200% 증가)로 커 보이지만, 절대위험은 0.01%에서 0.03%로 늘어난 것뿐이라 실제 영향은 미미하다. <strong>상대위험 하나만 보고는 이 둘을 구분할 수 없다.</strong></p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-소득 관련 통계를 읽는 법
+더 깊이: 상대위험도와 승산비(오즈비)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>이 글에서 다룬 상대위험도(RR)는 통계학에서 역학 연구 지표로 정식으로 다뤄진다. 강의노트 <a href="../../notes/intro_stat/crosstab.html#상대위험도-relative-risk와-승산비-odds-ratio">〈기초통계 4. 교차표 검정 — 상대위험도와 승산비〉</a>에서는 방사능 노출과 질병 발생 사례(<span class="math inline">\(\hat\pi_1=0.05,\ \hat\pi_2=0.01,\ RR=5\)</span>, 이 글의 두 번째 사례와 같은 예제다)를 통해 RR의 정의와 해석 기준, 그리고 사례-대조군 연구에서 대신 쓰이는 <strong>승산비(Odds Ratio)</strong>와의 차이까지 다룬다. 신문 기사의 “몇 배 위험” 뒤에 있는 정식 통계적 정의가 궁금하다면 참고할 만하다.</p>
+</div>
+</div>
+</section>
+<section id="결론-몇-배라는-말을-들으면-원래-얼마인데" class="level2">
+<h2 class="anchored" data-anchor-id="결론-몇-배라는-말을-들으면-원래-얼마인데">결론: “몇 배”라는 말을 들으면 “원래 얼마인데?”</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+위험 관련 보도를 읽는 법
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><strong>“평균 연봉”이라는 단어를 보면 곧바로 “중앙값은 얼마일까”를 떠올린다.</strong></li>
-<li><strong>평균과 중앙값의 차이가 클수록, 그 데이터는 왜도가 크다는 뜻이다.</strong> 즉 소수가 전체 그림을 좌우하고 있다.</li>
-<li><strong>내가 “평균 이하”라고 해서 내가 “못 버는 것”은 아니다.</strong> 오히려 그 편이 다수일 가능성이 높다.</li>
-<li><strong>회사나 통계 발표를 볼 때, 평균만 제시하고 중앙값을 감춘다면 의심해봐야 한다.</strong></li>
+<li><strong>“위험이 N% 증가”라는 표현을 보면, 상대위험인지 절대위험인지부터 구분한다.</strong></li>
+<li><strong>원래 발생률(기저 위험)이 얼마인지 함께 찾아본다.</strong> 기저 위험이 아주 작다면, 상대위험이 커 보여도 실제 영향은 작을 수 있다.</li>
+<li><strong>반대로 기저 위험이 이미 상당히 크다면, 작아 보이는 상대위험 증가도 무시하면 안 된다.</strong></li>
+<li><strong>“몇 배” “몇 퍼센트 증가”라는 말은 항상 비교 대상(기준값)과 함께 이해한다.</strong> 이는 지난 글의 %와 %p 구분과도 같은 원리다.</li>
 </ol>
 </div>
 </div>
-<p>평균은 계산하기 쉽고 익숙한 숫자지만, 꼬리가 긴 데이터 앞에서는 힘을 잃는다. 연봉 이야기를 할 때 우리에게 필요한 숫자는 평균이 아니라, 절반의 절반을 정확히 가르는 <strong>중앙값</strong>이다.</p>
+<p>상대위험은 “위험요인이 있는지 없는지”를 알려주는 유용한 신호다. 그러나 “그래서 나에게 실제로 얼마나 위험한지”를 알려주는 것은 절대위험이다. 뉴스의 자극적인 배수(倍數)에 놀라기 전에, 그 뒤에 있는 원래 숫자부터 찾아보자.</p>
 
 
 </section>
