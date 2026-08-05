@@ -1,0 +1,121 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(비율과 백분율의 함정) 취업률 69.3%, 숫자보다 먼저 분모를 보라"
+author: "권세혁"
+date: "2026-08-08"
+categories: [통계기초, 기술통계]
+description: "졸업생 4,417명 중 취업자 2,419명인 대학의 공시 취업률은 69.3%다. 그런데 졸업생 전체를 기준으로 다시 계산하면 55%다. 두 숫자 다 거짓말은 아니다. 분모가 다를 뿐이다."
+---
+
+## "취업률 69.3%"라는 문장을 읽는 법
+
+진로 상담을 겸하는 수업에서, 나는 매 학기 학생들에게 우리 학교 학과 취업률 공시 자료를 보여준다. 어느 해 한 학과의 취업률은 **69.3%**였다. 학생들 반응은 한결같다. "오, 10명 중 7명은 취업하네요?"
+
+틀렸다고 말하기도, 맞았다고 말하기도 애매하다. 실제로 그해 이 학과의 졸업생은 4,417명, 취업자는 2,419명이었다. 2,419를 4,417로 나누면 55%다. 69.3%라는 숫자는 어디서 나온 걸까?
+
+## 취업률의 분모에는 이미 뺄셈이 들어 있다
+
+교육부와 대학알리미가 공시하는 대학 취업률은 이렇게 계산된다.
+
+$$\text{취업률(\%)} = \frac{\text{취업자 수}}{\text{졸업자 수} - \text{진학자} - \text{입대자} - \text{외국인 유학생} - \text{취업불가능자}} \times 100$$
+
+::: {.callout-note}
+## 왜 이렇게 계산할까
+
+대학원에 진학했거나, 군에 입대했거나, 본국으로 돌아간 외국인 유학생은 애초에 "취업 대상자"가 아니라고 보는 것이 이 통계의 설계 취지다. 아프거나 수감 중이어서 구직 자체가 불가능한 사람도 마찬가지로 분모에서 뺀다. 취업할 의사와 여건이 있는 사람만 놓고 취업 여부를 따지겠다는 논리다.
+:::
+
+논리 자체는 이해할 만하다. 문제는 이 "제외"가 분모를 눈에 띄게 줄인다는 데 있다.
+
+## 같은 졸업생 4,417명, 분모에 따라 달라지는 숫자
+
+앞서 본 학과의 실제 구성을 뜯어보면 이렇다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Same graduating class (4,417 students), broken down by outcome. Green bars stay in the denominator; amber bars are excluded before the rate is calculated."
+import matplotlib.pyplot as plt
+
+labels = ["Employed", "Still\njob-seeking", "Grad school\n(excluded)", "Returned\noverseas\n(excluded)"]
+counts = [2419, 1070, 751, 177]
+colors = ["#1e3a2f", "#1e3a2f", "#a8790a", "#a8790a"]
+
+fig, ax = plt.subplots(figsize=(7, 3.8))
+bars = ax.bar(labels, counts, color=colors, width=0.55)
+for b, v in zip(bars, counts):
+    ax.annotate(f"{v:,}", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=10)
+ax.set_ylabel("Number of graduates")
+ax.set_title("One class, four outcomes — only two colors count toward the denominator", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+초록 막대(취업자 2,419명 + 아직 구직 중인 1,070명)는 분모에 남는다. 주황 막대(대학원 진학 751명, 귀국한 외국인 유학생 177명)는 분모에서 빠진다. 그 결과, 분모는 4,417명이 아니라 **3,489명**(4,417 − 751 − 177)이 된다.
+
+$$\text{공시 취업률} = \frac{2{,}419}{3{,}489} \times 100 \approx 69.3\%$$
+
+```{python}
+#| echo: false
+#| fig-cap: "Two honest ways to describe the same 2,419 employed graduates, depending on which denominator is used."
+categories2 = ["Official rate\n(denom. excludes grad school\n& overseas, n=3,489)", "Employed ÷ all graduates\n(denom. = full class, n=4,417)"]
+rates = [69.3, 54.8]
+
+fig, ax = plt.subplots(figsize=(6.5, 3.8))
+bars = ax.bar(categories2, rates, color=["#a8790a", "#1e3a2f"], width=0.5)
+for b, v in zip(bars, rates):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=11)
+ax.set_ylabel("Rate (%)")
+ax.set_ylim(0, 85)
+ax.set_title("Same numerator (2,419 employed) — different denominator", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+두 숫자 중 어느 쪽도 조작된 값이 아니다. 69.3%는 "취업 의사가 있는 사람 중 취업률"이라는 정의에 충실한 계산이고, 55%는 "졸업생 전체 중 취업 비율"이라는 정의에 충실한 계산이다. **분자(취업자 2,419명)는 똑같은데, 분모의 정의가 다르니 결과도 다르다.**
+
+## "제외 대상"이 늘어날수록 분모는 더 작아진다
+
+이 계산 방식이 논란이 되는 이유는, 대학이 진학률·입대율을 부풀리거나 "취업불가능자" 인정 범위를 넓게 잡을수록 분모가 작아지고 취업률은 자동으로 올라가기 때문이다. 실제로 대학 취업률 통계의 신뢰성 문제는 학내 언론에서도 여러 차례 지적됐다.
+
+::: {.callout-warning}
+## 기사 원문이 짚은 지점
+
+"69.3%의 취업률이 졸업자 100명 중 69명이 취업했다는 의미는 아니다." 학내 언론이 이 통계를 다루며 강조한 문장이다. 취업률이라는 이름 자체가 "졸업생 중 몇 %가 취업했는가"를 뜻한다고 오해하기 쉽지만, 공시 지표는 애초에 다른 질문—"취업 대상자 중 몇 %가 취업했는가"—에 답하도록 설계되어 있다.
+:::
+
+## 더 깊이: "분모를 다시 정의한다"는 것의 의미
+
+취업률처럼 분모에서 일부를 "제외"하는 방식은, 통계학적으로는 **모집단을 재정의하는 것**과 같다. 강의노트 [〈조사방법론 1. 조사방법론 개요 — 모집단과 프레임〉](../../notes/survey/survey_intro.qmd#모집단과-프레임)에서는 조사가 실제로 답하려는 대상인 **목표 모집단(target population)**과, 조사 설계상 실제로 다루는 **조사 모집단(survey population)**이 항상 일치하지는 않는다고 설명한다. "졸업생 전체"가 우리 머릿속의 목표 모집단이라면, 취업률 계산에 쓰이는 "제외인정자를 뺀 졸업생"은 조사 설계자가 재정의한 조사 모집단인 셈이다. 이 차이를 모르고 숫자만 보면, 정의가 다른 두 모집단을 같은 것으로 착각하게 된다.
+
+## 이번 챕터를 관통한 한 문장
+
+::: {.callout-tip}
+## 비율 통계, 숫자보다 먼저 분모를 보라
+
+이 챕터에서 다룬 사례들은 형태는 달랐지만 결국 같은 질문으로 수렴한다.
+
+- **"매출 200% 성장"** → 기준값(원래 매출)이 얼마였나?
+- **"지지율 3%p 상승"** → %와 %p, 어느 쪽 분모 위의 이야기인가?
+- **"위험이 2배"** → 상대위험도인가, 원래 발생 확률(절대위험도)인가?
+- **"인구 1만 명당 범죄율"** → 분모(인구)를 반영했는가, 건수만 봤는가?
+- **"양성 판정 시 감염 확률"** → 분모가 되는 유병률은 얼마인가?
+- **"취업률 69.3%"** → 분모에서 누가 빠졌는가?
+
+**분자만 보고 놀라거나 안심하지 마라. 비율을 보면 언제나 먼저 물어야 할 것은 "분모는 무엇인가"다.**
+:::
+
+나는 이 학과 취업률 통계를 보여줄 때마다 학생들에게 같은 숙제를 낸다. "다음에 어디서든 %를 보면, 3초만 멈춰서 분모를 찾아보세요." 분모를 찾는 3초가, 숫자에 속지 않는 가장 짧고 확실한 방법이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [교육부_교육통계서비스_취업 데이터셋 — 공공데이터포털](https://www.data.go.kr/data/15139279/fileData.do)
+- [대학알리미 — 취업 현황 공시](https://www.academyinfo.go.kr/)
+- [대학 취업률 통계의 의미 — 성대신문](http://www.skkuw.com/news/articleView.html?idxno=12624)
+:::
