@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-07-30">
-<meta name="description" content="통계청 가계동향조사의 실제 평균 소득 통계를 보면, 왜 ’평균’이라는 숫자가 대다수의 체감과 다를까? 왜도(skewness)라는 개념으로 그 이유를 풀어봅니다.">
+<meta name="dcterms.date" content="2026-08-11">
+<meta name="description" content="한국의 합계출산율과 코스피 지수. 서로 아무 관련 없어 보이는 이 두 지표를 이중축 그래프로 그리면 거의 완벽하게 반대로 움직이는 것처럼 보인다. 실제 상관계수를 계산해보면 이야기가 조금 달라진다.">
 
-<title>(숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유 – 권세혁HOME</title>
+<title>(그래프는 어떻게 우리를 속이는가) 두 개의 세로축이 만드는 가짜 상관관계 – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -87,6 +87,35 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <meta name="theme-color" content="#1e3a2f">
 <meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -154,7 +183,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_income_median.html">📖 (숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_dual_axis.html">📖 (그래프는 어떻게 우리를 속이는가) 두 개의 세로축이 만드는 가짜 상관관계</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -205,7 +234,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_income_median.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_income_median.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 (숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</span></a>
   </div>
 </li>
@@ -265,7 +294,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_dual_axis.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_dual_axis.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 두 개의 세로축이 만드는 가짜 상관관계</span></a>
   </div>
 </li>
@@ -279,12 +308,11 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#평균-가구소득-월-548만-원-내-통장은-왜-그만큼이-아닐까" id="toc-평균-가구소득-월-548만-원-내-통장은-왜-그만큼이-아닐까" class="nav-link active" data-scroll-target="#평균-가구소득-월-548만-원-내-통장은-왜-그만큼이-아닐까">“평균 가구소득 월 548만 원”, 내 통장은 왜 그만큼이 아닐까</a></li>
-  <li><a href="#소득-분포는-한쪽으로-길게-늘어져-있다" id="toc-소득-분포는-한쪽으로-길게-늘어져-있다" class="nav-link" data-scroll-target="#소득-분포는-한쪽으로-길게-늘어져-있다">소득 분포는 한쪽으로 길게 늘어져 있다</a></li>
-  <li><a href="#가상의-소득-5천여-명을-시뮬레이션해보면" id="toc-가상의-소득-5천여-명을-시뮬레이션해보면" class="nav-link" data-scroll-target="#가상의-소득-5천여-명을-시뮬레이션해보면">가상의 소득 5천여 명을 시뮬레이션해보면</a></li>
-  <li><a href="#평균-이하인-사람이-다수가-되는-이유" id="toc-평균-이하인-사람이-다수가-되는-이유" class="nav-link" data-scroll-target="#평균-이하인-사람이-다수가-되는-이유">“평균 이하”인 사람이 다수가 되는 이유</a></li>
-  <li><a href="#중위소득이라는-이름의-서로-다른-두-숫자" id="toc-중위소득이라는-이름의-서로-다른-두-숫자" class="nav-link" data-scroll-target="#중위소득이라는-이름의-서로-다른-두-숫자">“중위소득”이라는 이름의 서로 다른 두 숫자</a></li>
-  <li><a href="#결론-평균-하나만-보고-나를-비교하지-말자" id="toc-결론-평균-하나만-보고-나를-비교하지-말자" class="nav-link" data-scroll-target="#결론-평균-하나만-보고-나를-비교하지-말자">결론: 평균 하나만 보고 나를 비교하지 말자</a></li>
+  <li><a href="#아이-울음소리와-주가지수가-반대로-움직인다" id="toc-아이-울음소리와-주가지수가-반대로-움직인다" class="nav-link active" data-scroll-target="#아이-울음소리와-주가지수가-반대로-움직인다">아이 울음소리와 주가지수가 반대로 움직인다?</a></li>
+  <li><a href="#이중축-그래프는-왜-쓰는가" id="toc-이중축-그래프는-왜-쓰는가" class="nav-link" data-scroll-target="#이중축-그래프는-왜-쓰는가">이중축 그래프는 왜 쓰는가</a></li>
+  <li><a href="#실제-상관계수는-얼마일까" id="toc-실제-상관계수는-얼마일까" class="nav-link" data-scroll-target="#실제-상관계수는-얼마일까">실제 상관계수는 얼마일까</a></li>
+  <li><a href="#이중축-그래프가-항상-나쁜-것은-아니다" id="toc-이중축-그래프가-항상-나쁜-것은-아니다" class="nav-link" data-scroll-target="#이중축-그래프가-항상-나쁜-것은-아니다">이중축 그래프가 항상 나쁜 것은 아니다</a></li>
+  <li><a href="#결론-겹쳐-보이는-두-선보다-상관계수를-먼저-보라" id="toc-결론-겹쳐-보이는-두-선보다-상관계수를-먼저-보라" class="nav-link" data-scroll-target="#결론-겹쳐-보이는-두-선보다-상관계수를-먼저-보라">결론: 겹쳐 보이는 두 선보다 상관계수를 먼저 보라</a></li>
   </ul>
 </nav>
     </div>
@@ -293,16 +321,16 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">(숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</h1>
+<h1 class="title">(그래프는 어떻게 우리를 속이는가) 두 개의 세로축이 만드는 가짜 상관관계</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
-    <div class="quarto-category">기술통계</div>
+    <div class="quarto-category">데이터시각화</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    통계청 가계동향조사의 실제 평균 소득 통계를 보면, 왜 ’평균’이라는 숫자가 대다수의 체감과 다를까? 왜도(skewness)라는 개념으로 그 이유를 풀어봅니다.
+    한국의 합계출산율과 코스피 지수. 서로 아무 관련 없어 보이는 이 두 지표를 이중축 그래프로 그리면 거의 완벽하게 반대로 움직이는 것처럼 보인다. 실제 상관계수를 계산해보면 이야기가 조금 달라진다.
   </div>
 </div>
 
@@ -319,7 +347,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 30, 2026</p>
+      <p class="date">August 11, 2026</p>
     </div>
   </div>
   
@@ -331,180 +359,102 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </header>
 
 
-<section id="평균-가구소득-월-548만-원-내-통장은-왜-그만큼이-아닐까" class="level2">
-<h2 class="anchored" data-anchor-id="평균-가구소득-월-548만-원-내-통장은-왜-그만큼이-아닐까">“평균 가구소득 월 548만 원”, 내 통장은 왜 그만큼이 아닐까</h2>
-<p>수업 시간에 소득 통계 이야기를 꺼내면 늘 강의실 공기가 조금 무거워진다. 다들 “평균”이라는 말에 은근히 자신을 대입해보기 때문일 것이다. 통계청 KOSIS 가계동향조사 최신 자료(2026년 1/4분기)를 보면, 전체가구의 월평균 소득은 <strong>5,480,864원</strong>이다. 그런데 표를 조금만 더 들여다보면 눈에 띄는 격차가 보인다.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>구분</th>
-<th style="text-align: center;">전체가구</th>
-<th style="text-align: center;">근로자가구</th>
-<th style="text-align: center;">근로자외가구</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>월평균 소득</td>
-<td style="text-align: center;">5,480,864원</td>
-<td style="text-align: center;">6,454,647원</td>
-<td style="text-align: center;">4,086,348원</td>
-</tr>
-<tr class="even">
-<td>가구분포</td>
-<td style="text-align: center;">100%</td>
-<td style="text-align: center;">58.9%</td>
-<td style="text-align: center;">41.1%</td>
-</tr>
-</tbody>
-</table>
-<p><em>(출처: 통계청 KOSIS, 가계동향조사, 2026년 1/4분기)</em></p>
-<p>월급을 받는 근로자가구(645만 원)와 자영업·은퇴가구 등 근로자외가구(409만 원)의 평균은 236만 원 넘게 차이가 난다. “전체가구 평균 548만 원”이라는 숫자 하나는, 성격이 전혀 다른 이 두 집단을 한데 뭉뚱그린 결과다.</p>
-<p>평균은 이렇게 <strong>서로 다른 집단이 섞여 있을 때</strong>도, <strong>같은 집단 안에서 소수가 유난히 많이 벌 때</strong>도 왜곡될 수 있다. 이번 글에서는 후자, 즉 한 집단 안에서 소수의 고소득자가 평균 자체를 얼마나 끌어올릴 수 있는지를 살펴본다.</p>
+<section id="아이-울음소리와-주가지수가-반대로-움직인다" class="level2">
+<h2 class="anchored" data-anchor-id="아이-울음소리와-주가지수가-반대로-움직인다">아이 울음소리와 주가지수가 반대로 움직인다?</h2>
+<p>수업 시간에 종종 이런 그래프를 학생들에게 던져준다. 한쪽 선은 계속 떨어지고, 다른 쪽 선은 오르락내리락하면서도 대체로 반대 방향으로 움직인다. “이 두 지표, 관계가 있어 보이나요?” 열에 아홉은 “네, 꽤 뚜렷하게 반대로 가네요”라고 답한다.</p>
+<p>그 두 지표는 <strong>한국의 합계출산율</strong>과 <strong>코스피 지수 연말 종가</strong>다. 아이를 몇 명 낳을지 결정하는 일과 주식시장이 무슨 상관이 있을까? 상식적으로는 없다. 그런데 그래프만 보면 마치 두 지표가 손을 잡고 반대로 움직이는 것처럼 보인다. 이유는 데이터가 아니라 <strong>그래프를 그린 방식</strong>에 있다.</p>
 </section>
-<section id="소득-분포는-한쪽으로-길게-늘어져-있다" class="level2">
-<h2 class="anchored" data-anchor-id="소득-분포는-한쪽으로-길게-늘어져-있다">소득 분포는 한쪽으로 길게 늘어져 있다</h2>
-<p>키나 시험 점수처럼 좌우가 대칭인 데이터라면 평균 근처에 절반, 그 위아래로 사람들이 고르게 퍼져 있다. 그러나 소득은 다르다. 대다수는 중간 어딘가에 몰려 있고, 극소수의 최상위 소득자가 아주 멀리, 아주 길게 꼬리를 늘어뜨린다.</p>
-<p>이렇게 분포가 한쪽으로 치우친 정도를 통계학에서는 <strong>왜도(skewness)</strong>라 부른다.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-왜도(Skewness)란
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><strong>왜도 = 0</strong>: 좌우 대칭 (평균 = 중앙값). 정규분포가 대표적.</li>
-<li><strong>왜도 &gt; 0 (오른쪽 꼬리)</strong>: 소수의 큰 값이 오른쪽으로 길게 늘어짐. 평균이 중앙값보다 커진다. <strong>소득, 집값, 자산</strong>이 대표적.</li>
-<li><strong>왜도 &lt; 0 (왼쪽 꼬리)</strong>: 소수의 작은 값이 왼쪽으로 길게 늘어짐. 평균이 중앙값보다 작아진다. 예: 시험이 너무 쉬워서 대부분 고득점, 일부만 크게 낮은 점수를 받는 경우.</li>
-</ul>
-<p>소득처럼 왜도가 큰 데이터에서는, <strong>평균이 대표값 역할을 제대로 하지 못한다.</strong></p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-더 깊이: 왜도를 계산하는 여러 방법
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>이 글에서는 왜도를 부호(+/−)로만 설명했지만, 실제로는 여러 공식으로 정량화할 수 있다. 강의노트 <a href="../../notes/intro_stat/normality.html#치우침-진단-통계량">〈기초통계 6. 정규변환 — 치우침 진단 통계량〉</a>에서는 적률 기반 왜도, 평균과 중앙값의 차이를 이용한 왜도, 사분위수 기반 왜도 등 다섯 가지 계산 방법과 해석 기준을 비교해서 다룬다.</p>
-</div>
-</div>
-</section>
-<section id="가상의-소득-5천여-명을-시뮬레이션해보면" class="level2">
-<h2 class="anchored" data-anchor-id="가상의-소득-5천여-명을-시뮬레이션해보면">가상의 소득 5천여 명을 시뮬레이션해보면</h2>
-<blockquote class="blockquote">
-<p>아래 분포는 통계청 실제 자료가 아니라, 왜도가 큰 소득 데이터에서 평균이 어떻게 왜곡되는지 보여주기 위해 만든 <strong>가상의 예시</strong>다. 개인별 근로소득처럼 일부 초고소득자가 존재하는 데이터를 가정해 시뮬레이션했다.</p>
-</blockquote>
-<div id="d37240f4" class="cell" data-execution_count="1">
+<section id="이중축-그래프는-왜-쓰는가" class="level2">
+<h2 class="anchored" data-anchor-id="이중축-그래프는-왜-쓰는가">이중축 그래프는 왜 쓰는가</h2>
+<p>합계출산율은 0.7~1.2 사이의 작은 숫자이고, 코스피 지수는 2,000~3,000 사이의 큰 숫자다. 두 변수를 하나의 축에 그리면 출산율 선은 바닥에 납작하게 깔려 아무것도 보이지 않는다. 그래서 사람들은 <strong>왼쪽 축 하나, 오른쪽 축 하나</strong>를 따로 만들어 각 변수를 자기 축에 맞게 그린다. 단위가 다른 두 변수를 한 화면에 겹쳐 보고 싶을 때 흔히 쓰는 방법이다.</p>
+<div id="c6a4a3ac" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_income_median_files/figure-html/cell-2-output-1.png" width="656" height="355" class="figure-img"></p>
-<figcaption>가상 직장인 5,000여 명의 연봉 분포. 대부분은 2,000만~5,000만 원 사이에 몰려 있지만, 소수의 고소득층이 오른쪽으로 아주 길게 꼬리를 늘어뜨린다. 그 꼬리가 평균을 중앙값보다 훨씬 오른쪽으로 끌어올린다.</figcaption>
+<p><img src="story_dual_axis_files/figure-html/cell-2-output-1.png" width="662" height="394" class="figure-img"></p>
+<figcaption>South Korea’s total fertility rate (left axis) and KOSPI year-end close (right axis), 2015-2024. Each axis is auto-scaled to its own data range — the classic default behavior of dual-axis charts.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>이 시뮬레이션에서 중앙값은 약 <strong>3,600만 원</strong>, 평균은 약 <strong>4,072만 원</strong>이다. 평균이 중앙값보다 470만 원 가까이 높다. 이유는 단순하다. 아주 소수의 고소득층(그래프 오른쪽 끝, 이 그림에는 다 담기지도 않는 억대 연봉자들)이 평균을 강하게 끌어올리기 때문이다.</p>
-</section>
-<section id="평균-이하인-사람이-다수가-되는-이유" class="level2">
-<h2 class="anchored" data-anchor-id="평균-이하인-사람이-다수가-되는-이유">“평균 이하”인 사람이 다수가 되는 이유</h2>
-<div id="0363e51c" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="story_income_median_files/figure-html/cell-3-output-1.png" width="566" height="354" class="figure-img"></p>
-<figcaption>’평균보다 적게 버는 사람’의 비율. 중앙값 기준으로는 정확히 50%지만, 평균 기준으로는 61%나 된다 — 소수의 고소득층이 평균 자체를 밀어올렸기 때문이다.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>중앙값은 정의상 항상 정확히 절반(50%)을 가른다. 그러나 평균은 그렇지 않다. 이 시뮬레이션에서는 <strong>전체의 61%가 평균보다 적게 번다.</strong> “평균 이하”라는 말은, 왜도가 큰 데이터에서는 사실 다수파에 속한다는 뜻이다.</p>
-</section>
-<section id="중위소득이라는-이름의-서로-다른-두-숫자" class="level2">
-<h2 class="anchored" data-anchor-id="중위소득이라는-이름의-서로-다른-두-숫자">“중위소득”이라는 이름의 서로 다른 두 숫자</h2>
+<p>두 선이 꽤 뚜렷하게 반대로 움직이는 것처럼 보인다. 출산율이 떨어지는 동안 코스피는 대체로 오르고, 2022년처럼 코스피가 크게 꺾일 때는 출산율 하락세도 잠시 주춤한다. 완벽하게 겹치진 않지만, 누가 봐도 “뭔가 관계가 있다”는 인상을 받기에는 충분하다.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-평균 vs 중앙값, 언제 무엇을 봐야 할까
+착시가 생기는 이유
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 50%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>상황</th>
-<th>권장 대표값</th>
-<th>이유</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>소득, 자산, 집값</td>
-<td><strong>중앙값</strong></td>
-<td>극소수 초고소득층이 평균을 크게 왜곡</td>
-</tr>
-<tr class="even">
-<td>키, 몸무게, 시험 점수(정상 범위)</td>
-<td>평균</td>
-<td>좌우 대칭에 가까움</td>
-</tr>
-<tr class="odd">
-<td>회사의 “평균 연봉” 발표</td>
-<td>중앙값 + 평균 함께</td>
-<td>경영진 몇 명의 연봉이 평균을 부풀릴 수 있음</td>
-</tr>
-<tr class="even">
-<td>부동산 “평균 집값”</td>
-<td>중앙값</td>
-<td>초고가 매물 소수가 평균을 밀어올림</td>
-</tr>
-</tbody>
-</table>
-<p>여기서 한 가지 헷갈리기 쉬운 지점이 있다. 통계청은 가계금융복지조사 등 표본조사를 바탕으로, 실제 가구를 대상으로 한 <strong>중위소득 통계</strong>를 직접 발표한다. 실측치라는 뜻이다.</p>
-<p>반면 뉴스에서 “기준 중위소득 150% 이하는 지원 대상”처럼 복지 정책의 기준선으로 자주 언급되는 <strong>기준 중위소득(Standard Median Income)</strong>은 통계청이 아니라 <strong>보건복지부</strong>가 매년 별도로 고시하는 값이다. 통계청의 실제 중위소득 통계를 참고하되, 중앙생활보장위원회의 심의·의결을 거쳐 정책적으로 결정되므로 통계청이 발표하는 실측 중위소득과는 다른 숫자다.</p>
-<p>즉 “중위소득”이라는 같은 이름 아래, (1) 통계청이 조사해 발표하는 <strong>실제 통계</strong>와 (2) 보건복지부가 정책적으로 정하는 <strong>기준 중위소득</strong>이라는 서로 다른 두 숫자가 존재한다. 기초생활보장, 건강보험료 감면 같은 복지 기준선을 이야기할 때는 대개 후자를 가리킨다.</p>
+<p>이 그래프가 인상적으로 보이는 이유는 상관관계의 크기 때문이 아니라, <strong>각 축을 그 변수의 최솟값·최댓값에 맞춰 꽉 채웠기 때문</strong>이다. 왼쪽 축은 0.65~1.30, 오른쪽 축은 1900~3050으로 각각 데이터가 그래프 전체 높이를 다 쓰도록 늘여 놓았다. 두 변수의 실제 등락 폭이 얼마나 크든 작든, 축을 그렇게 맞추는 순간 두 선은 항상 “그래프 전체를 오르내리는” 것처럼 보이게 된다. 심지어 완전히 무작위인 두 숫자열도 이렇게 그리면 그럴듯하게 겹쳐 보일 수 있다.</p>
 </div>
 </div>
 </section>
-<section id="결론-평균-하나만-보고-나를-비교하지-말자" class="level2">
-<h2 class="anchored" data-anchor-id="결론-평균-하나만-보고-나를-비교하지-말자">결론: 평균 하나만 보고 나를 비교하지 말자</h2>
+<section id="실제-상관계수는-얼마일까" class="level2">
+<h2 class="anchored" data-anchor-id="실제-상관계수는-얼마일까">실제 상관계수는 얼마일까</h2>
+<p>인상만으로 판단하지 말고 직접 계산해보자. 위 두 지표(합계출산율, 코스피 연말 종가) 10개년 자료로 피어슨 상관계수를 구하면 다음과 같다.</p>
+<p><span class="math display">\[r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i-\bar{x})^2 \sum (y_i-\bar{y})^2}} \approx -0.64\]</span></p>
+<div id="8b0c6355" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_dual_axis_files/figure-html/cell-3-output-1.png" width="566" height="413" class="figure-img"></p>
+<figcaption>The same two variables as a scatter plot with the actual correlation coefficient. Real, but visibly noisier than the dual-axis line chart implied — and with no plausible causal link between the two.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>r = -0.64는 결코 0은 아니다.</strong> “약간의 음의 상관관계가 있다”고 말할 수 있는 수준이다. 하지만 이중축 그래프가 보여준 “거의 완벽하게 반대로 움직인다”는 인상에는 한참 못 미친다. 점들은 추세선 주위에 꽤 넓게 흩어져 있다. 무엇보다, 출산율과 주가지수 사이에는 <strong>인과관계로 이어질 만한 경로가 없다.</strong> 두 지표 모두 지난 10년간 나름의 이유로 각자 방향을 가졌을 뿐, 그 방향이 우연히 대체로 어긋났던 것에 가깝다.</p>
+<p>강의노트 <a href="../../notes/intro_stat/correlation.html#인과관계와-상관관계">〈기초통계 6. 상관분석 — 인과관계와 상관관계〉</a>는 이 함정을 정확히 짚는다. “상관관계가 높게 나타나는 경우에도 그 관계는 단순한 우연일 수 있다.” 상관계수 자체도 인과관계를 입증하는 충분조건이 아닌데, 그 상관계수보다 훨씬 과장된 그래프를 보고 있다면 착시는 두 배가 된다.</p>
+</section>
+<section id="이중축-그래프가-항상-나쁜-것은-아니다" class="level2">
+<h2 class="anchored" data-anchor-id="이중축-그래프가-항상-나쁜-것은-아니다">이중축 그래프가 항상 나쁜 것은 아니다</h2>
+<p>이중축 그래프 자체가 거짓말은 아니다. 금리와 환율처럼 이론적으로 실제 연결고리가 있는 두 변수를 함께 보여주고 싶을 때, 단위가 다르다는 이유만으로 포기할 필요는 없다. 문제는 <strong>축의 범위를 어떻게 정했는지 설명하지 않을 때</strong> 생긴다.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-소득 관련 통계를 읽는 법
+이중축 그래프를 볼 때 확인할 것
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><strong>“평균 연봉”이라는 단어를 보면 곧바로 “중앙값은 얼마일까”를 떠올린다.</strong></li>
-<li><strong>평균과 중앙값의 차이가 클수록, 그 데이터는 왜도가 크다는 뜻이다.</strong> 즉 소수가 전체 그림을 좌우하고 있다.</li>
-<li><strong>내가 “평균 이하”라고 해서 내가 “못 버는 것”은 아니다.</strong> 오히려 그 편이 다수일 가능성이 높다.</li>
-<li><strong>회사나 통계 발표를 볼 때, 평균만 제시하고 중앙값을 감춘다면 의심해봐야 한다.</strong></li>
+<li><strong>왼쪽 축과 오른쪽 축의 범위(최솟값·최댓값)가 표시되어 있는가?</strong> 숫자 없이 선 모양만 보여준다면 의심할 이유가 된다.</li>
+<li><strong>두 변수 사이에 그럴듯한 인과 경로가 있는가?</strong> 경로가 없다면, 아무리 그래프가 딱 맞아떨어져도 우연일 가능성을 먼저 의심해야 한다.</li>
+<li><strong>실제 상관계수나 수치를 따로 확인할 수 있는가?</strong> 그래프의 “느낌”과 통계량의 “숫자”가 다르다면, 그 차이만큼 축이 인상을 조작하고 있는 것이다.</li>
 </ol>
 </div>
 </div>
-<p>평균은 계산하기 쉽고 익숙한 숫자지만, 꼬리가 긴 데이터 앞에서는 힘을 잃는다. 연봉 이야기를 할 때 우리에게 필요한 숫자는 평균이 아니라, 절반의 절반을 정확히 가르는 <strong>중앙값</strong>이다.</p>
-<p>나는 학생들에게 이 통계청 표 하나를 보여주는 것만으로 수업의 절반을 한 셈이라고 생각한다. “평균 이하”라는 말에 위축될 필요가 없다는 것을, 숫자가 직접 증명해주기 때문이다.</p>
+</section>
+<section id="결론-겹쳐-보이는-두-선보다-상관계수를-먼저-보라" class="level2">
+<h2 class="anchored" data-anchor-id="결론-겹쳐-보이는-두-선보다-상관계수를-먼저-보라">결론: 겹쳐 보이는 두 선보다 상관계수를 먼저 보라</h2>
+<p>이중축 그래프는 두 변수를 한 화면에 담기 위한 편리한 도구지만, “각 축을 데이터 범위에 맞춰 꽉 채운다”는 기본 동작 자체가 실제보다 더 강한 관계처럼 보이게 만드는 착시 장치이기도 하다. 합계출산율과 코스피 지수처럼 아무 관련이 없어야 할 두 지표조차, 축을 이렇게 그리면 그럴듯한 이야기를 만들어낸다.</p>
+<p>나는 학생들에게 이 그래프를 보여줄 때 항상 마지막에 이렇게 말한다. “두 선이 닮아 보인다고 믿기 전에, 상관계수부터 계산해 보세요.” 그래프는 인상을 주지만, 숫자는 그 인상이 사실인지 아닌지를 말해준다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+참고 자료
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://namu.wiki/w/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD/%EC%B6%9C%EC%82%B0%EC%9C%A8">대한민국 합계출산율 통계 — 나무위키</a></li>
+<li><a href="https://ko.wikipedia.org/wiki/%EC%BD%94%EC%8A%A4%ED%94%BC">코스피 연도별 종가 — 위키백과</a></li>
+<li><a href="https://brunch.co.kr/@gkicarus/339">꺾은선그래프의 y축 조정이 가능한 이유 — 브런치</a></li>
+<li><a href="https://namu.wiki/w/%EA%B7%B8%EB%9E%98%ED%94%84%20%EC%99%9C%EA%B3%A1">그래프 왜곡 — 나무위키</a></li>
+</ul>
+</div>
+</div>
+</div>
 
 
 </section>
