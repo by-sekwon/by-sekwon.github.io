@@ -6,14 +6,18 @@ on:
   workflow_dispatch:           # 수동 실행 버튼
 
 jobs:
-  ping:
+  wake:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping — 로또 번호 생성기
-        run: curl -s -o /dev/null -w "%{http_code}" https://by-sekwonappio-8l9qy39rtnnumlftcp5vev.streamlit.app/
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Ping — 매수적절성 분석기
-        run: curl -s -o /dev/null -w "%{http_code}" https://by-sekwonappio-brhv7z6elu8dakgf7ed6ie.streamlit.app/
+      - name: Install Playwright
+        run: |
+          npm install playwright@latest
+          npx playwright install --with-deps chromium
 
-      - name: Ping — KRX 매수 추천 스캐너
-        run: curl -s -o /dev/null -w "%{http_code}" https://by-sekwonappio-74lvd7sgtztzyfhztkce9p.streamlit.app/
+      - name: Wake Streamlit apps
+        run: node scripts/wake_streamlit_apps.mjs
