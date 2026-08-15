@@ -12,8 +12,13 @@ const APPS = [
 const WAKE_BUTTON_PATTERN = /get this app back up|wake.?up|yes,\s*get/i;
 
 async function wakeApp(browser, { name, url }) {
-  const page = await browser.newPage();
+  let page;
   try {
+    page = await browser.newPage({
+      userAgent:
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+    });
     await page.goto(url, { waitUntil: "networkidle", timeout: 60_000 });
 
     const wakeButton = page.getByRole("button", { name: WAKE_BUTTON_PATTERN });
@@ -28,12 +33,21 @@ async function wakeApp(browser, { name, url }) {
   } catch (err) {
     console.error(`[${name}] failed: ${err.message}`);
   } finally {
-    await page.close();
+    await page?.close().catch(() => {});
   }
 }
 
-const browser = await chromium.launch();
-for (const app of APPS) {
-  await wakeApp(browser, app);
+let browser;
+try {
+  // ubuntu-latest (24.04) restricts unprivileged user namespaces by default,
+  // which breaks Chromium's sandbox in CI unless it's explicitly disabled.
+  browser = await chromium.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
+  for (const app of APPS) {
+    await wakeApp(browser, app);
+  }
+} catch (err) {
+  console.error(`Browser launch/run failed: ${err.message}`);
+  process.exitCode = 1;
+} finally {
+  await browser?.close().catch(() => {});
 }
-await browser.close();
