@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-06-02">
-<meta name="description" content="가장 많이 쓰이지만 가장 많이 오해되는 통계 숫자, p-값의 의미를 이야기로 풀어봅니다.">
+<meta name="dcterms.date" content="2026-08-21">
+<meta name="description" content="상어에게 물려 죽는 사람은 전 세계에서 한 해 열 명 남짓이지만, 낙상 사고로 죽는 사람은 수십만 명이다. 그런데도 바다에 들어갈 때 더 무서운 쪽은 상어다. 뉴스에 잘 나오는 사건일수록 기억하기 쉽고, 기억하기 쉬운 사건일수록 더 자주 일어나는 것처럼 느껴진다.">
 
-<title>p-값은 왜 0.05인가? – 권세혁HOME</title>
+<title>(사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는 사건이 더 자주 일어난다고 느끼는 이유 – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -87,6 +87,35 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <meta name="theme-color" content="#1e3a2f">
 <meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -158,7 +187,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_pvalue.html">📖 p-값은 왜 0.05인가?</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_availability_bias.html">📖 (사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는 사건이 더 자주 일어난다고 느끼는 이유</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -251,7 +280,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_pvalue.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_pvalue.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 p-값은 왜 0.05인가?</span></a>
   </div>
 </li>
@@ -317,7 +346,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_availability_bias.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_availability_bias.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는 사건이 더 자주 일어난다고 느끼는 이유</span></a>
   </div>
 </li>
@@ -331,10 +360,10 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#라는-숫자의-기원" id="toc-라는-숫자의-기원" class="nav-link active" data-scroll-target="#라는-숫자의-기원">0.05라는 숫자의 기원</a></li>
-  <li><a href="#p-값이-말하는-것과-말하지-않는-것" id="toc-p-값이-말하는-것과-말하지-않는-것" class="nav-link" data-scroll-target="#p-값이-말하는-것과-말하지-않는-것">p-값이 말하는 것과 말하지 않는 것</a></li>
-  <li><a href="#유의하다와-중요하다는-다르다" id="toc-유의하다와-중요하다는-다르다" class="nav-link" data-scroll-target="#유의하다와-중요하다는-다르다">“유의하다”와 “중요하다”는 다르다</a></li>
-  <li><a href="#결론-숫자보다-이야기가-먼저다" id="toc-결론-숫자보다-이야기가-먼저다" class="nav-link" data-scroll-target="#결론-숫자보다-이야기가-먼저다">결론: 숫자보다 이야기가 먼저다</a></li>
+  <li><a href="#상어는-무섭고-계단은-안-무섭다" id="toc-상어는-무섭고-계단은-안-무섭다" class="nav-link active" data-scroll-target="#상어는-무섭고-계단은-안-무섭다">상어는 무섭고, 계단은 안 무섭다</a></li>
+  <li><a href="#왜-떠올리기-쉬움이-자주-일어남으로-둔갑하는가" id="toc-왜-떠올리기-쉬움이-자주-일어남으로-둔갑하는가" class="nav-link" data-scroll-target="#왜-떠올리기-쉬움이-자주-일어남으로-둔갑하는가">왜 “떠올리기 쉬움”이 “자주 일어남”으로 둔갑하는가</a></li>
+  <li><a href="#더-깊이-확률은-원래-떠오르는-정도가-아니라-장기적-비율로-정의된다" id="toc-더-깊이-확률은-원래-떠오르는-정도가-아니라-장기적-비율로-정의된다" class="nav-link" data-scroll-target="#더-깊이-확률은-원래-떠오르는-정도가-아니라-장기적-비율로-정의된다">더 깊이: 확률은 원래 “떠오르는 정도”가 아니라 “장기적 비율”로 정의된다</a></li>
+  <li><a href="#결론-무서운-것과-위험한-것은-다르다" id="toc-결론-무서운-것과-위험한-것은-다르다" class="nav-link" data-scroll-target="#결론-무서운-것과-위험한-것은-다르다">결론: 무서운 것과 위험한 것은 다르다</a></li>
   </ul>
 </nav>
     </div>
@@ -343,16 +372,17 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">p-값은 왜 0.05인가?</h1>
+<h1 class="title">(사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는 사건이 더 자주 일어난다고 느끼는 이유</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
-    <div class="quarto-category">가설검정</div>
+    <div class="quarto-category">확률</div>
+    <div class="quarto-category">행동통계</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    가장 많이 쓰이지만 가장 많이 오해되는 통계 숫자, p-값의 의미를 이야기로 풀어봅니다.
+    상어에게 물려 죽는 사람은 전 세계에서 한 해 열 명 남짓이지만, 낙상 사고로 죽는 사람은 수십만 명이다. 그런데도 바다에 들어갈 때 더 무서운 쪽은 상어다. 뉴스에 잘 나오는 사건일수록 기억하기 쉽고, 기억하기 쉬운 사건일수록 더 자주 일어나는 것처럼 느껴진다.
   </div>
 </div>
 
@@ -369,7 +399,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 2, 2026</p>
+      <p class="date">August 21, 2026</p>
     </div>
   </div>
   
@@ -381,144 +411,94 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </header>
 
 
-<section id="라는-숫자의-기원" class="level2">
-<h2 class="anchored" data-anchor-id="라는-숫자의-기원">0.05라는 숫자의 기원</h2>
-<p>대학원생 논문 지도를 하다 보면, 결과표에 별표(*)가 몇 개 붙었는지부터 확인하는 학생들을 자주 만난다. “p &lt; 0.05면 유의하다”는 말을 들어봤을 것이다. 그런데 왜 하필 0.05일까? 0.04는 안 되고, 0.06은 안 되는 이유가 있는 걸까? 나는 이 질문을 받을 때마다 학생에게 되묻는다. “그 기준, 누가 정했는지 아세요?”</p>
-<p>사실 0.05라는 기준은 <strong>로널드 피셔(Ronald Fisher)</strong> 가 1925년 《Statistical Methods for Research Workers》에서 “편의상 기준으로 삼기 좋다”고 제안한 데서 비롯됐다. 엄밀한 수학적 근거가 있는 숫자가 아니다. 피셔 본인도 이 숫자를 절대적인 기준으로 삼으라고 한 것이 아니었다.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-p-값의 정의
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>귀무가설이 참이라고 가정했을 때</strong>, 실제로 관측된 결과 혹은 그보다 더 극단적인 결과가 나올 확률.</p>
-<p>p-값은 “효과의 크기”나 “가설이 옳을 확률”이 아니다. 데이터와 귀무가설 사이의 <strong>양립 가능성</strong>을 나타내는 수치다.</p>
-</div>
-</div>
-<div id="fbb5f975" class="cell" data-execution_count="1">
+<section id="상어는-무섭고-계단은-안-무섭다" class="level2">
+<h2 class="anchored" data-anchor-id="상어는-무섭고-계단은-안-무섭다">상어는 무섭고, 계단은 안 무섭다</h2>
+<p>여름 바다에 발을 담글 때 상어를 떠올리며 긴장하는 사람은 있어도, 화장실 바닥에서 미끄러질까 봐 긴장하는 사람은 거의 없다. 그런데 전 세계 통계를 보면 이 두려움의 순서는 완전히 거꾸로다. 국제상어공격파일(ISAF) 집계에 따르면 상어의 공격으로 사망하는 사람은 전 세계에서 연평균 열 명 안팎이다. 반면 세계보건기구(WHO)는 낙상(추락·미끄러짐) 사고로 사망하는 사람이 전 세계에서 연간 약 68만 명에 이른다고 추정한다.</p>
+<div id="af457f79" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_pvalue_files/figure-html/cell-2-output-1.png" width="652" height="355" class="figure-img"></p>
-<figcaption>귀무가설이 참일 때의 검정통계량 분포(표준정규분포). 관측값(주황 점) 오른쪽으로 더 극단적인 영역의 넓이가 곧 p-값이다.</figcaption>
+<p><img src="story_availability_bias_files/figure-html/cell-2-output-1.png" width="565" height="413" class="figure-img"></p>
+<figcaption>Estimated annual deaths worldwide: unprovoked shark attacks (International Shark Attack File, roughly ~10/year) vs falls (WHO, roughly ~684,000/year) — on a log scale, since the two numbers differ by nearly five orders of magnitude. Falls kill tens of thousands of times more people, yet shark attacks dominate the headlines and the fear.</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>낙상은 상어보다 <strong>6만 배 넘게</strong> 더 많은 사람을 죽이지만, 뉴스에 “오늘 화장실에서 미끄러져 사망”이라는 기사는 거의 나오지 않는다. 반면 상어에게 물린 사고는 단 한 건이라도 전 세계 언론이 대서특필한다. 우리가 실제로 두려워하는 크기는 실제 발생 빈도가 아니라, <strong>그 사건이 얼마나 쉽게 머릿속에 떠오르는가</strong>로 결정된다. 이 현상에 심리학자 아모스 트버스키와 대니얼 카너먼은 <strong>가용성 편향(availability bias, availability heuristic)</strong>이라는 이름을 붙였다.</p>
 </section>
-<section id="p-값이-말하는-것과-말하지-않는-것" class="level2">
-<h2 class="anchored" data-anchor-id="p-값이-말하는-것과-말하지-않는-것">p-값이 말하는 것과 말하지 않는 것</h2>
-<p>p-값을 둘러싼 오해는 통계학에서 가장 오래된 논쟁 중 하나다.</p>
+<section id="왜-떠올리기-쉬움이-자주-일어남으로-둔갑하는가" class="level2">
+<h2 class="anchored" data-anchor-id="왜-떠올리기-쉬움이-자주-일어남으로-둔갑하는가">왜 “떠올리기 쉬움”이 “자주 일어남”으로 둔갑하는가</h2>
+<p>1973년 트버스키와 카너먼은 이런 실험을 했다. 사람들에게 영어 단어에서 K, L, N, R, V 같은 자음이 <strong>첫 번째 글자</strong>로 더 많이 쓰이는지, <strong>세 번째 글자</strong>로 더 많이 쓰이는지 물었다. 대다수는 첫 글자 쪽이라고 답했다. 그런데 실제로 이 자음들은 세 번째 글자로 쓰이는 경우가 더 흔하다. 이유는 단순하다. 우리는 단어를 “K로 시작하는 단어”로는 쉽게 떠올리지만, “세 번째 글자가 K인 단어”로는 검색하듯 떠올리기 어렵다. <strong>떠올리기 쉬운 정도가 실제 빈도를 대신해버린 것이다.</strong></p>
+<p>뉴스 보도도 똑같은 방식으로 작동한다. 자주 일어나지만 심심한 사건(낙상, 감기, 교통 정체)은 기사가 되지 않는다. 드물지만 극적인 사건(상어 습격, 항공기 사고, 이상동기 범죄)은 며칠씩 이어지는 특집 기사가 된다. 그 결과, 우리 머릿속에 저장되는 “사례의 개수”는 실제 발생 개수와 전혀 다른 비율로 쌓인다.</p>
+<div id="f47b2526" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_availability_bias_files/figure-html/cell-3-output-1.png" width="614" height="413" class="figure-img"></p>
+<figcaption>A simplified illustrative model, not real statistics: an everyday event that happens 1,000 times a year but gets covered in only 2% of cases, versus a rare event that happens 5 times a year but each time generates about 5 follow-up stories. The rare event ends up more ‘available’ in the news even though it happens 200 times less often.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>이 그림은 실제 통계가 아니라 메커니즘을 보여주기 위한 단순화된 모형이다. 일상적인 사건은 1,000번 일어나도 2%만 기사화되어 20건의 보도가 나온다. 반면 극적인 사건은 5번밖에 안 일어나지만 한 건당 후속 보도가 5건씩 붙어 25건의 보도가 나온다. <strong>실제로는 200배 더 드문 사건이, 뉴스에서는 더 자주 등장하는 사건으로 뒤바뀐다.</strong> 우리는 뉴스에서 본 횟수를 실제 발생 빈도의 대용치로 쓰기 때문에, 이 역전이 그대로 체감 위험도의 역전으로 이어진다.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-흔한 오해 vs 올바른 해석
+“요즘 세상이 흉흉하다”는 체감
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
-<colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>잘못된 해석</th>
-<th>올바른 해석</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>p = 0.03 → “귀무가설이 거짓일 확률 97%”</td>
-<td>p = 0.03 → “귀무가설 하에서 이 데이터가 나올 확률 3% 이하”</td>
-</tr>
-<tr class="even">
-<td>p &gt; 0.05 → “효과 없음을 증명”</td>
-<td>p &gt; 0.05 → “귀무가설을 기각할 근거가 충분하지 않음”</td>
-</tr>
-<tr class="odd">
-<td>p가 작을수록 효과가 크다</td>
-<td>p가 작은 것은 표본 크기와도 관련 있음</td>
-</tr>
-</tbody>
-</table>
-<p>p-값은 <strong>효과의 크기(effect size)</strong>를 말하지 않는다.</p>
+<p>한국에서도 비슷한 패턴이 반복된다. 이상동기 범죄나 전세사기처럼 자극적인 사건이 연달아 보도되면 “요즘 왜 이렇게 사건사고가 많지”라는 체감이 강해진다. 그런데 이런 체감과 실제 범죄 통계의 장기 추세가 반대로 움직이는 경우가 여러 조사에서 보고된다. 범죄가 실제로 늘었는지는 매번 공식 통계로 따로 확인해야 할 질문이지, “요즘 뉴스에 많이 나온다”는 인상만으로 답할 수 있는 질문이 아니다.</p>
 </div>
 </div>
-<p>표본이 충분히 크면 아무리 작은 차이도 p &lt; 0.05가 된다. 반대로 표본이 작으면 실질적으로 큰 차이가 있어도 유의하지 않게 나올 수 있다.</p>
-<div id="adbfcd42" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="story_pvalue_files/figure-html/cell-3-output-1.png" width="656" height="353" class="figure-img"></p>
-<figcaption>실질적으로는 아주 작은 효과(두 집단 평균 차이가 표준편차의 5%에 불과)라도, 표본크기가 커지면 p-값은 결국 0.05 아래로 떨어진다.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>그래프의 효과 크기는 처음부터 끝까지 단 하나, 표준편차의 5%로 고정돼 있다. 달라진 것은 표본크기뿐인데도 p-값은 표본이 커질수록 계속 작아진다. <strong>작은 p-값이 항상 “큰 효과”를 의미하지 않는 이유</strong>가 여기에 있다.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-더 깊이: 유의확률의 정식 정의와 계산
+“요즘 자주 보인다”는 느낌을 검증하는 법
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>p-값을 “귀무가설이 거짓일 확률”로 오해하는 흔한 실수는, 정식 정의를 정확히 알면 사라진다. 강의노트 <a href="../../notes/math_stat/hypothesis_testing.html#유의확률">〈수리 통계 7. 가설검정과 신뢰구간 — 유의확률〉</a>에서는 유의확률을 “귀무가설 하에서 검정통계량이 관측치보다 귀무가설을 기각하는 방향으로 더 극단적인 값을 가질 확률”로 엄밀하게 정의하고, 단측·양측 검정에 따른 계산 방법과 예제를 다룬다.</p>
+<ol type="1">
+<li><strong>그 사건이 뉴스가 될 만큼 극적인가?</strong> 극적일수록 실제 발생 빈도보다 보도 빈도가 부풀려질 가능성이 크다.</li>
+<li><strong>비교 대상이 되는 “안 무서운” 사건의 실제 빈도도 알고 있는가?</strong> 상어와 낙상처럼, 진짜 위험은 종종 가장 안 무섭게 생긴 곳에 있다.</li>
+<li><strong>“내 기억에 몇 건 떠오른다”는 것과 “실제 통계가 몇 건이다”는 것을 구분했는가?</strong> 전자는 언론 보도량과 개인적 경험에 좌우되고, 후자만이 진짜 빈도다.</li>
+</ol>
 </div>
 </div>
 </section>
-<section id="유의하다와-중요하다는-다르다" class="level2">
-<h2 class="anchored" data-anchor-id="유의하다와-중요하다는-다르다">“유의하다”와 “중요하다”는 다르다</h2>
-<p>2019년 미국통계학회(ASA)는 p-값만으로 결론을 내리는 관행에 경고하는 성명을 발표했다. 800명 이상의 통계학자가 서명한 이 성명의 핵심 메시지는 하나였다.</p>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
+<section id="더-깊이-확률은-원래-떠오르는-정도가-아니라-장기적-비율로-정의된다" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-확률은-원래-떠오르는-정도가-아니라-장기적-비율로-정의된다">더 깊이: 확률은 원래 “떠오르는 정도”가 아니라 “장기적 비율”로 정의된다</h2>
+<p>강의노트 <a href="../../notes/math_stat/probability.html#상대-빈도-relative-frequency">〈수리통계학 1. 확률론 — 상대 빈도(Relative Frequency)〉</a>는 확률을 <span class="math inline">\(P(A) = \lim_{n \to \infty} f/n\)</span>, 즉 시행을 무한히 반복했을 때 사건 <span class="math inline">\(A\)</span>가 일어난 횟수의 비율로 정의한다. 뷔퐁이 동전을 4,040번, 피어슨이 24,000번 던져 상대빈도가 0.5 근처로 수렴하는 것을 직접 확인했다는 사례도 함께 소개한다. 가용성 편향은 바로 이 정의를 어기는 방식으로 작동한다. 사람들은 <span class="math inline">\(n\)</span>번의 전체 시행 중 <span class="math inline">\(f\)</span>번을 실제로 세는 대신, <strong>머릿속에 쉽게 떠오르는 사례의 수</strong>로 그 비율을 대신 추정한다. 뉴스 보도처럼 표본 자체가 이미 극적인 사건 쪽으로 치우쳐 있다면, 그 편향된 표본에서 나온 “체감 빈도”는 강의노트가 정의하는 진짜 확률과 처음부터 다른 것을 재고 있는 셈이다.</p>
+</section>
+<section id="결론-무서운-것과-위험한-것은-다르다" class="level2">
+<h2 class="anchored" data-anchor-id="결론-무서운-것과-위험한-것은-다르다">결론: 무서운 것과 위험한 것은 다르다</h2>
+<p>이번 주 나흘 동안 다룬 핫핸드, 도박사의 오류, 생존자 편향, 평균으로의 회귀는 모두 “무작위성을 잘못 읽는” 오류였다. 가용성 편향은 조금 다르다. 무작위성이 아니라 <strong>기억이라는 필터</strong>를 잘못 읽는 오류다. 우리 기억은 모든 사건을 공평하게 저장하지 않는다. 극적이고, 최근이고, 감정을 자극하는 사건일수록 더 선명하게, 더 오래 남는다. 그 결과 “내가 자주 떠올릴 수 있는 것”과 “실제로 자주 일어나는 것” 사이에는 항상 간극이 생긴다. 상어를 무서워하기 전에, 계단을 조심하는 편이 통계적으로는 훨씬 합리적이다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-ASA 성명의 핵심 (2019)
+참고 자료
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div class="callout-body-container callout-body">
-<p>“통계적 유의성”이라는 이분법적 기준을 버려라.</p>
-<p>효과의 유무는 p-값 하나로 결정할 수 없다. <strong>효과의 크기(effect size), 신뢰구간, 연구 맥락, 반복 가능성</strong>을 함께 고려해야 한다.</p>
-</div>
-</div>
-</section>
-<section id="결론-숫자보다-이야기가-먼저다" class="level2">
-<h2 class="anchored" data-anchor-id="결론-숫자보다-이야기가-먼저다">결론: 숫자보다 이야기가 먼저다</h2>
-<p>p-값은 분석의 끝이 아니라 출발점이다. “p &lt; 0.05가 나왔으니 됐다”가 아니라, “이 결과가 실질적으로 무슨 의미인가”를 묻는 것이 통계의 본래 역할이다.</p>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-실전에서 p-값을 쓸 때
-</div>
-</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul>
-<li>p-값과 함께 <strong>효과 크기(Cohen’s d, η² 등)</strong>를 항상 보고한다</li>
-<li>p &gt; 0.05를 “효과 없음”으로 결론 내리지 않는다</li>
-<li>표본 크기가 매우 크면 p-값보다 <strong>신뢰구간의 범위</strong>를 더 주목한다</li>
-<li>사전에 유의수준을 정하고(0.05 또는 0.01), 결과를 본 뒤 기준을 바꾸지 않는다</li>
+<li>Tversky, A., &amp; Kahneman, D. (1973). <em>Availability: A heuristic for judging frequency and probability.</em> Cognitive Psychology, 5(2), 207-232.</li>
+<li><a href="https://www.who.int/news-room/fact-sheets/detail/falls">Falls — World Health Organization</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Availability_heuristic">Availability heuristic — Wikipedia</a></li>
 </ul>
 </div>
 </div>
-<p>0.05라는 숫자에 지나치게 매달리지 않고, 데이터가 들려주는 이야기에 귀를 기울이는 것—그것이 좋은 통계 분석의 시작이다.</p>
-<p>논문 심사를 맡을 때마다 나는 저자에게 같은 질문을 던진다. “그래서 이 차이가 실제로 얼마나 큰가요?” 별표 개수로 답하는 저자보다, 숫자로 답하는 저자의 논문이 대개 더 오래 살아남는다.</p>
+</div>
 
 
 </section>
