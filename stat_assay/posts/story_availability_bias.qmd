@@ -6,35 +6,35 @@ title: "(사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는
 author: "권세혁"
 date: "2026-08-21"
 categories: [통계기초, 확률, 행동통계]
-description: "상어에게 물려 죽는 사람은 전 세계에서 한 해 열 명 남짓이지만, 낙상 사고로 죽는 사람은 수십만 명이다. 그런데도 바다에 들어갈 때 더 무서운 쪽은 상어다. 뉴스에 잘 나오는 사건일수록 기억하기 쉽고, 기억하기 쉬운 사건일수록 더 자주 일어나는 것처럼 느껴진다."
+description: "로또 1등에 당첨될 확률은 815만분의 1이다. 평생 벼락에 맞을 확률은 그보다 500배 넘게 높다. 그런데도 매주 로또를 사며 당첨을 상상하는 사람은 많아도, 벼락을 걱정하는 사람은 거의 없다. 뉴스에 잘 나오는 사건일수록 기억하기 쉽고, 기억하기 쉬운 사건일수록 더 자주 일어나는 것처럼 느껴진다."
 ---
 
-## 상어는 무섭고, 계단은 안 무섭다
+## 로또는 상상하고, 벼락은 상상하지 않는다
 
-여름 바다에 발을 담글 때 상어를 떠올리며 긴장하는 사람은 있어도, 화장실 바닥에서 미끄러질까 봐 긴장하는 사람은 거의 없다. 그런데 전 세계 통계를 보면 이 두려움의 순서는 완전히 거꾸로다. 국제상어공격파일(ISAF) 집계에 따르면 상어의 공격으로 사망하는 사람은 전 세계에서 연평균 열 명 안팎이다. 반면 세계보건기구(WHO)는 낙상(추락·미끄러짐) 사고로 사망하는 사람이 전 세계에서 연간 약 68만 명에 이른다고 추정한다.
+매주 토요일 저녁, 로또 추첨 방송을 챙겨보며 1등을 상상하는 사람은 많다. 반면 오늘 하루 벼락에 맞을까 봐 걱정하며 외출하는 사람은 거의 없다. 그런데 두 확률을 나란히 놓으면 이 순서는 뒤집힌다. 로또 6/45에서 1등에 당첨될 확률은 정확히 $\binom{45}{6} = 8,145,060$분의 1이다. 반면 미국 국립기상청(NWS)이 추정하는 평생 벼락에 맞을 확률은 약 15,300분의 1이다.
 
 ```{python}
 #| echo: false
-#| fig-cap: "Estimated annual deaths worldwide: unprovoked shark attacks (International Shark Attack File, roughly ~10/year) vs falls (WHO, roughly ~684,000/year) — on a log scale, since the two numbers differ by nearly five orders of magnitude. Falls kill tens of thousands of times more people, yet shark attacks dominate the headlines and the fear."
+#| fig-cap: "Two real, calculable probabilities on a log scale: winning the Korean Lotto 6/45 jackpot (an exact combinatorial calculation, 1 in 8,145,060) vs being struck by lightning at some point in your life (a commonly cited U.S. National Weather Service estimate, roughly 1 in 15,300). Being struck by lightning is over 500 times more likely — yet lightning barely crosses anyone's mind."
 import matplotlib.pyplot as plt
 
-labels = ["Shark attacks\n(~10/year)", "Falls\n(~684,000/year)"]
-values = [10, 684000]
+labels = ["Lotto jackpot\n(1 in 8,145,060)", "Struck by lightning\n(1 in 15,300)"]
+values = [1/8145060, 1/15300]
 
 fig, ax = plt.subplots(figsize=(6, 4.4))
 bars = ax.bar(labels, values, color=["#a8790a", "#1e3a2f"], width=0.5)
 ax.set_yscale("log")
 for b, v in zip(bars, values):
-    ax.annotate(f"{v:,}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 6),
+    ax.annotate(f"1 in {round(1/v):,}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 6),
                 textcoords="offset points", ha="center", fontsize=11)
-ax.set_ylabel("Estimated deaths worldwide per year (log scale)")
-ax.set_title("The thing we fear less kills far more people", fontsize=10.5, color="#1e3a2f")
+ax.set_ylabel("Probability (log scale)")
+ax.set_title("The thing nobody worries about is 500x more likely", fontsize=10.5, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()
 ```
 
-낙상은 상어보다 **6만 배 넘게** 더 많은 사람을 죽이지만, 뉴스에 "오늘 화장실에서 미끄러져 사망"이라는 기사는 거의 나오지 않는다. 반면 상어에게 물린 사고는 단 한 건이라도 전 세계 언론이 대서특필한다. 우리가 실제로 두려워하는 크기는 실제 발생 빈도가 아니라, **그 사건이 얼마나 쉽게 머릿속에 떠오르는가**로 결정된다. 이 현상에 심리학자 아모스 트버스키와 대니얼 카너먼은 **가용성 편향(availability bias, availability heuristic)**이라는 이름을 붙였다.
+벼락에 맞을 확률이 로또 1등 확률보다 **500배 넘게** 높은데도, 벼락을 걱정하며 사는 사람은 없다. 반대로 로또는 매주 수백만 명이 "이번엔 될지도 모른다"는 마음으로 산다. 이유는 명확하다. 로또 1등 당첨자는 매주 뉴스에 나오고, 당첨 판매점에는 "명당"이라는 팻말이 붙어 사람들이 줄을 선다. 반면 벼락에 맞은 사람의 사연은 개인 사고로 조용히 지나갈 뿐, 거의 보도되지 않는다. 우리가 실제로 두려워하거나 기대하는 크기는 실제 확률이 아니라, **그 사건이 얼마나 쉽게 머릿속에 떠오르는가**로 결정된다. 이 현상에 심리학자 아모스 트버스키와 대니얼 카너먼은 **가용성 편향(availability bias, availability heuristic)**이라는 이름을 붙였다.
 
 ## 왜 "떠올리기 쉬움"이 "자주 일어남"으로 둔갑하는가
 
@@ -83,7 +83,7 @@ plt.show()
 ## "요즘 자주 보인다"는 느낌을 검증하는 법
 
 1. **그 사건이 뉴스가 될 만큼 극적인가?** 극적일수록 실제 발생 빈도보다 보도 빈도가 부풀려질 가능성이 크다.
-2. **비교 대상이 되는 "안 무서운" 사건의 실제 빈도도 알고 있는가?** 상어와 낙상처럼, 진짜 위험은 종종 가장 안 무섭게 생긴 곳에 있다.
+2. **비교 대상이 되는 "안 무서운" 사건의 실제 확률도 알고 있는가?** 로또와 벼락처럼, 진짜 확률은 종종 가장 상상하지 않는 곳에 있다.
 3. **"내 기억에 몇 건 떠오른다"는 것과 "실제 통계가 몇 건이다"는 것을 구분했는가?** 전자는 언론 보도량과 개인적 경험에 좌우되고, 후자만이 진짜 빈도다.
 :::
 
@@ -93,12 +93,13 @@ plt.show()
 
 ## 결론: 무서운 것과 위험한 것은 다르다
 
-이번 주 나흘 동안 다룬 핫핸드, 도박사의 오류, 생존자 편향, 평균으로의 회귀는 모두 "무작위성을 잘못 읽는" 오류였다. 가용성 편향은 조금 다르다. 무작위성이 아니라 **기억이라는 필터**를 잘못 읽는 오류다. 우리 기억은 모든 사건을 공평하게 저장하지 않는다. 극적이고, 최근이고, 감정을 자극하는 사건일수록 더 선명하게, 더 오래 남는다. 그 결과 "내가 자주 떠올릴 수 있는 것"과 "실제로 자주 일어나는 것" 사이에는 항상 간극이 생긴다. 상어를 무서워하기 전에, 계단을 조심하는 편이 통계적으로는 훨씬 합리적이다.
+이번 주 나흘 동안 다룬 핫핸드, 도박사의 오류, 생존자 편향, 평균으로의 회귀는 모두 "무작위성을 잘못 읽는" 오류였다. 가용성 편향은 조금 다르다. 무작위성이 아니라 **기억이라는 필터**를 잘못 읽는 오류다. 우리 기억은 모든 사건을 공평하게 저장하지 않는다. 극적이고, 최근이고, 감정을 자극하는 사건일수록 더 선명하게, 더 오래 남는다. 그 결과 "내가 자주 떠올릴 수 있는 것"과 "실제로 자주 일어나는 것" 사이에는 항상 간극이 생긴다. 로또 1등을 상상하기 전에, 벼락에 맞을 확률이 그보다 훨씬 높다는 사실을 떠올려 보는 편이 통계적으로는 더 정직하다.
 
 ::: {.callout-note collapse="true"}
 ## 참고 자료
 
 - Tversky, A., & Kahneman, D. (1973). *Availability: A heuristic for judging frequency and probability.* Cognitive Psychology, 5(2), 207-232.
-- [Falls — World Health Organization](https://www.who.int/news-room/fact-sheets/detail/falls)
+- [Lightning Safety — National Weather Service](https://www.weather.gov/safety/lightning)
+- [로또 6/45 — 위키백과](https://ko.wikipedia.org/wiki/%EB%A1%9C%EB%98%90_6/45)
 - [Availability heuristic — Wikipedia](https://en.wikipedia.org/wiki/Availability_heuristic)
 :::
