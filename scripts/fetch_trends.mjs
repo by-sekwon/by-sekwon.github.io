@@ -11,7 +11,7 @@ import path from "node:path";
 // `quarto render` would otherwise wipe if it only existed under docs/.
 const SRC_DATA_DIR = path.resolve("trends/data");
 const OUT_DATA_DIR = path.resolve("docs/trends/data");
-const RETENTION_DAYS = 14;
+const RETENTION_DAYS = 30;
 
 function todayKST() {
   const parts = new Intl.DateTimeFormat("en-CA", {
