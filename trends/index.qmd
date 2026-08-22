@@ -82,14 +82,30 @@ format:
   padding: 0;
 }
 .tr-list li {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
   padding: 0.35rem 0;
   border-bottom: 1px dashed #eee;
   font-size: 0.92rem;
 }
 .tr-list li:last-child { border-bottom: none; }
+.tr-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.tr-news {
+  display: block;
+  margin: 0.2rem 0 0 2rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.tr-news a {
+  color: #667;
+  text-decoration: none;
+}
+.tr-news a:hover { text-decoration: underline; }
+.tr-news .tr-news-source {
+  color: #aaa;
+}
 .tr-rank {
   font-weight: 700;
   color: #3a5aad;
@@ -164,9 +180,12 @@ format:
       const items = source.items && source.items.length
         ? `<ol class="tr-list">${source.items.map((it) => `
             <li>
-              <span class="tr-rank">${it.rank}</span>
-              <span class="tr-keyword">${escapeHtml(it.keyword)}</span>
-              ${it.traffic ? `<span class="tr-traffic">${escapeHtml(it.traffic)}</span>` : ""}
+              <div class="tr-row">
+                <span class="tr-rank">${it.rank}</span>
+                <span class="tr-keyword">${escapeHtml(it.keyword)}</span>
+                ${it.traffic ? `<span class="tr-traffic">${escapeHtml(it.traffic)}</span>` : ""}
+              </div>
+              ${it.news ? `<span class="tr-news">📰 <a href="${escapeHtml(it.news.url)}" target="_blank" rel="noopener">${escapeHtml(it.news.title)}</a>${it.news.source ? ` <span class="tr-news-source">· ${escapeHtml(it.news.source)}</span>` : ""}</span>` : ""}
             </li>`).join("")}</ol>`
         : source.status === "error"
           ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
