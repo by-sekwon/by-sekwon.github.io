@@ -1,0 +1,222 @@
+---
+title: "오늘의 검색 트렌드"
+format:
+  html:
+    page-layout: full
+    toc: false
+---
+
+```{=html}
+<style>
+.tr-header {
+  background: linear-gradient(135deg, #1a2a4a 0%, #2d4a8c 60%, #3a5aad 100%);
+  color: #f5f0e8;
+  padding: 1.4rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.tr-header .tr-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+}
+.tr-header .tr-title span { color: #a2b8f0; }
+.tr-header .tr-sub {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+}
+.tr-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+.tr-controls select {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  border: none;
+}
+.tr-meta {
+  font-size: 0.8rem;
+  color: #888;
+  margin: -0.8rem 0 1.2rem;
+}
+.tr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+@media (max-width: 900px) {
+  .tr-grid { grid-template-columns: 1fr; }
+}
+.tr-card {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  background: var(--bs-body-bg, #fff);
+}
+.tr-card h3 {
+  font-size: 1.05rem;
+  margin: 0 0 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tr-card .tr-source-link {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #888;
+  text-decoration: none;
+}
+.tr-card .tr-source-link:hover { text-decoration: underline; }
+.tr-list {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+}
+.tr-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed #eee;
+  font-size: 0.92rem;
+}
+.tr-list li:last-child { border-bottom: none; }
+.tr-rank {
+  font-weight: 700;
+  color: #3a5aad;
+  min-width: 1.4rem;
+  text-align: right;
+}
+.tr-keyword { flex: 1; }
+.tr-traffic {
+  font-size: 0.75rem;
+  color: #999;
+}
+.tr-error {
+  color: #a33;
+  font-size: 0.88rem;
+}
+.tr-empty {
+  color: #999;
+  font-size: 0.88rem;
+}
+.tr-footnote {
+  margin-top: 1.4rem;
+  font-size: 0.78rem;
+  color: #999;
+  line-height: 1.6;
+}
+</style>
+
+<div class="tr-header">
+  <div>
+    <div class="tr-title">🔥 <span>오늘의 검색 트렌드</span></div>
+    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집</p>
+  </div>
+  <div class="tr-controls">
+    <label for="tr-date-select">날짜</label>
+    <select id="tr-date-select"></select>
+  </div>
+</div>
+
+<p class="tr-meta" id="tr-generated-at"></p>
+
+<div class="tr-grid" id="tr-grid">
+  <p class="tr-empty">데이터를 불러오는 중입니다…</p>
+</div>
+
+<p class="tr-footnote">
+  각 포털이 공개적으로 노출하는 실시간/이슈 검색어를 매일 자동으로 그대로 수집·정리한 것으로, 본 사이트가 별도로 순위를 산정하지 않습니다.
+  원본은 <a href="https://www.daum.net/" target="_blank" rel="noopener">Daum</a>,
+  <a href="https://www.zum.com/" target="_blank" rel="noopener">ZUM</a>,
+  <a href="https://trends.google.com/trending?geo=KR" target="_blank" rel="noopener">Google Trends</a>에서 확인할 수 있습니다.
+  일부 날짜는 포털 페이지 구조 변경 등으로 수집이 누락될 수 있습니다.
+</p>
+
+<script>
+(function () {
+  const grid = document.getElementById("tr-grid");
+  const select = document.getElementById("tr-date-select");
+  const meta = document.getElementById("tr-generated-at");
+  const cache = new Map();
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[c]));
+  }
+
+  function renderSnapshot(snapshot) {
+    meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date);
+    grid.innerHTML = "";
+    for (const source of snapshot.sources) {
+      const card = document.createElement("div");
+      card.className = "tr-card";
+      const items = source.items && source.items.length
+        ? `<ol class="tr-list">${source.items.map((it) => `
+            <li>
+              <span class="tr-rank">${it.rank}</span>
+              <span class="tr-keyword">${escapeHtml(it.keyword)}</span>
+              ${it.traffic ? `<span class="tr-traffic">${escapeHtml(it.traffic)}</span>` : ""}
+            </li>`).join("")}</ol>`
+        : source.status === "error"
+          ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
+          : `<p class="tr-empty">데이터 없음</p>`;
+      card.innerHTML = `
+        <h3>${escapeHtml(source.label)} <a class="tr-source-link" href="${source.sourceUrl}" target="_blank" rel="noopener">원본 ↗</a></h3>
+        ${items}
+      `;
+      grid.appendChild(card);
+    }
+  }
+
+  async function loadSnapshot(date) {
+    if (cache.has(date)) return cache.get(date);
+    const res = await fetch(`data/${date}.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    cache.set(date, data);
+    return data;
+  }
+
+  async function onDateChange() {
+    grid.innerHTML = '<p class="tr-empty">데이터를 불러오는 중입니다…</p>';
+    try {
+      const snapshot = await loadSnapshot(select.value);
+      renderSnapshot(snapshot);
+    } catch (err) {
+      grid.innerHTML = `<p class="tr-error">이 날짜의 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  async function init() {
+    try {
+      const res = await fetch("data/manifest.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const manifest = await res.json();
+      const dates = manifest.dates || [];
+      if (!dates.length) {
+        grid.innerHTML = '<p class="tr-empty">아직 수집된 데이터가 없습니다. 첫 자동 수집은 매일 오전 8시경 실행됩니다.</p>';
+        return;
+      }
+      select.innerHTML = dates.map((d) => `<option value="${d}">${d}</option>`).join("");
+      select.addEventListener("change", onDateChange);
+      await onDateChange();
+    } catch (err) {
+      grid.innerHTML = `<p class="tr-error">트렌드 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  init();
+})();
+</script>
+```
