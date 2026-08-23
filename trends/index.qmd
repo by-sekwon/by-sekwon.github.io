@@ -50,13 +50,10 @@ format:
 }
 .tr-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.2rem;
 }
-@media (max-width: 1200px) {
-  .tr-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .tr-grid { grid-template-columns: 1fr; }
 }
 .tr-card {
@@ -139,7 +136,7 @@ format:
 <div class="tr-header">
   <div>
     <div class="tr-title">🔥 <span>오늘의 검색 트렌드</span></div>
-    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집 + Claude 종합 Top 10</p>
+    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집</p>
   </div>
   <div class="tr-controls">
     <label for="tr-date-select">날짜</label>
@@ -159,7 +156,6 @@ format:
   <a href="https://www.zum.com/" target="_blank" rel="noopener">ZUM</a>,
   <a href="https://trends.google.com/trending?geo=KR" target="_blank" rel="noopener">Google Trends</a>에서 확인할 수 있습니다.
   일부 날짜는 포털 페이지 구조 변경 등으로 수집이 누락될 수 있습니다.
-  "Claude 종합 Top 10"은 별도 소스가 아니라, 위 세 소스에서 수집된 검색어·뉴스 제목만을 근거로 Claude가 중복 이슈를 병합하고 교차 언급 빈도로 순위를 매긴 결과입니다.
 </p>
 
 <script>
@@ -189,13 +185,13 @@ format:
                 <span class="tr-keyword">${escapeHtml(it.keyword)}</span>
                 ${it.traffic ? `<span class="tr-traffic">${escapeHtml(it.traffic)}</span>` : ""}
               </div>
-              ${it.news ? `<span class="tr-news">📰 ${it.news.url ? `<a href="${escapeHtml(it.news.url)}" target="_blank" rel="noopener">${escapeHtml(it.news.title)}</a>` : escapeHtml(it.news.title)}${it.news.source ? ` <span class="tr-news-source">· ${escapeHtml(it.news.source)}</span>` : ""}</span>` : ""}
+              ${it.news ? `<span class="tr-news">📰 <a href="${escapeHtml(it.news.url)}" target="_blank" rel="noopener">${escapeHtml(it.news.title)}</a>${it.news.source ? ` <span class="tr-news-source">· ${escapeHtml(it.news.source)}</span>` : ""}</span>` : ""}
             </li>`).join("")}</ol>`
         : source.status === "error"
           ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
           : `<p class="tr-empty">데이터 없음</p>`;
       card.innerHTML = `
-        <h3>${escapeHtml(source.label)} ${source.sourceUrl ? `<a class="tr-source-link" href="${escapeHtml(source.sourceUrl)}" target="_blank" rel="noopener">원본 ↗</a>` : ""}</h3>
+        <h3>${escapeHtml(source.label)} <a class="tr-source-link" href="${source.sourceUrl}" target="_blank" rel="noopener">원본 ↗</a></h3>
         ${items}
       `;
       grid.appendChild(card);

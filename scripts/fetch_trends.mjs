@@ -3,9 +3,6 @@
 // mirrors into docs/trends/data/ (published copy) so the trends/index.qmd
 // page picks up new data immediately, without waiting on a full site render.
 import { chromium } from "playwright";
-import Anthropic from "@anthropic-ai/sdk";
-import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { z } from "zod";
 import { mkdir, readFile, readdir, writeFile, unlink, cp } from "node:fs/promises";
 import path from "node:path";
 
@@ -171,84 +168,6 @@ async function fetchGoogleTrends() {
   }
 }
 
-const CurationSchema = z.object({
-  items: z
-    .array(
-      z.object({
-        keyword: z.string().describe("짧은 이슈 이름 (한국어, 5~15자 내외)"),
-        reason: z
-          .string()
-          .describe("이 이슈가 왜 상위권인지 한 문장으로. 반드시 제공된 뉴스 제목/검색어에 있는 사실만 사용."),
-        sources: z
-          .array(z.enum(["daum", "zum", "google"]))
-          .describe("이 이슈를 언급한 출처 (여러 소스에 동시에 뜬 경우 전부 포함)"),
-      }),
-    )
-    .max(10)
-    .describe("교차 소스 중요도 순으로 정렬된 상위 이슈 목록 (최대 10개, 입력 이슈 수가 적으면 그보다 적어도 됨)"),
-});
-
-// Asks Claude to synthesize a single "top 10" list across the three raw
-// sources: merge the same real-world story when it appears under different
-// keywords on different portals, and rank by how many sources carry it.
-// Grounded strictly in the keywords/headlines already scraped above — Claude
-// is explicitly told not to use outside knowledge, since it has no way to
-// verify today's actual news and must not guess at fast-moving real events.
-async function curateWithClaude(daum, zum, google) {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return { items: [], status: "error", error: "ANTHROPIC_API_KEY not set" };
-  }
-
-  const digest = [
-    { source: "daum", ok: daum.status === "ok", items: daum.items },
-    { source: "zum", ok: zum.status === "ok", items: zum.items },
-    { source: "google", ok: google.status === "ok", items: google.items },
-  ]
-    .filter((s) => s.ok && s.items.length)
-    .map((s) => ({
-      source: s.source,
-      items: s.items.map((it) => ({
-        keyword: it.keyword,
-        news_title: it.news?.title || null,
-      })),
-    }));
-
-  if (!digest.length) {
-    return { items: [], status: "error", error: "no source data available to curate" };
-  }
-
-  try {
-    const client = new Anthropic();
-    const response = await client.messages.parse({
-      model: "claude-opus-5",
-      max_tokens: 4096,
-      output_config: {
-        effort: "medium",
-        format: zodOutputFormat(CurationSchema),
-      },
-      system:
-        "너는 한국 포털 실시간 검색어 데이터를 종합하는 편집자다. 아래 JSON은 Daum·ZUM·Google Trends에서 " +
-        "오늘 실제로 수집된 검색어와 관련 뉴스 제목이다. 이 데이터에 없는 사실을 절대 추가하거나 추측하지 마라 " +
-        "(너는 실시간 정보를 모른다). 같은 실제 사건을 가리키는 서로 다른 키워드는 하나의 이슈로 합치고, " +
-        "여러 소스에 동시에 뜬 이슈를 우선순위로 두어 상위 10개 이내로 정리하라.",
-      messages: [{ role: "user", content: JSON.stringify(digest) }],
-    });
-
-    if (!response.parsed_output) {
-      return { items: [], status: "error", error: "failed to parse structured output" };
-    }
-
-    const items = response.parsed_output.items.map((it, i) => ({
-      rank: i + 1,
-      keyword: it.keyword,
-      news: { title: it.reason, source: it.sources.join(", ") },
-    }));
-    return { items, status: "ok" };
-  } catch (err) {
-    return { items: [], status: "error", error: err.message };
-  }
-}
-
 async function pruneOldFiles(dir, keepDates) {
   const keep = new Set(keepDates);
   let existing;
@@ -278,9 +197,7 @@ async function main() {
 
   await browser.close();
 
-  const claude = await curateWithClaude(daum, zum, google);
-
-  for (const [name, result] of [["daum", daum], ["zum", zum], ["google", google], ["claude", claude]]) {
+  for (const [name, result] of [["daum", daum], ["zum", zum], ["google", google]]) {
     if (result.status === "error") {
       console.error(`[${name}] failed: ${result.error}`);
     } else {
@@ -295,7 +212,6 @@ async function main() {
       { id: "daum", label: "Daum 실시간 트렌드", sourceUrl: "https://www.daum.net/", ...daum },
       { id: "zum", label: "ZUM AI 이슈 트렌드", sourceUrl: "https://www.zum.com/", ...zum },
       { id: "google", label: "Google Trends", sourceUrl: "https://trends.google.com/trending?geo=KR", ...google },
-      { id: "claude", label: "Claude 종합 Top 10", sourceUrl: null, ...claude },
     ],
   };
 
