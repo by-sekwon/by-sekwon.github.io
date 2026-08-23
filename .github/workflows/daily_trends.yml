@@ -20,12 +20,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Playwright
+      - name: Install dependencies
         run: |
-          npm install playwright@latest
+          npm install playwright@latest @anthropic-ai/sdk@latest zod@latest
           npx playwright install --with-deps chromium
 
       - name: Fetch daily trends
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/fetch_trends.mjs
 
       - name: Commit and push if changed
