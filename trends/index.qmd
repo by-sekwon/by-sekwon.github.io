@@ -136,17 +136,9 @@ format:
 <div class="tr-header">
   <div>
     <div class="tr-title">🔥 <span>오늘의 검색 트렌드</span></div>
-    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집</p>
+    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집 (정치·경제·사회·국제 4개 분야만 기본으로 표시)</p>
   </div>
   <div class="tr-controls">
-    <label for="tr-category-select">분야</label>
-    <select id="tr-category-select">
-      <option value="전체">전체</option>
-      <option value="정치">정치</option>
-      <option value="경제">경제</option>
-      <option value="사회">사회</option>
-      <option value="국제">국제</option>
-    </select>
     <label for="tr-date-select">날짜</label>
     <select id="tr-date-select"></select>
   </div>
@@ -164,17 +156,15 @@ format:
   <a href="https://www.zum.com/" target="_blank" rel="noopener">ZUM</a>,
   <a href="https://trends.google.com/trending?geo=KR" target="_blank" rel="noopener">Google Trends</a>에서 확인할 수 있습니다.
   일부 날짜는 포털 페이지 구조 변경 등으로 수집이 누락될 수 있습니다.
-  이 페이지는 원본 수집 결과 중 <strong>정치·경제·사회·국제</strong> 관련 트렌드만 추려서 보여줍니다(스포츠·연예·문화, 결혼·열애 등 신변잡기성 소식은 제외). "분야" 필터는 포털이 제공하는 공식 분류가 아니라, 검색어와 연결된 기사 제목을 키워드로 훑어 자동으로 추정한 것이라 참고용으로만 봐 주세요.
+  이 페이지는 원본 수집 결과 중 <strong>정치·경제·사회·국제</strong> 관련 트렌드만 추려서 보여줍니다(스포츠·연예·문화, 결혼·열애 등 신변잡기성 소식은 제외). 이 분류는 포털이 제공하는 공식 분류가 아니라, 검색어와 연결된 기사 제목을 키워드로 훑어 자동으로 추정한 것이라 참고용으로만 봐 주세요.
 </p>
 
 <script>
 (function () {
   const grid = document.getElementById("tr-grid");
   const select = document.getElementById("tr-date-select");
-  const categorySelect = document.getElementById("tr-category-select");
   const meta = document.getElementById("tr-generated-at");
   const cache = new Map();
-  let currentSnapshot = null;
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -217,19 +207,14 @@ format:
   }
 
   function renderSnapshot(snapshot) {
-    const category = categorySelect.value;
     meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date)
-      + (category === "전체" ? " · 분야: 정치·경제·사회·국제만 표시 (자동 분류, 참고용)" : ` · 분야: ${category} (자동 분류, 참고용)`);
+      + " · 분야: 정치·경제·사회·국제만 표시 (자동 분류, 참고용)";
     grid.innerHTML = "";
     for (const source of snapshot.sources) {
       const card = document.createElement("div");
       card.className = "tr-card";
       const filtered = source.items
-        ? source.items.filter((it) => {
-            const cls = classify(it);
-            if (!TARGET_CATEGORIES.includes(cls)) return false;
-            return category === "전체" || cls === category;
-          })
+        ? source.items.filter((it) => TARGET_CATEGORIES.includes(classify(it)))
         : [];
       const items = filtered.length
         ? `<ol class="tr-list">${filtered.map((it) => `
@@ -244,7 +229,7 @@ format:
         : source.status === "error"
           ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
           : source.items && source.items.length
-            ? `<p class="tr-empty">선택한 분야("${escapeHtml(category)}")의 트렌드가 없습니다.</p>`
+            ? `<p class="tr-empty">오늘은 정치·경제·사회·국제 분야의 트렌드가 없습니다.</p>`
             : `<p class="tr-empty">데이터 없음</p>`;
       card.innerHTML = `
         <h3>${escapeHtml(source.label)} <a class="tr-source-link" href="${source.sourceUrl}" target="_blank" rel="noopener">원본 ↗</a></h3>
@@ -266,16 +251,11 @@ format:
   async function onDateChange() {
     grid.innerHTML = '<p class="tr-empty">데이터를 불러오는 중입니다…</p>';
     try {
-      currentSnapshot = await loadSnapshot(select.value);
-      renderSnapshot(currentSnapshot);
+      const snapshot = await loadSnapshot(select.value);
+      renderSnapshot(snapshot);
     } catch (err) {
-      currentSnapshot = null;
       grid.innerHTML = `<p class="tr-error">이 날짜의 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
     }
-  }
-
-  function onCategoryChange() {
-    if (currentSnapshot) renderSnapshot(currentSnapshot);
   }
 
   async function init() {
@@ -290,7 +270,6 @@ format:
       }
       select.innerHTML = dates.map((d) => `<option value="${d}">${d}</option>`).join("");
       select.addEventListener("change", onDateChange);
-      categorySelect.addEventListener("change", onCategoryChange);
       await onDateChange();
     } catch (err) {
       grid.innerHTML = `<p class="tr-error">트렌드 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
