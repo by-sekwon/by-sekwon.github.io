@@ -136,7 +136,7 @@ format:
 <div class="tr-header">
   <div>
     <div class="tr-title">🔥 <span>오늘의 검색 트렌드</span></div>
-    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집 (정치·경제·사회·국제 4개 분야만 기본으로 표시)</p>
+    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집</p>
   </div>
   <div class="tr-controls">
     <label for="tr-date-select">날짜</label>
@@ -156,7 +156,6 @@ format:
   <a href="https://www.zum.com/" target="_blank" rel="noopener">ZUM</a>,
   <a href="https://trends.google.com/trending?geo=KR" target="_blank" rel="noopener">Google Trends</a>에서 확인할 수 있습니다.
   일부 날짜는 포털 페이지 구조 변경 등으로 수집이 누락될 수 있습니다.
-  이 페이지는 원본 수집 결과 중 <strong>정치·경제·사회·국제</strong> 관련 트렌드만 추려서 보여줍니다(스포츠·연예·문화, 결혼·열애 등 신변잡기성 소식은 제외). 이 분류는 포털이 제공하는 공식 분류가 아니라, 검색어와 연결된 기사 제목을 키워드로 훑어 자동으로 추정한 것이라 참고용으로만 봐 주세요.
 </p>
 
 <script>
@@ -172,52 +171,14 @@ format:
     }[c]));
   }
 
-  // Portals don't tag trends with a category, so this is a lightweight
-  // keyword-based guess run in the browser (not an official classification).
-  // Checked in this order; first matching category wins.
-  // Ordered from most distinctive vocabulary to least: country names (국제)
-  // go last because they show up as incidental mentions inside otherwise
-  // domestic 사회 stories (e.g. "코로나 재유행 ... 중국 확산"), so
-  // checking them first would misclassify those as 국제.
-  // 신변잡기 is checked first and on purpose: gossip stories often mention
-  // a celebrity's destination country ("화사, ... 미국 가더니") or an
-  // unrelated institution, which would otherwise leak into 국제/사회 if
-  // checked later. 스포츠, 문화, IT·과학, 신변잡기 all stay in the classifier
-  // purely as exclusion buckets — the page only ever displays
-  // TARGET_CATEGORIES below, so anything landing outside it is filtered
-  // out entirely, not just hidden behind a filter option.
-  const TARGET_CATEGORIES = ["정치", "경제", "사회", "국제"];
-  const CATEGORY_KEYWORDS = [
-    ["신변잡기", ["열애", "결혼", "이혼", "재혼", "연애", "신혼", "웨딩", "임신", "출산", "근황", "이별", "냉랭", "사생활", "럽스타그램", "동거", "환승연애", "양다리", "불륜", "열애설", "저격"]],
-    ["정치", ["대통령", "국회", "여당", "야당", "국민의힘", "민주당", "조국혁신당", "개혁신당", "정부", "국무총리", "장관", "청와대", "용산", "대선", "총선", "탄핵", "국정감사", "특검", "의원", "공천"]],
-    ["스포츠", ["야구", "KBO", "프로야구", "축구", "K리그", "EPL", "프리미어리그", "라리가", "농구", "KBL", "배구", "V리그", "골프", "PGA", "LPGA", "올림픽", "월드컵", "감독", "구단", "롯데", "두산", "LG트윈스", "KIA", "삼성라이온즈", "SSG", "한화이글스", "키움", "NC다이노스", "kt위즈", "메이저리그", "MLB", "챔피언스리그", "배드민턴", "테니스"]],
-    ["문화", ["드라마", "영화", "예능", "아이돌", "가수", "배우", "컴백", "빌보드", "콘서트", "데뷔", "앨범", "OTT", "넷플릭스", "티빙", "웨이브", "뮤직뱅크", "시상식", "걸그룹", "보이그룹", "문화재", "전시", "공연", "연극", "뮤지컬", "도서", "출판", "방송", "다큐멘터리", "박물관", "미술관", "캐스팅", "출연", "섭외"]],
-    ["IT·과학", ["인공지능", "챗GPT", "스마트폰", "앱스토어", "우주", "나사", "NASA", "로봇", "전기차", "자율주행", "메타버스", "양자컴퓨터", "생성형"]],
-    ["경제", ["주식", "증시", "코스피", "코스닥", "상장", "금리", "환율", "부동산", "은행", "수출", "무역수지", "GDP", "물가", "투자", "실적", "매출", "주주환원", "삼성전자", "SK하이닉스", "현대차", "반도체", "기업가치", "IPO", "공모주", "펀드", "가상자산", "비트코인"]],
-    ["사회", ["사고", "실종", "화재", "태풍", "지진", "호우", "폭염", "한파", "코로나", "재유행", "범죄", "경찰", "검찰", "법원", "판결", "기소", "구속", "학교", "교육부", "수능", "복지", "지원금", "시위", "집회", "사망", "숨진", "붕괴"]],
-    ["국제", ["미국", "중국", "일본", "러시아", "우크라이나", "트럼프", "바이든", "EU", "유엔", "UN", "북한", "나토", "NATO", "이스라엘", "팔레스타인", "가자", "정상회담", "외교", "관세", "시진핑", "푸틴", "영국", "프랑스", "독일", "대만"]],
-  ];
-
-  function classify(item) {
-    const text = ((item.keyword || "") + " " + (item.news?.title || "")).toLowerCase();
-    for (const [category, words] of CATEGORY_KEYWORDS) {
-      if (words.some((w) => text.includes(w.toLowerCase()))) return category;
-    }
-    return "기타";
-  }
-
   function renderSnapshot(snapshot) {
-    meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date)
-      + " · 분야: 정치·경제·사회·국제만 표시 (자동 분류, 참고용)";
+    meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date);
     grid.innerHTML = "";
     for (const source of snapshot.sources) {
       const card = document.createElement("div");
       card.className = "tr-card";
-      const filtered = source.items
-        ? source.items.filter((it) => TARGET_CATEGORIES.includes(classify(it)))
-        : [];
-      const items = filtered.length
-        ? `<ol class="tr-list">${filtered.map((it) => `
+      const items = source.items && source.items.length
+        ? `<ol class="tr-list">${source.items.map((it) => `
             <li>
               <div class="tr-row">
                 <span class="tr-rank">${it.rank}</span>
@@ -228,9 +189,7 @@ format:
             </li>`).join("")}</ol>`
         : source.status === "error"
           ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
-          : source.items && source.items.length
-            ? `<p class="tr-empty">오늘은 정치·경제·사회·국제 분야의 트렌드가 없습니다.</p>`
-            : `<p class="tr-empty">데이터 없음</p>`;
+          : `<p class="tr-empty">데이터 없음</p>`;
       card.innerHTML = `
         <h3>${escapeHtml(source.label)} <a class="tr-source-link" href="${source.sourceUrl}" target="_blank" rel="noopener">원본 ↗</a></h3>
         ${items}
