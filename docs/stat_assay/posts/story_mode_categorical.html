@@ -87,6 +87,35 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <meta name="theme-color" content="#1e3a2f">
 <meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -413,7 +442,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <section id="평균-혈액형이라는-질문이-성립하지-않는-이유" class="level2">
 <h2 class="anchored" data-anchor-id="평균-혈액형이라는-질문이-성립하지-않는-이유">“평균 혈액형”이라는 질문이 성립하지 않는 이유</h2>
 <p>한국인의 평균 혈액형은 무엇일까? 이상하게 들리겠지만, 이 질문에는 애초에 답이 없다. 한국갤럽조사연구소가 2023년 전국 성인 1,501명을 대상으로 조사한 결과, 한국인의 혈액형 분포는 A형 34%, O형 28%, B형 26%, AB형 11%였다. 그런데 이 네 범주를 “더해서 4로 나누는” 식의 평균 계산은 원천적으로 불가능하다. A형과 B형을 더하면 무엇이 나오는가? 이 질문 자체가 성립하지 않는다.</p>
-<div id="91625f08" class="cell" data-execution_count="1">
+<div id="893cf284" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -445,7 +474,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <section id="평균은-계산되지만-아무도-그-시각에-있지-않다" class="level2">
 <h2 class="anchored" data-anchor-id="평균은-계산되지만-아무도-그-시각에-있지-않다">평균은 계산되지만, 아무도 그 시각에 있지 않다</h2>
 <p>그런데 최빈값이 필요한 순간이 하나 더 있다. 이번엔 숫자 자료인데도 평균이 무의미해지는 경우다. 서울의 지하철·버스는 출근 시간대와 퇴근 시간대, 하루 두 번 승객이 몰린다. 이런 “시간대별 승차 인원” 자료의 평균 시각을 계산하면 어떻게 될까?</p>
-<div id="52f32481" class="cell" data-execution_count="2">
+<div id="1cda2264" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -456,6 +485,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </div>
 </div>
 <p>평균 시각은 오후 1시 근처로 계산된다. 그런데 그 시간대는 실제로는 하루 중 승객이 <strong>가장 적은</strong> 한산한 시간이다. 출근·퇴근이라는 뚜렷이 다른 두 봉우리를 하나의 평균으로 뭉개버리면, “평균적으로 사람들이 지하철을 타는 시각”이라는 표현 자체가 실재하지 않는 순간을 가리키게 된다. 이런 자료를 요약할 때 필요한 건 하나의 평균값이 아니라, “오전 8시와 오후 6시, 두 개의 봉우리가 있다”는 최빈값(또는 최빈 구간) 정보다.</p>
+<p>문제는 이 함정이 숫자 자료에서는 눈에 잘 띄지 않는다는 점이다. <span class="math inline">\(\bar{x} = \frac{1}{n}\sum x_i\)</span>라는 계산은 원자료를 하나하나 더해 <span class="math inline">\(n\)</span>으로 나눌 뿐, 그 값들이 한 덩어리로 몰려 있는지 두 봉우리로 갈라져 있는지는 전혀 들여다보지 않는다. 즉 평균이라는 숫자 자체에는 분포의 모양이 조금도 남지 않는다. 그래서 숫자형 자료를 다룰 때는 <strong>평균을 계산하기 전에 반드시 히스토그램부터 그려보는 순서</strong>를 거쳐야 한다. 히스토그램 없이 곧장 평균을 구하면, 오늘 살펴본 지하철 사례처럼 봉우리가 여러 개라는 사실 자체를 발견할 기회조차 없이 지나가 버린다.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -466,7 +496,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>시간대별 교통량, 매장 방문객 수, 통화량처럼 하루·한 주 동안 뚜렷한 패턴이 반복되는 자료는 평균 하나로 요약하면 오히려 정보를 잃는다. 히스토그램을 그려 봉우리가 몇 개인지부터 확인하는 습관이, “평균 얼마”라는 숫자보다 훨씬 많은 것을 알려준다.</p>
+<p>시간대별 교통량, 매장 방문객 수, 통화량처럼 하루·한 주 동안 뚜렷한 패턴이 반복되는 자료는 평균 하나로 요약하면 오히려 정보를 잃는다. <strong>숫자형 자료를 요약하는 표준 순서는 평균부터 구하는 게 아니라, 히스토그램을 먼저 그려 봉우리가 몇 개인지 확인한 다음에 평균·중앙값·최빈값 중 무엇을 쓸지 정하는 것이다.</strong> 이 순서를 건너뛰고 평균부터 계산하면, 다봉분포라는 신호 자체를 놓친 채 실재하지 않는 “평균 시각” 같은 숫자만 손에 쥐게 된다.</p>
 </div>
 </div>
 </section>
@@ -476,7 +506,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </section>
 <section id="결론-평균을-내기-전에-봉우리부터-세어보라" class="level2">
 <h2 class="anchored" data-anchor-id="결론-평균을-내기-전에-봉우리부터-세어보라">결론: 평균을 내기 전에, 봉우리부터 세어보라</h2>
-<p>나는 학생들에게 어떤 자료든 요약하기 전에 먼저 두 가지를 물어보라고 말한다. 첫째, 이 값들을 더하고 나누는 게 말이 되는가? 아니라면 최빈값이 답이다. 둘째, 말이 된다 해도 히스토그램을 그렸을 때 봉우리가 하나인가, 여럿인가? <a href="../../stat_assay/posts/story_variance_world.html">지난 챕터의 “같은 평균, 전혀 다른 세상”</a>에서 살펴봤듯, 평균이라는 숫자 하나는 분포의 모양을 감쪽같이 숨긴다. 혈액형처럼 평균 자체가 성립하지 않는 자료든, 출퇴근 시간대처럼 평균이 존재하지도 않는 순간을 가리키는 자료든 — 결론은 같다. 평균은 만능 대표값이 아니라, 특정 조건(등간·비율척도, 단봉분포)에서만 제 역할을 하는 여러 도구 중 하나일 뿐이다.</p>
+<p>나는 학생들에게 어떤 자료든 요약하기 전에 먼저 두 가지를 물어보라고 말한다. 첫째, 이 값들을 더하고 나누는 게 말이 되는가? 아니라면 최빈값이 답이다. 둘째, 숫자형 자료라서 말이 된다 해도 <strong>평균을 계산하는 코드부터 치지 말고, 히스토그램부터 그려서</strong> 봉우리가 하나인가 여럿인가를 눈으로 확인하라. 이 순서를 지키지 않으면, 즉 히스토그램 없이 곧장 평균을 구해버리면, 다봉분포라는 신호는 애초에 발견될 기회조차 얻지 못한다. <a href="../../stat_assay/posts/story_variance_world.html">지난 챕터의 “같은 평균, 전혀 다른 세상”</a>에서 살펴봤듯, 평균이라는 숫자 하나는 분포의 모양을 감쪽같이 숨긴다. 혈액형처럼 평균 자체가 성립하지 않는 자료든, 출퇴근 시간대처럼 평균이 존재하지도 않는 순간을 가리키는 자료든 — 결론은 같다. 평균은 만능 대표값이 아니라, 특정 조건(등간·비율척도, 단봉분포)에서만 제 역할을 하는 여러 도구 중 하나일 뿐이다.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
