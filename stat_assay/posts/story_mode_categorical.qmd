@@ -1,0 +1,112 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(기록의 착시, 대표값의 재발견) 평균으로 설명되지 않는 데이터들 — 최빈값이 필요한 순간"
+author: "권세혁"
+date: "2026-08-27"
+categories: [통계기초, 기술통계]
+description: "한국인의 '평균 혈액형'은 무엇일까? 이 질문은 애초에 성립하지 않는다 — 혈액형은 더하고 나눌 수 있는 숫자가 아니기 때문이다. 지하철 혼잡 시간을 평균 내면 아무도 타지 않는 한산한 시각이 나오는 것도 같은 문제의 다른 얼굴이다. 평균이 아니라 최빈값이 필요한 두 가지 순간을 정리한다."
+---
+
+## "평균 혈액형"이라는 질문이 성립하지 않는 이유
+
+한국인의 평균 혈액형은 무엇일까? 이상하게 들리겠지만, 이 질문에는 애초에 답이 없다. 한국갤럽조사연구소가 2023년 전국 성인 1,501명을 대상으로 조사한 결과, 한국인의 혈액형 분포는 A형 34%, O형 28%, B형 26%, AB형 11%였다. 그런데 이 네 범주를 "더해서 4로 나누는" 식의 평균 계산은 원천적으로 불가능하다. A형과 B형을 더하면 무엇이 나오는가? 이 질문 자체가 성립하지 않는다.
+
+```{python}
+#| echo: false
+#| fig-cap: "South Korea's blood-type distribution (Gallup Korea, 2023 survey, n=1,501 adults). Unlike most of the world, where type O is the most common blood type, type A is the mode in South Korea."
+import matplotlib.pyplot as plt
+
+types = ["A", "O", "B", "AB"]
+pct = [34, 28, 26, 11]
+colors = ["#a8790a" if t == "A" else "#1e3a2f" for t in types]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.4))
+bars = ax.bar(types, pct, color=colors, width=0.55)
+for b, v in zip(bars, pct):
+    ax.annotate(f"{v}%", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=11)
+ax.set_ylabel("Share of respondents (%)")
+ax.set_ylim(0, 40)
+ax.set_title("Type A is the mode in South Korea (most countries: type O)", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 자료에서 유일하게 말이 되는 "대표값"은 **최빈값(mode)** — 가장 많은 사람이 속한 범주, 즉 A형이다. 흥미롭게도 이건 세계적인 경향과도 다르다. 전 세계적으로는 O형이 가장 흔한 혈액형이지만, 한국은 A형이 최빈값이라는 점에서 예외적이다. "평균"은 이 자료에 대해 아무것도 말해줄 수 없지만, "최빈값"은 이렇게 분명한 사실 하나를 알려준다.
+
+## 척도가 다르면 쓸 수 있는 대표값도 달라진다
+
+혈액형, 성별, 거주지처럼 순서 없이 분류만 하는 자료를 **명목척도**라 부른다. 이런 자료에는 산술 연산 자체가 의미를 갖지 않으므로, 평균은 물론 중앙값조차 계산할 수 없다. 오직 "가장 많이 나온 값이 무엇인가"라는 최빈값만 모든 종류의 자료에 적용할 수 있는 유일한 대표값이다.
+
+::: {.callout-tip}
+## 최빈값이 필요한 첫 번째 신호: 범주형·명목형 자료
+
+혈액형, 선호 브랜드, 거주 지역, 정당 지지처럼 숫자로 환산할 수 없는 범주형 자료를 다룰 때는 평균이나 중앙값을 시도하기 전에 먼저 물어야 한다. "이 값들을 더하고 나누는 것이 말이 되는가?" 답이 "아니오"라면, 유일하게 남는 선택지는 최빈값이다.
+:::
+
+## 평균은 계산되지만, 아무도 그 시각에 있지 않다
+
+그런데 최빈값이 필요한 순간이 하나 더 있다. 이번엔 숫자 자료인데도 평균이 무의미해지는 경우다. 서울의 지하철·버스는 출근 시간대와 퇴근 시간대, 하루 두 번 승객이 몰린다. 이런 "시간대별 승차 인원" 자료의 평균 시각을 계산하면 어떻게 될까?
+
+```{python}
+#| echo: false
+#| fig-cap: "A stylized, illustrative model (not real subway data) of ridership by hour of day, with two real-world-typical peaks around the morning and evening commute. The weighted mean hour (~13:00) lands in the quietest trough of the entire day — a time when almost nobody is actually riding."
+import numpy as np
+import matplotlib.pyplot as plt
+
+hours = np.linspace(0, 24, 1000)
+
+def gauss(x, mu, sd, amp):
+    return amp * np.exp(-0.5 * ((x - mu) / sd) ** 2)
+
+y = gauss(hours, 8, 1.1, 1.0) + gauss(hours, 18, 1.3, 0.9) + 0.05
+mean_hour = np.sum(hours * y) / np.sum(y)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.fill_between(hours, y, color="#1e3a2f", alpha=0.25)
+ax.plot(hours, y, color="#1e3a2f", linewidth=2)
+
+ax.axvline(8, color="#1e3a2f", linestyle=":", linewidth=1.6)
+ax.axvline(18, color="#1e3a2f", linestyle=":", linewidth=1.6)
+ax.axvline(mean_hour, color="#a8790a", linestyle="--", linewidth=2.2)
+ax.annotate("mode: 8am rush", xy=(8, 1.02), xytext=(3.5, 1.02), fontsize=9, color="#1e3a2f")
+ax.annotate("mode: 6pm rush", xy=(18, 0.92), xytext=(19.2, 0.92), fontsize=9, color="#1e3a2f")
+ax.annotate(f"mean: ~{mean_hour:.0f}:00\n(the quietest hour of the day)", xy=(mean_hour, 0.05),
+            xytext=(mean_hour - 4.5, 0.35), fontsize=9, color="#a8790a",
+            arrowprops=dict(arrowstyle="->", color="#a8790a"))
+
+ax.set_xlim(0, 24)
+ax.set_xticks(range(0, 25, 4))
+ax.set_xlabel("Hour of day")
+ax.set_ylabel("Ridership (illustrative)")
+ax.set_title("The mean hour falls exactly where nobody is riding", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+평균 시각은 오후 1시 근처로 계산된다. 그런데 그 시간대는 실제로는 하루 중 승객이 **가장 적은** 한산한 시간이다. 출근·퇴근이라는 뚜렷이 다른 두 봉우리를 하나의 평균으로 뭉개버리면, "평균적으로 사람들이 지하철을 타는 시각"이라는 표현 자체가 실재하지 않는 순간을 가리키게 된다. 이런 자료를 요약할 때 필요한 건 하나의 평균값이 아니라, "오전 8시와 오후 6시, 두 개의 봉우리가 있다"는 최빈값(또는 최빈 구간) 정보다.
+
+::: {.callout-tip}
+## 최빈값이 필요한 두 번째 신호: 봉우리가 여러 개인 분포
+
+시간대별 교통량, 매장 방문객 수, 통화량처럼 하루·한 주 동안 뚜렷한 패턴이 반복되는 자료는 평균 하나로 요약하면 오히려 정보를 잃는다. 히스토그램을 그려 봉우리가 몇 개인지부터 확인하는 습관이, "평균 얼마"라는 숫자보다 훨씬 많은 것을 알려준다.
+:::
+
+## 더 깊이: 척도에 따라 다른 대표값
+
+강의노트 [〈기초통계학 1. 데이터란? — 질적변수와 양적변수〉](../../notes/intro_stat/data.qmd#질적변수와-양적변수)는 명목척도부터 비율척도까지 척도 유형별로 어떤 요약 통계가 계산 가능한지 정리한 표를 제시한다. 이 표에서 최빈값은 명목·서열·등간·비율척도 **모든** 칸에 체크되어 있는 유일한 대표값이다. 반면 평균은 등간·비율척도에서만, 중앙값은 서열·등간·비율척도에서만 계산할 수 있다. 이어지는 [〈데이터와 요약통계 — 측정형 데이터〉](../../notes/intro_stat/data.qmd#측정형-데이터) 절은 산술평균이 "이상값에 민감하다"는 약점을, 중앙값은 "이상값에 강건"하다는 대안을 제시하는데, 최빈값의 강점은 이와는 결이 다르다 — 이상값 방어가 아니라, **애초에 평균이라는 연산 자체가 성립하지 않거나 의미를 잃는 상황**에서 유일하게 남는 선택지라는 점이다.
+
+## 결론: 평균을 내기 전에, 봉우리부터 세어보라
+
+나는 학생들에게 어떤 자료든 요약하기 전에 먼저 두 가지를 물어보라고 말한다. 첫째, 이 값들을 더하고 나누는 게 말이 되는가? 아니라면 최빈값이 답이다. 둘째, 말이 된다 해도 히스토그램을 그렸을 때 봉우리가 하나인가, 여럿인가? [지난 챕터의 "같은 평균, 전혀 다른 세상"](story_variance_world.qmd)에서 살펴봤듯, 평균이라는 숫자 하나는 분포의 모양을 감쪽같이 숨긴다. 혈액형처럼 평균 자체가 성립하지 않는 자료든, 출퇴근 시간대처럼 평균이 존재하지도 않는 순간을 가리키는 자료든 — 결론은 같다. 평균은 만능 대표값이 아니라, 특정 조건(등간·비율척도, 단봉분포)에서만 제 역할을 하는 여러 도구 중 하나일 뿐이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 한국갤럽조사연구소 (2023). *한국인의 혈액형, 별자리, 사주, 신년운세 등에 대한 조사* (전국 만 19세 이상 1,501명).
+- [우리국민 본인 혈액형…A형 34%, B형 26%, AB형 11%, O형 28% — 폴리스TV](https://www.policetv.co.kr/news/articleView.html?idxno=46902)
+:::
