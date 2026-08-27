@@ -1,0 +1,120 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유"
+author: "권세혁"
+date: "2026-08-28"
+categories: [통계기초, 기술통계]
+description: "통계 강의에서 자주 드는 비유가 있다. '평균 수심 1m인 강을 건너다 물에 빠져 죽었다.' 얼핏 모순처럼 들리지만, 실제로 소방청 통계에서 하천은 최근 5년간 물놀이 사망사고 장소 1위(31%)다. 이번 주 나흘 동안 다룬 스트릭, 표본 크기, 세대 비교, 최빈값을 관통하는 하나의 교훈을 이 강물 이야기로 정리한다."
+---
+
+## 평균 수심 1m, 그런데 왜 위험할까
+
+통계 수업에서 자주 인용되는 우화가 있다. "평균 수심이 1m인 강을 건너다 물에 빠져 죽은 사람이 있었다." 얼핏 들으면 앞뒤가 안 맞는 이야기 같다. 어른 허리도 안 오는 깊이인데 어떻게 물에 빠져 죽는단 말인가. 그런데 이 우화는 실제 통계와 정확히 맞닿아 있다. 소방청 집계에 따르면 최근 5년(2021~2025)간 물놀이 사망사고 104명 가운데 **하천에서 일어난 사고가 32명(31%)으로 가장 많았다** — 계곡(27%), 해수욕장(23%), 바닷가(19%)보다도 높은 비중이다. 강이 유독 위험한 이유는 바로 이 "평균 수심"이라는 숫자 하나가 감추고 있는 것 때문이다.
+
+## 이번 주 나흘, 한 줄로 다시 보기
+
+이번 주 다룬 네 개의 글을 한 줄씩 늘어놓으면 이렇다.
+
+- **월요일**: SK 와이번스의 19연승은 "평균 승률 50%"라는 가정으로는 설명되지 않았다. 그 구간의 진짜 승리 확률이 평균보다 훨씬 높았다는 신호였다.
+- **화요일**: 박성한의 5월 1일 타율 4할3푼4리는 "진짜 실력"이 아니라 106타수라는 작은 표본이 만든 흔들림이었다. 지금의 3할3푼대가 표본이 쌓인 결과다.
+- **수요일**: 한국 여성의 평균 키가 100년 만에 20.1cm 자란 건 진짜지만, "무엇을, 언제, 누구와" 비교했는지에 따라 같은 평균도 다른 의미를 갖는다.
+- **목요일**: 한국인의 "평균 혈액형"은 계산조차 되지 않으며, 지하철의 "평균 승차 시각"은 계산은 되지만 아무도 그 시각에 타지 않는 시간을 가리켰다.
+
+::: {.callout-warning}
+## 네 사례의 공통점
+
+넷 다 "평균" 또는 그와 비슷한 대표값 하나를 계산하는 데는 문제가 없었다. 계산은 정확했다. 문제는 그 숫자 하나가 **원자료의 흩어짐, 표본 크기, 비교 기준, 분포의 모양**을 그대로 지워버린다는 데 있었다. 평균 수심 1m라는 숫자도 마찬가지다. 그 숫자는 정확하지만, 강바닥이 평평한지 가운데가 움푹 파였는지는 전혀 말해주지 않는다.
+:::
+
+## 강바닥은 평평하지 않다
+
+강의 폭 20m 단면을 가정해보자. 양쪽 강가는 얕고, 가운데로 갈수록 깊어지는 것이 자연스러운 하천의 모양이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A stylized, illustrative river cross-section (not a real measured river). The width-averaged depth is exactly 1.0m — but the banks are only 31cm deep while the central channel reaches 2.05m, well over an adult's waist and close to an average Korean adult's chest height."
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 20, 400)
+base, amp, center, sigma = 0.3, 1.75, 10, 3.2
+depth = base + amp * np.exp(-0.5 * ((x - center) / sigma) ** 2)
+mean_depth = depth.mean()
+
+fig, ax = plt.subplots(figsize=(8, 4.8))
+ax.fill_between(x, 0, depth, color="#3a6b8c", alpha=0.55)
+ax.plot(x, depth, color="#1e3a2f", linewidth=2)
+ax.axhline(mean_depth, color="#a8790a", linestyle="--", linewidth=2.2)
+ax.annotate(f"average depth: {mean_depth:.2f}m", xy=(1, mean_depth), xytext=(1, mean_depth + 0.25),
+            fontsize=10, color="#a8790a")
+ax.annotate(f"bank: {depth.min():.2f}m", xy=(0.3, depth.min()), xytext=(0.3, -0.35),
+            fontsize=9, color="#1e3a2f")
+ax.annotate(f"deepest channel: {depth.max():.2f}m", xy=(10, depth.max()), xytext=(10.8, depth.max()+0.05),
+            fontsize=9, color="#1e3a2f")
+ax.invert_yaxis()
+ax.set_xlabel("Distance across the river (m)")
+ax.set_ylabel("Depth (m)")
+ax.set_title("Average depth 1.0m — but the channel is 2.05m deep", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 강의 폭 전체를 평균 내면 정확히 1m가 나온다. 그런데 강가는 31cm에 불과하고, 가운데 물길은 2.05m에 달한다. 한국 성인 평균 키(약 170cm 안팎)를 기준으로 보면, 가운데로 몇 걸음만 더 들어가도 발이 닿지 않는 깊이다. "평균 수심 1m라니 안전하겠지"라고 판단한 사람이 실제로 위험해지는 지점은 평균값 근처가 아니라, 평균이 감춰버린 가장 깊은 지점이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Location of water-recreation drowning deaths in South Korea over the most recent 5 years (2021-2025), per Korea National Fire Agency statistics widely reported in Korean media. Rivers account for the largest share of the 104 total deaths."
+import matplotlib.pyplot as plt
+
+locations = ["River", "Valley", "Beach", "Coast"]
+counts = [32, 28, 24, 20]
+colors = ["#a8790a", "#1e3a2f", "#1e3a2f", "#1e3a2f"]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.4))
+bars = ax.bar(locations, counts, color=colors, width=0.55)
+for b, v in zip(bars, counts):
+    pct = v / sum(counts) * 100
+    ax.annotate(f"{v} ({pct:.0f}%)", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=9.5)
+ax.set_ylabel("Deaths, 2021-2025 (out of 104 total)")
+ax.set_ylim(0, 38)
+ax.set_title("Rivers are the #1 location for water-recreation deaths in Korea", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 다섯 가지 확인 질문
+
+이번 주 다룬 네 사례와 강물 이야기를 하나로 묶으면, 어떤 대표값을 마주하든 던져야 할 질문이 다섯 가지로 정리된다.
+
+::: {.callout-tip}
+## 평균(또는 대표값)을 마주하면 확인할 다섯 가지
+
+1. **흩어짐(분산·표준편차·범위)까지 함께 봤는가?** 평균 수심 1m는 강가 31cm와 물길 2.05m를 모두 감춘다.
+2. **표본 크기는 충분한가?** 화요일 글처럼, 작은 표본의 평균은 진짜 값에서 크게 벗어날 수 있다.
+3. **비교 대상은 같은 조건에서 맞춰졌는가?** 수요일 글처럼, "무엇을 언제 누구와" 비교했는지에 따라 같은 평균도 뜻이 달라진다.
+4. **애초에 평균을 낼 수 있는 자료인가, 봉우리가 여럿은 아닌가?** 목요일 글처럼, 명목척도이거나 다봉분포라면 평균은 계산되지 않거나 무의미하다.
+5. **극단적인 기록을 봤다면, 순전한 우연으로 설명되는 범위인지 계산해봤는가?** 월요일 글처럼, 우연의 범위를 벗어난 기록은 실제로 뭔가 달라졌다는 신호일 수 있다.
+:::
+
+## 더 깊이: 중심경향만큼 중요한 흩어짐 척도
+
+강의노트 [〈기초통계학 3. 데이터와 요약통계 — 측정형 데이터〉](../../notes/intro_stat/data.qmd#측정형-데이터)는 중심경향 척도(평균·중앙값·최빈값) 바로 다음에 **흩어짐 척도**를 다룬다. 분산 $s^2 = \frac{1}{n-1}\sum(x_i-\overline{x})^2$과 그 제곱근인 표준편차, 그리고 범위(range)와 사분위범위(IQR)가 여기 속한다. 강의노트가 이 둘을 나란히 배치한 이유가 바로 이번 주의 결론이다 — 중심경향 척도 하나만으로는 자료를 절반도 요약하지 못한다. 평균이 "어디에 몰려 있는가"를 말해준다면, 흩어짐 척도는 "얼마나 퍼져 있는가"를 말해준다. 강물의 평균 수심이 안전을 보장하지 못하는 이유는, 이 두 번째 질문에 답하지 않았기 때문이다.
+
+## 결론: 평균은 질문의 절반에만 답한다
+
+나는 학생들에게 "평균이 얼마입니까"라는 질문을 받으면 항상 되묻는다. "그런데 흩어짐은 얼마입니까?" 이번 주 다룬 네 편의 글 — 연승 확률, 작은 표본, 세대 비교, 최빈값 — 은 모두 형태가 다른 같은 질문이었다. 평균이라는 숫자 하나에 만족하지 말고, 그 뒤에 숨은 분산과 표본과 조건과 분포 모양까지 확인하라는 것. 강을 건너기 전에 물어야 할 질문은 "평균 수심이 얼마인가"가 아니라 "가장 깊은 곳은 얼마나 깊은가"다. 통계도 다르지 않다.
+
+::: {.callout-note collapse="true"}
+## 이번 주 다룬 글 · 참고 자료
+
+- [연승과 연패, 우연일까 실력일까](story_streak_probability.qmd)
+- [작은 표본이 만드는 큰 착각 — 야구 타율 3할의 의미](story_sample_size_illusion.qmd)
+- [세대별 평균이 말해주는 진짜 의미 — 평균 키가 자라는 이유](story_generation_height.qmd)
+- [평균으로 설명되지 않는 데이터들 — 최빈값이 필요한 순간](story_mode_categorical.qmd)
+- [물놀이 사망 절반은 '7말·8초'…5년간 104명 — 데일리안](https://www.dailian.co.kr/news/view/1670919/%EB%AC%BC%EB%86%80-%EC%82%AC%EB%A7%9D-%EC%A0%88%EB%B0%98-%E2%80%987%EB%A7%908%EC%B4%88%E2%80%995%EB%85%84%EA%B0%84-1-2026)
+:::

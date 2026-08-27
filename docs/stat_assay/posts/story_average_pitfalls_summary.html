@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-08-19">
-<meta name="description" content="’10전 10승 적중 리딩방’을 만드는 방법은 사실 간단하다. 만 명에게 서로 다른 예측을 나눠 보내고, 틀린 사람은 버리고 맞춘 사람에게만 계속 보내면 된다. 생존자만 보고 성공의 비결을 찾으려 하면, 정작 성공을 만든 것이 무엇인지는 절대 보이지 않는다.">
+<meta name="dcterms.date" content="2026-08-28">
+<meta name="description" content="통계 강의에서 자주 드는 비유가 있다. ‘평균 수심 1m인 강을 건너다 물에 빠져 죽었다.’ 얼핏 모순처럼 들리지만, 실제로 소방청 통계에서 하천은 최근 5년간 물놀이 사망사고 장소 1위(31%)다. 이번 주 나흘 동안 다룬 스트릭, 표본 크기, 세대 비교, 최빈값을 관통하는 하나의 교훈을 이 강물 이야기로 정리한다.">
 
-<title>(사람의 직관은 왜 통계와 충돌하는가) 성공한 사람만 보면 성공법이 보이지 않는다 – 권세혁HOME</title>
+<title>(기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유 – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -87,6 +87,35 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <meta name="theme-color" content="#1e3a2f">
 <meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -162,7 +191,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_survivorship_bias.html">📖 (사람의 직관은 왜 통계와 충돌하는가) 성공한 사람만 보면 성공법이 보이지 않는다</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_average_pitfalls_summary.html">📖 (기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -309,7 +338,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_survivorship_bias.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_survivorship_bias.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 성공한 사람만 보면 성공법이 보이지 않는다</span></a>
   </div>
 </li>
@@ -351,7 +380,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_average_pitfalls_summary.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_average_pitfalls_summary.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유</span></a>
   </div>
 </li>
@@ -365,11 +394,12 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#전-10승-전문가를-만드는-아주-쉬운-방법" id="toc-전-10승-전문가를-만드는-아주-쉬운-방법" class="nav-link active" data-scroll-target="#전-10승-전문가를-만드는-아주-쉬운-방법">10전 10승 전문가를 만드는 아주 쉬운 방법</a></li>
-  <li><a href="#차-대전의-폭격기와-통계학자-왈드" id="toc-차-대전의-폭격기와-통계학자-왈드" class="nav-link" data-scroll-target="#차-대전의-폭격기와-통계학자-왈드">2차 대전의 폭격기와 통계학자 왈드</a></li>
-  <li><a href="#살아남은-사람들의-평균은-원래보다-부풀려-보인다" id="toc-살아남은-사람들의-평균은-원래보다-부풀려-보인다" class="nav-link" data-scroll-target="#살아남은-사람들의-평균은-원래보다-부풀려-보인다">살아남은 사람들의 평균은 원래보다 부풀려 보인다</a></li>
-  <li><a href="#더-깊이-보이지-않는-사람들이-추정값을-왜곡한다" id="toc-더-깊이-보이지-않는-사람들이-추정값을-왜곡한다" class="nav-link" data-scroll-target="#더-깊이-보이지-않는-사람들이-추정값을-왜곡한다">더 깊이: 보이지 않는 사람들이 추정값을 왜곡한다</a></li>
-  <li><a href="#결론-보이는-것이-전부라고-믿는-순간-속는다" id="toc-결론-보이는-것이-전부라고-믿는-순간-속는다" class="nav-link" data-scroll-target="#결론-보이는-것이-전부라고-믿는-순간-속는다">결론: 보이는 것이 전부라고 믿는 순간 속는다</a></li>
+  <li><a href="#평균-수심-1m-그런데-왜-위험할까" id="toc-평균-수심-1m-그런데-왜-위험할까" class="nav-link active" data-scroll-target="#평균-수심-1m-그런데-왜-위험할까">평균 수심 1m, 그런데 왜 위험할까</a></li>
+  <li><a href="#이번-주-나흘-한-줄로-다시-보기" id="toc-이번-주-나흘-한-줄로-다시-보기" class="nav-link" data-scroll-target="#이번-주-나흘-한-줄로-다시-보기">이번 주 나흘, 한 줄로 다시 보기</a></li>
+  <li><a href="#강바닥은-평평하지-않다" id="toc-강바닥은-평평하지-않다" class="nav-link" data-scroll-target="#강바닥은-평평하지-않다">강바닥은 평평하지 않다</a></li>
+  <li><a href="#다섯-가지-확인-질문" id="toc-다섯-가지-확인-질문" class="nav-link" data-scroll-target="#다섯-가지-확인-질문">다섯 가지 확인 질문</a></li>
+  <li><a href="#더-깊이-중심경향만큼-중요한-흩어짐-척도" id="toc-더-깊이-중심경향만큼-중요한-흩어짐-척도" class="nav-link" data-scroll-target="#더-깊이-중심경향만큼-중요한-흩어짐-척도">더 깊이: 중심경향만큼 중요한 흩어짐 척도</a></li>
+  <li><a href="#결론-평균은-질문의-절반에만-답한다" id="toc-결론-평균은-질문의-절반에만-답한다" class="nav-link" data-scroll-target="#결론-평균은-질문의-절반에만-답한다">결론: 평균은 질문의 절반에만 답한다</a></li>
   </ul>
 </nav>
     </div>
@@ -378,17 +408,16 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">(사람의 직관은 왜 통계와 충돌하는가) 성공한 사람만 보면 성공법이 보이지 않는다</h1>
+<h1 class="title">(기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
-    <div class="quarto-category">확률</div>
-    <div class="quarto-category">행동통계</div>
+    <div class="quarto-category">기술통계</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    ’10전 10승 적중 리딩방’을 만드는 방법은 사실 간단하다. 만 명에게 서로 다른 예측을 나눠 보내고, 틀린 사람은 버리고 맞춘 사람에게만 계속 보내면 된다. 생존자만 보고 성공의 비결을 찾으려 하면, 정작 성공을 만든 것이 무엇인지는 절대 보이지 않는다.
+    통계 강의에서 자주 드는 비유가 있다. ‘평균 수심 1m인 강을 건너다 물에 빠져 죽었다.’ 얼핏 모순처럼 들리지만, 실제로 소방청 통계에서 하천은 최근 5년간 물놀이 사망사고 장소 1위(31%)다. 이번 주 나흘 동안 다룬 스트릭, 표본 크기, 세대 비교, 최빈값을 관통하는 하나의 교훈을 이 강물 이야기로 정리한다.
   </div>
 </div>
 
@@ -405,7 +434,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 19, 2026</p>
+      <p class="date">August 28, 2026</p>
     </div>
   </div>
   
@@ -417,92 +446,106 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </header>
 
 
-<section id="전-10승-전문가를-만드는-아주-쉬운-방법" class="level2">
-<h2 class="anchored" data-anchor-id="전-10승-전문가를-만드는-아주-쉬운-방법">10전 10승 전문가를 만드는 아주 쉬운 방법</h2>
-<p>한국에서 몇 년째 반복되는 투자 사기 수법이 있다. 소위 “족집게 리딩방”이다. 방식은 이렇다. 운영자가 만 명에게 문자를 보낸다. 절반에게는 “내일 코스피 상승”, 나머지 절반에게는 “내일 코스피 하락”을 예측했다고 보낸다. 다음 날, 예측이 맞은 5천 명에게만 다시 연락한다. 그 5천 명을 다시 절반으로 나눠 상승·하락을 보내고, 또 맞춘 2,500명에게만 연락한다. 이 과정을 열 번만 반복하면, 시작할 때 만 명이었던 사람 중 <strong>10번 연속으로 정확히 맞힌 사람이 통계적으로 반드시 남는다.</strong> 그 사람들 눈에는 “10전 10승”의 전문가가 실제로 존재하는 것처럼 보인다. 실제로는 동전을 던진 것과 다를 바 없는데도.</p>
-<div id="f79191f6" class="cell" data-execution_count="1">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="story_survivorship_bias_files/figure-html/cell-2-output-1.png" width="710" height="394" class="figure-img"></p>
-<figcaption>Starting from 10,000 recipients and discarding everyone whose prediction was wrong each round, roughly half survive each time — purely by chance. After 10 rounds, about 9-10 people have witnessed 10 correct predictions in a row from someone who was, mathematically, no better than a coin flip.</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>시작 인원이 만 명이었기 때문에, 10라운드를 거쳐도 약 9~10명은 반드시 남는다. 운영자는 이제 이 소수에게 “그동안 무료였지만, 이제부터는 유료 회원만 받겠다”고 접근한다. 이 사기가 성립하는 이유는 간단하다. <strong>틀린 사람들은 조용히 사라지고, 맞춘 사람들만 계속 눈에 보이기 때문이다.</strong> 사라진 사람들의 존재를 모르면, 남아있는 사람들의 “적중률 100%”가 실력처럼 보인다.</p>
+<section id="평균-수심-1m-그런데-왜-위험할까" class="level2">
+<h2 class="anchored" data-anchor-id="평균-수심-1m-그런데-왜-위험할까">평균 수심 1m, 그런데 왜 위험할까</h2>
+<p>통계 수업에서 자주 인용되는 우화가 있다. “평균 수심이 1m인 강을 건너다 물에 빠져 죽은 사람이 있었다.” 얼핏 들으면 앞뒤가 안 맞는 이야기 같다. 어른 허리도 안 오는 깊이인데 어떻게 물에 빠져 죽는단 말인가. 그런데 이 우화는 실제 통계와 정확히 맞닿아 있다. 소방청 집계에 따르면 최근 5년(2021~2025)간 물놀이 사망사고 104명 가운데 <strong>하천에서 일어난 사고가 32명(31%)으로 가장 많았다</strong> — 계곡(27%), 해수욕장(23%), 바닷가(19%)보다도 높은 비중이다. 강이 유독 위험한 이유는 바로 이 “평균 수심”이라는 숫자 하나가 감추고 있는 것 때문이다.</p>
 </section>
-<section id="차-대전의-폭격기와-통계학자-왈드" class="level2">
-<h2 class="anchored" data-anchor-id="차-대전의-폭격기와-통계학자-왈드">2차 대전의 폭격기와 통계학자 왈드</h2>
-<p>이 원리에 이름을 붙인 것은 제2차 세계대전 때의 한 통계학자다. 미군은 유럽 상공에서 돌아온 폭격기의 총알 구멍을 분석해, 구멍이 가장 많이 몰린 날개와 꼬리 부분에 장갑판을 덧대려 했다. 통계학자 에이브러햄 왈드(Abraham Wald)는 정반대를 주장했다. “그 부분에 장갑을 대면 안 됩니다. 왜냐하면 그 부분에 총을 맞고도 살아 돌아왔다는 뜻이니까요.” 정작 장갑이 필요한 곳은 <strong>총에 맞으면 격추당해 돌아오지 못한 비행기들의 엔진과 조종석</strong>이었다. 분석 대상이 된 표본(귀환한 비행기) 자체가 이미 “살아남은 것만 걸러진” 표본이었던 것이다. 이 통찰 이후 이 오류에는 <strong>생존자 편향(survivorship bias)</strong>이라는 이름이 붙었다.</p>
+<section id="이번-주-나흘-한-줄로-다시-보기" class="level2">
+<h2 class="anchored" data-anchor-id="이번-주-나흘-한-줄로-다시-보기">이번 주 나흘, 한 줄로 다시 보기</h2>
+<p>이번 주 다룬 네 개의 글을 한 줄씩 늘어놓으면 이렇다.</p>
+<ul>
+<li><strong>월요일</strong>: SK 와이번스의 19연승은 “평균 승률 50%”라는 가정으로는 설명되지 않았다. 그 구간의 진짜 승리 확률이 평균보다 훨씬 높았다는 신호였다.</li>
+<li><strong>화요일</strong>: 박성한의 5월 1일 타율 4할3푼4리는 “진짜 실력”이 아니라 106타수라는 작은 표본이 만든 흔들림이었다. 지금의 3할3푼대가 표본이 쌓인 결과다.</li>
+<li><strong>수요일</strong>: 한국 여성의 평균 키가 100년 만에 20.1cm 자란 건 진짜지만, “무엇을, 언제, 누구와” 비교했는지에 따라 같은 평균도 다른 의미를 갖는다.</li>
+<li><strong>목요일</strong>: 한국인의 “평균 혈액형”은 계산조차 되지 않으며, 지하철의 “평균 승차 시각”은 계산은 되지만 아무도 그 시각에 타지 않는 시간을 가리켰다.</li>
+</ul>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-“성공한 사람들의 습관” 책이 위험한 이유
+네 사례의 공통점
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>서점 경제경영 코너에는 “이렇게 해서 성공했다”는 책이 끊이지 않는다. 유튜브에는 “성공한 창업가의 하루 루틴” 영상이 넘친다. 문제는 이런 콘텐츠가 다루는 표본이 전부 <strong>생존자</strong>라는 점이다. 새벽 4시에 일어나고, 공격적으로 사업을 확장하고, 남들이 말리는 데도 밀어붙인 창업가 100명 중 1명이 성공했다면, 우리는 그 1명의 습관만 책으로 읽는다. 똑같이 새벽 4시에 일어나고 똑같이 공격적으로 밀어붙였지만 망한 99명은 책을 쓰지 않는다. 그 99명을 보지 못하면, “새벽 기상”과 “공격적 확장”이 성공의 원인처럼 보인다. 실제로는 성공과 무관하거나, 오히려 위험 요인이었을 수도 있는데 말이다.</p>
+<p>넷 다 “평균” 또는 그와 비슷한 대표값 하나를 계산하는 데는 문제가 없었다. 계산은 정확했다. 문제는 그 숫자 하나가 <strong>원자료의 흩어짐, 표본 크기, 비교 기준, 분포의 모양</strong>을 그대로 지워버린다는 데 있었다. 평균 수심 1m라는 숫자도 마찬가지다. 그 숫자는 정확하지만, 강바닥이 평평한지 가운데가 움푹 파였는지는 전혀 말해주지 않는다.</p>
 </div>
 </div>
 </section>
-<section id="살아남은-사람들의-평균은-원래보다-부풀려-보인다" class="level2">
-<h2 class="anchored" data-anchor-id="살아남은-사람들의-평균은-원래보다-부풀려-보인다">살아남은 사람들의 평균은 원래보다 부풀려 보인다</h2>
-<p>리딩방 사례를 조금 더 확장해보자. 이번엔 순전히 운으로만 수익률이 결정되는(실력은 전혀 없는) 가상의 투자자 5만 명을 만들어, 20번의 투자 라운드를 거치게 한다. 매 라운드 수익률은 평균 0%를 중심으로 무작위로 오르내린다. 다만 누적 손실이 일정 수준을 넘으면 “파산”으로 간주해 시장에서 퇴출시킨다.</p>
-<div id="5ce4428f" class="cell" data-execution_count="2">
+<section id="강바닥은-평평하지-않다" class="level2">
+<h2 class="anchored" data-anchor-id="강바닥은-평평하지-않다">강바닥은 평평하지 않다</h2>
+<p>강의 폭 20m 단면을 가정해보자. 양쪽 강가는 얕고, 가운데로 갈수록 깊어지는 것이 자연스러운 하천의 모양이다.</p>
+<div id="71952e0c" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_survivorship_bias_files/figure-html/cell-3-output-1.png" width="566" height="394" class="figure-img"></p>
-<figcaption>50,000 simulated investors with zero real skill (average return per round is exactly 0%) over 20 rounds, with the worst performers dropping out along the way. The survivors’ average final return looks clearly positive — not because they have any real edge, but because the biggest losers were removed from the picture before the average was taken.</figcaption>
+<p><img src="story_average_pitfalls_summary_files/figure-html/cell-2-output-1.png" width="758" height="449" class="figure-img"></p>
+<figcaption>A stylized, illustrative river cross-section (not a real measured river). The width-averaged depth is exactly 1.0m — but the banks are only 31cm deep while the central channel reaches 2.05m, well over an adult’s waist and close to an average Korean adult’s chest height.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>전체 5만 명의 진짜 평균 수익률은 0%에 가깝다 — 애초에 실력을 전혀 넣지 않고 설계했으니 당연하다. 그런데 파산해서 사라진 사람들을 빼고 <strong>살아남은 사람들만</strong> 놓고 평균을 내면, 뚜렷하게 플러스로 보인다. 만약 이 살아남은 투자자들만 인터뷰해서 “성공 비결”을 취재한다면, 실제로는 존재하지 않는 “전략”을 마치 진짜 원인인 것처럼 기사로 쓰게 된다.</p>
+<p>이 강의 폭 전체를 평균 내면 정확히 1m가 나온다. 그런데 강가는 31cm에 불과하고, 가운데 물길은 2.05m에 달한다. 한국 성인 평균 키(약 170cm 안팎)를 기준으로 보면, 가운데로 몇 걸음만 더 들어가도 발이 닿지 않는 깊이다. “평균 수심 1m라니 안전하겠지”라고 판단한 사람이 실제로 위험해지는 지점은 평균값 근처가 아니라, 평균이 감춰버린 가장 깊은 지점이다.</p>
+<div id="075fe8c1" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_average_pitfalls_summary_files/figure-html/cell-3-output-1.png" width="614" height="413" class="figure-img"></p>
+<figcaption>Location of water-recreation drowning deaths in South Korea over the most recent 5 years (2021-2025), per Korea National Fire Agency statistics widely reported in Korean media. Rivers account for the largest share of the 104 total deaths.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="다섯-가지-확인-질문" class="level2">
+<h2 class="anchored" data-anchor-id="다섯-가지-확인-질문">다섯 가지 확인 질문</h2>
+<p>이번 주 다룬 네 사례와 강물 이야기를 하나로 묶으면, 어떤 대표값을 마주하든 던져야 할 질문이 다섯 가지로 정리된다.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-성공 사례를 볼 때 확인할 것
+평균(또는 대표값)을 마주하면 확인할 다섯 가지
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><strong>실패한 사람들은 어디 있는가?</strong> 보이지 않는다면, 지금 보고 있는 것은 전체 그림이 아니라 살아남은 일부다.</li>
-<li><strong>성공한 사람과 실패한 사람이 정말 다른 행동을 했는가?</strong> 아니면 둘 다 같은 행동을 했는데 결과만 갈렸는가? 후자라면 그 “행동”은 원인이 아니다.</li>
-<li><strong>시작할 때 표본이 얼마나 컸는가?</strong> 표본이 충분히 크면, 순전한 운만으로도 몇 명은 반드시 극적인 성공을 거둔다. 그 몇 명의 존재 자체는 “비결이 있다”는 증거가 되지 못한다.</li>
+<li><strong>흩어짐(분산·표준편차·범위)까지 함께 봤는가?</strong> 평균 수심 1m는 강가 31cm와 물길 2.05m를 모두 감춘다.</li>
+<li><strong>표본 크기는 충분한가?</strong> 화요일 글처럼, 작은 표본의 평균은 진짜 값에서 크게 벗어날 수 있다.</li>
+<li><strong>비교 대상은 같은 조건에서 맞춰졌는가?</strong> 수요일 글처럼, “무엇을 언제 누구와” 비교했는지에 따라 같은 평균도 뜻이 달라진다.</li>
+<li><strong>애초에 평균을 낼 수 있는 자료인가, 봉우리가 여럿은 아닌가?</strong> 목요일 글처럼, 명목척도이거나 다봉분포라면 평균은 계산되지 않거나 무의미하다.</li>
+<li><strong>극단적인 기록을 봤다면, 순전한 우연으로 설명되는 범위인지 계산해봤는가?</strong> 월요일 글처럼, 우연의 범위를 벗어난 기록은 실제로 뭔가 달라졌다는 신호일 수 있다.</li>
 </ol>
 </div>
 </div>
 </section>
-<section id="더-깊이-보이지-않는-사람들이-추정값을-왜곡한다" class="level2">
-<h2 class="anchored" data-anchor-id="더-깊이-보이지-않는-사람들이-추정값을-왜곡한다">더 깊이: 보이지 않는 사람들이 추정값을 왜곡한다</h2>
-<p>강의노트 <a href="../../notes/survey/nonresponse.html#무응답-개요">〈조사방법론 — 무응답 개요〉</a>는 표본으로 뽑힌 사람 중 일부가 응답하지 않으면, 응답자만으로 계산한 추정값이 모집단 전체의 실제 값과 체계적으로 달라질 수 있다고 설명한다. 생존자 편향은 이 원리의 또 다른 얼굴이다. 무응답 편향에서는 “답하지 않은 사람”이 보이지 않고, 생존자 편향에서는 “실패하거나 사라진 사람”이 보이지 않는다는 차이가 있을 뿐, <strong>관찰되지 않은 대상이 관찰된 대상과 체계적으로 다른 특성을 가질 때 추정값이 왜곡된다</strong>는 핵심 메커니즘은 완전히 같다. 결국 두 편향 모두 같은 질문으로 요약된다. “지금 내가 보고 있는 표본에서, 원래 있어야 했는데 빠진 사람은 누구인가?”</p>
+<section id="더-깊이-중심경향만큼-중요한-흩어짐-척도" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-중심경향만큼-중요한-흩어짐-척도">더 깊이: 중심경향만큼 중요한 흩어짐 척도</h2>
+<p>강의노트 <a href="../../notes/intro_stat/data.html#측정형-데이터">〈기초통계학 3. 데이터와 요약통계 — 측정형 데이터〉</a>는 중심경향 척도(평균·중앙값·최빈값) 바로 다음에 <strong>흩어짐 척도</strong>를 다룬다. 분산 <span class="math inline">\(s^2 = \frac{1}{n-1}\sum(x_i-\overline{x})^2\)</span>과 그 제곱근인 표준편차, 그리고 범위(range)와 사분위범위(IQR)가 여기 속한다. 강의노트가 이 둘을 나란히 배치한 이유가 바로 이번 주의 결론이다 — 중심경향 척도 하나만으로는 자료를 절반도 요약하지 못한다. 평균이 “어디에 몰려 있는가”를 말해준다면, 흩어짐 척도는 “얼마나 퍼져 있는가”를 말해준다. 강물의 평균 수심이 안전을 보장하지 못하는 이유는, 이 두 번째 질문에 답하지 않았기 때문이다.</p>
 </section>
-<section id="결론-보이는-것이-전부라고-믿는-순간-속는다" class="level2">
-<h2 class="anchored" data-anchor-id="결론-보이는-것이-전부라고-믿는-순간-속는다">결론: 보이는 것이 전부라고 믿는 순간 속는다</h2>
-<p>에이브러햄 왈드가 대단했던 이유는 남들과 다른 데이터를 본 게 아니다. 같은 데이터를 보면서 <strong>“이 데이터에 없는 것은 무엇인가”</strong>를 물었을 뿐이다. 리딩방의 “10전 10승” 전문가도, 서점의 성공 신화도, 살아남은 투자자의 인터뷰도 전부 같은 함정에 빠지기 쉽다. 눈앞의 생존자들은 실제로 존재하고, 그들의 숫자도 거짓이 아니다. 문제는 그 숫자만으로 성공의 원인을 찾으려 할 때 생긴다. 성공의 진짜 이유는, 대개 성공한 사람들 옆이 아니라 <strong>더 이상 이야기를 들려줄 수 없는 사람들 쪽</strong>에 있다.</p>
+<section id="결론-평균은-질문의-절반에만-답한다" class="level2">
+<h2 class="anchored" data-anchor-id="결론-평균은-질문의-절반에만-답한다">결론: 평균은 질문의 절반에만 답한다</h2>
+<p>나는 학생들에게 “평균이 얼마입니까”라는 질문을 받으면 항상 되묻는다. “그런데 흩어짐은 얼마입니까?” 이번 주 다룬 네 편의 글 — 연승 확률, 작은 표본, 세대 비교, 최빈값 — 은 모두 형태가 다른 같은 질문이었다. 평균이라는 숫자 하나에 만족하지 말고, 그 뒤에 숨은 분산과 표본과 조건과 분포 모양까지 확인하라는 것. 강을 건너기 전에 물어야 할 질문은 “평균 수심이 얼마인가”가 아니라 “가장 깊은 곳은 얼마나 깊은가”다. 통계도 다르지 않다.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-참고 자료
+이번 주 다룬 글 · 참고 자료
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Abraham_Wald">Abraham Wald — Wikipedia</a></li>
-<li><a href="https://en.wikipedia.org/wiki/Survivorship_bias">Survivorship bias — Wikipedia</a></li>
+<li><a href="../../stat_assay/posts/story_streak_probability.html">연승과 연패, 우연일까 실력일까</a></li>
+<li><a href="../../stat_assay/posts/story_sample_size_illusion.html">작은 표본이 만드는 큰 착각 — 야구 타율 3할의 의미</a></li>
+<li><a href="../../stat_assay/posts/story_generation_height.html">세대별 평균이 말해주는 진짜 의미 — 평균 키가 자라는 이유</a></li>
+<li><a href="../../stat_assay/posts/story_mode_categorical.html">평균으로 설명되지 않는 데이터들 — 최빈값이 필요한 순간</a></li>
+<li><a href="https://www.dailian.co.kr/news/view/1670919/%EB%AC%BC%EB%86%80-%EC%82%AC%EB%A7%9D-%EC%A0%88%EB%B0%98-%E2%80%987%EB%A7%908%EC%B4%88%E2%80%995%EB%85%84%EA%B0%84-1-2026">물놀이 사망 절반은 ‘7말·8초’…5년간 104명 — 데일리안</a></li>
 </ul>
 </div>
 </div>
