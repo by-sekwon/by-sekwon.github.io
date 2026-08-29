@@ -5,6 +5,13 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
+import datetime
+
+try:
+    from pykrx import stock as pykrx_stock
+    _PYKRX_OK = True
+except Exception:
+    _PYKRX_OK = False
 
 # ── 주요 한국 종목명 매핑 ─────────────────────────────────
 _KR_MAP = {
@@ -115,9 +122,11 @@ def analyze_stock(ticker: str) -> dict:
     target    = last + 3.0 * atr14
 
     delta = close.diff()
-    gain  = delta.clip(lower=0).rolling(14).mean()
-    loss  = (-delta.clip(upper=0)).rolling(14).mean()
-    rs    = gain / loss.replace(0, np.nan)
+    gain  = delta.clip(lower=0)
+    loss  = (-delta.clip(upper=0))
+    avg_gain = gain.ewm(alpha=1/14, adjust=False).mean()  # Wilder's smoothing
+    avg_loss = loss.ewm(alpha=1/14, adjust=False).mean()
+    rs    = avg_gain / avg_loss.replace(0, np.nan)
     rsi   = float((100 - 100 / (1 + rs)).iloc[-1])
 
     ema12      = close.ewm(span=12, adjust=False).mean()
@@ -184,6 +193,62 @@ def analyze_stock(ticker: str) -> dict:
     ])
     hv20     = float(close.pct_change().rolling(20).std().iloc[-1] * np.sqrt(252) * 100)
     price_up = bool(close.iloc[-1] > close.iloc[-2])
+
+    # ── 펀더멘털 데이터 (PER·PBR·배당수익률) ────────────────
+    try:
+        info = yf.Ticker(ticker).info
+    except Exception:
+        info = {}
+    per = info.get("trailingPE")
+    pbr = info.get("priceToBook")
+    # yfinance는 dividendYield를 이미 퍼센트 단위(예: 2.5 = 2.5%)로 제공한다.
+    div_pct = info.get("dividendYield")
+    fundamental_available = any(v is not None for v in (per, pbr, div_pct))
+
+    # ── 시장 대비 상대강도 (KOSPI/KOSDAQ/S&P500) ──────────────
+    if ticker.endswith(".KS"):
+        bench_ticker = "^KS11"
+    elif ticker.endswith(".KQ"):
+        bench_ticker = "^KQ11"
+    else:
+        bench_ticker = "^GSPC"
+    rs_available = False
+    rs_20 = rs_60 = None
+    try:
+        bench = yf.Ticker(bench_ticker).history(period="2y", auto_adjust=True)["Close"].dropna()
+        close_valid = close.dropna()
+        if len(bench) > 61 and len(close_valid) > 61:
+            stock_ret_20 = float(close_valid.iloc[-1] / close_valid.iloc[-21] - 1)
+            stock_ret_60 = float(close_valid.iloc[-1] / close_valid.iloc[-61] - 1)
+            bench_ret_20 = float(bench.iloc[-1] / bench.iloc[-21] - 1)
+            bench_ret_60 = float(bench.iloc[-1] / bench.iloc[-61] - 1)
+            rs_20 = (stock_ret_20 - bench_ret_20) * 100
+            rs_60 = (stock_ret_60 - bench_ret_60) * 100
+            if not (np.isnan(rs_20) or np.isnan(rs_60)):
+                rs_available = True
+    except Exception:
+        pass
+
+    # ── 외국인·기관 수급 (KRX, 국내 종목 한정) ─────────────────
+    flow_available = False
+    foreign_net_5d = inst_net_5d = foreign_net_20d = inst_net_20d = None
+    if _PYKRX_OK and (ticker.endswith(".KS") or ticker.endswith(".KQ")):
+        try:
+            code = ticker.split(".")[0]
+            end_d = datetime.date.today()
+            start_d = end_d - datetime.timedelta(days=45)
+            flow_df = pykrx_stock.get_market_trading_value_by_date(
+                start_d.strftime("%Y%m%d"), end_d.strftime("%Y%m%d"), code
+            )
+            if flow_df is not None and not flow_df.empty and \
+               "외국인합계" in flow_df.columns and "기관합계" in flow_df.columns:
+                foreign_net_5d  = float(flow_df["외국인합계"].tail(5).sum())
+                inst_net_5d     = float(flow_df["기관합계"].tail(5).sum())
+                foreign_net_20d = float(flow_df["외국인합계"].tail(20).sum())
+                inst_net_20d    = float(flow_df["기관합계"].tail(20).sum())
+                flow_available  = True
+        except Exception:
+            pass
 
     # ── 점수 계산 ──────────────────────────────────────────
     trend_score = 0; trend_details = []
@@ -275,25 +340,111 @@ def analyze_stock(ticker: str) -> dict:
         candle_details.append("특이 캔들 패턴 없음")
     candle_score = min(candle_score, 10)
 
-    weights = {"trend":0.20,"momentum":0.20,"volume":0.15,
-               "volatility":0.15,"dispersion":0.15,"candle":0.15}
+    fundamental_score = 0; fundamental_details = []
+    if per is not None:
+        if per <= 0:
+            fundamental_details.append(f"PER={per:.1f} (적자, 이익 미실현) ⚠️")
+        elif per <= 12:
+            fundamental_score += 4; fundamental_details.append(f"PER={per:.1f} (저평가 ≤12) ✅")
+        elif per <= 20:
+            fundamental_score += 2; fundamental_details.append(f"PER={per:.1f} (적정 수준)")
+        else:
+            fundamental_details.append(f"PER={per:.1f} (고평가 주의)")
+    else:
+        fundamental_details.append("PER 정보 없음")
+    if pbr is not None:
+        if pbr < 1:
+            fundamental_score += 3; fundamental_details.append(f"PBR={pbr:.2f} (자산가치 대비 저평가) ✅")
+        elif pbr < 2:
+            fundamental_score += 1; fundamental_details.append(f"PBR={pbr:.2f} (보통)")
+        else:
+            fundamental_details.append(f"PBR={pbr:.2f} (고평가 주의)")
+    else:
+        fundamental_details.append("PBR 정보 없음")
+    if div_pct is not None:
+        if div_pct >= 3:
+            fundamental_score += 3; fundamental_details.append(f"배당수익률 {div_pct:.2f}% (고배당) ✅")
+        elif div_pct >= 1:
+            fundamental_score += 1; fundamental_details.append(f"배당수익률 {div_pct:.2f}% (보통)")
+        else:
+            fundamental_details.append(f"배당수익률 {div_pct:.2f}% (낮음)")
+    else:
+        fundamental_details.append("배당 정보 없음")
+    if not fundamental_available:
+        fundamental_details = ["펀더멘털 데이터를 가져올 수 없습니다 (데이터 제공 제한)"]
+    fundamental_score = min(fundamental_score, 10)
+
+    rs_score = 0; rs_details = []
+    if rs_available:
+        if rs_20 >= 5:
+            rs_score += 4; rs_details.append(f"20일 상대강도 {rs_20:+.1f}%p (시장 대비 강세) ✅")
+        elif rs_20 >= 0:
+            rs_score += 2; rs_details.append(f"20일 상대강도 {rs_20:+.1f}%p (시장과 비슷)")
+        else:
+            rs_details.append(f"20일 상대강도 {rs_20:+.1f}%p (시장 대비 약세) ⚠️")
+        if rs_60 >= 10:
+            rs_score += 4; rs_details.append(f"60일 상대강도 {rs_60:+.1f}%p (시장 대비 강세) ✅")
+        elif rs_60 >= 0:
+            rs_score += 2; rs_details.append(f"60일 상대강도 {rs_60:+.1f}%p (시장과 비슷)")
+        else:
+            rs_details.append(f"60일 상대강도 {rs_60:+.1f}%p (시장 대비 약세) ⚠️")
+        if rs_20 > 0 and rs_60 > 0:
+            rs_score += 2; rs_details.append("단기·중기 모두 시장 대비 초과수익 지속 ✅")
+    else:
+        rs_details.append(f"벤치마크({bench_ticker}) 데이터를 가져올 수 없습니다")
+    rs_score = min(rs_score, 10)
+
+    flow_score = 0; flow_details = []
+    if flow_available:
+        if foreign_net_5d > 0:
+            flow_score += 3; flow_details.append(f"외국인 5일 순매수 {foreign_net_5d:,.0f}원 ✅")
+        else:
+            flow_details.append(f"외국인 5일 순매도 {foreign_net_5d:,.0f}원")
+        if inst_net_5d > 0:
+            flow_score += 3; flow_details.append(f"기관 5일 순매수 {inst_net_5d:,.0f}원 ✅")
+        else:
+            flow_details.append(f"기관 5일 순매도 {inst_net_5d:,.0f}원")
+        if foreign_net_20d > 0 and inst_net_20d > 0:
+            flow_score += 4; flow_details.append("외국인·기관 20일 동반 순매수 (강한 수급) ✅")
+        elif foreign_net_20d > 0 or inst_net_20d > 0:
+            flow_score += 2; flow_details.append("외국인·기관 중 한쪽만 20일 순매수")
+        else:
+            flow_details.append("외국인·기관 모두 20일 순매도 ⚠️")
+    else:
+        reason = "해외 종목" if not (ticker.endswith(".KS") or ticker.endswith(".KQ")) else "KRX 데이터 조회 실패"
+        flow_details.append(f"수급 데이터를 가져올 수 없습니다 ({reason})")
+    flow_score = min(flow_score, 10)
+
+    # 9개 요인 가중치 — 신규 요인(펀더멘털/상대강도/수급) 데이터가 없으면
+    # 해당 요인을 제외하고 남은 요인들의 가중치를 재정규화한다.
+    weights = {"trend":0.15,"momentum":0.15,"volume":0.10,
+               "volatility":0.10,"dispersion":0.10,"candle":0.08,
+               "fundamental":0.12,"relative_strength":0.10,"flow":0.10}
     scores  = {"trend":trend_score,"momentum":mom_score,"volume":vol_score,
-               "volatility":vola_score,"dispersion":disp_score,"candle":candle_score}
-    total   = sum(scores[k] * weights[k] for k in weights)
+               "volatility":vola_score,"dispersion":disp_score,"candle":candle_score,
+               "fundamental":fundamental_score,"relative_strength":rs_score,"flow":flow_score}
+    availability = {"trend":True,"momentum":True,"volume":True,"volatility":True,
+                     "dispersion":True,"candle":True,
+                     "fundamental":fundamental_available,"relative_strength":rs_available,
+                     "flow":flow_available}
+    active_sum  = sum(w for k, w in weights.items() if availability[k]) or 1.0
+    norm_weights = {k: (w / active_sum if availability[k] else 0.0) for k, w in weights.items()}
+    total   = sum(scores[k] * norm_weights[k] for k in weights)
     verdict = "✅ 매수 추천" if total >= 7 else ("🟠 관망 권고" if total >= 5 else "❌ 매수 비권고")
 
-    try:
-        info = yf.Ticker(ticker).info
-        name = (info.get("longName") or info.get("shortName") or "").strip()[:20]
-    except Exception:
-        name = ""
+    name = (info.get("longName") or info.get("shortName") or "").strip()[:20]
 
     return {
         "ticker": ticker, "name": name,
         "total": round(total, 2), "verdict": verdict,
-        "scores": scores, "weights": weights,
+        "scores": scores, "weights": norm_weights,
         "details": {"trend":trend_details,"momentum":mom_details,"volume":vol_details,
-                    "volatility":vola_details,"dispersion":disp_details,"candle":candle_details},
+                    "volatility":vola_details,"dispersion":disp_details,"candle":candle_details,
+                    "fundamental":fundamental_details,"relative_strength":rs_details,"flow":flow_details},
+        "fundamentals": {"PER": per, "PBR": pbr, "DivYield_pct": div_pct},
+        "relative_strength": {"RS_20d_pct": rs_20, "RS_60d_pct": rs_60, "benchmark": bench_ticker},
+        "investor_flow": {"Foreign_5d": foreign_net_5d, "Inst_5d": inst_net_5d,
+                           "Foreign_20d": foreign_net_20d, "Inst_20d": inst_net_20d},
         "golden_cross": {
             "most_recent": most_recent, "days_since_cross": days_since,
             "currently_above": currently_above,
@@ -475,23 +626,30 @@ if run and ticker_input.strip():
     # ② 요인별 점수
     with tab1:
         factor_labels = [
-            ("trend",      "추세"),
-            ("momentum",   "모멘텀"),
-            ("volume",     "거래량"),
-            ("volatility", "변동성"),
-            ("dispersion", "이격/반등"),
-            ("candle",     "캔들패턴"),
+            ("trend",             "추세"),
+            ("momentum",          "모멘텀"),
+            ("volume",            "거래량"),
+            ("volatility",        "변동성"),
+            ("dispersion",        "이격/반등"),
+            ("candle",            "캔들패턴"),
+            ("fundamental",       "펀더멘털"),
+            ("relative_strength", "상대강도"),
+            ("flow",              "수급"),
         ]
         rows = []
         for k, lb in factor_labels:
             v  = float(sc[k])
             wt = W[k]
-            mark = "✅ 양호" if v >= 7 else ("⚠️ 주의" if v >= 5 else "❌ 부정")
+            if wt == 0:
+                mark = "— 데이터없음"
+            else:
+                mark = "✅ 양호" if v >= 7 else ("⚠️ 주의" if v >= 5 else "❌ 부정")
             rows.append({"요인": lb, "가중치": f"{wt:.0%}", "점수": v,
                          "바": "█" * int(v*1.4) + "░" * (14 - int(v*1.4)),
                          "판정": mark})
         df_sc = pd.DataFrame(rows)
         st.dataframe(df_sc, hide_index=True, use_container_width=True)
+        st.caption("가중치는 데이터를 가져오지 못한 요인(펀더멘털/상대강도/수급)을 제외하고 재정규화됩니다.")
 
         st.divider()
         st.markdown("**추가 신호**")
@@ -530,6 +688,25 @@ if run and ticker_input.strip():
         }
         st.dataframe(pd.DataFrame(gc_data), hide_index=True, use_container_width=True)
 
+        st.divider()
+        st.markdown("**펀더멘털 · 상대강도 · 수급**")
+        fd  = r["fundamentals"]; rsd = r["relative_strength"]; fl = r["investor_flow"]
+        extra2 = {
+            "항목": ["PER", "PBR", "배당수익률",
+                    f"상대강도 20일 (vs {rsd['benchmark']})", "상대강도 60일",
+                    "외국인 5일 순매수", "기관 5일 순매수"],
+            "값": [
+                f"{fd['PER']:.1f}" if fd['PER'] is not None else "N/A",
+                f"{fd['PBR']:.2f}" if fd['PBR'] is not None else "N/A",
+                f"{fd['DivYield_pct']:.2f}%" if fd['DivYield_pct'] is not None else "N/A",
+                f"{rsd['RS_20d_pct']:+.1f}%p" if rsd['RS_20d_pct'] is not None else "N/A",
+                f"{rsd['RS_60d_pct']:+.1f}%p" if rsd['RS_60d_pct'] is not None else "N/A",
+                f"{fl['Foreign_5d']:,.0f}원" if fl['Foreign_5d'] is not None else "N/A",
+                f"{fl['Inst_5d']:,.0f}원" if fl['Inst_5d'] is not None else "N/A",
+            ],
+        }
+        st.dataframe(pd.DataFrame(extra2), hide_index=True, use_container_width=True)
+
     # ③ 주가 차트
     with tab2:
         if fig:
@@ -540,7 +717,8 @@ if run and ticker_input.strip():
     # ④ 상세 사유
     with tab3:
         label_map = {"trend":"추세","momentum":"모멘텀","volume":"거래량",
-                     "volatility":"변동성","dispersion":"이격/반등","candle":"캔들패턴"}
+                     "volatility":"변동성","dispersion":"이격/반등","candle":"캔들패턴",
+                     "fundamental":"펀더멘털","relative_strength":"상대강도","flow":"수급"}
         for k, lb in label_map.items():
             with st.expander(f"**{lb}** — 점수 {sc[k]}/10"):
                 for d in r["details"].get(k, []):
