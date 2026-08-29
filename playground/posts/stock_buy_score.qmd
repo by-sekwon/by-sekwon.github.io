@@ -2,6 +2,7 @@
 title: "매수적절성 분석기 v2"
 author: "권세혁"
 date: "2026-06-06"
+date-modified: "2026-08-29"
 description: "기술적 지표 6개 + 펀더멘털·재무건전성·상대강도·수급·애널리스트·유동성·52주위치 등 13개 요인으로 종목 매수 적절성을 가중 점수로 분석합니다."
 categories: [주식, 기술적분석, 베이지안]
 format:
@@ -10,9 +11,136 @@ format:
     toc: false
 ---
 
-::: {.callout-note}
-아래 앱은 **Streamlit** 으로 구동됩니다. 처음 로딩에 10~20초 소요될 수 있습니다.
-:::
+```{=html}
+<style>
+.mbs-hero {
+  background: linear-gradient(135deg, #16302a 0%, #1f5c46 55%, #2f8c6a 100%);
+  color: #f5f4ee;
+  padding: 1.5rem 1.8rem;
+  border-radius: 12px;
+  margin: 0.2rem 0 1.6rem;
+  box-shadow: 0 4px 14px rgba(24,60,48,0.18);
+}
+.mbs-hero .mbs-hero-top { display:flex; align-items:center; gap:.6rem; }
+.mbs-hero .mbs-hero-top span.icon { font-size:1.7rem; line-height:1; }
+.mbs-hero h3 { margin:0; font-size:1.3rem; font-weight:800; letter-spacing:-.01em; }
+.mbs-hero p { margin:.6rem 0 0; font-size:.9rem; line-height:1.7; opacity:.92; }
+.mbs-hero .mbs-badge {
+  display:inline-block; background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.28); border-radius:20px;
+  padding:.18rem .7rem; font-size:.72rem; font-weight:600;
+  margin-top:.7rem; letter-spacing:.02em;
+}
+
+.mbs-section-title {
+  font-size:1.02rem; font-weight:700; margin:0 0 .8rem;
+  display:flex; align-items:center; gap:.4rem; color:#1f3d33;
+}
+
+.mbs-factor-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
+  gap:0.9rem; margin:0 0 1.6rem;
+}
+.mbs-card {
+  border:1px solid #e2e6e3; border-radius:10px;
+  padding:1rem 1.1rem; background:#fafcfa;
+}
+.mbs-card .mbs-card-head {
+  display:flex; align-items:baseline; justify-content:space-between; margin-bottom:.55rem;
+}
+.mbs-card h4 { margin:0; font-size:.92rem; font-weight:700; color:#1f3d33; }
+.mbs-card .mbs-weight {
+  font-size:.76rem; font-weight:700; color:#2f8c6a;
+  background:#e6f2ec; border-radius:6px; padding:.1rem .45rem;
+}
+.mbs-card ul { margin:0; padding-left:1.05rem; font-size:.82rem; line-height:1.75; color:#444; }
+.mbs-card ul li span.wt { color:#888; font-size:.76rem; }
+
+.mbs-verdict-row {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+  gap:0.7rem; margin:0 0 1.6rem;
+}
+.mbs-verdict {
+  border-radius:9px; padding:.75rem .9rem; font-size:.85rem; font-weight:600;
+  display:flex; align-items:center; gap:.5rem;
+}
+.mbs-verdict.buy   { background:#e7f5ec; color:#1e6b3a; border:1px solid #bfe4cd; }
+.mbs-verdict.watch { background:#fdf2e3; color:#9a5b0a; border:1px solid #f3d9ad; }
+.mbs-verdict.avoid { background:#fbebeb; color:#a32b2b; border:1px solid #f0c6c6; }
+.mbs-verdict .mbs-v-score { font-weight:800; }
+
+.mbs-note {
+  border:1px solid #dbe6e1; background:#f3f8f6; border-radius:10px;
+  padding:.8rem 1rem; font-size:.83rem; color:#33513f; line-height:1.65;
+  margin-bottom:1.4rem;
+}
+.mbs-note b { color:#1f3d33; }
+</style>
+
+<div class="mbs-hero">
+  <div class="mbs-hero-top">
+    <span class="icon">📊</span>
+    <h3>매수적절성 분석기 v2</h3>
+  </div>
+  <p>
+    기술적 분석 6개 요인과 펀더멘털·재무·시장·컨센서스·리스크 7개 요인, 총 <b>13개 요인</b>을 가중합산해
+    종목의 매수 적절성을 0~10점으로 계산합니다. yfinance·KRX 데이터를 실시간으로 가져와
+    추세·모멘텀·거래량·변동성 같은 차트 신호뿐 아니라 밸류에이션, 재무 건전성, 시장 대비 상대강도,
+    외국인·기관 수급, 애널리스트 컨센서스, 유동성, 52주 가격대까지 함께 반영합니다.
+  </p>
+  <span class="mbs-badge">v2 · 13 Factors · yfinance + KRX</span>
+</div>
+
+<div class="mbs-section-title">🧮 점수 로직 — 4개 카테고리, 13개 요인</div>
+<div class="mbs-factor-grid">
+  <div class="mbs-card">
+    <div class="mbs-card-head"><h4>① 기술적 분석</h4><span class="mbs-weight">52%</span></div>
+    <ul>
+      <li>추세 (MA 정배열·ADX) <span class="wt">12%</span></li>
+      <li>모멘텀 (RSI·MACD·Stochastic) <span class="wt">12%</span></li>
+      <li>거래량 (가격-거래량 동반 여부) <span class="wt">8%</span></li>
+      <li>변동성 (HV20·볼린저밴드) <span class="wt">8%</span></li>
+      <li>이격/반등 (MA20 이격도·1년 저점 반등) <span class="wt">7%</span></li>
+      <li>캔들패턴 (장대양봉·망치형·3연양봉) <span class="wt">5%</span></li>
+    </ul>
+  </div>
+  <div class="mbs-card">
+    <div class="mbs-card-head"><h4>② 펀더멘털·재무</h4><span class="mbs-weight">18%</span></div>
+    <ul>
+      <li>밸류에이션 — PER·PBR·배당수익률 <span class="wt">9%</span></li>
+      <li>재무건전성 — ROE·부채비율·영업이익률·매출성장률 <span class="wt">9%</span></li>
+    </ul>
+  </div>
+  <div class="mbs-card">
+    <div class="mbs-card-head"><h4>③ 시장·수급</h4><span class="mbs-weight">16%</span></div>
+    <ul>
+      <li>상대강도 — KOSPI/KOSDAQ/S&amp;P500 대비 20·60일 초과수익 <span class="wt">8%</span></li>
+      <li>수급 — 외국인·기관 5·20일 순매수 (KRX) <span class="wt">8%</span></li>
+    </ul>
+  </div>
+  <div class="mbs-card">
+    <div class="mbs-card-head"><h4>④ 컨센서스·리스크</h4><span class="mbs-weight">14%</span></div>
+    <ul>
+      <li>애널리스트 — 목표주가 괴리율·투자의견 <span class="wt">6%</span></li>
+      <li>공매도/유동성 — 공매도 비중·거래대금·시가총액 <span class="wt">4%</span></li>
+      <li>52주 위치 — 고점/저점 대비 현재가 <span class="wt">4%</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="mbs-verdict-row">
+  <div class="mbs-verdict buy">✅ <span class="mbs-v-score">7.0~10점</span>&nbsp;매수 추천</div>
+  <div class="mbs-verdict watch">🟠 <span class="mbs-v-score">5.0~6.9점</span>&nbsp;관망 권고</div>
+  <div class="mbs-verdict avoid">❌ <span class="mbs-v-score">0~4.9점</span>&nbsp;매수 비권고</div>
+</div>
+
+<div class="mbs-note">
+  ⓘ <b>Streamlit</b> 앱으로 구동되며 처음 로딩에 10~20초 소요될 수 있습니다. 목표주가·수급·재무 데이터를
+  가져오지 못하는 종목(해외종목의 국내 수급, 정보 미제공 종목 등)은 해당 요인을 제외하고 나머지 요인의
+  가중치를 자동으로 재정규화해 총점을 계산합니다. 본 분석은 교육·참고 목적이며 투자 결정의 책임은
+  본인에게 있습니다.
+</div>
+```
 
 ```{=html}
 <iframe
