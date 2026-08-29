@@ -804,8 +804,12 @@ with st.expander("🔧 KRX 종목명 데이터 상태 (문제 확인용)", expan
 
 c1, c2, _ = st.columns([2, 1, 3])
 with c1:
-    ticker_input = st.text_input("종목코드 또는 종목명", value="005930",
-                                 placeholder="예: 005930 / 삼성전자 / AAPL")
+    ticker_input = st.text_input(
+        "종목코드 또는 종목명", value="005930",
+        placeholder="예: 005930 / 삼성전자 / AAPL",
+        help="종목명을 일부만 입력해도(예: '삼성') 관련 국내 종목 목록이 아래 드롭다운으로 나타납니다. 거기서 선택하세요.",
+    )
+    st.caption("💡 종목명을 일부만 입력하면(예: '삼성') 관련 종목 목록이 아래에 나타나요. 목록에서 선택해 주세요.")
 query_stripped = ticker_input.strip()
 has_korean_query = any('가' <= c <= '힣' for c in query_stripped)
 
