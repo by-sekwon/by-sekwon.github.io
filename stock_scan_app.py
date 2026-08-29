@@ -27,11 +27,12 @@ st.markdown("""
 # ── 파라미터 사이드바 ──────────────────────────────────────────
 with st.sidebar:
     st.header("⚙️ 스캔 파라미터")
+    top_n_marcap = st.slider("시가총액", 10, 200, 50, step=10,
+                             help="시가총액 상위 몇 위까지 스캔할지 선택합니다. 예: 50이면 시가총액 상위 50개 종목만 스캔합니다.")
     cutoff      = st.number_input("최소 주가 (원)", value=10_000, step=1_000, min_value=0)
     min_score   = st.slider("매수 추천 컷오프 점수", 1, 28, 13,
                             help="이 점수 이상인 종목만 추천 목록에 표시됩니다.")
     TOP_N       = st.slider("상세 리포트 종목 수", 1, 10, 5)
-    min_marcap  = st.number_input("최소 시가총액 (억원)", value=1_000, step=100, min_value=0) * 100_000_000
     min_vol     = st.number_input("최소 거래량", value=30_000, step=10_000, min_value=0)
     max_workers = st.slider("병렬 스레드 수", 5, 20, 10)
     st.caption("⚠️ 전체 스캔은 5~15분 소요됩니다.\n결과는 세션 내 유지됩니다.")
@@ -643,7 +644,8 @@ if run_btn:
         krx["Volume"] = pd.to_numeric(krx["Volume"], errors="coerce")
         if "Marcap" in krx.columns:
             krx["Marcap"] = pd.to_numeric(krx["Marcap"], errors="coerce")
-            krx = krx[krx["Marcap"] >= min_marcap]
+            krx = krx.dropna(subset=["Marcap"]).sort_values("Marcap", ascending=False)
+            krx = krx.head(top_n_marcap)
         krx = krx.dropna(subset=["Close","Volume"])
         krx = krx[(krx["Close"] >= cutoff) & (krx["Volume"] >= min_vol)].reset_index(drop=True)
 
