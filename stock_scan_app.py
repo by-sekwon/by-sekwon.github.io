@@ -241,6 +241,7 @@ def scan_one(row, market_ret20_map=None):
             "종목코드":      code,
             "종목명":        name,
             "시장":          market,
+            "시총순위":      row.get("시가총액순위"),
             "점수":          res["score"],
             "현재가":        round(res["close"]),
             "RSI":           round(res["rsi"],   1),
@@ -646,6 +647,7 @@ if run_btn:
             krx["Marcap"] = pd.to_numeric(krx["Marcap"], errors="coerce")
             krx = krx.dropna(subset=["Marcap"]).sort_values("Marcap", ascending=False)
             krx = krx.head(top_n_marcap)
+            krx["시가총액순위"] = range(1, len(krx) + 1)
         krx = krx.dropna(subset=["Close","Volume"])
         krx = krx[(krx["Close"] >= cutoff) & (krx["Volume"] >= min_vol)].reset_index(drop=True)
 
