@@ -78,6 +78,37 @@ def resolve_ticker(raw: str) -> str:
         pass
     return raw
 
+
+# ── KRX 전종목 마스터 (코드 ↔ 한글 종목명, 검색 자동완성용) ────
+@st.cache_data(ttl=86400, show_spinner=False)
+def load_kr_master():
+    if not _PYKRX_OK:
+        return None
+    try:
+        from pykrx.website.krx.market.ticker import StockTicker
+        df = StockTicker().listed.copy()  # index=티커(6자리), 컬럼: 종목, ISIN, 시장
+        return df
+    except Exception:
+        return None
+
+
+def search_kr_candidates(query: str, master_df, limit: int = 12):
+    if master_df is None or master_df.empty or not query:
+        return master_df.iloc[0:0] if master_df is not None else None
+    matches = master_df[master_df["종목"].str.contains(query, na=False, regex=False)].copy()
+    if matches.empty:
+        return matches
+    matches["exact"] = matches["종목"] == query
+    matches["length"] = matches["종목"].str.len()
+    matches = matches.sort_values(["exact", "length"], ascending=[False, True])
+    return matches.head(limit)
+
+
+def kr_name_from_master(code: str, master_df):
+    if master_df is None or code not in master_df.index:
+        return None
+    return master_df.loc[code, "종목"]
+
 st.set_page_config(page_title="매수적절성 분석기", page_icon="📊", layout="wide")
 
 st.markdown("""
@@ -590,7 +621,11 @@ def analyze_stock(ticker: str) -> dict:
     total   = sum(scores[k] * norm_weights[k] for k in weights)
     verdict = "✅ 매수 추천" if total >= 7 else ("🟠 관망 권고" if total >= 5 else "❌ 매수 비권고")
 
-    name = (info.get("longName") or info.get("shortName") or "").strip()[:20]
+    name = None
+    if is_kr_stock:
+        name = kr_name_from_master(ticker.split(".")[0], load_kr_master())
+    if not name:
+        name = (info.get("longName") or info.get("shortName") or "").strip()[:20]
 
     return {
         "ticker": ticker, "name": name,
@@ -735,16 +770,42 @@ def build_chart(ticker: str):
 
 
 # ── UI ────────────────────────────────────────────────────
+kr_master = load_kr_master()
+
 c1, c2, _ = st.columns([2, 1, 3])
 with c1:
     ticker_input = st.text_input("종목코드 또는 종목명", value="005930",
                                  placeholder="예: 005930 / 삼성전자 / AAPL")
+query_stripped = ticker_input.strip()
+has_korean_query = any('가' <= c <= '힣' for c in query_stripped)
+
+candidates = None
+if has_korean_query and kr_master is not None:
+    candidates = search_kr_candidates(query_stripped, kr_master)
+
+selected_ticker = None
+if candidates is not None and len(candidates) > 0:
+    if len(candidates) == 1:
+        row = candidates.iloc[0]
+        selected_ticker = candidates.index[0] + (".KS" if row["시장"] == "STK" else ".KQ")
+    else:
+        def _fmt_candidate(code, _c=candidates):
+            row = _c.loc[code]
+            market_label = "코스피" if row["시장"] == "STK" else "코스닥"
+            return f"{row['종목']} ({code}) · {market_label}"
+        selected_code = st.selectbox(
+            f"🔎 '{query_stripped}' 검색 결과 {len(candidates)}건 — 종목을 선택하세요",
+            options=list(candidates.index), format_func=_fmt_candidate,
+        )
+        row = candidates.loc[selected_code]
+        selected_ticker = selected_code + (".KS" if row["시장"] == "STK" else ".KQ")
+
 with c2:
     st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
     run = st.button("▶ 분석 실행", type="primary", use_container_width=True)
 
-if run and ticker_input.strip():
-    resolved = resolve_ticker(ticker_input.strip())
+if run and query_stripped:
+    resolved = selected_ticker if selected_ticker else resolve_ticker(query_stripped)
     has_korean_resolved = any('가' <= c <= '힣' for c in resolved)
     if has_korean_resolved:
         st.error(
@@ -774,7 +835,7 @@ if run and ticker_input.strip():
     # ① 종합 요약
     st.markdown(
         f"<div style='margin-bottom:.6rem;'>"
-        f"<span style='font-size:1.5rem;font-weight:800;color:#f5f0e8;'>{r['name'] or r['ticker']}</span>"
+        f"<span style='font-size:1.5rem;font-weight:800;color:#163c2e;'>{r['name'] or r['ticker']}</span>"
         f"<span style='font-size:1rem;color:#aaa;margin-left:.6rem;'>{r['ticker']}</span>"
         f"</div>",
         unsafe_allow_html=True
