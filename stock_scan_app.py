@@ -17,9 +17,9 @@ st.set_page_config(page_title="KRX 매수 추천 스캐너", page_icon="🔍", l
 st.markdown("""
 <div style="background:linear-gradient(135deg,#1a2a6c,#2d5a8c);
             padding:1.2rem 1.6rem;border-radius:10px;color:#f5f0e8;margin-bottom:1.2rem;">
-  <h2 style="margin:0;font-size:1.4rem;">🔍 KRX 매수 추천 스캐너</h2>
+  <h2 style="margin:0;font-size:1.4rem;">🔍 KRX 매수 추천 스캐너 v2</h2>
   <p style="margin:0.3rem 0 0;font-size:0.85rem;opacity:0.85;">
-    KRX 전체 종목 × 기술적 분석 12개 지표 × 점수 기반 스캔 (최대 ±24점)
+    KRX 전체 종목 × 기술적 분석 16개 지표(추가: Williams %R·CCI·MFI·시장 대비 상대강도) × 점수 기반 스캔 (최대 ±32점)
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -28,7 +28,7 @@ st.markdown("""
 with st.sidebar:
     st.header("⚙️ 스캔 파라미터")
     cutoff      = st.number_input("최소 주가 (원)", value=10_000, step=1_000, min_value=0)
-    min_score   = st.slider("매수 추천 컷오프 점수", 1, 20, 10,
+    min_score   = st.slider("매수 추천 컷오프 점수", 1, 28, 13,
                             help="이 점수 이상인 종목만 추천 목록에 표시됩니다.")
     TOP_N       = st.slider("상세 리포트 종목 수", 1, 10, 5)
     min_marcap  = st.number_input("최소 시가총액 (억원)", value=1_000, step=100, min_value=0) * 100_000_000
@@ -40,8 +40,8 @@ with st.sidebar:
     st.info(
         "**📐 모델 기반**\n\n"
         "본 스캐너는 **통계학 전공자**의 연구 모델링을 기반으로 설계되었습니다. "
-        "MA·MACD·RSI·볼린저밴드·ADX 등 12개 기술적 지표를 통계적으로 가중 집계하여 "
-        "매수 적절성 점수(±24점)를 산출합니다."
+        "MA·MACD·RSI·볼린저밴드·ADX·Williams %R·CCI·MFI·시장 대비 상대강도 등 "
+        "16개 기술적 지표를 통계적으로 가중 집계하여 매수 적절성 점수(±32점)를 산출합니다."
     )
     st.warning(
         "**⚠️ 투자 위험 고지**\n\n"
@@ -55,8 +55,8 @@ with st.sidebar:
 start_date = (datetime.today() - timedelta(days=365)).strftime("%Y-%m-%d")
 
 
-# ── 점수 계산 (±24점) ──────────────────────────────────────────
-def compute_score(df):
+# ── 점수 계산 (±32점) ──────────────────────────────────────────
+def compute_score(df, market_ret20=None):
     if df is None or len(df) < 70:
         return None
     c, h, l, v = df["Close"], df["High"], df["Low"], df["Volume"]
@@ -177,18 +177,62 @@ def compute_score(df):
         elif cv > high_52w * 0.95:               score += 1
         elif cv < l.iloc[-252:-1].min() * 1.05: score -= 2
 
+    # ⑬ Williams %R (14일)
+    willr = (high14 - c) / (high14 - low14) * -100
+    wv = willr.iloc[r1]
+    if   wv <= -80: score += 2
+    elif wv >= -20: score -= 2
+
+    # ⑭ CCI (20일)
+    tp       = (h + l + c) / 3
+    sma_tp   = tp.rolling(20).mean()
+    mean_dev = tp.rolling(20).apply(lambda x: np.mean(np.abs(x - x.mean())), raw=True)
+    cci      = (tp - sma_tp) / (0.015 * mean_dev.replace(0, np.nan))
+    ccv = cci.iloc[r1]
+    if pd.notna(ccv):
+        if   ccv <= -100: score += 2
+        elif ccv >=  100: score -= 2
+
+    # ⑮ MFI (14일, 자금흐름지수)
+    tp_diff  = tp.diff()
+    raw_mf   = tp * v
+    pos_mf   = raw_mf.where(tp_diff > 0, 0.0).rolling(14).sum()
+    neg_mf   = raw_mf.where(tp_diff < 0, 0.0).rolling(14).sum()
+    mfr      = pos_mf / neg_mf.replace(0, np.nan)
+    mfi      = 100 - (100 / (1 + mfr))
+    mfv = mfi.iloc[r1]
+    if pd.notna(mfv):
+        if   mfv <= 20: score += 2
+        elif mfv >= 80: score -= 2
+
+    # ⑯ 시장 대비 상대강도 (20일, KOSPI/KOSDAQ 지수 대비 초과수익)
+    rel_strength = None
+    if market_ret20 is not None and len(c) >= 21 and c.iloc[-21] > 0:
+        stock_ret20  = c.iloc[r1] / c.iloc[-21] - 1
+        rel_strength = (stock_ret20 - market_ret20) * 100
+        if   rel_strength >= 5:  score += 2
+        elif rel_strength >= 0:  score += 1
+        elif rel_strength <= -5: score -= 2
+        else:                    score -= 1
+
     return {
         "score": score, "close": cv, "rsi": rv, "stoch": kv,
         "atr": atr.iloc[r1], "ma20": ma20.iloc[r1], "ma60": ma60.iloc[r1],
+        "willr": wv, "cci": ccv, "mfi": mfv, "rel_strength": rel_strength,
     }
 
 
 # ── 단일 종목 스캔 ─────────────────────────────────────────────
-def scan_one(row):
+def scan_one(row, market_ret20_map=None):
     code = row["Code"]; name = row["Name"]; market = row.get("Market", "")
     try:
+        market_ret20 = None
+        if market_ret20_map:
+            market_ret20 = market_ret20_map.get(
+                "KOSPI" if market == "KOSPI" else "KOSDAQ"
+            )
         df  = fdr.DataReader(code, start_date)
-        res = compute_score(df if not df.empty else None)
+        res = compute_score(df if not df.empty else None, market_ret20=market_ret20)
         if res is None:
             return None
         atr_pct = res["atr"] / res["close"] * 100 if res["close"] else np.nan
@@ -200,6 +244,10 @@ def scan_one(row):
             "현재가":        round(res["close"]),
             "RSI":           round(res["rsi"],   1),
             "Stoch%K":       round(res["stoch"], 1),
+            "Williams%R":    round(res["willr"], 1) if pd.notna(res["willr"]) else None,
+            "CCI":           round(res["cci"], 1) if pd.notna(res["cci"]) else None,
+            "MFI":           round(res["mfi"], 1) if pd.notna(res["mfi"]) else None,
+            "상대강도(20D)": round(res["rel_strength"], 1) if res["rel_strength"] is not None else None,
             "ATR%":          round(atr_pct,      2),
             "손절가(-1ATR)": round(res["close"] - res["atr"]),
             "목표가(+2ATR)": round(res["close"] + 2 * res["atr"]),
@@ -261,6 +309,29 @@ def show_signal(code, name, market):
     df["ADX"]      = dx.ewm(span=14, adjust=False).mean()
     df["Plus_DI"]  = plus_di
     df["Minus_DI"] = minus_di
+
+    df["Williams_R"] = (high_max - df["Close"]) / (high_max - low_min) * -100
+
+    tp        = (df["High"] + df["Low"] + df["Close"]) / 3
+    sma_tp    = tp.rolling(20).mean()
+    mean_dev  = tp.rolling(20).apply(lambda x: np.mean(np.abs(x - x.mean())), raw=True)
+    df["CCI"] = (tp - sma_tp) / (0.015 * mean_dev.replace(0, np.nan))
+
+    tp_diff  = tp.diff()
+    raw_mf   = tp * df["Volume"]
+    pos_mf   = raw_mf.where(tp_diff > 0, 0.0).rolling(14).sum()
+    neg_mf   = raw_mf.where(tp_diff < 0, 0.0).rolling(14).sum()
+    mfr      = pos_mf / neg_mf.replace(0, np.nan)
+    df["MFI"] = 100 - (100 / (1 + mfr))
+
+    market_ret20 = None
+    try:
+        idx_code = "KS11" if market == "KOSPI" else "KQ11"
+        idx_df   = fdr.DataReader(idx_code, start_date)
+        if len(idx_df) >= 21 and idx_df["Close"].iloc[-21] > 0:
+            market_ret20 = idx_df["Close"].iloc[-1] / idx_df["Close"].iloc[-21] - 1
+    except Exception:
+        pass
 
     r  = df.iloc[-1]; r2 = df.iloc[-2]
     score = 0; logs = []
@@ -339,25 +410,56 @@ def show_signal(code, name, market):
         elif close < df["Low"].iloc[-252:-1].min() * 1.05:
             score -= 2; logs.append(("▼ 52주 신저가 근처", "-2", "SELL"))
 
-    MAX_SCORE = 24
-    if   score >= 14: verdict, vcolor, vbg, hbg = "🔴 강한 매수",  "#CC0000", "#FFE0E0", "#CC0000"
-    elif score >= 9:  verdict, vcolor, vbg, hbg = "🟠 매수 고려",  "#CC5500", "#FFE8CC", "#CC5500"
-    elif score >= 4:  verdict, vcolor, vbg, hbg = "🟡 약한 매수",  "#886600", "#FFF3CC", "#886600"
-    elif score >= -3: verdict, vcolor, vbg, hbg = "⬜ 중립 (관망)", "#444444", "#EEEEEE", "#666666"
-    elif score >= -8: verdict, vcolor, vbg, hbg = "🟦 약한 매도",  "#003DAA", "#DDEAFF", "#003DAA"
-    elif score >=-13: verdict, vcolor, vbg, hbg = "🔵 매도 고려",  "#002288", "#CCDAFF", "#002288"
+    willr = r["Williams_R"]
+    if pd.notna(willr):
+        if   willr <= -80: score += 2; logs.append((f"▲ Williams %R 과매도 ({willr:.1f} ≤ -80)", "+2", "BUY"))
+        elif willr >= -20: score -= 2; logs.append((f"▼ Williams %R 과매수 ({willr:.1f} ≥ -20)", "-2", "SELL"))
+        else:                            logs.append((f"● Williams %R 중립 ({willr:.1f})", "0", "NEUTRAL"))
+
+    cci = r["CCI"]
+    if pd.notna(cci):
+        if   cci <= -100: score += 2; logs.append((f"▲ CCI 과매도 ({cci:.1f} ≤ -100)", "+2", "BUY"))
+        elif cci >=  100: score -= 2; logs.append((f"▼ CCI 과매수 ({cci:.1f} ≥ 100)", "-2", "SELL"))
+        else:                          logs.append((f"● CCI 중립 ({cci:.1f})", "0", "NEUTRAL"))
+
+    mfi = r["MFI"]
+    if pd.notna(mfi):
+        if   mfi <= 20: score += 2; logs.append((f"▲ MFI 자금흐름 과매도 ({mfi:.1f} ≤ 20)", "+2", "BUY"))
+        elif mfi >= 80: score -= 2; logs.append((f"▼ MFI 자금흐름 과매수 ({mfi:.1f} ≥ 80)", "-2", "SELL"))
+        else:                        logs.append((f"● MFI 중립 ({mfi:.1f})", "0", "NEUTRAL"))
+
+    rel_strength = None
+    if market_ret20 is not None and len(df) >= 21 and df["Close"].iloc[-21] > 0:
+        stock_ret20  = close / df["Close"].iloc[-21] - 1
+        rel_strength = (stock_ret20 - market_ret20) * 100
+        if   rel_strength >= 5:
+            score += 2; logs.append((f"▲ {market} 대비 상대강도 우위 ({rel_strength:+.1f}%p)", "+2", "BUY"))
+        elif rel_strength >= 0:
+            score += 1; logs.append((f"▲ {market} 대비 소폭 우위 ({rel_strength:+.1f}%p)", "+1", "BUY"))
+        elif rel_strength <= -5:
+            score -= 2; logs.append((f"▼ {market} 대비 상대약세 ({rel_strength:+.1f}%p)", "-2", "SELL"))
+        else:
+            score -= 1; logs.append((f"▼ {market} 대비 소폭 열위 ({rel_strength:+.1f}%p)", "-1", "SELL"))
+
+    MAX_SCORE = 32
+    if   score >= 18: verdict, vcolor, vbg, hbg = "🔴 강한 매수",  "#CC0000", "#FFE0E0", "#CC0000"
+    elif score >= 12: verdict, vcolor, vbg, hbg = "🟠 매수 고려",  "#CC5500", "#FFE8CC", "#CC5500"
+    elif score >= 5:  verdict, vcolor, vbg, hbg = "🟡 약한 매수",  "#886600", "#FFF3CC", "#886600"
+    elif score >= -4: verdict, vcolor, vbg, hbg = "⬜ 중립 (관망)", "#444444", "#EEEEEE", "#666666"
+    elif score >= -11: verdict, vcolor, vbg, hbg = "🟦 약한 매도",  "#003DAA", "#DDEAFF", "#003DAA"
+    elif score >=-17: verdict, vcolor, vbg, hbg = "🔵 매도 고려",  "#002288", "#CCDAFF", "#002288"
     else:             verdict, vcolor, vbg, hbg = "🟣 강한 매도",  "#550088", "#EDD8FF", "#550088"
 
     atr_pct = r["ATR"] / close * 100
 
     grade_rows = [
-        ("🔴 강한 매수",  "14~24",  "#CC0000", "#FFF0F0"),
-        ("🟠 매수 고려",  " 9~13",  "#CC5500", "#FFF4EE"),
-        ("🟡 약한 매수",  " 4~ 8",  "#886600", "#FFFBEE"),
-        ("⬜ 중립",       "-3~ 3",  "#444444", "#F5F5F5"),
-        ("🟦 약한 매도",  "-8~-4",  "#003DAA", "#EEF3FF"),
-        ("🔵 매도 고려",  "-13~-9", "#002288", "#E8EEFF"),
-        ("🟣 강한 매도",  "-24~-14","#550088", "#F5EEFF"),
+        ("🔴 강한 매수",  "18~32",  "#CC0000", "#FFF0F0"),
+        ("🟠 매수 고려",  "12~17",  "#CC5500", "#FFF4EE"),
+        ("🟡 약한 매수",  " 5~11",  "#886600", "#FFFBEE"),
+        ("⬜ 중립",       "-4~ 4",  "#444444", "#F5F5F5"),
+        ("🟦 약한 매도",  "-11~-5", "#003DAA", "#EEF3FF"),
+        ("🔵 매도 고려",  "-17~-12","#002288", "#E8EEFF"),
+        ("🟣 강한 매도",  "-32~-18","#550088", "#F5EEFF"),
     ]
     grade_html = "".join([
         f'<tr style="background:{gbg};outline:{"2px solid "+gc if gv==verdict else "none"};">'
@@ -412,7 +514,7 @@ def show_signal(code, name, market):
     <div style="flex:1;">
       <table style="width:100%;border-collapse:collapse;">
         <thead><tr style="background:#333;color:#FFF;">
-          <th style="padding:8px 12px;text-align:left;font-size:12px;">📋 조건 (①~⑫)</th>
+          <th style="padding:8px 12px;text-align:left;font-size:12px;">📋 조건 (①~⑯)</th>
           <th style="padding:8px 12px;text-align:center;font-size:12px;width:50px;">점수</th>
         </tr></thead>
         <tbody>{rows_html}</tbody>
@@ -547,12 +649,26 @@ if run_btn:
 
     col_status.info(f"스캔 대상: **{len(krx):,}개** 종목 | 기간: {start_date} ~ 오늘")
 
+    # 시장 대비 상대강도(⑯) 계산용 — KOSPI/KOSDAQ 지수는 종목당이 아니라
+    # 딱 한 번만 받아와 전체 스캔에서 공유한다 (종목별 API 호출 없음).
+    market_ret20_map = {}
+    with st.spinner("KOSPI/KOSDAQ 지수 로딩 중..."):
+        for idx_name, idx_code in [("KOSPI", "KS11"), ("KOSDAQ", "KQ11")]:
+            try:
+                idx_df = fdr.DataReader(idx_code, start_date)
+                if len(idx_df) >= 21 and idx_df["Close"].iloc[-21] > 0:
+                    market_ret20_map[idx_name] = (
+                        idx_df["Close"].iloc[-1] / idx_df["Close"].iloc[-21] - 1
+                    )
+            except Exception:
+                pass
+
     pbar = st.progress(0, text="스캔 준비 중...")
     all_scores = []; completed = 0
     rows_list  = [row for _, row in krx.iterrows()]
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(scan_one, row): row["Code"] for row in rows_list}
+        futures = {executor.submit(scan_one, row, market_ret20_map): row["Code"] for row in rows_list}
         for f in as_completed(futures):
             result = f.result()
             if result:
@@ -573,10 +689,10 @@ if st.session_state.scan_df is not None and len(st.session_state.scan_df) > 0:
 
     # 등급 구간 안내
     grade_info = [
-        ("🔴 강한 매수","14~24점","#CC0000"),("🟠 매수 고려"," 9~13점","#CC5500"),
-        ("🟡 약한 매수"," 4~ 8점","#886600"),("⬜ 중립",      "-3~ 3점","#444444"),
-        ("🟦 약한 매도","-8~-4점","#003DAA"),("🔵 매도 고려","-13~-9점","#002288"),
-        ("🟣 강한 매도","-24~-14점","#550088"),
+        ("🔴 강한 매수","18~32점","#CC0000"),("🟠 매수 고려","12~17점","#CC5500"),
+        ("🟡 약한 매수"," 5~11점","#886600"),("⬜ 중립",      "-4~ 4점","#444444"),
+        ("🟦 약한 매도","-11~-5점","#003DAA"),("🔵 매도 고려","-17~-12점","#002288"),
+        ("🟣 강한 매도","-32~-18점","#550088"),
     ]
     grade_cells = "".join([
         f'<td style="padding:5px 10px;color:{gc};font-weight:700;font-size:13px;">'
@@ -585,7 +701,7 @@ if st.session_state.scan_df is not None and len(st.session_state.scan_df) > 0:
     ])
     st.markdown(f"""
 <div style="font-family:'Malgun Gothic',sans-serif;margin:12px 0 6px 0;">
-  <b style="font-size:13px;">📊 등급 구간 (최대 ±24점)</b>
+  <b style="font-size:13px;">📊 등급 구간 (최대 ±32점)</b>
   <table style="border-collapse:collapse;margin-top:4px;background:#FAFAFA;
                 border:1px solid #DDD;border-radius:6px;overflow:hidden;">
     <tr>{grade_cells}</tr>
