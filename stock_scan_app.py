@@ -555,7 +555,7 @@ def show_signal(code, name, market):
     fig1, _ = mpf.plot(
         plot_df, type="candle", style="yahoo",
         addplot=apds, volume=True, figsize=(12, 5),
-        title=f"({code}) {name}  ·  MA20/60 · Bollinger · VWAP",
+        title=f"{code} ({market})  ·  MA20/60 · Bollinger · VWAP",
         tight_layout=True, returnfig=True,
     )
     st.pyplot(fig1)
