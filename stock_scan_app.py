@@ -12,12 +12,12 @@ import mplfinance as mpf
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-st.set_page_config(page_title="KRX 매수 추천 스캐너", page_icon="🔍", layout="wide")
+st.set_page_config(page_title="KRX 매수종목 추천 스캐너", page_icon="🔍", layout="wide")
 
 st.markdown("""
 <div style="background:linear-gradient(135deg,#1a2a6c,#2d5a8c);
             padding:1.2rem 1.6rem;border-radius:10px;color:#f5f0e8;margin-bottom:1.2rem;">
-  <h2 style="margin:0;font-size:1.4rem;">🔍 KRX 매수 추천 스캐너 v2</h2>
+  <h2 style="margin:0;font-size:1.4rem;">🔍 KRX 매수종목 추천 스캐너 v2</h2>
   <p style="margin:0.3rem 0 0;font-size:0.85rem;opacity:0.85;">
     KRX 전체 종목 × 기술적 분석 16개 지표(추가: Williams %R·CCI·MFI·시장 대비 상대강도) × 점수 기반 스캔 (최대 ±32점)
   </p>

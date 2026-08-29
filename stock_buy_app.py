@@ -136,12 +136,12 @@ def kr_name_from_master(code: str, master_df):
         return None
     return master_df.loc[code, "종목"]
 
-st.set_page_config(page_title="매수적절성 분석기", page_icon="📊", layout="wide")
+st.set_page_config(page_title="단일종목 매수 적절성 분석기", page_icon="📊", layout="wide")
 
 st.markdown("""
 <div style="background:linear-gradient(135deg,#1a3a2a,#2d6a4f);
             padding:1.2rem 1.6rem;border-radius:10px;color:#f5f0e8;margin-bottom:1.2rem;">
-  <h2 style="margin:0;font-size:1.4rem;">📊 매수적절성 분석기 v2</h2>
+  <h2 style="margin:0;font-size:1.4rem;">📊 단일종목 매수 적절성 분석기 v2</h2>
   <p style="margin:0.3rem 0 0;font-size:0.85rem;opacity:0.85;">
     기술적(추세·모멘텀·거래량·변동성·이격도·캔들) + 펀더멘털·재무건전성·상대강도·수급·애널리스트·유동성·52주위치 — 13개 요인 가중 점수
   </p>
