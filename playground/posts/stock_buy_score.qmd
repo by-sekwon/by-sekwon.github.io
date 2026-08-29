@@ -13,24 +13,25 @@ format:
 
 ```{=html}
 <style>
-.mbs-hero {
-  background: linear-gradient(135deg, #16302a 0%, #1f5c46 55%, #2f8c6a 100%);
-  color: #f5f4ee;
-  padding: 1.5rem 1.8rem;
-  border-radius: 12px;
-  margin: 0.2rem 0 1.6rem;
-  box-shadow: 0 4px 14px rgba(24,60,48,0.18);
+/* 제목 하단 메타(Author/Published/Modified) — Published(발행일) 행은 숨기고
+   Author·Modified만 한 줄로 압축한다. Published 값에만 붙는 p.date 클래스로
+   해당 필드 블록을 찾아 숨기므로(:has), Quarto가 렌더링 순서를 바꿔도 안전하다. */
+.quarto-title-meta {
+  display:flex !important;
+  flex-wrap:wrap;
+  align-items:baseline;
+  column-gap:.9rem;
 }
-.mbs-hero .mbs-hero-top { display:flex; align-items:center; gap:.6rem; }
-.mbs-hero .mbs-hero-top span.icon { font-size:1.7rem; line-height:1; }
-.mbs-hero h3 { margin:0; font-size:1.3rem; font-weight:800; letter-spacing:-.01em; }
-.mbs-hero p { margin:.6rem 0 0; font-size:.9rem; line-height:1.7; opacity:.92; }
-.mbs-hero .mbs-badge {
-  display:inline-block; background:rgba(255,255,255,0.14);
-  border:1px solid rgba(255,255,255,0.28); border-radius:20px;
-  padding:.18rem .7rem; font-size:.72rem; font-weight:600;
-  margin-top:.7rem; letter-spacing:.02em;
+.quarto-title-meta > div:has(p.date) { display:none !important; }
+.quarto-title-meta > div { display:flex !important; align-items:baseline; gap:.35rem; }
+.quarto-title-meta-heading { margin-top:0 !important; font-size:.72rem !important; opacity:.6; font-weight:600; }
+.quarto-title-meta-contents { font-size:.85rem !important; }
+.quarto-title-meta-contents p { margin:0; }
+
+.mbs-intro {
+  font-size:.92rem; line-height:1.7; color:#333; margin:0 0 1.1rem;
 }
+.mbs-intro b { color:#1f3d33; }
 
 .mbs-section-title {
   font-size:1.02rem; font-weight:700; margin:0 0 .8rem;
@@ -77,19 +78,12 @@ format:
 .mbs-note b { color:#1f3d33; }
 </style>
 
-<div class="mbs-hero">
-  <div class="mbs-hero-top">
-    <span class="icon">📊</span>
-    <h3>매수적절성 분석기 v2</h3>
-  </div>
-  <p>
-    기술적 분석 6개 요인과 펀더멘털·재무·시장·컨센서스·리스크 7개 요인, 총 <b>13개 요인</b>을 가중합산해
-    종목의 매수 적절성을 0~10점으로 계산합니다. yfinance·KRX 데이터를 실시간으로 가져와
-    추세·모멘텀·거래량·변동성 같은 차트 신호뿐 아니라 밸류에이션, 재무 건전성, 시장 대비 상대강도,
-    외국인·기관 수급, 애널리스트 컨센서스, 유동성, 52주 가격대까지 함께 반영합니다.
-  </p>
-  <span class="mbs-badge">v2 · 13 Factors · yfinance + KRX</span>
-</div>
+<p class="mbs-intro">
+  기술적 분석 6개 요인과 펀더멘털·재무·시장·컨센서스·리스크 7개 요인, 총 <b>13개 요인</b>을 가중합산해
+  종목의 매수 적절성을 0~10점으로 계산합니다. yfinance·KRX 데이터를 실시간으로 가져와
+  추세·모멘텀·거래량·변동성 같은 차트 신호뿐 아니라 밸류에이션, 재무 건전성, 시장 대비 상대강도,
+  외국인·기관 수급, 애널리스트 컨센서스, 유동성, 52주 가격대까지 함께 반영합니다.
+</p>
 
 <div class="mbs-section-title">🧮 점수 로직 — 4개 카테고리, 13개 요인</div>
 <div class="mbs-factor-grid">
