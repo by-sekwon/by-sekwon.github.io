@@ -83,9 +83,9 @@ st.set_page_config(page_title="매수적절성 분석기", page_icon="📊", lay
 st.markdown("""
 <div style="background:linear-gradient(135deg,#1a3a2a,#2d6a4f);
             padding:1.2rem 1.6rem;border-radius:10px;color:#f5f0e8;margin-bottom:1.2rem;">
-  <h2 style="margin:0;font-size:1.4rem;">📊 매수적절성 분석기</h2>
+  <h2 style="margin:0;font-size:1.4rem;">📊 매수적절성 분석기 v2</h2>
   <p style="margin:0.3rem 0 0;font-size:0.85rem;opacity:0.85;">
-    yfinance 데이터 × 추세·모멘텀·거래량·변동성·이격도·캔들 6개 요인 베이지안 가중 점수
+    기술적(추세·모멘텀·거래량·변동성·이격도·캔들) + 펀더멘털·재무건전성·상대강도·수급·애널리스트·유동성·52주위치 — 13개 요인 가중 점수
   </p>
 </div>
 """, unsafe_allow_html=True)
@@ -99,6 +99,9 @@ def analyze_stock(ticker: str) -> dict:
     df = yf.Ticker(ticker).history(period="2y", auto_adjust=True)
     if df.empty:
         raise ValueError(f"데이터 없음: {ticker}")
+    df = df[df["Close"].notna()]  # 장중 미확정 봉 등으로 마지막 행이 NaN인 경우 제외
+    if df.empty:
+        raise ValueError(f"유효한 데이터 없음: {ticker}")
 
     close  = df["Close"]
     high   = df["High"]
@@ -176,6 +179,7 @@ def analyze_stock(ticker: str) -> dict:
     big_bull = bool((close.iloc[-1] > o.iloc[-1]) and (body.iloc[-1] >= 0.04 * last))
 
     low_1y     = float(low.iloc[-252:].min())
+    high_1y    = float(high.iloc[-252:].max())
     rebound_1y = (last - low_1y) / low_1y * 100
 
     gc_dates = []
@@ -204,6 +208,26 @@ def analyze_stock(ticker: str) -> dict:
     # yfinance는 dividendYield를 이미 퍼센트 단위(예: 2.5 = 2.5%)로 제공한다.
     div_pct = info.get("dividendYield")
     fundamental_available = any(v is not None for v in (per, pbr, div_pct))
+
+    # ── 재무 건전성/수익성 (ROE·부채비율·영업이익률·매출성장률) ──
+    roe        = info.get("returnOnEquity")
+    d2e        = info.get("debtToEquity")
+    op_margin  = info.get("operatingMargins")
+    rev_growth = info.get("revenueGrowth")
+    financial_health_available = any(v is not None for v in (roe, d2e, op_margin, rev_growth))
+
+    # ── 애널리스트 컨센서스 (목표주가·투자의견) ────────────────
+    target_mean   = info.get("targetMeanPrice")
+    rec_key       = info.get("recommendationKey")
+    num_analysts  = info.get("numberOfAnalystOpinions")
+    analyst_available = (target_mean is not None) or (rec_key is not None)
+
+    # ── 공매도/유동성 리스크 ──────────────────────────────────
+    short_pct = info.get("shortPercentOfFloat")
+    mcap      = info.get("marketCap")
+    avg_vol   = info.get("averageVolume") or info.get("averageDailyVolume10Day")
+    liquidity_available = any(v is not None for v in (short_pct, mcap, avg_vol))
+    is_kr_stock = ticker.endswith(".KS") or ticker.endswith(".KQ")
 
     # ── 시장 대비 상대강도 (KOSPI/KOSDAQ/S&P500) ──────────────
     if ticker.endswith(".KS"):
@@ -415,18 +439,152 @@ def analyze_stock(ticker: str) -> dict:
         flow_details.append(f"수급 데이터를 가져올 수 없습니다 ({reason})")
     flow_score = min(flow_score, 10)
 
-    # 9개 요인 가중치 — 신규 요인(펀더멘털/상대강도/수급) 데이터가 없으면
-    # 해당 요인을 제외하고 남은 요인들의 가중치를 재정규화한다.
-    weights = {"trend":0.15,"momentum":0.15,"volume":0.10,
-               "volatility":0.10,"dispersion":0.10,"candle":0.08,
-               "fundamental":0.12,"relative_strength":0.10,"flow":0.10}
+    fh_score = 0; fh_details = []
+    if roe is not None:
+        roe_pct = roe * 100
+        if roe_pct >= 15:
+            fh_score += 3; fh_details.append(f"ROE {roe_pct:.1f}% (우수 ≥15%) ✅")
+        elif roe_pct >= 8:
+            fh_score += 1; fh_details.append(f"ROE {roe_pct:.1f}% (보통)")
+        else:
+            fh_details.append(f"ROE {roe_pct:.1f}% (저조) ⚠️")
+    else:
+        fh_details.append("ROE 정보 없음")
+    if d2e is not None:
+        if d2e <= 100:
+            fh_score += 3; fh_details.append(f"부채비율 {d2e:.0f}% (안정적 ≤100%) ✅")
+        elif d2e <= 200:
+            fh_score += 1; fh_details.append(f"부채비율 {d2e:.0f}% (보통)")
+        else:
+            fh_details.append(f"부채비율 {d2e:.0f}% (과다 주의) ⚠️")
+    else:
+        fh_details.append("부채비율 정보 없음")
+    if op_margin is not None:
+        op_pct = op_margin * 100
+        if op_pct >= 15:
+            fh_score += 2; fh_details.append(f"영업이익률 {op_pct:.1f}% (우수) ✅")
+        elif op_pct >= 5:
+            fh_score += 1; fh_details.append(f"영업이익률 {op_pct:.1f}% (보통)")
+        else:
+            fh_details.append(f"영업이익률 {op_pct:.1f}% (저조) ⚠️")
+    else:
+        fh_details.append("영업이익률 정보 없음")
+    if rev_growth is not None:
+        rg_pct = rev_growth * 100
+        if rg_pct >= 10:
+            fh_score += 2; fh_details.append(f"매출성장률 {rg_pct:.1f}% (고성장) ✅")
+        elif rg_pct >= 0:
+            fh_score += 1; fh_details.append(f"매출성장률 {rg_pct:.1f}% (성장 유지)")
+        else:
+            fh_details.append(f"매출성장률 {rg_pct:.1f}% (역성장) ⚠️")
+    else:
+        fh_details.append("매출성장률 정보 없음")
+    if not financial_health_available:
+        fh_details = ["재무 데이터를 가져올 수 없습니다"]
+    fh_score = min(fh_score, 10)
+
+    analyst_score = 0; analyst_details = []
+    if target_mean is not None and target_mean > 0:
+        target_gap = (target_mean - last) / last * 100
+        if target_gap >= 15:
+            analyst_score += 5; analyst_details.append(f"목표주가 대비 상승여력 +{target_gap:.1f}% (매력적) ✅")
+        elif target_gap >= 0:
+            analyst_score += 3; analyst_details.append(f"목표주가 대비 상승여력 +{target_gap:.1f}%")
+        else:
+            analyst_details.append(f"목표주가 대비 {target_gap:.1f}% (목표가 하회) ⚠️")
+    else:
+        target_gap = None
+        analyst_details.append("목표주가 정보 없음")
+    if rec_key is not None:
+        rk = rec_key.lower()
+        opinions = f"{num_analysts}명" if num_analysts else "?명"
+        if rk in ("strong_buy", "buy"):
+            analyst_score += 5; analyst_details.append(f"투자의견: {rec_key} (긍정적, 분석가 {opinions}) ✅")
+        elif rk == "hold":
+            analyst_score += 2; analyst_details.append(f"투자의견: {rec_key} (중립)")
+        else:
+            analyst_details.append(f"투자의견: {rec_key} (부정적) ⚠️")
+    else:
+        analyst_details.append("투자의견 정보 없음")
+    if not analyst_available:
+        analyst_details = ["애널리스트 컨센서스 데이터를 가져올 수 없습니다"]
+    analyst_score = min(analyst_score, 10)
+
+    liq_score = 0; liq_details = []
+    trade_value = None
+    if short_pct is not None:
+        sp = short_pct * 100
+        if sp < 2:
+            liq_score += 3; liq_details.append(f"공매도 비중 {sp:.2f}% (부담 낮음) ✅")
+        elif sp < 5:
+            liq_score += 1; liq_details.append(f"공매도 비중 {sp:.2f}% (보통)")
+        else:
+            liq_details.append(f"공매도 비중 {sp:.2f}% (높음, 변동성 확대 우려) ⚠️")
+    else:
+        liq_details.append("공매도 비중 정보 없음")
+    if avg_vol is not None:
+        trade_value = avg_vol * last
+        vol_hi, vol_lo, unit = (5e10, 5e9, "억원") if is_kr_stock else (5e7, 5e6, "달러")
+        disp_val = trade_value / 1e8 if is_kr_stock else trade_value / 1e6
+        if trade_value >= vol_hi:
+            liq_score += 4; liq_details.append(f"평균 거래대금 {disp_val:,.0f}{unit} (유동성 풍부) ✅")
+        elif trade_value >= vol_lo:
+            liq_score += 2; liq_details.append(f"평균 거래대금 {disp_val:,.0f}{unit} (보통)")
+        else:
+            liq_details.append(f"평균 거래대금 {disp_val:,.1f}{unit} (유동성 부족 주의) ⚠️")
+    else:
+        liq_details.append("거래대금 정보 없음")
+    if mcap is not None:
+        cap_hi, cap_lo, unit = (1e13, 1e12, "조원") if is_kr_stock else (1e11, 1e10, "억달러")
+        disp_cap = mcap / 1e12 if is_kr_stock else mcap / 1e8
+        if mcap >= cap_hi:
+            liq_score += 3; liq_details.append(f"시가총액 {disp_cap:,.1f}{unit} (대형주 안정성) ✅")
+        elif mcap >= cap_lo:
+            liq_score += 1; liq_details.append(f"시가총액 {disp_cap:,.1f}{unit} (중형주)")
+        else:
+            liq_details.append(f"시가총액 {disp_cap:,.1f}{unit} (중소형주, 변동성 유의) ⚠️")
+    else:
+        liq_details.append("시가총액 정보 없음")
+    if not liquidity_available:
+        liq_details = ["시가총액·거래대금 데이터를 가져올 수 없습니다"]
+    liq_score = min(liq_score, 10)
+
+    gap_high52 = (last - high_1y) / high_1y * 100
+    gap_low52  = (last - low_1y) / low_1y * 100
+    high52_score = 0; high52_details = []
+    if -15 <= gap_high52 <= -3:
+        high52_score += 5; high52_details.append(f"52주 고점 대비 {gap_high52:.1f}% (건전한 조정 구간, 매수 매력적) ✅")
+    elif -3 < gap_high52 <= 0:
+        high52_score += 3; high52_details.append(f"52주 고점 대비 {gap_high52:.1f}% (신고가 근접, 돌파 시도)")
+    elif -30 <= gap_high52 < -15:
+        high52_score += 2; high52_details.append(f"52주 고점 대비 {gap_high52:.1f}% (조정 진행 중)")
+    else:
+        high52_details.append(f"52주 고점 대비 {gap_high52:.1f}% (큰 폭 하락, 추세 훼손 우려) ⚠️")
+    if gap_low52 >= 20:
+        high52_score += 5; high52_details.append(f"52주 저점 대비 +{gap_low52:.1f}% (바닥 탈출 확인) ✅")
+    elif gap_low52 >= 5:
+        high52_score += 3; high52_details.append(f"52주 저점 대비 +{gap_low52:.1f}% (반등 진행)")
+    else:
+        high52_details.append(f"52주 저점 대비 +{gap_low52:.1f}% (저점권 근접)")
+    high52_score = min(high52_score, 10)
+
+    # 13개 요인 가중치 — 데이터를 가져오지 못한 요인은 제외하고
+    # 남은 요인들의 가중치를 재정규화한다.
+    weights = {"trend":0.12,"momentum":0.12,"volume":0.08,
+               "volatility":0.08,"dispersion":0.07,"candle":0.05,
+               "fundamental":0.09,"financial_health":0.09,
+               "relative_strength":0.08,"flow":0.08,
+               "analyst":0.06,"liquidity":0.04,"high52":0.04}
     scores  = {"trend":trend_score,"momentum":mom_score,"volume":vol_score,
                "volatility":vola_score,"dispersion":disp_score,"candle":candle_score,
-               "fundamental":fundamental_score,"relative_strength":rs_score,"flow":flow_score}
+               "fundamental":fundamental_score,"financial_health":fh_score,
+               "relative_strength":rs_score,"flow":flow_score,
+               "analyst":analyst_score,"liquidity":liq_score,"high52":high52_score}
     availability = {"trend":True,"momentum":True,"volume":True,"volatility":True,
                      "dispersion":True,"candle":True,
-                     "fundamental":fundamental_available,"relative_strength":rs_available,
-                     "flow":flow_available}
+                     "fundamental":fundamental_available,"financial_health":financial_health_available,
+                     "relative_strength":rs_available,"flow":flow_available,
+                     "analyst":analyst_available,"liquidity":liquidity_available,"high52":True}
     active_sum  = sum(w for k, w in weights.items() if availability[k]) or 1.0
     norm_weights = {k: (w / active_sum if availability[k] else 0.0) for k, w in weights.items()}
     total   = sum(scores[k] * norm_weights[k] for k in weights)
@@ -440,11 +598,22 @@ def analyze_stock(ticker: str) -> dict:
         "scores": scores, "weights": norm_weights,
         "details": {"trend":trend_details,"momentum":mom_details,"volume":vol_details,
                     "volatility":vola_details,"dispersion":disp_details,"candle":candle_details,
-                    "fundamental":fundamental_details,"relative_strength":rs_details,"flow":flow_details},
+                    "fundamental":fundamental_details,"financial_health":fh_details,
+                    "relative_strength":rs_details,"flow":flow_details,
+                    "analyst":analyst_details,"liquidity":liq_details,"high52":high52_details},
         "fundamentals": {"PER": per, "PBR": pbr, "DivYield_pct": div_pct},
+        "financial_health": {"ROE_pct": roe*100 if roe is not None else None,
+                              "DebtToEquity_pct": d2e, "OperatingMargin_pct": op_margin*100 if op_margin is not None else None,
+                              "RevenueGrowth_pct": rev_growth*100 if rev_growth is not None else None},
         "relative_strength": {"RS_20d_pct": rs_20, "RS_60d_pct": rs_60, "benchmark": bench_ticker},
         "investor_flow": {"Foreign_5d": foreign_net_5d, "Inst_5d": inst_net_5d,
                            "Foreign_20d": foreign_net_20d, "Inst_20d": inst_net_20d},
+        "analyst": {"TargetMean": target_mean, "TargetGap_pct": target_gap,
+                    "Recommendation": rec_key, "NumAnalysts": num_analysts},
+        "liquidity": {"ShortPct": short_pct*100 if short_pct is not None else None,
+                      "MarketCap": mcap, "AvgTradeValue": trade_value, "IsKR": is_kr_stock},
+        "high52": {"High_1Y": high_1y, "Low_1Y": low_1y,
+                   "GapFromHigh_pct": gap_high52, "GapFromLow_pct": gap_low52},
         "golden_cross": {
             "most_recent": most_recent, "days_since_cross": days_since,
             "currently_above": currently_above,
@@ -470,7 +639,9 @@ def build_chart(ticker: str):
     df = yf.Ticker(ticker).history(period="1y", auto_adjust=True)
     if df.empty:
         return None
-    df = df.copy()
+    df = df[df["Close"].notna()].copy()
+    if df.empty:
+        return None
     if df.index.tz is not None:
         df.index = df.index.tz_convert(None)  # Plotly 타임존 호환
     df['MA20'] = df['Close'].rolling(20).mean()
@@ -632,9 +803,13 @@ if run and ticker_input.strip():
             ("volatility",        "변동성"),
             ("dispersion",        "이격/반등"),
             ("candle",            "캔들패턴"),
-            ("fundamental",       "펀더멘털"),
+            ("fundamental",       "펀더멘털(밸류에이션)"),
+            ("financial_health",  "재무건전성"),
             ("relative_strength", "상대강도"),
             ("flow",              "수급"),
+            ("analyst",           "애널리스트"),
+            ("liquidity",         "공매도/유동성"),
+            ("high52",            "52주 위치"),
         ]
         rows = []
         for k, lb in factor_labels:
@@ -649,7 +824,7 @@ if run and ticker_input.strip():
                          "판정": mark})
         df_sc = pd.DataFrame(rows)
         st.dataframe(df_sc, hide_index=True, use_container_width=True)
-        st.caption("가중치는 데이터를 가져오지 못한 요인(펀더멘털/상대강도/수급)을 제외하고 재정규화됩니다.")
+        st.caption("가중치는 데이터를 가져오지 못한 요인을 제외하고 재정규화됩니다.")
 
         st.divider()
         st.markdown("**추가 신호**")
@@ -689,23 +864,47 @@ if run and ticker_input.strip():
         st.dataframe(pd.DataFrame(gc_data), hide_index=True, use_container_width=True)
 
         st.divider()
-        st.markdown("**펀더멘털 · 상대강도 · 수급**")
-        fd  = r["fundamentals"]; rsd = r["relative_strength"]; fl = r["investor_flow"]
+        st.markdown("**펀더멘털 · 재무건전성**")
+        fd = r["fundamentals"]; fh = r["financial_health"]; h52 = r["high52"]
         extra2 = {
-            "항목": ["PER", "PBR", "배당수익률",
-                    f"상대강도 20일 (vs {rsd['benchmark']})", "상대강도 60일",
-                    "외국인 5일 순매수", "기관 5일 순매수"],
+            "항목": ["PER", "PBR", "배당수익률", "ROE", "부채비율", "영업이익률", "매출성장률",
+                    "52주 고점 대비", "52주 저점 대비"],
             "값": [
                 f"{fd['PER']:.1f}" if fd['PER'] is not None else "N/A",
                 f"{fd['PBR']:.2f}" if fd['PBR'] is not None else "N/A",
                 f"{fd['DivYield_pct']:.2f}%" if fd['DivYield_pct'] is not None else "N/A",
+                f"{fh['ROE_pct']:.1f}%" if fh['ROE_pct'] is not None else "N/A",
+                f"{fh['DebtToEquity_pct']:.0f}%" if fh['DebtToEquity_pct'] is not None else "N/A",
+                f"{fh['OperatingMargin_pct']:.1f}%" if fh['OperatingMargin_pct'] is not None else "N/A",
+                f"{fh['RevenueGrowth_pct']:.1f}%" if fh['RevenueGrowth_pct'] is not None else "N/A",
+                f"{h52['GapFromHigh_pct']:.1f}%",
+                f"+{h52['GapFromLow_pct']:.1f}%",
+            ],
+        }
+        st.dataframe(pd.DataFrame(extra2), hide_index=True, use_container_width=True)
+
+        st.divider()
+        st.markdown("**상대강도 · 수급 · 애널리스트 · 유동성**")
+        rsd = r["relative_strength"]; fl = r["investor_flow"]
+        an  = r["analyst"]; lq = r["liquidity"]
+        cap_unit = "조원" if lq["IsKR"] else "억달러"
+        cap_val  = (lq["MarketCap"] / 1e12) if lq["IsKR"] else (lq["MarketCap"] / 1e8) if lq["MarketCap"] else None
+        extra3 = {
+            "항목": [f"상대강도 20일 (vs {rsd['benchmark']})", "상대강도 60일",
+                    "외국인 5일 순매수", "기관 5일 순매수",
+                    "목표주가 괴리율", "투자의견", "공매도 비중", "시가총액"],
+            "값": [
                 f"{rsd['RS_20d_pct']:+.1f}%p" if rsd['RS_20d_pct'] is not None else "N/A",
                 f"{rsd['RS_60d_pct']:+.1f}%p" if rsd['RS_60d_pct'] is not None else "N/A",
                 f"{fl['Foreign_5d']:,.0f}원" if fl['Foreign_5d'] is not None else "N/A",
                 f"{fl['Inst_5d']:,.0f}원" if fl['Inst_5d'] is not None else "N/A",
+                f"{an['TargetGap_pct']:+.1f}%" if an['TargetGap_pct'] is not None else "N/A",
+                an['Recommendation'] or "N/A",
+                f"{lq['ShortPct']:.2f}%" if lq['ShortPct'] is not None else "N/A",
+                f"{cap_val:,.1f}{cap_unit}" if cap_val is not None else "N/A",
             ],
         }
-        st.dataframe(pd.DataFrame(extra2), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(extra3), hide_index=True, use_container_width=True)
 
     # ③ 주가 차트
     with tab2:
@@ -718,7 +917,9 @@ if run and ticker_input.strip():
     with tab3:
         label_map = {"trend":"추세","momentum":"모멘텀","volume":"거래량",
                      "volatility":"변동성","dispersion":"이격/반등","candle":"캔들패턴",
-                     "fundamental":"펀더멘털","relative_strength":"상대강도","flow":"수급"}
+                     "fundamental":"펀더멘털(밸류에이션)","financial_health":"재무건전성",
+                     "relative_strength":"상대강도","flow":"수급",
+                     "analyst":"애널리스트","liquidity":"공매도/유동성","high52":"52주 위치"}
         for k, lb in label_map.items():
             with st.expander(f"**{lb}** — 점수 {sc[k]}/10"):
                 for d in r["details"].get(k, []):
