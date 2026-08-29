@@ -84,21 +84,38 @@ def resolve_ticker(raw: str) -> str:
 # Streamlit Cloud 등 일부 호스팅 환경에서는 KRX 실시간 조회 자체가 막혀
 # pykrx 라이브 호출이 조용히 실패한다. 그래서 라이브 조회를 먼저 시도하되,
 # 실패하면 저장소에 함께 배포되는 정적 스냅샷(stock_kr_tickers.csv)으로 폴백한다.
+_kr_master_debug = {"pykrx_ok": _PYKRX_OK}
+
+
 @st.cache_data(ttl=86400, show_spinner=False)
 def load_kr_master():
+    global _kr_master_debug
+    dbg = {"pykrx_ok": _PYKRX_OK, "file": os.path.abspath(__file__)}
     if _PYKRX_OK:
         try:
             from pykrx.website.krx.market.ticker import StockTicker
             df = StockTicker().listed.copy()[["종목", "시장"]]
             if df is not None and not df.empty:
+                dbg["source"] = "live(pykrx)"
+                dbg["rows"] = len(df)
+                _kr_master_debug = dbg
                 return df
-        except Exception:
-            pass
+            dbg["live_note"] = "empty dataframe"
+        except Exception as e:
+            dbg["live_error"] = f"{type(e).__name__}: {e}"
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stock_kr_tickers.csv")
+    dbg["csv_path"] = csv_path
+    dbg["csv_exists"] = os.path.exists(csv_path)
     try:
-        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stock_kr_tickers.csv")
         df = pd.read_csv(csv_path, dtype={"티커": str}, encoding="utf-8-sig").set_index("티커")
+        dbg["source"] = "static_csv"
+        dbg["rows"] = len(df)
+        _kr_master_debug = dbg
         return df
-    except Exception:
+    except Exception as e:
+        dbg["csv_error"] = f"{type(e).__name__}: {e}"
+        dbg["source"] = None
+        _kr_master_debug = dbg
         return None
 
 
@@ -781,6 +798,9 @@ def build_chart(ticker: str):
 
 # ── UI ────────────────────────────────────────────────────
 kr_master = load_kr_master()
+
+with st.expander("🔧 KRX 종목명 데이터 상태 (문제 확인용)", expanded=False):
+    st.write({**_kr_master_debug, "master_shape": None if kr_master is None else list(kr_master.shape)})
 
 c1, c2, _ = st.columns([2, 1, 3])
 with c1:
