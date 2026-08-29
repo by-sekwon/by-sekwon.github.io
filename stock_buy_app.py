@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import requests
 import datetime
+import os
 
 try:
     from pykrx import stock as pykrx_stock
@@ -80,13 +81,22 @@ def resolve_ticker(raw: str) -> str:
 
 
 # ── KRX 전종목 마스터 (코드 ↔ 한글 종목명, 검색 자동완성용) ────
+# Streamlit Cloud 등 일부 호스팅 환경에서는 KRX 실시간 조회 자체가 막혀
+# pykrx 라이브 호출이 조용히 실패한다. 그래서 라이브 조회를 먼저 시도하되,
+# 실패하면 저장소에 함께 배포되는 정적 스냅샷(stock_kr_tickers.csv)으로 폴백한다.
 @st.cache_data(ttl=86400, show_spinner=False)
 def load_kr_master():
-    if not _PYKRX_OK:
-        return None
+    if _PYKRX_OK:
+        try:
+            from pykrx.website.krx.market.ticker import StockTicker
+            df = StockTicker().listed.copy()[["종목", "시장"]]
+            if df is not None and not df.empty:
+                return df
+        except Exception:
+            pass
     try:
-        from pykrx.website.krx.market.ticker import StockTicker
-        df = StockTicker().listed.copy()  # index=티커(6자리), 컬럼: 종목, ISIN, 시장
+        csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stock_kr_tickers.csv")
+        df = pd.read_csv(csv_path, dtype={"티커": str}, encoding="utf-8-sig").set_index("티커")
         return df
     except Exception:
         return None
