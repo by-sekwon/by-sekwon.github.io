@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-08-06">
-<meta name="description" content="서울의 범죄 발생 건수는 전국 1위다. 그런데 정부가 발표한 안전지수에서는 세종·전남이 가장 안전하다고 나온다. 두 통계는 왜 이렇게 다른 결론을 낼까?">
+<meta name="dcterms.date" content="2026-08-31">
+<meta name="description" content="’오늘 낮 기온은 평년과 같은 27도’라는 예보를 들으면 안심이 된다. 그런데 평년 기온이 항상 정확히 27도였다는 뜻일까, 아니면 24도와 30도를 오가다 평균이 27도가 된 걸까? 이 둘을 구별해주는 숫자가 표준편차다. 배달 라이더 두 명의 배달 시간을 직접 손으로 계산해보며 표준편차의 의미를 알아본다.">
 
-<title>(비율과 백분율의 함정) 인구 1만 명당 범죄율을 사용하는 이유 – 권세혁HOME</title>
+<title>(흩어짐과 역설) “보통”의 폭을 재는 법 — 표준편차란 무엇인가 – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -191,7 +191,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_crime_rate.html">📖 (비율과 백분율의 함정) 인구 1만 명당 범죄율을 사용하는 이유</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_std_deviation_basics.html">📖 (흩어짐과 역설) “보통”의 폭을 재는 법 — 표준편차란 무엇인가</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -212,7 +212,7 @@ window.Quarto = {
         <li class="px-0"><hr class="sidebar-divider hi "></li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_crime_rate.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_crime_rate.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 (비율과 백분율의 함정) 인구 1만 명당 범죄율을 사용하는 이유</span></a>
   </div>
 </li>
@@ -386,7 +386,7 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_std_deviation_basics.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_std_deviation_basics.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (흩어짐과 역설) “보통”의 폭을 재는 법 — 표준편차란 무엇인가</span></a>
   </div>
 </li>
@@ -400,11 +400,11 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#수업-시간마다-던지는-질문" id="toc-수업-시간마다-던지는-질문" class="nav-link active" data-scroll-target="#수업-시간마다-던지는-질문">수업 시간마다 던지는 질문</a></li>
-  <li><a href="#숫자만-비교하면-반쪽짜리-정보다" id="toc-숫자만-비교하면-반쪽짜리-정보다" class="nav-link" data-scroll-target="#숫자만-비교하면-반쪽짜리-정보다">숫자만 비교하면 반쪽짜리 정보다</a></li>
-  <li><a href="#인구로-나누면-그림이-달라진다" id="toc-인구로-나누면-그림이-달라진다" class="nav-link" data-scroll-target="#인구로-나누면-그림이-달라진다">인구로 나누면 그림이 달라진다</a></li>
-  <li><a href="#더-깊이-비율이라는-개념의-뿌리" id="toc-더-깊이-비율이라는-개념의-뿌리" class="nav-link" data-scroll-target="#더-깊이-비율이라는-개념의-뿌리">더 깊이: 비율이라는 개념의 뿌리</a></li>
-  <li><a href="#결론-분모를-묻는-습관" id="toc-결론-분모를-묻는-습관" class="nav-link" data-scroll-target="#결론-분모를-묻는-습관">결론: 분모를 묻는 습관</a></li>
+  <li><a href="#보통이라는-말의-숨은-폭" id="toc-보통이라는-말의-숨은-폭" class="nav-link active" data-scroll-target="#보통이라는-말의-숨은-폭">“보통”이라는 말의 숨은 폭</a></li>
+  <li><a href="#표준편차-손으로-직접-계산해보자" id="toc-표준편차-손으로-직접-계산해보자" class="nav-link" data-scroll-target="#표준편차-손으로-직접-계산해보자">표준편차, 손으로 직접 계산해보자</a></li>
+  <li><a href="#표준편차가-알려주는-것-보통의-실제-범위" id="toc-표준편차가-알려주는-것-보통의-실제-범위" class="nav-link" data-scroll-target="#표준편차가-알려주는-것-보통의-실제-범위">표준편차가 알려주는 것: “보통”의 실제 범위</a></li>
+  <li><a href="#더-깊이-실증적-법칙과-분산의-정의" id="toc-더-깊이-실증적-법칙과-분산의-정의" class="nav-link" data-scroll-target="#더-깊이-실증적-법칙과-분산의-정의">더 깊이: 실증적 법칙과 분산의 정의</a></li>
+  <li><a href="#결론-평균-뒤에는-항상-폭이-있다" id="toc-결론-평균-뒤에는-항상-폭이-있다" class="nav-link" data-scroll-target="#결론-평균-뒤에는-항상-폭이-있다">결론: 평균 뒤에는 항상 폭이 있다</a></li>
   </ul>
 </nav>
     </div>
@@ -413,7 +413,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">(비율과 백분율의 함정) 인구 1만 명당 범죄율을 사용하는 이유</h1>
+<h1 class="title">(흩어짐과 역설) “보통”의 폭을 재는 법 — 표준편차란 무엇인가</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
     <div class="quarto-category">기술통계</div>
@@ -422,7 +422,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    서울의 범죄 발생 건수는 전국 1위다. 그런데 정부가 발표한 안전지수에서는 세종·전남이 가장 안전하다고 나온다. 두 통계는 왜 이렇게 다른 결론을 낼까?
+    ’오늘 낮 기온은 평년과 같은 27도’라는 예보를 들으면 안심이 된다. 그런데 평년 기온이 항상 정확히 27도였다는 뜻일까, 아니면 24도와 30도를 오가다 평균이 27도가 된 걸까? 이 둘을 구별해주는 숫자가 표준편차다. 배달 라이더 두 명의 배달 시간을 직접 손으로 계산해보며 표준편차의 의미를 알아본다.
   </div>
 </div>
 
@@ -439,7 +439,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 6, 2026</p>
+      <p class="date">August 31, 2026</p>
     </div>
   </div>
   
@@ -451,86 +451,94 @@ window.Quarto = {
 </header>
 
 
-<section id="수업-시간마다-던지는-질문" class="level2">
-<h2 class="anchored" data-anchor-id="수업-시간마다-던지는-질문">수업 시간마다 던지는 질문</h2>
-<p>매 학기 통계학 개론 첫 시간이면, 나는 학생들에게 같은 질문을 던진다.</p>
-<p><em>“서울과 세종, 어디가 더 위험할까요?”</em></p>
-<p>거의 모든 학생이 주저 없이 서울이라 답한다. 근거도 바로 댄다. “범죄 건수가 압도적으로 많잖아요.” 틀린 말은 아니다. 2024년 경찰청 통계를 보면 서울에서 발생한 범죄는 30만 건을 넘는다(301,933건, 전국 1위). 그런데 2026년 1월, 행정안전부가 발표한 지역안전지수에서 범죄 분야 전국 1등급(가장 안전한 지역)으로 꼽힌 곳은 다름 아닌 <strong>세종과 전남</strong>이었다.</p>
-<p>같은 나라, 비슷한 시기의 통계인데 왜 정반대의 결론이 나올까? 매년 이 질문 앞에서 학생들은 잠깐 말을 잃는다.</p>
+<section id="보통이라는-말의-숨은-폭" class="level2">
+<h2 class="anchored" data-anchor-id="보통이라는-말의-숨은-폭">“보통”이라는 말의 숨은 폭</h2>
+<p>일기예보에서 “오늘 낮 최고기온은 평년과 같은 27도가 되겠습니다”라는 문장을 들으면 마음이 놓인다. 그런데 이 문장을 곰곰이 뜯어보면 숨겨진 질문이 하나 있다. <strong>평년 기온이 매번 정확히 27도에 가까웠다는 뜻일까, 아니면 어떤 해는 22도, 어떤 해는 32도였는데 그걸 다 평균 내니 27도가 나온 걸까?</strong> 이 둘은 완전히 다른 상황이다. 앞의 경우라면 오늘 30도만 돼도 이례적인 더위지만, 뒤의 경우라면 30도는 그저 “그럴 수 있는” 평범한 하루다. 평균 하나만으로는 이 둘을 구별할 수 없다. 필요한 건 “보통”이 실제로 어느 정도의 <strong>폭</strong>을 가지고 움직이는지 알려주는 숫자 — 오늘부터 이번 주 다룰 <strong>표준편차(standard deviation)</strong>다.</p>
 </section>
-<section id="숫자만-비교하면-반쪽짜리-정보다" class="level2">
-<h2 class="anchored" data-anchor-id="숫자만-비교하면-반쪽짜리-정보다">숫자만 비교하면 반쪽짜리 정보다</h2>
-<p>답은 간단하다. “범죄 건수”라는 숫자에는 <strong>분모가 빠져 있다.</strong> 서울 인구는 약 930만 명, 세종 인구는 약 40만 명이다. 인구가 23배나 차이 나는 두 지역의 범죄 “건수”를 그대로 비교하는 것은, 애초에 공정한 비교가 아니다.</p>
-<div id="5bd9996c" class="cell" data-execution_count="1">
+<section id="표준편차-손으로-직접-계산해보자" class="level2">
+<h2 class="anchored" data-anchor-id="표준편차-손으로-직접-계산해보자">표준편차, 손으로 직접 계산해보자</h2>
+<p>배달 라이더 두 명이 있다고 하자. 둘 다 최근 5건의 배달에 걸린 시간이 평균 20분으로 똑같다. 그런데 개별 기록을 보면 사뭇 다르다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>라이더</th>
+<th>배달 시간(분)</th>
+<th>평균</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A (일관형)</td>
+<td>18, 20, 22, 20, 20</td>
+<td>20분</td>
+</tr>
+<tr class="even">
+<td>B (들쭉날쭉형)</td>
+<td>10, 15, 20, 25, 30</td>
+<td>20분</td>
+</tr>
+</tbody>
+</table>
+<div id="3d0a8fc5" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_crime_rate_files/figure-html/cell-2-output-1.png" width="614" height="355" class="figure-img"></p>
-<figcaption>범죄 발생 건수만 놓고 보면 서울이 압도적으로 많아 보인다. 서울 수치는 2024년 경찰청 통계(301,933건)이고, 예시 소도시는 인구 40만 명 규모를 가정한 참고용 수치다.</figcaption>
+<p><img src="story_std_deviation_basics_files/figure-html/cell-2-output-1.png" width="710" height="432" class="figure-img"></p>
+<figcaption>Five delivery times for two riders, both averaging exactly 20 minutes. Rider A’s times cluster tightly around the mean; Rider B’s swing widely. The vertical lines from each point to the mean are the deviations that standard deviation summarizes into a single number.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>학생들이 처음 이 그래프를 보면 다들 고개를 끄덕인다. “역시 서울이 위험하네요.” 그런데 여기서 인구를 함께 보여주면 반응이 달라진다.</p>
+<p>표준편차는 각 관측값이 평균에서 얼마나 떨어져 있는지(편차, deviation)를 하나의 대표 숫자로 요약한 것이다. 계산 순서는 이렇다.</p>
+<ol type="1">
+<li>각 값에서 평균을 뺀다 (편차).</li>
+<li>편차를 제곱한다 (음수를 없애고, 큰 편차에 더 큰 벌점을 주기 위해).</li>
+<li>제곱한 값들을 더하고, (<span class="math inline">\(n-1\)</span>)로 나눈다 — 이것이 <strong>분산(variance)</strong> <span class="math inline">\(s^2\)</span>이다.</li>
+<li>분산에 제곱근을 씌운다 — 이것이 <strong>표준편차</strong> <span class="math inline">\(s\)</span>다. 제곱근을 씌우는 이유는 단위를 원래 데이터와 같게(이 경우 “분”) 되돌리기 위해서다.</li>
+</ol>
+<p>라이더 A는 편차가 <span class="math inline">\(-2, 0, 2, 0, 0\)</span>, 제곱하면 <span class="math inline">\(4, 0, 4, 0, 0\)</span>, 합이 8, <span class="math inline">\(8/(5-1) = 2.0\)</span>, 표준편차는 <span class="math inline">\(\sqrt{2.0} \approx\)</span> <strong>1.41분</strong>이다. 라이더 B는 편차가 <span class="math inline">\(-10, -5, 0, 5, 10\)</span>, 제곱하면 <span class="math inline">\(100, 25, 0, 25, 100\)</span>, 합이 250, <span class="math inline">\(250/4 = 62.5\)</span>, 표준편차는 <span class="math inline">\(\sqrt{62.5} \approx\)</span> <strong>7.91분</strong>이다. 평균은 똑같이 20분이지만, 라이더 A에게 배달을 맡기면 거의 항상 18~22분 안에 도착하고, 라이더 B는 10분 만에 올 수도 30분이 걸릴 수도 있다. <strong>평균이 “어디쯤”을 말해준다면, 표준편차는 “그 주변에서 얼마나 흔들리는가”를 말해준다.</strong></p>
 </section>
-<section id="인구로-나누면-그림이-달라진다" class="level2">
-<h2 class="anchored" data-anchor-id="인구로-나누면-그림이-달라진다">인구로 나누면 그림이 달라진다</h2>
-<p>같은 기준으로 비교하려면, 두 지역 모두 “인구 10만 명당 몇 건”인지로 환산해야 한다.</p>
-<p><span class="math display">\[\text{인구 10만 명당 발생률} = \frac{\text{범죄 건수}}{\text{인구 수}} \times 100{,}000\]</span></p>
-<p>서울의 실제 수치로 계산해 보면:</p>
-<p><span class="math display">\[\frac{301{,}933}{9{,}305{,}678} \times 100{,}000 \approx 3{,}245\text{건}\]</span></p>
-<div id="ee38cad2" class="cell" data-execution_count="2">
+<section id="표준편차가-알려주는-것-보통의-실제-범위" class="level2">
+<h2 class="anchored" data-anchor-id="표준편차가-알려주는-것-보통의-실제-범위">표준편차가 알려주는 것: “보통”의 실제 범위</h2>
+<p>표준편차의 진짜 쓸모는 여기서부터 시작된다. 분포가 좌우 대칭인 종 모양(정규분포에 가까운 모양)이라면, 평균으로부터 표준편차 1개 거리 안에 전체의 약 68%가, 2개 거리 안에 약 95%가 들어온다는 경험적 규칙이 있다. 이걸 8월 한 달의 낮 최고기온에 적용해보자.</p>
+<div id="67f71a6b" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_crime_rate_files/figure-html/cell-3-output-1.png" width="614" height="355" class="figure-img"></p>
-<figcaption>인구 10만 명당으로 환산하면 격차가 크게 줄어든다. 서울 수치(약 3,245건)는 실제 인구·범죄 통계로 계산한 값이며, 예시 소도시 수치는 참고용이다.</figcaption>
+<p><img src="story_std_deviation_basics_files/figure-html/cell-3-output-1.png" width="758" height="450" class="figure-img"></p>
+<figcaption>A stylized, illustrative month of daily high temperatures (not real KMA data) with a mean of 27.1C and standard deviation of 2.9C. The shaded bands mark +-1 SD (roughly the ‘ordinary’ range) and +-2 SD. Day 10, at 35.3C, sits well outside the 2-SD band — the kind of day a forecast would call unusually hot, not just ‘a bit above average.’</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>두 그래프를 나란히 보여주면, 강의실 반응이 늘 재미있다. 첫 번째 그래프에서 “역시 서울”이라 했던 학생들이, 두 번째 그래프 앞에서는 “어? 별 차이 없네요?”라고 말한다. <strong>숫자를 바꾼 것이 아니라, 분모를 더했을 뿐인데도</strong> 그림이 완전히 달라진다.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-실제로 정부는 이렇게 비교한다
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>행정안전부가 매년 발표하는 지역안전지수는 단순 발생 건수가 아니라, 인구를 비롯한 여러 요인으로 보정한 지표를 사용한다. 2026년 1월 발표에서 범죄 분야 1등급(세종·전남)과 5등급 지역의 순위가, 단순 범죄 “건수” 순위와는 다르게 나타난 것도 같은 이유다. 대도시일수록 분자(범죄 건수)와 함께 분모(인구)도 크다는 사실을, 지수를 설계할 때부터 반영하는 것이다.</p>
-</div>
-</div>
-</section>
-<section id="더-깊이-비율이라는-개념의-뿌리" class="level2">
-<h2 class="anchored" data-anchor-id="더-깊이-비율이라는-개념의-뿌리">더 깊이: 비율이라는 개념의 뿌리</h2>
-<p>“건수를 인구로 나눈다”는 이 단순한 계산은 사실 확률론에서 가장 기본이 되는 개념과 맞닿아 있다. 강의노트 <a href="../../notes/math_stat/probability.html#상대-빈도-relative-frequency">〈수리 통계 1. 확률 — 상대 빈도〉</a>에서는 사건이 일어난 횟수를 전체 시행 횟수로 나눈 <strong>상대빈도</strong>가 어떻게 확률의 정의로 이어지는지를 다룬다. 범죄율이든 동전 던지기든, “몇 번 중 몇 번”이라는 비율로 바꿔야 서로 다른 크기의 대상을 공정하게 비교할 수 있다는 원리는 동일하다.</p>
-</section>
-<section id="결론-분모를-묻는-습관" class="level2">
-<h2 class="anchored" data-anchor-id="결론-분모를-묻는-습관">결론: 분모를 묻는 습관</h2>
+<p>평균만 알면 “27도”라는 점 하나뿐이다. 표준편차까지 알면 “대략 24~30도 사이가 보통이고, 그 밖으로 벗어나면 이례적”이라는 <strong>범위</strong>가 생긴다. 10일째의 35.3도는 평균보다 8도 이상 높은데, 이는 단순히 “평균보다 더운 날”이 아니라 표준편차 2개(±2σ) 범위를 확실히 벗어난, 통계적으로 드문 날이라는 뜻이다. 표준편차가 없다면 “오늘 좀 덥네” 정도의 감상에 그치지만, 표준편차가 있으면 “이 정도 더위는 이 달에 한 번 나올까 말까 한 수준”이라고 구체적으로 말할 수 있다.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-비율 통계를 읽는 법
+표준편차를 읽는 법
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><strong>“OO 건수가 가장 많다”는 말을 들으면, “그래서 인구(또는 전체 대상)는 몇 명인가?”를 함께 묻는다.</strong></li>
-<li><strong>지역·집단 간 비교에는 항상 같은 분모(인구 10만 명당, 1만 명당 등)를 쓴 값을 사용한다.</strong></li>
-<li><strong>분모가 큰 대상(대도시, 큰 조직)은 분자도 자연히 커진다는 점을 감안한다.</strong></li>
-<li><strong>공식 지표(안전지수, 유병률 등)는 대개 이미 분모를 반영해 만들어졌다는 것을 기억하고, 원자료의 “건수”만 따로 인용한 기사는 한 번 더 의심한다.</strong></li>
+<li><strong>표준편차가 작다</strong> → 값들이 평균 가까이 몰려 있다. 예측 가능하고 “믿을 만하다.”</li>
+<li><strong>표준편차가 크다</strong> → 값들이 넓게 흩어져 있다. 평균만으로는 실제로 무슨 일이 일어날지 가늠하기 어렵다.</li>
+<li><strong>평균 ± 표준편차 범위</strong>가 대략 “보통”의 실질적인 정의다. 그 범위를 크게 벗어난 값이라야 “이례적이다”라고 말할 자격이 있다.</li>
 </ol>
 </div>
 </div>
-<p>학생들에게 나는 늘 같은 말로 이 수업을 마무리한다. “숫자가 크다고 겁먹지 마세요. 먼저 물어야 할 건 하나뿐입니다 — 몇 명 중에서요?”</p>
+</section>
+<section id="더-깊이-실증적-법칙과-분산의-정의" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-실증적-법칙과-분산의-정의">더 깊이: 실증적 법칙과 분산의 정의</h2>
+<p>강의노트 <a href="../../notes/math_stat/random_variable.html#실증적-법칙-empirical-rule">〈수리통계학 2. 확률변수 — 실증적 법칙(Empirical Rule)〉</a>는 분포가 좌우 대칭인 종 모양일 때 <span class="math inline">\(P(|X-\mu| &lt; k\sigma)\)</span>가 <span class="math inline">\(k=1\)</span>이면 적어도 68%, <span class="math inline">\(k=2\)</span>면 적어도 95%, <span class="math inline">\(k=3\)</span>이면 적어도 99.8%라고 정리한다 — 오늘 기온 그래프에서 그려본 두 개의 띠가 바로 이 법칙을 시각화한 것이다. 이 법칙이 성립하는 근거는 <a href="../../notes/math_stat/random_variable.html#주요-기대값">〈수리통계학 4. 기대값 — 주요 기대값〉</a>이 정의하는 분산 <span class="math inline">\(\text{Var}(X) = E[(X-\mu)^2]\)</span>과 표준편차 <span class="math inline">\(\sigma = \sqrt{\text{Var}(X)}\)</span>에 있다. 오늘 라이더 예제에서 손으로 계산한 “편차 제곱의 평균”이 바로 이 정의를 표본 자료에 그대로 적용한 것이다.</p>
+</section>
+<section id="결론-평균-뒤에는-항상-폭이-있다" class="level2">
+<h2 class="anchored" data-anchor-id="결론-평균-뒤에는-항상-폭이-있다">결론: 평균 뒤에는 항상 폭이 있다</h2>
+<p>나는 학생들에게 평균을 배운 다음 날 표준편차를 가르치며 이렇게 말한다. “평균은 질문의 절반에만 답합니다.” 어디쯤에 있는지는 평균이 말해주지만, 그 주변이 얼마나 넓은지는 표준편차만이 말해줄 수 있다. 오늘 소개한 계산법 — 편차를 구하고, 제곱하고, 평균 내고, 제곱근을 씌우는 이 네 단계 — 은 이번 주 나머지 나흘 동안 다룰 이상치, 표준점수, 변동계수, 심슨의 역설을 이해하는 데 필요한 가장 기본적인 도구다. “보통”이라는 말을 들으면, 이제부터는 그 폭이 얼마인지부터 물어보자.</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -539,13 +547,10 @@ window.Quarto = {
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <ul>
-<li><a href="https://www.data.go.kr/data/3074462/fileData.do">경찰청 범죄 발생 지역별 통계(2024.12.31 기준) — 공공데이터포털</a></li>
-<li><a href="https://www.mt.co.kr/policy/2026/01/12/2026011208485265047">“전국에서 제일 안전한 곳 봤더니”…범죄, 세종·전남 제일 적었다 — 머니투데이(2026.1.12)</a></li>
-<li><a href="https://www.sejong.go.kr/stat/index.do">세종특별자치시 인구통계(2025년) — 세종통계포털</a></li>
-<li><a href="https://data.seoul.go.kr/dataList/419/S/2/datasetView.do">서울특별시 등록인구 통계 — 서울 열린데이터광장</a></li>
+<li>Empirical Rule (68-95-99.7 rule) — 정규분포에 가까운 대칭 분포에서 성립하는 경험적 법칙.</li>
 </ul>
 </div>
 </div>
