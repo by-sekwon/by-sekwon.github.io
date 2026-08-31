@@ -1,0 +1,110 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(흩어짐과 역설) 재벌 총수가 낀 동네 평균 소득 — 이상치 하나가 바꾸는 평균"
+author: "권세혁"
+date: "2026-09-01"
+categories: [통계기초, 기술통계]
+description: "20가구가 사는 평범한 동네에 회장님 한 명이 이사 온다. 실제 공시된 대기업 총수 보수(2025년 248억 원)를 그대로 넣어 계산해보면, 동네 평균 소득은 21배 뛴다. 그런데 표준편차는 무려 865배 뛴다. 이상치 하나가 평균보다 흩어짐 척도를 훨씬 더 크게 흔든다는 사실을, 어제 배운 제곱의 원리로 풀어본다."
+---
+
+## 스무 가구가 사는 동네에 회장님이 이사 온다면
+
+20가구가 사는 평범한 아파트 단지를 하나 상상해보자. 다들 비슷비슷하게 벌어서, 가구당 연소득이 대략 4,500만~7,100만 원 사이에 몰려 있고 평균은 **5,747만 원**이다. 그런데 어느 날 이 단지 한 동에 대기업 회장님이 입주한다. 실제로 2025년 공시 기준, 한화그룹 김승연 회장은 계열사 5곳에서 받은 보수를 합쳐 **248억 4,100만 원**을 받았다. 이 숫자를 그대로 21번째 가구로 집어넣고 평균을 다시 계산하면 어떻게 될까?
+
+```{python}
+#| echo: false
+#| fig-cap: "21 households on a log scale: 20 ordinary incomes clustered together, and one real, publicly disclosed 2025 chaebol-owner compensation figure (Hanwha Group chairman, KRW 24.841 billion) far to the right. The mean (gold) is dragged almost all the way to the outlier; the median (gray) barely moves."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(7)
+incomes = np.round(rng.normal(6000, 800, 20), 0)
+chaebol = 2484100
+all_incomes = np.concatenate([incomes, [chaebol]])
+mean_after = all_incomes.mean()
+median_after = np.median(all_incomes)
+
+fig, ax = plt.subplots(figsize=(8, 3.4))
+ax.scatter(incomes, np.ones(20), color="#1e3a2f", s=60, zorder=3, label="20 ordinary households")
+ax.scatter([chaebol], [1], color="#a8790a", s=140, zorder=4, edgecolor="white", label="chairman's disclosed pay")
+ax.axvline(mean_after, color="#a8790a", linestyle="--", linewidth=2)
+ax.axvline(median_after, color="#555555", linestyle=":", linewidth=2)
+ax.annotate(f"mean: {mean_after/10000:.2f} (100M KRW)", xy=(mean_after, 1.35), fontsize=9, color="#a8790a", ha="right")
+ax.annotate(f"median: {median_after:,.0f} (10K KRW)", xy=(median_after, 0.55), fontsize=9, color="#555555")
+ax.set_xscale("log")
+ax.set_xlabel("Annual income, 10K KRW (log scale)")
+ax.set_ylim(0.3, 1.6)
+ax.set_yticks([])
+ax.set_title("One outlier drags the mean; the median barely notices", fontsize=10.5, color="#1e3a2f")
+ax.legend(fontsize=8.5, loc="upper left")
+ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+계산 결과 동네 평균은 5,747만 원에서 **12억 3,764만 원**으로 뛴다. 21.5배다. 회장님 한 명의 보수가 나머지 스무 가구 전체를 합친 것(약 11억 4,900만 원)보다도 많으니 당연한 결과다. 반면 중앙값은 5,708만 원에서 5,781만 원으로 거의 그대로다 — [지난달 다룬 연봉 이야기](story_income_median.qmd)에서 확인했듯, 중앙값은 극단값 하나에 흔들리지 않는다.
+
+::: {.callout-note}
+## 낯익은 통계 우화
+
+"술집에 빌 게이츠가 들어오면, 그 술집 안 모든 사람의 평균 재산이 순식간에 억만장자 수준이 된다"는 이야기는 통계 수업에서 자주 쓰이는 비유다. 오늘 계산한 동네 평균 소득이 정확히 같은 원리다. 평균은 "전체를 인원수로 나눈 값"이기 때문에, 극단적으로 큰 값 하나가 나머지 전부를 압도할 수 있다.
+:::
+
+## 평균보다 표준편차가 더 크게 흔들린다
+
+여기서 어제 배운 표준편차를 같은 자료에 적용해보면 훨씬 흥미로운 사실이 드러난다. 회장님이 들어오기 전, 20가구의 표준편차는 **625만 원**이었다. 회장님을 더한 21가구의 표준편차는 **54억 821만 원**이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Before-and-after comparison of the mean and the standard deviation, on a log scale (linear scale would make the 'before' bars invisible). The mean grows 21.5x when the outlier is added; the standard deviation grows 865x — because SD is built from squared deviations, and squaring one huge number dwarfs everything else in the sum."
+import numpy as np
+import matplotlib.pyplot as plt
+
+mean_before, sd_before = incomes.mean(), incomes.std(ddof=1)
+mean_after2, sd_after2 = all_incomes.mean(), all_incomes.std(ddof=1)
+
+labels = ["Mean\nbefore", "Mean\nafter", "SD\nbefore", "SD\nafter"]
+values = [mean_before, mean_after2, sd_before, sd_after2]
+colors = ["#1e3a2f", "#a8790a", "#1e3a2f", "#a8790a"]
+
+fig, ax = plt.subplots(figsize=(7, 4.6))
+bars = ax.bar(labels, values, color=colors, width=0.55)
+ax.set_yscale("log")
+for b, v in zip(bars, values):
+    ax.annotate(f"{v/10000:,.2f} (100M KRW)" if v > 100000 else f"{v:,.0f} (10K KRW)",
+                xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=8.5)
+ax.annotate("x21.5", xy=(0.5, mean_after2), xytext=(0.5, mean_after2*3), ha="center", fontsize=10, color="#a8790a")
+ax.annotate("x865", xy=(2.5, sd_after2), xytext=(2.5, sd_after2*0.3), ha="center", fontsize=10, color="#a8790a")
+ax.set_ylabel("10K KRW (log scale)")
+ax.set_title("The mean grows 21.5x; the standard deviation grows 865x", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+평균은 21.5배 뛰었지만 표준편차는 **865배** 뛰었다. 왜 이렇게 차이가 날까? 답은 어제 글에서 손으로 계산해본 표준편차의 계산 순서에 있다. 평균은 값을 **그냥 더해서** 가구 수로 나눈다 — 극단값 하나가 들어와도 그 값 자체의 크기만큼만 영향을 준다. 반면 표준편차는 평균에서 떨어진 **편차를 제곱해서** 더한다. 회장님의 소득은 원래 동네 평균보다 **247억 원 넘게** 높은데, 이 큰 편차를 제곱하는 순간 그 값은 나머지 스무 가구의 편차를 전부 제곱해 더한 것보다도 압도적으로 커진다. 평균은 극단값에 "끌려가지만", 표준편차는 극단값 하나에 통째로 "장악당한다"고 표현해도 좋을 정도다.
+
+::: {.callout-tip}
+## 이상치 하나가 있을 때 확인할 것
+
+1. **평균이 크게 변했다면, 표준편차는 그보다 훨씬 더 크게 변했을 가능성이 높다.** 제곱이라는 연산 자체가 극단값의 영향력을 증폭시키기 때문이다.
+2. **중앙값과 사분위범위(IQR)는 이상치에 상대적으로 둔감하다.** 극단값 하나가 있는 자료를 요약할 때는 평균·표준편차보다 중앙값·IQR을 함께 살펴보는 편이 안전하다.
+3. **"평균과 표준편차가 이상하게 크다"는 신호를 보면, 값을 하나하나 확인하라.** 계산 오류가 아니라 진짜 이상치일 수도, 반대로 입력 오류일 수도 있다.
+:::
+
+## 더 깊이: 이상치에 강한 척도, 약한 척도
+
+강의노트 [〈기초통계학 3. 데이터와 요약통계 — 측정형 데이터〉](../../notes/intro_stat/data.qmd#측정형-데이터)는 흩어짐 척도 네 가지 — 분산, 표준편차, 범위(range), 사분위범위(IQR) — 를 나란히 정리하면서, 사분위범위에 대해 "중간 50% 데이터의 범위이며, 이상값에 덜 민감하다"고 명시한다. 오늘 계산에서 확인했듯 분산과 표준편차는 제곱이라는 연산 때문에 이상치 하나에도 크게 흔들리지만, 사분위범위는 애초에 상위·하위 25%를 계산에서 빼고 중간 50%만 보기 때문에 회장님 같은 극단값이 끼어들어도 거의 변하지 않는다. 어떤 척도를 쓸지는 "이 데이터에 극단값이 있을 가능성이 있는가"라는 질문에 대한 답에 달려 있다.
+
+## 결론: 평균과 표준편차는 극단값 앞에서 함께 흔들린다
+
+나는 학생들에게 소득·자산처럼 극단값이 나올 수 있는 자료를 다룰 때는 평균과 표준편차를 계산하기 전에 먼저 산점도나 히스토그램으로 값을 눈으로 훑어보라고 말한다. 오늘 살펴본 동네 이야기가 보여주듯, 이상치 하나는 평균을 21배, 표준편차를 865배까지 흔들 수 있다. 어제는 표준편차가 "보통의 폭"을 재는 유용한 도구라는 걸 배웠다면, 오늘은 그 도구조차 극단값 앞에서는 무너질 수 있다는 걸 확인한 셈이다. 흩어짐을 재는 척도를 고를 때도, 그 척도 자체가 무엇에 취약한지부터 알아야 한다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [2025년 연봉 순위, 1위 김승연 회장 248억원 — 녹색경제신문](https://www.greened.kr/news/articleView.html?idxno=339345)
+:::
