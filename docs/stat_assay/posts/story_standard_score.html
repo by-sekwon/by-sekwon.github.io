@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="권세혁">
+<meta name="dcterms.date" content="2026-09-02">
+<meta name="description" content="2019학년도 수능 국어 만점자의 표준점수는 150점, 2022학년도 만점자는 149점이었다. 둘 다 원점수는 100점(만점)인데 표준점수는 다르다. 그 해 시험이 얼마나 어려웠는지, 즉 평균과 표준편차가 해마다 다르기 때문이다. 어제 배운 표준편차가 어떻게 ’점수를 공정하게 비교하는 도구’로 쓰이는지 살펴본다.">
+
+<title>(흩어짐과 역설) 입시에서 표준점수를 쓰는 이유 — 편차값의 비밀 – 권세혁HOME</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-35419eb3a154f6f894e0af1e245874c8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-6JP0RHCH1Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon-16x16.png">
+<link rel="manifest" href="../../site.webmanifest">
+<meta name="theme-color" content="#1e3a2f">
+<meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">권세혁HOME</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">강의노트</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/index.html">
+ <span class="dropdown-text">기초수학·수리통계·조사방법</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/index.html">
+ <span class="dropdown-text">기초통계·회귀·다변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mldl_intro/index.html">
+ <span class="dropdown-text">머신러닝·딥러닝</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/inference_xai/index.html">
+ <span class="dropdown-text">AI·감성분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../stat_chatbot.html"> 
+<span class="menu-text">통계챗봇</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../trends/index.html"> 
+<span class="menu-text">오늘의 검색 트렌드</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../stat_assay/index.html" aria-current="page"> 
+<span class="menu-text">통계, 다르게 읽기</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://wolfpack61.tistory.com/" rel="noopener" target="_blank"> 
+<span class="menu-text">통계로 보는 세상(티스토리 e책방)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../playground/index.html"> 
+<span class="menu-text">놀이터_플랫폼(주식 매수 점수)</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.youtube.com/@wolfpack61kwon" rel="noopener" target="_blank"> <i class="bi bi-youtube" role="img" aria-label="YouTube 채널">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_standard_score.html">📖 (흩어짐과 역설) 입시에서 표준점수를 쓰는 이유 — 편차값의 비밀</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📋 전체 목록</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_crime_rate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 인구 1만 명당 범죄율을 사용하는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_relative_risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_percentage_point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 지지율 3% 상승인가, 3%포인트 상승인가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_growth_rate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 매출이 50% 늘었다는 말에 속지 않는 법</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_variance_world.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 같은 평균, 전혀 다른 세상</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_income_median.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_class_average.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_star_rating.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 별점 4.5점짜리 식당은 믿을 만한가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_body_temp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 내 체온 36.5도는 정말 정상인가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_late_people.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 지각하는 사람들의 비밀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_waiting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 대기 시간의 비밀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_mean_trap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 평균의 함정</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_pvalue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 p-값은 왜 0.05인가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_kakao_reply.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 카톡 답장 속도와 호감도의 통계학</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_truncated_axis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 막대그래프의 축을 자르면 차이가 커진다</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_dual_axis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 두 개의 세로축이 만드는 가짜 상관관계</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_cumulative_growth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 누적그래프는 왜 항상 좋아 보일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_log_scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 선형 눈금과 로그 눈금은 무엇이 다른가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_graph_ethics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 좋은 그래프는 무엇을 숨기지 않는가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_hot_hand.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 농구에서 ’슛 감각이 올랐다’는 말은 사실일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_gamblers_fallacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 동전이 다섯 번 앞면이면 다음은 뒷면일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_survivorship_bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 성공한 사람만 보면 성공법이 보이지 않는다</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_regression_mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 시험을 망친 다음 점수가 오르는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_availability_bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는 사건이 더 자주 일어난다고 느끼는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_streak_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 연승과 연패, 우연일까 실력일까</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_sample_size_illusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 작은 표본이 만드는 큰 착각 — 야구 타율 3할의 의미</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_generation_height.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 세대별 평균이 말해주는 진짜 의미 — 평균 키가 자라는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_mode_categorical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 평균으로 설명되지 않는 데이터들 — 최빈값이 필요한 순간</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_average_pitfalls_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_std_deviation_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) “보통”의 폭을 재는 법 — 표준편차란 무엇인가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_outlier_mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) 재벌 총수가 낀 동네 평균 소득 — 이상치 하나가 바꾸는 평균</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_standard_score.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📖 (흩어짐과 역설) 입시에서 표준점수를 쓰는 이유 — 편차값의 비밀</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#똑같이-만점인데-표준점수는-다르다" id="toc-똑같이-만점인데-표준점수는-다르다" class="nav-link active" data-scroll-target="#똑같이-만점인데-표준점수는-다르다">똑같이 만점인데, 표준점수는 다르다</a></li>
+  <li><a href="#표준점수는-사실-몇-표준편차-위에-있는가를-보기-좋게-늘어놓은-것" id="toc-표준점수는-사실-몇-표준편차-위에-있는가를-보기-좋게-늘어놓은-것" class="nav-link" data-scroll-target="#표준점수는-사실-몇-표준편차-위에-있는가를-보기-좋게-늘어놓은-것">표준점수는 사실 “몇 표준편차 위에 있는가”를 보기 좋게 늘어놓은 것</a></li>
+  <li><a href="#편차값의-비밀-같은-개념-다른-눈금" id="toc-편차값의-비밀-같은-개념-다른-눈금" class="nav-link" data-scroll-target="#편차값의-비밀-같은-개념-다른-눈금">편차값의 비밀: 같은 개념, 다른 눈금</a></li>
+  <li><a href="#더-깊이-표준화의-원리-z-x-musigma" id="toc-더-깊이-표준화의-원리-z-x-musigma" class="nav-link" data-scroll-target="#더-깊이-표준화의-원리-z-x-musigma">더 깊이: 표준화의 원리, <span class="math inline">\(Z = (X-\mu)/\sigma\)</span></a></li>
+  <li><a href="#결론-원점수는-얼마나-맞혔는가-표준점수는-얼마나-잘했는가" id="toc-결론-원점수는-얼마나-맞혔는가-표준점수는-얼마나-잘했는가" class="nav-link" data-scroll-target="#결론-원점수는-얼마나-맞혔는가-표준점수는-얼마나-잘했는가">결론: 원점수는 “얼마나 맞혔는가”, 표준점수는 “얼마나 잘했는가”</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">(흩어짐과 역설) 입시에서 표준점수를 쓰는 이유 — 편차값의 비밀</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">통계기초</div>
+    <div class="quarto-category">기술통계</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    2019학년도 수능 국어 만점자의 표준점수는 150점, 2022학년도 만점자는 149점이었다. 둘 다 원점수는 100점(만점)인데 표준점수는 다르다. 그 해 시험이 얼마나 어려웠는지, 즉 평균과 표준편차가 해마다 다르기 때문이다. 어제 배운 표준편차가 어떻게 ’점수를 공정하게 비교하는 도구’로 쓰이는지 살펴본다.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>권세혁 </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 2, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="똑같이-만점인데-표준점수는-다르다" class="level2">
+<h2 class="anchored" data-anchor-id="똑같이-만점인데-표준점수는-다르다">똑같이 만점인데, 표준점수는 다르다</h2>
+<p>수능이 끝나면 늘 나오는 뉴스가 있다. “이번 수능 국어, 만점자 표준점수 OOO점.” 그런데 이상하지 않은가? 국어 시험은 원점수 100점이 만점이다. 만점은 어느 해든 100점으로 똑같은데, 왜 “표준점수”는 해마다 달라질까? 실제 기록을 보면 이렇다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>학년도</th>
+<th style="text-align: center;">국어 만점자 표준점수</th>
+<th>체감 난이도</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2019학년도</td>
+<td style="text-align: center;">150점</td>
+<td>역대 최고 수준</td>
+</tr>
+<tr class="even">
+<td>2021학년도</td>
+<td style="text-align: center;">144점</td>
+<td>비교적 평이</td>
+</tr>
+<tr class="odd">
+<td>2022학년도</td>
+<td style="text-align: center;">149점</td>
+<td>“불수능”</td>
+</tr>
+</tbody>
+</table>
+<div id="73c66c46" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_standard_score_files/figure-html/cell-2-output-1.png" width="614" height="412" class="figure-img"></p>
+<figcaption>The top standard score for a perfect raw score (100/100) on the Korean-language section of Korea’s national college entrance exam (CSAT), across three years. Every one of these students got exactly the same raw score - 100 out of 100 - yet their standard scores differ by up to 6 points, purely because each year’s exam had a different mean and spread.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>원점수는 똑같이 100점인데 표준점수가 144점에서 150점까지 오르내린다. 그 해 시험이 어려워서 평균이 낮고 점수가 넓게 흩어질수록(표준편차가 클수록), 만점의 “가치”는 더 높게 평가된다. 이 변환의 정체가 바로 어제 배운 표준편차다.</p>
+</section>
+<section id="표준점수는-사실-몇-표준편차-위에-있는가를-보기-좋게-늘어놓은-것" class="level2">
+<h2 class="anchored" data-anchor-id="표준점수는-사실-몇-표준편차-위에-있는가를-보기-좋게-늘어놓은-것">표준점수는 사실 “몇 표준편차 위에 있는가”를 보기 좋게 늘어놓은 것</h2>
+<p>한국교육과정평가원이 실제로 쓰는 국어·수학 영역 표준점수 공식은 이렇다.</p>
+<p><span class="math display">\[\text{표준점수} = 20 \times \frac{\text{원점수} - \text{평균}}{\text{표준편차}} + 100\]</span></p>
+<p>가운데 분수 부분, <span class="math inline">\((\text{원점수} - \text{평균})/\text{표준편차}\)</span>가 바로 <strong>표준화 점수(z-점수)</strong>다 — 내 점수가 평균에서 표준편차 몇 개만큼 떨어져 있는지를 나타내는 수치다. 여기에 20을 곱하고 100을 더하는 건, 마이너스 부호나 소수점이 섞인 z-점수를 “평균 100, 어느 정도 퍼져 있는 점수”라는 익숙한 모양으로 보기 좋게 늘어놓은 것뿐이다.</p>
+<p>같은 원점수 88점을 받은 두 학생을 비교해보자. 한 명은 평균 75점, 표준편차 10점인 “쉬운 해”에 시험을 봤고, 다른 한 명은 평균 55점, 표준편차 18점인 “어려운 해”에 시험을 봤다.</p>
+<div id="7054336c" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_standard_score_files/figure-html/cell-3-output-1.png" width="707" height="432" class="figure-img"></p>
+<figcaption>The same raw score of 88 (dashed line) in two hypothetical exam years with different means and spreads. In the easy year (mean 75, SD 10), 88 lands at the top 9.7% of test-takers. In the hard year (mean 55, SD 18), the same 88 lands at the top 3.3% - a much rarer, stronger relative performance, which the raw score alone cannot show.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>원점수는 똑같이 88점이지만, 쉬운 해에는 상위 9.7%(표준점수 126점), 어려운 해에는 상위 3.3%(표준점수 137점)에 해당한다. 대학이 원점수만 보고 학생을 뽑는다면, 어려운 해에 88점을 받은 학생의 진짜 실력이 과소평가된다. 표준점수는 “그 해, 그 시험 안에서 상대적으로 얼마나 잘했는가”를 담아내기 위한 장치다.</p>
+</section>
+<section id="편차값의-비밀-같은-개념-다른-눈금" class="level2">
+<h2 class="anchored" data-anchor-id="편차값의-비밀-같은-개념-다른-눈금">편차값의 비밀: 같은 개념, 다른 눈금</h2>
+<p>흥미롭게도 수능은 영역마다 눈금을 다르게 쓴다. 국어·수학은 “평균 100, 표준편차 20”으로 늘어놓지만(<span class="math inline">\(20z+100\)</span>), 탐구영역·제2외국어·한문은 “평균 50, 표준편차 10”으로 늘어놓는다(<span class="math inline">\(10z+50\)</span>). 이 “평균 50, 표준편차 10” 눈금은 일본식 입시 용어 “편차값(偏差値)”과 정확히 같은 공식이다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+편차값의 비밀
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>두 공식은 겉보기에 다른 점수처럼 보이지만, 사실은 <strong>똑같은 z-점수</strong>에 서로 다른 배율(20 또는 10)과 기준점(100 또는 50)을 곱하고 더한 것뿐이다. “표준점수 120점”과 “편차값 60”은 둘 다 z=1, 즉 평균보다 표준편차 1개만큼 위에 있다는 같은 뜻이다. 표준점수의 진짜 비밀은 복잡한 공식이 아니라, <strong>어떤 눈금을 쓰든 결국은 “평균에서 표준편차 몇 개만큼 떨어져 있는가”라는 하나의 질문으로 귀결된다는 것</strong>이다.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+표준점수를 읽는 법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>표준점수가 100(또는 50)보다 높다</strong> → 그 해 평균보다 잘 봤다는 뜻이다. 원점수가 몇 점인지는 중요하지 않다.</li>
+<li><strong>표준점수의 최고점이 해마다 다른 이유는 시험 난이도(평균·표준편차)가 다르기 때문</strong>이다. 표준점수가 높은 해라고 학생들 실력이 늘어난 게 아니라, 그 해 시험이 어려워 점수가 넓게 흩어졌다는 뜻일 때가 많다.</li>
+<li><strong>원점수만으로 다른 과목·다른 해의 성적을 비교하면 안 된다.</strong> 표준점수는 바로 이 비교 불가능성을 해결하기 위해 만들어졌다.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="더-깊이-표준화의-원리-z-x-musigma" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-표준화의-원리-z-x-musigma">더 깊이: 표준화의 원리, <span class="math inline">\(Z = (X-\mu)/\sigma\)</span></h2>
+<p>강의노트 <a href="../../notes/math_stat/famous_distribution.html#정규분포-x-sim-nmusigma">〈수리통계학 3. 유명분포 — 정규분포〉</a>는 <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span>를 따르는 확률변수에 대해 <span class="math inline">\(Z = (X-\mu)/\sigma\)</span>로 변환하면 항상 표준정규분포 <span class="math inline">\(N(0,1)\)</span>을 따른다고 정리한다. 원래 분포가 무엇이든(국어 100점 만점이든, 수학 만점이든), 평균을 빼고 표준편차로 나누는 이 한 번의 변환으로 서로 다른 두 시험 결과를 같은 저울 위에 올릴 수 있다. 수능의 표준점수 공식 <span class="math inline">\(20Z+100\)</span>은 이 이론적 <span class="math inline">\(Z\)</span>에 시험 주관사가 보기 편한 배율과 기준점을 씌운 것에 지나지 않는다.</p>
+</section>
+<section id="결론-원점수는-얼마나-맞혔는가-표준점수는-얼마나-잘했는가" class="level2">
+<h2 class="anchored" data-anchor-id="결론-원점수는-얼마나-맞혔는가-표준점수는-얼마나-잘했는가">결론: 원점수는 “얼마나 맞혔는가”, 표준점수는 “얼마나 잘했는가”</h2>
+<p>나는 수능 채점 결과가 발표되는 매년 12월, 학생들에게 이 표를 보여주며 묻는다. “100점 만점을 받은 두 사람 중 누가 더 대단한 걸까요?” 답은 원점수만으로는 알 수 없다. 그 해 평균과 표준편차를 알아야, 즉 그 100점이 얼마나 드문 성취였는지를 알아야 답할 수 있다. 어제 표준편차가 “보통의 폭”을 재는 도구였다면, 오늘 표준점수는 그 폭을 이용해 서로 다른 잣대로 잰 점수들을 하나의 공정한 저울 위에 올려놓는 도구다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+참고 자료
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://www.fnnews.com/news/202112091104254330">역대급 ‘불수능’ 사실로…국어 표점 149, 수학 147 — 파이낸셜뉴스</a></li>
+<li>한국교육과정평가원, 수능 표준점수 산출 공식(국어·수학: <span class="math inline">\(20Z+100\)</span>, 탐구/제2외국어·한문: <span class="math inline">\(10Z+50\)</span>)</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/by-sekwon\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<div style="display:flex; align-items:center; justify-content:flex-end; gap:0.5rem;">
+<p><img src="https://hits.sh/by-sekwon.github.io.svg?style=flat-square&amp;label=visitors&amp;color=555555" alt="방문자 수" style="vertical-align:middle; border-radius:3px;"> <span style="font-size:0.8rem; color:#888;">since 2026.08.08</span></p>
+</div>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

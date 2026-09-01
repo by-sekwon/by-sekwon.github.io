@@ -1,0 +1,2229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="권세혁">
+
+<title>기초통계 | 8. 분산분석 – 권세혁HOME</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-35419eb3a154f6f894e0af1e245874c8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-6JP0RHCH1Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon-16x16.png">
+<link rel="manifest" href="../../site.webmanifest">
+<meta name="theme-color" content="#1e3a2f">
+<meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">권세혁HOME</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">강의노트</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/index.html">
+ <span class="dropdown-text">기초수학·수리통계·조사방법</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/index.html">
+ <span class="dropdown-text">기초통계·회귀·다변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mldl_intro/index.html">
+ <span class="dropdown-text">머신러닝·딥러닝</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/inference_xai/index.html">
+ <span class="dropdown-text">AI·감성분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../stat_chatbot.html"> 
+<span class="menu-text">통계챗봇</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../trends/index.html"> 
+<span class="menu-text">오늘의 검색 트렌드</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../stat_assay/index.html"> 
+<span class="menu-text">통계, 다르게 읽기</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://wolfpack61.tistory.com/" rel="noopener" target="_blank"> 
+<span class="menu-text">통계로 보는 세상(티스토리 e책방)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../playground/index.html"> 
+<span class="menu-text">놀이터_플랫폼(주식 매수 점수)</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.youtube.com/@wolfpack61kwon" rel="noopener" target="_blank"> <i class="bi bi-youtube" role="img" aria-label="YouTube 채널">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/intro_stat/concept_of_stat.html">【기초통계】</a></li><li class="breadcrumb-item"><a href="../../notes/intro_stat/anova.html">📄 분산분석(ANOVA)</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">【기초통계】</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/concept_of_stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 통계학의 개념</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 데이터와 통계</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/univariate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 일변량 분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/crosstab.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 교차표 분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/goodness_of_fits.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 적합성 검정</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/normality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 정규성 검정</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 상관분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/anova.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📄 분산분석(ANOVA)</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/intro_stat/time_series.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 시계열 분석</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">【회귀분석】</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/linear_model/lm_concept.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 개념·추정</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/linear_model/lm_selection.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 변수선택</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/linear_model/lm_multicolin.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 다중공선성</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/linear_model/lm_diagnosis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 회귀진단</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/linear_model/lm_logistic.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 로지스틱회귀=예측분류</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">【다변량분석】</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_concepts.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 다변량분석 개요</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_pca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 PCA주성분분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_factor.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 FA요인분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_discriminant.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 판별분석=예측분류</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_cluster.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 군집분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_mds_ca.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 다차원척도·대응분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../notes/mda/mda_cancorr_manova.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📄 정준상관·MANOVA</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#실험설계-기초" id="toc-실험설계-기초" class="nav-link active" data-scroll-target="#실험설계-기초"><span class="header-section-number">1</span> 실험설계 기초</a>
+  <ul>
+  <li><a href="#개념" id="toc-개념" class="nav-link" data-scroll-target="#개념"><span class="header-section-number">1.1</span> 개념</a></li>
+  <li><a href="#실험설계-용어" id="toc-실험설계-용어" class="nav-link" data-scroll-target="#실험설계-용어"><span class="header-section-number">1.2</span> 실험설계 용어</a></li>
+  <li><a href="#실험오차-제어" id="toc-실험오차-제어" class="nav-link" data-scroll-target="#실험오차-제어"><span class="header-section-number">1.3</span> 실험오차 제어</a></li>
+  <li><a href="#랜덤화와-블록화" id="toc-랜덤화와-블록화" class="nav-link" data-scroll-target="#랜덤화와-블록화"><span class="header-section-number">1.4</span> 랜덤화와 블록화</a>
+  <ul class="collapse">
+  <li><a href="#랜덤화-실험단위에-처리배치" id="toc-랜덤화-실험단위에-처리배치" class="nav-link" data-scroll-target="#랜덤화-실험단위에-처리배치"><span class="header-section-number">1.4.1</span> 랜덤화 (실험단위에 처리배치)</a></li>
+  <li><a href="#블록화" id="toc-블록화" class="nav-link" data-scroll-target="#블록화"><span class="header-section-number">1.4.2</span> 블록화</a></li>
+  </ul></li>
+  <li><a href="#반복과-반복-측정" id="toc-반복과-반복-측정" class="nav-link" data-scroll-target="#반복과-반복-측정"><span class="header-section-number">1.5</span> 반복과 반복 측정</a></li>
+  <li><a href="#반복수-결정" id="toc-반복수-결정" class="nav-link" data-scroll-target="#반복수-결정"><span class="header-section-number">1.6</span> 반복수 결정</a>
+  <ul class="collapse">
+  <li><a href="#처리평균-신뢰수준-활용방법" id="toc-처리평균-신뢰수준-활용방법" class="nav-link" data-scroll-target="#처리평균-신뢰수준-활용방법"><span class="header-section-number">1.6.1</span> 처리평균 신뢰수준 활용방법</a></li>
+  <li><a href="#f-검정의-검정력을-이용한-반복-수-결정" id="toc-f-검정의-검정력을-이용한-반복-수-결정" class="nav-link" data-scroll-target="#f-검정의-검정력을-이용한-반복-수-결정"><span class="header-section-number">1.6.2</span> F 검정의 검정력을 이용한 반복 수 결정</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#완전-랜덤화-설계-completely-randomized-design" id="toc-완전-랜덤화-설계-completely-randomized-design" class="nav-link" data-scroll-target="#완전-랜덤화-설계-completely-randomized-design"><span class="header-section-number">2</span> 완전 랜덤화 설계 Completely Randomized Design</a>
+  <ul>
+  <li><a href="#완전-랜덤화-설계-개념" id="toc-완전-랜덤화-설계-개념" class="nav-link" data-scroll-target="#완전-랜덤화-설계-개념"><span class="header-section-number">2.1</span> 완전 랜덤화 설계 개념</a>
+  <ul class="collapse">
+  <li><a href="#모형-및-가정" id="toc-모형-및-가정" class="nav-link" data-scroll-target="#모형-및-가정"><span class="header-section-number">2.1.1</span> 모형 및 가정</a></li>
+  <li><a href="#추정" id="toc-추정" class="nav-link" data-scroll-target="#추정"><span class="header-section-number">2.1.2</span> 추정</a></li>
+  <li><a href="#검정가설" id="toc-검정가설" class="nav-link" data-scroll-target="#검정가설"><span class="header-section-number">2.1.3</span> 검정가설</a></li>
+  <li><a href="#총변동-요인-변동-오차변동" id="toc-총변동-요인-변동-오차변동" class="nav-link" data-scroll-target="#총변동-요인-변동-오차변동"><span class="header-section-number">2.1.4</span> 총변동, 요인 변동, 오차변동</a></li>
+  <li><a href="#변동의-분포" id="toc-변동의-분포" class="nav-link" data-scroll-target="#변동의-분포"><span class="header-section-number">2.1.5</span> 변동의 분포</a></li>
+  </ul></li>
+  <li><a href="#사후-검정-post-hoc-test" id="toc-사후-검정-post-hoc-test" class="nav-link" data-scroll-target="#사후-검정-post-hoc-test"><span class="header-section-number">2.2</span> 사후 검정 (Post-hoc test)</a>
+  <ul class="collapse">
+  <li><a href="#개념-1" id="toc-개념-1" class="nav-link" data-scroll-target="#개념-1"><span class="header-section-number">2.2.1</span> 개념</a></li>
+  <li><a href="#선형-대비-linear-contrast" id="toc-선형-대비-linear-contrast" class="nav-link" data-scroll-target="#선형-대비-linear-contrast"><span class="header-section-number">2.2.2</span> 선형 대비 (Linear Contrast)</a></li>
+  <li><a href="#다중비교-방법" id="toc-다중비교-방법" class="nav-link" data-scroll-target="#다중비교-방법"><span class="header-section-number">2.2.3</span> 다중비교 방법</a></li>
+  </ul></li>
+  <li><a href="#사례-실습" id="toc-사례-실습" class="nav-link" data-scroll-target="#사례-실습"><span class="header-section-number">2.3</span> 사례 실습</a></li>
+  </ul></li>
+  <li><a href="#블록설계-block-design" id="toc-블록설계-block-design" class="nav-link" data-scroll-target="#블록설계-block-design"><span class="header-section-number">3</span> 블록설계 Block Design</a>
+  <ul>
+  <li><a href="#개념-2" id="toc-개념-2" class="nav-link" data-scroll-target="#개념-2"><span class="header-section-number">3.1</span> 개념</a></li>
+  <li><a href="#모형-및-가정-1" id="toc-모형-및-가정-1" class="nav-link" data-scroll-target="#모형-및-가정-1"><span class="header-section-number">3.2</span> 모형 및 가정</a></li>
+  <li><a href="#추정과-가설검정" id="toc-추정과-가설검정" class="nav-link" data-scroll-target="#추정과-가설검정"><span class="header-section-number">3.3</span> 추정과 가설검정</a></li>
+  <li><a href="#사례-실습-1" id="toc-사례-실습-1" class="nav-link" data-scroll-target="#사례-실습-1"><span class="header-section-number">3.4</span> 사례 실습</a></li>
+  </ul></li>
+  <li><a href="#이원-분산분석-two-way-anova" id="toc-이원-분산분석-two-way-anova" class="nav-link" data-scroll-target="#이원-분산분석-two-way-anova"><span class="header-section-number">4</span> 이원 분산분석 two-way ANOVA</a>
+  <ul>
+  <li><a href="#모형-및-가정-2" id="toc-모형-및-가정-2" class="nav-link" data-scroll-target="#모형-및-가정-2"><span class="header-section-number">4.1</span> 모형 및 가정</a></li>
+  <li><a href="#추정-및-가설검정" id="toc-추정-및-가설검정" class="nav-link" data-scroll-target="#추정-및-가설검정"><span class="header-section-number">4.2</span> 추정 및 가설검정</a></li>
+  <li><a href="#사례분석" id="toc-사례분석" class="nav-link" data-scroll-target="#사례분석"><span class="header-section-number">4.3</span> 사례분석</a></li>
+  </ul></li>
+  <li><a href="#공분산분석-analysis-of-covariance" id="toc-공분산분석-analysis-of-covariance" class="nav-link" data-scroll-target="#공분산분석-analysis-of-covariance"><span class="header-section-number">5</span> 공분산분석 Analysis of Covariance</a>
+  <ul>
+  <li><a href="#공분산분석-개념" id="toc-공분산분석-개념" class="nav-link" data-scroll-target="#공분산분석-개념"><span class="header-section-number">5.1</span> 공분산분석 개념</a></li>
+  <li><a href="#모형-및-가정-3" id="toc-모형-및-가정-3" class="nav-link" data-scroll-target="#모형-및-가정-3"><span class="header-section-number">5.2</span> 모형 및 가정</a></li>
+  <li><a href="#이원-공분산분석-사례" id="toc-이원-공분산분석-사례" class="nav-link" data-scroll-target="#이원-공분산분석-사례"><span class="header-section-number">5.3</span> 이원 공분산분석 사례</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../notes/intro_stat/concept_of_stat.html">【기초통계】</a></li><li class="breadcrumb-item"><a href="../../notes/intro_stat/anova.html">📄 분산분석(ANOVA)</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">기초통계 | 8. 분산분석</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>권세혁 </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="실험설계-기초" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="실험설계-기초"><span class="header-section-number">1</span> 실험설계 기초</h2>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+정의
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>실험 설계(Experimental Design)</strong>는 기록된 반응을 바탕으로 처리나 집단 간 비교가 가능하도록 연구의 틀을 마련하는 과정이다. <strong>분산분석(ANOVA)</strong>은 만들어진 데이터를 어떻게 해석할지에 관한 단계이다.</p>
+</div>
+</div>
+<p>실험설계는 데이터를 어떻게 만들지에 관한 단계이고, 분산분석(ANOVA)은 만들어진 데이터를 어떻게 해석할지에 관한 단계다. 실험설계에서 처리(treatment) 구조, 반복(replication), 무작위화(randomization), 블록화(blocking) 같은 요소를 미리 결정하면, 그 결과 데이터는 분산분석 모형에 자연스럽게 들어갈 수 있는 형태로 구성된다.</p>
+<section id="개념" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="개념"><span class="header-section-number">1.1</span> 개념</h3>
+<p>실험 설계는 기록된 반응을 바탕으로 치료나 집단 간 비교가 가능하도록 연구의 틀을 마련하는 과정이다. 연구는 자연 상태에서의 관찰처럼 환경을 방해하지 않고 수행될 수도 있고, 실험실처럼 요인을 인위적으로 통제하는 방식으로 이루어질 수도 있다.</p>
+<p>예를 들어, 학교 유형별 2학년 읽기 점수 차이는 자연 관찰 연구에 해당하지만, 온도와 습도가 진드기 수명 주기에 미치는 영향은 통제가 가능한 실험실에서 연구된다. 따라서 실험의 유용성을 위해서는 조건 통제와 현실성 사이의 균형이 필요하다.</p>
+</section>
+<section id="실험설계-용어" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="실험설계-용어"><span class="header-section-number">1.2</span> 실험설계 용어</h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+실험설계 핵심 용어 요약
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>용어</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>절대실험</strong></td>
+<td>요인을 조작하지 않고 관찰·조사로 현재 상태 파악</td>
+</tr>
+<tr class="even">
+<td><strong>비교실험</strong></td>
+<td>요인을 변화시켜 반응의 변화 분석 → ANOVA 대상</td>
+</tr>
+<tr class="odd">
+<td><strong>요인(Factor)</strong></td>
+<td>연구자가 통제하는 변수 (예: 사료 종류, 수온)</td>
+</tr>
+<tr class="even">
+<td><strong>처리(Treatment)</strong></td>
+<td>요인 수준의 조합 (2수준 × 2수준 = 4처리)</td>
+</tr>
+<tr class="odd">
+<td><strong>대조 처리(Control)</strong></td>
+<td>다른 처리의 효과를 비교하는 기준 (플라세보 포함)</td>
+</tr>
+<tr class="even">
+<td><strong>실험 단위</strong></td>
+<td>처리를 무작위 할당받는 물리적 개체</td>
+</tr>
+<tr class="odd">
+<td><strong>반복(Replication)</strong></td>
+<td>동일 처리를 서로 다른 독립 실험 단위에 적용</td>
+</tr>
+<tr class="even">
+<td><strong>실험 오차</strong></td>
+<td>동일 처리를 받은 실험 단위 간 반응 변동</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>절대실험과 비교실험</strong>: 절대실험은 관심 있는 대상의 현재 상태나 특성을 파악하기 위해 요인을 조작하지 않고 관찰이나 조사를 통해 정보를 얻는 방식이다. 반면 비교실험은 관심 있는 현상에 영향을 미칠 수 있는 요인을 변화시키고, 그에 따른 반응의 변화를 분석하는 실험이다. 분산분석(ANOVA)은 이러한 비교실험을 분석하는 대표적인 방법이다.</p>
+<p><strong>설계된 실험 (designed experiment)</strong>: 미리 정해진 틀 안에서 집단을 관찰·측정·평가하는 연구를 뜻한다. 연구자는 실험 중 해당 틀의 요소들을 통제하여, 관심 있는 집단 간에 타당한 비교가 가능하도록 데이터를 수집한다. 이러한 통제를 통해 통계적 추론이 가능해진다.</p>
+<p><strong>요인 (factors)</strong>: 물고기 사료(기존 사료A, 새로 개발된 사료B)와 수온(20도, 25도)에 따른 몸무게 증가 효과를 보기 위하여 어항 4개, 물고기 12마리를 랜덤하게 선택하여, 각 어항에 3마리 물고기 배정 후, (사료×온도) 어항 넣은 후 2주 후에 몸무게를 측정하였다.</p>
+<ul>
+<li>사료 종류 – A-기존사료, B-새로운 사료 (2수준)</li>
+<li>수온 – 20도, 25도 (2수준)</li>
+</ul>
+<p>사료 종류와 수온은 연구자가 통제하는 요인이다. 반응변수는 물고기 몸무게(g)이며, 이는 측정값(measurement)으로 기록되지만 연구자가 통제하지는 않는다.</p>
+<p><strong>처리 (treatments) 및 설계 형태</strong>: 처리는 요인의 수준을 조합하여 구성된다. 위 실험에서는 2수준(사료) × 2수준(수온) = 4개의 처리가 가능하다.</p>
+<ul>
+<li>만약 요인이 하나만 있다면, 이는 일원배치(one-way classification)이다.</li>
+<li>두 요인을 모두 고려하면 요인배치 설계(factorial treatment design)가 되며, 분산분석(ANOVA)을 통해 비료 효과, 관개 효과, 그리고 두 요인의 상호작용 효과까지 평가할 수 있다.</li>
+</ul>
+<p><strong>대조 처리 (control treatment)</strong>: 다른 처리들의 효과를 비교하는 기준이 되는 특별한 처리 유형이다. 대조 처리가 특히 중요한 경우는 세 가지다.</p>
+<p>첫째, 실험 조건이 일반적으로 효과적인 처리라도 그 효과를 보여주기 어렵게 만드는 경우이다. ‘질소를 전혀 주지 않는’ 대조 처리를 포함하면, 토양 자체의 높은 비옥도가 드러나고, 대조 처리의 효과가 질소 처리와 비슷하다는 점이 확인될 수 있다.</p>
+<p>둘째, 기존에 잘 확립된 표준 방법과 새로운 방법들을 비교하는 경우다.</p>
+<p>셋째, 플라세보(placebo) 대조다. 이는 피실험자가 실험 중 단순히 처치 과정을 받는 것만으로 반응을 보일 수 있는 경우에 사용된다.</p>
+<p><strong>실험 단위 (experimental unit)</strong>: 처리를 무작위로 할당받는 물리적 개체, 혹은 처리 집단 중 하나에서 무작위로 선택된 실험 대상이다. 예를 들어, 물고기 몸무게 실험에서는 “어항”이 실험 단위이다.</p>
+<p><strong>반복 (replication)</strong>: 처리가 한 실험 단위에 할당되면 이를 해당 처리의 한 번의 반복이라고 한다. 일반적으로는 각 처리를 여러 실험 단위에 무작위로 배정하여, 각 처리에 대해 여러 번의 반복을 수행한다.</p>
+<p><strong>실험 오차 (experimental error)</strong>: 동일한 처리를 받고 동일한 실험 조건에서 관측된 실험 단위들 간 반응의 변동을 말한다. 실험 오차가 0이 되지 않는 이유에는 다음이 포함된다.</p>
+<ul>
+<li><ol type="a">
+<li>처리를 받기 전부터 존재하는 실험 단위 간의 자연적인 차이</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>측정 장치의 변동(측정 기기 오차)</li>
+</ol></li>
+<li><ol start="3" type="a">
+<li>처리 조건을 설정하는 과정에서의 변동</li>
+</ol></li>
+<li><ol start="4" type="a">
+<li>처리 요인이 아닌 외부 요인들이 반응 변수에 미치는 영향</li>
+</ol></li>
+</ul>
+<p><strong>Placebo 효과</strong>: 플라세보 효과는 실제로 치료 성분이 없거나 효과가 없는 처치를 받았음에도 불구하고, 환자가 치료를 받았다고 믿기 때문에 증상이 호전되는 현상을 말한다. 이러한 플라세보 효과를 배제하기 위해 이중 블라인드(double blind) 실험을 적용한다.</p>
+</section>
+<section id="실험오차-제어" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="실험오차-제어"><span class="header-section-number">1.3</span> 실험오차 제어</h3>
+<p>실험 오차의 분산이 크면 추론의 정밀성이 크게 떨어진다. 따라서 실험 오차를 줄이는 모든 기법은 더 나은 실험과 더 정밀한 추론으로 이어진다.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+실험오차 제어 방법 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>원리</th>
+<th>효과</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>블록화 (Blocking)</strong></td>
+<td>유사 단위를 묶어 블록 내 균질성 확보</td>
+<td>블록 간 변동을 오차에서 분리</td>
+</tr>
+<tr class="even">
+<td><strong>공변량 (Covariate)</strong></td>
+<td>반응변수와 관련된 보조변수를 모형에 포함</td>
+<td>공변량이 설명하는 변동을 오차에서 제거</td>
+</tr>
+<tr class="odd">
+<td><strong>반복 (Replication)</strong></td>
+<td>각 처리를 여러 독립 단위에 적용</td>
+<td>오차 추정 정확도 향상, 검정력 증가</td>
+</tr>
+<tr class="even">
+<td><strong>무작위화</strong></td>
+<td>처리 배정을 무작위로 수행</td>
+<td>미지의 요인에 의한 편향 방지</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>블록화를 통한 실험오차 줄이기</strong>: 블록화(blocking)는 실험 단위 집단 내에서 중요한 특성 차이가 클 때, 실험 오차 분산을 줄이는 데 효과적인 방법이다. 반응변수에 영향을 줄 수 있는 특성에 따라 실험 단위를 비슷한 것끼리 묶어 블록을 만들면, 각 블록 내부는 균질해지고 전체적으로는 다양한 특성을 포함할 수 있다.</p>
+<p><strong>공변량을 이용한 변동성 줄이기</strong>: 공변량(covariate)은 반응변수와 관련이 있는 변수로, 실험 오차의 변동을 줄이는 데 활용된다. 공변량이 되기 위해서는 세 가지 조건을 만족해야 한다. 첫째, 반응변수와 관계가 있어야 하고, 둘째, 측정이 가능해야 하며, 셋째, 처리에 의해 영향을 받지 않아야 한다.</p>
+</section>
+<section id="랜덤화와-블록화" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="랜덤화와-블록화"><span class="header-section-number">1.4</span> 랜덤화와 블록화</h3>
+<section id="랜덤화-실험단위에-처리배치" class="level4" data-number="1.4.1">
+<h4 data-number="1.4.1" class="anchored" data-anchor-id="랜덤화-실험단위에-처리배치"><span class="header-section-number">1.4.1</span> 랜덤화 (실험단위에 처리배치)</h4>
+<p>랜덤화는 실험 단위의 배정과 실험 수행 순서를 무작위로 결정하여 실험의 객관성을 보장하는 절차이다. 완전임의배치법(CRD)에서는 이러한 랜덤화를 통해 관심 요인 이외의 기타 원인들이 실험 결과에 영향을 주는 가능성을 최소화한다.</p>
+<p>비료 종류(A, B, C)에 따른 벼 수확량의 차이를 알아보기 위하여 실험을 한다고 하자. 반복 수는 각 비료에 대해 4번을 한다면 실험을 위해 총 12곳의 경작지가 필요하다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/CRD설계.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</section>
+<section id="블록화" class="level4" data-number="1.4.2">
+<h4 data-number="1.4.2" class="anchored" data-anchor-id="블록화"><span class="header-section-number">1.4.2</span> 블록화</h4>
+<p>블록화는 실험 단위를 무작위로 배정하기 어려운 상황에서 실험의 정밀도를 높이기 위해 사용하는 방법이다. 성질이 유사한 단위들을 묶어 블록을 구성하면, 각 블록 내부에서는 실험 환경이 균일하게 유지되어 처리 효과를 보다 정확하게 비교할 수 있다.</p>
+<p>만약 경작지 아래 개천이 흐른다면 물로부터 거리에 따라 땅의 비옥도의 차이가 있을 것이므로 CRD 방법은 적합하지 않다. 물의 위치에 따라 경작지를 나누고(블록화) 각 블록 내에서 각 비료를 하나씩 임의로 배정하는 실험 계획을 Randomized Block Design이라 한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/RBD설계.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="반복과-반복-측정" class="level3" data-number="1.5">
+<h3 data-number="1.5" class="anchored" data-anchor-id="반복과-반복-측정"><span class="header-section-number">1.5</span> 반복과 반복 측정</h3>
+<p>반복은 동일한 처리를 서로 다른 독립적인 실험 단위에 적용하는 것을 의미한다. 이렇게 하면 실험 오차를 추정하고 결과의 재현성을 검증할 수 있다.</p>
+<p>반복측정은 동일한 실험 단위에서 동일한 조건으로 여러 번 측정하거나 관찰하는 것을 말한다. 같은 실험 단위에서 얻은 값은 통계적으로 독립이 아니므로 실험 오차 추정에 직접 사용되지는 않으며, 보통 평균값을 계산해 분석에 사용한다.</p>
+<p>결국 반복은 실험의 신뢰성과 오차 추정을 위한 핵심 설계 요소이고, 반복측정은 측정값의 정밀도를 높이는 보조적 방법이다.</p>
+</section>
+<section id="반복수-결정" class="level3" data-number="1.6">
+<h3 data-number="1.6" class="anchored" data-anchor-id="반복수-결정"><span class="header-section-number">1.6</span> 반복수 결정</h3>
+<p>실험에서 반복(replication) 횟수는 처리 평균의 추정 정확도와, 처리 평균 차이에 대한 가설검정의 검정력을 결정하는 핵심 요소이다. 일반적으로 반복 횟수가 많을수록 추정값의 정확도가 높아지고, 신뢰구간이 좁아지며, 가설검정의 검정력도 커진다.</p>
+<section id="처리평균-신뢰수준-활용방법" class="level4" data-number="1.6.1">
+<h4 data-number="1.6.1" class="anchored" data-anchor-id="처리평균-신뢰수준-활용방법"><span class="header-section-number">1.6.1</span> 처리평균 신뢰수준 활용방법</h4>
+<p>처리 평균에 대한 <span class="math inline">\(100(1-\alpha)\%\)</span> 신뢰구간의 폭이 원하는 수준이 되도록 반복 횟수를 결정할 수 있다.</p>
+<p><span class="math display">\[r = \frac{(z_{\frac{\alpha}{2}})^{2}{\widehat{\sigma}}^{2}}{E^{2}}\]</span></p>
+<p>여기서 <span class="math inline">\(z_{\frac{\alpha}{2}}\)</span>: 신뢰수준 <span class="math inline">\(100(1-\alpha)\%\)</span>에 해당하는 표준정규분포 임계값(95% 신뢰수준, 1.96 사용), <span class="math inline">\(\widehat{\sigma}\)</span>은 실험 표준편차, <span class="math inline">\(E\)</span>는 추정값의 허용 오차(precision)이다.</p>
+<p>과거 수확량 범위: 40~70 파운드이고 표준편차 추정치: <span class="math inline">\(\widehat{\sigma} = \frac{70 - 40}{4} = 7.5\)</span>, 신뢰수준: 95%, 원하는 정밀도(허용 오차): <span class="math inline">\(E = 4\)</span> 파운드일 때,</p>
+<p><span class="math display">\[r = \frac{(1.96)^{2}(7.5)^{2}}{(4)^{2}} = 13.51\]</span></p>
+<p>결론적으로 각 처리 수준별로 14회 반복을 수행해야 원하는 정밀도를 달성할 수 있다.</p>
+</section>
+<section id="f-검정의-검정력을-이용한-반복-수-결정" class="level4" data-number="1.6.2">
+<h4 data-number="1.6.2" class="anchored" data-anchor-id="f-검정의-검정력을-이용한-반복-수-결정"><span class="header-section-number">1.6.2</span> F 검정의 검정력을 이용한 반복 수 결정</h4>
+<p>t개의 처리가 있는 실험에서 반복 수를 결정할 때, 연구 목표 중 하나는 다음 가설을 검정하는 것이다.</p>
+<p><span class="math display">\[H_{0}:\mu_{1} = \mu_{2} = \cdots = \mu_{t}\]</span></p>
+<p>F 통계량은 <span class="math inline">\(F = \frac{MST}{MSE}\)</span>로 계산되며, 비중심 F 분포를 이용해 제2종 오류 확률 β(λ)를 계산하며, 비중심성 모수 λ는</p>
+<p><span class="math display">\[\lambda = \frac{r\sum_{i = 1}^{t}(\mu_{i} - \overline{\mu})^{2}}{\sigma^{2}}\]</span></p>
+<p>이고, 평균 차이가 D 이상인 최소 경우에는 <span class="math inline">\(\lambda = \frac{rD^{2}}{2\sigma^{2}}\)</span>로 단순화된다.</p>
+<p>연구자가 4가지 질소 비료 처리 수준에 따른 피칸(pecan) 수확량을 비교하는 실험에서 처리 개수 t = 4, 표준편차 추정치 <span class="math inline">\(\widehat{\sigma} = 7.5\)</span>, 효과 크기 D = 15일 때,</p>
+<p><span class="math display">\[\phi = \frac{\sqrt{r}D}{\sqrt{2t}\widehat{\sigma}} = 0.707\sqrt{r}\]</span></p>
+<p>파워 곡선 표를 이용하여 시도-오류(trial &amp; error) 방식으로 r 값을 찾는다.</p>
+<ul>
+<li>r=6 → φ=1.73, ν₂=20 → 파워=0.75 (부족)</li>
+<li>r=10 → φ=2.24, ν₂=36 → 파워=0.96 (충분하지만 여유 있음)</li>
+<li>r=9 → φ=2.12, ν₂=32 → 파워=0.93 (목표 충족)</li>
+</ul>
+<p>따라서, r=9가 적절한 반복 수로 결정된다. 이는 총 36개의 실험 단위(4처리 × 9반복)가 필요함을 의미한다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/samplesize.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</section>
+</section>
+</section>
+<section id="완전-랜덤화-설계-completely-randomized-design" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="완전-랜덤화-설계-completely-randomized-design"><span class="header-section-number">2</span> 완전 랜덤화 설계 Completely Randomized Design</h2>
+<section id="완전-랜덤화-설계-개념" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="완전-랜덤화-설계-개념"><span class="header-section-number">2.1</span> 완전 랜덤화 설계 개념</h3>
+<p>단일 요인 완전랜덤화 설계(CRD)는 t개의 모집단(처리) 평균 <span class="math inline">\(\mu_{1},\mu_{2},\ldots,\mu_{t}\)</span>를 비교하는 데 초점을 맞춘다.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/anovaconcept.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<section id="모형-및-가정" class="level4" data-number="2.1.1">
+<h4 data-number="2.1.1" class="anchored" data-anchor-id="모형-및-가정"><span class="header-section-number">2.1.1</span> 모형 및 가정</h4>
+<p><span class="math display">\[y_{ij} = \mu + \alpha_{i} + e_{ij}, \quad e_{ij} \sim N(0,\sigma^{2})\]</span></p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+CRD 모형 가정 및 주요 항목
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>항목</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>오차 독립</strong></td>
+<td><span class="math inline">\(e_{ij}\)</span>는 서로 독립</td>
+</tr>
+<tr class="even">
+<td><strong>오차 정규성</strong></td>
+<td><span class="math inline">\(e_{ij} \sim N(0, \sigma^2)\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>등분산성</strong></td>
+<td>모든 처리 집단의 분산 동일</td>
+</tr>
+<tr class="even">
+<td><strong><span class="math inline">\(\mu\)</span></strong></td>
+<td>모집단 총평균</td>
+</tr>
+<tr class="odd">
+<td><strong><span class="math inline">\(\alpha_i\)</span></strong></td>
+<td>요인 <span class="math inline">\(i\)</span>수준의 처리 효과 (주효과)</td>
+</tr>
+<tr class="even">
+<td><strong><span class="math inline">\(\mu_i = \mu + \alpha_i\)</span></strong></td>
+<td>수준 <span class="math inline">\(i\)</span> 모집단 평균</td>
+</tr>
+<tr class="odd">
+<td><strong>검정 가설</strong></td>
+<td><span class="math inline">\(H_0: \mu_1 = \mu_2 = \cdots = \mu_k\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>(가정) 오차항은 독립이며 정규분포를 따르고 분산은 동일하다.</p>
+<ul>
+<li><span class="math inline">\(i\)</span>: 요인A의 수준 첨자 <span class="math inline">\(i = 1,2,...,k\)</span>, <span class="math inline">\(k\)</span>는 요인의 수준 수</li>
+<li><span class="math inline">\(j\)</span>: <span class="math inline">\(i\)</span>-번째 요인의 반복 첨자</li>
+<li><span class="math inline">\(y_{ij}\)</span>: 요인 <span class="math inline">\(\alpha\)</span>의 수준 <span class="math inline">\(i\)</span>의 처리를 받은 <span class="math inline">\(j\)</span>-번째 실험단위 관측치</li>
+<li><span class="math inline">\(\epsilon_{ij}\)</span>: <span class="math inline">\(i\)</span>번째 처리의 <span class="math inline">\(j\)</span>번째 실험단위에서 발생한 임의 오차</li>
+<li><span class="math inline">\(n_{i}\)</span>: <span class="math inline">\(i\)</span>번째 처리의 반복수</li>
+<li>총 데이터 크기: <span class="math inline">\(\sum\sum n_{ij} = n\)</span></li>
+</ul>
+</section>
+<section id="추정" class="level4" data-number="2.1.2">
+<h4 data-number="2.1.2" class="anchored" data-anchor-id="추정"><span class="header-section-number">2.1.2</span> 추정</h4>
+<p><strong>모수</strong></p>
+<ul>
+<li><span class="math inline">\(\mu\)</span>: 모집단 총평균</li>
+<li><span class="math inline">\(\alpha_{i}\)</span>: 요인 <span class="math inline">\(\alpha\)</span>는 주효과를 나타내는 알파벳으로 실험 처리효과라고도 한다. <span class="math inline">\(i\)</span>-번째 수준의 주효과는 <span class="math inline">\(\alpha_{i}\)</span>로 표현한다.</li>
+<li><span class="math inline">\(\mu + \alpha_{i} = \mu_{i}\)</span>: 수준 <span class="math inline">\(i\)</span> 모집단 평균</li>
+<li>모수: <span class="math inline">\(\mu,\mu_{1},\mu_{2},...,\mu_{k}\)</span> (<span class="math inline">\(k + 1\)</span>개)</li>
+</ul>
+<p><strong>추정량 (MVUE)</strong>: MVUE(최소분산 불편추정량)는 다음과 같이 정의된다.</p>
+<p>총평균 점추정치: <span class="math inline">\(\widehat{\mu} = \frac{\sum_{i}\sum_{j}y_{ij}}{n} = \overline{\overline{y}}\)</span></p>
+<p>요인 수준 <span class="math inline">\(i\)</span>-(모집단)- 평균 점추정치: <span class="math inline">\({\widehat{\mu}}_{i} = \frac{\sum_{j}^{}y_{ij}}{n_{i}} = \overline{y_{i}}\)</span></p>
+<p>OLS(최소자승합) 추정치: <span class="math inline">\(\min_{\mu,A_{i}}\sum\sum(y_{ij} - \widehat{y_{ij}})^{2}\)</span> ⬌ <span class="math inline">\(\widehat{\underset{¯}{\beta}} = (X'X)^{- 1}X'\underset{¯}{y}\)</span></p>
+<p>요인 <span class="math inline">\(A\)</span>의 수준 3개, 반복 2인 데이터의 모형은 다음과 같다.</p>
+<p><span class="math display">\[\left\lbrack \begin{array}{r}
+y_{11} \\
+y_{12} \\
+y_{21} \\
+y_{22} \\
+y_{31} \\
+y_{32}
+\end{array} \right\rbrack = \begin{bmatrix}
+1 &amp; 1 &amp; 0 &amp; 0 \\
+1 &amp; 1 &amp; 0 &amp; 0 \\
+1 &amp; 0 &amp; 1 &amp; 0 \\
+1 &amp; 0 &amp; 1 &amp; 0 \\
+1 &amp; 0 &amp; 0 &amp; 1 \\
+1 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}\left\lbrack \begin{array}{r}
+\mu \\
+A_{1} \\
+A_{2} \\
+A_{3}
+\end{array} \right\rbrack + \left\lbrack \begin{array}{r}
+e_{11} \\
+e_{12} \\
+e_{21} \\
+e_{22} \\
+e_{31} \\
+e_{32}
+\end{array} \right\rbrack \quad \Leftrightarrow \quad \underset{¯}{y} = X\underset{¯}{\beta} + \underset{¯}{e}\]</span></p>
+<p>모수(<span class="math inline">\(\underset{¯}{\beta}\)</span>)는 3개이나 <span class="math inline">\(rank(X) = 3\)</span>이므로 모수 4개를 모두(<span class="math inline">\(\mu,\alpha_{1},\alpha_{2},\alpha_{3}\)</span>) 추정할 수 없다. 하여, <span class="math inline">\(\sum\mu_{i} = 0\)</span> 가정 하에 모수를 추정한다.</p>
+</section>
+<section id="검정가설" class="level4" data-number="2.1.3">
+<h4 data-number="2.1.3" class="anchored" data-anchor-id="검정가설"><span class="header-section-number">2.1.3</span> 검정가설</h4>
+<p><span class="math display">\[H_{0}:\mu_{1} = \mu_{2} = \ldots = \mu_{t} \quad \Leftrightarrow \quad H_{0}:\alpha_{1} = \alpha_{2} = \ldots = \alpha_{t} = 0\]</span></p>
+<p><span class="math display">\[H_{a}:\text{적어도 하나의 }\mu_{i}\text{가 다르다} \quad \Leftrightarrow \quad H_{a}:\text{적어도 하나의 }\tau_{i} \neq 0\]</span></p>
+</section>
+<section id="총변동-요인-변동-오차변동" class="level4" data-number="2.1.4">
+<h4 data-number="2.1.4" class="anchored" data-anchor-id="총변동-요인-변동-오차변동"><span class="header-section-number">2.1.4</span> 총변동, 요인 변동, 오차변동</h4>
+<p><strong>변동분해</strong>: 총변동(③) = 집단간 변동(②) + 집단내 변동(①)</p>
+<ul>
+<li>③ 반응변수의 총변동(SST): <span class="math inline">\(SST = \sum_{i}\sum_{j}(y_{ij} - \overline{\overline{y}})^{2}\)</span></li>
+<li>② 요인(집단간, 설명) 변동: <span class="math inline">\(SSB = \sum_{i}\sum_{j}({\overline{y}}_{i} - \overline{\overline{y}})^{2}\)</span></li>
+<li>① 오차(집단내) 변동: <span class="math inline">\(SSE = \sum_{i}\sum_{j}(y_{ij} - {\overline{y}}_{i})^{2}\)</span></li>
+</ul>
+<p><strong>평균변동 Mean Sum of Squares</strong></p>
+<ul>
+<li>총변동(<span class="math inline">\(SST\)</span>)의 자유도: <span class="math inline">\((n - 1)\)</span></li>
+<li>요인변동(<span class="math inline">\(SSB\)</span>)의 자유도: <span class="math inline">\((k - 1)\)</span></li>
+<li>오차변동(<span class="math inline">\(SSE\)</span>)의 자유도: <span class="math inline">\((n - k)\)</span></li>
+<li>평균 요인변동: <span class="math inline">\(MSB = \frac{SSB}{k - 1}\)</span></li>
+<li>평균오차변동: <span class="math inline">\(MSE = \frac{SSE}{n - k}\)</span></li>
+</ul>
+<p><strong>분산분석표</strong></p>
+<ul>
+<li>귀무가설: 요인 수준별 평균은 동일하다. <span class="math inline">\(H_{0}:\mu_{1} = \mu_{2} = ... = \mu_{k}\)</span></li>
+<li>대립가설: 적어도 하나의 집단 평균은 다르다.</li>
+</ul>
+<table class="table-striped caption-top table">
+<caption>분산분석표</caption>
+<colgroup>
+<col style="width: 7%">
+<col style="width: 30%">
+<col style="width: 16%">
+<col style="width: 33%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>요인</th>
+<th style="text-align: center;">자승합 (Sum of Squares)</th>
+<th style="text-align: center;">자유도 (df)</th>
+<th style="text-align: center;">평균자승합 (Mean Squares)</th>
+<th style="text-align: center;">F-통계량</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>집단간 변동 (Between)</td>
+<td style="text-align: center;"><span class="math inline">\(SSB = \sum_{i}\sum_{j}({\overline{y}}_{i} - \overline{\overline{y}})^{2}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(k-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(MSB = \frac{SSB}{k-1}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(F = \frac{MSB}{MSE}\)</span></td>
+</tr>
+<tr class="even">
+<td>오차변동 (Error)</td>
+<td style="text-align: center;"><span class="math inline">\(SSE = \sum_{i}\sum_{j}(y_{ij} - {\overline{y}}_{i})^{2}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(n-k\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(MSE = \frac{SSE}{n-k}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\sim F(k-1, n-k)\)</span></td>
+</tr>
+<tr class="odd">
+<td>수정총합 (Corrected Total)</td>
+<td style="text-align: center;"><span class="math inline">\(SST = \sum_{i}\sum_{j}(y_{ij} - \overline{\overline{y}})^{2}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(n-1\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>검정통계량: <span class="math inline">\(TS = \frac{SSB/(k - 1)}{SSE/(n - k)} \sim F(1,n - 2) = t(n - 2)^{2}\)</span>, 분자의 자유도가 1인 F-분포는 <span class="math inline">\(t\)</span>-분포의 제곱과 동일하다.</p>
+</section>
+<section id="변동의-분포" class="level4" data-number="2.1.5">
+<h4 data-number="2.1.5" class="anchored" data-anchor-id="변동의-분포"><span class="header-section-number">2.1.5</span> 변동의 분포</h4>
+<p>오차의 가정 <span class="math inline">\(e_{ij} \sim N(0,\sigma^{2})\)</span>으로부터 <span class="math inline">\(y_{ij} \sim N(\mu + \alpha_{i},\sigma^{2})\)</span>이므로 다음이 증명된다.</p>
+<p><span class="math display">\[\frac{SSB}{\sigma^{2}} \sim \chi^{2}(k - 1), \quad \frac{SSE}{\sigma^{2}} \sim \chi^{2}(n - k)\]</span></p>
+<p>오차 분산의 추정치: <span class="math inline">\(\widehat{\sigma^{2}} = MSE\)</span></p>
+<p><strong>변동비의 분포</strong></p>
+<p><span class="math display">\[TS = \frac{SSB/(k - 1)}{SSE/(n - k)} \sim F(k - 1,n - k)\]</span></p>
+<p><strong>평균변동 기대값</strong></p>
+<p><span class="math display">\[E(MSE) = \sigma^{2}, \quad E(MSB) = \sigma^{2} + \frac{\sum n_{i}(\mu_{i} - \mu)^{2}}{k - 1}\]</span></p>
+<p>만약 모든 집단의 평균이 동일하다면 <span class="math inline">\((\mu_{i} - \mu) = 0\)</span>이므로 <span class="math inline">\(E(MSE) = E(MSB)\)</span>가 된다.</p>
+</section>
+</section>
+<section id="사후-검정-post-hoc-test" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="사후-검정-post-hoc-test"><span class="header-section-number">2.2</span> 사후 검정 (Post-hoc test)</h3>
+<section id="개념-1" class="level4" data-number="2.2.1">
+<h4 data-number="2.2.1" class="anchored" data-anchor-id="개념-1"><span class="header-section-number">2.2.1</span> 개념</h4>
+<p>분산분석에서의 F-검정에서 귀무가설이 기각되면, 적어도 하나의 집단 평균이 다른 집단과 차이가 있다는 사실은 알 수 있지만, 구체적으로 어떤 집단이 서로 다른지를 파악할 수는 없다. 이러한 구체적인 차이를 확인하기 위해서는 사후 검정(Post-hoc test) 또는 다중 비교(Multiple Comparison) 절차가 필요하다.</p>
+<p>다중 비교에서는 여러 개의 가설을 동시에 검정하므로 유의수준을 조정해야 한다. 조정된 실험 유의수준은 <span class="math inline">\(1 - (1 - \alpha)^{c}\)</span>이다. 여기서 <span class="math inline">\(c\)</span>는 가설 수를 의미한다.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+사후 검정 방법 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 27%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>방법</th>
+<th>특징</th>
+<th style="text-align: center;">엄격성</th>
+<th>주요 용도</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Fisher’s LSD</strong></td>
+<td>분산분석 후 쌍별 t-검정</td>
+<td style="text-align: center;">낮음</td>
+<td>탐색적 비교</td>
+</tr>
+<tr class="even">
+<td><strong>Tukey HSD</strong></td>
+<td>Studentized 범위 분포 활용</td>
+<td style="text-align: center;">중간</td>
+<td>자연과학 (가장 많이 사용)</td>
+</tr>
+<tr class="odd">
+<td><strong>SNK / Duncan</strong></td>
+<td>간격(step) 수에 따라 임계값 달라짐</td>
+<td style="text-align: center;">중간</td>
+<td>순차적 비교</td>
+</tr>
+<tr class="even">
+<td><strong>Dunnett</strong></td>
+<td>대조군 vs.&nbsp;각 실험군만 비교</td>
+<td style="text-align: center;">중간</td>
+<td>대조군 포함 실험</td>
+</tr>
+<tr class="odd">
+<td><strong>Scheffé</strong></td>
+<td>모든 가능한 선형 대비 허용</td>
+<td style="text-align: center;">높음</td>
+<td>일반적 선형 비교</td>
+</tr>
+</tbody>
+</table>
+<p><strong>엄격성</strong>: 낮음(많은 유의 차이 탐지) → 높음(보수적, 적은 유의 차이 탐지)</p>
+</div>
+</div>
+</section>
+<section id="선형-대비-linear-contrast" class="level4" data-number="2.2.2">
+<h4 data-number="2.2.2" class="anchored" data-anchor-id="선형-대비-linear-contrast"><span class="header-section-number">2.2.2</span> 선형 대비 (Linear Contrast)</h4>
+<p>선형 대비는 <span class="math inline">\(t\)</span>개의 모집단 평균 <span class="math inline">\(\mu_{1} = \mu_{2} = ... = \mu_{t}\)</span>사이의 특정 비교를 나타내는 선형 결합 형태로, 계수들의 합이 0이 되도록 설정한다.</p>
+<p><span class="math display">\[l = \sum_{i}a_{i}\mu_{i} = a_{1}\mu_{1} + a_{2}\mu_{2} + ... + a_{t}\mu_{t}, \quad \sum_{i}a_{i} = 0\]</span></p>
+<p>선형대비가 설명하는 변동의 크기는 대비 제곱합(SSC)으로 계산한다.</p>
+<p><span class="math display">\[SSC = \frac{\left( \sum_{i=1}^{t}a_{i}\overline{y}_i \right)^{2}}{\sum_{i=1}^{t}\left( \frac{a_{i}^{2}}{n_{i}} \right)} = \frac{{\widehat{l}}^{2}}{\sum_{i = 1}^{t}\left( \frac{a_{i}^{2}}{n_{i}} \right)}\]</span></p>
+<p><strong>선형대비 가설검정</strong></p>
+<ul>
+<li>귀무가설: <span class="math inline">\(H_{0}:l = a_{1}\mu_{1} + a_{2}\mu_{2} + \cdots + a_{t}\mu_{t} = 0\)</span></li>
+<li>대립가설: <span class="math inline">\(H_{a}:l = a_{1}\mu_{1} + a_{2}\mu_{2} + \cdots + a_{t}\mu_{t} \neq 0\)</span></li>
+<li>검정통계량: <span class="math inline">\(F = \frac{SSC}{MS_{\text{Error}}} \sim F(1,n - t)\)</span></li>
+</ul>
+</section>
+<section id="다중비교-방법" class="level4" data-number="2.2.3">
+<h4 data-number="2.2.3" class="anchored" data-anchor-id="다중비교-방법"><span class="header-section-number">2.2.3</span> 다중비교 방법</h4>
+<p><strong>Fisher’s Least Significant Difference</strong>: Fisher의 최소유의차(LSD) 방법은 분산분석에서 전체 평균이 같다는 귀무가설을 기각한 이후, 구체적으로 어떤 집단 평균이 서로 다른지를 알아보기 위해 고안된 사후(pairwise) 비교 절차이다.</p>
+<p><span class="math display">\[LSD_{ij} = t_{\frac{\alpha}{2}}\sqrt{MSE\left( \frac{1}{n_{i}} + \frac{1}{n_{j}} \right)}\]</span></p>
+<p>요인 수준 <span class="math inline">\(i\)</span>와 <span class="math inline">\(j\)</span>의 평균 차이가 위의 값 이상이어야 유의하다고 판단한다.</p>
+<p><strong>Tukey HSD (honestly significant difference) procedure</strong>: Tukey의 W 절차는 다중비교에서 개별 비교 오류율을 통제할 때 발생하는 주요 단점을 해결하기 위해 제안된 방법이다. <strong>Studentized 범위 분포(Studentized range distribution)</strong>를 이용한 방법이다. 보수적인(귀무가설 기각하지 않음) 방법으로 자연 과학에서 가장 많이 이용한다.</p>
+<p>검정통계량: <span class="math inline">\(\frac{\overline{y}_{\text{largest}} - \overline{y}_{\text{smallest}}}{\sqrt{MSE/n}}\)</span></p>
+<p>두 모집단 평균 <span class="math inline">\(\mu_{i}\)</span>와 <span class="math inline">\(\mu_{j}\)</span>의 차이를 검정할 때, 다음 조건이 만족되면 두 평균이 서로 다르다고 판단한다.</p>
+<p><span class="math display">\[|{\overline{y}}_{i} - {\overline{y}}_{j}| \geq W, \quad W = q_{\alpha}(t,\nu)\sqrt{\frac{MSE}{n}}\]</span></p>
+<p><strong>Student-Newman-Keuls(SNK) ⟺ Duncan Multiple range test</strong>: SNK 절차는 Studentized 범위 통계량을 사용하지만, 비교되는 평균들 간의 간격(steps)의 수에 따라 서로 다른 임계값을 적용한다.</p>
+<p><span class="math display">\[W_{r} = q_{\alpha}(r,\nu)\sqrt{\frac{MSE}{n}}\]</span></p>
+<p><strong>Dunnett’s Procedure</strong>: Dunnett(1955) 방법은 대조군과 각 실험군의 평균을 비교할 때 실험 단위 제1종 오류율을 통제하는 절차이다.</p>
+<p><span class="math display">\[D = d_{\alpha}(k,v)\sqrt{\frac{2MSE}{n}}\]</span></p>
+<p>여기서 <span class="math inline">\(k = t - 1\)</span>(t는 요인 개수), <span class="math inline">\(n_{c} = n_{1} = \cdots = n_{t - 1} = n\)</span>, 그리고 <span class="math inline">\(v\)</span>는 오차변동의 자유도이다.</p>
+<p><strong>Scheffe’s S method</strong>: Scheffé(1953)가 제안한 절차는 t개의 모집단 평균 사이에서 가능한 모든 비교를 수행할 수 있는 보다 일반적인 방법이다.</p>
+<p>검정통계량: <span class="math inline">\(\widehat{l} = a_{1}{\overline{y}}_{1} + a_{2}{\overline{y}}_{2} + \cdots + a_{t}{\overline{y}}_{t}\)</span></p>
+<p>기각역: <span class="math inline">\(S = \sqrt{\widehat{V}(\widehat{l})} \cdot \sqrt{(t - 1)F_{\alpha,\text{df}_{1},\text{df}_{2}}}\)</span>, 여기서 <span class="math inline">\(\widehat{V}(\widehat{l}) = MSE\sum_{i}\frac{a_{i}^{2}}{n_{i}}\)</span>이다.</p>
+<p><strong>대비 (contrast): 집단 간 차이 분석</strong></p>
+<p><span class="math display">\[Q = \overset{k}{\sum_{i}}c_{i}\mu_{i}, \quad \sum c_{i} = 1\]</span></p>
+<p>검정통계량: <span class="math inline">\(TS = \frac{n(\sum c_{i}{\overline{y}}_{i})^{2}/\sum c_{i}^{2}}{MSE} \sim F(m - 1,n - k)\)</span>, <span class="math inline">\(m\)</span> = <span class="math inline">\(c_{i}\)</span>가 0이 아닌 개수</p>
+</section>
+</section>
+<section id="사례-실습" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="사례-실습"><span class="header-section-number">2.3</span> 사례 실습</h3>
+<p>분꽃 3종(Versicolor, Setosa, Virginica)에 대한 sepal(꽃받침 조각) 길이, 넓이, petal(꽃잎) 길이, 넓이 데이터이다.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#분꽃 데이터 불러오기</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>iris <span class="op">=</span> sns.load_dataset(<span class="st">'iris'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>iris.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/irisinfo.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#히스토그램 그리기</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>f, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">11</span>,<span class="dv">9</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>sns.distplot(iris.loc[iris[<span class="st">'species'</span>]<span class="op">==</span><span class="st">'setosa'</span>,<span class="st">'petal_length'</span>], ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">'setosa'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>sns.distplot(iris.loc[iris[<span class="st">'species'</span>]<span class="op">==</span><span class="st">'versicolor'</span>,<span class="st">'petal_length'</span>], ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">'versicolor'</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>sns.distplot(iris.loc[iris[<span class="st">'species'</span>]<span class="op">==</span><span class="st">'virginica'</span>,<span class="st">'petal_length'</span>], ax<span class="op">=</span>ax, label<span class="op">=</span><span class="st">'virginica'</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Histogram'</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/irishist.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#나무상자 그리기</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ax<span class="op">=</span>sns.boxplot(x<span class="op">=</span><span class="st">'species'</span>,y<span class="op">=</span><span class="st">'petal_length'</span>,hue<span class="op">=</span><span class="st">'species'</span>,data<span class="op">=</span>iris)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/irisboxplot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#기초통계량 표</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>iris.pivot_table(index<span class="op">=</span>[<span class="st">'species'</span>],values<span class="op">=</span>[<span class="st">'petal_length'</span>],aggfunc<span class="op">=</span>[<span class="st">'mean'</span>,<span class="st">'std'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/irisstattable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>분산분석: F-검정통계량=1180, 유의확률&lt;0.001로 귀무가설이 기각되어 품종간 꽃잎 길이는 유의한 차이가 있다.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#분산분석</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.formula.api <span class="im">import</span> ols</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>y<span class="op">=</span>iris[<span class="st">'petal_length'</span>]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>results<span class="op">=</span>ols(<span class="st">'y~C(species)'</span>,data<span class="op">=</span>iris).fit()</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>sm.stats.anova_lm(results,typ<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/irisanovatable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>모형 <span class="math inline">\(y_{ij} = \mu + A_{i} + e_{ij}\)</span></p>
+<p>setosa 꽃잎 길이 평균=절편 1.462(기초 통계량 평균과 동일) versicolor 품종 평균 길이: 1.462+2.798=4.26 virginica 꽃잎 평균 길이: 1.462+4.09=5.552이다.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#추정결과</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>results.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/iris_reg.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>사후검정: 튜키 다중비교 검정</p>
+<p>SE종과 VE종 간 꽃잎 길이 차이는 유의함(True). VI종(5.55) &gt; VE종(4.26) &gt; SE종(1.46) 순으로 꽃잎의 길이가 유의한 차이를 보이고 있다.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#다중비교 튜키검정</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.multicomp <span class="im">import</span> pairwise_tukeyhsd</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.multicomp <span class="im">import</span> MultiComparison</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>mc<span class="op">=</span>MultiComparison(iris[<span class="st">'petal_length'</span>],iris[<span class="st">'species'</span>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>mc_results <span class="op">=</span> mc.tukeyhsd()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/iristukey.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+분꽃 품종별 꽃잎 길이 일원 ANOVA 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>품종</th>
+<th style="text-align: center;">평균</th>
+<th style="text-align: center;">표준편차</th>
+<th style="text-align: center;">F-통계량</th>
+<th style="text-align: center;">유의확률</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>setosa^a</td>
+<td style="text-align: center;">1.46</td>
+<td style="text-align: center;">0.174</td>
+<td style="text-align: center;">1180</td>
+<td style="text-align: center;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td>versicolor^b</td>
+<td style="text-align: center;">4.26</td>
+<td style="text-align: center;">0.470</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td>virginica^c</td>
+<td style="text-align: center;">5.55</td>
+<td style="text-align: center;">0.552</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>귀무가설 기각: 품종 간 꽃잎 길이는 통계적으로 유의한 차이가 있다. Tukey 사후검정: virginica^c &gt; versicolor^b &gt; setosa^a (모든 쌍 유의)</p>
+</div>
+</div>
+</section>
+</section>
+<section id="블록설계-block-design" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="블록설계-block-design"><span class="header-section-number">3</span> 블록설계 Block Design</h2>
+<section id="개념-2" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="개념-2"><span class="header-section-number">3.1</span> 개념</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/crdrbd.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p>각 논 구역에는 동일한 조건을 갖춘 세 구간이 있으며, 일부 구간은 물이 있는 상태를 나타낸다. 만약 세 가지 비료(A, B, C)를 아홉 개 구간에 무작위로 배정한다면, 비료 간 수확량 차이가 실제로는 논 구역별 토양 상태, 일조량, 또는 물의 유무와 같은 환경 차이에 기인할 수 있다.</p>
+<p>이러한 경우 완전 무작위 설계는 적절하지 않다. 대신, 실험 단위 간의 환경 차이를 통제하기 위해 무작위 완전 블록 설계(Randomized Complete Block Design, RCBD)를 사용한다. RCBD에서는 각 블록(논 구역) 내에 모든 비료 종류가 한 번씩 배정되도록 한다.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+CRD vs.&nbsp;RCBD 비교
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 39%">
+<col style="width: 46%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>구분</th>
+<th>CRD (완전임의배치)</th>
+<th>RCBD (무작위 완전블록)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>설계 원리</strong></td>
+<td>모든 실험 단위에 처리를 무작위 배정</td>
+<td>블록 내에서만 처리 무작위 배정</td>
+</tr>
+<tr class="even">
+<td><strong>블록</strong></td>
+<td>없음</td>
+<td>있음 (동질 단위 묶음)</td>
+</tr>
+<tr class="odd">
+<td><strong>모형</strong></td>
+<td><span class="math inline">\(y_{ij} = \mu + \alpha_i + e_{ij}\)</span></td>
+<td><span class="math inline">\(y_{ij} = \mu + \alpha_i + \beta_j + e_{ij}\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>자유도 (오차)</strong></td>
+<td><span class="math inline">\(n - k\)</span></td>
+<td><span class="math inline">\((t-1)(b-1)\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>적용 조건</strong></td>
+<td>실험 환경이 균일</td>
+<td>블록 요인이 반응변수에 영향</td>
+</tr>
+<tr class="even">
+<td><strong>정밀도</strong></td>
+<td>낮음 (블록 변동 미분리)</td>
+<td>높음 (블록 변동 분리 제거)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>RCBD는 외생적 변동 요인(블록)이 존재할 때 t개의 처리 평균을 비교하는 데 사용하는 실험 설계이다. b개의 블록이 있을 경우, 각 블록 내에 t개의 처리를 무작위로 배정하되, 각 처리는 블록마다 정확히 한 번씩 나타난다.</p>
+</section>
+<section id="모형-및-가정-1" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="모형-및-가정-1"><span class="header-section-number">3.2</span> 모형 및 가정</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rbddata.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+<p><span class="math display">\[y_{ij} = \mu + \alpha_{i} + \beta_{j} + \varepsilon_{ij}\]</span></p>
+<ul>
+<li><span class="math inline">\(y_{ij}\)</span>: j번째 블록에서 i번째 처리를 받은 실험 단위의 관측값</li>
+<li><span class="math inline">\(t\)</span>는 처리개수, <span class="math inline">\(b\)</span>는 블록개수, <span class="math inline">\(n = tb\)</span>은 총 실험개수, <span class="math inline">\(i = 1,2,..,t\)</span>, <span class="math inline">\(j = 1,2,..,b\)</span></li>
+<li><span class="math inline">\(\mu\)</span>: 전체 평균(알 수 없는 상수)</li>
+<li><span class="math inline">\(\alpha_{i}\)</span>: i번째 처리 효과(알 수 없는 상수)</li>
+<li><span class="math inline">\(\beta_{j}\)</span>: j번째 블록 효과(알 수 없는 상수)</li>
+<li><span class="math inline">\(\varepsilon_{ij}\)</span>: j번째 블록에서 i번째 처리를 받은 실험 단위의 반응값에 대한 오차항</li>
+<li>평균 0, 분산 <span class="math inline">\(\sigma_{\varepsilon}^{2}\)</span>를 가지는 정규분포를 따른다고 가정하며, 모든 오차항은 서로 독립이어야 함</li>
+</ul>
+</section>
+<section id="추정과-가설검정" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="추정과-가설검정"><span class="header-section-number">3.3</span> 추정과 가설검정</h3>
+<p><strong>추정</strong></p>
+<ul>
+<li>전체평균: <span class="math inline">\(\widehat{\mu} = {\overline{y}}_{..} = \frac{1}{n}\sum_{i}\sum_{j}y_{ij}\)</span></li>
+<li>처리 <span class="math inline">\(i\)</span>의 표본평균: <span class="math inline">\({\widehat{\mu}}_{i} = {\overline{y}}_{i \cdot} = \frac{1}{b}\overset{b}{\sum_{j = 1}}y_{ij}\)</span></li>
+<li>블록 <span class="math inline">\(j\)</span>의 표본평균: <span class="math inline">\({\widehat{\mu}}_{j} = {\overline{y}}_{\cdot j} = \frac{1}{t}\overset{t}{\sum_{i = 1}}y_{ij}\)</span></li>
+</ul>
+<p><strong>변동분해</strong></p>
+<ul>
+<li>총변동: <span class="math inline">\(SST = \overset{t}{\sum_{i = 1}}\overset{b}{\sum_{j = 1}}(y_{ij} - {\overline{y}}_{\cdot \cdot})^{2}\)</span></li>
+<li>처리변동: <span class="math inline">\(SSTr = b\overset{t}{\sum_{i = 1}}({\overline{y}}_{i \cdot} - {\overline{y}}_{\cdot \cdot})^{2}\)</span></li>
+<li>블록변동: <span class="math inline">\(SSBl = t\overset{b}{\sum_{j = 1}}({\overline{y}}_{\cdot j} - {\overline{y}}_{\cdot \cdot})^{2}\)</span></li>
+<li>오차변동: <span class="math inline">\(SSE = \overset{t}{\sum_{i = 1}}\overset{b}{\sum_{j = 1}}(y_{ij} - {\overline{y}}_{i \cdot} - {\overline{y}}_{\cdot j} + {\overline{y}}_{\cdot \cdot})^{2}\)</span></li>
+</ul>
+<p><strong>분산분석표</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rbdanova.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<ul>
+<li>귀무가설 <span class="math inline">\(H_{0}:\alpha_{1} = \alpha_{2} = \ldots = \alpha_{t} = 0\)</span> (모든 처리효과가 0 → 처리 간 차이가 없다)</li>
+<li>검정통계량: <span class="math inline">\(F = \frac{MST}{MSE}\)</span></li>
+</ul>
+<p><strong>블록효과 검정</strong>: 상대효율은 블록화 설계가 완전임의배치설계에 비해 처리 평균을 얼마나 더 정밀하게 추정할 수 있는지를 나타내는 척도이다.</p>
+<p><span class="math display">\[RE(RCB,CR) = \frac{MSECR}{MSERCB} = \frac{(b - 1)MSB + b(t - 1)MSE}{(bt - 1)MSE}\]</span></p>
+<p>상대효율 값이 1보다 크면, RCBD가 동일한 정밀도를 얻기 위해 CRD보다 적은 수의 실험 단위만으로도 충분하다는 뜻이다.</p>
+</section>
+<section id="사례-실습-1" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="사례-실습-1"><span class="header-section-number">3.4</span> 사례 실습</h3>
+<p>diamonds 데이터는 총 53,940개의 관측값을 포함하며, 미국에서 판매된 다이아몬드 기록을 기반으로 가공된 예제 자료이다.</p>
+<p>diamonds 데이터에서 처리 요인(treatment)으로는 다이아몬드의 연마 품질 등급인 cut을, 블록 요인(block)으로는 색상 등급(color)을, 반응변수(response)는 가격(price)으로 설정할 수 있다.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.formula.api <span class="im">import</span> ols</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 데이터 불러오기</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>diamonds <span class="op">=</span> sns.load_dataset(<span class="st">"diamonds"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. RCBD 모형 적합 (cut: 처리, color: 블록)</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> ols(<span class="st">"price ~ C(cut) + C(color)"</span>, data<span class="op">=</span>diamonds).fit()</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>anova_table <span class="op">=</span> sm.stats.anova_lm(model, typ<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(anova_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>            sum_sq       df           F         PR(&gt;F)</code></pre>
+<p><br> C(cut) 9.699679e+09 4.0 159.106485 1.288117e-135 <br> C(color) 2.550704e+10 6.0 278.932685 0.000000e+00 <br> Residual 8.219243e+11 53929.0 NaN NaN</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. mean_sq 직접 계산</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>anova_table[<span class="st">"mean_sq"</span>] <span class="op">=</span> anova_table[<span class="st">"sum_sq"</span>] <span class="op">/</span> anova_table[<span class="st">"df"</span>]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. MSB, MSE, RE 계산</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>MSB <span class="op">=</span> anova_table.loc[<span class="st">"C(color)"</span>, <span class="st">"mean_sq"</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>MSE <span class="op">=</span> anova_table.loc[<span class="st">"Residual"</span>, <span class="st">"mean_sq"</span>]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> diamonds[<span class="st">"cut"</span>].nunique()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> diamonds[<span class="st">"color"</span>].nunique()</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>RE <span class="op">=</span> ((b<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span>MSB <span class="op">+</span> b<span class="op">*</span>(t<span class="op">-</span><span class="dv">1</span>)<span class="op">*</span>MSE) <span class="op">/</span> ((b<span class="op">*</span>t <span class="op">-</span> <span class="dv">1</span>)<span class="op">*</span>MSE)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"상대효율(RE):"</span>, RE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>상대효율(RE): 50.046944451222345</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">8</span>,<span class="dv">6</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>diamonds, x<span class="op">=</span><span class="st">"cut"</span>, y<span class="op">=</span><span class="st">"price"</span>, palette<span class="op">=</span><span class="st">"pastel"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"(cut) price (Boxplot)"</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Cut (treatment)"</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"price"</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/rbdboxplot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+다이아몬드 RCBD 분석 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>요인</th>
+<th style="text-align: center;">F-통계량</th>
+<th style="text-align: center;">유의확률</th>
+<th>결론</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>cut (처리)</td>
+<td style="text-align: center;">159.1</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>연마 품질별 가격 차이 유의</td>
+</tr>
+<tr class="even">
+<td>color (블록)</td>
+<td style="text-align: center;">278.9</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>색상별 가격 차이 유의</td>
+</tr>
+<tr class="odd">
+<td><strong>상대효율 (RE)</strong></td>
+<td style="text-align: center;"><strong>50.05</strong></td>
+<td style="text-align: center;">—</td>
+<td>RCBD가 CRD보다 약 50배 정밀</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="이원-분산분석-two-way-anova" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="이원-분산분석-two-way-anova"><span class="header-section-number">4</span> 이원 분산분석 two-way ANOVA</h2>
+<section id="모형-및-가정-2" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="모형-및-가정-2"><span class="header-section-number">4.1</span> 모형 및 가정</h3>
+<p><span class="math display">\[y_{ijk} = \mu + \alpha_{i} + \beta_{j} + (\alpha\beta)_{ij} + e_{ijk}\]</span></p>
+<ul>
+<li><span class="math inline">\(y_{ijk}\)</span>: A 요인의 i수준, B 요인의 j수준을 받은 k번째 실험단위의 반응값</li>
+<li><span class="math inline">\(\mu\)</span>: 전체 평균(모르는 상수)</li>
+<li><span class="math inline">\(\alpha_{i}\)</span>: 요인 A의 i수준 효과, <span class="math inline">\(i = 1,2,...,a\)</span></li>
+<li><span class="math inline">\(\beta_{j}\)</span>: 요인 B의 j수준 효과, <span class="math inline">\(j = 1,2,...,b\)</span></li>
+<li><span class="math inline">\(\alpha\beta_{ij}\)</span>: 요인 A의 i수준과 요인 B의 j수준 간 상호작용 효과</li>
+<li><span class="math inline">\(\varepsilon_{ijk}\)</span>: 무작위 오차항 (평균 0, 분산 <span class="math inline">\(\sigma_{\varepsilon}^{2}\)</span>의 정규분포, 독립), <span class="math inline">\(k = 1,2,...,n\)</span></li>
+</ul>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+이원분산분석 상호작용 효과 해석
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 23%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>상호작용</th>
+<th>의미</th>
+<th>시각적 특징</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>없음</strong></td>
+<td>A 효과가 B 수준에 관계없이 일정</td>
+<td>평균도표의 선들이 평행</td>
+</tr>
+<tr class="even">
+<td><strong>있음</strong></td>
+<td>A 효과가 B 수준에 따라 달라짐</td>
+<td>평균도표의 선들이 교차 또는 발산</td>
+</tr>
+</tbody>
+</table>
+<p><strong>⚠️ 상호작용이 유의하면</strong>: 주효과만 해석하면 오류. 각 수준 조합의 셀 평균으로 해석해야 한다.</p>
+</div>
+</div>
+<p><strong>모수</strong></p>
+<ul>
+<li><span class="math inline">\(\mu\)</span>: 모집단 총평균</li>
+<li>주효과 main effect: <span class="math inline">\(\alpha_{i},\beta_{j}\)</span></li>
+<li>상호효과 interaction effect: <span class="math inline">\(\alpha\beta_{ij}\)</span></li>
+</ul>
+</section>
+<section id="추정-및-가설검정" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="추정-및-가설검정"><span class="header-section-number">4.2</span> 추정 및 가설검정</h3>
+<p><strong>모평균 추정</strong>: <span class="math inline">\(\widehat{\mu} = {\overline{y}}_{...} = \frac{1}{abn}\sum_{ijk}y_{ijk}\)</span>, 표본 총평균</p>
+<p><strong>주효과 추정</strong></p>
+<ul>
+<li>주효과 <span class="math inline">\(\alpha_{i}\)</span>의 점추정치: <span class="math inline">\(\alpha_{i} = {\overline{y}}_{i..} - {\overline{y}}_{...}\)</span></li>
+<li>주효과 <span class="math inline">\(\beta_{j}\)</span>의 점추정치: <span class="math inline">\(\beta_{j} = {\overline{y}}_{.j.} - {\overline{y}}_{...}\)</span></li>
+<li>상호효과 <span class="math inline">\(\alpha\beta_{ij}\)</span>의 점추정치: <span class="math inline">\(\alpha\beta_{ij} = {\overline{y}}_{ij.} - {\overline{y}}_{i..} - {\overline{y}}_{.j.} + {\overline{y}}_{...}\)</span></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/effects.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<p><strong>변동분해</strong></p>
+<ul>
+<li>총변동: <span class="math inline">\(SST = \sum_{ijk}(y_{ijk} - {\overline{y}}_{\cdots})^{2}\)</span></li>
+<li>요인 <span class="math inline">\(A\)</span> 변동: <span class="math inline">\(SSA = bn\sum_{i}({\overline{y}}_{i..} - {\overline{y}}_{...})^{2}\)</span></li>
+<li>요인 <span class="math inline">\(B\)</span> 변동: <span class="math inline">\(SSB = an\sum_{i}({\overline{y}}_{.j.} - {\overline{y}}_{...})^{2}\)</span></li>
+<li>요인 <span class="math inline">\(AB\)</span> 변동: <span class="math inline">\(SSAB = n\sum_{i}\sum_{j}({\overline{y}}_{ij.} - {\overline{y}}_{i..} - {\overline{y}}_{.j.} + {\overline{y}}_{...})^{2}\)</span></li>
+<li>잔차 변동: <span class="math inline">\(SSE = \sum_{ijk}(y_{ijk} - {\overline{y}}_{ij.})^{2}\)</span></li>
+</ul>
+<p><strong>분산분석표</strong></p>
+<table class="table-striped caption-top table">
+<caption>이원 분산분석표</caption>
+<colgroup>
+<col style="width: 14%">
+<col style="width: 19%">
+<col style="width: 19%">
+<col style="width: 26%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>요인</th>
+<th style="text-align: center;">자승합</th>
+<th style="text-align: center;">자유도</th>
+<th style="text-align: center;">평균자승합</th>
+<th style="text-align: center;">F-통계량</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>요인 A 주효과</td>
+<td style="text-align: center;"><span class="math inline">\(SSA\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(a-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(MSA\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MSA}{MSE}\)</span></td>
+</tr>
+<tr class="even">
+<td>요인 B 주효과</td>
+<td style="text-align: center;"><span class="math inline">\(SSB\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(b-1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(MSB\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MSB}{MSE}\)</span></td>
+</tr>
+<tr class="odd">
+<td>요인 AB 상호효과</td>
+<td style="text-align: center;"><span class="math inline">\(SSAB\)</span></td>
+<td style="text-align: center;"><span class="math inline">\((a-1)(b-1)\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(MSAB\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\frac{MSAB}{MSE}\)</span></td>
+</tr>
+<tr class="even">
+<td>오차변동</td>
+<td style="text-align: center;"><span class="math inline">\(SSE\)</span></td>
+<td style="text-align: center;">차이</td>
+<td style="text-align: center;"><span class="math inline">\(MSE\)</span></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td>수정총합 (Corrected Total)</td>
+<td style="text-align: center;"><span class="math inline">\(SST\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(n-1\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="사례분석" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="사례분석"><span class="header-section-number">4.3</span> 사례분석</h3>
+<p>SEABORN MPG 데이터: 자동차 연비(mpg)에 영향을 미치는 요인으로 실린더 개수와 생산국가를 고려하였다.</p>
+<ul>
+<li>생산국 origin: usa, japan, europe</li>
+<li>실린더 개수 cylinders: 3, 4, 5, 6, 8 (4, 6개만 사용)</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#mpg 데이터 불러오기</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span> sns.load_dataset(<span class="st">'mpg'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span>data[(data[<span class="st">'cylinders'</span>]<span class="op">==</span><span class="dv">4</span>)<span class="op">|</span>(data[<span class="st">'cylinders'</span>]<span class="op">==</span><span class="dv">6</span>)]</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>data.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Column Non-Null Count Dtype <br> 0 mpg 288 non-null float64 <br> 1 cylinders 288 non-null int64 <br> 2 displacement 288 non-null float64 <br> 3 horsepower 282 non-null float64 <br> 4 weight 288 non-null int64 <br> 5 acceleration 288 non-null float64 <br> 6 model_year 288 non-null int64 <br> 7 origin 288 non-null object <br> 8 name 288 non-null object</p>
+<p><strong>Box Plot 그리기</strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#나무상자 그림</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>sns.boxplot(x<span class="op">=</span><span class="st">"cylinders"</span>,y<span class="op">=</span><span class="st">"mpg"</span>,hue<span class="op">=</span><span class="st">'origin'</span>,notch<span class="op">=</span><span class="va">True</span>,data<span class="op">=</span>data)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/twowayboxplot.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p><strong>평균, 표준편차</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#요인별 기초통계량</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data.pivot_table(index<span class="op">=</span>[<span class="st">'origin'</span>],columns<span class="op">=</span>[<span class="st">'cylinders'</span>],values<span class="op">=</span>[<span class="st">'mpg'</span>],aggfunc<span class="op">=</span>[<span class="st">'mean'</span>,<span class="st">'std'</span>],margins<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/carstattable.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>생산국가: 생산국가에 따른 연비차이는 매우 유의함(유의확률 &lt;0.001). 생산국가 일본 &gt; 유럽 &gt; 미국 순으로 연비가 높다.</p>
+<p>실린더 개수: 실린더 개수에 따른 연비차이는 매우 유의함(유의확률 &lt;0.001). 실린더 수가 많을수록 연비는 낮아진다.</p>
+<ul>
+<li>(생산국가)×(실린더개수) 상호효과도 매우 유의함</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#이원 분산분석</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.formula.api <span class="im">import</span> ols</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>y<span class="op">=</span>data[<span class="st">'mpg'</span>]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>results<span class="op">=</span>ols(<span class="st">'y~C(cylinders)+C(origin)+C(cylinders):C(origin)'</span>,data<span class="op">=</span>data).fit()</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>sm.stats.anova_lm(results,typ<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/car_anova_table.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p><strong>평균도표</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>means <span class="op">=</span> (data</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>         .groupby([<span class="st">'cylinders'</span>,<span class="st">'origin'</span>])[<span class="st">'mpg'</span>]</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>         .mean()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>         .reset_index())</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>pivot <span class="op">=</span> means.pivot(index<span class="op">=</span><span class="st">'cylinders'</span>, columns<span class="op">=</span><span class="st">'origin'</span>, values<span class="op">=</span><span class="st">'mpg'</span>).sort_index()</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> pivot.columns:</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    plt.plot(pivot.index.astype(<span class="bu">str</span>), pivot[b], marker<span class="op">=</span><span class="st">'o'</span>, label<span class="op">=</span><span class="ss">f'origin=</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Factor A: cylinders'</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Mean response (mpg)'</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Interaction plot (means)'</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">'Factor B: origin'</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/twoway_effects.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+자동차 MPG 이원 ANOVA 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 33%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>요인</th>
+<th>내용</th>
+<th style="text-align: center;">유의확률</th>
+<th>결론</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>origin</strong> (생산국가)</td>
+<td>일본 &gt; 유럽 &gt; 미국 순 연비</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>유의</td>
+</tr>
+<tr class="even">
+<td><strong>cylinders</strong> (실린더 수)</td>
+<td>실린더 많을수록 연비 낮아짐</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>유의</td>
+</tr>
+<tr class="odd">
+<td><strong>origin × cylinders</strong> (상호효과)</td>
+<td>생산국가별 실린더 수에 따른 연비 변화 패턴 다름</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>유의</td>
+</tr>
+</tbody>
+</table>
+<p>→ 상호작용이 유의하므로 주효과만 해석하면 오류. 생산국가·실린더 조합별 셀 평균을 함께 해석해야 한다.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="공분산분석-analysis-of-covariance" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="공분산분석-analysis-of-covariance"><span class="header-section-number">5</span> 공분산분석 Analysis of Covariance</h2>
+<section id="공분산분석-개념" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="공분산분석-개념"><span class="header-section-number">5.1</span> 공분산분석 개념</h3>
+<p>공분산분석에서의 공변량은 독립변수(요인)와 종속변수 사이의 관계를 더 정확하게 검증하거나 그룹 간의 차이를 더 정확하게 비교하기 위해 사용된다.</p>
+<p>공변량을 사용하는 주요 목적은 통제(Control)이다. 예를 들어, 어떤 약의 효과를 연령대에 따라 측정한다고 가정해 보자. 이 때 나이를 공변량으로 사용하여 나이의 영향을 제거하고 약의 효과를 더 정확하게 측정할 수 있다. 즉, 공변량은 관심의 대상이 아니라 요인의 유의성 검정을 정확하게 하기 위하여 고려하는 설명변수이다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+공분산분석(ANCOVA)의 핵심
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>목적</strong>: 공변량(covariate)을 통제하여 처리 효과를 보다 정확하게 추정</p>
+<p><strong>공변량의 3가지 조건</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>조건</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>반응변수와 관련</strong></td>
+<td>공변량이 종속변수 변동을 설명할 수 있어야 함</td>
+</tr>
+<tr class="even">
+<td><strong>측정 가능</strong></td>
+<td>실험에서 실제로 수치로 측정되어야 함</td>
+</tr>
+<tr class="odd">
+<td><strong>처리 영향 없음</strong></td>
+<td>처리(요인) 배정에 의해 공변량 값이 바뀌면 안 됨</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ANOVA vs ANCOVA</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 33%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>구분</th>
+<th>ANOVA</th>
+<th>ANCOVA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>모형</td>
+<td><span class="math inline">\(y = \mu + A_i + B_j + (AB)_{ij} + e\)</span></td>
+<td><span class="math inline">\(y = \mu + A_i + B_j + (AB)_{ij} + \gamma x + e\)</span></td>
+</tr>
+<tr class="even">
+<td>공변량</td>
+<td>없음</td>
+<td>있음 (<span class="math inline">\(x\)</span>)</td>
+</tr>
+<tr class="odd">
+<td>오차 분산</td>
+<td>큼</td>
+<td>작음 (공변량 설명 후)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="모형-및-가정-3" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="모형-및-가정-3"><span class="header-section-number">5.2</span> 모형 및 가정</h3>
+<p><span class="math display">\[y_{ijk} = \mu + A_{i} + B_{j} + (AB)_{ij} + x_{ijk} + e_{ijk}, \quad e_{ij} \sim N(0,\sigma^{2})\]</span></p>
+<ul>
+<li><span class="math inline">\(i\)</span>: 요인 A의 수준 첨자, <span class="math inline">\(j\)</span>: 요인 B의 수준 첨자, <span class="math inline">\(k\)</span>: 반복 첨자</li>
+<li>요인 A 수준 개수 <span class="math inline">\(a\)</span>, 요인 B 수준 개수 <span class="math inline">\(b\)</span></li>
+<li><span class="math inline">\(y_{ijk}\)</span>: 요인 <span class="math inline">\(A\)</span> <span class="math inline">\(i\)</span> 수준, 요인 <span class="math inline">\(B\)</span>의 수준 <span class="math inline">\(j\)</span>의 <span class="math inline">\(k\)</span>-번째 종속변수 관측치</li>
+<li><span class="math inline">\(x_{ijk}\)</span>: 요인 <span class="math inline">\(A\)</span> <span class="math inline">\(i\)</span> 수준, 요인 <span class="math inline">\(B\)</span>의 수준 <span class="math inline">\(j\)</span>의 <span class="math inline">\(k\)</span>-번째 공변량 관측치</li>
+</ul>
+</section>
+<section id="이원-공분산분석-사례" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="이원-공분산분석-사례"><span class="header-section-number">5.3</span> 이원 공분산분석 사례</h3>
+<p><strong>seaborn 예제 데이터 (운동)</strong></p>
+<ul>
+<li>종속변수: 운동 후 맥박 수</li>
+<li>요인: 운동시간 3개 층(1 min=96, 15 min=117, 30 min=126, 매우 유의), 비만 유형 2개 층(no fat=121, low fat=105, 매우 유의)</li>
+<li>공변량: 운동 전 맥박 수(매우 유의) - 운동 후 맥박은 운동 전 맥박에 영향을 받으므로 요인의 검증을 위한 통제변수이므로 유의성 검증 대상이 아니다.</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#운동 데이터 불러오기</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>data<span class="op">=</span> sns.load_dataset(<span class="st">'exercise'</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#데이터 전처리</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>rest<span class="op">=</span>pd.melt(data[data[<span class="st">'kind'</span>]<span class="op">==</span><span class="st">'rest'</span>],id_vars<span class="op">=</span>[<span class="st">'id'</span>,<span class="st">'diet'</span>,<span class="st">'time'</span>],value_vars<span class="op">=</span>[<span class="st">'pulse'</span>],value_name<span class="op">=</span><span class="st">'rest_pulse'</span>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>run<span class="op">=</span>pd.melt(data[data[<span class="st">'kind'</span>]<span class="op">==</span><span class="st">'running'</span>],id_vars<span class="op">=</span>[<span class="st">'id'</span>,<span class="st">'diet'</span>,<span class="st">'time'</span>],value_vars<span class="op">=</span>[<span class="st">'pulse'</span>],value_name<span class="op">=</span><span class="st">'run_pulse'</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>df<span class="op">=</span>pd.concat([rest,run],axis<span class="op">=</span><span class="dv">1</span>).iloc[:,[<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">9</span>]]</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Column Non-Null Count Dtype <br> 0 diet 30 non-null category <br> 1 time 30 non-null category <br> 2 rest_pulse 30 non-null int64 <br> 3 run_pulse 30 non-null int64</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#요인별 기초통계량</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df.pivot_table(index<span class="op">=</span>[<span class="st">'time'</span>],columns<span class="op">=</span>[<span class="st">'diet'</span>],values<span class="op">=</span>[<span class="st">'run_pulse'</span>],aggfunc<span class="op">=</span>[<span class="st">'mean'</span>,<span class="st">'std'</span>],margins<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ancova_stat.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#공변량 분석</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.formula.api <span class="im">import</span> ols</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>y<span class="op">=</span>df[<span class="st">'run_pulse'</span>]</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>results<span class="op">=</span>ols(<span class="st">'y~C(diet)+C(time)+C(diet):C(time)+rest_pulse'</span>,data<span class="op">=</span>df).fit()</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>sm.stats.anova_lm(results,typ<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/ancova_table.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>운동 후 맥박(run_pulse)에 대해 식이요법(diet)과 측정 시점(time)의 영향을 공변량(rest_pulse, 안정 시 맥박)을 통제한 상태에서 살펴본 결과, 식이요법과 측정 시점 모두에서 유의한 차이가 나타났다.</p>
+<p>또한 식이요법과 시간 간에는 상호작용 효과가 나타나, 운동 직후에는 두 집단 간 차이가 크지 않았으나 시간이 지남에 따라 무지방(no fat) 집단은 맥박이 꾸준히 증가한 반면, 저지방(low fat) 집단은 증가 폭이 상대적으로 작아졌다. 반면, 안정 시 맥박(rest_pulse)은 운동 후 맥박에 통계적으로 유의한 영향을 주지 않았다.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+운동 데이터 공분산분석 결과
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 42%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>요인</th>
+<th style="text-align: center;">유의확률</th>
+<th>결론</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>diet</strong> (식이요법)</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>유의: no fat(121) &gt; low fat(105)</td>
+</tr>
+<tr class="even">
+<td><strong>time</strong> (운동시간)</td>
+<td style="text-align: center;">&lt; 0.001</td>
+<td>유의: 시간 길수록 맥박 증가</td>
+</tr>
+<tr class="odd">
+<td><strong>diet × time</strong> (상호작용)</td>
+<td style="text-align: center;">유의</td>
+<td>식이요법별 시간에 따른 맥박 패턴 다름</td>
+</tr>
+<tr class="even">
+<td><strong>rest_pulse</strong> (공변량)</td>
+<td style="text-align: center;">비유의</td>
+<td>운동 전 맥박을 통제 후 효과 없음</td>
+</tr>
+</tbody>
+</table>
+<p><strong>결론</strong>: 저지방 식이요법이 운동 후 시간이 지남에 따라 맥박 상승을 억제하는 효과가 있다.</p>
+</div>
+</div>
+<p>따라서 본 연구에서는 저지방 식이요법이 운동 후 시간이 지남에 따라 맥박 상승을 억제하는 효과가 있음을 확인할 수 있다.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/by-sekwon\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<div style="display:flex; align-items:center; justify-content:flex-end; gap:0.5rem;">
+<p><img src="https://hits.sh/by-sekwon.github.io.svg?style=flat-square&amp;label=visitors&amp;color=555555" alt="방문자 수" style="vertical-align:middle; border-radius:3px;"> <span style="font-size:0.8rem; color:#888;">since 2026.08.08</span></p>
+</div>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
