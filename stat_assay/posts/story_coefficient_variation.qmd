@@ -1,0 +1,103 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(흩어짐과 역설) 단위가 다른 두 집단을 견주는 법 — 변동계수로 비교하기"
+author: "권세혁"
+date: "2026-09-03"
+categories: [통계기초, 기술통계]
+description: "2022년 병역판정검사 자료(약 25만 명)에 따르면 한국 성인 남성의 평균 키는 174.3cm, 평균 몸무게는 73.1kg이다. 표준편차는 몸무게 쪽이 숫자로는 더 크다. 그런데 '몸무게가 키보다 더 들쭉날쭉하다'고 말해도 될까? cm와 kg은애초에 비교할 수 없는 단위다. 이 문제를 푸는 도구가 변동계수다."
+---
+
+## 키와 몸무게, 어느 쪽이 더 들쭉날쭉할까
+
+2022년 병역판정검사(약 25만 명) 자료를 보면 한국 성인 남성의 평균 키는 **174.3cm**, 평균 몸무게는 **73.1kg**이다. 사람마다 얼마나 차이가 나는지 표준편차를 붙여보면, 키는 대략 **6cm**, 몸무게는 대략 **11kg** 안팎으로 흔히 인용된다. 숫자만 보면 "11이 6보다 크니까 몸무게가 더 들쭉날쭉하다"고 말하고 싶어진다. 그런데 이 비교, 사실은 성립하지 않는다. **6cm와 11kg은 애초에 단위가 다른 숫자다.** 자를 대고 잰 값과 저울에 올려 잰 값을 그냥 크기로 비교하는 건, 마치 "6미터가 11킬로그램보다 작다"고 말하는 것과 다르지 않다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Korean adult male height and weight, each on its own natural scale (cm vs kg), using the 2022 conscription-exam mean (n about 250,000) with a commonly cited standard deviation for illustration. The two bell curves cannot be compared directly - a centimeter and a kilogram are not the same kind of unit."
+import numpy as np
+import matplotlib.pyplot as plt
+
+mean_h, sd_h = 174.3, 6.0
+mean_w, sd_w = 73.1, 11.0
+
+fig, axes = plt.subplots(1, 2, figsize=(9, 4))
+for ax, mean, sd, label, color, unit in [
+    (axes[0], mean_h, sd_h, "Height", "#1e3a2f", "cm"),
+    (axes[1], mean_w, sd_w, "Weight", "#a8790a", "kg"),
+]:
+    x = np.linspace(mean - 4*sd, mean + 4*sd, 300)
+    y = np.exp(-0.5*((x-mean)/sd)**2) / (sd*np.sqrt(2*np.pi))
+    ax.plot(x, y, color=color, linewidth=2)
+    ax.fill_between(x, y, color=color, alpha=0.2)
+    ax.axvline(mean, color=color, linestyle="--", linewidth=1.4)
+    ax.set_title(f"{label}: mean {mean}{unit}, SD {sd}{unit}", fontsize=10, color=color)
+    ax.set_xlabel(f"{label} ({unit})")
+    ax.set_yticks([])
+    ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+두 그래프는 각자의 눈금으로 그려졌을 뿐, 어느 쪽이 "더 흩어져 있는지"는 이 그림만으로 말할 수 없다. cm와 kg이라는 서로 다른 잣대를 하나의 잣대로 바꿔야 비로소 공정한 비교가 가능해진다.
+
+## 변동계수: 표준편차를 평균으로 나누면 단위가 사라진다
+
+이 문제를 푸는 도구가 **변동계수(coefficient of variation, CV)**다. 계산은 간단하다.
+
+$$\text{CV} = \frac{\text{표준편차}}{\text{평균}} \times 100\%$$
+
+표준편차를 평균으로 나누는 순간, 분자와 분모의 단위(cm, kg)가 서로 약분되어 사라진다. 남는 건 "평균 대비 몇 퍼센트가 흩어져 있는가"라는, 단위 없는 순수한 비율이다. 키와 몸무게에 이 공식을 적용해보자.
+
+- 키: $6.0 / 174.3 \times 100 \approx$ **3.4%**
+- 몸무게: $11.0 / 73.1 \times 100 \approx$ **15.1%**
+
+```{python}
+#| echo: false
+#| fig-cap: "The same two distributions, replotted with each axis expressed as a percentage of its own mean (100% = average height, 100% = average weight). On this common, unit-free scale, weight is visibly far more spread out than height - which is exactly what the CV numbers (3.4% vs 15.1%) say."
+import numpy as np
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+for mean, sd, label, color in [(mean_h, sd_h, f"Height (CV = {sd_h/mean_h*100:.1f}%)", "#1e3a2f"),
+                                  (mean_w, sd_w, f"Weight (CV = {sd_w/mean_w*100:.1f}%)", "#a8790a")]:
+    pct = np.linspace(70, 130, 300)
+    x_actual = mean * pct / 100
+    y = np.exp(-0.5*((x_actual-mean)/sd)**2) / (sd*np.sqrt(2*np.pi)) * mean / 100
+    ax.plot(pct, y, color=color, linewidth=2.2, label=label)
+    ax.fill_between(pct, y, color=color, alpha=0.15)
+ax.axvline(100, color="#555555", linestyle=":", linewidth=1.4)
+ax.set_xlabel("Value, as % of its own mean (100% = average)")
+ax.set_ylabel("Density (rescaled)")
+ax.set_yticks([])
+ax.set_title("On a common relative scale, weight is far more spread out", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right", "left"]].set_visible(False)
+ax.legend(fontsize=9)
+plt.tight_layout()
+plt.show()
+```
+
+두 분포를 "각자 평균의 몇 %인가"라는 공통 눈금 위에 다시 그리면, 몸무게 곡선이 키 곡선보다 훨씬 넓게 퍼진다는 게 눈으로 보인다. 몸무게의 변동계수(15.1%)가 키의 변동계수(3.4%)보다 **4배 넘게** 크다. 즉 사람들의 몸무게는 평균을 기준으로 볼 때, 키보다 상대적으로 훨씬 더 큰 폭으로 들쭉날쭉하다는 뜻이다. 원래의 표준편차만 보고 "11이 6보다 크다"고 판단했다면 방향은 맞았어도, "얼마나 더 흩어져 있는가"라는 진짜 크기는 놓쳤을 것이다.
+
+::: {.callout-tip}
+## 변동계수가 필요한 순간
+
+1. **단위가 서로 다른 두 자료를 비교할 때** (예: cm vs kg, 원화 vs 달러). 표준편차는 단위를 그대로 가지고 있어 직접 비교가 불가능하지만, 변동계수는 비율이라 단위가 없다.
+2. **단위는 같지만 평균의 크기 자체가 크게 다른 두 집단을 비교할 때** (예: 신입사원 연봉의 흩어짐 vs 임원 연봉의 흩어짐). 표준편차 값 자체는 평균이 큰 쪽이 항상 유리하게(크게) 나오기 쉽다.
+3. **"어느 쪽이 더 예측하기 어려운가"를 묻고 싶을 때.** 변동계수가 클수록 평균만 알아서는 개별값을 가늠하기 어렵다는 뜻이다.
+:::
+
+## 더 깊이: 표준편차의 세 번째 형제, 변동계수
+
+강의노트 [〈기초통계학 3. 데이터와 요약통계 — 측정형 데이터〉](../../notes/intro_stat/data.qmd#측정형-데이터)는 분산·표준편차·범위·사분위범위를 "흩어짐 척도"로 묶어 정리한 다음, 별도로 "상대적 산포"라는 항목에서 변동계수를 소개한다: "변동계수(CV)는 표준편차를 평균으로 나눈 비율로, 자료의 상대적 산포 크기를 나타낸다. 서로 단위가 다르거나, 평균 크기가 현저히 다른 두 변수의 산포 비교에 유용하다." 이번 주 월요일부터 표준편차, 이상치, 표준점수까지 다뤄온 흩어짐 이야기가 오늘 변동계수에서 한 바퀴를 돈다 — 표준편차가 "그 자체로 얼마나 흩어졌는가"를 재는 도구였다면, 변동계수는 "그 흩어짐이 평균에 비해 얼마나 큰가"를 재는, 비교를 위한 도구다.
+
+## 결론: 표준편차를 비교하기 전에 평균부터 나눠라
+
+나는 학생들에게 두 집단의 표준편차를 비교하고 싶어질 때마다 먼저 물어보라고 말한다. "이 둘은 같은 단위이고, 평균 크기도 비슷한가?" 둘 중 하나라도 아니라면, 표준편차를 그대로 비교하는 건 착시를 부른다. 오늘 살펴본 키와 몸무게처럼, 표준편차의 크기 순서와 변동계수의 크기 순서가 다르게 나올 수도 있다. 흩어짐을 비교하는 마지막 단계는 언제나 같다 — 표준편차를 평균으로 나누고 나서 비교하라.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [대한민국 남성 키 몸무게 분포 (징병검사 통계) — 건신건정](https://health.tali.kr/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD-%EB%82%A8%EC%84%B1-%ED%82%A4-%EB%AA%B8%EB%AC%B4%EA%B2%8C-%EB%B6%84%ED%8F%AC-%EC%A7%95%EB%B3%91%EA%B2%80%EC%82%AC-%ED%86%B5%EA%B3%84) (2022년 병역판정검사, 약 25만 명 기준 평균값). 표준편차는 정확한 공식 수치가 공개되어 있지 않아, 일반적으로 인용되는 대표값을 사용한 예시임을 밝혀둔다.
+:::
