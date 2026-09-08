@@ -1,0 +1,103 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(숫자로 사람을 줄 세우는 법) 5.0과 4.8 사이, 표본크기의 문제 — 별점 평균의 함정"
+author: "권세혁"
+date: "2026-09-10"
+categories: [통계기초, 확률]
+description: "리뷰 5개짜리 식당이 5.0 만점을 받을 확률은 얼마나 될까? 만약 그 식당의 '진짜 실력'이 손님 100명 중 85명이 5점을 주는 수준(평균 4.85)이라 해도, 리뷰가 5개뿐이면 만점으로 보일 확률이 44%에 달한다. 반면 리뷰가 500개 쌓이면 그 확률은 사실상 0%다. 별점에는 천장이 있다는 사실이 만드는 착시를 살펴본다."
+---
+
+## 만점(5.0)은 왜 리뷰 적은 가게에 몰려 있을까
+
+지도 앱이나 배달앱을 켜면 리뷰 3~5개짜리 신생 매장이 5.0 만점을 받은 걸 심심찮게 본다. 반면 리뷰가 수백~수천 개씩 쌓인 오래된 맛집은 아무리 훌륭해도 4.9를 넘기기 어렵다. [지난 7월 글](story_star_rating.qmd)에서는 표준오차와 IMDb의 가중평균 공식으로 "작은 표본의 평균은 흔들린다"는 걸 다뤘다. 오늘은 조금 다른 각도에서 같은 현상을 들여다본다. **별점에는 천장이 있다.** 5점이 최댓값이라는 사실 하나가, 표본 크기에 따라 완전히 다른 확률 게임을 만들어낸다.
+
+## 만점 확률을 직접 계산해보자
+
+어떤 식당의 "진짜 실력"이 이렇다고 하자. 손님 100명 중 85명은 5점을, 15명은 4점을 준다. 평균을 내면 $0.85 \times 5 + 0.15 \times 4 = 4.85$점 — 훌륭하지만 완벽하지는 않은 가게다. 이 가게에 리뷰가 $n$개 달렸을 때, **그 $n$개 전부가 5점일 확률**은 $0.85^n$이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The probability that every single review is a perfect 5-star rating, as the number of reviews n grows, for restaurants with three different 'true' qualities (the underlying chance any one customer gives 5 stars: 0.70, 0.85, 0.90). Even a genuinely excellent restaurant (p=0.85) has a 44% chance of showing a perfect 5.0 with just 5 reviews - but essentially 0% chance once reviews reach the hundreds."
+import numpy as np
+import matplotlib.pyplot as plt
+
+n = np.arange(1, 60)
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+for p, color, label in [(0.70, "#8a9a90", "p = 0.70 (avg 4.70)"),
+                          (0.85, "#1e3a2f", "p = 0.85 (avg 4.85)"),
+                          (0.90, "#a8790a", "p = 0.90 (avg 4.90)")]:
+    ax.plot(n, p**n, color=color, linewidth=2.2, label=label)
+
+ax.axvline(5, color="#555555", linestyle=":", linewidth=1.2)
+ax.annotate("n = 5 reviews", xy=(5, 0.85), xytext=(6.5, 0.85), fontsize=9, color="#555555")
+ax.set_xlabel("Number of reviews (n)")
+ax.set_ylabel("P(all n reviews are 5 stars)")
+ax.set_title("A perfect 5.0 becomes almost impossible as reviews accumulate", fontsize=10.3, color="#1e3a2f")
+ax.legend(fontsize=8.5)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+$p=0.85$ 곡선을 보면, 리뷰 5개일 때 만점이 나올 확률은 **44%** — 5곳 중 2곳 이상이 순전히 우연으로 5.0을 보여준다는 뜻이다. 리뷰가 10개로만 늘어도 이 확률은 20%로 줄고, 50개면 0.03%, 100개를 넘으면 사실상 0이다. 진짜 실력(4.85점)은 전혀 변하지 않았는데, 오직 리뷰 개수만으로 "만점으로 보일 확률"이 이렇게 요동친다.
+
+## 같은 가게라도, 표본이 작으면 만점이 흔하다
+
+이번엔 같은 진짜 실력($p=0.85$, 진짜 평균 4.85점)을 가진 가게 수천 곳을 시뮬레이션해서, 리뷰 5개짜리와 500개짜리의 관측 평점 분포를 비교해보자.
+
+```{python}
+#| echo: false
+#| fig-cap: "Simulated observed average rating for thousands of restaurants that all share the exact same true quality (p=0.85, true average 4.85). Among 5-review restaurants, a large share cluster right at the 5.0 ceiling. Among 500-review restaurants, essentially none do - they cluster tightly and honestly around 4.85, the true value."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(11)
+p = 0.85
+trials = 20000
+
+avg5 = rng.binomial(5, p, trials) / 5 * 1 + 4  # ratings are 4 or 5 stars
+avg5 = 4 + rng.binomial(5, p, trials) / 5
+avg500 = 4 + rng.binomial(500, p, trials) / 500
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+bins5 = np.linspace(4, 5, 6) - 0.05
+ax.hist(avg5, bins=11, range=(3.9, 5.05), color="#a8790a", alpha=0.6, density=True, label="n = 5 reviews")
+ax.hist(avg500, bins=40, range=(4.6, 5.0), color="#1e3a2f", alpha=0.75, density=True, label="n = 500 reviews")
+ax.axvline(4.85, color="#555555", linestyle="--", linewidth=1.6)
+ax.annotate("true quality: 4.85", xy=(4.85, ax.get_ylim()[1]*0.9), xytext=(4.55, ax.get_ylim()[1]*0.9),
+            fontsize=9, color="#555555")
+ax.set_xlabel("Observed average rating")
+ax.set_ylabel("Density (share of restaurants)")
+ax.set_xlim(3.9, 5.05)
+ax.set_title("Small samples pile up at the ceiling; large samples reveal the truth", fontsize=10.3, color="#1e3a2f")
+ax.legend(fontsize=8.5, loc="upper left")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+리뷰 5개짜리 가게들(주황)은 5.0이라는 벽에 커다란 막대가 쌓인다. 별점이 4와 5뿐인 단순한 세상에서는, 리뷰 5개가 모두 5점이면 평균도 정확히 5.0이 되기 때문이다. 반면 리뷰 500개짜리 가게들(초록)은 진짜 실력인 4.85점 근처에 촘촘하게 몰려 있다 — 500명 중 단 한 명만 4점을 줘도 5.0은 깨지므로, 500개 표본에서 만점이 나올 여지가 사실상 없다.
+
+::: {.callout-tip}
+## 별점을 다시 볼 때 기억할 것
+
+1. **리뷰가 적은데 만점이라면, 그 만점은 "진짜 실력"이 아니라 "아직 깨지지 않은 우연"일 가능성이 크다.**
+2. **4.85와 5.0 중 어느 쪽이 더 나은 가게인지는 리뷰 개수를 모르면 답할 수 없다.** 오늘 예시처럼 둘이 같은 가게일 수도 있다.
+3. **별점 4자리 소수점 차이(4.8 vs 4.9)보다, 리뷰 개수 자릿수 차이(10개 vs 1,000개)가 훨씬 더 중요한 정보다.**
+:::
+
+## 더 깊이: 만점 확률은 베르누이 시행의 반복이다
+
+강의노트 [〈수리통계학 5. 유명분포 — 베르누이분포〉](../../notes/math_stat/famous_distribution.qmd#베르누이분포-x-sim-b1p)는 성공확률이 매 시행마다 동일하고 서로 독립인 시행을 베르누이 시행으로 정의한다. 오늘 계산한 "$n$개 리뷰가 모두 5점일 확률 $p^n$"은 이 정의를 그대로 따른다 — 각 리뷰를 "5점(성공)이냐 아니냐"의 독립적인 베르누이 시행으로 본 것이다. $n$번 연속 성공할 확률이 $p^n$으로 지수적으로 줄어든다는 사실 자체가, 표본이 작을 때만 "완벽한 기록"이 자주 나오는 이유를 설명해준다.
+
+## 결론: 별점의 천장은 표본이 작을 때 가장 잘 보인다
+
+[지난번 글](story_star_rating.qmd)이 "표본이 작으면 평균이 진짜 값에서 크게 벗어날 수 있다"는 일반적인 원리를 다뤘다면, 오늘은 그중에서도 별점이라는 척도가 **위로 막혀 있다**는 특수성이 만드는 착시를 다뤘다. 5.0이라는 숫자는 완벽함의 증거가 아니라, 표본이 작아서 아직 그 벽에 부딪힐 기회가 없었다는 증거에 가까울 때가 많다. 리뷰 개수가 두 자릿수를 넘어가는 순간까지 만점을 유지하는 가게야말로, 진짜 눈여겨볼 만한 곳이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [별점 4.5점짜리 식당은 믿을 만한가? — 통계, 다르게 읽기 (지난 글)](story_star_rating.qmd)
+:::

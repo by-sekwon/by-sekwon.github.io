@@ -1,0 +1,205 @@
+---
+title: "오늘의 증권가 주식 소식"
+author: "권세혁"
+date: "2026-09-08"
+description: "네이버 증권 '증권' 섹션의 주요 뉴스를 매일 자동으로 수집해 보여드립니다."
+categories: [주식, 뉴스]
+format:
+  html:
+    sidebar: playground
+    toc: false
+---
+
+```{=html}
+<style>
+.sn-header {
+  background: linear-gradient(135deg, #1a2a4a 0%, #2d4a8c 60%, #3a5aad 100%);
+  color: #f5f0e8;
+  padding: 1.4rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.sn-header .sn-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+}
+.sn-header .sn-title span { color: #a2b8f0; }
+.sn-header .sn-sub {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+}
+.sn-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+.sn-controls select {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  border: none;
+}
+.sn-meta {
+  font-size: 0.8rem;
+  color: #888;
+  margin: -0.8rem 0 1.2rem;
+}
+.sn-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sn-item {
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid #eee;
+  background: var(--bs-body-bg, #fff);
+}
+.sn-item:last-child { border-bottom: none; }
+.sn-item h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.sn-item h3 a {
+  color: #1f3d33;
+  text-decoration: none;
+}
+.sn-item h3 a:hover { text-decoration: underline; }
+.sn-summary {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.6;
+}
+.sn-item-meta {
+  font-size: 0.75rem;
+  color: #999;
+  display: flex;
+  gap: 0.5rem;
+}
+.sn-rank {
+  font-weight: 700;
+  color: #3a5aad;
+  margin-right: 0.4rem;
+}
+.sn-error {
+  color: #a33;
+  font-size: 0.88rem;
+}
+.sn-empty {
+  color: #999;
+  font-size: 0.88rem;
+}
+.sn-footnote {
+  margin-top: 1.4rem;
+  font-size: 0.78rem;
+  color: #999;
+  line-height: 1.6;
+}
+</style>
+
+<div class="sn-header">
+  <div>
+    <div class="sn-title">📈 <span>오늘의 증권가 주식 소식</span></div>
+    <p class="sn-sub">네이버 증권 '증권' 섹션 주요 뉴스를 매일 자동 수집</p>
+  </div>
+  <div class="sn-controls">
+    <label for="sn-date-select">날짜</label>
+    <select id="sn-date-select"></select>
+  </div>
+</div>
+
+<p class="sn-meta" id="sn-generated-at"></p>
+
+<div id="sn-body">
+  <p class="sn-empty">데이터를 불러오는 중입니다…</p>
+</div>
+
+<p class="sn-footnote">
+  <a href="https://finance.naver.com/news/news_list.naver?mode=LSS2D&section_id=101&section_id2=258" target="_blank" rel="noopener">네이버 증권 &gt; 뉴스 &gt; 증권</a>
+  섹션에 노출되는 기사 제목·요약·언론사·시각을 매일 자동으로 그대로 수집·정리한 것으로, 본 사이트가 별도로 내용을 가공하거나 순위를 산정하지 않습니다.
+  기사 본문은 각 언론사 원문 링크에서 확인할 수 있습니다. 본 정보는 참고용이며 투자 결정의 책임은 본인에게 있습니다.
+</p>
+
+<script>
+(function () {
+  const body = document.getElementById("sn-body");
+  const select = document.getElementById("sn-date-select");
+  const meta = document.getElementById("sn-generated-at");
+  const cache = new Map();
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[c]));
+  }
+
+  function renderSnapshot(snapshot) {
+    meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date);
+    if (snapshot.status === "error" || !snapshot.items || !snapshot.items.length) {
+      body.innerHTML = `<p class="sn-error">이 날짜에는 수집된 뉴스가 없습니다${snapshot.error ? ": " + escapeHtml(snapshot.error) : ""}.</p>`;
+      return;
+    }
+    body.innerHTML = `<ul class="sn-list">${snapshot.items.map((it) => `
+      <li class="sn-item">
+        <h3><span class="sn-rank">${it.rank}</span><a href="${escapeHtml(it.url)}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a></h3>
+        ${it.summary ? `<p class="sn-summary">${escapeHtml(it.summary)}</p>` : ""}
+        <div class="sn-item-meta">
+          ${it.press ? `<span>${escapeHtml(it.press)}</span>` : ""}
+          ${it.time ? `<span>${escapeHtml(it.time)}</span>` : ""}
+        </div>
+      </li>`).join("")}</ul>`;
+  }
+
+  async function loadSnapshot(date) {
+    if (cache.has(date)) return cache.get(date);
+    const res = await fetch(`../data/stock_news/${date}.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    cache.set(date, data);
+    return data;
+  }
+
+  async function onDateChange() {
+    body.innerHTML = '<p class="sn-empty">데이터를 불러오는 중입니다…</p>';
+    try {
+      const snapshot = await loadSnapshot(select.value);
+      renderSnapshot(snapshot);
+    } catch (err) {
+      body.innerHTML = `<p class="sn-error">이 날짜의 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  async function init() {
+    try {
+      const res = await fetch("../data/stock_news/manifest.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const manifest = await res.json();
+      const dates = manifest.dates || [];
+      if (!dates.length) {
+        body.innerHTML = '<p class="sn-empty">아직 수집된 데이터가 없습니다. 첫 자동 수집은 매일 오전 8시 10분경 실행됩니다.</p>';
+        return;
+      }
+      select.innerHTML = dates.map((d) => `<option value="${d}">${d}</option>`).join("");
+      select.addEventListener("change", onDateChange);
+      await onDateChange();
+    } catch (err) {
+      body.innerHTML = `<p class="sn-error">뉴스 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  init();
+})();
+</script>
+```
