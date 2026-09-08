@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="권세혁">
-<meta name="dcterms.date" content="2026-07-29">
-<meta name="description" content="반 평균 점수가 올랐다는 발표에도 대부분의 학생은 시큰둥하다. 평균 하나로는 보이지 않는, 분포 안의 진짜 이야기를 들여다봅니다.">
+<meta name="dcterms.date" content="2026-09-08">
+<meta name="description" content="2025년부터 고교 내신은 9등급제에서 5등급제로 바뀌었다. 그런데도 2026년 봄 기준 전국 고2 11개교, 고1 9개교에서 여전히 ‘1등급이 한 명도 없는’ 학교가 나왔다. 상대평가의 등급은 사실 반올림 계산의 결과다. 수강 인원이 몇 명이어야 1등급이 ’존재’할 수 있는지 직접 계산해본다.">
 
-<title>(숫자를 대표하는 방법) 우리 반 평균이 올랐는데 학생들은 왜 불만일까? – 권세혁HOME</title>
+<title>(숫자로 사람을 줄 세우는 법) 어느 쪽이 더 공정할까 — 상대평가 vs 절대평가 – 권세혁HOME</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -87,6 +87,35 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <meta name="theme-color" content="#1e3a2f">
 <meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -169,7 +198,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_class_average.html">📖 (숫자를 대표하는 방법) 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_relative_absolute_eval.html">📖 (숫자로 사람을 줄 세우는 법) 어느 쪽이 더 공정할까 — 상대평가 vs 절대평가</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -226,7 +255,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_class_average.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../stat_assay/posts/story_class_average.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">📖 (숫자를 대표하는 방법) 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</span></a>
   </div>
 </li>
@@ -400,7 +429,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../stat_assay/posts/story_relative_absolute_eval.html" class="sidebar-item-text sidebar-link">
+  <a href="../../stat_assay/posts/story_relative_absolute_eval.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">📖 (숫자로 사람을 줄 세우는 법) 어느 쪽이 더 공정할까 — 상대평가 vs 절대평가</span></a>
   </div>
 </li>
@@ -414,11 +443,11 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#이번-시험-평균이-올랐어요" id="toc-이번-시험-평균이-올랐어요" class="nav-link active" data-scroll-target="#이번-시험-평균이-올랐어요">“이번 시험 평균이 올랐어요!”</a></li>
-  <li><a href="#평균은-어디서-올랐는지-말해주지-않는다" id="toc-평균은-어디서-올랐는지-말해주지-않는다" class="nav-link" data-scroll-target="#평균은-어디서-올랐는지-말해주지-않는다">평균은 ‘어디서’ 올랐는지 말해주지 않는다</a></li>
-  <li><a href="#실제로는-누구의-점수가-올랐을까" id="toc-실제로는-누구의-점수가-올랐을까" class="nav-link" data-scroll-target="#실제로는-누구의-점수가-올랐을까">실제로는 누구의 점수가 올랐을까</a></li>
-  <li><a href="#평균이-올라도-등수는-그대로일-수-있다" id="toc-평균이-올라도-등수는-그대로일-수-있다" class="nav-link" data-scroll-target="#평균이-올라도-등수는-그대로일-수-있다">평균이 올라도 등수는 그대로일 수 있다</a></li>
-  <li><a href="#결론-평균-뒤의-분포를-함께-보라" id="toc-결론-평균-뒤의-분포를-함께-보라" class="nav-link" data-scroll-target="#결론-평균-뒤의-분포를-함께-보라">결론: 평균 뒤의 분포를 함께 보라</a></li>
+  <li><a href="#개편했는데도-1등급이-0명인-학교가-있다" id="toc-개편했는데도-1등급이-0명인-학교가-있다" class="nav-link active" data-scroll-target="#개편했는데도-1등급이-0명인-학교가-있다">개편했는데도 1등급이 0명인 학교가 있다</a></li>
+  <li><a href="#등급은-반올림으로-결정된다" id="toc-등급은-반올림으로-결정된다" class="nav-link" data-scroll-target="#등급은-반올림으로-결정된다">등급은 반올림으로 결정된다</a></li>
+  <li><a href="#상대평가와-절대평가는-애초에-다른-질문에-답한다" id="toc-상대평가와-절대평가는-애초에-다른-질문에-답한다" class="nav-link" data-scroll-target="#상대평가와-절대평가는-애초에-다른-질문에-답한다">상대평가와 절대평가는 애초에 다른 질문에 답한다</a></li>
+  <li><a href="#더-깊이-등급은-순서통계량의-절단이다" id="toc-더-깊이-등급은-순서통계량의-절단이다" class="nav-link" data-scroll-target="#더-깊이-등급은-순서통계량의-절단이다">더 깊이: 등급은 순서통계량의 절단이다</a></li>
+  <li><a href="#결론-완벽한-평가-제도는-없다" id="toc-결론-완벽한-평가-제도는-없다" class="nav-link" data-scroll-target="#결론-완벽한-평가-제도는-없다">결론: 완벽한 평가 제도는 없다</a></li>
   </ul>
 </nav>
     </div>
@@ -427,7 +456,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">(숫자를 대표하는 방법) 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</h1>
+<h1 class="title">(숫자로 사람을 줄 세우는 법) 어느 쪽이 더 공정할까 — 상대평가 vs 절대평가</h1>
   <div class="quarto-categories">
     <div class="quarto-category">통계기초</div>
     <div class="quarto-category">기술통계</div>
@@ -436,7 +465,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 <div>
   <div class="description">
-    반 평균 점수가 올랐다는 발표에도 대부분의 학생은 시큰둥하다. 평균 하나로는 보이지 않는, 분포 안의 진짜 이야기를 들여다봅니다.
+    2025년부터 고교 내신은 9등급제에서 5등급제로 바뀌었다. 그런데도 2026년 봄 기준 전국 고2 11개교, 고1 9개교에서 여전히 ‘1등급이 한 명도 없는’ 학교가 나왔다. 상대평가의 등급은 사실 반올림 계산의 결과다. 수강 인원이 몇 명이어야 1등급이 ’존재’할 수 있는지 직접 계산해본다.
   </div>
 </div>
 
@@ -453,7 +482,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 29, 2026</p>
+      <p class="date">September 8, 2026</p>
     </div>
   </div>
   
@@ -465,91 +494,54 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </header>
 
 
-<section id="이번-시험-평균이-올랐어요" class="level2">
-<h2 class="anchored" data-anchor-id="이번-시험-평균이-올랐어요">“이번 시험 평균이 올랐어요!”</h2>
-<p>기말고사 채점을 마치고 성적 통계를 낼 때마다, 나는 이 장면을 떠올린다. 담임 선생님이 반가운 소식을 전한다. “이번 중간고사 평균이 지난번보다 올랐습니다!” 그런데 교실 반응은 뜨뜻미지근하다.</p>
-<p><em>“저는 그대로인데요.”</em> <em>“제 등수도 똑같던데요.”</em></p>
-<p>평균이 올랐다는데, 왜 대부분의 학생은 아무 변화도 느끼지 못할까?</p>
+<section id="개편했는데도-1등급이-0명인-학교가-있다" class="level2">
+<h2 class="anchored" data-anchor-id="개편했는데도-1등급이-0명인-학교가-있다">개편했는데도 1등급이 0명인 학교가 있다</h2>
+<p>2025년, 고교학점제 전면 시행과 함께 고등학교 내신 등급 체계가 바뀌었다. 기존에는 상위 4%까지만 1등급을 주는 <strong>9등급 상대평가</strong>였는데, 이걸 상위 10%까지 1등급을 주는 <strong>5등급 상대평가</strong>로 완화하고, 실제 성취 수준(A~E)을 매기는 <strong>절대평가(성취평가제)</strong>를 함께 표기하도록 했다. 학생들이 원하는 과목을 자유롭게 선택하는 고교학점제 아래에서는 과목마다 수강 인원이 들쭉날쭉해지는데, 기존 9등급제로는 인원이 적은 선택과목에서 등급 자체가 안 나오는 사례가 속출했기 때문이다.</p>
+<p>그런데 개편 이후에도 문제는 사라지지 않았다. 2026년 봄 보도에 따르면, 전국 고등학교 중 <strong>1등급을 받은 학생이 단 한 명도 없는 학교가 고2 기준 11곳, 고1 기준 9곳</strong>이었다. 등급 기준을 4%에서 10%로 넓혔는데도 왜 여전히 “등급 공백”이 생길까? 답은 상대평가 등급이 사실 <strong>반올림 계산의 결과물</strong>이라는 데 있다.</p>
 </section>
-<section id="평균은-어디서-올랐는지-말해주지-않는다" class="level2">
-<h2 class="anchored" data-anchor-id="평균은-어디서-올랐는지-말해주지-않는다">평균은 ‘어디서’ 올랐는지 말해주지 않는다</h2>
-<p>평균은 30명, 300명의 점수를 단 하나의 숫자로 요약한 값이다. 그 숫자가 오르는 이유는 두 가지로 나뉜다.</p>
-<ul>
-<li><strong>모두가 골고루 조금씩 올랐다</strong> → 반 전체의 실력이 실제로 향상됐을 가능성</li>
-<li><strong>소수의 점수가 크게 올랐다</strong> → 평균은 오르지만 대부분은 그대로</li>
-</ul>
-<p>문제는, <strong>평균 하나만 봐서는 이 둘을 구분할 수 없다</strong>는 것이다.</p>
-<div id="81427e2e" class="cell" data-execution_count="1">
+<section id="등급은-반올림으로-결정된다" class="level2">
+<h2 class="anchored" data-anchor-id="등급은-반올림으로-결정된다">등급은 반올림으로 결정된다</h2>
+<p>9등급제의 실제 계산 규칙은 이렇다. 한 과목 수강 인원에 각 등급의 누적 비율(1등급은 4%)을 곱한 뒤, 그 값을 반올림해서 해당 등급의 인원수를 정한다. 예를 들어 수강생이 13명이면 <span class="math inline">\(13 \times 0.04 = 0.52\)</span>명이 되고, 반올림하면 1명이 1등급을 받는다. 그런데 수강생이 12명이라면 <span class="math inline">\(12 \times 0.04 = 0.48\)</span>명, 반올림하면 <strong>0명</strong>이다. 아무리 시험을 잘 봐도, 그 과목을 들은 학생이 12명뿐이라면 1등급은 원천적으로 존재하지 않는다.</p>
+<div id="614de14c" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="story_class_average_files/figure-html/cell-2-output-1.png" width="662" height="355" class="figure-img"></p>
-<figcaption>지난 시험(회색)과 이번 시험(초록) 점수 분포. 평균은 70.0점에서 72.8점으로 올랐지만, 그래프 대부분은 거의 같은 자리에 그대로 겹쳐 있다.</figcaption>
+<p><img src="story_relative_absolute_eval_files/figure-html/cell-2-output-1.png" width="758" height="432" class="figure-img"></p>
+<figcaption>The number of students who receive the top grade (grade 1), by class size, under Korea’s old 9-tier system (top 4%) versus the new 5-tier system (top 10%), using the official round-half-up rule (count = round(n x rate)). Under the old system, a class needs at least 13 students before a single ‘1st grade’ can exist; the new system lowers that threshold to 5 - but classes smaller than that still produce zero.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>그래프에서 보듯, 9등급제(4%)에서는 수강 인원이 13명이 될 때까지 1등급이 아예 나오지 않는다. 5등급제(10%)로 바뀌면서 그 문턱이 5명으로 낮아졌지만, 그보다도 인원이 적은 소규모 선택과목이나 농어촌 소규모 학교에서는 여전히 문턱을 넘지 못한다.</p>
+<div id="02f2cde4" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_relative_absolute_eval_files/figure-html/cell-3-output-1.png" width="518" height="394" class="figure-img"></p>
+<figcaption>Real, reported figures from spring 2026: the number of Korean high schools where not a single student received grade 1 in at least one subject, even after the 2025 reform from a 9-tier to a 5-tier relative grading system.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="실제로는-누구의-점수가-올랐을까" class="level2">
-<h2 class="anchored" data-anchor-id="실제로는-누구의-점수가-올랐을까">실제로는 누구의 점수가 올랐을까</h2>
-<p>같은 자료를 학생 개개인 단위로 다시 보자. x축에 지난 시험 점수, y축에 이번 시험에서 오른 폭을 놓으면 그림이 확 달라진다.</p>
-<div id="c7398bf3" class="cell" data-execution_count="2">
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="story_class_average_files/figure-html/cell-3-output-1.png" width="662" height="355" class="figure-img"></p>
-<figcaption>학생 30명 각각의 점수 변화. 대부분(회색, 24명)은 거의 제자리인 반면, 상위권 소수(주황, 6명)만 크게 상승했다.</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<section id="상대평가와-절대평가는-애초에-다른-질문에-답한다" class="level2">
+<h2 class="anchored" data-anchor-id="상대평가와-절대평가는-애초에-다른-질문에-답한다">상대평가와 절대평가는 애초에 다른 질문에 답한다</h2>
+<p>상대평가는 “이 학생이 또래 안에서 몇 등인가”를 묻고, 절대평가는 “이 학생이 정해진 기준을 얼마나 충족했는가”를 묻는다. 두 질문은 겉보기엔 비슷하지만 답이 갈리는 순간이 있다.</p>
 <div class="callout callout-style-default callout-warning callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-숫자로 보면 이렇다
+두 평가 방식이 어긋나는 경우
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>구분</th>
-<th style="text-align: center;">지난 시험</th>
-<th style="text-align: center;">이번 시험</th>
-<th style="text-align: center;">변화</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>반 평균</td>
-<td style="text-align: center;">70.0점</td>
-<td style="text-align: center;">72.8점</td>
-<td style="text-align: center;"><strong>+2.8점</strong></td>
-</tr>
-<tr class="even">
-<td>반 중앙값</td>
-<td style="text-align: center;">70.9점</td>
-<td style="text-align: center;">71.1점</td>
-<td style="text-align: center;">+0.2점</td>
-</tr>
-<tr class="odd">
-<td>상위 6명 평균 변화</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;"><strong>+15.3점</strong></td>
-</tr>
-<tr class="even">
-<td>나머지 24명 평균 변화</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;">—</td>
-<td style="text-align: center;"><strong>−0.3점</strong></td>
-</tr>
-</tbody>
-</table>
-<p>평균은 2.8점이나 올랐지만, 중앙값은 사실상 그대로다. 그리고 반 인원의 80%에 해당하는 24명은 오히려 평균적으로 아주 조금 <strong>떨어졌다</strong>. “평균 상승”이라는 소식의 실체는, 상위권 6명이 크게 뛴 결과였다.</p>
+<ul>
+<li><strong>모두가 잘했을 때</strong>: 절대평가라면 전원이 A를 받을 수 있다. 상대평가라면 아무리 다 같이 잘해도 정해진 비율만큼은 반드시 하위 등급을 받는다.</li>
+<li><strong>인원이 적을 때</strong>: 오늘 살펴봤듯, 상대평가는 비율×인원을 반올림하는 계산이라 인원이 너무 적으면 특정 등급 자체가 사라진다. 절대평가는 인원과 무관하게 기준만 충족하면 등급이 나온다.</li>
+<li><strong>난이도가 해마다 다를 때</strong>: 절대평가는 시험이 쉬웠던 해에 등급 인플레이션이 생길 수 있다. 상대평가는 난이도와 무관하게 비율이 고정되므로 이 문제에서 자유롭다.</li>
+</ul>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -558,41 +550,45 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-더 깊이: 평균과 중앙값, 언제 무엇을 볼까
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>산술평균이 상위권 소수에 휘둘리는 이유와, 중앙값이 왜 이런 상황에 더 안정적인지는 강의노트 <a href="../../notes/intro_stat/data.html#측정형-데이터">〈기초통계 2. 데이터와 통계 — 측정형 데이터〉</a>의 “중심경향 척도 비교” 표에 정리되어 있다. 이상값이나 비대칭 분포에서는 중앙값이 권장되는 이유를 확인할 수 있다.</p>
-</div>
-</div>
-</section>
-<section id="평균이-올라도-등수는-그대로일-수-있다" class="level2">
-<h2 class="anchored" data-anchor-id="평균이-올라도-등수는-그대로일-수-있다">평균이 올라도 등수는 그대로일 수 있다</h2>
-<p>여기에 학생들이 진짜 신경 쓰는 것 하나가 더 있다. 바로 <strong>등수(상대적 위치)</strong>다.</p>
-<p>설령 모두의 점수가 똑같이 3점씩 올랐다고 해도, 반 안에서의 순서는 하나도 바뀌지 않는다. 평균은 분명히 올랐는데 등수는 그대로이니, 체감하는 변화는 0에 가깝다. 절대적인 점수(평균)와 상대적인 위치(등수)는 서로 다른 질문에 대한 답이라는 것을, 학생들은 본능적으로 알고 있다.</p>
-</section>
-<section id="결론-평균-뒤의-분포를-함께-보라" class="level2">
-<h2 class="anchored" data-anchor-id="결론-평균-뒤의-분포를-함께-보라">결론: 평균 뒤의 분포를 함께 보라</h2>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-“평균이 올랐다”는 말을 들었을 때 확인할 것
+평가 방식을 볼 때 확인할 것
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><strong>중앙값도 함께 확인한다.</strong> 평균과 중앙값의 차이가 크다면, 상승분이 일부에게 몰려 있다는 신호다.</li>
-<li><strong>누가 올랐는지 나눠서 본다.</strong> 상위권·중위권·하위권으로 쪼개 보면 숨겨진 그림이 드러난다.</li>
-<li><strong>절대 점수와 상대 순위를 구분한다.</strong> 반 평균이 올라도 내 등수가 그대로라면, “내가 나아졌다”는 뜻은 아니다.</li>
-<li><strong>하나의 요약 숫자를 볼 때는 항상 “분포 전체는 어떤 모양일까”를 함께 묻는다.</strong></li>
+<li><strong>이 평가가 “등수”를 매기는가, “기준 충족 여부”를 매기는가?</strong> 상대평가와 절대평가는 서로 다른 질문에 답하는 도구이지, 하나가 항상 더 옳은 게 아니다.</li>
+<li><strong>집단의 크기가 평가 결과에 영향을 주는가?</strong> 상대평가라면 그렇다. 오늘 본 것처럼 인원이 적으면 등급 자체가 존재하지 않을 수 있다.</li>
+<li><strong>“공정하다”는 말이 무엇을 뜻하는지부터 합의해야 한다.</strong> 또래 안에서의 상대적 위치가 공정의 기준인지, 정해진 성취 기준 도달 여부가 공정의 기준인지에 따라 답이 달라진다.</li>
 </ol>
 </div>
 </div>
-<p>평균은 교실 전체를 하나의 숫자로 압축해서 보여주는 편리한 도구다. 그러나 그 압축 과정에서 “누가, 얼마나” 달라졌는지는 사라진다. 학생들의 불만은 틀리지 않았다. 그들은 평균이 아니라 분포를 보고 있었던 것이다.</p>
-<p>그래서 나는 성적을 발표할 때 반 평균 대신 성적 분포 그래프를 함께 보여준다. 숫자 하나보다 그래프 한 장이, 학생들의 “왜 저만 그대로예요?”라는 질문에 훨씬 정직하게 답해준다.</p>
+</section>
+<section id="더-깊이-등급은-순서통계량의-절단이다" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-등급은-순서통계량의-절단이다">더 깊이: 등급은 순서통계량의 절단이다</h2>
+<p>강의노트 <a href="../../notes/math_stat/random_sample.html#순서통계량-정의">〈수리통계학 4. 확률표본의 함수 — 순서통계량 정의〉</a>는 확률표본을 크기 순으로 정렬한 <span class="math inline">\(X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}\)</span>을 순서통계량으로 정의한다. 내신 등급은 정확히 이 순서통계량을 정해진 구간(1등급, 2등급, …)으로 잘라낸 것이다. 그런데 표본 크기 <span class="math inline">\(n\)</span>이 아주 작으면, “상위 4%에 해당하는 학생”이라는 구간 자체가 정수 인원으로 존재하지 않을 수 있다 — 4%라는 비율은 연속적인 개념이지만, 실제 학생 수는 1명, 2명 같은 정수 단위로만 셀 수 있기 때문이다. 오늘 살펴본 “등급 공백”은 연속적인 비율 개념을 이산적인(정수) 인원에 억지로 적용할 때 생기는 필연적인 마찰이다.</p>
+</section>
+<section id="결론-완벽한-평가-제도는-없다" class="level2">
+<h2 class="anchored" data-anchor-id="결론-완벽한-평가-제도는-없다">결론: 완벽한 평가 제도는 없다</h2>
+<p>나는 학생들에게 상대평가와 절대평가 중 어느 쪽이 옳으냐고 물으면 이렇게 답한다. “둘 다 옳고, 둘 다 대가가 있습니다.” 상대평가는 난이도 차이에 흔들리지 않는 대신, 소규모 집단에서 등급 자체가 사라지는 대가를 치른다. 절대평가는 인원수에서 자유로운 대신, 시험이 쉬운 해에는 등급이 부풀려지는 대가를 치른다. 2025년의 개편은 이 두 대가를 절충하려는 시도였지만, 완전히 없앨 수는 없었다 — 4%를 10%로 넓혀도, 반올림이라는 계산 방식 자체가 남아 있는 한 어딘가에는 여전히 문턱 아래에 있는 소수의 학생들이 존재한다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+참고 자료
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://www.seoul.co.kr/news/society/education-news/2023/10/11/20231011002006">2025년 고교내신 전 학년 5등급 상대평가… 1등급 4%→10% 확대 — 서울신문</a></li>
+<li><a href="https://www.kmib.co.kr/article/view.asp?arcid=0030173356">고교 내신 5등급제에도 1등급 ‘0명’ 학교 11곳 — 국민일보</a></li>
+<li><a href="https://v.daum.net/v/20260429065946843">고교학점제, ‘내신등급’ 앞에서 ’선택’은 불가능했다 — 다음뉴스</a></li>
+</ul>
+</div>
+</div>
+</div>
 
 
 </section>

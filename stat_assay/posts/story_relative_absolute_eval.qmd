@@ -1,0 +1,110 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(숫자로 사람을 줄 세우는 법) 어느 쪽이 더 공정할까 — 상대평가 vs 절대평가"
+author: "권세혁"
+date: "2026-09-08"
+categories: [통계기초, 기술통계]
+description: "2025년부터 고교 내신은 9등급제에서 5등급제로 바뀌었다. 그런데도 2026년 봄 기준 전국 고2 11개교, 고1 9개교에서 여전히 '1등급이 한 명도 없는' 학교가 나왔다. 상대평가의 등급은 사실 반올림 계산의 결과다. 수강 인원이 몇 명이어야 1등급이 '존재'할 수 있는지 직접 계산해본다."
+---
+
+## 개편했는데도 1등급이 0명인 학교가 있다
+
+2025년, 고교학점제 전면 시행과 함께 고등학교 내신 등급 체계가 바뀌었다. 기존에는 상위 4%까지만 1등급을 주는 **9등급 상대평가**였는데, 이걸 상위 10%까지 1등급을 주는 **5등급 상대평가**로 완화하고, 실제 성취 수준(A~E)을 매기는 **절대평가(성취평가제)**를 함께 표기하도록 했다. 학생들이 원하는 과목을 자유롭게 선택하는 고교학점제 아래에서는 과목마다 수강 인원이 들쭉날쭉해지는데, 기존 9등급제로는 인원이 적은 선택과목에서 등급 자체가 안 나오는 사례가 속출했기 때문이다.
+
+그런데 개편 이후에도 문제는 사라지지 않았다. 2026년 봄 보도에 따르면, 전국 고등학교 중 **1등급을 받은 학생이 단 한 명도 없는 학교가 고2 기준 11곳, 고1 기준 9곳**이었다. 등급 기준을 4%에서 10%로 넓혔는데도 왜 여전히 "등급 공백"이 생길까? 답은 상대평가 등급이 사실 **반올림 계산의 결과물**이라는 데 있다.
+
+## 등급은 반올림으로 결정된다
+
+9등급제의 실제 계산 규칙은 이렇다. 한 과목 수강 인원에 각 등급의 누적 비율(1등급은 4%)을 곱한 뒤, 그 값을 반올림해서 해당 등급의 인원수를 정한다. 예를 들어 수강생이 13명이면 $13 \times 0.04 = 0.52$명이 되고, 반올림하면 1명이 1등급을 받는다. 그런데 수강생이 12명이라면 $12 \times 0.04 = 0.48$명, 반올림하면 **0명**이다. 아무리 시험을 잘 봐도, 그 과목을 들은 학생이 12명뿐이라면 1등급은 원천적으로 존재하지 않는다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The number of students who receive the top grade (grade 1), by class size, under Korea's old 9-tier system (top 4%) versus the new 5-tier system (top 10%), using the official round-half-up rule (count = round(n x rate)). Under the old system, a class needs at least 13 students before a single '1st grade' can exist; the new system lowers that threshold to 5 - but classes smaller than that still produce zero."
+import numpy as np
+import matplotlib.pyplot as plt
+
+def round_half_up(x):
+    return np.floor(x + 0.5)
+
+n = np.arange(1, 21)
+g9 = round_half_up(n * 0.04)
+g5 = round_half_up(n * 0.10)
+
+fig, ax = plt.subplots(figsize=(8, 4.6))
+ax.step(n, g9, where="post", color="#a8790a", linewidth=2.2, label="Old system: top 4% (9-tier)")
+ax.step(n, g5, where="post", color="#1e3a2f", linewidth=2.2, label="New system: top 10% (5-tier)")
+ax.axvline(13, color="#a8790a", linestyle=":", linewidth=1.4)
+ax.axvline(5, color="#1e3a2f", linestyle=":", linewidth=1.4)
+ax.annotate("13 students needed\n(old system)", xy=(13, 1), xytext=(13.5, 0.3), fontsize=8.5, color="#a8790a")
+ax.annotate("5 students needed\n(new system)", xy=(5, 1), xytext=(5.5, 1.5), fontsize=8.5, color="#1e3a2f")
+ax.set_xlabel("Number of students taking the course")
+ax.set_ylabel("Number of students who get grade 1")
+ax.set_xticks(range(0, 21, 2))
+ax.set_yticks(range(0, 3))
+ax.set_title("Below the threshold, grade 1 simply does not exist", fontsize=10.5, color="#1e3a2f")
+ax.legend(fontsize=8.5, loc="upper left")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+그래프에서 보듯, 9등급제(4%)에서는 수강 인원이 13명이 될 때까지 1등급이 아예 나오지 않는다. 5등급제(10%)로 바뀌면서 그 문턱이 5명으로 낮아졌지만, 그보다도 인원이 적은 소규모 선택과목이나 농어촌 소규모 학교에서는 여전히 문턱을 넘지 못한다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Real, reported figures from spring 2026: the number of Korean high schools where not a single student received grade 1 in at least one subject, even after the 2025 reform from a 9-tier to a 5-tier relative grading system."
+import matplotlib.pyplot as plt
+
+grades = ["1st graders\n(2026 cohort)", "2nd graders\n(2026 cohort)"]
+counts = [9, 11]
+
+fig, ax = plt.subplots(figsize=(5.5, 4.2))
+bars = ax.bar(grades, counts, color=["#1e3a2f", "#a8790a"], width=0.5)
+for b, v in zip(bars, counts):
+    ax.annotate(f"{v} schools", xy=(b.get_x()+b.get_width()/2, v), xytext=(0,5),
+                textcoords="offset points", ha="center", fontsize=10)
+ax.set_ylabel("Number of high schools with zero grade-1 students")
+ax.set_ylim(0, 14)
+ax.set_title("The 'grade gap' persisted after the 2025 reform", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 상대평가와 절대평가는 애초에 다른 질문에 답한다
+
+상대평가는 "이 학생이 또래 안에서 몇 등인가"를 묻고, 절대평가는 "이 학생이 정해진 기준을 얼마나 충족했는가"를 묻는다. 두 질문은 겉보기엔 비슷하지만 답이 갈리는 순간이 있다.
+
+::: {.callout-warning}
+## 두 평가 방식이 어긋나는 경우
+
+- **모두가 잘했을 때**: 절대평가라면 전원이 A를 받을 수 있다. 상대평가라면 아무리 다 같이 잘해도 정해진 비율만큼은 반드시 하위 등급을 받는다.
+- **인원이 적을 때**: 오늘 살펴봤듯, 상대평가는 비율×인원을 반올림하는 계산이라 인원이 너무 적으면 특정 등급 자체가 사라진다. 절대평가는 인원과 무관하게 기준만 충족하면 등급이 나온다.
+- **난이도가 해마다 다를 때**: 절대평가는 시험이 쉬웠던 해에 등급 인플레이션이 생길 수 있다. 상대평가는 난이도와 무관하게 비율이 고정되므로 이 문제에서 자유롭다.
+:::
+
+::: {.callout-tip}
+## 평가 방식을 볼 때 확인할 것
+
+1. **이 평가가 "등수"를 매기는가, "기준 충족 여부"를 매기는가?** 상대평가와 절대평가는 서로 다른 질문에 답하는 도구이지, 하나가 항상 더 옳은 게 아니다.
+2. **집단의 크기가 평가 결과에 영향을 주는가?** 상대평가라면 그렇다. 오늘 본 것처럼 인원이 적으면 등급 자체가 존재하지 않을 수 있다.
+3. **"공정하다"는 말이 무엇을 뜻하는지부터 합의해야 한다.** 또래 안에서의 상대적 위치가 공정의 기준인지, 정해진 성취 기준 도달 여부가 공정의 기준인지에 따라 답이 달라진다.
+:::
+
+## 더 깊이: 등급은 순서통계량의 절단이다
+
+강의노트 [〈수리통계학 4. 확률표본의 함수 — 순서통계량 정의〉](../../notes/math_stat/random_sample.qmd#순서통계량-정의)는 확률표본을 크기 순으로 정렬한 $X_{(1)} \leq X_{(2)} \leq \ldots \leq X_{(n)}$을 순서통계량으로 정의한다. 내신 등급은 정확히 이 순서통계량을 정해진 구간(1등급, 2등급, …)으로 잘라낸 것이다. 그런데 표본 크기 $n$이 아주 작으면, "상위 4%에 해당하는 학생"이라는 구간 자체가 정수 인원으로 존재하지 않을 수 있다 — 4%라는 비율은 연속적인 개념이지만, 실제 학생 수는 1명, 2명 같은 정수 단위로만 셀 수 있기 때문이다. 오늘 살펴본 "등급 공백"은 연속적인 비율 개념을 이산적인(정수) 인원에 억지로 적용할 때 생기는 필연적인 마찰이다.
+
+## 결론: 완벽한 평가 제도는 없다
+
+나는 학생들에게 상대평가와 절대평가 중 어느 쪽이 옳으냐고 물으면 이렇게 답한다. "둘 다 옳고, 둘 다 대가가 있습니다." 상대평가는 난이도 차이에 흔들리지 않는 대신, 소규모 집단에서 등급 자체가 사라지는 대가를 치른다. 절대평가는 인원수에서 자유로운 대신, 시험이 쉬운 해에는 등급이 부풀려지는 대가를 치른다. 2025년의 개편은 이 두 대가를 절충하려는 시도였지만, 완전히 없앨 수는 없었다 — 4%를 10%로 넓혀도, 반올림이라는 계산 방식 자체가 남아 있는 한 어딘가에는 여전히 문턱 아래에 있는 소수의 학생들이 존재한다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [2025년 고교내신 전 학년 5등급 상대평가… 1등급 4%→10% 확대 — 서울신문](https://www.seoul.co.kr/news/society/education-news/2023/10/11/20231011002006)
+- [고교 내신 5등급제에도 1등급 '0명' 학교 11곳 — 국민일보](https://www.kmib.co.kr/article/view.asp?arcid=0030173356)
+- [고교학점제, '내신등급' 앞에서 '선택'은 불가능했다 — 다음뉴스](https://v.daum.net/v/20260429065946843)
+:::
