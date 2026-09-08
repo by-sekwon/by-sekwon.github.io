@@ -343,24 +343,6 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   gap: 0.5rem 0.8rem;
 }
 
-/* Filter */
-.sn-filter-row {
-  margin-bottom: 1.2rem;
-}
-.sn-filter-row input {
-  width: 100%;
-  max-width: 420px;
-  font-size: 0.88rem;
-  padding: 0.5rem 0.8rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
-.sn-filter-count {
-  font-size: 0.78rem;
-  color: #999;
-  margin: 0.4rem 0 0;
-}
-
 /* Source cards grid */
 .sn-grid {
   display: grid;
@@ -468,11 +450,6 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   <p class="sn-empty">시황 데이터를 불러오는 중입니다…</p>
 </div>
 
-<div class="sn-filter-row">
-  <input type="text" id="sn-filter" placeholder="종목명·키워드로 오늘 수집된 뉴스 검색 (예: 삼성전자, 반도체, 코스피)">
-  <p class="sn-filter-count" id="sn-filter-count"></p>
-</div>
-
 <div class="sn-grid" id="sn-grid">
   <p class="sn-empty">데이터를 불러오는 중입니다…</p>
 </div>
@@ -481,7 +458,6 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   뉴스는 <a href="https://finance.naver.com/news/news_list.naver?mode=LSS2D&amp;section_id=101&amp;section_id2=258" target="_blank" rel="noopener">네이버 증권 &gt; 뉴스 &gt; 증권</a> 및
   <a href="https://www.mk.co.kr/news/stock/" target="_blank" rel="noopener">매일경제 &gt; 증권</a> 섹션에 노출되는 기사 제목·요약·시각을,
   시황은 네이버 증권의 코스피·코스닥 지수를 매일 자동으로 그대로 수집·정리한 것으로, 본 사이트가 별도로 내용을 가공하거나 순위를 산정하지 않습니다.
-  검색창은 오늘 수집된 뉴스 안에서만 제목·요약을 대상으로 찾으며, 수집되지 않은 종목은 결과에 나타나지 않을 수 있습니다.
   기사 본문은 각 언론사 원문 링크에서 확인할 수 있습니다. 본 정보는 참고용이며 투자 결정의 책임은 본인에게 있습니다.
 </p>
 
@@ -491,10 +467,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   const market = document.getElementById("sn-market");
   const select = document.getElementById("sn-date-select");
   const meta = document.getElementById("sn-generated-at");
-  const filterInput = document.getElementById("sn-filter");
-  const filterCount = document.getElementById("sn-filter-count");
   const cache = new Map();
-  let current = null;
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -529,29 +502,17 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     }).join("");
   }
 
-  function itemMatches(item, query) {
-    if (!query) return true;
-    const haystack = `${item.title} ${item.summary || ""}`.toLowerCase();
-    return haystack.includes(query.toLowerCase());
-  }
-
-  function renderSources(sources, query) {
-    let totalShown = 0;
-    let totalAll = 0;
-    const cardsHtml = sources.map((source) => {
-      const allItems = source.items || [];
-      totalAll += allItems.length;
-      if (source.status === "error" || !allItems.length) {
+  function renderSources(sources) {
+    grid.innerHTML = sources.map((source) => {
+      const items = source.items || [];
+      if (source.status === "error" || !items.length) {
         return `
         <div class="sn-source-card">
           <div class="sn-source-head">${escapeHtml(source.label)} <a href="${escapeHtml(source.sourceUrl)}" target="_blank" rel="noopener">원본 ↗</a></div>
           <p class="sn-error">${source.status === "error" ? "수집 실패" + (source.error ? ": " + escapeHtml(source.error) : "") : "데이터 없음"}</p>
         </div>`;
       }
-      const filtered = allItems.filter((it) => itemMatches(it, query));
-      totalShown += filtered.length;
-      const listHtml = filtered.length
-        ? `<ul class="sn-list">${filtered.map((it) => `
+      const listHtml = `<ul class="sn-list">${items.map((it) => `
           <li class="sn-item">
             <h3><span class="sn-rank">${it.rank}</span><a href="${escapeHtml(it.url)}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a></h3>
             ${it.summary ? `<p class="sn-summary">${escapeHtml(it.summary)}</p>` : ""}
@@ -560,23 +521,19 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
               ${it.press ? `<span>${escapeHtml(it.press)}</span>` : ""}
               ${it.time ? `<span>${escapeHtml(it.time)}</span>` : ""}
             </div>
-          </li>`).join("")}</ul>`
-        : `<p class="sn-empty" style="padding:0.9rem 1.1rem;">검색어와 일치하는 뉴스가 없습니다.</p>`;
+          </li>`).join("")}</ul>`;
       return `
       <div class="sn-source-card">
         <div class="sn-source-head">${escapeHtml(source.label)} <a href="${escapeHtml(source.sourceUrl)}" target="_blank" rel="noopener">원본 ↗</a></div>
         ${listHtml}
       </div>`;
     }).join("");
-    grid.innerHTML = cardsHtml;
-    filterCount.textContent = query ? `"${query}" 검색 결과: 전체 ${totalAll}건 중 ${totalShown}건` : "";
   }
 
   function renderSnapshot(snapshot) {
-    current = snapshot;
     meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date);
     renderMarket(snapshot.market);
-    renderSources(snapshot.sources || [], filterInput.value.trim());
+    renderSources(snapshot.sources || []);
   }
 
   async function loadSnapshot(date) {
@@ -599,10 +556,6 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       market.innerHTML = "";
     }
   }
-
-  filterInput.addEventListener("input", () => {
-    if (current) renderSources(current.sources || [], filterInput.value.trim());
-  });
 
   async function init() {
     try {
