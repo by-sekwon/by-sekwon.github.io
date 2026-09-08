@@ -8,7 +8,7 @@
 
 <meta name="author" content="권세혁">
 <meta name="dcterms.date" content="2026-09-08">
-<meta name="description" content="등록된 관심 종목의 뉴스를 매일 자동으로 수집해, 종목명으로 찾아볼 수 있게 해드립니다.">
+<meta name="description" content="코스피·코스닥 전 종목 중 원하는 기업을 검색하면 그 기업의 뉴스를 실시간으로 보여드립니다.">
 
 <title>관심 종목 뉴스 검색기 – 권세혁HOME</title>
 <style>
@@ -232,7 +232,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 <div>
   <div class="description">
-    등록된 관심 종목의 뉴스를 매일 자동으로 수집해, 종목명으로 찾아볼 수 있게 해드립니다.
+    코스피·코스닥 전 종목 중 원하는 기업을 검색하면 그 기업의 뉴스를 실시간으로 보여드립니다.
   </div>
 </div>
 
@@ -274,11 +274,6 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   padding: 1.4rem 2rem;
   border-radius: 10px;
   margin-bottom: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
 }
 .wn-header .wn-title {
   font-size: 1.5rem;
@@ -291,24 +286,8 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   opacity: 0.85;
   margin: 0;
 }
-.wn-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 0.85rem;
-}
-.wn-controls select {
-  font-size: 0.85rem;
-  padding: 0.3rem 0.5rem;
-  border-radius: 6px;
-  border: none;
-}
-.wn-meta {
-  font-size: 0.8rem;
-  color: #888;
-  margin: -0.6rem 0 1rem;
-}
 
+.wn-search-row { position: relative; }
 .wn-search-row input {
   width: 100%;
   max-width: 420px;
@@ -316,13 +295,19 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   padding: 0.55rem 0.9rem;
   border-radius: 8px;
   border: 1px solid #ddd;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+.wn-hint {
+  font-size: 0.78rem;
+  color: #999;
+  margin: 0 0 0.9rem;
 }
 .wn-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1.3rem;
+  min-height: 2rem;
 }
 .wn-chip {
   font-size: 0.85rem;
@@ -333,12 +318,18 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   color: #2d4a8c;
   cursor: pointer;
 }
+.wn-chip .wn-chip-market {
+  font-size: 0.68rem;
+  color: #8a95b8;
+  margin-left: 0.3rem;
+}
 .wn-chip:hover { background: #dfe6f7; }
 .wn-chip.wn-active {
   background: #2d4a8c;
   color: #fff;
   border-color: #2d4a8c;
 }
+.wn-chip.wn-active .wn-chip-market { color: #cfd9f5; }
 .wn-chip-empty {
   font-size: 0.85rem;
   color: #999;
@@ -401,48 +392,41 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </style>
 
 <div class="wn-header">
-  <div>
-    <div class="wn-title">🔍 <span>관심 종목 뉴스 검색기</span></div>
-    <p class="wn-sub">등록된 관심 종목의 뉴스를 매일 자동 수집</p>
-  </div>
-  <div class="wn-controls">
-    <label for="wn-date-select">날짜</label>
-    <select id="wn-date-select"></select>
-  </div>
+  <div class="wn-title">🔍 <span>관심 종목 뉴스 검색기</span></div>
+  <p class="wn-sub">코스피·코스닥 전 종목을 대상으로 실시간 검색</p>
 </div>
-
-<p class="wn-meta" id="wn-generated-at"></p>
 
 <div class="wn-search-row">
-  <input type="text" id="wn-search" placeholder="종목명으로 검색 (예: 삼성전자, 카카오)">
+  <input type="text" id="wn-search" placeholder="종목명 또는 종목코드로 검색 (예: 삼성전자, 005930, HLB)" autocomplete="off">
 </div>
+<p class="wn-hint" id="wn-hint">종목명이나 종목코드 일부를 입력해보세요.</p>
 
-<div class="wn-chips" id="wn-chips">
-  <p class="wn-empty">종목 목록을 불러오는 중입니다…</p>
-</div>
+<div class="wn-chips" id="wn-chips"></div>
 
-<div id="wn-result">
-  <p class="wn-empty">위에서 종목을 선택하면 해당 종목의 뉴스가 표시됩니다.</p>
-</div>
+<div id="wn-result"></div>
 
 <p class="wn-footnote">
-  현재 등록된 관심 종목: <strong>삼성전자·SK하이닉스·LG에너지솔루션·삼성바이오로직스·현대차·기아·셀트리온·NAVER·카카오·POSCO홀딩스</strong> (코스피 시가총액 상위 10종목으로 시작).
-  이 페이지는 방문자가 아무 종목이나 실시간으로 검색하는 방식이 아니라, 위 목록에 등록된 종목의 뉴스만 매일 자동으로 미리 수집해 두는 방식입니다
-  (정적 사이트 특성상 브라우저에서 외부 사이트를 실시간으로 검색하는 데는 제약이 있습니다). 더 보고 싶은 종목이 있다면 알려주시면 목록에 추가할 수 있습니다.
-  뉴스는 <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener">네이버 증권 종목 뉴스</a>에 노출되는 제목·날짜를 그대로 수집·정리한 것이며,
+  검색은 코스피·코스닥 상장 전 종목(약 2,900개)을 대상으로 하며, 결과를 고르면 그 종목의 최신 뉴스를 그 자리에서 가져옵니다
+  (짧은 시간 내 같은 종목을 다시 조회하면 캐시된 결과가 표시될 수 있습니다).
+  뉴스는 <a href="https://finance.naver.com/item/main.naver?code=005930" target="_blank" rel="noopener">네이버 증권 종목 뉴스</a>에 노출되는 제목·날짜를 그대로 가져온 것이며,
   본문은 각 언론사 원문 링크에서 확인할 수 있습니다. 본 정보는 참고용이며 투자 결정의 책임은 본인에게 있습니다.
 </p>
 
 <script>
 (function () {
+  // Replace with the deployed Cloudflare Worker URL from
+  // cloudflare-worker/stock-search-worker.js (see that file's header comment
+  // for deploy steps). A static site can't call finance.naver.com directly
+  // from the browser (no CORS there), so this small proxy does it instead.
+  const WORKER_URL = "__CONFIGURE_WORKER_URL__";
+
+  const searchInput = document.getElementById("wn-search");
+  const hint = document.getElementById("wn-hint");
   const chips = document.getElementById("wn-chips");
   const result = document.getElementById("wn-result");
-  const select = document.getElementById("wn-date-select");
-  const meta = document.getElementById("wn-generated-at");
-  const search = document.getElementById("wn-search");
-  const cache = new Map();
-  let current = null;
   let activeCode = null;
+  let debounceTimer = null;
+  let searchSeq = 0;
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -450,95 +434,86 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     }[c]));
   }
 
-  function renderResult(stock) {
-    if (!stock) {
-      result.innerHTML = '<p class="wn-empty">위에서 종목을 선택하면 해당 종목의 뉴스가 표시됩니다.</p>';
-      return;
-    }
-    if (stock.status === "error" || !stock.items || !stock.items.length) {
-      result.innerHTML = `
-        <div class="wn-result-head">${escapeHtml(stock.name)}</div>
-        <p class="wn-error">${stock.status === "error" ? "수집 실패" + (stock.error ? ": " + escapeHtml(stock.error) : "") : "수집된 뉴스가 없습니다."}</p>`;
-      return;
-    }
-    result.innerHTML = `
-      <div class="wn-result-head">${escapeHtml(stock.name)} 뉴스</div>
-      <ul class="wn-list">${stock.items.map((it) => `
-        <li class="wn-item">
-          <h3><span class="wn-rank">${it.rank}</span><a href="${escapeHtml(it.url)}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a></h3>
-          <div class="wn-item-meta">${escapeHtml(it.time || "")}</div>
-        </li>`).join("")}</ul>`;
+  function workerConfigured() {
+    return !WORKER_URL.startsWith("__CONFIGURE");
   }
 
-  function renderChips(query) {
-    const stocks = (current && current.stocks) || [];
-    const q = (query || "").trim().toLowerCase();
-    const filtered = q ? stocks.filter((s) => s.name.toLowerCase().includes(q)) : stocks;
-    if (!filtered.length) {
-      chips.innerHTML = '<p class="wn-chip-empty">일치하는 등록 종목이 없습니다.</p>';
+  async function runSearch(q) {
+    const mySeq = ++searchSeq;
+    if (!q) {
+      chips.innerHTML = "";
+      hint.textContent = "종목명이나 종목코드 일부를 입력해보세요.";
       return;
     }
-    chips.innerHTML = filtered.map((s) => `
-      <button type="button" class="wn-chip${s.code === activeCode ? " wn-active" : ""}" data-code="${escapeHtml(s.code)}">${escapeHtml(s.name)}</button>
+    hint.textContent = "검색 중…";
+    try {
+      const res = await fetch(`${WORKER_URL}/search?q=${encodeURIComponent(q)}`);
+      if (mySeq !== searchSeq) return; // a newer keystroke already started another search
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      renderChips(data.results || []);
+      hint.textContent = data.results && data.results.length
+        ? `${data.results.length}개 종목이 검색되었습니다.`
+        : "일치하는 종목이 없습니다.";
+    } catch (err) {
+      if (mySeq !== searchSeq) return;
+      chips.innerHTML = "";
+      hint.textContent = `검색 서비스에 연결하지 못했습니다: ${err.message}`;
+    }
+  }
+
+  function renderChips(stocks) {
+    if (!stocks.length) {
+      chips.innerHTML = "";
+      return;
+    }
+    chips.innerHTML = stocks.map((s) => `
+      <button type="button" class="wn-chip${s.code === activeCode ? " wn-active" : ""}" data-code="${escapeHtml(s.code)}" data-name="${escapeHtml(s.name)}">
+        ${escapeHtml(s.name)}<span class="wn-chip-market">${escapeHtml(s.market === "KSQ" ? "코스닥" : "코스피")}</span>
+      </button>
     `).join("");
     chips.querySelectorAll(".wn-chip").forEach((btn) => {
       btn.addEventListener("click", () => {
         activeCode = btn.dataset.code;
-        renderChips(search.value);
-        renderResult(stocks.find((s) => s.code === activeCode));
+        chips.querySelectorAll(".wn-chip").forEach((b) => b.classList.toggle("wn-active", b === btn));
+        loadNews(btn.dataset.code, btn.dataset.name);
       });
     });
   }
 
-  function renderSnapshot(snapshot) {
-    current = snapshot;
-    activeCode = null;
-    meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date);
-    renderChips(search.value);
-    renderResult(null);
-  }
-
-  async function loadSnapshot(date) {
-    if (cache.has(date)) return cache.get(date);
-    const res = await fetch(`../data/watchlist_news/${date}.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    cache.set(date, data);
-    return data;
-  }
-
-  async function onDateChange() {
-    chips.innerHTML = '<p class="wn-empty">종목 목록을 불러오는 중입니다…</p>';
-    result.innerHTML = "";
+  async function loadNews(code, name) {
+    result.innerHTML = `<div class="wn-result-head">${escapeHtml(name)} 뉴스</div><p class="wn-empty">불러오는 중입니다…</p>`;
     try {
-      const snapshot = await loadSnapshot(select.value);
-      renderSnapshot(snapshot);
-    } catch (err) {
-      chips.innerHTML = `<p class="wn-error">이 날짜의 데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
-    }
-  }
-
-  search.addEventListener("input", () => renderChips(search.value));
-
-  async function init() {
-    try {
-      const res = await fetch("../data/watchlist_news/manifest.json");
+      const res = await fetch(`${WORKER_URL}/news?code=${encodeURIComponent(code)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const manifest = await res.json();
-      const dates = manifest.dates || [];
-      if (!dates.length) {
-        chips.innerHTML = '<p class="wn-empty">아직 수집된 데이터가 없습니다. 첫 자동 수집은 매일 오전 8시 10분경 실행됩니다.</p>';
+      const stock = await res.json();
+      if (stock.error) throw new Error(stock.error);
+      if (!stock.items || !stock.items.length) {
+        result.innerHTML = `<div class="wn-result-head">${escapeHtml(name)} 뉴스</div><p class="wn-empty">최근 수집된 뉴스가 없습니다.</p>`;
         return;
       }
-      select.innerHTML = dates.map((d) => `<option value="${d}">${d}</option>`).join("");
-      select.addEventListener("change", onDateChange);
-      await onDateChange();
+      result.innerHTML = `
+        <div class="wn-result-head">${escapeHtml(name)} 뉴스</div>
+        <ul class="wn-list">${stock.items.map((it) => `
+          <li class="wn-item">
+            <h3><span class="wn-rank">${it.rank}</span><a href="${escapeHtml(it.url)}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a></h3>
+            <div class="wn-item-meta">${escapeHtml(it.time || "")}</div>
+          </li>`).join("")}</ul>`;
     } catch (err) {
-      chips.innerHTML = `<p class="wn-error">데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+      result.innerHTML = `<div class="wn-result-head">${escapeHtml(name)} 뉴스</div><p class="wn-error">뉴스를 가져오지 못했습니다: ${escapeHtml(err.message)}</p>`;
     }
   }
 
-  init();
+  searchInput.addEventListener("input", () => {
+    clearTimeout(debounceTimer);
+    const q = searchInput.value.trim();
+    debounceTimer = setTimeout(() => runSearch(q), 300);
+  });
+
+  if (!workerConfigured()) {
+    hint.textContent = "검색 서비스가 아직 연결되지 않았습니다 (관리자 설정 필요).";
+    searchInput.disabled = true;
+  }
 })();
 </script>
 
