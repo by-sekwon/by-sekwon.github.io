@@ -241,6 +241,63 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   margin: 0;
 }
 
+/* ── KWONSE SDV 캐러셀 ── */
+.kwonse-carousel {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  background: #eef4fb;
+}
+.kwonse-track {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+.kwonse-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  display: block;
+}
+.kwonse-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(30,58,47,0.55);
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+.kwonse-btn:hover { background: rgba(30,58,47,0.85); }
+.kwonse-btn.prev { left: 0.7rem; }
+.kwonse-btn.next { right: 0.7rem; }
+.kwonse-dots {
+  position: absolute;
+  bottom: 0.7rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+}
+.kwonse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.55);
+  cursor: pointer;
+  padding: 0;
+}
+.kwonse-dot.active { background: #d4a017; }
+
 /* ── 메인 2열 ── */
 .main-row {
   display: grid;
@@ -437,6 +494,54 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       </div>
     </div>
   </div>
+
+  <!-- KWONSE SDV 캐러셀 -->
+  <div class="kwonse-carousel" id="kwonseCarousel">
+    <div class="kwonse-track">
+      <a href="images/kwonse-model.jpg" target="_blank" rel="noopener">
+        <img class="kwonse-slide" src="images/kwonse-model.jpg" alt="KWONSE MODEL: AI 시대 통계학자의 역할 전환, From Analyst to Value Architect">
+      </a>
+      <a href="images/kwonse-sdv.jpg" target="_blank" rel="noopener">
+        <img class="kwonse-slide" src="images/kwonse-sdv.jpg" alt="KWONSE SDV: 통계적 데이터 가치화, Statistical Data Valorization">
+      </a>
+    </div>
+    <button class="kwonse-btn prev" type="button" aria-label="이전 슬라이드">‹</button>
+    <button class="kwonse-btn next" type="button" aria-label="다음 슬라이드">›</button>
+    <div class="kwonse-dots">
+      <button class="kwonse-dot active" type="button" data-slide="0" aria-label="1번 슬라이드"></button>
+      <button class="kwonse-dot" type="button" data-slide="1" aria-label="2번 슬라이드"></button>
+    </div>
+  </div>
+  <script>
+  (function () {
+    const root = document.getElementById('kwonseCarousel');
+    if (!root) return;
+    const track = root.querySelector('.kwonse-track');
+    const dots = Array.from(root.querySelectorAll('.kwonse-dot'));
+    const slideCount = dots.length;
+    let index = 0;
+    let timer;
+
+    function show(i) {
+      index = (i + slideCount) % slideCount;
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      dots.forEach((d, di) => d.classList.toggle('active', di === index));
+    }
+    function next() { show(index + 1); }
+    function prev() { show(index - 1); }
+    function startAuto() { timer = setInterval(next, 6000); }
+    function stopAuto() { clearInterval(timer); }
+
+    root.querySelector('.kwonse-btn.next').addEventListener('click', () => { next(); stopAuto(); startAuto(); });
+    root.querySelector('.kwonse-btn.prev').addEventListener('click', () => { prev(); stopAuto(); startAuto(); });
+    dots.forEach((d, di) => d.addEventListener('click', () => { show(di); stopAuto(); startAuto(); }));
+    root.addEventListener('mouseenter', stopAuto);
+    root.addEventListener('mouseleave', startAuto);
+
+    show(0);
+    startAuto();
+  })();
+  </script>
 
   <!-- 메인 2열 -->
   <div class="main-row">
