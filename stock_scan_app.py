@@ -616,9 +616,16 @@ run_btn = col_btn.button("🚀 스캔 시작", type="primary", use_container_wid
 
 if run_btn:
     with st.spinner("KRX 종목 목록 로딩 중..."):
+        def _is_published(df):
+            # 당일 KRX 시가총액 스냅샷은 장 마감 후 정산이 끝나야 채워진다.
+            # 장중에는 Close가 전 종목 "-" (Volume/Marcap NaN) 로 내려오므로,
+            # 실제 종가가 절반 이상 채워져 있는지로 "당일 데이터 게시 여부"를 판단한다.
+            if df is None or df.empty or "Close" not in df.columns:
+                return False
+            close = df["Close"].astype(str).str.strip()
+            return (close != "-").mean() > 0.5
+
         def _load_krx_github_cache():
-            import requests
-            from datetime import timedelta
             base = ("https://raw.githubusercontent.com/FinanceData/"
                     "fdr_krx_data_cache/refs/heads/master/data/listing/krx/")
             for days_ago in range(10):
@@ -630,15 +637,25 @@ if run_btn:
                     df = pd.read_csv(url, index_col=0,
                                      dtype={"Code": str, "Dept": str,
                                             "ChangeCode": str, "MarketId": str})
-                    return df.reset_index(drop=True)
+                    df = df.reset_index(drop=True)
                 except Exception:
                     continue
+                if _is_published(df):
+                    return df, dt.strftime("%Y-%m-%d")
             raise ValueError("KRX GitHub 캐시에서 최근 데이터를 찾을 수 없습니다")
 
+        krx = None
+        listing_date = datetime.now().strftime("%Y-%m-%d")
         try:
             krx = fdr.StockListing("KRX")
+            if not _is_published(krx):
+                raise ValueError("당일 KRX 시세 미게시 (장중)")
         except Exception:
-            krx = _load_krx_github_cache()
+            krx, listing_date = _load_krx_github_cache()
+
+        if listing_date != datetime.now().strftime("%Y-%m-%d"):
+            st.info(f"ℹ️ 당일 KRX 시세가 아직 게시되지 않아(장중/장마감 전), "
+                    f"최근 영업일({listing_date}) 종가 기준으로 스캔합니다.")
 
         krx = krx[krx["Market"] != "KONEX"].copy()
         krx["Close"]  = pd.to_numeric(krx["Close"], errors="coerce")
