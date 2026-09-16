@@ -1,0 +1,98 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(공식 통계 숫자 읽는 법) 인과추론 감각을 기르는 법 — 미신적 상관관계 모음"
+author: "권세혁"
+date: "2026-09-18"
+categories: [통계기초, 상관분석]
+description: "1999~2009년 미국에서 니콜라스 케이지가 출연한 영화 편수와 수영장 익사 사고 수의 상관계수는 0.666이다. 같은 기간 1인당 치즈 소비량과 침대시트에 엉켜 사망한 사람 수의 상관계수는 0.947이다. 둘 다 실제로 계산된 진짜 숫자다. 두 사건이 아무 관계가 없어도 상관계수가 이렇게까지 높게 나올 수 있는 이유를 직접 시뮬레이션으로 확인한다."
+---
+
+## 니콜라스 케이지와 익사 사고, 치즈와 침대시트
+
+통계학자 타일러 비건(Tyler Vigen)이 정리해 유명해진 사례가 있다. 1999년부터 2009년까지, 배우 니콜라스 케이지가 그해 출연한 영화 편수와 미국에서 수영장에 빠져 익사한 사람 수 사이의 **상관계수는 0.666**이다. 같은 기간 미국의 1인당 치즈 소비량과, 침대시트에 몸이 엉켜 사망한 사람 수 사이의 상관계수는 **0.947**에 달한다. 두 쌍 모두 실제로 존재하는 공개 데이터로 계산된 진짜 숫자다. 그런데 니콜라스 케이지의 영화 출연이 누군가를 익사하게 만들었다거나, 치즈를 많이 먹을수록 침대시트에 엉켜 죽을 확률이 올라간다고 믿는 사람은 없을 것이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Two real, published correlation coefficients between obviously unrelated things (Tyler Vigen's 'Spurious Correlations' project, US data circa 1999-2009). Both are high enough that, in almost any other context, a researcher might be tempted to write a headline about them."
+import matplotlib.pyplot as plt
+
+labels = ["Nicolas Cage films\nvs pool drownings", "Cheese consumption\nvs bedsheet-tangling deaths"]
+values = [0.666, 0.947]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.4))
+bars = ax.bar(labels, values, color=["#1e3a2f", "#a8790a"], width=0.5)
+for b, v in zip(bars, values):
+    ax.annotate(f"r = {v:.3f}", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=10.5)
+ax.set_ylabel("Correlation coefficient")
+ax.set_ylim(0, 1.05)
+ax.set_title("Real correlation coefficients between obviously unrelated pairs", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 우연히도, 이 정도 상관은 생각보다 흔하다
+
+이런 숫자가 어떻게 나올 수 있는지 직접 확인해보자. 서로 완전히 무관한 두 값이, 그저 해마다 오르내리기만 하는 시계열 자료라면 — 즉 "니콜라스 케이지 영화 편수"와 "익사 사고 수"처럼 해마다 등락하는 숫자 두 개를 아무 관계 없이 무작위로 만들어낸다면 — 상관계수는 얼마나 자주 이렇게 높게 나올까?
+
+```{python}
+#| echo: false
+#| fig-cap: "The distribution of correlation coefficients between 20,000 pairs of completely independent random-walk time series (24 points each, mimicking two unrelated year-by-year trending statistics). Even with zero real relationship, about 22% of random pairs exceed the Nicolas Cage/drowning correlation (0.666), and about 1.4% exceed the cheese/bedsheet correlation (0.947) - purely by chance."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(0)
+n_years = 24
+trials = 20000
+rs = np.empty(trials)
+for i in range(trials):
+    x = np.cumsum(rng.normal(0, 1, n_years))
+    y = np.cumsum(rng.normal(0, 1, n_years))
+    rs[i] = np.corrcoef(x, y)[0, 1]
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.hist(rs, bins=60, color="#1e3a2f", alpha=0.75, edgecolor="white")
+ax.axvline(0.666, color="#a8790a", linestyle="--", linewidth=2)
+ax.axvline(0.947, color="#7a1f2b", linestyle="--", linewidth=2)
+ax.annotate("Cage/drowning\n(r=0.666)", xy=(0.666, ax.get_ylim()[1]*0.85), xytext=(0.40, ax.get_ylim()[1]*0.85),
+            fontsize=9, color="#a8790a", arrowprops=dict(arrowstyle="->", color="#a8790a"))
+ax.annotate("cheese/bedsheet\n(r=0.947)", xy=(0.947, ax.get_ylim()[1]*0.55), xytext=(0.65, ax.get_ylim()[1]*0.55),
+            fontsize=9, color="#7a1f2b", arrowprops=dict(arrowstyle="->", color="#7a1f2b"))
+ax.set_xlabel("Correlation coefficient between two unrelated random trending series")
+ax.set_ylabel("Number of simulated pairs (out of 20,000)")
+ax.set_title("Unrelated trending series often look correlated by pure chance", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+시뮬레이션 결과, 아무 관계 없는 두 시계열 사이에서도 상관계수 0.666 이상이 나올 확률은 약 **22%**, 0.947 이상이 나올 확률도 약 **1.4%**였다. 완전히 우연으로도 드물지 않게 나올 수 있는 숫자라는 뜻이다. 이유는 단순하다 — 두 값이 서로 무관하더라도, 둘 다 시간이 지나며 오르내리는(트렌드가 있는) 숫자라면, 우연히 같은 방향으로 움직이는 구간이 겹치기 쉽다. 세상에는 해마다 오르내리는 통계가 수천, 수만 개나 있다. 그중 아무 둘이나 짝지어보면, 이 정도로 높은 상관계수를 보이는 쌍은 반드시 몇 개씩 나온다.
+
+::: {.callout-tip}
+## 상관계수를 볼 때 확인할 것
+
+1. **상관계수가 높다고 인과관계가 있다는 뜻이 아니다.** 오늘 확인했듯, 완전히 무관한 시계열도 우연히 높은 상관을 보일 수 있다.
+2. **두 변수를 이어줄 그럴듯한 메커니즘(경로)이 있는지 먼저 물어라.** 메커니즘 없이 숫자만 비슷하게 움직인다면 의심부터 하라.
+3. **비교 대상 쌍이 많을수록, 그중 하나쯤은 우연히 높은 상관을 보이기 마련이다.** 수백 개 변수를 모두 짝지어 상관계수를 훑는 방식(데이터 마이닝) 자체가 허위상관을 만들어내는 공장이다.
+:::
+
+## 더 깊이: 상관과 인과를 혼동하는 함정
+
+강의노트 [〈기초통계학 3. 통계의 이해 — 확률 해석의 함정〉](../../notes/intro_stat/concept_of_stat.qmd#확률-해석의-함정)이 정리한 "통계 해석의 주요 함정" 표는 이 문제를 정확히 짚는다: **"상관 vs. 인과 혼동 — 함께 움직인다고 인과관계로 오해. 예: 태양 흑점 수와 정당 점유율의 허위상관."** 니콜라스 케이지의 영화 편수와 태양 흑점 수는 소재만 다를 뿐, 통계적으로는 같은 함정이다. 둘 다 "함께 움직인다"는 사실 하나만으로 관계를 지어내려는 유혹이다.
+
+## SDV 관점: 상관에서 멈추지 않고 인과로 나아가기
+
+두 변수의 상관계수를 계산하는 일은 **요약(기술통계, 1단계)**이고, 오늘처럼 그 상관이 우연일 가능성을 시뮬레이션으로 따져보는 건 **추론(2단계)**을 넘어선 검증이다. 제가 제안하는 **SDV(통계적 데이터 가치화)**의 관점에서 보면, 상관관계 하나를 발견하는 것과 그것을 결정의 근거로 쓰는 것 사이에는 큰 간극이 있다. 실제로 가치 있는 통계 작업은 상관계수를 보고 "관계가 있다"고 서둘러 결론짓는 게 아니라, 메커니즘을 확인하고, 무작위 대조(실험이나 자연실험)로 인과를 검증한 뒤에야 정책이나 투자 같은 실제 결정에 반영하는 것이다. AI는 수천 개 변수 쌍의 상관계수를 순식간에 계산해 보여줄 수 있다. 그럴수록 통계학자의 역할은 계산이 아니라, **그 상관 중 어느 것이 진짜 가치 있는 인과적 통찰인지 가려내는 것**이다. ([about SDV & me](../../about.qmd))
+
+## 결론: 챕터 1을 마치며 — 숫자 다음엔 항상 질문이 있다
+
+이 시리즈의 첫 챕터, "숫자를 대표하는 방법"에서 시작해 오늘 "공식 통계 숫자 읽는 법"까지, 8주 40편 동안 우리는 같은 메시지를 여러 각도에서 반복해왔다. **평균도, 비율도, 순위도, 상관계수도 — 숫자 하나만으로는 이야기가 끝나지 않는다.** 그 숫자가 무엇을 요약했는지, 무엇을 감췄는지, 우연이었는지 필연이었는지를 물어야 비로소 숫자가 쓸모 있어진다. 다음 챕터부터는 "확률과 우연의 세계"로 들어가, 이 질문들을 조금 더 정교한 도구로 다뤄볼 것이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- Tyler Vigen, *Spurious Correlations* — [tylervigen.com/spurious-correlations](https://tylervigen.com/spurious-correlations)
+:::

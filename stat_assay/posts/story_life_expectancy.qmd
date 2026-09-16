@@ -1,0 +1,105 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(공식 통계 숫자 읽는 법) 평균수명 60세 시대의 오해 — 기대수명이라는 숫자의 함정"
+author: "권세혁"
+date: "2026-09-14"
+categories: [통계기초, 기술통계]
+description: "1970년 한국인의 기대수명은 62.3세였다. '그 시절엔 환갑만 넘겨도 장수했다'는 이미지가 여기서 나온다. 그런데 그해 65세까지 살아남은 사람은 평균 75세 넘게 살 것으로 이미 기대됐다. 기대수명이라는 숫자가 실제로 무엇을 요약하는지, 그리고 그 숫자를 어떻게 결정에 쓸 가치로 바꿀지 살펴본다."
+---
+
+## 1970년에는 정말 62세에 다들 세상을 떠났을까
+
+국가데이터처(옛 통계청)가 매년 발표하는 생명표를 보면, 1970년 한국인의 기대수명은 **62.3세**(남자 58.7세, 여자 65.6세)였다. 2024년 출생아의 기대수명은 **83.7세**(남자 80.8세, 여자 86.6세)로, 53년 만에 21.4년이 늘었다. 이 숫자를 보면 "옛날엔 환갑(60세)만 넘겨도 동네잔치를 벌일 만큼 장수였다"는 이미지가 자연스럽게 떠오른다. 그런데 이 이미지는 절반만 맞다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Korea's life expectancy at birth, at the milestones officially recorded by the national statistics agency: it first passed 70 in 1987, 75 in 1998, 80 in 2009, and 83 in 2019, reaching 83.7 in 2024."
+import matplotlib.pyplot as plt
+
+years = [1970, 1987, 1998, 2009, 2019, 2024]
+values = [62.3, 70.0, 75.0, 80.0, 83.0, 83.7]
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.plot(years, values, color="#1e3a2f", linewidth=2.3, marker="o")
+for y, v in zip(years, values):
+    ax.annotate(f"{v}", xy=(y, v), xytext=(0, 8), textcoords="offset points", ha="center", fontsize=9)
+ax.set_xlabel("Year")
+ax.set_ylabel("Life expectancy at birth (years)")
+ax.set_ylim(55, 90)
+ax.set_title("Korea's life expectancy at birth, 1970-2024", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 기대수명은 "그 해에 태어난 아기"를 기준으로 한 숫자다
+
+기대수명(출생 시 기대여명)은 그 해의 연령별 사망률을 그대로 유지한다고 가정했을 때, **막 태어난 아기가 평균적으로 몇 살까지 살 것으로 기대되는가**를 계산한 값이다. 문제는 1970년의 영유아·어린이 사망률이 지금과는 비교가 안 될 만큼 높았다는 데 있다. 한 살도 안 돼 세상을 떠나는 아기가 적지 않던 시절이었다. 평균을 계산할 때, 0세나 1세에 사망한 사례 하나는 80세에 사망한 사례보다 훨씬 더 큰 폭으로 평균을 끌어내린다 — [이상치 하나가 바꾸는 평균](story_outlier_mean.qmd) 글에서 살펴본 것과 똑같은 산술이다. 다만 이번엔 극단적으로 큰 값이 아니라 극단적으로 **작은** 값이 평균을 끌어내리는 방향이라는 차이가 있을 뿐이다.
+
+그렇다면 진짜 궁금한 질문은 이거다. **1970년에 이미 성인이 된 사람들, 즉 영유아기를 무사히 넘긴 사람들은 실제로 몇 살까지 살았을까?**
+
+```{python}
+#| echo: false
+#| fig-cap: "Two different gaps between 1970 and today. The gap in life expectancy AT BIRTH (21.4 years) is more than double the gap in remaining life expectancy for someone who had already reached age 65 (9.1 years, comparing 1970 to 2022). Most of the dramatic rise in the headline number reflects fewer infant and child deaths being averaged in - not a proportional extension of old age itself."
+import matplotlib.pyplot as plt
+import numpy as np
+
+categories = ["At birth\n(1970 -> 2024)", "At age 65\n(1970 -> 2022)"]
+old_val = [62.3, 65 + 10.2]
+new_val = [83.7, 65 + 19.3]
+gap = [83.7 - 62.3, 19.3 - 10.2]
+
+x = np.arange(2)
+w = 0.32
+fig, ax = plt.subplots(figsize=(7, 4.8))
+b1 = ax.bar(x - w/2, old_val, w, color="#8a9a90", label="Earlier year")
+b2 = ax.bar(x + w/2, new_val, w, color="#1e3a2f", label="Recent year")
+for bars in (b1, b2):
+    for b in bars:
+        ax.annotate(f"{b.get_height():.1f}", xy=(b.get_x()+b.get_width()/2, b.get_height()),
+                    xytext=(0, 4), textcoords="offset points", ha="center", fontsize=9.5)
+for i, g in enumerate(gap):
+    ax.annotate(f"+{g:.1f} yrs", xy=(x[i], max(old_val[i], new_val[i])+3.5), ha="center",
+                fontsize=10, color="#a8790a", fontweight="bold")
+ax.set_xticks(x)
+ax.set_xticklabels(categories)
+ax.set_ylabel("Expected age at death (years)")
+ax.set_ylim(0, 95)
+ax.set_title("The gain looks very different depending on where you start counting", fontsize=10.3, color="#1e3a2f")
+ax.legend(fontsize=8.5, loc="lower right")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+1970년 통계를 보면, 그해 65세였던 사람은 평균 **10.2년**을 더 살 것으로 기대됐다 — 즉 75세 무렵까지다. 2022년 기준 65세인 사람은 평균 **19.3년**을 더 살 것으로 기대된다 — 84세를 넘긴다. 65세를 기준으로 보면 반세기 동안 늘어난 수명은 9.1년이다. 반면 "기대수명"이라는 헤드라인 숫자는 같은 기간 21.4년이 늘었다. 이 두 숫자의 차이(21.4년 vs 9.1년) 대부분은, 노년의 수명이 극적으로 늘어서가 아니라 **애초에 노년까지 살아남는 사람의 비율 자체가 크게 늘었기 때문**이다.
+
+::: {.callout-tip}
+## 기대수명을 읽는 법
+
+1. **"기대수명"은 항상 "그 해에 태어난 아기" 기준이다.** 이미 나이가 든 사람에게는 다른 숫자(연령별 기대여명)가 적용된다.
+2. **과거의 짧은 기대수명은 대부분 높은 영유아 사망률 때문이지, 노인들이 일찍 죽어서가 아니다.**
+3. **은퇴·연금 설계에는 출생 시 기대수명이 아니라, 현재 자신의 나이에서의 기대여명을 써야 한다.**
+:::
+
+## 더 깊이: 기대수명은 결국 기댓값이다
+
+강의노트 [〈수리통계학 4. 기대값 — 기대값 정의〉](../../notes/math_stat/random_variable.qmd#기대값-정의)는 확률변수 $X$의 기댓값을 $E(X) = \sum_x x \cdot P(X=x)$(이산형)로 정의한다. 기대수명은 정확히 이 정의를 따른다 — 사망 나이를 확률변수로 보고, 그 해의 연령별 사망 확률을 가중치 삼아 계산한 가중평균이다. 사망 확률이 0세·1세에 몰려 있던 시절에는, 그 어린 나이가 기댓값 계산식에서 큰 가중치를 차지하며 전체 평균을 끌어내렸다. 오늘 우리가 확인한 오해는, 결국 "가중평균이 어떻게 계산되는지"를 놓쳐서 생긴 것이다.
+
+## SDV 관점: 기대수명 숫자를 결정으로 연결하기
+
+기대수명 83.7세라는 숫자 자체는 국가데이터처가 매년 계산해 발표하는 **요약(기술통계, 1단계)**이다. 오늘처럼 그 숫자 뒤에 숨은 연령별 기대여명까지 뜯어보는 건 **추론(2단계)**의 영역이다. 그런데 제가 제안하는 **SDV(통계적 데이터 가치화, Statistical Data Valorization)**의 관점에서 보면, 진짜 중요한 질문은 그다음이다 — "이 숫자로 무엇을 설계할 것인가?" 국민연금 수급 개시 연령을 몇 세로 정할지, 정년을 몇 세로 늘릴지, 의료·요양 예산을 어느 연령대에 얼마나 배분할지는 모두 "기대수명 83.7세"가 아니라 "65세의 기대여명 19.3년"을 근거로 설계해야 한다. AI가 이런 숫자를 순식간에 계산하고 표로 정리해주는 시대일수록, 통계학자의 일은 계산이 아니라 **이 숫자가 만들어낼 가치의 방향을 설계하는 것**이다 — 저는 이 역할을 Value Architect라 부른다. ([about SDV & me](../../about.qmd)에 이 프레임워크를 더 자세히 정리해두었다.)
+
+## 결론: 헤드라인 숫자 하나로 세대를 판단하지 말자
+
+나는 학생들에게 "옛날 사람들은 60세만 돼도 노인 대접을 받았다"는 말을 들으면 이렇게 되묻는다. "그 60이라는 숫자, 태어난 아기 기준이에요, 아니면 그 나이까지 살아남은 사람 기준이에요?" 같은 통계라도 어느 지점에서 계산을 시작하느냐에 따라 완전히 다른 이야기를 들려준다. 공식 통계를 읽을 때 가장 먼저 확인할 것은 숫자의 크기가 아니라, 그 숫자가 **누구를 기준으로, 어디서부터** 요약한 값인지다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [2024년 생명표 — 대한민국 정책브리핑](https://www.korea.kr/news/policyNewsView.do?newsId=156732935)
+- [한국 기대수명 53년 — 1970년 62.3세에서 2023년 83.5세로 — DataFact](https://datafact.org/articles/life-expectancy-trend)
+- [기대수명 마일스톤 — DataFact](https://datafact.org/articles/life-expectancy-milestones-1970-2023)
+:::
