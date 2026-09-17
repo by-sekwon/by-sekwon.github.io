@@ -2,115 +2,330 @@
 format:
   html:
     sidebar: sdv
+    toc: false
 title: "000편 SDV(데이터 가치화) — 분석을 넘어 가치로: 통계적 데이터 가치화(SDV) 선언"
 author: "권세혁"
 date: "2026-09-17"
 description: "AI가 분석을 대신하는 시대, 통계학자의 역할은 분석 수행자에서 가치 설계자로 확장되어야 한다. 통계적 데이터 가치화(SDV)가 무엇이고 왜 필요한지 다섯 가지 선언으로 정리한다."
 ---
 
-## 분석을 넘어 가치로
+```{=html}
+<style>
+#title-block-header { display: none; }
 
-### 통계적 데이터 가치화(SDV) 선언
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
 
-## 1. 분석이 흔해진 시대
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
 
-과거에는 데이터를 수집하고 분석할 수 있는 능력 자체가 전문성이었다. 통계분석에는 전문적인 지식과 소프트웨어가 필요했고, 분석 결과를 해석하고 보고서로 작성하는 데에도 상당한 시간과 경험이 요구되었다.
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
 
-그러나 AI의 등장은 이러한 환경을 빠르게 바꾸고 있다. 이제 AI는 데이터를 정리하고, 적절한 분석방법을 제안하며, 모형을 추정하고, 그래프를 만들고, 분석 결과를 문장으로 설명한다. 분석의 속도와 접근성은 과거와 비교할 수 없을 정도로 향상되었다.
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
 
-그렇다고 데이터에 관한 모든 문제가 해결된 것은 아니다. 분석 결과가 많아질수록 오히려 새로운 질문이 중요해진다.
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
 
-- 이 데이터는 믿을 수 있는가?
-- 분석방법은 문제에 적합한가?
-- 발견된 차이는 현실적으로 중요한가?
-- 결과를 어떤 맥락에서 해석해야 하는가?
-- 이 분석은 누구의 어떤 의사결정을 위한 것인가?
-- 분석 결과가 실제로 어떤 가치를 만들어내는가?
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
 
-AI는 답을 빠르게 만들 수 있지만, 어떤 질문에 답해야 하는지와 그 답을 어디에 사용할 것인지는 스스로 결정하지 못한다.
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
 
-## 2. 데이터는 그 자체로 가치가 아니다
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+}
+</style>
 
-데이터를 많이 보유했다고 해서 반드시 더 나은 결정을 내리는 것은 아니다. 정확한 분석 결과가 있다고 해서 정책과 경영이 자동으로 개선되는 것도 아니다.
+<div class="mf-wrap">
 
-원자료는 검증과 구조화를 거쳐야 정보가 된다. 정보는 통계적 분석과 해석을 통해 인사이트가 된다. 인사이트는 현실의 맥락과 결합되어야 판단 가능한 지식이 된다. 그리고 그 지식이 실제 의사결정과 행동으로 이어질 때 비로소 가치가 만들어진다.
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 000편</div>
+    <div class="mf-hero-title">분석을 넘어 가치로</div>
+    <p class="mf-hero-sub">통계적 데이터 가치화(SDV) 선언</p>
+    <div class="mf-hero-meta">권세혁 · 2026.09.17</div>
+  </div>
 
-> Raw Data → Quality → Structure → Analysis → Insight → Knowledge → Decision → Value
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>분석이 흔해진 시대</h2>
+      <p>과거에는 데이터를 수집하고 분석할 수 있는 능력 자체가 전문성이었다. 통계분석에는 전문적인 지식과 소프트웨어가 필요했고, 분석 결과를 해석하고 보고서로 작성하는 데에도 상당한 시간과 경험이 요구되었다.</p>
+      <p>그러나 AI의 등장은 이러한 환경을 빠르게 바꾸고 있다. 이제 AI는 데이터를 정리하고, 적절한 분석방법을 제안하며, 모형을 추정하고, 그래프를 만들고, 분석 결과를 문장으로 설명한다. 분석의 속도와 접근성은 과거와 비교할 수 없을 정도로 향상되었다.</p>
+      <p>그렇다고 데이터에 관한 모든 문제가 해결된 것은 아니다. 분석 결과가 많아질수록 오히려 새로운 질문이 중요해진다.</p>
+      <ul>
+        <li>이 데이터는 믿을 수 있는가?</li>
+        <li>분석방법은 문제에 적합한가?</li>
+        <li>발견된 차이는 현실적으로 중요한가?</li>
+        <li>결과를 어떤 맥락에서 해석해야 하는가?</li>
+        <li>이 분석은 누구의 어떤 의사결정을 위한 것인가?</li>
+        <li>분석 결과가 실제로 어떤 가치를 만들어내는가?</li>
+      </ul>
+      <p>AI는 답을 빠르게 만들 수 있지만, 어떤 질문에 답해야 하는지와 그 답을 어디에 사용할 것인지는 스스로 결정하지 못한다.</p>
+    </div>
+  </div>
 
-따라서 분석 결과의 생산은 데이터 활용의 끝이 아니라 가치 창출 과정의 중간 단계다.
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>데이터는 그 자체로 가치가 아니다</h2>
+      <p>데이터를 많이 보유했다고 해서 반드시 더 나은 결정을 내리는 것은 아니다. 정확한 분석 결과가 있다고 해서 정책과 경영이 자동으로 개선되는 것도 아니다.</p>
+      <p>원자료는 검증과 구조화를 거쳐야 정보가 된다. 정보는 통계적 분석과 해석을 통해 인사이트가 된다. 인사이트는 현실의 맥락과 결합되어야 판단 가능한 지식이 된다. 그리고 그 지식이 실제 의사결정과 행동으로 이어질 때 비로소 가치가 만들어진다.</p>
+      <div class="mf-flow">Raw Data → Quality → Structure → Analysis → Insight → Knowledge → Decision → Value</div>
+      <p>따라서 분석 결과의 생산은 데이터 활용의 끝이 아니라 가치 창출 과정의 중간 단계다.</p>
+    </div>
+  </div>
 
-## 3. 통계적 데이터 가치화란 무엇인가
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>통계적 데이터 가치화란 무엇인가</h2>
+      <p><strong>통계적 데이터 가치화(Statistical Data Valorization)</strong>는 원자료에 통계적 사고를 적용하여 신뢰할 수 있는 정보와 해석 가능한 인사이트를 생성하고, 이를 의사결정과 행동의 가치로 전환하는 과정이다.</p>
+      <p>SDV는 새로운 분석기법 하나를 의미하지 않는다. 기존의 통계분석, 데이터 사이언스, 인공지능을 부정하거나 대체하려는 개념도 아니다.</p>
+      <p>SDV는 이들 방법을 사용해 얻은 결과가 다음 단계로 나아가도록 만드는 통계적 사고체계다.</p>
+      <ul>
+        <li>분석이 신뢰할 만한지 검증한다.</li>
+        <li>숫자가 현실에서 무엇을 의미하는지 해석한다.</li>
+        <li>결과가 적용될 의사결정의 맥락을 확인한다.</li>
+        <li>가능한 대안과 위험을 비교한다.</li>
+        <li>분석이 만들어낸 실질적 가치를 평가한다.</li>
+      </ul>
+    </div>
+  </div>
 
-통계적 데이터 가치화(Statistical Data Valorization)는 원자료에 통계적 사고를 적용하여 신뢰할 수 있는 정보와 해석 가능한 인사이트를 생성하고, 이를 의사결정과 행동의 가치로 전환하는 과정이다.
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>통계학의 다섯 번째 단계</h2>
+      <p>통계학의 역할은 시대에 따라 확장되어 왔다.</p>
+      <ul>
+        <li><strong>요약</strong>: 데이터의 특징을 기술한다.</li>
+        <li><strong>추론</strong>: 표본으로부터 모집단을 판단한다.</li>
+        <li><strong>학습</strong>: 데이터에서 예측과 분류 규칙을 학습한다.</li>
+        <li><strong>융합</strong>: 통계·컴퓨팅·도메인 지식을 결합한다.</li>
+        <li><strong>가치화</strong>: 분석 결과를 의사결정과 가치로 전환한다.</li>
+      </ul>
+      <p>다섯 번째 단계인 가치화는 앞의 네 단계를 대체하지 않는다. 요약·추론·학습·융합을 바탕으로 그 결과가 현실에서 무엇을 변화시킬 수 있는지를 묻는 확장 단계다.</p>
+      <p><strong>가치화는 인간이 데이터에 목적과 방향을 부여하는 창조의 단계다.</strong></p>
+    </div>
+  </div>
 
-SDV는 새로운 분석기법 하나를 의미하지 않는다. 기존의 통계분석, 데이터 사이언스, 인공지능을 부정하거나 대체하려는 개념도 아니다.
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>SDV의 다섯 가지 선언</h2>
+      <div class="mf-declare-list">
+        <div class="mf-declare">
+          <div class="mf-declare-title">선언 1. 원자료는 아직 가치가 아니다</div>
+          <p class="mf-declare-desc">데이터의 양보다 품질과 목적 적합성을 먼저 확인한다.</p>
+        </div>
+        <div class="mf-declare">
+          <div class="mf-declare-title">선언 2. 신뢰할 수 없는 분석은 가치가 될 수 없다</div>
+          <p class="mf-declare-desc">대표성, 측정오차, 편향과 불확실성을 숨기지 않는다.</p>
+        </div>
+        <div class="mf-declare">
+          <div class="mf-declare-title">선언 3. 설명할 수 없는 결과는 책임 있는 결정으로 이어지기 어렵다</div>
+          <p class="mf-declare-desc">정확도뿐 아니라 해석 가능성과 현실적 의미를 함께 평가한다.</p>
+        </div>
+        <div class="mf-declare">
+          <div class="mf-declare-title">선언 4. 분석은 의사결정과 행동으로 연결되어야 한다</div>
+          <p class="mf-declare-desc">"무엇을 발견했는가?"에서 멈추지 않고 "그래서 무엇을 해야 하는가?"까지 나아간다.</p>
+        </div>
+        <div class="mf-declare">
+          <div class="mf-declare-title">선언 5. 가치의 방향과 책임은 인간이 결정한다</div>
+          <p class="mf-declare-desc">AI는 계산하고 제안할 수 있지만, 목적·윤리·우선순위와 책임은 인간이 판단한다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-SDV는 이들 방법을 사용해 얻은 결과가 다음 단계로 나아가도록 만드는 통계적 사고체계다.
+  <div class="mf-section">
+    <div class="mf-section-num">06</div>
+    <div class="mf-section-body">
+      <h2>AI 시대 통계학자의 역할</h2>
+      <p>AI 시대의 통계학자는 분석을 직접 수행하는 사람에 머물지 않는다.</p>
+      <ul class="mf-role-list">
+        <li>좋은 질문을 설계한다.</li>
+        <li>데이터의 신뢰성을 판단한다.</li>
+        <li>분석 결과의 한계와 불확실성을 설명한다.</li>
+        <li>숫자를 현실의 맥락에서 해석한다.</li>
+        <li>여러 대안의 효과와 위험을 비교한다.</li>
+        <li>분석 결과를 실행 가능한 결정으로 전환한다.</li>
+        <li>데이터가 만들어낼 가치와 그 방향을 설계한다.</li>
+      </ul>
+      <p><strong>통계학자의 역할은 분석 수행자에서 가치 설계자로 확장되어야 한다.</strong></p>
+    </div>
+  </div>
 
-- 분석이 신뢰할 만한지 검증한다.
-- 숫자가 현실에서 무엇을 의미하는지 해석한다.
-- 결과가 적용될 의사결정의 맥락을 확인한다.
-- 가능한 대안과 위험을 비교한다.
-- 분석이 만들어낸 실질적 가치를 평가한다.
+  <div class="mf-section">
+    <div class="mf-section-num">07</div>
+    <div class="mf-section-body">
+      <h2>KWONSE SDV의 지향점</h2>
+      <p>나는 통계학을 단순한 분석기법의 집합이 아니라, 불확실한 현실에서 더 나은 판단을 가능하게 하는 사고방식으로 이해한다.</p>
+      <p>통계적 데이터 가치화는 데이터와 분석을 의사결정, 행동, 정책과 사회적 가치로 연결하려는 나의 제안이다. 앞으로 SDV 연재를 통해 신뢰성, 해석, 의사결정, 가치평가의 문제를 하나씩 살펴보고 실제 통계와 연구 사례에 적용하고자 한다.</p>
+    </div>
+  </div>
 
-## 4. 통계학의 다섯 번째 단계
+  <div class="mf-closing">
+    <p class="mf-closing-quote">데이터에 의미를 더하고, 통계로 가치를 설계하며, 더 나은 내일을 만든다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
 
-통계학의 역할은 시대에 따라 확장되어 왔다.
-
-- **요약**: 데이터의 특징을 기술한다.
-- **추론**: 표본으로부터 모집단을 판단한다.
-- **학습**: 데이터에서 예측과 분류 규칙을 학습한다.
-- **융합**: 통계·컴퓨팅·도메인 지식을 결합한다.
-- **가치화**: 분석 결과를 의사결정과 가치로 전환한다.
-
-다섯 번째 단계인 가치화는 앞의 네 단계를 대체하지 않는다. 요약·추론·학습·융합을 바탕으로 그 결과가 현실에서 무엇을 변화시킬 수 있는지를 묻는 확장 단계다.
-
-가치화는 인간이 데이터에 목적과 방향을 부여하는 창조의 단계다.
-
-## 5. SDV의 다섯 가지 선언
-
-**선언 1. 원자료는 아직 가치가 아니다**
-
-데이터의 양보다 품질과 목적 적합성을 먼저 확인한다.
-
-**선언 2. 신뢰할 수 없는 분석은 가치가 될 수 없다**
-
-대표성, 측정오차, 편향과 불확실성을 숨기지 않는다.
-
-**선언 3. 설명할 수 없는 결과는 책임 있는 결정으로 이어지기 어렵다**
-
-정확도뿐 아니라 해석 가능성과 현실적 의미를 함께 평가한다.
-
-**선언 4. 분석은 의사결정과 행동으로 연결되어야 한다**
-
-"무엇을 발견했는가?"에서 멈추지 않고 "그래서 무엇을 해야 하는가?"까지 나아간다.
-
-**선언 5. 가치의 방향과 책임은 인간이 결정한다**
-
-AI는 계산하고 제안할 수 있지만, 목적·윤리·우선순위와 책임은 인간이 판단한다.
-
-## 6. AI 시대 통계학자의 역할
-
-AI 시대의 통계학자는 분석을 직접 수행하는 사람에 머물지 않는다.
-
-- 좋은 질문을 설계한다.
-- 데이터의 신뢰성을 판단한다.
-- 분석 결과의 한계와 불확실성을 설명한다.
-- 숫자를 현실의 맥락에서 해석한다.
-- 여러 대안의 효과와 위험을 비교한다.
-- 분석 결과를 실행 가능한 결정으로 전환한다.
-- 데이터가 만들어낼 가치와 그 방향을 설계한다.
-
-통계학자의 역할은 분석 수행자에서 가치 설계자로 확장되어야 한다.
-
-## 7. KWONSE SDV의 지향점
-
-나는 통계학을 단순한 분석기법의 집합이 아니라, 불확실한 현실에서 더 나은 판단을 가능하게 하는 사고방식으로 이해한다.
-
-통계적 데이터 가치화는 데이터와 분석을 의사결정, 행동, 정책과 사회적 가치로 연결하려는 나의 제안이다. 앞으로 SDV 연재를 통해 신뢰성, 해석, 의사결정, 가치평가의 문제를 하나씩 살펴보고 실제 통계와 연구 사례에 적용하고자 한다.
-
-데이터에 의미를 더하고, 통계로 가치를 설계하며, 더 나은 내일을 만든다.
-
-::: {style="text-align:center; margin-top:2rem;"}
-<img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE" style="max-width:360px; width:100%;">
-:::
+</div>
+```
