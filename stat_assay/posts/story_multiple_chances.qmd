@@ -1,0 +1,97 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률과 우연의 세계) 희귀한 사건이 매일 뉴스에 나오는 이유 — 다중 기회"
+author: "권세혁"
+date: "2026-09-25"
+categories: [통계기초, 확률]
+description: "1000만 명 중 한 명꼴로 일어나는 극히 드문 사건이라도, 그 '기회'를 가진 사람이 5,100만 명이라면 이야기가 달라진다. 계산해보면 그런 사건이 오늘 대한민국 어딘가에서 실제로 일어날 확률은 99% 를 넘는다. '수학자 리틀우드의 기적의 법칙'과 함께, 희귀한 뉴스가 매일 나오는 이유를 확률로 풀어본다."
+---
+
+## 1000만분의 1의 확률, 그런데 오늘도 뉴스에 나온다
+
+"1,000만 명 중 한 명꼴로 일어나는 희귀한 사건"이라는 표현을 뉴스에서 종종 본다. 개인 한 사람에게 이 확률은 정말 작다. 그런데 이 확률을 가진 "기회"를 가진 사람이 한국에만 5,100만 명이라면 어떨까? 계산해보면, 오늘 하루 대한민국 어딘가에서 이 정도로 희귀한 사건이 적어도 한 번은 일어날 확률은 **99% 이상**이다. 개인에게는 상상하기 힘든 확률이, 사회 전체로 보면 사실상 "매일 일어나는 일"이 되는 이유다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The probability that a rare event (1-in-10-million chance per person, per day) happens to AT LEAST ONE person somewhere, as the size of the population with that daily 'chance' grows from 1,000 to South Korea's full population (51 million). By the time the population reaches the low tens of millions, the event becomes very likely to happen to someone, somewhere, every single day."
+import numpy as np
+import matplotlib.pyplot as plt
+
+p = 1e-7
+N = np.linspace(1000, 51_000_000, 500)
+prob = 1 - np.exp(-N * p)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.8))
+ax.plot(N / 1e6, prob * 100, color="#1e3a2f", linewidth=2.2)
+ax.axvline(51, color="#a8790a", linestyle="--", linewidth=1.6)
+ax.scatter([51], [(1 - np.exp(-51_000_000 * p)) * 100], color="#a8790a", zorder=5, s=60)
+ax.annotate("South Korea (51M): 99.4%", xy=(51, 99.4), xytext=(28, 60),
+            fontsize=9.5, color="#a8790a", arrowprops=dict(arrowstyle="->", color="#a8790a"))
+ax.set_xlabel("Population size with the 1-in-10-million daily chance (millions)")
+ax.set_ylabel("P(the rare event happens to someone today), %")
+ax.set_title("A 1-in-10-million event becomes an almost-daily headline at national scale", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 리틀우드의 "기적의 법칙"
+
+영국의 수학자 존 리틀우드(John Littlewood)는 이런 현상을 "기적의 법칙(Littlewood's Law of Miracles)"이라 불렀다. 그가 말한 "기적"의 정의는 단순하다 — 개인에게 100만분의 1의 확률로 일어나는 사건이다. 그런데 사람은 깨어 있는 동안 대략 한 달이면 100만 번 가까운 크고 작은 "사건"(보고, 듣고, 마주치는 것들)을 경험한다고 어림잡을 수 있다. 그렇다면 100만분의 1의 확률로 일어나는 "기적"은, 한 사람에게 평균적으로 **한 달에 한 번꼴로** 일어나야 한다는 계산이 나온다. 물론 그 기적이 매번 나에게 일어나는 건 아니다 — 그 "한 달에 한 번"이라는 몫이, 지구상 수십억 명 중 누군가에게 돌아갈 뿐이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The same 1-in-10-million individual probability, compared with the expected number of times it actually occurs somewhere in South Korea on a given day (about 5.1 times, using the Poisson approximation with 51 million independent 'chances')."
+import matplotlib.pyplot as plt
+
+labels = ["One person's\ndaily chance", "Expected occurrences\nin Korea, per day"]
+values = [1e-7 * 100, 51_000_000 * 1e-7]
+
+fig, axes = plt.subplots(1, 2, figsize=(8, 4.4))
+axes[0].bar(labels[0], values[0], color="#8a9a90", width=0.5)
+axes[0].annotate(f"{values[0]:.5f}%", xy=(0, values[0]), xytext=(0, 4), textcoords="offset points", ha="center", fontsize=10)
+axes[0].set_ylabel("Probability (%)")
+axes[0].set_title("Individually: almost zero", fontsize=9.5, color="#1e3a2f")
+axes[0].spines[["top", "right"]].set_visible(False)
+
+axes[1].bar(labels[1], values[1], color="#a8790a", width=0.5)
+axes[1].annotate(f"{values[1]:.1f} times/day", xy=(0, values[1]), xytext=(0, 4), textcoords="offset points", ha="center", fontsize=10)
+axes[1].set_ylabel("Expected count")
+axes[1].set_title("Nationally: happens routinely", fontsize=9.5, color="#1e3a2f")
+axes[1].spines[["top", "right"]].set_visible(False)
+
+plt.tight_layout()
+plt.show()
+```
+
+## 뉴스는 "누구에게" 일어났는지를 전하지, "얼마나 드문지"를 전하지 않는다
+
+언론이 희귀한 사건을 보도할 때, 그 사건이 "이 사람"에게 일어날 확률이 아니라 "이 사건이 실제로 일어났다"는 사실 자체를 전한다. 그런데 5,100만 명이 저마다 그 사건의 "기회"를 하나씩 갖고 있다면, 그중 누군가에게 일어나는 것은 전혀 이상한 일이 아니다. 로또 1등이 매주 나오는 것도, 벼락에 맞는 사람이 해마다 몇 명씩 나오는 것도, 희귀 질환이 매달 어디선가 새로 진단되는 것도 같은 원리다 — 개인의 확률은 극히 낮아도, 그 확률을 가진 사람의 수가 충분히 많으면 "누군가"에게는 반드시 일어난다.
+
+::: {.callout-tip}
+## "희귀한 사건" 뉴스를 읽는 법
+
+1. **"이 사람에게 일어날 확률"과 "누군가에게 일어날 확률"을 구분하라.** 전자는 낮아도 후자는 매우 높을 수 있다.
+2. **그 사건의 "기회"를 가진 모집단이 얼마나 큰지 생각해보라.** 모집단이 클수록, 아무리 희귀한 사건도 "매일 어디선가는 일어나는 일"이 된다.
+3. **"이런 우연이?"라는 반응이 나오면, 그 우연이 일어날 수 있었던 전체 기회의 수를 먼저 세어보라.** 이번 주 다룬 생일 문제, 로또 명당 이야기와 정확히 같은 논리다.
+:::
+
+## 더 깊이: 여러 사건의 합집합은 각 확률의 합을 넘지 않는다
+
+강의노트 [〈수리통계학 1. 확률론 — 확률계산 관련 정리〉](../../notes/math_stat/probability.qmd#확률계산-관련-정리)가 소개하는 **불의 부등식(Boole's Inequality)**은 $P\left(\bigcup_{i=1}^{\infty} A_i\right) \leq \sum_{i=1}^{\infty} P(A_i)$로, 여러 사건 중 "적어도 하나가 일어날 확률"이 각 사건 확률의 합을 넘지 않는다는 걸 보장한다. 오늘 계산에서 5,100만 명 각각을 "그 사람에게 사건이 일어날 확률"을 가진 개별 사건으로 보면, 그 합(약 5.1)이 바로 "누군가에게는 일어날 것으로 기대되는 횟수"의 상한에 가까운 근사값이 된다. 확률이 아무리 작아도, 더해지는 항의 개수(기회의 수)가 충분히 많으면 그 합은 얼마든지 커질 수 있다 — 이것이 희귀한 사건이 큰 모집단에서 흔해지는 수학적 이유다.
+
+## SDV 관점: 희귀 사건 관리는 개인 확률이 아니라 모집단 규모로 설계해야 한다
+
+개인 확률과 모집단 전체의 기대 발생 횟수를 구분하는 일은 **요약과 추론(1~2단계)**에 해당한다. 제가 제안하는 **SDV(통계적 데이터 가치화)** 관점에서 이 구분이 중요한 이유는, 리스크 관리·품질 관리·이상 탐지 설계 전반에 직결되기 때문이다. "이 정도 확률이면 안전하다"는 판단은 개인(또는 거래 한 건) 기준의 확률만으로는 부족하다. 그 확률에 노출되는 모집단(고객 수, 거래 건수, 부품 수)이 얼마나 큰지를 함께 계산해야, "이번 달에 몇 건 정도는 발생할 것으로 예상된다"는 진짜 의사결정 근거가 나온다. 이번 주 다룬 생일 문제, 독립사건, 군집 착각, 명당의 정체, 그리고 오늘의 다중 기회는 모두 같은 메시지로 수렴한다 — **확률은 언제나 "몇 번의 기회가 있었는가"와 함께 읽어야 한다.** ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 확률이 작다고 안심하지 말고, 기회의 수를 세어보라
+
+나는 학생들에게 "말도 안 되는 확률"이라는 표현을 들으면 딱 하나만 물어보라고 말한다. "그 확률을 시도할 기회가 몇 번이나 있었나요?" 이번 주 다섯 편의 글 — 생일 문제, 독립사건, 군집 착각, 로또 명당, 그리고 오늘의 다중 기회 — 은 결국 하나의 도구로 요약된다. 확률이 작아 보인다고 안심하기 전에, 그 작은 확률에 곱해질 기회의 수부터 세어보는 습관이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- Littlewood, J. E. *Littlewood's Miscellany* (1953, 1986 재발간) — "기적의 법칙"의 최초 출처로 널리 인용됨.
+:::

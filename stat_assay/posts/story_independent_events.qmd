@@ -1,0 +1,97 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률과 우연의 세계) 같은 번호가 연속으로 나오면 조작일까? — 독립사건"
+author: "권세혁"
+date: "2026-09-22"
+categories: [통계기초, 확률]
+description: "로또에서 지난주 나온 번호가 이번 주에 또 나오면 '조작 아니냐'는 댓글이 꼭 달린다. 그런데 계산해보면, 지난 회차 6개 번호 중 적어도 하나가 이번 회차에도 나올 확률은 약 60%다. 2주에 1주 이상은 번호가 겹치는 게 오히려 정상이라는 뜻이다. 매 회차가 서로 독립이라는 사실이 왜 '겹치지 않아야 한다'는 뜻이 아닌지 살펴본다."
+---
+
+## "지난주 번호가 또 나왔다"는 뉴스는 사실 뉴스거리가 아니다
+
+로또 추첨 결과가 발표될 때마다 인터넷에는 비슷한 댓글이 달린다. "어? 이 번호 지난주에도 나왔던 건데?", "이거 설계된 거 아니야?" 그런데 실제로 계산해보면, 지난 회차에 나온 6개 번호 중 적어도 하나가 이번 회차에도 나올 확률은 **약 60%**다. 2주 중 1주 이상은 번호가 겹치는 게 오히려 통계적으로 자연스러운 결과라는 뜻이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The probability that this week's 6 lotto numbers (drawn from 1-45) share at least one number with last week's 6, versus sharing none, computed exactly using combinations. Sharing at least one number is actually the more likely outcome."
+import matplotlib.pyplot as plt
+from math import comb
+
+C45_6 = comb(45, 6)
+C39_6 = comb(39, 6)
+p_no_overlap = C39_6 / C45_6
+p_overlap = 1 - p_no_overlap
+
+labels = ["No shared numbers", "At least 1 shared number"]
+values = [p_no_overlap * 100, p_overlap * 100]
+
+fig, ax = plt.subplots(figsize=(6, 4.4))
+bars = ax.bar(labels, values, color=["#8a9a90", "#a8790a"], width=0.5)
+for b, v in zip(bars, values):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x()+b.get_width()/2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=11)
+ax.set_ylabel("Probability (%)")
+ax.set_ylim(0, 70)
+ax.set_title("Sharing a number with last week is the MORE common outcome", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 매 회차는 독립이다 — 그런데 독립이 "달라야 한다"는 뜻은 아니다
+
+로또 추첨기는 매주 45개의 공을 처음부터 다시 채워 넣고 돌린다. 지난주에 나온 공이 이번 주에 제외되는 일은 없다. 이렇게 한 사건(이번 주 추첨)의 결과가 다른 사건(지난주 추첨)의 결과에 전혀 영향을 받지 않을 때, 두 사건을 **독립(independent)**이라 한다. 그런데 여기서 흔한 오해가 생긴다 — 많은 사람이 "독립적이다"를 "서로 달라야 한다"로 잘못 받아들인다. 사실은 정반대다. 독립적이라는 건 지난주 결과가 이번 주 결과에 **아무 제약도 주지 않는다**는 뜻이지, 겹치지 않도록 조정된다는 뜻이 아니다. 오히려 아무 제약이 없기 때문에, 순전한 우연만으로도 번호가 겹칠 여지가 그대로 남아 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A simulation of 200,000 pairs of consecutive lotto draws: how many numbers (out of 6) are shared between one week and the next. Sharing exactly one number is actually the single most common outcome (about 42%), more common than sharing none at all (40%)."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(0)
+trials = 200000
+pool = np.arange(1, 46)
+counts = np.empty(trials, dtype=int)
+for i in range(trials):
+    last = rng.choice(pool, size=6, replace=False)
+    this = rng.choice(pool, size=6, replace=False)
+    counts[i] = len(set(last) & set(this))
+
+fig, ax = plt.subplots(figsize=(7, 4.6))
+vals, freqs = np.unique(counts, return_counts=True)
+bars = ax.bar(vals, freqs / trials * 100, color="#1e3a2f", width=0.6)
+for v, f in zip(vals, freqs):
+    ax.annotate(f"{f/trials*100:.1f}%", xy=(v, f/trials*100), xytext=(0, 3),
+                textcoords="offset points", ha="center", fontsize=9)
+ax.set_xlabel("Numbers shared with the previous week's draw (out of 6)")
+ax.set_ylabel("Share of simulated draw-pairs (%)")
+ax.set_xticks(vals)
+ax.set_title("Sharing zero numbers is not even the most likely case", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+시뮬레이션 결과, 번호가 하나도 안 겹치는 경우는 40%, 정확히 1개 겹치는 경우가 42%로 오히려 더 흔하다. 2개 이상 겹치는 경우도 17.6%나 된다. 이런 겹침을 "조작의 증거"로 의심하려면, 1년(52회차) 중 절반 가까운 주에서 "조작 의혹"을 제기해야 한다는 뜻이다 — 그 자체로 이미 앞뒤가 맞지 않는다.
+
+::: {.callout-tip}
+## 독립사건과 "우연의 반복"을 구분하는 법
+
+1. **"독립"은 "달라야 한다"가 아니라 "서로 영향을 안 준다"는 뜻이다.** 독립적인 사건도 우연히 같은 결과를 낼 수 있다.
+2. **반복되는 패턴을 보면, 그 패턴이 나올 수 있는 경우의 수를 먼저 세어보라.** 오늘처럼 계산해보면 "예외적인 우연"이 사실은 "가장 흔한 결과"인 경우가 많다.
+3. **매 시행이 정말 독립인지부터 확인하라.** 로또처럼 공을 매번 새로 채우는 게임은 독립이지만, 카드 게임처럼 이미 뽑힌 패를 빼고 진행하는 경우는 독립이 아니다.
+:::
+
+## 더 깊이: 독립의 정의와 곱셈 규칙
+
+강의노트 [〈수리통계학 1. 확률론 — 독립〉](../../notes/math_stat/probability.qmd#독립)은 두 사건 $A$와 $B$가 독립이면 $P(A \cap B) = P(A) \cdot P(B)$가 성립한다고 정의하고, 상호 배타적(mutually exclusive)인 사건과 독립사건을 혼동하면 안 된다는 예제도 함께 다룬다 — 두 사건이 동시에 일어날 수 없는 것(상호 배타)과, 두 사건이 서로 영향을 주지 않는 것(독립)은 전혀 다른 개념이다. 로또의 이번 주 추첨과 지난주 추첨은 상호 배타적이지 않다(둘 다 일어날 수 있다는 것 자체가 당연하다) — 그리고 독립이다(서로 영향을 안 준다). 이 두 성질이 합쳐지면, 오늘 계산한 것처럼 "번호가 겹칠 확률"을 곱셈 규칙으로 정확히 계산할 수 있다.
+
+## SDV 관점: "패턴처럼 보인다"를 확률로 검증하는 습관
+
+두 사건이 독립인지 확인하고 겹칠 확률을 계산하는 일은 **요약과 추론(1~2단계)**에 해당하는 고전적 확률 계산이다. 제가 제안하는 **SDV(통계적 데이터 가치화)** 관점에서 이 계산이 갖는 가치는 실전에 있다. 품질관리에서 "같은 불량이 이번 달에도 반복됐다", 마케팅에서 "이 고객군이 지난달과 또 겹친다"처럼, 업무 현장에서는 "반복"을 곧장 "이상 신호"로 해석하는 경우가 흔하다. 그런데 그 반복이 정말 이례적인지, 아니면 오늘 로또 사례처럼 독립적인 과정에서도 자연스럽게 나오는 흔한 결과인지를 먼저 계산해보지 않으면, 있지도 않은 원인을 찾아 헤매느라 자원을 낭비하게 된다. 데이터를 가치로 바꾸는 첫 단계는 종종, 그 데이터가 "설명이 필요한 이상 신호"인지 "설명이 필요 없는 정상 변동"인지를 가려내는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 겹치는 게 이상한 게 아니라, 안 겹치는 걸 기대하는 게 이상하다
+
+나는 학생들에게 "이런 우연이?"라는 반응이 나오면, 그 우연이 나올 수 있는 경우의 수를 직접 세어보라고 말한다. 지난주와 이번 주 로또 번호가 하나라도 겹칠 조합은 생각보다 훨씬 많다. 매주 반복되는 추첨이 서로 독립이라는 사실은, 번호가 겹치지 않게 막아주는 장치가 아니라 오히려 겹칠 여지를 그대로 열어두는 조건이다. 독립사건 앞에서는, 반복이야말로 기본값이다.
