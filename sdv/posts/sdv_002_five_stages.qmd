@@ -1,0 +1,306 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제2편 — 통계학은 왜 분석 다음을 말해야 하는가"
+author: "권세혁"
+date: "2026-09-25"
+description: "요약·추론·학습·융합, 그리고 가치화로 — 통계학의 역할이 넓어져 온 다섯 단계를 돌아보고, AI 시대에 통계학이 왜 분석 다음을 물어야 하는지 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제2편</div>
+    <div class="mf-hero-title">통계학은 왜 분석 다음을 말해야 하는가</div>
+    <p class="mf-hero-sub">요약·추론·학습·융합, 그리고 가치화로</p>
+    <div class="mf-hero-meta">권세혁 · 2026.09.25</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>지난 글에서 나는 AI가 분석과 해석, 보고서 작성까지 수행하는 시대에 통계학자는 무엇을 해야 하는지 물었다. 그 답을 찾으려면 앞으로 무엇이 달라질지에 앞서, 통계학이 지금까지 어떤 역할을 넓혀 왔는지 돌아볼 필요가 있다.</p>
+      <p>나는 그 흐름을 다섯 가지 말로 정리하고자 한다.</p>
+      <div class="mf-flow">요약 → 추론 → 학습 → 융합 → 가치화</div>
+      <p>이것은 학계에서 확립된 통계학사의 시대 구분이 아니다. 앞선 단계가 끝나고 다음 단계로 교체되었다는 뜻도 아니다. 통계학의 역할이 확장되어 온 흐름을 이해하고, 앞으로 나아갈 방향을 제안하기 위한 나의 관점이다. 특히 다섯 번째인 '가치화'는 이 연재에서 강조하고자 하는 지향점이다.</p>
+      <p>다섯 단계는 서로 다른 질문에서 출발한다. 데이터에 무엇이 나타나는가. 그 너머에 대해 무엇을 말할 수 있는가. 새로운 자료에서도 무엇을 알아낼 수 있는가. 여러 역량을 어떻게 연결할 것인가. 그리고 그 모든 작업으로 무엇이 나아지는가.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>요약 — 복잡한 현실을 알아볼 수 있게 만들다</h2>
+      <p>수많은 관측값을 그대로 나열하면 전체 모습을 파악하기 어렵다. 통계학의 가장 기본적인 역할은 자료를 정리하고, 복잡한 현상을 이해할 수 있는 형태로 표현하는 것이다.</p>
+      <p>평균과 비율, 분포와 산포, 표와 그래프가 여기에 해당한다. 요약은 단순히 숫자의 개수를 줄이는 작업이 아니다. 무엇을 보여주고 무엇을 생략할지 결정하는 일이다.</p>
+      <p>여론조사에서 응답자들의 정책 찬반을 집계하면 의견의 분포를 볼 수 있다. 전체 비율과 함께 집단별 차이를 제시하면 하나의 숫자에 가려진 다양성도 드러난다.</p>
+      <p>다만 같은 자료라도 무엇으로 요약하느냐에 따라 인상은 달라진다. 평균만 보여주면 분포의 차이를 놓칠 수 있고, 전체 비율만 보면 집단별로 반대 방향의 변화가 일어난 사실을 알아보기 어렵다.</p>
+      <p>좋은 요약은 복잡한 현실을 단순하게 보여주면서도 중요한 차이를 지우지 않는다. 이 역할은 이후의 어느 단계에서도 사라지지 않는다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>추론 — 관측한 일부를 넘어 말하다</h2>
+      <p>조사에 응답한 사람들의 생각을 정리하는 것과 국민 전체의 생각을 추정하는 것은 다른 일이다.</p>
+      <p>통계적 추론은 관측한 자료를 바탕으로 모집단이나 자료를 만들어낸 과정에 대해 결론을 이끌어내는 역할을 한다. 여기에는 추정과 가설검정, 그리고 결론의 불확실성을 평가하는 일이 포함된다.</p>
+      <p>여론조사에서는 누구를 어떤 방식으로 표본에 포함할지 설계하고, 응답 자료에 적절한 가중치를 적용해 모집단의 지지율이나 찬성률을 추정한다. 그 추정이 얼마나 흔들릴 수 있는지도 함께 평가해야 한다.</p>
+      <p>따라서 표본설계와 추정은 연결되어 있다. 자료를 어떻게 얻었는지와 무관하게 분석 결과만으로 대표성을 주장할 수는 없다. 표본오차를 계산했다고 해서 무응답이나 질문 표현에서 생긴 문제까지 모두 해결되는 것도 아니다.</p>
+      <p>이 단계에서 중요한 질문은 "어떤 수치가 나왔는가"에 더해 "그 수치를 어디까지 믿고 일반화할 수 있는가"이다.</p>
+      <p>통계학은 확실하지 않은 것을 확실한 것처럼 만드는 학문이 아니다. 제한된 관측으로 무엇을 말할 수 있으며, 그 결론에 어떤 불확실성이 남는지 밝히는 학문이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>학습 — 데이터에서 규칙을 찾고 새로운 자료에 적용하다</h2>
+      <p>데이터의 규모와 형태가 다양해지고 계산 능력이 발전하면서, 복잡한 관계를 학습하고 새로운 관측에 적용하는 능력이 더욱 중요해졌다. 통계학 내부에서도 예측과 데이터 분석의 역할을 넓혀야 한다는 논의가 이어져 왔다. 데이비드 도노호의 「50 Years of Data Science」는 이러한 확장 논의를 돌아본 글이다.</p>
+      <p>이 글에서 '학습'은 데이터에서 패턴을 찾아 예측·분류하거나, 드러나지 않은 구조를 탐색하는 역할을 가리킨다.</p>
+      <p>여론조사에서도 여러 문항의 응답을 함께 살펴 비슷한 인식 구조를 찾거나, 적절한 반복 관측 자료를 이용해 이후의 응답을 예측하는 모형을 검토할 수 있다.</p>
+      <p>그러나 주어진 자료를 잘 설명하는 모형이 새로운 자료에서도 잘 작동한다는 보장은 없다. 자료에 지나치게 맞춘 것은 아닌지, 조사 시점과 대상이 달라져도 성능이 유지되는지 확인해야 한다.</p>
+      <p>또한 예측에 유용한 변수가 곧 원인인 것은 아니다. 어떤 경험이 정책 찬반을 잘 예측한다고 해서 그 경험을 바꾸면 찬반이 달라진다고 바로 말할 수는 없다.</p>
+      <p>학습의 확대는 추론을 불필요하게 만들지 않는다. 오히려 무엇을 학습했고 어디에 적용할 수 있는지 검증하는 일이 함께 중요해진다. 데이터가 크다는 사실도 이러한 검토를 대신하지 못한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>융합 — 분석기법을 실제 문제 해결의 과정에 연결하다</h2>
+      <p>현실의 데이터 작업은 정돈된 자료에 분석법을 적용하는 것만으로 이루어지지 않는다. 자료를 수집하고 저장하며, 오류를 수정하고, 서로 다른 형식을 연결하고, 결과를 전달하는 과정이 필요하다.</p>
+      <p>이 과정에서 통계학은 컴퓨팅, 데이터 관리, 분야 지식과 만난다. 미국통계학회도 데이터사이언스를 통계·기계학습, 데이터베이스, 계산 인프라 사이의 협력과 관련 분야와의 상호작용으로 설명한 바 있다.</p>
+      <p>나는 이러한 연결을 '융합'이라는 말로 정리한다.</p>
+      <p>여론조사에서도 선택형 문항과 서술형 응답을 함께 살펴보려면 통계적 분석과 언어 처리, 조사 문항에 대한 이해가 필요할 수 있다. 서로 다른 자료를 결합한다면 조사 대상과 시점, 측정 개념이 맞는지도 확인해야 한다.</p>
+      <p>자료를 많이 모으거나 여러 기법을 사용했다고 해서 융합이 완성되는 것은 아니다. 각각의 자료와 방법이 같은 문제를 해결하는 데 적절하게 연결되어야 한다.</p>
+      <p>이것은 통계학자가 모든 분야의 전문가가 되어야 한다는 뜻도 아니다. 각자의 전문성을 연결하면서, 자료의 비교 가능성과 결론의 타당성을 확보하는 협력이 필요하다는 뜻이다.</p>
+      <p>그런데 이러한 협력으로 훌륭한 분석 시스템과 보고서를 만들었다고 해도, 한 가지 질문은 여전히 남는다.</p>
+      <p><strong>그 결과는 실제로 어디에 쓰였는가.</strong></p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>가치화 — 분석의 성과를 활용의 성과로 연결하다</h2>
+      <p>나는 이 질문을 다섯 번째 단계인 '가치화'의 출발점으로 삼고자 한다.</p>
+      <p>정확한 추정, 우수한 예측, 설득력 있는 시각화는 중요한 성과다. 그러나 그것만으로 어떤 이해가 깊어지고 어떤 판단이 나아졌는지까지 설명되지는 않는다.</p>
+      <p>지난 글의 사례처럼 지지율이 두 시점 모두 40%라고 하자. 적절한 설계와 분석을 통해 그 안에서 상당한 의견 이동이 있었다는 사실을 확인했다면, 우리는 전체 비율만으로는 알 수 없던 구조를 발견한 것이다.</p>
+      <p>그 결과가 언론과 시민에게 전달되어 '지지율 유지'를 곧바로 '여론의 안정'으로 해석하는 오류를 줄였다면, 분석은 실제 활용 가치를 갖게 된다. 후속 조사에서 무엇을 더 확인해야 하는지 분명해졌다면, 그것 역시 중요한 가치다.</p>
+      <p>다만 결과를 전달했다는 이유만으로 그런 효과가 있었다고 단정해서는 안 된다. 어떻게 사용되었고 무엇에 도움이 되었는지 확인할 수 있어야 한다.</p>
+      <p>가치화는 분석을 마친 뒤 활용 방안을 한 문단 덧붙이는 일이 아니다. 처음부터 누가 어떤 질문에 답하기 위해 결과를 사용할지 생각하고, 필요한 자료와 분석을 설계하며, 활용 이후의 평가를 다음 작업에 반영하는 과정이다.</p>
+      <p>물론 통계학과 데이터사이언스가 지금까지 활용이나 의사결정을 외면해 왔다는 뜻은 아니다. 그 연결은 이미 여러 연구와 실무에서 이루어져 왔다. 내가 SDV로 강조하려는 것은 그 연결을 작업의 중심 목표로 놓고 끝까지 확인하자는 것이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">06</div>
+    <div class="mf-section-body">
+      <h2>분석 다음을 묻는 것은 분석의 목적을 묻는 일이다</h2>
+      <p>다섯 단계는 우열의 순서가 아니다. 가치화를 강조한다고 해서 요약과 추정의 중요성이 줄어들지 않는다. 잘못된 측정과 불안정한 추론 위에 세워진 판단은 가치라는 이름만으로 정당화할 수 없다.</p>
+      <p>모든 통계 연구가 즉시 경제적 성과나 정책 변화로 이어져야 한다는 뜻도 아니다. 새로운 지식을 축적하고, 불확실성을 줄이고, 잘못된 주장을 바로잡는 일도 가치가 있다. 중요한 것은 작업의 목적에 맞게 그 기여를 설명하는 것이다.</p>
+      <p>AI가 분석과 해석을 돕는 시대에 나는 이 다섯 단계를 더욱 긴밀하게 연결하고 싶다. 자료를 요약하고, 그 너머를 추론하며, 패턴을 학습하고, 여러 전문성을 결합해, 실제 이해와 판단에 기여하는 일이다.</p>
+      <p>그래서 '분석 다음'은 시간적으로 분석이 끝난 뒤만을 가리키지 않는다. 분석을 시작할 때부터 끝까지 놓치지 않아야 할 질문을 뜻한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"이 분석으로 무엇을 더 잘 이해하게 되었으며,<br>어떤 판단이 나아졌는가."</p>
+    <p class="mf-closing-note">통계적 데이터 가치화, SDV는 이 질문을 통계학의 전문성과 연결하려는 나의 제안이다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
