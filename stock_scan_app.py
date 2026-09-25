@@ -27,7 +27,7 @@ st.markdown("""
 # ── 파라미터 사이드바 ──────────────────────────────────────────
 with st.sidebar:
     st.header("⚙️ 스캔 파라미터")
-    top_n_marcap = st.slider("시가총액", 10, 1000, 50, step=10,
+    top_n_marcap = st.slider("시가총액", 10, 1000, 100, step=10,
                              help="시가총액 상위 몇 위까지 스캔할지 선택합니다. 예: 50이면 시가총액 상위 50개 종목만 스캔합니다.")
     cutoff      = st.number_input("최소 주가 (원)", value=10_000, step=1_000, min_value=0)
     min_score   = st.slider("매수 추천 컷오프 점수", 1, 28, 13,
