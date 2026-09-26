@@ -551,7 +551,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <section id="완벽하게-무작위였는데-무작위가-아니라는-항의가-빗발쳤다" class="level2">
 <h2 class="anchored" data-anchor-id="완벽하게-무작위였는데-무작위가-아니라는-항의가-빗발쳤다">완벽하게 무작위였는데, 무작위가 아니라는 항의가 빗발쳤다</h2>
 <p>2014년 스포티파이는 재생목록 셔플 기능에 수학적으로 완벽한 무작위 알고리즘(피셔-예이츠 셔플)을 쓰고 있었다. 그런데도 이용자 항의가 끊이지 않았다. “같은 가수 노래가 왜 자꾸 연달아 나오죠? 이거 무작위 아니잖아요.” 스포티파이 엔지니어링 블로그는 결국 이렇게 인정했다 — 진짜 무작위는 원래 이렇게 뭉치기 마련이라고. 그래서 스포티파이는 같은 아티스트의 곡이 너무 가까이 배치되지 않도록, <strong>알고리즘을 일부러 덜 무작위하게</strong> 바꿨다. 2005년 애플도 같은 문제를 겪었다. 스티브 잡스는 당시 발표 자리에서 이렇게 말했다. “우리 셔플이 무작위가 아니라는 사람들이 많더군요. 사실은 완벽하게 무작위입니다. 다만 무작위라는 게 가끔은 같은 아티스트의 두 곡이 나란히 나온다는 뜻이기도 하죠 … 그래서 스마트 셔플을 추가해 일부러 덜 무작위하게 만들었습니다 — 사람들은 그게 더 무작위하다고 느끼겠지만, 사실은 그 반대입니다.”</p>
-<div id="8ad72aa7" class="cell" data-execution_count="1">
+<div id="16e5a23b" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -565,7 +565,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <section id="곡을-진짜로-섞으면-99.6-확률로-어디선가-같은-아티스트가-연달아-나온다" class="level2">
 <h2 class="anchored" data-anchor-id="곡을-진짜로-섞으면-99.6-확률로-어디선가-같은-아티스트가-연달아-나온다">30곡을 진짜로 섞으면, 99.6% 확률로 어디선가 같은 아티스트가 연달아 나온다</h2>
 <p>이게 얼마나 흔한 일인지 직접 계산해보자. 5명의 아티스트가 각 6곡씩, 총 30곡짜리 재생목록을 진짜 무작위로 섞는다고 하자.</p>
-<div id="e5648fcc" class="cell" data-execution_count="2">
+<div id="8996ecbb" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -634,11 +634,14 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 
 </main> <!-- /main -->
 <div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
-  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드 (클릭하면 크게 보기)" title="클릭하면 크게 볼 수 있어요" style="display:block;width:100%;height:auto;cursor:zoom-in;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
     <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
     <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
   </div>
+</div>
+<div id="intro-zoom" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.8);align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="intro-zoom-img" alt="사이트 소개 슬라이드 원본 크기" style="width:1280px;max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;">
 </div>
 <script>
 (function () {
@@ -653,6 +656,14 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   }
   document.getElementById("intro-popup-close").onclick = function () { hide(0); };
   document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  var zoom = document.getElementById("intro-zoom");
+  function closeZoom() { zoom.style.display = "none"; document.getElementById("intro-zoom-img").removeAttribute("src"); }
+  document.getElementById("intro-popup-img").onclick = function () {
+    document.getElementById("intro-zoom-img").src = "/images/site_intro.gif";
+    zoom.style.display = "flex";
+  };
+  zoom.onclick = closeZoom;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
   window.addEventListener("load", function () {
     var img = document.getElementById("intro-popup-img");
     img.onload = function () { box.style.display = "block"; };

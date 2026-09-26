@@ -605,7 +605,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<div id="e44225f0" class="cell" data-execution_count="1">
+<div id="525f041f" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -623,7 +623,7 @@ window.Quarto = {
 <p><span class="math display">\[\text{표준점수} = 20 \times \frac{\text{원점수} - \text{평균}}{\text{표준편차}} + 100\]</span></p>
 <p>가운데 분수 부분, <span class="math inline">\((\text{원점수} - \text{평균})/\text{표준편차}\)</span>가 바로 <strong>표준화 점수(z-점수)</strong>다 — 내 점수가 평균에서 표준편차 몇 개만큼 떨어져 있는지를 나타내는 수치다. 여기에 20을 곱하고 100을 더하는 건, 마이너스 부호나 소수점이 섞인 z-점수를 “평균 100, 어느 정도 퍼져 있는 점수”라는 익숙한 모양으로 보기 좋게 늘어놓은 것뿐이다.</p>
 <p>같은 원점수 88점을 받은 두 학생을 비교해보자. 한 명은 평균 75점, 표준편차 10점인 “쉬운 해”에 시험을 봤고, 다른 한 명은 평균 55점, 표준편차 18점인 “어려운 해”에 시험을 봤다.</p>
-<div id="94fb9d43" class="cell" data-execution_count="2">
+<div id="2995de2d" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -701,11 +701,14 @@ window.Quarto = {
 
 </main> <!-- /main -->
 <div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
-  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드 (클릭하면 크게 보기)" title="클릭하면 크게 볼 수 있어요" style="display:block;width:100%;height:auto;cursor:zoom-in;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
     <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
     <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
   </div>
+</div>
+<div id="intro-zoom" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.8);align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="intro-zoom-img" alt="사이트 소개 슬라이드 원본 크기" style="width:1280px;max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;">
 </div>
 <script>
 (function () {
@@ -720,6 +723,14 @@ window.Quarto = {
   }
   document.getElementById("intro-popup-close").onclick = function () { hide(0); };
   document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  var zoom = document.getElementById("intro-zoom");
+  function closeZoom() { zoom.style.display = "none"; document.getElementById("intro-zoom-img").removeAttribute("src"); }
+  document.getElementById("intro-popup-img").onclick = function () {
+    document.getElementById("intro-zoom-img").src = "/images/site_intro.gif";
+    zoom.style.display = "flex";
+  };
+  zoom.onclick = closeZoom;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
   window.addEventListener("load", function () {
     var img = document.getElementById("intro-popup-img");
     img.onload = function () { box.style.display = "block"; };

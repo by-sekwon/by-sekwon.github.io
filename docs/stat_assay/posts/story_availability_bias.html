@@ -579,7 +579,7 @@ window.Quarto = {
 <section id="로또는-상상하고-벼락은-상상하지-않는다" class="level2">
 <h2 class="anchored" data-anchor-id="로또는-상상하고-벼락은-상상하지-않는다">로또는 상상하고, 벼락은 상상하지 않는다</h2>
 <p>매주 토요일 저녁, 로또 추첨 방송을 챙겨보며 1등을 상상하는 사람은 많다. 반면 오늘 하루 벼락에 맞을까 봐 걱정하며 외출하는 사람은 거의 없다. 그런데 두 확률을 나란히 놓으면 이 순서는 뒤집힌다. 로또 6/45에서 1등에 당첨될 확률은 정확히 <span class="math inline">\(\binom{45}{6} = 8,145,060\)</span>분의 1이다. 반면 미국 국립기상청(NWS)이 추정하는 평생 벼락에 맞을 확률은 약 15,300분의 1이다.</p>
-<div id="d0541862" class="cell" data-execution_count="1">
+<div id="5c2798aa" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -595,7 +595,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="왜-떠올리기-쉬움이-자주-일어남으로-둔갑하는가">왜 “떠올리기 쉬움”이 “자주 일어남”으로 둔갑하는가</h2>
 <p>1973년 트버스키와 카너먼은 이런 실험을 했다. 사람들에게 영어 단어에서 K, L, N, R, V 같은 자음이 <strong>첫 번째 글자</strong>로 더 많이 쓰이는지, <strong>세 번째 글자</strong>로 더 많이 쓰이는지 물었다. 대다수는 첫 글자 쪽이라고 답했다. 그런데 실제로 이 자음들은 세 번째 글자로 쓰이는 경우가 더 흔하다. 이유는 단순하다. 우리는 단어를 “K로 시작하는 단어”로는 쉽게 떠올리지만, “세 번째 글자가 K인 단어”로는 검색하듯 떠올리기 어렵다. <strong>떠올리기 쉬운 정도가 실제 빈도를 대신해버린 것이다.</strong></p>
 <p>뉴스 보도도 똑같은 방식으로 작동한다. 자주 일어나지만 심심한 사건(낙상, 감기, 교통 정체)은 기사가 되지 않는다. 드물지만 극적인 사건(상어 습격, 항공기 사고, 이상동기 범죄)은 며칠씩 이어지는 특집 기사가 된다. 그 결과, 우리 머릿속에 저장되는 “사례의 개수”는 실제 발생 개수와 전혀 다른 비율로 쌓인다.</p>
-<div id="30f3f2b6" class="cell" data-execution_count="2">
+<div id="ff4002bf" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -671,11 +671,14 @@ window.Quarto = {
 
 </main> <!-- /main -->
 <div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
-  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드 (클릭하면 크게 보기)" title="클릭하면 크게 볼 수 있어요" style="display:block;width:100%;height:auto;cursor:zoom-in;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
     <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
     <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
   </div>
+</div>
+<div id="intro-zoom" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.8);align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="intro-zoom-img" alt="사이트 소개 슬라이드 원본 크기" style="width:1280px;max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;">
 </div>
 <script>
 (function () {
@@ -690,6 +693,14 @@ window.Quarto = {
   }
   document.getElementById("intro-popup-close").onclick = function () { hide(0); };
   document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  var zoom = document.getElementById("intro-zoom");
+  function closeZoom() { zoom.style.display = "none"; document.getElementById("intro-zoom-img").removeAttribute("src"); }
+  document.getElementById("intro-popup-img").onclick = function () {
+    document.getElementById("intro-zoom-img").src = "/images/site_intro.gif";
+    zoom.style.display = "flex";
+  };
+  zoom.onclick = closeZoom;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
   window.addEventListener("load", function () {
     var img = document.getElementById("intro-popup-img");
     img.onload = function () { box.style.display = "block"; };

@@ -584,7 +584,7 @@ window.Quarto = {
 <section id="답은-운이-아니라-판매량이다" class="level2">
 <h2 class="anchored" data-anchor-id="답은-운이-아니라-판매량이다">답은 운이 아니라 “판매량”이다</h2>
 <p>복권위원회 관계자는 이 현상을 이렇게 설명한다. “구매자가 살 수 있는 번호조합은 814만 개뿐이지만, 이들이 사는 게임 수는 매주 1억 건이 넘는다. 예전에는 100명만 사던 조합을 지금은 1,000명이 구매한다면, 그 조합이 당첨됐을 때 당첨자 수가 많아질 수밖에 없다.” 즉 특정 가게에 당첨자가 몰리는 이유는 그 가게가 “행운의 장소”라서가 아니라, 그 가게가 압도적으로 많은 표를 팔기 때문이다. 표를 많이 팔수록 당첨 조합을 우연히 포함할 확률도 비례해서 커진다 — 이건 신비로운 힘이 아니라 단순한 곱셈이다.</p>
-<div id="b4a66dfd" class="cell" data-execution_count="1">
+<div id="f8dfc9e0" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -598,7 +598,7 @@ window.Quarto = {
 </section>
 <section id="매주-1억-건-당첨자가-매주-나오는-진짜-이유" class="level2">
 <h2 class="anchored" data-anchor-id="매주-1억-건-당첨자가-매주-나오는-진짜-이유">매주 1억 건 — 당첨자가 매주 나오는 진짜 이유</h2>
-<div id="2f674f01" class="cell" data-execution_count="2">
+<div id="7e4d19af" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -662,11 +662,14 @@ window.Quarto = {
 
 </main> <!-- /main -->
 <div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
-  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드 (클릭하면 크게 보기)" title="클릭하면 크게 볼 수 있어요" style="display:block;width:100%;height:auto;cursor:zoom-in;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
     <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
     <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
   </div>
+</div>
+<div id="intro-zoom" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.8);align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="intro-zoom-img" alt="사이트 소개 슬라이드 원본 크기" style="width:1280px;max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;">
 </div>
 <script>
 (function () {
@@ -681,6 +684,14 @@ window.Quarto = {
   }
   document.getElementById("intro-popup-close").onclick = function () { hide(0); };
   document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  var zoom = document.getElementById("intro-zoom");
+  function closeZoom() { zoom.style.display = "none"; document.getElementById("intro-zoom-img").removeAttribute("src"); }
+  document.getElementById("intro-popup-img").onclick = function () {
+    document.getElementById("intro-zoom-img").src = "/images/site_intro.gif";
+    zoom.style.display = "flex";
+  };
+  zoom.onclick = closeZoom;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
   window.addEventListener("load", function () {
     var img = document.getElementById("intro-popup-img");
     img.onload = function () { box.style.display = "block"; };

@@ -603,7 +603,7 @@ window.Quarto = {
 <p>통계학에서 표본평균의 불확실성, 즉 표준오차(Standard Error)는 다음과 같이 표본 크기의 제곱근에 반비례해서 줄어든다.</p>
 <p><span class="math display">\[\text{SE} = \frac{\sigma}{\sqrt{n}}\]</span></p>
 <p>리뷰 개수 <span class="math inline">\(n\)</span>이 4배로 늘어나야 표준오차는 절반으로 줄어든다. 리뷰가 몇 개 안 되는 식당은 진짜 실력과 동떨어진 평균이 우연히 찍혀 있을 가능성이 훨씬 크다.</p>
-<div id="fcd06dbc" class="cell" data-execution_count="1">
+<div id="5e58c55d" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -669,7 +669,7 @@ IMDb 공식
 </tr>
 </tbody>
 </table>
-<div id="4d6e00a6" class="cell" data-execution_count="2">
+<div id="a09123bc" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -722,11 +722,14 @@ IMDb 공식
 
 </main> <!-- /main -->
 <div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
-  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드 (클릭하면 크게 보기)" title="클릭하면 크게 볼 수 있어요" style="display:block;width:100%;height:auto;cursor:zoom-in;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
     <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
     <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
   </div>
+</div>
+<div id="intro-zoom" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.8);align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="intro-zoom-img" alt="사이트 소개 슬라이드 원본 크기" style="width:1280px;max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;">
 </div>
 <script>
 (function () {
@@ -741,6 +744,14 @@ IMDb 공식
   }
   document.getElementById("intro-popup-close").onclick = function () { hide(0); };
   document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  var zoom = document.getElementById("intro-zoom");
+  function closeZoom() { zoom.style.display = "none"; document.getElementById("intro-zoom-img").removeAttribute("src"); }
+  document.getElementById("intro-popup-img").onclick = function () {
+    document.getElementById("intro-zoom-img").src = "/images/site_intro.gif";
+    zoom.style.display = "flex";
+  };
+  zoom.onclick = closeZoom;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
   window.addEventListener("load", function () {
     var img = document.getElementById("intro-popup-img");
     img.onload = function () { box.style.display = "block"; };
