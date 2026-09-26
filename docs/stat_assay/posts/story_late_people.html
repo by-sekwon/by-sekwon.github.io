@@ -596,7 +596,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <p>만성 지각자의 공통점: 지각이 <strong>의도적이지 않다</strong>. 매번 “이번엔 제시간에 갈 수 있다”고 진심으로 믿는다.</p>
 </div>
 </div>
-<div id="4b751670" class="cell" data-execution_count="1">
+<div id="34a77ae3" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -729,7 +729,7 @@ MBTI 유형과 시간 관리 패턴
 <p><strong>통계적으로, 이 사람은 94%의 날을 늦게 도착하도록 설계된 일정을 짜고 있는 셈이다.</strong></p>
 </div>
 </div>
-<div id="972ed175" class="cell" data-execution_count="2">
+<div id="cf7cf735" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -835,6 +835,33 @@ MBTI 유형과 시간 관리 패턴
 </section>
 
 </main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

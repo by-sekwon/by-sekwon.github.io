@@ -580,7 +580,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="그래프는-점점-더-가팔라지는데-실제로는-진정되고-있었다">그래프는 점점 더 가팔라지는데, 실제로는 진정되고 있었다</h2>
 <p>2020년 2월 18일, 대구에서 국내 31번째 확진자가 나왔다. 이른바 “31번 확진자”다. 그날 이후 신천지 대구교회를 중심으로 확진자가 쏟아졌다. 국내 누적 확진자 수는 2월 18일 31명에서, 2월 20일 104명, 2월 22일 433명, 2월 29일 3,150명, 그리고 3월 15일에는 8,236명까지 늘었다. 보름 만에 확진자가 265배로 불어난 것이다.</p>
 <p>당시 이 추이를 다룬 뉴스 그래프들은 대부분 세로축을 0부터 시작하는 <strong>선형 눈금(linear scale)</strong>으로 그렸다. 이런 그래프에서 확진자 곡선은 2월 하순까지 거의 바닥에 붙어 있다가, 3월에 접어들며 갑자기 하늘로 치솟는 모양이 된다. “확산세가 걷잡을 수 없이 가팔라지고 있다”는 인상을 준다.</p>
-<div id="aefd8c8d" class="cell" data-execution_count="1">
+<div id="8598ab86" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -601,7 +601,7 @@ window.Quarto = {
 </ul>
 <p>확진자 수처럼 매일 일정한 <strong>비율</strong>로 늘어나는 값(지수적 증가, exponential growth)은, 이 성질 때문에 로그 눈금에서 <strong>직선</strong>으로 나타난다. 반대로 매일 일정한 <strong>양</strong>만큼 늘어나는 값은 선형 눈금에서 직선이 된다. 즉 어느 눈금을 쓰느냐에 따라 “직선”이 뜻하는 바가 완전히 달라진다.</p>
 <p>같은 확진자 데이터를 로그 눈금으로 다시 그려보면 이렇다.</p>
-<div id="3c804a66" class="cell" data-execution_count="2">
+<div id="e0b15ddf" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -680,6 +680,33 @@ window.Quarto = {
 </section>
 
 </main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

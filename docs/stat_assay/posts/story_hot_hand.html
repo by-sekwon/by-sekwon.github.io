@@ -557,7 +557,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <section id="성공확률이-고정된-가상의-슈터를-만들어보자" class="level2">
 <h2 class="anchored" data-anchor-id="성공확률이-고정된-가상의-슈터를-만들어보자">성공확률이 고정된 가상의 슈터를 만들어보자</h2>
 <p>이 질문에 답하기 가장 간단한 방법은, 매 슛마다 성공확률이 <strong>정확히 똑같고, 직전 결과와 완전히 무관한</strong> 가상의 슈터를 컴퓨터로 만들어 보는 것이다. 성공확률 45%인 이 가상 슈터에게 100번 슛을 던지게 시뮬레이션하면 이런 결과가 나온다.</p>
-<div id="4a1be9a7" class="cell" data-execution_count="1">
+<div id="3408e311" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -572,7 +572,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 <section id="이런-몰아넣기는-얼마나-특별한가" class="level2">
 <h2 class="anchored" data-anchor-id="이런-몰아넣기는-얼마나-특별한가">이런 몰아넣기는 얼마나 “특별”한가</h2>
 <p>혹시 방금 본 그림이 우연히 뽑은 극단적인 사례는 아니었을까? 같은 조건(성공확률 45%, 100번 슛)의 가상 슈터를 2만 명 만들어, 각자의 최장 연속 성공 기록을 모아보면 답이 나온다.</p>
-<div id="8cb4e7c3" class="cell" data-execution_count="2">
+<div id="50e9838d" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -651,6 +651,33 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
 </section>
 
 </main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

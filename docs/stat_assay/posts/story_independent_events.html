@@ -579,7 +579,7 @@ window.Quarto = {
 <section id="지난주-번호가-또-나왔다는-뉴스는-사실-뉴스거리가-아니다" class="level2">
 <h2 class="anchored" data-anchor-id="지난주-번호가-또-나왔다는-뉴스는-사실-뉴스거리가-아니다">“지난주 번호가 또 나왔다”는 뉴스는 사실 뉴스거리가 아니다</h2>
 <p>로또 추첨 결과가 발표될 때마다 인터넷에는 비슷한 댓글이 달린다. “어? 이 번호 지난주에도 나왔던 건데?”, “이거 설계된 거 아니야?” 그런데 실제로 계산해보면, 지난 회차에 나온 6개 번호 중 적어도 하나가 이번 회차에도 나올 확률은 <strong>약 60%</strong>다. 2주 중 1주 이상은 번호가 겹치는 게 오히려 통계적으로 자연스러운 결과라는 뜻이다.</p>
-<div id="e108e8d1" class="cell" data-execution_count="1">
+<div id="8133c9eb" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -593,7 +593,7 @@ window.Quarto = {
 <section id="매-회차는-독립이다-그런데-독립이-달라야-한다는-뜻은-아니다" class="level2">
 <h2 class="anchored" data-anchor-id="매-회차는-독립이다-그런데-독립이-달라야-한다는-뜻은-아니다">매 회차는 독립이다 — 그런데 독립이 “달라야 한다”는 뜻은 아니다</h2>
 <p>로또 추첨기는 매주 45개의 공을 처음부터 다시 채워 넣고 돌린다. 지난주에 나온 공이 이번 주에 제외되는 일은 없다. 이렇게 한 사건(이번 주 추첨)의 결과가 다른 사건(지난주 추첨)의 결과에 전혀 영향을 받지 않을 때, 두 사건을 <strong>독립(independent)</strong>이라 한다. 그런데 여기서 흔한 오해가 생긴다 — 많은 사람이 “독립적이다”를 “서로 달라야 한다”로 잘못 받아들인다. 사실은 정반대다. 독립적이라는 건 지난주 결과가 이번 주 결과에 <strong>아무 제약도 주지 않는다</strong>는 뜻이지, 겹치지 않도록 조정된다는 뜻이 아니다. 오히려 아무 제약이 없기 때문에, 순전한 우연만으로도 번호가 겹칠 여지가 그대로 남아 있다.</p>
-<div id="a8a4f955" class="cell" data-execution_count="2">
+<div id="30f349b6" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -638,6 +638,33 @@ window.Quarto = {
 </section>
 
 </main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

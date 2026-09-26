@@ -586,7 +586,7 @@ window.Quarto = {
 <section id="숫자만-비교하면-반쪽짜리-정보다" class="level2">
 <h2 class="anchored" data-anchor-id="숫자만-비교하면-반쪽짜리-정보다">숫자만 비교하면 반쪽짜리 정보다</h2>
 <p>답은 간단하다. “범죄 건수”라는 숫자에는 <strong>분모가 빠져 있다.</strong> 서울 인구는 약 930만 명, 세종 인구는 약 40만 명이다. 인구가 23배나 차이 나는 두 지역의 범죄 “건수”를 그대로 비교하는 것은, 애초에 공정한 비교가 아니다.</p>
-<div id="c719c28a" class="cell" data-execution_count="1">
+<div id="d33526be" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -604,7 +604,7 @@ window.Quarto = {
 <p><span class="math display">\[\text{인구 10만 명당 발생률} = \frac{\text{범죄 건수}}{\text{인구 수}} \times 100{,}000\]</span></p>
 <p>서울의 실제 수치로 계산해 보면:</p>
 <p><span class="math display">\[\frac{301{,}933}{9{,}305{,}678} \times 100{,}000 \approx 3{,}245\text{건}\]</span></p>
-<div id="29cd5562" class="cell" data-execution_count="2">
+<div id="0f6e22cf" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -680,6 +680,33 @@ window.Quarto = {
 </section>
 
 </main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

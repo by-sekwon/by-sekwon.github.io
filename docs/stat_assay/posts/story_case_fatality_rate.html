@@ -579,7 +579,7 @@ window.Quarto = {
 <section id="치명률이-24배-낮아졌다-바이러스가-약해진-걸까" class="level2">
 <h2 class="anchored" data-anchor-id="치명률이-24배-낮아졌다-바이러스가-약해진-걸까">치명률이 24배 낮아졌다, 바이러스가 약해진 걸까</h2>
 <p>코로나19 국내 발생 첫해인 2020년, 한국의 연간 치명률(사망자÷확진자×100)은 <strong>2.16%</strong>였다. 그런데 오미크론이 우세종이 된 2022년, 치명률은 <strong>0.09%</strong>로 떨어졌다. 24배 가까이 낮아진 셈이다. 이 숫자만 보면 “바이러스가 2년 사이 훨씬 약해졌다”고 결론짓기 쉽다. 그런데 같은 기간 사망자 수 자체는 오히려 늘었다 — 2020년 1,313명에서 2022년 25,915명으로, 약 20배 증가했다. 사망자는 늘었는데 치명률은 급락했다. 어떻게 이런 일이 가능할까?</p>
-<div id="daef1b74" class="cell" data-execution_count="1">
+<div id="9da804fa" class="cell" data-execution_count="1">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -593,7 +593,7 @@ window.Quarto = {
 <section id="분모확진자가-분자사망자보다-훨씬-더-크게-움직였다" class="level2">
 <h2 class="anchored" data-anchor-id="분모확진자가-분자사망자보다-훨씬-더-크게-움직였다">분모(확진자)가 분자(사망자)보다 훨씬 더 크게 움직였다</h2>
 <p>답은 분모에 있다. 2020년, 한국의 진단검사 역량은 지금과 비교가 안 될 만큼 제한적이었다. 증상이 뚜렷하거나 역학적으로 의심되는 사람 위주로만 검사가 이뤄졌고, 그해 전체 확진자는 60,722명이었다. 2022년에는 오미크론의 폭발적 확산과 함께 신속항원검사·자가검사키트가 전국에 보급되면서, 무증상이나 경증까지 포함해 그해에만 <strong>2,842만 명</strong>이 확진 판정을 받았다. 확진자 수(분모)가 <strong>약 470배</strong> 늘어난 것이다.</p>
-<div id="caa09704" class="cell" data-execution_count="2">
+<div id="6f0bea8f" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -670,6 +670,33 @@ window.Quarto = {
 </section>
 
 </main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드" style="display:block;width:100%;height:auto;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
