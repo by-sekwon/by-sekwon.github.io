@@ -1,0 +1,126 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률의 도구들) 오해하기 쉬운 개념 — 독립이라는 것의 진짜 의미"
+author: "권세혁"
+date: "2026-10-01"
+categories: [통계기초, 확률]
+description: "'독립'은 '서로 상관없다', '따로 일어난다'는 말이 아니다. 하트와 그림 카드는 3장이 겹치는데도 독립이고, 하트와 스페이드는 절대 동시에 안 일어나는데도 독립이 아니다. 독립의 정의는 곱셈 하나로 확인한다."
+---
+
+## 겹치면 독립이 아닐까, 안 겹치면 독립일까
+
+'독립'이라는 말은 일상에서 '서로 영향을 주지 않는다'는 느낌으로 쓰인다. 그런데 확률에서의 독립은 훨씬 엄밀하다. 아래 세 가지 직관은 모두 틀렸다.
+
+- "동시에 일어날 수 없으면 독립이다" → 틀렸다. 오히려 정반대다.
+- "겹치는 부분이 있으면 독립이 아니다" → 틀렸다.
+- "독립이니까 서로 아무 관련이 없다" → 관련이 없다는 뜻은 맞지만, 판단은 그림이 아니라 계산으로 한다.
+
+독립의 정의는 한 줄이다. 두 사건 $A, B$가 독립이라는 것은 $P(A\cap B)=P(A)P(B)$가 성립한다는 뜻이다.
+
+## 카드 한 장으로 세 가지 관계를 확인하기
+
+52장 카드에서 한 장을 뽑는다고 하자. 하트를 $A$, 그림 카드를 $B$, 스페이드를 $C$, 빨간색 카드를 $D$라고 하면 세 쌍의 관계는 이렇다.
+
+| 쌍 | $P(A\cap B)$ | $P(A)P(B)$ | 판정 |
+|---|---|---|---|
+| 하트 & 그림 카드 | 3/52 = 5.77% | (13/52)(12/52) = 5.77% | **독립** |
+| 하트 & 스페이드 | 0 | (13/52)(13/52) = 6.25% | 독립 아님 |
+| 하트 & 빨간색 | 13/52 = 25% | (13/52)(26/52) = 12.5% | 독립 아님 |
+
+하트와 그림 카드는 3장이 겹치는데도 독립이다. 하트 카드 가운데 그림 카드의 비율(3/13)이 전체 카드 중 그림 카드의 비율(12/52)과 같기 때문이다. 하트인지 알아도 그림 카드일 확률이 달라지지 않는다. 반대로 하트와 스페이드는 동시에 일어날 수 없는(배반) 사건이지만, 하트가 나왔다는 사실을 알면 스페이드일 확률이 0이 되므로 오히려 **강하게 종속**이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "For three pairs of events drawn from a 52-card deck: the actual joint probability P(A and B) versus the product P(A) x P(B). Independence means the two bars are equal. Heart & face card are independent despite overlapping; heart & spade never occur together yet are strongly dependent."
+import matplotlib.pyplot as plt
+import numpy as np
+
+pairs = ["Heart &\nface card", "Heart &\nspade", "Heart &\nred card"]
+joint = [3 / 52, 0, 13 / 52]
+prod = [(13 / 52) * (12 / 52), (13 / 52) ** 2, (13 / 52) * (26 / 52)]
+x = np.arange(3)
+w = 0.36
+
+fig, ax = plt.subplots(figsize=(7.4, 4.5))
+b1 = ax.bar(x - w / 2, np.array(joint) * 100, w, color="#1e3a2f", label="Actual P(A and B)")
+b2 = ax.bar(x + w / 2, np.array(prod) * 100, w, color="#a8790a", label="Product P(A) x P(B)")
+for bars in (b1, b2):
+    for b in bars:
+        ax.annotate(f"{b.get_height():.2f}%", xy=(b.get_x() + b.get_width() / 2, b.get_height()),
+                    xytext=(0, 3), textcoords="offset points", ha="center", fontsize=9.5)
+ax.set_xticks(x)
+ax.set_xticklabels(pairs)
+ax.set_ylabel("Probability (%)")
+ax.set_ylim(0, 30)
+ax.text(0, 15, "equal:\nindependent", ha="center", fontsize=9, color="#3a6b8c")
+ax.text(1, 15, "0 vs 6.25:\ndependent", ha="center", fontsize=9, color="#7a1f2b")
+ax.text(2, 28, "25 vs 12.5:\ndependent", ha="center", fontsize=9, color="#7a1f2b")
+ax.set_title("Independence is a statement about a product, not about overlap", fontsize=10.3, color="#1e3a2f")
+ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 조건부확률로 다시 읽기
+
+독립은 '알려주는 정보가 없다'는 뜻으로 다시 쓸 수 있다. $P(B\mid A)=P(B)$, 곧 $A$가 일어났다는 사실을 알아도 $B$의 확률이 바뀌지 않는다. 스페이드 $C$에서는 $P(C\mid A)=0\neq P(C)=25\%$이므로 하트라는 정보가 스페이드 확률을 통째로 바꾼다. 하트는 빨간색이라는 사실을 확정해 주니 $P(D\mid A)=100\%\neq50\%$다.
+
+```{python}
+#| echo: false
+#| fig-cap: "How much learning 'the card is a heart' changes the probability of another event: P(event | heart) versus P(event). Only for 'face card' is there no change - that is what independence means."
+import matplotlib.pyplot as plt
+import numpy as np
+
+events = ["Face card", "Spade", "Red card"]
+cond = [3 / 13, 0, 1.0]
+uncond = [12 / 52, 13 / 52, 26 / 52]
+x = np.arange(3)
+w = 0.36
+
+fig, ax = plt.subplots(figsize=(7, 4.4))
+b1 = ax.bar(x - w / 2, np.array(uncond) * 100, w, color="#8a9a90", label="P(event)")
+b2 = ax.bar(x + w / 2, np.array(cond) * 100, w, color="#1e3a2f", label="P(event | heart)")
+for bars in (b1, b2):
+    for b in bars:
+        ax.annotate(f"{b.get_height():.1f}%", xy=(b.get_x() + b.get_width() / 2, b.get_height()),
+                    xytext=(0, 3), textcoords="offset points", ha="center", fontsize=9.5)
+ax.set_xticks(x)
+ax.set_xticklabels(events)
+ax.set_ylabel("Probability (%)")
+ax.set_ylim(0, 115)
+ax.set_title("Knowing 'heart' changes some probabilities and not others", fontsize=10.3, color="#1e3a2f")
+ax.legend(frameon=False)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+::: {.callout-tip}
+## 독립인지 확인하는 법
+
+1. **그림이 아니라 곱셈으로 확인하라.** $P(A\cap B)=P(A)P(B)$가 성립하는가.
+2. **배반(동시에 불가능)과 독립을 구분하라.** 확률이 0보다 큰 두 사건이 배반이면 오히려 독립이 아니다.
+3. **'알면 바뀌는가'로 물어보라.** $A$를 알 때 $B$의 확률이 그대로인가.
+4. **독립은 가정이 아니라 검증 대상이다.** 실제 데이터에서는 곱셈이 근사적으로 맞는지 본다.
+:::
+
+## 더 깊이: 독립과 배반의 구분
+
+앞서 09월 22일 글에서는 로또 추첨의 독립성을 다뤘다. 강의노트 [〈수리통계학 1. 확률론 — 독립〉](../../notes/math_stat/probability.qmd#독립)에는 독립의 정의와 함께, 확률이 양수인 두 사건이 배반이면 독립일 수 없다는 증명이 실려 있다. 오늘 카드 예시의 하트와 스페이드가 바로 그 경우다.
+
+## SDV 관점: 독립 가정이 틀리면 결정이 무너진다
+
+독립을 검증하는 일은 **요약과 추론(1~2단계)**의 기본 절차다. **SDV(통계적 데이터 가치화)** 관점에서는 결정의 안전성을 좌우하는 문제다. 리스크 관리에서 "각 부품의 고장은 독립"이라고 가정하고 확률을 곱해 전체 고장률을 계산했다가, 사실은 같은 전원이나 같은 공급처 때문에 함께 고장 나는 종속 구조라서 실제 위험이 수십 배 커지는 일이 반복된다. 곱셈 규칙을 적용하기 전에 "이 두 사건은 정말 서로 정보를 주지 않는가"를 데이터로 확인하는 것이, 숫자에 가치를 더하는 통계학자의 검증 절차다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 독립은 느낌이 아니라 등식이다
+
+나는 학생들에게 "서로 상관없어 보인다"는 말을 믿지 말고 곱해보라고 말한다. 하트와 그림 카드는 눈으로는 얽혀 있어도 독립이고, 하트와 스페이드는 눈으로는 남남 같아도 종속이다. 독립은 직관이 아니라 $P(A\cap B)=P(A)P(B)$라는 하나의 등식으로 판정한다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 트럼프 카드(52장) 구성에 기반한 이론적 계산이며 외부 통계 자료는 사용하지 않았다.
+:::

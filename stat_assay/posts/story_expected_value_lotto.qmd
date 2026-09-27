@@ -1,0 +1,113 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률의 도구들) 복권 기댓값으로 알아보기 — 기댓값이란 무엇인가"
+author: "권세혁"
+date: "2026-10-02"
+categories: [통계기초, 확률]
+description: "로또 한 게임 1,000원의 기댓값은 약 500원이다. 당첨금 총액이 판매액의 50%로 정해져 있기 때문이다. 매주 사서 1년을 버텨도 4·5등만 보면 대부분 투자금의 일부만 돌아온다. 기댓값은 '평균적으로 얼마를 돌려받는가'를 말해주는 숫자다."
+---
+
+## 1,000원을 내면 평균 얼마를 돌려받나
+
+로또 6/45 한 게임은 1,000원이다. 당첨금은 판매액의 50%로 정해져 있고, 5등은 5,000원, 4등은 50,000원이 고정이며 1~3등은 나머지를 당첨자 수로 나눠 받는다. 그렇다면 한 게임을 살 때마다 평균적으로 돌려받는 돈, 곧 **기댓값**은 얼마일까? 각 결과의 상금에 그 확률을 곱해서 더한 값이 기댓값이다.
+
+$$E[X]=\sum_x x\,P(X=x)$$
+
+## 계산해 보기: 4·5등에서만 180원
+
+- 5등(번호 3개 일치): 확률 $\binom{6}{3}\binom{39}{3}/\binom{45}{6}=2.244\%$ → 기여 $0.02244\times5{,}000\approx$ **112원**
+- 4등(4개 일치): 확률 $0.1365\%$ → 기여 $0.001365\times50{,}000\approx$ **68원**
+- 1~3등: 확률은 1등 1/8,145,060, 3등 1/35,724 등으로 극히 작지만 상금이 크다. 판매액의 50%가 당첨금이므로 4·5등 몫(약 180원)을 뺀 나머지가 1~3등의 평균 기여분, 곧 **약 320원**이다.
+
+합치면 기댓값은 약 500원, 즉 1,000원을 내고 평균 500원을 돌려받는다. **평균적으로 절반을 잃는 게임**인 셈이다(이월된 회차 등에 따라 회차별로 달라질 수 있는 설계상의 평균이다).
+
+```{python}
+#| echo: false
+#| fig-cap: "Where the average 1,000 won goes: about 112 won from 5th prizes, 68 won from 4th prizes, roughly 320 won from 1st-3rd prizes (implied by the 50% payout rule), and about 500 won not returned to players."
+import matplotlib.pyplot as plt
+
+parts = [("5th", 112.2, "#8a9a90"), ("4th", 68.2, "#3a6b8c"),
+         ("1st-3rd prizes\n(implied)", 319.6, "#a8790a"), ("Not returned", 500.0, "#7a1f2b")]
+fig, ax = plt.subplots(figsize=(8, 2.8))
+left = 0
+for name, v, col in parts:
+    ax.barh([0], [v], left=left, color=col, edgecolor="white")
+    ax.text(left + v / 2, 0, f"{name}\n{v:.0f}", ha="center", va="center", fontsize=9,
+            color="white")
+    left += v
+ax.set_xlim(0, 1000)
+ax.set_yticks([])
+ax.set_xlabel("Won (out of 1,000 won spent per game)")
+ax.set_title("Expected return per 1,000-won lotto game: about 500 won", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 한 사람의 1년은 어떨까
+
+기댓값은 '평균'이지 '내가 얻을 값'이 아니다. 매주 5게임씩 1년(260게임)을 사는 사람 1만 명을 시뮬레이션해 보자. 1~3등은 확률이 너무 작아 대부분의 사람에게 한 번도 일어나지 않으므로, 여기서는 4·5등 상금만 세어 본다. 260,000원을 쓰고 4·5등에서 돌려받는 금액은 평균 약 46,300원이고, 거의 모든 사람이 쓴 돈의 절반에도 못 미친다.
+
+```{python}
+#| echo: false
+#| fig-cap: "10,000 simulated players who each buy 260 lotto games (5 per week for a year). Histogram of the money returned from 4th and 5th prizes only, versus the 260,000 won spent. Almost nobody gets back even half of what they spent from these prizes."
+import numpy as np
+import matplotlib.pyplot as plt
+from math import comb
+
+T = comb(45, 6)
+p5 = comb(6, 3) * comb(39, 3) / T
+p4 = comb(6, 4) * comb(39, 2) / T
+rng = np.random.default_rng(3)
+games = 260
+n5 = rng.binomial(games, p5, 10000)
+n4 = rng.binomial(games, p4, 10000)
+ret = 5000 * n5 + 50000 * n4
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.hist(ret / 1000, bins=40, color="#1e3a2f", edgecolor="white")
+ax.axvline(260, color="#7a1f2b", linestyle="--", linewidth=1.8)
+ax.text(255, ax.get_ylim()[1] * 0.85, "money spent: 260", ha="right", fontsize=9.5, color="#7a1f2b")
+ax.axvline(ret.mean() / 1000, color="#a8790a", linewidth=1.8)
+ax.text(ret.mean() / 1000 + 4, ax.get_ylim()[1] * 0.6, f"mean return: {ret.mean()/1000:.1f}", fontsize=9.5, color="#a8790a")
+ax.set_xlabel("Returned from 4th/5th prizes (thousand won)")
+ax.set_ylabel("Number of simulated players")
+ax.set_title("One year of weekly play: returns from small prizes", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 기댓값이 말해주는 것, 말해주지 않는 것
+
+기댓값이 500원이라는 사실은 이 게임이 **장기적으로 반복하면 평균 손실이 발생하도록 설계**되었음을 알려준다. 그러나 개인에게 일어나는 일은 훨씬 들쭉날쭉하다. 대부분은 소액을 받거나 아무것도 받지 못하고, 극소수만 수억 원을 받는다. 기댓값은 그 극단값까지 확률로 가중해 하나의 숫자로 요약한 것이라 대부분의 사람이 실제로 겪는 경험과는 다를 수 있다.
+
+::: {.callout-tip}
+## 기댓값을 읽을 때
+
+1. **기댓값 = 각 결과 × 확률의 합.** 큰 상금이라도 확률이 작으면 기여는 작다.
+2. **기댓값은 '반복했을 때의 평균'이지 한 번의 결과가 아니다.**
+3. **분포의 모양을 함께 보라.** 극단값이 평균을 끌어올리면 대부분은 평균에 못 미친다.
+4. **비용과 비교하라.** 기댓값이 지불 금액보다 작으면 평균적으로 손해다.
+:::
+
+## 더 깊이: 기댓값의 정의
+
+강의노트 [〈수리통계학 2. 확률변수 — 기대값 정의〉](../../notes/math_stat/random_variable.qmd#기대값-정의)는 이산형 확률변수의 기대값을 $\sum g(x)f_X(x)$로 정의한다. 오늘 계산은 $g(x)$를 상금으로, $f_X(x)$를 등수별 당첨 확률로 놓은 그대로의 적용이다.
+
+## SDV 관점: 평균 한 줄이 감추는 분포를 함께 읽어라
+
+기댓값을 계산하는 일은 **요약과 추론(1~2단계)**에 속한다. **SDV(통계적 데이터 가치화)** 관점에서 핵심은, "평균 수익률 5%", "고객당 평균 매출 3만 원" 같은 숫자가 오늘의 시뮬레이션처럼 **소수의 큰 값이 평균을 끌어올린 결과**일 수 있다는 점이다. 평균만 보고 의사결정을 하면 대부분의 고객이 경험하는 현실과 괴리가 생긴다. 기댓값과 함께 분포, 곧 대부분의 사람이 얻는 값과 극단의 몫을 나란히 보여줄 때 숫자가 비로소 결정의 가치가 된다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 평균이 500원이면, 나는 대개 500원보다 못 받는다
+
+나는 학생들에게 복권을 사지 말라고 하지는 않는다. 다만 1,000원이 평균 500원으로 돌아온다는 사실, 그리고 대부분의 사람은 그 평균에도 못 미친다는 사실을 알고 사라고 말한다. 기댓값은 미래를 맞추는 예언이 아니라, 반복되는 게임의 구조를 한 숫자로 드러내는 도구다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [로또6/45 소개 — 동행복권](https://www.dhlottery.co.kr/lt645/intro): 당첨금 총액은 판매액의 50%, 5등 5,000원·4등 50,000원 고정.
+- [고객센터 당첨자 가이드 — 동행복권](https://www.dhlottery.co.kr/guide/wnrGuide)
+:::

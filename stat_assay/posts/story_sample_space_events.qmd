@@ -1,0 +1,108 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률의 도구들) 확률을 세는 언어 — 표본공간과 사건이란 무엇인가"
+author: "권세혁"
+date: "2026-09-28"
+categories: [통계기초, 확률]
+description: "윷 네 개를 던지면 도·개·걸·윷·모 다섯 가지 결과가 나온다. 그렇다면 각각 20%일까? 아니다. 개는 37.5%, 윷과 모는 6.25%다. 확률을 계산하는 첫걸음은 '무엇이 일어날 수 있는가'를 빠짐없이 나열하는 표본공간과 사건이라는 언어를 익히는 일이다."
+---
+
+## 윷이 나올 확률은 5분의 1일까
+
+설날 가족 윷놀이에서 누군가 "윷이 나올 확률은 다섯 가지 중 하나니까 20%지"라고 말했다면, 틀린 말이다. 결과의 종류가 다섯 가지(도·개·걸·윷·모)라는 것과, 다섯 결과가 **같은 확률**이라는 것은 전혀 다른 이야기다. 윷가락 하나가 평평한 면과 둥근 면이 나올 확률을 각각 50%라고 가정하면, 개는 37.5%, 도와 걸은 각각 25%, 윷과 모는 각각 6.25%다. 개가 윷보다 여섯 배 자주 나온다. 어떻게 이런 계산이 나올까? 답은 '표본공간'을 제대로 세는 데 있다.
+
+## 표본공간: 일어날 수 있는 모든 일의 목록
+
+확률에서 가장 먼저 하는 일은 실험을 던져서 나올 수 있는 **모든 결과의 집합**, 곧 **표본공간(sample space)**을 적는 것이다. 윷가락 네 개를 구별해서 각각 평평한 면(F) 또는 둥근 면(R)이 나온다고 하면, 표본공간은 $2^4=16$가지다. 도·개·걸·윷·모는 이 16가지 결과를 '평평한 면이 몇 개인가'로 묶어 이름 붙인 것에 지나지 않는다. 이렇게 표본공간의 일부분을 묶은 것을 **사건(event)**이라 부른다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The 16 equally likely outcomes of throwing four yut sticks (F = flat side up, R = round side up), colored by the named result. The five results are events of very different sizes: 4, 6, 4, 1 and 1 outcomes."
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+from itertools import product
+
+names = {1: "Do", 2: "Gae", 3: "Geol", 4: "Yut", 0: "Mo"}
+colors = {"Do": "#3a6b8c", "Gae": "#1e3a2f", "Geol": "#8a9a90", "Yut": "#a8790a", "Mo": "#7a1f2b"}
+
+outcomes = list(product("FR", repeat=4))
+outcomes.sort(key=lambda o: (o.count("F") % 4 if o.count("F") else 0, o))
+order = {"Do": 0, "Gae": 1, "Geol": 2, "Yut": 3, "Mo": 4}
+outcomes.sort(key=lambda o: (order[names[o.count("F")]], o))
+
+fig, ax = plt.subplots(figsize=(8, 4.4))
+for i, o in enumerate(outcomes):
+    r, c = divmod(i, 4)
+    nm = names[o.count("F")]
+    ax.add_patch(patches.Rectangle((c, 3 - r), 0.94, 0.9, facecolor=colors[nm], edgecolor="white"))
+    ax.text(c + 0.47, 3 - r + 0.62, "".join(o), ha="center", va="center", color="white", fontsize=12, fontweight="bold")
+    ax.text(c + 0.47, 3 - r + 0.26, nm, ha="center", va="center", color="white", fontsize=9)
+ax.set_xlim(0, 4)
+ax.set_ylim(0, 4)
+ax.set_aspect("equal")
+ax.axis("off")
+ax.set_title("Sample space of four yut sticks: 16 outcomes", fontsize=10.5, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+## 사건의 크기가 곧 확률이다
+
+모든 결과가 같은 가능성을 갖는다는 가정(균등가능성) 아래에서는 사건 $A$의 확률이 $P(A)=|A|/|S|$, 곧 사건에 속한 결과의 수를 표본공간 전체의 수로 나눈 값이다. 윷은 FFFF 한 가지뿐이니 $1/16=6.25\%$, 개는 평평한 면이 두 개인 $\binom{4}{2}=6$가지이니 $6/16=37.5\%$다. '결과의 종류가 다섯 가지'는 사건의 이름이 다섯 개라는 뜻일 뿐, 표본공간의 원소가 다섯 개라는 뜻이 아니다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Probability of each yut result when each stick lands flat or round with probability 1/2, compared with the naive '1 in 5 = 20%' guess (dashed line)."
+import matplotlib.pyplot as plt
+
+labels = ["Do", "Gae", "Geol", "Yut", "Mo"]
+counts = [4, 6, 4, 1, 1]
+probs = [c / 16 * 100 for c in counts]
+cols = ["#3a6b8c", "#1e3a2f", "#8a9a90", "#a8790a", "#7a1f2b"]
+
+fig, ax = plt.subplots(figsize=(7, 4.4))
+bars = ax.bar(labels, probs, color=cols, width=0.6)
+for b, p, c in zip(bars, probs, counts):
+    ax.annotate(f"{p:.2f}%\n({c}/16)", xy=(b.get_x() + b.get_width() / 2, p), xytext=(0, 4),
+                textcoords="offset points", ha="center", fontsize=9.5)
+ax.axhline(20, color="#a8790a", linestyle="--", linewidth=1.4)
+ax.text(4.45, 20.8, "naive 20%", ha="right", fontsize=9, color="#a8790a")
+ax.set_ylim(0, 45)
+ax.set_ylabel("Probability (%)")
+ax.set_title("Named results are events of different sizes", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+물론 실제 윷가락은 한쪽이 반원형이라 평평한 면과 둥근 면이 정확히 반반으로 나오지는 않는다. 여기서 계산한 값은 '50 대 50'이라는 가정을 둔 이론값이며, 가정이 달라지면 표본공간의 각 원소 확률이 달라진다. 그래도 도·개·걸이 흔하고 윷·모가 귀하다는 큰 그림은 바뀌지 않는다.
+
+::: {.callout-tip}
+## 확률 문제를 읽을 때 먼저 확인할 것
+
+1. **표본공간을 먼저 적어라.** "무엇이 일어날 수 있는가"를 빠짐없이, 겹치지 않게 나열하는 일이 계산의 절반이다.
+2. **결과의 '종류'와 '가능성'을 혼동하지 마라.** 종류가 다섯이라고 각각 $1/5$인 것은 아니다.
+3. **사건은 표본공간의 부분집합이다.** 사건을 '결과들의 묶음'으로 그려보면 확률은 묶음의 크기 비교가 된다.
+4. **균등가능성 가정이 성립하는지 스스로 물어라.** 성립하지 않으면 원소마다 확률을 따로 붙여야 한다.
+:::
+
+## 더 깊이: 집합의 언어로 쓰는 확률
+
+강의노트 [〈수리통계학 1. 확률론 — 표본공간과 사건〉](../../notes/math_stat/probability.qmd#표본공간과-사건)은 표본공간을 실험의 모든 가능한 결과의 집합으로 정의하고, 사건을 그 부분집합으로 다룬다. 합집합·교집합·여집합 같은 집합 연산이 곧 '또는'·'그리고'·'아니다'의 언어가 된다는 점이 앞으로 두 주 동안 쓸 모든 도구의 바탕이다.
+
+## SDV 관점: 데이터 분석의 첫 질문은 "가능한 경우의 전체가 무엇인가"
+
+표본공간을 정의하는 일은 **요약과 추론(1~2단계)**의 출발점이다. 제가 제안하는 **SDV(통계적 데이터 가치화)** 관점에서 이는 더 실용적인 뜻을 갖는다. "전환율 3%", "불량률 0.5%" 같은 숫자는 '무엇을 한 번의 시도로 세었는가', 곧 표본공간의 단위를 정해야 비로소 의미가 생긴다. 방문자 기준인지 세션 기준인지, 부품 기준인지 로트 기준인지에 따라 같은 데이터가 전혀 다른 확률을 만든다. 데이터에 가치를 더하는 첫 단계는 계산이 아니라, 숫자가 어떤 표본공간 위에서 정의됐는지를 못 박는 일이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 세기 전에 나열하라
+
+나는 학생들에게 확률 문제 앞에서 계산기를 두드리기 전에 표본공간부터 종이에 적어보라고 말한다. 윷놀이의 개가 윷보다 여섯 배 흔한 이유는 신비로운 것이 아니라, 개라는 사건에 속한 결과가 여섯 개이고 윷에는 하나뿐이라는 단순한 세기의 문제다. 확률은 결국 '얼마나 많은 경우가 그 사건에 해당하는가'를 세는 언어다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [윷가락 확률 '개 ＞ 걸 = 도 ＞ 윷 = 모' 順 — 문화일보](https://www.munhwa.com/article/10907513)
+- [윷놀이 — 위키백과](https://ko.wikipedia.org/wiki/%EC%9C%B7%EB%86%80%EC%9D%B4)
+:::
