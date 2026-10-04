@@ -1,0 +1,83 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(분포가 들려주는 이야기) 키는 정규분포에 가깝고 소득은 그렇지 않은 이유 — 분포 모양이 다른 이유"
+author: "권세혁"
+date: "2026-10-13"
+categories: [통계기초, 분포]
+description: "성인 남성의 키는 평균 174cm 근처에 종 모양으로 모인다. 반면 가구 소득은 평균이 중앙값보다 훨씬 높다. 2024년 기준 한국 가구의 평균 소득은 7,427만 원, 중위소득은 5,800만 원이다. 같은 '사람이 가진 값'인데 모양이 다른 이유는 값이 더해져 만들어졌는지, 곱해져 만들어졌는지에 있다."
+---
+
+## 키는 평균 근처에 모이고, 소득은 한쪽으로 쏠린다
+
+길거리에서 성인 남성 100명을 세운 뒤 키를 재면, 대부분은 170cm 안팎에 몰려 있고 170cm보다 훨씬 작거나 훨씬 큰 사람은 드물다. 병무청의 병역판정검사 통계를 보면 평균은 174cm 조금 넘고 표준편차는 6cm 안팎이다(자료마다 조금씩 다르다). 반면 가구 소득을 같은 방식으로 재면 그림이 완전히 달라진다. 통계청(국가데이터처)의 가계금융복지조사에 따르면 2024년 가구의 **평균** 소득은 7,427만 원이었지만, 한가운데 가구인 **중위소득**은 5,800만 원이었다. 평균이 중앙값보다 약 28% 높다. 키에서는 평균과 중앙값이 거의 같은데, 소득에서는 왜 이렇게 벌어질까?
+
+## 키는 더해져서, 소득은 곱해져서 만들어진다
+
+키는 수많은 유전자와 영양, 성장 환경이 **더해져서** 결정된다. 한 요인이 키를 1cm 늘리거나 줄이는 정도이고, 그 효과들이 모이면 가운데에 몰리는 종 모양이 된다. 앞서 본 중심극한정리가 말하는 상황이다.
+
+소득은 다르다. 학력이 소득을 1.2배로 만들고, 업종이 1.5배로 만들고, 경력이 또 1.3배로 만든다. 이렇게 **곱해지는** 구조에서는 작은 차이가 누적되어 큰 차이가 된다. 그 결과 한쪽 끝에 소수의 고소득자가 길게 늘어진 오른쪽 꼬리가 생긴다. 로그를 취하면 곱셈이 덧셈으로 바뀌어 다시 대칭에 가까워지는 것이 바로 **로그정규분포**다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Simulated adult male heights (normal, mean 174.5 cm, SD 5.8 cm) on the left: nearly symmetric. Simulated household incomes (lognormal, calibrated so the mean-to-median ratio is about 1.28 as in the 2024 Korean survey) on the right: a long right tail. Values are illustrative."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(11)
+height = rng.normal(174.5, 5.8, 50000)
+sigma = np.sqrt(2 * np.log(7427 / 5800))
+income = rng.lognormal(np.log(5800), sigma, 50000)
+
+fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.2))
+axes[0].hist(height, bins=60, color="#1e3a2f", density=True)
+axes[0].axvline(height.mean(), color="#a8790a", linewidth=1.8, label=f"mean {height.mean():.1f}")
+axes[0].set_title("Adult male height (cm): symmetric", fontsize=9.5, color="#1e3a2f")
+axes[0].legend(frameon=False)
+axes[1].hist(income[income < 30000], bins=80, color="#a8790a", density=True)
+axes[1].axvline(income.mean(), color="#1e3a2f", linewidth=1.8, label=f"simulated mean {income.mean():,.0f}")
+axes[1].axvline(np.median(income), color="#7a1f2b", linestyle="--", linewidth=1.6, label=f"simulated median {np.median(income):,.0f}")
+axes[1].set_title("Household income (10k won): long right tail", fontsize=9.5, color="#1e3a2f")
+axes[1].legend(frameon=False)
+for ax in axes:
+    ax.set_yticks([])
+    ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+그림에서 소득 히스토그램은 3억 원 이상의 가구를 잘라서 보여준다. 실제로는 그 꼬리 너머에도 가구가 있고, 그 가구들이 평균을 끌어올린다. 평균이 중앙값보다 큰 것은 계산 실수가 아니라 분포 모양이 낳은 결과다.
+
+## 평균 소득이 실제 가구를 대표하지 못하는 이유
+
+평균 소득 7,427만 원을 보고 "우리 가구도 이 정도는 벌어야 평균이지"라고 생각하면, 절반 이상의 가구는 그 기준에 못 미친다. 중위소득 5,800만 원이 "한가운데 가구"의 실제 모습에 더 가깝다. 같은 데이터에 대해 평균과 중앙값이 이렇게 다른 답을 주는 것은, 분포가 대칭이 아니기 때문이다.
+
+::: {.callout-tip}
+## 분포의 모양을 읽는 법
+
+1. **평균과 중앙값을 함께 보라.** 둘이 가까우면 대칭에 가깝고, 멀면 한쪽으로 치우쳐 있다.
+2. **값이 어떻게 만들어지는지 물어라.** 더해졌는지, 곱해졌는지에 따라 모양이 정해진다.
+3. **꼬리가 긴 데이터에는 로그 눈금을 시도하라.** 곱셈 구조는 로그를 취하면 대칭에 가까워진다.
+4. **"평균 이상"이라는 표현이 얼마나 많은 사람에게 해당하는지 세어보라.** 치우친 분포에서는 소수만 해당한다.
+:::
+
+## 더 깊이: 로그정규분포의 정의
+
+강의노트 [〈수리통계학 5. 유명분포 — 로그정규분포〉](../../notes/math_stat/famous_distribution.qmd#로그정규분포-logx-sim-nmusigma2)는 $\log X$가 정규분포를 따르는 확률변수 $X$를 로그정규분포로 정의한다. 소득처럼 양수이고 곱셈으로 결정되는 값이 이 분포에 가까운 이유를 이 정의가 설명해준다.
+
+## SDV 관점: 평균 소득은 "대표 가구"가 아니다
+
+분포가 치우쳐 있음을 알아채는 일은 **요약과 추론(1~2단계)**의 핵심이다. **SDV(통계적 데이터 가치화)** 관점에서 이는 정책과 사업 설계의 기준을 정하는 문제다. 지원금 기준, 가격 정책, 고객 세분화를 평균 소득이나 평균 구매액으로 설계하면, 실제 대상의 절반 이상이 설계와 맞지 않는다. 치우친 데이터에서는 중앙값과 분위수를 기준으로 삼고, 평균은 전체 규모를 말할 때만 쓰는 것이 데이터를 실제 결정의 가치로 연결하는 방법이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 같은 '사람의 값'도 만들어진 방식이 모양을 정한다
+
+나는 학생들에게 키와 소득을 같은 종류의 데이터로 취급하지 말라고 말한다. 키는 더해져서 종 모양이 되고, 소득은 곱해져서 오른쪽으로 길게 늘어진다. 분포의 모양을 먼저 알아야 평균이 무엇을 말해주고 무엇을 감추는지 판단할 수 있다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- [2025년 가계금융복지조사 결과 — 대한민국 정책브리핑](https://www.korea.kr/briefing/policyBriefingView.do?newsId=156733201): 2024년 가구 평균 소득 7,427만 원, 처분가능소득 6,032만 원 등.
+- [2024년 가계금융복지조사 결과 — 대한민국 정책브리핑](https://www.korea.kr/briefing/policyBriefingView.do?newsId=156664637)
+- 병무청 병역판정검사 기준 성인 남성 키 평균·표준편차는 자료마다 차이가 있어 대략적인 값(평균 약 174~175cm, 표준편차 약 6cm)으로만 사용했다.
+:::

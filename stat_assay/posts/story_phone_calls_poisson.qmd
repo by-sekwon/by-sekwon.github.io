@@ -1,0 +1,108 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(분포가 들려주는 이야기) 하루에 걸려오는 전화 수는 어떤 분포를 따를까? — 포아송분포"
+author: "권세혁"
+date: "2026-10-15"
+categories: [통계기초, 분포]
+description: "콜센터에 하루 평균 12통의 전화가 걸려 온다면, 어떤 날은 6통이고 어떤 날은 20통이다. 이 흔들림은 우연일까, 문제일까? 일정한 평균 속도로 독립적으로 일어나는 사건의 횟수는 포아송분포를 따른다. 평균 하나로 날마다의 변동 폭까지 예측할 수 있다."
+---
+
+## 평균 12통, 그런데 날마다 다르다
+
+한 고객센터가 하루 평균 12통의 전화를 받는다고 하자. 그런데 실제로 어떤 날은 7통, 어떤 날은 18통이 걸려 온다. 관리자는 이 날마다의 차이를 보고 "오늘은 인력이 부족했다"거나 "무슨 일이 생겼다"고 해석하기 쉽다. 그러나 평균이 같아도 이런 흔들림은 자연스럽게 생긴다. 일정한 평균 속도로 서로 독립적으로 일어나는 사건의 횟수는 **포아송분포**를 따르고, 포아송분포는 평균 하나만으로 날마다의 변동 폭까지 말해준다.
+
+## 포아송분포는 무엇을 세는가
+
+포아송분포는 정해진 시간이나 공간 안에서 드물게 일어나는 사건의 횟수를 센다. 평균 발생 횟수를 $\lambda$라고 하면, $k$번 일어날 확률은
+
+$$P(X=k)=\frac{e^{-\lambda}\lambda^{k}}{k!}$$
+
+이다. 이 분포의 가장 중요한 특징은 **평균과 분산이 모두 $\lambda$**라는 점이다. 평균이 12이면 분산도 12, 표준편차는 약 3.5다. 그래서 평균 12통인 날의 "보통" 변동은 대략 8통에서 16통 사이에 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Poisson probabilities of k calls per day when the average is 12 (blue-grey) and 3 (dark green). The larger average gives a wider, more symmetric spread around its mean, and the small average gives a skewed shape close to zero."
+import numpy as np
+import matplotlib.pyplot as plt
+from math import exp, factorial
+
+def pmf(k, lam):
+    return exp(-lam) * lam ** k / factorial(k)
+
+ks = np.arange(0, 31)
+fig, ax = plt.subplots(figsize=(8, 4.4))
+ax.bar(ks - 0.2, [pmf(k, 12) * 100 for k in ks], width=0.4, color="#3a6b8c", label="average = 12")
+ax.bar(ks + 0.2, [pmf(k, 3) * 100 for k in ks], width=0.4, color="#1e3a2f", label="average = 3")
+ax.set_xlabel("Number of calls in one day (k)")
+ax.set_ylabel("Probability (%)")
+ax.set_xticks(range(0, 31, 3))
+ax.legend(frameon=False)
+ax.set_title("Poisson distribution: the mean sets the spread too", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 1년 365일 시뮬레이션으로 확인하기
+
+이론이 실제 하루하루에 맞는지 확인해 보자. 평균 12통의 포아송 과정을 365일 동안 시뮬레이션하고, 날마다 걸려 온 전화 수의 히스토그램을 이론값과 겹쳐 본다.
+
+```{python}
+#| echo: false
+#| fig-cap: "One simulated year (365 days) of calls from a Poisson process with average 12 per day. Histogram of daily counts (bars) with the theoretical Poisson probabilities (line). The two agree closely, so the day-to-day swings are what chance alone would produce."
+import numpy as np
+import matplotlib.pyplot as plt
+from math import exp, factorial
+
+rng = np.random.default_rng(2026)
+counts = rng.poisson(12, 365)
+ks = np.arange(0, 26)
+theo = np.array([exp(-12) * 12 ** k / factorial(k) for k in ks])
+
+fig, ax = plt.subplots(figsize=(8, 4.4))
+ax.hist(counts, bins=np.arange(-0.5, 26.5, 1), density=True, color="#8a9a90", edgecolor="white", label="simulated year")
+ax.plot(ks, theo, color="#7a1f2b", linewidth=2, marker="o", markersize=3.5, label="Poisson(12) theory")
+ax.axvline(counts.mean(), color="#a8790a", linestyle="--", linewidth=1.5, label=f"sample mean {counts.mean():.1f}")
+ax.set_xlabel("Calls per day")
+ax.set_ylabel("Share of days")
+ax.set_title("A year of simulated calls matches the Poisson model", fontsize=10.5, color="#1e3a2f")
+ax.legend(frameon=False)
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+시뮬레이션에서 날마다의 전화 수는 평균 근처에 모이되, 6통이나 18통인 날도 자주 나온다. 이 흔들림은 고객센터가 무언가를 잘못했다는 신호가 아니다. 평균이 12인 포아송 과정에서 기대되는 정상적인 모습이다.
+
+## 포아송분포를 쓰는 조건
+
+포아송분포가 맞으려면 세 가지 조건이 필요하다. 사건이 일정한 평균 속도로 일어나야 하고, 한 사건이 다음 사건의 발생에 영향을 주지 않아야 하며(독립), 같은 짧은 구간에 두 사건이 동시에 일어나지 않아야 한다. 전화 수는 대체로 이 조건에 가깝다. 그러나 점심시간에는 전화가 몰리고 월요일 아침에는 평균이 더 높다면, 하루 전체를 하나의 평균으로 보는 것은 무리다. 시간대별로 평균을 나누어 보아야 한다.
+
+::: {.callout-tip}
+## 포아송 모형을 적용하기 전에 확인할 것
+
+1. **사건이 드물고 독립적인가?** 한 번 일어난 사건이 다음 사건을 부추기면 포아송이 아니다.
+2. **평균이 일정한가?** 요일이나 시간대에 따라 평균이 바뀌면 구간을 나눠야 한다.
+3. **분산이 평균과 비슷한가?** 분산이 평균보다 훨씬 크면 과산포(overdispersion)이므로 다른 모형을 고려하라.
+4. **"평균과 다른 날"을 기대 범위와 비교하라.** 포아송이라면 평균 ± 2σ 밖은 드물다.
+:::
+
+## 더 깊이: 포아송 과정과 포아송분포
+
+강의노트 [〈수리통계학 5. 유명분포 — 포아송분포〉](../../notes/math_stat/famous_distribution.qmd#포아송분포-x-sim-poissonlambda)는 포아송 과정의 조건과, 평균과 분산이 모두 $\lambda$인 포아송분포를 정의한다. 앞서 군집 착각 글에서 다룬 것도 같은 포아송 구조였다. 이번에는 같은 분포가 하루의 전화 수라는 일상의 숫자를 설명하는 데 쓰였다.
+
+## SDV 관점: 평균과 함께 "정상 변동의 폭"을 설계하라
+
+포아송 모형으로 기대 변동을 계산하는 일은 **요약과 추론(1~2단계)**의 실전 응용이다. **SDV(통계적 데이터 가치화)** 관점에서 이 계산은 운영 데이터의 해석 기준을 만든다. 고객 문의, 주문 건수, 서버 요청 수는 모두 평균 주변에서 흔들린다. 그 흔들림이 포아송 범위 안이면 인력 배치와 재고를 평균 기준으로 조정하면 되지만, 범위를 벗어나면 원인을 찾아야 한다. 평균만 보고 날마다 반응하면 정상 변동을 문제로 착각해 쓸데없는 대응을 반복하게 된다. 평균과 함께 정상 변동의 폭을 제시하는 것이 데이터를 실제 운영의 가치로 바꾸는 방법이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 평균이 같아도 하루는 흔들린다
+
+나는 학생들에게 날마다의 숫자가 흔들린다고 곧바로 원인을 찾으려 하지 말라고 말한다. 평균이 12인 전화는 어떤 날 18통이 걸려 오는 것이 당연하다. 포아송분포는 그 흔들림이 얼마나 자연스러운지를 알려주는 도구이고, 그 범위를 넘을 때에만 비로소 이야기할 거리가 생긴다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 시뮬레이션 자료는 평균 12의 포아송 난수를 사용한 가상의 1년치 데이터다. 실제 고객센터의 전화 수 분포는 시간대와 계절에 따라 다를 수 있다.
+:::
