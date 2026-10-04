@@ -49,6 +49,33 @@ plt.show()
 
 그림에서 소득 히스토그램은 3억 원 이상의 가구를 잘라서 보여준다. 실제로는 그 꼬리 너머에도 가구가 있고, 그 가구들이 평균을 끌어올린다. 평균이 중앙값보다 큰 것은 계산 실수가 아니라 분포 모양이 낳은 결과다.
 
+로그를 취한 뒤에도 같은 소득 자료를 그려보면, 곱셈 구조가 덧셈 구조로 바뀌면서 꼬리가 사라진다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Simulated household incomes after taking logarithms: the long right tail disappears and the histogram follows a normal curve (red line). Multiplicative effects become additive on the log scale. Values are illustrative."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(12)
+sigma = np.sqrt(2 * np.log(7427 / 5800))
+logs = np.log(rng.lognormal(np.log(5800), sigma, 50000))
+mu, sd = logs.mean(), logs.std()
+xs = np.linspace(logs.min(), logs.max(), 400)
+pdf = np.exp(-(xs - mu) ** 2 / (2 * sd ** 2)) / (sd * np.sqrt(2 * np.pi))
+
+fig, ax = plt.subplots(figsize=(7.5, 4.4))
+ax.hist(logs, bins=80, density=True, color="#3a6b8c")
+ax.plot(xs, pdf, color="#7a1f2b", linewidth=2)
+ax.set_xlabel("log(household income)")
+ax.set_ylabel("Density")
+ax.set_yticks([])
+ax.set_title("On the log scale, the skewed incomes look normal", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
 ## 평균 소득이 실제 가구를 대표하지 못하는 이유
 
 평균 소득 7,427만 원을 보고 "우리 가구도 이 정도는 벌어야 평균이지"라고 생각하면, 절반 이상의 가구는 그 기준에 못 미친다. 중위소득 5,800만 원이 "한가운데 가구"의 실제 모습에 더 가깝다. 같은 데이터에 대해 평균과 중앙값이 이렇게 다른 답을 주는 것은, 분포가 대칭이 아니기 때문이다.
