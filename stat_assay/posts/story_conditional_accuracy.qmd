@@ -1,0 +1,80 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(조건부확률과 베이즈의 사고) 정확도 99% 검사가 틀릴 수 있는 이유 — 조건부확률"
+author: "권세혁"
+date: "2026-10-06"
+categories: [통계기초, 확률]
+description: "'양성이면 병이다'와 '병이면 양성이다'는 전혀 다른 문장이다. 앞의 확률은 P(병|양성), 뒤의 확률은 P(양성|병)이고, 둘은 같지 않다. 조건부확률은 '무엇을 조건으로 두었는가'를 바꾸면 답이 어떻게 달라지는지를 정확히 알려준다."
+---
+
+## 같은 말처럼 들리지만 다른 확률이다
+
+뉴스에서 "이 검사는 병이 있는 사람의 99%를 양성으로 찾아낸다"는 말을 들었다. 이것을 "양성이면 병이 있을 확률이 99%"라고 바꿔 기억하면 어떻게 될까? 어제 본 것처럼, 그 바꿔 말하기는 틀렸다. 앞 문장은 **병을 조건으로 둔 양성 확률** $P(\text{양성}\mid\text{병})=0.99$이고, 바꿔 말한 문장은 **양성을 조건으로 둔 병 확률** $P(\text{병}\mid\text{양성})$이다. 조건부확률에서 조건의 방향을 바꾸면 값이 바뀐다.
+
+## 조건부확률의 정의
+
+두 사건 $A$, $B$에 대해 $B$가 일어났다는 조건에서 $A$가 일어날 확률은
+
+$$P(A\mid B)=\frac{P(A\cap B)}{P(B)}$$
+
+이다. 분모는 조건이 되는 사건의 확률이다. 따라서 $P(A\mid B)$와 $P(B\mid A)$는 분모가 다르기 때문에 일반적으로 같지 않다. 이 식을 한 번 더 쓰면 $P(A\mid B)P(B)=P(A\cap B)=P(B\mid A)P(A)$라는 관계가 나온다. 이것이 바로 다음 주 베이즈 정리의 뿌리다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Two conditional probabilities built from the same 2x2 table of 10,000 people (1,000 sick, 9,000 healthy). Reading the condition in the other direction changes the answer: P(positive | sick) = 90% but P(sick | positive) is much lower."
+import matplotlib.pyplot as plt
+import numpy as np
+
+sick_pos, sick_neg = 900, 100
+well_pos, well_neg = 900, 8100
+pos_total = sick_pos + well_pos
+
+labels = ["P(positive | sick)", "P(sick | positive)"]
+vals = [sick_pos / (sick_pos + sick_neg) * 100, sick_pos / pos_total * 100]
+fig, ax = plt.subplots(figsize=(6.8, 4.3))
+bars = ax.bar(labels, vals, color=["#3a6b8c", "#a8790a"], width=0.5)
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.set_ylabel("Probability (%)")
+ax.set_ylim(0, 110)
+ax.set_title("Same table, two conditions, two different answers", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 예시의 표는 민감도 90%와 특이도 90%, 병의 유병률 10%(1만 명 중 1,000명)를 가정한 가상의 숫자다. 양성은 모두 1,800명이고, 그중 실제 환자는 900명, 즉 절반이다. 병이 더 드물다면 이 비율은 훨씬 떨어진다. 조건을 뒤집는 순간 답이 달라지는 이유는 분모가 '환자'에서 '양성'으로 바뀌었기 때문이다.
+
+## 방향을 헷갈리게 하는 말들
+
+일상의 많은 오해는 조건의 방향을 바꿔 읽는 데서 생긴다. "이 집단에서 범죄율이 높다"는 말은 $P(\text{범죄}\mid\text{집단})$이지만, "범죄자 중 이 집단 출신이 많다"는 말은 $P(\text{집단}\mid\text{범죄})$다. 두 값은 집단의 크기와 범죄의 기저율에 따라 전혀 다르다. 같은 현상을 두고도 어떤 조건으로 말하느냐에 따라 전혀 다른 결론이 나온다.
+
+::: {.callout-tip}
+## 조건의 방향을 확인하는 법
+
+1. **"무엇을 조건으로 두었는가"를 먼저 적어라.** $P(A\mid B)$에서 $B$는 이미 알고 있는 사실이다.
+2. **두 방향을 모두 계산해 보라.** 표를 한 장 그리면 방향에 따른 답이 한눈에 보인다.
+3. **분모가 무엇인지 확인하라.** 분모가 바뀌면 같은 분자라도 확률은 완전히 달라진다.
+4. **"A이면 B"를 "B이면 A"로 읽지 마라.** 이 한 가지 실수가 검사 결과 해석의 대부분을 망친다.
+:::
+
+## 더 깊이: 조건부확률의 정의
+
+강의노트 [〈수리통계학 1. 확률론 — 조건부 확률〉](../../notes/math_stat/probability.qmd#조건부-확률)은 $P(A\mid B)=P(A\cap B)/P(B)$를 정의하고, 조건부확률이 $P(\cdot\mid B)$라는 새로운 확률 측도가 된다는 점을 설명한다. 오늘의 표 계산은 그 정의를 그대로 따른 것이다. 분모를 바꾸는 순간 새로운 확률 공간이 생긴다고 이해하면 방향 문제를 정리하기 쉽다.
+
+## SDV 관점: 지표의 조건을 명시하지 않으면 보고서가 오해를 낳는다
+
+조건부확률을 정확히 쓰는 일은 **요약과 추론(1~2단계)**의 기본기이며, **SDV(통계적 데이터 가치화)** 관점에서는 데이터 보고서의 신뢰를 결정한다. "구매 고객의 80%가 앱 사용자"라는 문장은 $P(\text{앱}\mid\text{구매})$이고, "앱 사용자의 구매율이 높다"는 문장은 $P(\text{구매}\mid\text{앱})$다. 두 지표는 모집단이 다르면 전혀 다른 행동을 가리킨다. 가치 있는 데이터 분석은 모든 지표에 조건을 명시하고, 그 조건이 결정에 어떤 영향을 주는지 함께 보여주는 것에서 시작한다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 조건은 문장의 가장 중요한 단어다
+
+나는 학생들에게 확률 문장을 읽을 때 "~라는 조건에서"라는 말을 먼저 찾으라고 가르친다. 같은 99%라도 '병이라면'과 '양성이라면'은 전혀 다른 세계를 가리킨다. 조건을 정확히 읽으면 검사 결과도, 뉴스 통계도, 보고서의 숫자도 제 의미를 찾는다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 표의 숫자(민감도·특이도 90%, 유병률 10%)는 조건부확률의 방향을 보여주기 위한 가상의 값이다.
+:::

@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="권세혁">
+<meta name="dcterms.date" content="2026-10-08">
+<meta name="description" content="2002년 폴 그레이엄은 ’스팸 계획(A Plan for Spam)’에서 단어 하나의 등장으로 메일이 스팸일 확률을 계산하는 방법을 제안했다. 메일 한 통에 나온 단어들이 차례로 확률을 밀어 올리거나 내린다. 스팸 필터는 규칙을 외우지 않고, 증거가 들어올 때마다 믿음을 고쳐 가며 배운다.">
+
+<title>(조건부확률과 베이즈의 사고) 스팸메일 필터는 어떻게 배워가는가? — 베이즈 갱신 – 권세혁HOME</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-35419eb3a154f6f894e0af1e245874c8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-6JP0RHCH1Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
+</script>
+<link rel="apple-touch-icon" sizes="180x180" href="../../images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../../images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../../images/favicon-16x16.png">
+<link rel="manifest" href="../../site.webmanifest">
+<meta name="theme-color" content="#1e3a2f">
+<meta name="naver-site-verification" content="17239f8611b29802bf12d652f461d0712fe57d6b">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">권세혁HOME</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../sdv/index.html"> 
+<span class="menu-text">SDV(데이터 가치화)</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">강의노트</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-">    
+        <li>
+    <a class="dropdown-item" href="../../notes/math_stat/index.html">
+ <span class="dropdown-text">기초수학·수리통계·조사방법</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/intro_stat/index.html">
+ <span class="dropdown-text">기초통계·회귀·다변량분석</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/mldl_intro/index.html">
+ <span class="dropdown-text">머신러닝·딥러닝</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../notes/inference_xai/index.html">
+ <span class="dropdown-text">AI·감성분석</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../stat_chatbot.html"> 
+<span class="menu-text">통계챗봇</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../trends/index.html"> 
+<span class="menu-text">오늘의 검색 트렌드</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../stat_assay/index.html" aria-current="page"> 
+<span class="menu-text">통계, 다르게 읽기</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://wolfpack61.tistory.com/" rel="noopener" target="_blank"> 
+<span class="menu-text">통계로 보는 세상(티스토리 e책방)</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../playground/index.html"> 
+<span class="menu-text">AI_플랫폼(주식 매수 점수)</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.youtube.com/@wolfpack61kwon" rel="noopener" target="_blank"> <i class="bi bi-youtube" role="img" aria-label="YouTube 채널">
+</i> 
+<span class="menu-text">유튜브</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../stat_assay/posts/story_spam_filter_learning.html">📖 (조건부확률과 베이즈의 사고) 스팸메일 필터는 어떻게 배워가는가? — 베이즈 갱신</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📋 전체 목록</span></a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_crime_rate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 인구 1만 명당 범죄율을 사용하는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_relative_risk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 위험이 두 배 증가했다는 뉴스는 얼마나 위험한가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_percentage_point.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 지지율 3% 상승인가, 3%포인트 상승인가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_growth_rate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (비율과 백분율의 함정) 매출이 50% 늘었다는 말에 속지 않는 법</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_variance_world.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 같은 평균, 전혀 다른 세상</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_income_median.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 연봉은 평균보다 중앙값으로 보아야 하는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_class_average.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 우리 반 평균이 올랐는데 학생들은 왜 불만일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_star_rating.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 별점 4.5점짜리 식당은 믿을 만한가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_body_temp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자를 대표하는 방법) 내 체온 36.5도는 정말 정상인가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_late_people.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 지각하는 사람들의 비밀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_waiting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 대기 시간의 비밀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_mean_trap.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 평균의 함정</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_pvalue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 p-값은 왜 0.05인가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_kakao_reply.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 카톡 답장 속도와 호감도의 통계학</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_truncated_axis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 막대그래프의 축을 자르면 차이가 커진다</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_dual_axis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 두 개의 세로축이 만드는 가짜 상관관계</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_cumulative_growth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 누적그래프는 왜 항상 좋아 보일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_log_scale.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 선형 눈금과 로그 눈금은 무엇이 다른가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_graph_ethics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (그래프는 어떻게 우리를 속이는가) 좋은 그래프는 무엇을 숨기지 않는가?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_hot_hand.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 농구에서 ’슛 감각이 올랐다’는 말은 사실일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_gamblers_fallacy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 동전이 다섯 번 앞면이면 다음은 뒷면일까?</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_survivorship_bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 성공한 사람만 보면 성공법이 보이지 않는다</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_regression_mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 시험을 망친 다음 점수가 오르는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_availability_bias.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (사람의 직관은 왜 통계와 충돌하는가) 기억에 잘 남는 사건이 더 자주 일어난다고 느끼는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_streak_probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 연승과 연패, 우연일까 실력일까</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_sample_size_illusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 작은 표본이 만드는 큰 착각 — 야구 타율 3할의 의미</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_generation_height.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 세대별 평균이 말해주는 진짜 의미 — 평균 키가 자라는 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_mode_categorical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 평균으로 설명되지 않는 데이터들 — 최빈값이 필요한 순간</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_average_pitfalls_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (기록의 착시, 대표값의 재발견) 평균의 함정 총정리 — 평균 수심 1m 강물이 위험한 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_std_deviation_basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) “보통”의 폭을 재는 법 — 표준편차란 무엇인가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_outlier_mean.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) 재벌 총수가 낀 동네 평균 소득 — 이상치 하나가 바꾸는 평균</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_standard_score.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) 입시에서 표준점수를 쓰는 이유 — 편차값의 비밀</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_coefficient_variation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) 단위가 다른 두 집단을 견주는 법 — 변동계수로 비교하기</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_simpsons_paradox.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (흩어짐과 역설) 부분에서 이기고도 전체에서 지는 이유 — 심슨의 역설</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_gini_coefficient.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자로 사람을 줄 세우는 법) 숫자 하나로 사회를 요약하기 — 지니계수로 읽는 불평등</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_relative_absolute_eval.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자로 사람을 줄 세우는 법) 어느 쪽이 더 공정할까 — 상대평가 vs 절대평가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_rank_illusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자로 사람을 줄 세우는 법) 1점 차이가 갖는 진짜 무게 — 순위의 착시</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_star_rating_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자로 사람을 줄 세우는 법) 5.0과 4.8 사이, 표본크기의 문제 — 별점 평균의 함정</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_netflix_rating.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (숫자로 사람을 줄 세우는 법) 별점 대신 순위를 매기는 이유 — 넷플릭스 평점 시스템</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_life_expectancy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (공식 통계 숫자 읽는 법) 평균수명 60세 시대의 오해 — 기대수명이라는 숫자의 함정</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_perceived_inflation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (공식 통계 숫자 읽는 법) 나만의 장바구니 물가지수 — 체감 물가와 통계 물가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_unemployment_rate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (공식 통계 숫자 읽는 법) 누구를 세고 누구를 빼는가 — 실업률의 숨은 정의</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_case_fatality_rate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (공식 통계 숫자 읽는 법) 분모가 다르면 결론도 다르다 — 치명률 숫자 읽는 법</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_spurious_correlation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (공식 통계 숫자 읽는 법) 인과추론 감각을 기르는 법 — 미신적 상관관계 모음</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_birthday_problem.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률과 우연의 세계) 23명만 모여도 생일이 겹칠 가능성이 높은 이유 — 생일 문제</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_independent_events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률과 우연의 세계) 같은 번호가 연속으로 나오면 조작일까? — 독립사건</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_clustering_illusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률과 우연의 세계) 무작위 숫자는 왜 고르게 흩어지지 않는가? — 군집 착각</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_lotto_hotspot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률과 우연의 세계) 로또 번호에 명당이 존재할까? — 동일확률과 선택편향</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_multiple_chances.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률과 우연의 세계) 희귀한 사건이 매일 뉴스에 나오는 이유 — 다중 기회</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_sample_space_events.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률의 도구들) 확률을 세는 언어 — 표본공간과 사건이란 무엇인가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_at_least_one.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률의 도구들) “적어도 하나”의 확률 — 여사건으로 풀면 쉬워지는 문제</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_counting_cards.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률의 도구들) 경우의 수 세기 — 카드 한 장을 뽑을 때 확률 계산법</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_independence_meaning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률의 도구들) 오해하기 쉬운 개념 — 독립이라는 것의 진짜 의미</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_expected_value_lotto.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (확률의 도구들) 복권 기댓값으로 알아보기 — 기댓값이란 무엇인가</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_normal_myth.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (분포가 들려주는 이야기) 세상의 모든 데이터는 정규분포일까? — 정규분포 신화와 한계</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_height_vs_income.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (분포가 들려주는 이야기) 키는 정규분포에 가깝고 소득은 그렇지 않은 이유 — 분포 모양이 다른 이유</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_three_sigma.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (분포가 들려주는 이야기) 평균에서 세 표준편차 밖이면 이상한 값일까? — 68-95-99.7 법칙</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_phone_calls_poisson.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (분포가 들려주는 이야기) 하루에 걸려오는 전화 수는 어떤 분포를 따를까? — 포아송분포</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_distribution_matters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (분포가 들려주는 이야기) 분포를 모르면 평균도 해석할 수 없다 — 분포 이해의 중요성</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_base_rate_test.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (조건부확률과 베이즈의 사고) 검사 결과가 양성이면 정말 병에 걸린 것일까? — 기저율</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_conditional_accuracy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (조건부확률과 베이즈의 사고) 정확도 99% 검사가 틀릴 수 있는 이유 — 조건부확률</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_direction_of_condition.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (조건부확률과 베이즈의 사고) 범인이 범행 현장에 있을 확률과 현장에 있던 사람이 범인일 확률 — 조건의 방향</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_spam_filter_learning.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">📖 (조건부확률과 베이즈의 사고) 스팸메일 필터는 어떻게 배워가는가? — 베이즈 갱신</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../stat_assay/posts/story_bayesian_thinking.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">📖 (조건부확률과 베이즈의 사고) 새로운 증거가 들어오면 믿음도 바뀌어야 한다 — 베이지안 사고</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#규칙-목록-대신-확률로-배우는-필터" id="toc-규칙-목록-대신-확률로-배우는-필터" class="nav-link active" data-scroll-target="#규칙-목록-대신-확률로-배우는-필터">규칙 목록 대신 확률로 배우는 필터</a></li>
+  <li><a href="#단어-하나로-믿음을-바꾸기" id="toc-단어-하나로-믿음을-바꾸기" class="nav-link" data-scroll-target="#단어-하나로-믿음을-바꾸기">단어 하나로 믿음을 바꾸기</a></li>
+  <li><a href="#단어마다-얼마나-무게가-있는가" id="toc-단어마다-얼마나-무게가-있는가" class="nav-link" data-scroll-target="#단어마다-얼마나-무게가-있는가">단어마다 얼마나 무게가 있는가</a></li>
+  <li><a href="#학습은-곧-갱신이다" id="toc-학습은-곧-갱신이다" class="nav-link" data-scroll-target="#학습은-곧-갱신이다">학습은 곧 갱신이다</a></li>
+  <li><a href="#더-깊이-베이즈-규칙" id="toc-더-깊이-베이즈-규칙" class="nav-link" data-scroll-target="#더-깊이-베이즈-규칙">더 깊이: 베이즈 규칙</a></li>
+  <li><a href="#sdv-관점-데이터는-한-번-분석하고-끝나지-않는다" id="toc-sdv-관점-데이터는-한-번-분석하고-끝나지-않는다" class="nav-link" data-scroll-target="#sdv-관점-데이터는-한-번-분석하고-끝나지-않는다">SDV 관점: 데이터는 한 번 분석하고 끝나지 않는다</a></li>
+  <li><a href="#결론-믿음은-증거를-만나면-바뀌어야-한다" id="toc-결론-믿음은-증거를-만나면-바뀌어야-한다" class="nav-link" data-scroll-target="#결론-믿음은-증거를-만나면-바뀌어야-한다">결론: 믿음은 증거를 만나면 바뀌어야 한다</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">(조건부확률과 베이즈의 사고) 스팸메일 필터는 어떻게 배워가는가? — 베이즈 갱신</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">통계기초</div>
+    <div class="quarto-category">확률</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    2002년 폴 그레이엄은 ’스팸 계획(A Plan for Spam)’에서 단어 하나의 등장으로 메일이 스팸일 확률을 계산하는 방법을 제안했다. 메일 한 통에 나온 단어들이 차례로 확률을 밀어 올리거나 내린다. 스팸 필터는 규칙을 외우지 않고, 증거가 들어올 때마다 믿음을 고쳐 가며 배운다.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>권세혁 </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 8, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="규칙-목록-대신-확률로-배우는-필터" class="level2">
+<h2 class="anchored" data-anchor-id="규칙-목록-대신-확률로-배우는-필터">규칙 목록 대신 확률로 배우는 필터</h2>
+<p>초기의 스팸 필터는 “무료”, “당첨” 같은 단어가 들어 있으면 차단하는 규칙 목록이었다. 스패머들은 금방 철자를 바꾸었고, 규칙은 끝없이 늘어났다. 2002년 프로그래머 폴 그레이엄은 다른 길을 제안했다. 메일 속 단어들이 스팸일 확률을 베이즈 정리로 계산하고, 사용자가 스팸을 표시할 때마다 그 확률을 갱신하자는 것이다. 이 방식을 <strong>나이브 베이즈(naive Bayes)</strong> 필터라고 부른다. 여기서 핵심은 규칙이 고정되지 않고 <strong>증거가 들어올수록 믿음이 바뀌는 것</strong>이다.</p>
+</section>
+<section id="단어-하나로-믿음을-바꾸기" class="level2">
+<h2 class="anchored" data-anchor-id="단어-하나로-믿음을-바꾸기">단어 하나로 믿음을 바꾸기</h2>
+<p>메일이 스팸일 사전확률을 50%라고 하자. 어떤 단어 “무료”가 스팸에는 80%의 확률로 나타나고, 정상 메일에는 10%만 나타난다고 가정한다. 메일에 “무료”가 들어 있다면 베이즈 정리에 따라</p>
+<p><span class="math display">\[P(\text{스팸}\mid\text{무료})=\frac{P(\text{무료}\mid\text{스팸})P(\text{스팸})}{P(\text{무료}\mid\text{스팸})P(\text{스팸})+P(\text{무료}\mid\text{정상})P(\text{정상})}=\frac{0.8\times0.5}{0.8\times0.5+0.1\times0.5}\approx88.9\%\]</span></p>
+<p>이다. 메일 한 통에 단어 하나가 들어왔을 뿐인데 스팸일 확률이 50%에서 89%로 뛴다. 이 새로운 값이 다음 단어를 계산할 때의 출발점, 곧 <strong>새로운 사전확률</strong>이 된다.</p>
+<div id="090ab28e" class="cell" data-execution_count="1">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_spam_filter_learning_files/figure-html/cell-2-output-1.png" width="711" height="413" class="figure-img"></p>
+<figcaption>Belief update for one email: starting from a 50% prior, each additional spam-indicating word (each with likelihood 0.8 in spam and 0.1 in normal mail) raises the probability that the email is spam. Certainty builds quickly, and no single word settles it.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="단어마다-얼마나-무게가-있는가" class="level2">
+<h2 class="anchored" data-anchor-id="단어마다-얼마나-무게가-있는가">단어마다 얼마나 무게가 있는가</h2>
+<p>모든 단어가 같은 힘을 갖지는 않는다. 어떤 단어는 스팸에서만 자주 나오고, 어떤 단어는 정상 메일에서도 흔하다. 필터는 각 단어가 스팸과 정상 메일을 얼마나 잘 구분하는지를 데이터에서 배운다. 아래 그림은 같은 사전확률에서 단어마다 다른 힘을 가진다는 점을 보여준다.</p>
+<div id="7955de44" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="story_spam_filter_learning_files/figure-html/cell-3-output-1.png" width="902" height="393" class="figure-img"></p>
+<figcaption>Illustrative word-level evidence: how often each word appears in spam versus normal mail, and the resulting probability that a single email containing it is spam (prior 50%). Words that appear mostly in spam move the belief the most.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="학습은-곧-갱신이다" class="level2">
+<h2 class="anchored" data-anchor-id="학습은-곧-갱신이다">학습은 곧 갱신이다</h2>
+<p>필터는 사용자가 스팸을 표시하거나 정상 메일을 구출할 때마다 각 단어의 확률을 조금씩 고친다. 이것은 베이즈 갱신의 전형적인 모습이다. 새로운 증거가 들어올 때마다 사전확률을 사후확률로 바꾸고, 그 사후확률이 다음 판단의 출발점이 된다. 그래서 스패머가 새로운 단어를 써도, 사용자의 몇 번의 표시만으로 필터는 빠르게 따라잡는다.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+베이즈 갱신을 따라가는 법
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>사전확률을 먼저 적어라.</strong> 증거를 보기 전 믿음이 출발점이다.</li>
+<li><strong>증거가 각 가설에서 얼마나 자주 나타나는지 비교하라.</strong> 우도 <span class="math inline">\(P(\text{증거}\mid\text{가설})\)</span>의 차이가 갱신의 힘이다.</li>
+<li><strong>사후확률을 다음 단계의 사전확률로 써라.</strong> 증거가 여러 개일 때 이 과정을 반복하면 된다.</li>
+<li><strong>독립 가정을 의심하라.</strong> 나이브 베이즈는 단어들이 독립이라고 가정하므로, 실제로 함께 나타나는 단어들은 힘을 과대평가할 수 있다.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="더-깊이-베이즈-규칙" class="level2">
+<h2 class="anchored" data-anchor-id="더-깊이-베이즈-규칙">더 깊이: 베이즈 규칙</h2>
+<p>강의노트 <a href="../../notes/math_stat/probability.html#베이즈-규칙">〈수리통계학 1. 확률론 — 베이즈 규칙〉</a>은 <span class="math inline">\(P(A\mid B)=P(B\mid A)P(A)/P(B)\)</span>와 전확률 법칙을 결합한 베이즈 규칙을 소개한다. 오늘 스팸 필터의 계산은 이 규칙을 증거 하나씩에 반복 적용한 것이다. 앞선 두 편에서 본 조건의 방향 문제가 여기서 실제 기계의 학습 과정이 된다.</p>
+</section>
+<section id="sdv-관점-데이터는-한-번-분석하고-끝나지-않는다" class="level2">
+<h2 class="anchored" data-anchor-id="sdv-관점-데이터는-한-번-분석하고-끝나지-않는다">SDV 관점: 데이터는 한 번 분석하고 끝나지 않는다</h2>
+<p>베이즈 갱신은 <strong>요약과 추론(1~2단계)</strong>을 넘어, 데이터가 쌓일수록 판단이 나아지는 구조를 설계하는 일이다. <strong>SDV(통계적 데이터 가치화)</strong> 관점에서 스팸 필터는 좋은 사례다. 한 번 만든 규칙은 환경이 바뀌면 쓸모가 없어지지만, 확률을 갱신하는 구조는 새로운 증거를 흡수하며 가치를 유지한다. 데이터 분석의 가치는 보고서 한 장이 아니라, 새 데이터가 들어올 때 판단을 고쳐 가는 절차에 있다. 그 절차를 설계하는 것이 AI 시대에 통계학자가 맡을 일이다. (<a href="../../sdv/index.html">SDV(데이터 가치화)</a>)</p>
+</section>
+<section id="결론-믿음은-증거를-만나면-바뀌어야-한다" class="level2">
+<h2 class="anchored" data-anchor-id="결론-믿음은-증거를-만나면-바뀌어야-한다">결론: 믿음은 증거를 만나면 바뀌어야 한다</h2>
+<p>나는 학생들에게 스팸 필터를 떠올리라고 말한다. 필터는 규칙을 외운 것이 아니라 메일을 받을 때마다 “이제 얼마나 스팸 같은가”를 다시 계산한다. 베이즈 갱신은 그 계산을 한 줄의 원칙으로 정리한다. 처음의 믿음은 출발점일 뿐이고, 증거가 믿음을 바꿀 때 비로소 배움이 일어난다.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+참고 자료
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<ul>
+<li>Paul Graham, <em>A Plan for Spam</em> (2002) — <a href="https://www.paulgraham.com/spam.html">paulgraham.com/spam.html</a></li>
+<li>앞의 계산 예시(단어별 출현 비율)는 설명을 위한 가상의 숫자다.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<div id="intro-popup" role="dialog" aria-label="사이트 소개" style="display:none;position:fixed;top:72px;right:16px;width:min(300px,62vw);z-index:2000;background:#1e3a2f;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);overflow:hidden;">
+  <img id="intro-popup-img" alt="권세혁 교수의 통계책방 사이트 소개 슬라이드 (클릭하면 크게 보기)" title="클릭하면 크게 볼 수 있어요" style="display:block;width:100%;height:auto;cursor:zoom-in;">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;font-size:12px;color:#f5f0e8;">
+    <button type="button" id="intro-popup-today" style="background:none;border:0;color:#f5f0e8;cursor:pointer;padding:0;font-size:12px;">오늘 하루 닫기</button>
+    <button type="button" id="intro-popup-close" style="background:none;border:0;color:#d4a017;cursor:pointer;padding:0;font-size:12px;font-weight:700;">닫기 ✕</button>
+  </div>
+</div>
+<div id="intro-zoom" style="display:none;position:fixed;inset:0;z-index:2100;background:rgba(0,0,0,.8);align-items:center;justify-content:center;cursor:zoom-out;">
+  <img id="intro-zoom-img" alt="사이트 소개 슬라이드 확대" style="width:640px;max-width:94vw;max-height:94vh;object-fit:contain;border-radius:8px;">
+</div>
+<script>
+(function () {
+  var KEY = "introPopupHiddenUntil";
+  var box = document.getElementById("intro-popup");
+  if (location.pathname !== "/" && location.pathname !== "/index.html") return;
+  try {
+    if (Date.now() < Number(localStorage.getItem(KEY) || 0)) return;
+  } catch (e) {}
+  function hide(days) {
+    box.style.display = "none";
+    if (days) { try { localStorage.setItem(KEY, String(Date.now() + days * 864e5)); } catch (e) {} }
+  }
+  document.getElementById("intro-popup-close").onclick = function () { hide(0); };
+  document.getElementById("intro-popup-today").onclick = function () { hide(1); };
+  var zoom = document.getElementById("intro-zoom");
+  function closeZoom() { zoom.style.display = "none"; document.getElementById("intro-zoom-img").removeAttribute("src"); }
+  document.getElementById("intro-popup-img").onclick = function () {
+    document.getElementById("intro-zoom-img").src = "/images/site_intro.gif";
+    zoom.style.display = "flex";
+  };
+  zoom.onclick = closeZoom;
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
+  window.addEventListener("load", function () {
+    var img = document.getElementById("intro-popup-img");
+    img.onload = function () { box.style.display = "block"; };
+    img.src = "/images/site_intro.gif";
+  });
+})();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/by-sekwon\.github\.io");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<div style="display:flex; align-items:center; justify-content:flex-end; gap:0.5rem;">
+<p><img src="https://hits.sh/by-sekwon.github.io.svg?style=flat-square&amp;label=visitors&amp;color=555555" alt="방문자 수" style="vertical-align:middle; border-radius:3px;"> <span style="font-size:0.8rem; color:#888;">since 2026.08.08</span></p>
+</div>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

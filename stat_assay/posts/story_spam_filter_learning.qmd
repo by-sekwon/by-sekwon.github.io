@@ -1,0 +1,121 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(조건부확률과 베이즈의 사고) 스팸메일 필터는 어떻게 배워가는가? — 베이즈 갱신"
+author: "권세혁"
+date: "2026-10-08"
+categories: [통계기초, 확률]
+description: "2002년 폴 그레이엄은 '스팸 계획(A Plan for Spam)'에서 단어 하나의 등장으로 메일이 스팸일 확률을 계산하는 방법을 제안했다. 메일 한 통에 나온 단어들이 차례로 확률을 밀어 올리거나 내린다. 스팸 필터는 규칙을 외우지 않고, 증거가 들어올 때마다 믿음을 고쳐 가며 배운다."
+---
+
+## 규칙 목록 대신 확률로 배우는 필터
+
+초기의 스팸 필터는 "무료", "당첨" 같은 단어가 들어 있으면 차단하는 규칙 목록이었다. 스패머들은 금방 철자를 바꾸었고, 규칙은 끝없이 늘어났다. 2002년 프로그래머 폴 그레이엄은 다른 길을 제안했다. 메일 속 단어들이 스팸일 확률을 베이즈 정리로 계산하고, 사용자가 스팸을 표시할 때마다 그 확률을 갱신하자는 것이다. 이 방식을 **나이브 베이즈(naive Bayes)** 필터라고 부른다. 여기서 핵심은 규칙이 고정되지 않고 **증거가 들어올수록 믿음이 바뀌는 것**이다.
+
+## 단어 하나로 믿음을 바꾸기
+
+메일이 스팸일 사전확률을 50%라고 하자. 어떤 단어 "무료"가 스팸에는 80%의 확률로 나타나고, 정상 메일에는 10%만 나타난다고 가정한다. 메일에 "무료"가 들어 있다면 베이즈 정리에 따라
+
+$$P(\text{스팸}\mid\text{무료})=\frac{P(\text{무료}\mid\text{스팸})P(\text{스팸})}{P(\text{무료}\mid\text{스팸})P(\text{스팸})+P(\text{무료}\mid\text{정상})P(\text{정상})}=\frac{0.8\times0.5}{0.8\times0.5+0.1\times0.5}\approx88.9\%$$
+
+이다. 메일 한 통에 단어 하나가 들어왔을 뿐인데 스팸일 확률이 50%에서 89%로 뛴다. 이 새로운 값이 다음 단어를 계산할 때의 출발점, 곧 **새로운 사전확률**이 된다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Belief update for one email: starting from a 50% prior, each additional spam-indicating word (each with likelihood 0.8 in spam and 0.1 in normal mail) raises the probability that the email is spam. Certainty builds quickly, and no single word settles it."
+import matplotlib.pyplot as plt
+
+def post(p, se, sp):
+    return p * se / (p * se + (1 - p) * (1 - sp))
+
+p = 0.5
+steps = [p * 100]
+for _ in range(4):
+    p = post(p, 0.8, 0.9)
+    steps.append(p * 100)
+
+labels = ["prior", "word 1", "word 2", "word 3", "word 4"]
+fig, ax = plt.subplots(figsize=(7.5, 4.4))
+bars = ax.bar(labels, steps, color=["#8a9a90", "#3a6b8c", "#1e3a2f", "#1e3a2f", "#a8790a"], width=0.55)
+for b, v in zip(bars, steps):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=9.5)
+ax.set_ylabel("P(spam | words seen), %")
+ax.set_ylim(0, 115)
+ax.set_title("Each word updates the belief in the email being spam", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 단어마다 얼마나 무게가 있는가
+
+모든 단어가 같은 힘을 갖지는 않는다. 어떤 단어는 스팸에서만 자주 나오고, 어떤 단어는 정상 메일에서도 흔하다. 필터는 각 단어가 스팸과 정상 메일을 얼마나 잘 구분하는지를 데이터에서 배운다. 아래 그림은 같은 사전확률에서 단어마다 다른 힘을 가진다는 점을 보여준다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Illustrative word-level evidence: how often each word appears in spam versus normal mail, and the resulting probability that a single email containing it is spam (prior 50%). Words that appear mostly in spam move the belief the most."
+import matplotlib.pyplot as plt
+import numpy as np
+
+words = ["free", "winner", "meeting", "report"]
+p_spam = np.array([0.80, 0.70, 0.05, 0.10])
+p_ham = np.array([0.10, 0.05, 0.40, 0.30])
+post_vals = p_spam * 0.5 / (p_spam * 0.5 + p_ham * 0.5) * 100
+
+x = np.arange(len(words))
+w = 0.36
+fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.2))
+axes[0].bar(x - w / 2, p_spam * 100, w, color="#7a1f2b", label="in spam")
+axes[0].bar(x + w / 2, p_ham * 100, w, color="#8a9a90", label="in normal mail")
+axes[0].set_xticks(x)
+axes[0].set_xticklabels(words)
+axes[0].set_ylabel("Share of emails containing the word (%)")
+axes[0].set_title("How often each word appears", fontsize=9.5, color="#1e3a2f")
+axes[0].legend(frameon=False, fontsize=8.5)
+axes[1].bar(x, post_vals, color="#1e3a2f", width=0.55)
+for xi, v in zip(x, post_vals):
+    axes[1].annotate(f"{v:.0f}%", xy=(xi, v), xytext=(0, 3), textcoords="offset points", ha="center", fontsize=9.5)
+axes[1].set_xticks(x)
+axes[1].set_xticklabels(words)
+axes[1].set_ylabel("P(spam | this word), %")
+axes[1].set_ylim(0, 110)
+axes[1].set_title("What one word tells us (prior 50%)", fontsize=9.5, color="#1e3a2f")
+for ax in axes:
+    ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 학습은 곧 갱신이다
+
+필터는 사용자가 스팸을 표시하거나 정상 메일을 구출할 때마다 각 단어의 확률을 조금씩 고친다. 이것은 베이즈 갱신의 전형적인 모습이다. 새로운 증거가 들어올 때마다 사전확률을 사후확률로 바꾸고, 그 사후확률이 다음 판단의 출발점이 된다. 그래서 스패머가 새로운 단어를 써도, 사용자의 몇 번의 표시만으로 필터는 빠르게 따라잡는다.
+
+::: {.callout-tip}
+## 베이즈 갱신을 따라가는 법
+
+1. **사전확률을 먼저 적어라.** 증거를 보기 전 믿음이 출발점이다.
+2. **증거가 각 가설에서 얼마나 자주 나타나는지 비교하라.** 우도 $P(\text{증거}\mid\text{가설})$의 차이가 갱신의 힘이다.
+3. **사후확률을 다음 단계의 사전확률로 써라.** 증거가 여러 개일 때 이 과정을 반복하면 된다.
+4. **독립 가정을 의심하라.** 나이브 베이즈는 단어들이 독립이라고 가정하므로, 실제로 함께 나타나는 단어들은 힘을 과대평가할 수 있다.
+:::
+
+## 더 깊이: 베이즈 규칙
+
+강의노트 [〈수리통계학 1. 확률론 — 베이즈 규칙〉](../../notes/math_stat/probability.qmd#베이즈-규칙)은 $P(A\mid B)=P(B\mid A)P(A)/P(B)$와 전확률 법칙을 결합한 베이즈 규칙을 소개한다. 오늘 스팸 필터의 계산은 이 규칙을 증거 하나씩에 반복 적용한 것이다. 앞선 두 편에서 본 조건의 방향 문제가 여기서 실제 기계의 학습 과정이 된다.
+
+## SDV 관점: 데이터는 한 번 분석하고 끝나지 않는다
+
+베이즈 갱신은 **요약과 추론(1~2단계)**을 넘어, 데이터가 쌓일수록 판단이 나아지는 구조를 설계하는 일이다. **SDV(통계적 데이터 가치화)** 관점에서 스팸 필터는 좋은 사례다. 한 번 만든 규칙은 환경이 바뀌면 쓸모가 없어지지만, 확률을 갱신하는 구조는 새로운 증거를 흡수하며 가치를 유지한다. 데이터 분석의 가치는 보고서 한 장이 아니라, 새 데이터가 들어올 때 판단을 고쳐 가는 절차에 있다. 그 절차를 설계하는 것이 AI 시대에 통계학자가 맡을 일이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 믿음은 증거를 만나면 바뀌어야 한다
+
+나는 학생들에게 스팸 필터를 떠올리라고 말한다. 필터는 규칙을 외운 것이 아니라 메일을 받을 때마다 "이제 얼마나 스팸 같은가"를 다시 계산한다. 베이즈 갱신은 그 계산을 한 줄의 원칙으로 정리한다. 처음의 믿음은 출발점일 뿐이고, 증거가 믿음을 바꿀 때 비로소 배움이 일어난다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- Paul Graham, *A Plan for Spam* (2002) — [paulgraham.com/spam.html](https://www.paulgraham.com/spam.html)
+- 앞의 계산 예시(단어별 출현 비율)는 설명을 위한 가상의 숫자다.
+:::

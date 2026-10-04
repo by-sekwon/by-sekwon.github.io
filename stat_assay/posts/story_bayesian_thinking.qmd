@@ -1,0 +1,81 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(조건부확률과 베이즈의 사고) 새로운 증거가 들어오면 믿음도 바뀌어야 한다 — 베이지안 사고"
+author: "권세혁"
+date: "2026-10-09"
+categories: [통계기초, 확률]
+description: "같은 양성 결과라도 처음 믿음이 1%인 사람과 30%인 사람의 결론은 다르다. 그러나 양성 결과가 여러 번 쌓이면 두 사람의 믿음은 결국 같은 곳으로 수렴한다. 베이지안 사고는 믿음을 고정된 답이 아니라, 증거에 따라 고쳐 가는 과정으로 본다."
+---
+
+## 같은 증거, 다른 출발점
+
+검사 결과가 양성이라는 같은 증거를 두 사람이 받았다고 하자. 한 사람은 증상이 전혀 없는 건강한 사람이고, 다른 한 사람은 증상이 뚜렷해 병일 가능성이 30%라고 짐작하는 사람이다. 검사의 민감도와 특이도가 99%라면, 두 사람의 사후 믿음은 같을까? 아니다. 처음 믿음, 곧 **사전확률**이 다르기 때문이다. 베이지안 사고의 핵심은 증거를 믿음과 따로 떼어 보지 않고, **이전의 믿음을 출발점으로 삼아 증거로 고쳐 가는 것**이다.
+
+## 한 번의 양성, 두 번의 양성
+
+처음 믿음이 1%인 사람이 양성 판정을 한 번 받으면 믿음은 50%로 오른다. 그 상태에서 같은 검사를 한 번 더 받아 양성이 나오면, 이제 50%가 새로운 출발점이 되어 99%로 뛴다. 세 번째 양성에서는 99.99%에 이른다. 증거가 쌓일수록 믿음은 확신에 가까워진다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Belief after successive positive results from the same 99%-accurate test, starting from two different priors (1% and 30%). Each result updates the previous belief; after a few independent positives, both starting points converge near certainty."
+import matplotlib.pyplot as plt
+import numpy as np
+
+def post(p, se=0.99, sp=0.99):
+    return p * se / (p * se + (1 - p) * (1 - sp))
+
+def path(p0, n=5):
+    out = [p0 * 100]
+    p = p0
+    for _ in range(n):
+        p = post(p)
+        out.append(p * 100)
+    return out
+
+fig, ax = plt.subplots(figsize=(7.5, 4.5))
+xs = np.arange(0, 6)
+ax.plot(xs, path(0.01), marker="o", color="#8a9a90", linewidth=2.2, label="prior 1% (healthy-looking)")
+ax.plot(xs, path(0.30), marker="o", color="#1e3a2f", linewidth=2.2, label="prior 30% (symptomatic)")
+ax.set_xlabel("Number of independent positive results")
+ax.set_ylabel("Belief in having the condition, %")
+ax.set_xticks(xs)
+ax.set_ylim(0, 105)
+ax.legend(frameon=False, loc="center right")
+ax.set_title("Different starting beliefs converge as evidence accumulates", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 출발점이 틀리면 결론도 틀린다
+
+그렇다고 출발점이 중요하지 않다는 뜻은 아니다. 이 그림에서 증거가 몇 번만 쌓여도 두 믿음은 가까워지지만, 증거가 **독립이며 같은 검사로 공정하게 얻어졌을 때**에만 그렇다. 같은 증상을 여러 번 확인한다고 독립적인 증거가 늘어나는 것은 아니다. 또 출발점의 믿음이 극단적으로 0이면, 아무리 많은 증거가 들어와도 믿음은 0에서 움직이지 않는다. 베이지안 갱신은 출발점에 대한 판단을 숨기지 않고 명시적으로 드러내는 방법이다.
+
+::: {.callout-tip}
+## 베이지안 사고를 실천하는 법
+
+1. **처음 믿음을 숫자로 적어라.** "모르겠다"도 0.5라는 명시적 출발점이다.
+2. **새 증거가 얼마나 독립적인지 물어라.** 같은 근거의 반복은 믿음을 과도하게 올린다.
+3. **증거마다 사후확률을 기록하라.** 어떤 증거가 믿음을 움직였는지 추적할 수 있다.
+4. **극단적 출발점(0 또는 1)을 피하라.** 한 번 0이나 1이 된 믿음은 증거로도 바뀌지 않는다.
+:::
+
+## 더 깊이: 베이즈 확률과 사후분포
+
+강의노트 [〈수리통계학 1. 확률론 — 베이즈 확률〉](../../notes/math_stat/probability.qmd#베이즈-확률)은 사전확률과 사후확률의 관계로 베이지안 사고를 정식화한다. 이 틀을 모수 추정으로 확장하면 사전분포와 사후분포가 되고, 그 자세한 내용은 추정 단원의 베이즈 추정량에서 이어진다. 오늘 본 확률 갱신은 그 출발점이다.
+
+## SDV 관점: 믿음을 갱신하는 절차가 데이터 가치를 만든다
+
+베이지안 갱신은 **요약과 추론(1~2단계)**에서 한 걸음 더 나아가, 판단을 **계속 업데이트할 수 있는 구조**로 만든다. **SDV(통계적 데이터 가치화)** 관점에서 이는 조직의 의사결정에 중요한 함의를 갖는다. 신규 사업의 성공 가능성, 신제품 수요, 정책 효과에 대한 초기 믿음을 명시적으로 기록하고, 새 데이터가 들어올 때마다 그 믿음을 고쳐 가면 판단은 감과 고집이 아니라 축적된 증거가 된다. 데이터에 가치를 더하는 일은 한 번의 정답을 찾는 것이 아니라, 증거에 따라 믿음을 정직하게 바꾸는 과정을 설계하는 일이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 믿음은 증거와 함께 움직여야 한다
+
+나는 학생들에게 "나는 원래 이렇게 생각했다"는 말보다 "새 증거를 보고 어떻게 바꿨는가"를 묻는 습관을 가지라고 말한다. 같은 양성 결과도 출발점에 따라 다르게 읽히지만, 증거가 쌓이면 결국 같은 곳에 이른다. 베이지안 사고는 그 과정을 숨기지 않고 보여주는 방법이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 민감도·특이도 99%와 사전확률 1%, 30%는 설명을 위한 가상의 값이다. 독립적인 여러 검사 결과를 가정했다.
+:::
