@@ -1,0 +1,331 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제7편 — 좋은 분석은 좋은 질문에서, 좋은 결정은 선택의 설계에서 시작된다"
+author: "권세혁"
+date: "2026-10-10"
+description: "데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기 — 분석 질문과 결정 질문을 구분하고, 판단 주체·목적·대안·근거·제약·평가를 먼저 공유해야 하는 이유를 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin: 0.4rem 0 1.1rem;
+}
+.mf-table th, .mf-table td {
+  border: 1px solid #e8e8e8;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.mf-table th {
+  background: #f5f8f6;
+  color: #1e3a2f;
+  font-weight: 700;
+}
+.mf-table td {
+  color: #333;
+  line-height: 1.6;
+}
+.mf-table td.num {
+  text-align: right;
+  font-weight: 700;
+  color: #1e3a2f;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+  .mf-table { font-size: 0.78rem; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제7편</div>
+    <div class="mf-hero-title">좋은 분석은 좋은 질문에서, 좋은 결정은 선택의 설계에서 시작된다</div>
+    <p class="mf-hero-sub">데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기</p>
+    <div class="mf-hero-meta">권세혁 · 2026.10.10</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>"이 데이터를 분석해 주세요."</p>
+      <p>통계 자문에서 자주 만나는 요청이다. 자료에는 여러 변수가 있고, 분석할 수 있는 관계도 많다. 평균을 비교하고, 영향을 설명하는 모형을 만들고, 집단을 분류할 수 있다.</p>
+      <p>그러나 분석을 시작하기 전에 묻고 싶은 것이 있다.</p>
+      <p>분석 결과로 무엇을 결정하려는가.</p>
+      <p>자료에서 흥미로운 특징을 발견하려는 탐색이라면 그것 자체가 목적일 수 있다. 하지만 구체적인 행동을 선택하려는 작업이라면 분석할 수 있는 것과 결정에 필요한 것을 구분해야 한다.</p>
+      <p>지난 글에서는 예측 성능이 곧 의사결정 가치가 되지는 않는다고 말했다. 이번에는 그 둘을 연결하기 위해 작업의 출발점을 어떻게 설계할지 생각해 보려 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>분석 질문과 결정 질문은 다르다</h2>
+      <p>설명을 위해 제한된 예산으로 경영 개선을 지원하는 사업을 생각해 보자.</p>
+      <p>"어떤 사업체의 성과가 낮은가"는 분석 질문이다. "누구에게 어떤 지원을 제공할 것인가"는 결정 질문이다.</p>
+      <p>첫 번째 질문에 답하려면 성과를 어떻게 측정하고 비교할지 정해야 한다. 두 번째 질문에 답하려면 지원 목적과 대상, 수단, 예산, 기대효과와 공정성까지 검토해야 한다.</p>
+      <p>성과가 낮다는 사실만으로 지원 방식이 정해지지는 않는다. 기술 부족이 문제인지, 시장 접근이 어려운지, 일시적인 외부 충격을 겪었는지에 따라 필요한 대응이 달라질 수 있다.</p>
+      <p>반대로 성과가 높다는 이유만으로 지원 대상에서 제외해야 하는 것도 아니다. 선도사례의 확산이 사업 목적이라면 고성과 대상이 중요한 역할을 할 수 있다.</p>
+      <p>같은 자료라도 무엇을 이루려는지에 따라 결정의 구조가 달라진다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>목적을 분명하게 한다는 것은 충돌을 드러내는 일이다</h2>
+      <p>"성과를 높인다"는 목표는 자연스럽지만 충분히 구체적이지 않다.</p>
+      <p>평균 성과를 높이려는 것인가. 가장 어려운 대상의 상황을 개선하려는 것인가. 격차를 줄이려는 것인가. 장기적인 자립 기반을 만들려는 것인가.</p>
+      <p>이 목적들은 함께 추구할 수 있지만 항상 같은 대상을 가리키지는 않는다. 제한된 예산을 평균 개선 효과가 큰 곳에 집중하는 선택과, 가장 어려운 곳에 최소한의 지원을 보장하는 선택은 다를 수 있다.</p>
+      <p>이때 통계적 계산으로 하나의 목적만 옳다고 결정할 수는 없다. 어떤 가치를 우선할지는 정당한 권한과 책임을 가진 주체가 판단해야 한다.</p>
+      <p>통계학자가 기여할 수 있는 것은 목적을 모호하게 남기지 않고, 서로 다른 기준을 적용했을 때 대상과 결과가 어떻게 달라지는지 보여주는 일이다.</p>
+      <p>숫자를 이용해 가치 판단을 감추는 것이 아니라, 선택에 포함된 가치 판단을 더 분명하게 드러내는 것이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>대안이 없으면 분석도 행동으로 이어지기 어렵다</h2>
+      <p>자료가 풍부해도 실제로 선택할 수 있는 행동이 불분명하면 분석 결과를 활용하기 어렵다.</p>
+      <p>지원금을 지급할 것인지, 교육을 제공할 것인지, 기술 진단이나 판로 연결을 할 것인지 정해져 있어야 각 대안에 필요한 근거를 찾을 수 있다.</p>
+      <p>즉시 지원하지 않고 추가 정보를 확보하는 것, 소규모로 시범 운영하는 것, 기존 방식을 유지하는 것도 대안이 될 수 있다.</p>
+      <p>대안을 분명하게 하면 자료의 부족도 구체적으로 보인다. 성과 수준은 파악했지만 지원 수단별 효과를 모른다면 효과 검증이 필요하다. 전체 효과는 알지만 특정 집단에서의 효과가 불확실하다면 적용 범위를 다시 살펴야 한다.</p>
+      <p>좋은 질문은 분석을 많이 하게 만드는 질문만이 아니다. 어떤 근거가 부족하며 무엇을 더 확보해야 하는지 알려주는 질문이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>SDV에서는 선택의 구조를 먼저 공유한다</h2>
+      <p>나는 의사결정을 지원하는 작업이라면 분석에 앞서 다음 내용을 짧게 정리해 공유할 필요가 있다고 생각한다.</p>
+      <table class="mf-table">
+        <thead>
+          <tr><th>항목</th><th>확인할 질문</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>판단 주체</td><td>누가 결정하고 그 결과에 책임지는가?</td></tr>
+          <tr><td>목적</td><td>무엇을 개선하며 어떤 가치를 우선하는가?</td></tr>
+          <tr><td>대안</td><td>실제로 선택할 수 있는 행동은 무엇인가?</td></tr>
+          <tr><td>근거</td><td>대안을 비교하려면 무엇을 알아야 하는가?</td></tr>
+          <tr><td>제약</td><td>예산·시간·법적 조건·공정성 기준은 무엇인가?</td></tr>
+          <tr><td>평가</td><td>실행 이후 무엇으로 기여와 부작용을 확인할 것인가?</td></tr>
+        </tbody>
+      </table>
+      <p>이 표는 정답을 만드는 장치가 아니다. 서로 다른 생각을 가진 사람들이 같은 문제를 검토하고 있는지 확인하는 장치다.</p>
+      <p>목적과 대안을 공유한 뒤에도 탐색적 분석은 필요하다. 처음 예상하지 못한 구조를 발견하면 질문을 바꿀 수도 있다. 다만 탐색에서 발견한 결과와 사전에 정한 기준에 따른 검증 결과는 구분해서 전달해야 한다.</p>
+      <p>처음의 질문을 고수하는 것과, 결과를 본 뒤 유리한 질문으로 바꾸는 것 사이에서 책임 있는 수정이 필요하다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>결정권을 대신하지 않고 판단을 돕는다</h2>
+      <p>통계학자는 선택의 결과를 비교하고 불확실성을 설명할 수 있다. 그러나 모든 판단을 대신할 수 있는 것은 아니다.</p>
+      <p>분야 전문가는 실행 가능성과 현장의 맥락을 제공한다. 영향을 받는 사람들은 통계표에 담기지 않은 경험과 우려를 제시한다. 결정권자는 서로 충돌하는 기준을 검토하고 선택의 책임을 진다.</p>
+      <p>이 역할들은 실제 작업에서 겹칠 수 있다. 중요한 것은 누가 무엇을 판단했고 어떤 근거를 사용했는지 알 수 있게 하는 것이다.</p>
+      <p>SDV에서 말하는 '가치를 설계한다'는 표현도 이런 의미에서 이해하고 싶다. 원하는 결과를 보장한다는 뜻이 아니라, 근거가 실제 선택에 사용될 수 있도록 목적과 대안, 판단 기준과 평가를 연결한다는 뜻이다.</p>
+      <p><strong>좋은 분석은 질문에 답한다. 의사결정을 돕는 분석은 그 답이 어떤 선택에 쓰일 수 있는지까지 설명한다.</strong></p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"좋은 분석은 질문에 답한다."</p>
+    <p class="mf-closing-note">의사결정을 돕는 분석은 그 답이 어떤 선택에 쓰일 수 있는지까지 설명한다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
