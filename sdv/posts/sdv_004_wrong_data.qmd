@@ -1,0 +1,350 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제4편 — 틀린 데이터로는 좋은 결정을 할 수 없다"
+author: "권세혁"
+date: "2026-10-10"
+description: "데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기 — 대표성, 표본오차, 무응답, 측정, 비교가능성이라는 다섯 질문으로 데이터의 적합성을 확인하는 법을 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin: 0.4rem 0 1.1rem;
+}
+.mf-table th, .mf-table td {
+  border: 1px solid #e8e8e8;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.mf-table th {
+  background: #f5f8f6;
+  color: #1e3a2f;
+  font-weight: 700;
+}
+.mf-table td {
+  color: #333;
+  line-height: 1.6;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+  .mf-table { font-size: 0.78rem; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제4편</div>
+    <div class="mf-hero-title">틀린 데이터로는 좋은 결정을 할 수 없다</div>
+    <p class="mf-hero-sub">데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기</p>
+    <div class="mf-hero-meta">권세혁 · 2026.10.10</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>한 정책에 대한 찬성률이 60%라는 조사 결과를 받았다고 하자. 보고서에는 정교한 그래프와 집단별 비교, 정책 제안까지 담겨 있다. AI를 이용하면 이러한 결과를 빠르게 분석하고 읽기 좋은 문장으로 설명할 수도 있다.</p>
+      <p>그런데 조사에 참여한 사람들이 특정한 의견을 가진 사람들에게 치우쳐 있었다면 어떨까. 질문이 정책의 장점만 설명한 뒤 찬반을 물었다면 어떨까. 정책의 취지에 동의한다는 응답을 구체적인 시행 방안에 찬성한다는 뜻으로 해석했다면 어떨까.</p>
+      <p>계산은 정확해도 판단의 근거는 잘못될 수 있다.</p>
+      <p>지난 글에서는 데이터가 분석과 해석, 검증을 거쳐 실제 활용 가치로 이어지는 과정을 살펴보았다. 이번에는 그 출발점으로 돌아가려 한다. 우리가 분석하려는 데이터는 어떤 현실을 담고 있으며, 어디까지 믿고 사용할 수 있는가.</p>
+      <p>제목에서 말하는 '틀린 데이터'는 입력 오류나 조작된 자료만을 뜻하지 않는다. 기록 자체는 정확하더라도, 알고 싶은 대상이나 질문과 맞지 않는 자료를 사용하면 판단을 그르칠 수 있다.</p>
+      <p>물론 불완전한 자료에서도 유용한 판단을 할 수 있고, 잘못된 근거로 내린 결정이 우연히 좋은 결과를 낳을 수도 있다. 여기서 강조하려는 것은 <strong>좋은 결정을 지속적으로 뒷받침하려면, 그 근거가 되는 데이터의 적합성을 먼저 확인해야 한다는 점</strong>이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>누가 조사되었는가</h2>
+      <p>국민 전체의 의견을 알고 싶다면 국민을 적절하게 포괄하는 표본틀과 표본설계가 필요하다. 실제 조사에서는 선정된 사람에게 연락이 닿았는지, 응답했는지도 함께 살펴야 한다.</p>
+      <p>특정 정책에 관심이 많은 사람들이 자발적으로 참여한 온라인 투표를 생각해 보자. 참여자가 많더라도 그 결과를 곧바로 국민 전체의 찬성률로 해석할 수는 없다. 참여할 가능성이 의견의 방향이나 강도와 관련되어 있을 수 있기 때문이다.</p>
+      <p>그렇다고 그 자료가 아무 쓸모도 없다는 뜻은 아니다. 참여자들이 어떤 의견을 표현했는지 살피거나, 후속 조사에서 확인할 쟁점을 찾는 데 활용할 수 있다. 다만 국민 전체의 의견을 추정하는 용도와는 구분해야 한다.</p>
+      <p>자료의 가치는 사용하려는 목적과 함께 판단해야 한다. 한 목적에 부족한 자료가 다른 목적에는 유용할 수 있다.</p>
+      <p>이 점에서 대표성은 표본에 한 번 붙이면 끝나는 인증표시가 아니다. 어떤 모집단의 어떤 특성을 추정하려는지, 표본이 어떻게 선정되고 응답이 어떻게 확보되었는지, 추정에 어떤 가정을 사용하는지를 함께 검토해야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>많이 조사했으니 믿을 수 있는가</h2>
+      <p>일반적으로 적절한 확률표본설계 아래 표본 수를 늘리면 표본추출에 따른 불확실성을 줄일 수 있다. 그러나 조사 대상의 누락이나 응답자의 체계적인 편향이 표본 수 증가만으로 사라지는 것은 아니다.</p>
+      <p>한쪽으로 기울어진 방식으로 자료를 모으면서 응답자 수만 늘리면, 편향된 결과를 더 정밀하게 추정할 수도 있다. 숫자는 안정적으로 보이지만 알고 싶은 모집단의 값과는 거리가 남는 것이다.</p>
+      <p>여론조사에서 제시하는 '표본오차 ±몇 %포인트'도 이러한 구분 속에서 읽어야 한다. 이는 특정 표본설계와 계산 조건에 따른 표본추출의 불확실성을 나타낸다. 질문의 편향이나 조사 대상의 누락, 무응답에서 생기는 문제까지 모두 포함한 전체 오차는 아니다. 또한 전체 표본의 오차범위를 작은 하위집단에 그대로 적용할 수도 없다.</p>
+      <p>따라서 표본 수와 표본오차는 중요한 정보이지만, 그것만으로 조사의 품질을 판단할 수는 없다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>응답하지 않은 사람들은 어떤 사람들인가</h2>
+      <p>조사에 선정되었다고 해서 모두 응답하는 것은 아니다. 연락이 닿지 않거나, 시간이 없거나, 조사 자체를 꺼릴 수 있다. 조사 주제에 관심이 있는 사람이 더 적극적으로 참여할 수도 있다.</p>
+      <p>무응답이 추정에 미치는 영향은 응답률이라는 숫자 하나로 결정되지 않는다. 응답자와 무응답자가 조사하려는 특성에서 얼마나 다르고, 그 차이를 추정 과정에서 얼마나 적절하게 보정했는지가 중요하다. 응답률이 낮다는 이유만으로 결과가 틀렸다고 단정할 수 없으며, 높다는 이유만으로 편향이 없다고 보장할 수도 없다.</p>
+      <p>가중치는 이러한 문제를 줄이기 위한 중요한 수단이다. 표본에 포함될 확률의 차이를 반영하고, 무응답을 조정하며, 알려진 모집단의 특성에 맞추어 추정하는 데 사용한다.</p>
+      <p>그러나 연령과 성별, 지역의 구성비를 맞추었다고 해서 모든 의견의 차이까지 보정되는 것은 아니다. 같은 연령과 성별, 같은 지역 안에서도 조사에 응답한 사람과 응답하지 않은 사람의 정책 의견이 다를 수 있다. 보정에 사용한 정보가 이러한 차이를 충분히 설명하지 못하면 편향이 남을 수 있다.</p>
+      <p>가중치를 적용했다는 사실만큼 중요한 것은 어떤 정보를 이용했고, 어떤 차이를 보정하려 했으며, 무엇이 여전히 확인되지 않았는지 설명하는 일이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>정말 알고 싶은 것을 물었는가</h2>
+      <p>표본설계와 추정이 적절해도 질문이 목적에 맞지 않으면 필요한 근거를 얻기 어렵다.</p>
+      <p>"지역의 미래를 위해 꼭 필요한 이 정책에 찬성하십니까?"라는 질문과 정책의 내용과 조건을 균형 있게 설명한 뒤 찬반을 묻는 질문은 같지 않다. 질문에 포함된 평가적 표현이 응답에 영향을 줄 수 있다.</p>
+      <p>더 근본적인 문제는 서로 다른 개념을 하나로 취급하는 데 있다.</p>
+      <p>정책의 목표에 동의하는 것, 구체적인 시행 방식에 찬성하는 것, 자신의 비용 부담을 받아들이는 것은 서로 다른 판단이다. 목표에 대한 동의만 조사해 놓고 그 결과를 시행 방식과 비용 부담에 대한 동의로 확대하면, 데이터가 말한 범위를 넘어선다.</p>
+      <p>'모르겠다'는 응답도 마찬가지다. 정보가 부족해서인지, 판단을 유보해서인지, 찬반 어느 쪽에도 동의하지 않아서인지에 따라 의미가 다를 수 있다. 이를 일괄적으로 반대에 포함하거나 분석에서 제외하면, 추정 대상과 결과의 해석이 달라질 수 있다.</p>
+      <p>측정의 문제는 분석기법을 복잡하게 만든다고 해결되지 않는다. 정책의 어떤 조건을 받아들이는지 알고 싶다면, 조사 설계 단계에서 그 조건을 구분하여 물어야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>서로 비교해도 되는 데이터인가</h2>
+      <p>지난달 찬성률이 55%, 이번 달이 60%라고 하자. 두 수치를 나란히 놓으면 찬성률이 5%포인트 높아졌다고 표현하기 쉽다.</p>
+      <p>그러나 이를 여론의 변화로 해석하려면 조사 대상과 질문, 조사 방식, 가중치 적용 기준 등이 충분히 비교 가능한지 확인해야 한다. 질문에 새로운 설명이 추가되었거나 조사 대상의 범위가 달라졌다면, 관측된 차이에 실제 의견 변화와 조사 조건의 변화가 함께 섞여 있을 수 있다.</p>
+      <p>전체 비율의 변화와 개인의 의견 이동도 구분해야 한다. 매번 다른 사람을 조사했다면 모집단 비율의 변화를 추정할 수는 있어도, 누가 찬성에서 반대로 이동했는지 직접 확인할 수는 없다. 개인의 이동을 파악하려면 같은 사람을 반복해서 관측하는 패널자료 등이 필요하며, 이 경우에도 중도 탈락에 따른 영향을 살펴야 한다.</p>
+      <p>데이터를 연결한다는 것은 파일을 합치는 일보다 넓은 작업이다. 같은 대상과 같은 개념을 비교하고 있는지 확인하는 일이 포함된다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">06</div>
+    <div class="mf-section-body">
+      <h2>활용 범위를 결정하는 품질 검토</h2>
+      <p><strong>SDV에서 품질 검토는 활용 범위를 결정하는 일로 이어진다.</strong></p>
+      <p>지금까지 살펴본 대표성, 무응답, 측정, 비교 가능성은 조사방법론과 통계학에서 오래 다루어 온 문제들이다. SDV가 새롭게 발견한 문제는 아니다.</p>
+      <p>내가 이 연재에서 강조하려는 것은 이러한 검토를 보고서 앞부분의 설명이나 뒷부분의 한계로 남겨두지 않고, <strong>어떤 판단에 결과를 사용할 수 있는지 결정하는 과정에 직접 연결하자는 것</strong>이다.</p>
+      <p>가령 정책 찬성률 60%라는 결과를 받았다면, 활용하려는 판단에 따라 필요한 근거도 달라진다.</p>
+      <table class="mf-table">
+        <thead>
+          <tr><th>활용하려는 판단</th><th>먼저 확인할 근거</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>국민 전체의 찬성 수준을 파악한다</td><td>모집단의 범위, 표본설계, 무응답과 가중치, 추정의 불확실성</td></tr>
+          <tr><td>특정 집단을 위한 대응을 검토한다</td><td>해당 집단의 표본 규모와 추정 정밀도, 측정의 적합성</td></tr>
+          <tr><td>구체적인 시행 방안을 채택한다</td><td>시행 조건과 비용 부담 등을 실제로 조사했는지 여부</td></tr>
+          <tr><td>지난 조사 이후 의견이 변했다고 판단한다</td><td>조사 대상·문항·방식의 비교 가능성과 차이의 불확실성</td></tr>
+          <tr><td>특정 조건을 바꾸면 찬성률이 높아질 것으로 기대한다</td><td>단순한 관련성을 넘어 변화의 효과를 뒷받침하는 연구설계와 근거</td></tr>
+        </tbody>
+      </table>
+      <p>같은 자료로 첫 번째 질문에는 답할 수 있어도 네 번째나 다섯 번째 질문에는 답하지 못할 수 있다. 그렇다면 결론의 범위를 좁히거나 추가 조사를 설계해야 한다.</p>
+      <p>이때 "현재 자료만으로는 판단하기 어렵다"는 결론도 중요한 성과다. 근거가 부족한 결정을 막고, 무엇을 더 알아야 하는지 분명하게 만들기 때문이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">07</div>
+    <div class="mf-section-body">
+      <h2>틀린 데이터로 결정하지 않을 책임</h2>
+      <p>품질 검토는 자료를 통과시키거나 폐기하는 양자택일이 아니다. 오류를 수정할 수 있는지, 적절한 가정 아래 보완할 수 있는지, 활용 범위를 제한해야 하는지, 새로운 자료가 필요한지 판단하는 과정이다. 보완했다면 어떤 가정을 사용했고 그 가정에 따라 결론이 얼마나 달라지는지도 밝혀야 한다.</p>
+      <p>AI는 이 과정에서 도움을 줄 수 있다. 결측과 중복, 비정상적인 값과 논리적 모순을 찾고, 질문의 표현을 검토하며, 여러 분석 조건에서 결과를 비교하는 작업을 지원할 수 있다.</p>
+      <p>그러나 파일 안에서 오류를 찾는 것만으로 조사에서 빠진 사람들의 의견이나 측정하지 않은 내용을 확인할 수는 없다. AI가 그럴듯한 설명을 제시하더라도, 그것이 실제 관측된 근거인지 추가로 검증해야 할 가설인지는 구분해야 한다.</p>
+      <p>분석과 보고서 작성이 쉬워질수록, 결과가 만들어지기 이전의 과정을 더 자세히 살펴야 하는 이유가 여기에 있다.</p>
+      <p>나는 데이터 가치화가 출발점부터 이러한 책임을 포함해야 한다고 생각한다. 누구에게 어떤 판단이 필요한지 정하고, 그 판단에 자료가 적합한지 확인하며, 근거가 허용하는 범위 안에서 결과를 사용하는 책임이다.</p>
+      <p><strong>데이터의 품질을 확인하는 일은 분석을 준비하는 절차이면서, 그 분석으로 어떤 결정을 뒷받침할 수 있는지 정하는 일이기도 하다.</strong></p>
+      <p>좋은 분석은 데이터가 말하는 것을 드러낸다. 책임 있는 활용은 데이터가 말하지 못하는 것까지 함께 밝힌다.</p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"데이터의 품질을 확인하는 일은 분석을 준비하는 절차이면서,<br>그 분석으로 어떤 결정을 뒷받침할 수 있는지 정하는 일이기도 하다."</p>
+    <p class="mf-closing-note">SDV는 이 둘을 연결하려는 나의 제안이다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
