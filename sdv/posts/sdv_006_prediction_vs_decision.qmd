@@ -1,0 +1,307 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제6편 — 예측을 잘하는 것과 결정에 도움이 되는 것은 다르다"
+author: "권세혁"
+date: "2026-10-10"
+description: "데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기 — 예측 성능과 활용 가치를 구분하고, 확률을 행동 기준으로 옮기는 과정에서 무엇을 더 확인해야 하는지 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin: 0.4rem 0 1.1rem;
+}
+.mf-table th, .mf-table td {
+  border: 1px solid #e8e8e8;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.mf-table th {
+  background: #f5f8f6;
+  color: #1e3a2f;
+  font-weight: 700;
+}
+.mf-table td {
+  color: #333;
+  line-height: 1.6;
+}
+.mf-table td.num {
+  text-align: right;
+  font-weight: 700;
+  color: #1e3a2f;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+  .mf-table { font-size: 0.78rem; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제6편</div>
+    <div class="mf-hero-title">예측을 잘하는 것과 결정에 도움이 되는 것은 다르다</div>
+    <p class="mf-hero-sub">데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기</p>
+    <div class="mf-hero-meta">권세혁 · 2026.10.10</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>내일 무엇이 일어날지 알 수 있다면 더 좋은 결정을 내릴 수 있을 것 같다. 매출을 예측하면 생산량을 정하고, 위험을 예측하면 미리 대응하며, 정책에 대한 반응을 예측하면 시행 방안을 준비할 수 있다.</p>
+      <p>예측은 불확실한 미래를 다루는 중요한 수단이다. 그러나 예측을 잘한다는 사실만으로 좋은 결정이 보장되는 것은 아니다.</p>
+      <p>지난 글에서는 분석 결과에서 판단에 필요한 의미를 발견하는 과정을 살펴보았다. 이번에는 그 의미가 미래에 대한 예측으로 확장될 때 무엇을 더 확인해야 하는지 생각해 보려 한다.</p>
+      <p><strong>예측은 앞으로 무엇이 일어날 가능성이 있는지 알려준다. 결정은 그 가능성 앞에서 무엇을 할 것인지 선택하는 일이다.</strong></p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>정확도는 출발점이지 목적의 전부는 아니다</h2>
+      <p>설명을 위해 가상의 지원 사업을 생각해 보자. 1,000개 사업체 가운데 다음 해 경영 위기를 겪는 사업체가 50개라고 하자.</p>
+      <p>모든 사업체가 위기를 겪지 않을 것이라고 예측해도 분류 정확도는 95%다. 숫자만 보면 성능이 높지만, 위기를 겪는 사업체를 미리 찾아 지원하려는 목적에는 도움이 되지 않는다.</p>
+      <p>이 예에서 중요한 것은 전체 예측 중 얼마나 맞았는가만이 아니다. 지원이 필요한 사업체를 얼마나 놓쳤으며, 필요하지 않은 곳을 얼마나 잘못 선정했는지 함께 살펴야 한다.</p>
+      <p>어떤 실수가 더 중요한지는 상황에 따라 달라진다. 위기를 놓치면 피해가 크지만 예방 지원의 비용이 작다면 폭넓게 대응하는 것이 적절할 수 있다. 반대로 지원 비용이 크고 예산이 제한되어 있다면 더 신중한 선정이 필요하다.</p>
+      <p>결국 예측 성능을 평가하는 기준도 활용 목적과 연결되어야 한다. 하나의 지표가 높다는 이유만으로 모든 상황에 좋은 모형이라고 말할 수는 없다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>확률을 행동으로 옮기려면 기준이 필요하다</h2>
+      <p>어떤 사업체의 위기 가능성이 30%로 예측되었다고 하자. 그 숫자만으로 지원 여부가 결정되지는 않는다.</p>
+      <p>지원하지 않았을 때 발생할 피해는 어느 정도인가. 지원하면 위기를 얼마나 줄일 수 있는가. 지원 비용은 얼마인가. 다른 사업체를 지원하지 못하는 기회비용은 무엇인가.</p>
+      <p>이러한 조건을 함께 검토해야 행동의 기준을 정할 수 있다.</p>
+      <p>확률을 제시하는 모형도 점검해야 한다. 비슷한 조건에서 30%의 위험을 예측한 대상들에게 실제로 그에 가까운 빈도로 위기가 발생했는지, 다른 시점과 집단에서도 예측이 유지되는지 확인할 필요가 있다.</p>
+      <p>위험의 순서를 잘 매기는 것과 위험 확률을 정확하게 제시하는 것은 다른 성과다. 지원 우선순위를 정할 때는 순위가 중요할 수 있지만, 비용과 기대효과를 계산할 때는 확률의 적합성도 중요하다.</p>
+      <p>예측 결과를 어떤 행동에 사용할지에 따라 필요한 검증이 달라지는 것이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>위험이 높은 대상과 지원 효과가 큰 대상은 같지 않다</h2>
+      <p>여기에서 한 가지 질문이 더 생긴다.</p>
+      <p>위험이 가장 높은 곳을 지원하면 가장 큰 효과를 얻을 수 있을까.</p>
+      <p>그럴 수도 있지만 반드시 그렇지는 않다. 위험은 높지만 해당 지원으로 개선하기 어려운 곳이 있을 수 있다. 위험은 중간 정도지만 적절한 지원으로 위기를 크게 줄일 수 있는 곳도 있을 수 있다.</p>
+      <p>위험 예측은 현재 조건에서 누가 어려움을 겪을 가능성이 높은지에 답한다. 지원 효과에 관한 분석은 지원했을 때와 하지 않았을 때 결과가 얼마나 달라지는지에 답하려 한다.</p>
+      <p>두 질문은 다르다.</p>
+      <p>관측자료에서 위기와 관련된 특성을 찾았다고 해서 그 특성을 바꾸면 위기가 줄어든다고 곧바로 말할 수는 없다. 지원 효과를 판단하려면 효과를 식별할 수 있는 연구설계와 가정, 검증이 필요하다.</p>
+      <p>또한 효과의 크기만으로 지원 대상을 결정하는 것도 충분하지 않을 수 있다. 가장 어려운 대상을 보호한다는 원칙이나 최소한의 지원을 보장한다는 공정성 기준이 함께 작용할 수 있기 때문이다.</p>
+      <p>통계는 이러한 선택의 근거를 제공하지만, 사회가 무엇을 우선할지 대신 결정하지는 않는다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>SDV는 예측 이후의 연결을 묻는다</h2>
+      <p>예측을 잘하는 일은 이미 통계학과 기계학습의 중요한 과제다. 예측을 비용과 효용, 행동에 연결하는 논의 역시 기존 의사결정이론과 여러 실무 분야에 있다.</p>
+      <p>내가 SDV에서 강조하려는 것은 예측 성능과 활용 성과를 구분하면서도, 두 가지를 하나의 작업 과정으로 연결하자는 것이다.</p>
+      <p>예측 결과가 실제로 누구에게 전달되었는가. 그 사람이 취할 수 있는 행동은 무엇인가. 행동을 정하는 기준은 설명 가능한가. 예측의 불확실성과 잘못된 판단의 피해를 고려했는가. 활용 이후에는 무엇을 확인할 것인가.</p>
+      <p>이 질문에 답하지 못하면 좋은 예측이 보고서 안에 머물 수 있다. 반대로 성능이 조금 개선된 모형이라도 필요한 시점에 전달되고 적절한 대응을 가능하게 했다면 중요한 활용 가치를 가질 수 있다.</p>
+      <p>물론 행동 이후 결과가 좋아졌다고 해서 예측 모형의 기여를 곧바로 확정할 수는 없다. 다른 요인의 영향과 함께 평가해야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"SDV에서 예측의 가치는 맞힌 숫자만으로 완성되지 않는다."</p>
+    <p class="mf-closing-note">그 예측이 어떤 선택을 가능하게 했으며, 그 선택에 어떤 도움이 되었는지까지 살펴야 한다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
