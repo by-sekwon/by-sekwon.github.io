@@ -1,0 +1,357 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제5편 — 숫자를 설명하는 것과 의미를 발견하는 것은 다르다"
+author: "권세혁"
+date: "2026-10-10"
+description: "데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기 — 결과를 설명하는 일과 인사이트를 발견하는 일을 구분하고, 발견한 의미와 만들어낸 이야기를 가르는 법을 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin: 0.4rem 0 1.1rem;
+}
+.mf-table th, .mf-table td {
+  border: 1px solid #e8e8e8;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.mf-table th {
+  background: #f5f8f6;
+  color: #1e3a2f;
+  font-weight: 700;
+}
+.mf-table td {
+  color: #333;
+  line-height: 1.6;
+}
+.mf-table td.num {
+  text-align: right;
+  font-weight: 700;
+  color: #1e3a2f;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+  .mf-table { font-size: 0.78rem; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제5편</div>
+    <div class="mf-hero-title">숫자를 설명하는 것과 의미를 발견하는 것은 다르다</div>
+    <p class="mf-hero-sub">데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기</p>
+    <div class="mf-hero-meta">권세혁 · 2026.10.10</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>한 정책에 대한 찬성률이 60%라는 조사 결과가 나왔다고 하자.</p>
+      <p>보고서에는 "응답자의 다수가 정책에 찬성한다"는 설명이 담겼다. 연령별 비율을 비교하고, 지역별 차이를 보여주는 그래프도 덧붙였다. 표본설계와 추정은 적절했고, 자료의 품질도 검토했다.</p>
+      <p>이제 우리는 정책에 대한 여론을 충분히 이해한 것일까.</p>
+      <p>찬성률을 알아낸 것은 중요한 성과다. 그러나 그 숫자가 무엇을 뜻하며, 어떤 판단에 도움이 되는지는 별도의 질문이다. 정책의 목표에 동의한다는 뜻인지, 구체적인 시행 방식까지 받아들인다는 뜻인지, 일정한 조건 아래에서만 찬성한다는 뜻인지에 따라 필요한 검토가 달라지기 때문이다.</p>
+      <p>지난 글에서는 데이터가 판단의 근거로 적합한지 확인하는 일을 다루었다. 이번에는 그 근거에서 의미를 발견하는 과정을 살펴보려 한다.</p>
+      <p><strong>숫자를 정확하게 설명하는 것과, 그 숫자로 현실을 더 깊이 이해하는 것은 연결되어 있지만 같은 작업은 아니다.</strong></p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>결과를 읽는 일에서 질문을 다시 보는 일로</h2>
+      <p>분석 결과를 설명하는 가장 기본적인 방법은 무엇이 높고 낮은지, 얼마나 차이가 나는지, 어떤 관계가 나타나는지 정리하는 것이다.</p>
+      <p>찬성률은 60%다. 한 집단에서는 높고 다른 집단에서는 낮다. 어떤 특성과 찬반 사이에 관련성이 있다.</p>
+      <p>이러한 설명은 필요하다. 그러나 보고서가 여기에서 끝나면 독자는 숫자의 배열을 이해할 수 있어도, 그 결과로 무엇을 새롭게 생각해야 하는지는 알기 어렵다.</p>
+      <p>의미를 발견하려면 분석을 의뢰받을 때의 질문으로 돌아가야 한다.</p>
+      <p>담당자가 알고 싶었던 것이 국민의 전반적인 찬반 수준이었다면 전체 찬성률이 핵심 결과다. 반면 정책을 어떤 방식으로 시행해야 하는지 검토하려 했다면, 전체 찬성률만으로는 충분하지 않을 수 있다.</p>
+      <p>같은 데이터라도 활용 목적에 따라 중요하게 살펴야 할 관계가 달라진다.</p>
+      <p>그렇다고 원하는 결론에 맞추어 분석하자는 뜻은 아니다. 목적은 어떤 질문에 답해야 하는지를 정하고, 근거는 어떤 답을 할 수 있는지를 제한한다. 이 둘을 함께 놓고 살펴야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>하나의 비율 안에 서로 다른 판단이 있다</h2>
+      <p>설명을 위해 가상의 조사 결과를 생각해 보자. 이번 조사에서는 정책의 목표에 대한 동의와 특정 비용 부담 방식에 대한 수용성을 각각 측정했다고 하자.</p>
+      <p>분석 결과가 다음과 같다고 가정한다.</p>
+      <table class="mf-table">
+        <thead>
+          <tr><th>응답 유형</th><th>비율</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>정책 목표에 동의하고 비용 부담 방식도 수용한다</td><td class="num">35%</td></tr>
+          <tr><td>정책 목표에는 동의하지만 비용 부담 방식은 수용하지 않는다</td><td class="num">25%</td></tr>
+          <tr><td>정책 목표에는 동의하지 않지만 비용 부담 방식은 수용한다</td><td class="num">10%</td></tr>
+          <tr><td>정책 목표에 동의하지 않고 비용 부담 방식도 수용하지 않는다</td><td class="num">30%</td></tr>
+        </tbody>
+      </table>
+      <p>이 예에서는 설명을 단순하게 하기 위해 무응답과 판단 유보 응답을 제외하고, 네 유형이 전체를 구성한다고 가정했다.</p>
+      <p>목표에 대한 동의율은 60%다. 비용 부담 방식의 수용률은 45%다.</p>
+      <p>두 수치를 따로 제시해도 유용한 정보를 전달할 수 있다. 그러나 교차해서 살펴보면 더 구체적인 구조가 드러난다. 전체의 25%는 목표에 동의하면서도 비용 부담 방식은 받아들이지 않는다.</p>
+      <p>여기에서 얻는 의미는 "목표에 대한 동의를 시행 조건의 수용으로 곧바로 해석해서는 안 된다"는 것이다. 정책을 검토할 때 목표와 시행 조건을 구분할 필요가 생긴다.</p>
+      <p>목표에는 동의하지 않으면서 비용 부담 방식은 수용한다는 10%도 성급하게 모순된 응답으로 처리해서는 안 된다. 다른 대안보다 해당 방식을 선호했을 수도 있고, 두 문항을 서로 다른 기준으로 판단했을 수도 있다. 문항을 제대로 이해했는지 확인할 필요도 있다.</p>
+      <p>이 자료만으로 그 이유를 결정할 수는 없다. 오히려 추가로 확인할 질문이 생긴 것이다.</p>
+      <p><strong>의미를 발견한다는 것은 숫자에 이야기를 붙이는 일이 아니라, 함께 보아야 할 판단을 구분하고 아직 설명되지 않은 부분을 찾아내는 일이다.</strong></p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>발견한 의미와 만들어낸 이야기를 구분해야 한다</h2>
+      <p>분석자는 결과를 이해하기 쉽게 설명하려고 한다. 그러나 설명이 매끄러울수록 경계해야 할 순간도 있다.</p>
+      <p>목표에는 동의하지만 비용 부담 방식은 수용하지 않는 집단을 보고 "경제적 어려움 때문에 반대한다"고 썼다고 하자. 실제로 경제적 어려움을 측정했는가. 부담 수준을 문제 삼았는가, 부담을 나누는 방식의 공정성을 문제 삼았는가. 정책 담당자에 대한 불신 때문은 아닌가.</p>
+      <p>그 이유를 조사하지 않았다면 어느 하나를 사실처럼 서술할 수 없다.</p>
+      <p>관측한 사실은 목표에 대한 동의와 비용 부담 방식에 대한 수용이 일치하지 않는 응답이 있다는 것이다. 가능한 해석은 두 판단이 구분되어 있다는 것이다. 구체적인 이유는 추가로 확인할 가설이다.</p>
+      <p>이 세 가지를 나누어 쓰면 문장은 다소 조심스러워질 수 있다. 하지만 독자는 무엇을 근거로 판단할 수 있고 무엇이 아직 확인되지 않았는지 알게 된다.</p>
+      <p>나는 이것이 통계적 전문성의 중요한 역할이라고 생각한다. 결론을 약하게 만드는 것이 아니라, 근거의 강도에 맞게 결론을 구성하는 일이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>눈에 띄는 차이가 모두 중요한 의미는 아니다</h2>
+      <p>자료를 여러 방식으로 나누면 많은 차이를 발견할 수 있다. 연령별, 지역별, 직업별, 소득별로 비교하고 다시 교차하면, 그중 일부는 유난히 커 보일 수 있다.</p>
+      <p>그러나 눈에 띈다는 이유만으로 핵심 결과가 되는 것은 아니다.</p>
+      <p>먼저 그 차이를 얼마나 정밀하게 추정했는지 살펴야 한다. 작은 집단의 결과인지, 표본설계와 가중치를 고려했는지, 많은 비교 중 우연히 두드러진 것은 아닌지 검토해야 한다.</p>
+      <p>다음으로 그 차이가 답하려는 질문에 어떤 의미가 있는지 물어야 한다. 통계적으로 유의한 차이라도 실제 판단에는 중요하지 않을 수 있다. 반대로 실질적으로 중요한 크기의 차이가 관측되었지만 불확실성이 커서 추가 자료가 필요할 수도 있다.</p>
+      <p>불확실성이 크다는 이유로 차이가 없다고 단정해서는 안 된다. 차이가 커 보인다는 이유로 확정적인 결론을 내려서도 안 된다.</p>
+      <p>의미를 발견하는 과정에는 결과를 골라내는 판단이 들어간다. 무엇이 두드러졌는가뿐 아니라, 무엇이 충분한 근거를 갖추었고 활용 목적에 중요한가를 함께 살펴야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>관련성을 행동의 효과로 바꾸어 말할 수는 없다</h2>
+      <p>앞의 가상 사례로 돌아가 보자.</p>
+      <p>목표에는 동의하지만 비용 부담 방식은 수용하지 않는 사람이 25%라는 결과를 얻었다. 그렇다면 비용 부담 방식을 바꾸면 그 사람들이 모두 정책을 받아들일 것이라고 말할 수 있을까.</p>
+      <p>그렇게 단정할 수는 없다.</p>
+      <p>현재 자료는 두 응답이 어떻게 함께 나타났는지를 보여준다. 다른 비용 부담 방식을 제시했을 때 같은 사람들이 어떻게 반응할지는 직접 보여주지 않는다. 방식을 바꾸어도 수용하지 않을 수 있고, 다른 조건이 더 중요할 수도 있다.</p>
+      <p>이 결과로 제안할 수 있는 것은 비용 부담 방식의 대안을 검토하고, 대안별 수용성을 추가로 확인하자는 것이다. 특정 대안을 채택하면 수용률이 얼마나 높아질 것인지는 그 질문에 맞는 자료와 연구설계가 필요하다.</p>
+      <p>인사이트의 가치는 곧바로 정답을 제시하는 데만 있지 않다. 지금까지 하나로 취급했던 문제를 구분하고, 다음에 무엇을 검증해야 하는지 분명하게 만드는 데도 있다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">06</div>
+    <div class="mf-section-body">
+      <h2>SDV에서 인사이트는 판단의 구조를 바꾸는 근거다</h2>
+      <p>인사이트라는 말은 여러 분야에서 사용한다. 데이터에서 의미를 찾는 작업 역시 통계학과 데이터사이언스의 새로운 발명은 아니다.</p>
+      <p>내가 SDV에서 강조하고 싶은 것은 그 의미가 실제 판단을 어떻게 바꾸는지까지 연결하는 일이다.</p>
+      <p>"찬성률이 60%다"라는 결과에서 출발해 "목표와 시행 조건을 구분해야 한다"는 근거를 얻었다면, 검토의 구조가 달라진다. 전체 찬반만 놓고 정책을 평가하던 방식에서, 어떤 목표와 어떤 조건을 각각 받아들이는지 살펴보는 방식으로 옮겨갈 수 있다.</p>
+      <p>이때 판단이 달라진다는 것은 반드시 정책을 바꾼다는 뜻은 아니다. 기존 방안을 더 명확한 근거로 유지할 수도 있고, 일부 조건을 다시 검토하거나 결정을 유보할 수도 있다.</p>
+      <p>중요한 것은 분석 전에는 놓쳤던 구분이 판단에 반영되었는가이다.</p>
+      <p>따라서 나는 인사이트를 얻었다고 말하기 전에 두 가지를 묻고 싶다.</p>
+      <p>이 결과로 무엇을 새롭게 이해했는가. 그 이해로 어떤 검토가 가능해졌는가.</p>
+      <p>두 질문에 답할 수 있다면 분석의 기여가 선명해진다. 아직 답하기 어렵다면 추가 분석이 필요한지, 자료가 부족한지, 처음의 질문이 모호했는지 살펴야 한다.</p>
+      <p>AI는 여러 결과를 비교하고 가능한 해석을 제안하며, 설명의 빈틈을 찾는 데 도움을 줄 수 있다. 그러나 그럴듯한 해석이 많아졌다고 이해가 깊어졌다고 볼 수는 없다. 각각의 해석이 자료에 근거하는지, 다른 설명은 가능한지, 실제 판단과 연결되는지 확인해야 한다.</p>
+      <p>내가 AI와 함께 글을 쓰고 분석하면서 붙잡고 싶은 것도 이 기준이다. 설명을 풍부하게 만드는 능력과 근거를 분명하게 만드는 책임을 함께 가져가는 것이다.</p>
+      <p>분석표가 늘어난다고 의미가 저절로 깊어지지는 않는다. 짧은 결과 하나가 중요한 구분을 드러낼 수도 있다.</p>
+      <p><strong>좋은 인사이트는 숫자를 더 인상적으로 만드는 것이 아니라, 우리가 무엇을 구분하고 무엇을 더 확인해야 하는지 알게 한다.</strong></p>
+      <p>SDV에서 분석 다음을 묻는다는 것은 바로 이러한 변화까지 살펴보겠다는 뜻이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"좋은 인사이트는 숫자를 더 인상적으로 만드는 것이 아니라,<br>우리가 무엇을 구분하고 무엇을 더 확인해야 하는지 알게 한다."</p>
+    <p class="mf-closing-note">SDV에서 분석 다음을 묻는다는 것은 바로 이러한 변화까지 살펴보겠다는 뜻이다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
