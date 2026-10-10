@@ -1,0 +1,318 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제9편 — 보고서를 전달했다는 것과 가치를 만들었다는 것은 다르다"
+author: "권세혁"
+date: "2026-10-10"
+description: "데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기 — 산출물·사용·기여를 구분하고, 활용 이후 가치를 확인하는 법과 활용되지 않은 결과도 다음 작업의 근거가 되는 이유를 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin: 0.4rem 0 1.1rem;
+}
+.mf-table th, .mf-table td {
+  border: 1px solid #e8e8e8;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.mf-table th {
+  background: #f5f8f6;
+  color: #1e3a2f;
+  font-weight: 700;
+}
+.mf-table td {
+  color: #333;
+  line-height: 1.6;
+}
+.mf-table td.num {
+  text-align: right;
+  font-weight: 700;
+  color: #1e3a2f;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+  .mf-table { font-size: 0.78rem; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제9편</div>
+    <div class="mf-hero-title">보고서를 전달했다는 것과 가치를 만들었다는 것은 다르다</div>
+    <p class="mf-hero-sub">데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기</p>
+    <div class="mf-hero-meta">권세혁 · 2026.10.10</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>분석을 마쳤다. 보고서를 전달했고, 발표도 끝났다. 담당자는 도움이 되었다고 말했다.</p>
+      <p>이제 데이터의 가치가 만들어졌다고 말할 수 있을까.</p>
+      <p>그럴 가능성은 있다. 그러나 작업을 완료했다는 사실, 결과를 사용했다는 사실, 실제로 도움이 되었다는 사실은 구분해야 한다.</p>
+      <p>지난 글에서는 AI와 함께 결과를 만드는 과정의 검토와 책임을 다루었다. 이번에는 결과가 전달된 이후를 살펴보려 한다.</p>
+      <p>SDV가 분석을 실제 가치로 연결하자는 제안이라면, 활용 이후의 확인도 그 안에 포함되어야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>산출물, 사용, 기여를 나누어 본다</h2>
+      <p>표와 그래프, 분석 모형과 보고서는 산출물이다. 회의에서 검토하고 계획서에 인용하거나 업무에 적용했다면 사용의 흔적이 있다.</p>
+      <p>그 사용으로 이해가 깊어지고 판단이 개선되었는지는 다시 확인해야 한다.</p>
+      <p>예를 들어 정책의 목표에 대한 동의와 시행 조건의 수용성을 구분한 보고서를 전달했다고 하자. 보고서가 회의 자료에 포함된 것은 사용이다. 두 가지를 구분하지 않았던 검토 방식이 수정되고, 시행 조건에 관한 추가 의견 수렴이 이루어졌다면 판단 과정에 기여한 것으로 볼 근거가 생긴다.</p>
+      <p>그러나 이후 정책 성과가 좋아졌다는 이유만으로 그 개선을 모두 보고서의 효과라고 말할 수는 없다. 제도 변경과 예산, 현장 대응, 외부 환경 등 여러 요인이 함께 작용했을 수 있다.</p>
+      <p>기여를 설명하는 것과 효과를 인과적으로 입증하는 것은 구분해야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>가치의 기준은 활용 목적에서 출발한다</h2>
+      <p>데이터의 가치를 하나의 숫자로 평가할 수 있을 것 같지만, 모든 작업에 같은 기준을 적용하기는 어렵다.</p>
+      <p>업무 자동화가 목적이라면 처리 시간과 오류, 운영 비용을 살필 수 있다. 위험 대응이 목적이라면 필요한 대상을 얼마나 놓쳤는지, 불필요한 대응은 얼마나 발생했는지, 피해를 얼마나 줄였는지 검토할 수 있다.</p>
+      <p>공적 논의를 개선하려는 조사라면 쟁점이 더 정확하게 구분되었는지, 오해가 줄었는지, 판단의 근거와 한계가 충분히 전달되었는지를 살펴야 한다.</p>
+      <p>이러한 가치가 모두 돈으로 환산되어야 하는 것은 아니다. 새로운 지식을 축적하고 잘못된 주장을 수정하는 것도 가치다.</p>
+      <p>다만 "유익했다"는 추상적인 표현에 머물지 않으려면 어떤 변화를 기대했고 무엇으로 확인할지 구체화해야 한다. 가능하면 작업을 시작할 때부터 평가 기준을 정하는 것이 좋다. 결과를 본 뒤 유리한 기준만 선택하는 일을 줄일 수 있기 때문이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>이해가 개선되었다는 주장에도 근거가 필요하다</h2>
+      <p>보고서를 읽은 사람이 만족했다는 것은 중요한 반응이다. 그러나 만족과 정확한 이해는 같지 않다.</p>
+      <p>문장이 쉽게 읽혔지만 핵심 한계를 놓쳤을 수 있다. 설명이 설득력 있었지만 원래의 오해를 바로잡지는 못했을 수도 있다.</p>
+      <p>이해의 개선을 확인하려면 해당 작업에 맞는 질문이 필요하다. 목표와 시행 조건을 구분하게 되었는지, 표본오차의 범위를 정확하게 이해하는지, 관측된 관련성과 검증되지 않은 효과를 구별하는지 살펴볼 수 있다.</p>
+      <p>판단의 개선도 단순히 결정이 빨라졌는지로 평가하기 어렵다. 근거가 부족할 때 결정을 유보하고 추가 자료를 확보했다면 시간이 더 걸렸더라도 중요한 기여일 수 있다.</p>
+      <p>SDV에서 확인하려는 가치는 속도뿐 아니라 판단의 내용과 과정에 있다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>결과가 좋아졌다고 분석의 효과가 입증되는 것은 아니다</h2>
+      <p>분석을 활용한 뒤 성과가 개선되었다면 반가운 일이다. 하지만 활용 전후의 차이만으로 분석이 그 개선을 만들었다고 확정할 수는 없다.</p>
+      <p>분석이 없어도 성과가 좋아졌을 수 있다. 분석을 활용한 대상들이 처음부터 다른 특성을 가지고 있었을 수도 있다.</p>
+      <p>효과를 더 엄밀하게 평가하려면 상황에 맞는 비교와 연구설계가 필요하다. 무작위 배정이 가능한지, 적절한 비교집단을 구성할 수 있는지, 시행 시점의 차이를 이용할 수 있는지 등을 검토할 수 있다. 어떤 방법이든 적용 조건과 가정을 확인해야 한다.</p>
+      <p>이러한 평가가 어려운 경우에도 확인을 포기할 필요는 없다. 분석으로 어떤 근거가 새롭게 제공되었고, 그 근거가 어떤 검토와 행동에 반영되었는지 기록할 수 있다. 다만 그 기록을 인과효과의 확정적인 증거로 확대해서는 안 된다.</p>
+      <p>주장의 강도를 근거에 맞추는 원칙은 활용 이후에도 이어진다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>활용되지 않은 결과도 다음 작업의 근거가 된다</h2>
+      <p>보고서가 사용되지 않았다면 실패로만 볼 것인가.</p>
+      <p>왜 사용되지 않았는지 살펴야 한다. 결과가 필요한 시점보다 늦었는지, 의사결정의 대안과 연결되지 않았는지, 표현이 어려웠는지, 실행할 권한과 자원이 없었는지 확인할 수 있다.</p>
+      <p>자료의 한계가 커서 활용하지 않는 것이 적절했을 수도 있다. 분석 결과가 기존 판단을 바꿀 만큼 새로운 근거를 제공하지 못했을 수도 있다.</p>
+      <p>이유에 따라 다음 작업이 달라진다. 조사 내용을 바꾸거나 전달 시점을 앞당길 수 있고, 결과를 설명하는 방식이나 활용 주체와의 협의를 개선할 수 있다.</p>
+      <p>활용 여부를 분석자의 능력만으로 설명해서는 안 된다. 그러나 외부 사정이라는 이유로 모든 확인을 끝내서도 안 된다.</p>
+      <p><strong>가치의 확인은 성공을 과장하기 위한 절차가 아니라, 무엇이 기여했고 무엇이 연결되지 않았는지 배우는 과정이다.</strong></p>
+      <p>SDV가 지향하는 것은 모든 분석이 가치를 만들었다고 선언하는 일이 아니다. 가치가 생긴 조건과 생기지 못한 이유를 살펴, 다음 조사와 분석을 더 나아지게 하는 일이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"가치의 확인은 성공을 과장하기 위한 절차가 아니라,<br>무엇이 기여했고 무엇이 연결되지 않았는지 배우는 과정이다."</p>
+    <p class="mf-closing-note">SDV가 지향하는 것은 모든 분석이 가치를 만들었다고 선언하는 일이 아니라, 다음 조사와 분석을 더 나아지게 하는 일이다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
