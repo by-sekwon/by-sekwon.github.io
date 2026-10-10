@@ -1,0 +1,319 @@
+---
+format:
+  html:
+    sidebar: sdv
+    toc: false
+title: "SDV 이야기 제8편 — AI가 분석하는 시대, 통계학자는 무엇을 책임지는가"
+author: "권세혁"
+date: "2026-10-10"
+description: "데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기 — AI와 함께 만든 결과를 검토하고 책임지는 구조, 그리고 AI를 동의가 아닌 반론의 도구로 쓰는 법을 살펴본다."
+---
+
+```{=html}
+<style>
+#title-block-header { display: none; }
+
+.mf-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.mf-hero {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  padding: 2.6rem 2rem;
+  border-radius: 14px;
+  text-align: center;
+}
+.mf-hero-badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #1e3a2f;
+  background: #d4a017;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.9rem;
+}
+.mf-hero-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.5px;
+}
+.mf-hero-sub {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #d4a017;
+  margin: 0;
+}
+.mf-hero-meta {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-top: 1.3rem;
+  letter-spacing: 0.4px;
+}
+
+.mf-section {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 1.8rem 2rem;
+  overflow: hidden;
+}
+.mf-section-num {
+  position: absolute;
+  top: 0.6rem;
+  right: 1.2rem;
+  font-size: 3.4rem;
+  font-weight: 900;
+  color: #f0ead8;
+  line-height: 1;
+  user-select: none;
+  z-index: 0;
+}
+.mf-section-body { position: relative; z-index: 1; }
+.mf-section h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e3a2f;
+  margin: 0 0 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 2px solid #d4a017;
+  display: inline-block;
+}
+.mf-section p {
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: #333;
+  margin: 0 0 1rem;
+}
+.mf-section p:last-child { margin-bottom: 0; }
+.mf-section ul {
+  margin: 0 0 1rem;
+  padding-left: 1.3rem;
+}
+.mf-section li {
+  font-size: 0.92rem;
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+.mf-section strong { color: #1e3a2f; }
+
+.mf-flow {
+  text-align: center;
+  font-weight: 700;
+  color: #1e3a2f;
+  background: #f5f8f6;
+  border: 1px dashed #c9b06a;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.2px;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.mf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  margin: 0.4rem 0 1.1rem;
+}
+.mf-table th, .mf-table td {
+  border: 1px solid #e8e8e8;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+.mf-table th {
+  background: #f5f8f6;
+  color: #1e3a2f;
+  font-weight: 700;
+}
+.mf-table td {
+  color: #333;
+  line-height: 1.6;
+}
+.mf-table td.num {
+  text-align: right;
+  font-weight: 700;
+  color: #1e3a2f;
+}
+
+.mf-declare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.mf-declare {
+  border-left: 4px solid #d4a017;
+  background: #fdf8ec;
+  padding: 0.95rem 1.2rem;
+  border-radius: 0 8px 8px 0;
+}
+.mf-declare-title {
+  font-weight: 800;
+  color: #1e3a2f;
+  font-size: 0.94rem;
+  margin: 0 0 0.35rem;
+}
+.mf-declare-desc {
+  font-size: 0.86rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.mf-role-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.2rem;
+  margin: 0 0 1.1rem;
+  padding: 0;
+  list-style: none;
+}
+.mf-role-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #333;
+  padding-left: 1.3rem;
+  position: relative;
+}
+.mf-role-list li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #d4a017;
+  font-weight: 800;
+}
+
+.mf-closing {
+  background: linear-gradient(135deg, #1e3a2f 0%, #2e5441 55%, #3a6b52 100%);
+  color: #f5f0e8;
+  text-align: center;
+  padding: 2.4rem 2rem;
+  border-radius: 14px;
+}
+.mf-closing-quote {
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.7;
+  margin: 0 0 0.8rem;
+}
+.mf-closing-note {
+  font-size: 0.86rem;
+  color: #d4a017;
+  font-weight: 600;
+  margin: 0 0 1.6rem;
+}
+.mf-closing img {
+  max-width: 260px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .mf-hero-title { font-size: 1.5rem; }
+  .mf-section { padding: 1.4rem 1.3rem; }
+  .mf-section-num { font-size: 2.4rem; }
+  .mf-role-list { grid-template-columns: 1fr; }
+  .mf-table { font-size: 0.78rem; }
+}
+</style>
+
+<div class="mf-wrap">
+
+  <div class="mf-hero">
+    <div class="mf-hero-badge">SDV 제8편</div>
+    <div class="mf-hero-title">AI가 분석하는 시대, 통계학자는 무엇을 책임지는가</div>
+    <p class="mf-hero-sub">데이터 분석을 넘어 의사결정과 가치 창출로 나아가는 통계 이야기</p>
+    <div class="mf-hero-meta">권세혁 · 2026.10.10</div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-body">
+      <p>AI와 함께 작업하다 보면 편리함과 불편함을 동시에 느낀다.</p>
+      <p>코드를 작성하고 오류를 찾으며, 분석 결과를 설명하고 글의 구조를 제안하는 과정이 빨라진다. 예전에는 오래 걸리던 작업을 짧은 대화로 시작할 수 있다.</p>
+      <p>그런데 바로 그 순간 질문이 생긴다.</p>
+      <p>내가 오랫동안 쌓아 온 전문성은 이제 어디에 있는가.</p>
+      <p>이 연재는 그런 질문에서 출발했다. 나는 분석을 넘어 가치로 나아가는 통계학의 역할을 생각해 왔다. 그러나 그것을 AI가 하지 못하는 영역을 찾아 지키는 방식으로 설명하고 싶지는 않다.</p>
+      <p>AI가 맡을 수 있는 작업의 범위는 계속 달라질 수 있다. 오늘 사람이 더 잘하는 일을 영원한 경계로 삼는다면, 우리의 역할도 그 경계와 함께 흔들릴 수밖에 없다.</p>
+      <p>내가 찾고 싶은 기준은 독점할 수 있는 작업보다, 함께 만들어낸 결과에 어떤 책임을 질 것인가에 있다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">01</div>
+    <div class="mf-section-body">
+      <h2>매끄러운 결과와 검토된 결과는 다르다</h2>
+      <p>AI가 작성한 보고서는 잘 정돈되어 보일 수 있다. 문장은 자연스럽고, 표에는 제목이 있으며, 결론도 분명하다.</p>
+      <p>그러나 형식의 완성도가 근거의 타당성을 보장하지는 않는다.</p>
+      <p>자료의 단위를 잘못 해석했는지, 가중치를 고려했는지, 서로 다른 대상을 비교했는지, 관련성을 원인처럼 설명했는지 확인해야 한다. 실제 분석 결과와 보고서에 적힌 숫자가 일치하는지도 살펴야 한다.</p>
+      <p>이것은 AI만의 문제는 아니다. 사람이 작성한 보고서에도 같은 검토가 필요하다. 다만 결과를 빠르고 많이 만들 수 있을수록 검토해야 할 산출물도 늘어난다.</p>
+      <p>한 문단의 결론이 그럴듯하다는 이유로 전체 과정을 신뢰하면 안 된다. 어떤 자료와 조건에서 그 결론이 나왔는지 되짚을 수 있어야 한다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">02</div>
+    <div class="mf-section-body">
+      <h2>검증은 결과를 다시 읽는 것보다 넓다</h2>
+      <p>나는 AI와 분석할 때 "틀린 부분이 있는지 확인해 달라"고 요청하는 것만으로 검증을 끝내고 싶지 않다.</p>
+      <p>같은 해석을 다시 읽는 작업은 도움이 되지만, 처음의 가정을 그대로 받아들일 수 있다. 다른 관점의 검토가 필요하다.</p>
+      <p>표본 수와 합계를 별도로 확인한다. 주요 지표의 산식을 점검한다. 일부 사례를 직접 계산한다. 분석 조건을 바꾸어 핵심 결론이 유지되는지 살펴본다. 인용한 자료가 실제로 존재하고 주장과 맞는지 확인한다.</p>
+      <p>검토의 강도는 결과의 사용 목적에 맞추어야 한다. 개인적인 탐색과 공적 의사결정에 사용하는 보고서에 같은 수준의 검증을 적용할 수는 없다.</p>
+      <p>또한 모든 오류를 제거했다고 보장하기보다, 어떤 점검을 했고 어떤 불확실성이 남았는지 설명하는 편이 정직하다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">03</div>
+    <div class="mf-section-body">
+      <h2>책임은 사람 한 명에게 모든 것을 떠넘기는 말이 아니다</h2>
+      <p>AI 결과는 사람이 책임져야 한다는 말은 익숙하다. 그러나 책임의 내용을 구체화하지 않으면 마지막에 사람이 이름을 올리는 절차에 그칠 수 있다.</p>
+      <p>누가 자료의 출처와 사용 권한을 확인하는가. 누가 분석 가정과 방법을 검토하는가. 누가 현장의 의미를 판단하는가. 누가 최종 결정을 승인하며, 문제가 생겼을 때 수정하는가.</p>
+      <p>이 질문에 답할 수 있어야 책임이 실제 작업으로 연결된다.</p>
+      <p>통계학자는 주로 측정과 설계, 추정과 검증의 타당성을 살핀다. 분야 전문가는 해석의 맥락과 실행 가능성을 검토한다. 조직과 결정권자는 사용 목적과 영향, 최종 선택에 책임을 진다.</p>
+      <p>작은 작업에서는 한 사람이 여러 역할을 맡을 수 있다. 그렇더라도 서로 다른 책임이 있다는 사실은 구분해야 한다.</p>
+      <p>자료를 다루는 권한도 중요하다. 개인이나 조직의 민감한 정보를 어떤 도구에 제공할 수 있는지 먼저 확인해야 한다. 분석에 도움이 된다는 이유만으로 사용 권한의 범위가 넓어지는 것은 아니다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">04</div>
+    <div class="mf-section-body">
+      <h2>AI는 동의를 얻는 도구보다 반론을 찾는 도구로 쓰고 싶다</h2>
+      <p>나는 AI와 생각을 발전시키는 과정에서 한 가지 위험을 경계한다. 내가 제안한 개념을 AI가 계속 긍정하면, 충분히 검토되지 않은 생각이 확립된 주장처럼 느껴질 수 있다는 점이다.</p>
+      <p>SDV 역시 예외가 아니다.</p>
+      <p>어떤 내용이 기존 통계학과 데이터사이언스에 이미 있는가. 내가 추가로 요구하는 작업은 무엇인가. 기존 개념과 이름만 다른 것은 아닌가. 실제 사례에서 차이를 설명할 수 있는가.</p>
+      <p>AI가 이런 질문을 제기하고 대안을 제시할 때 협업의 가치가 커진다.</p>
+      <p>독창성은 새롭다는 칭찬을 반복해서 얻는 것으로 확보되지 않는다. 기존 논의와 겹치는 부분을 밝히고, 나의 제안이 더하는 내용을 구체화하면서 만들어가야 한다.</p>
+      <p>물론 AI의 반론도 최종 판정은 아니다. 반론이 근거를 갖추었는지 다시 검토해야 한다. 협업은 동의와 반대 중 하나를 받아들이는 일이 아니라, 주장과 근거를 함께 정교하게 만드는 과정이다.</p>
+    </div>
+  </div>
+
+  <div class="mf-section">
+    <div class="mf-section-num">05</div>
+    <div class="mf-section-body">
+      <h2>전문성은 결과의 신뢰성을 높이는 능력으로 드러난다</h2>
+      <p>AI를 사용하는 사람 모두가 같은 결과를 얻는 것은 아니다. 어떤 질문을 던지고, 어떤 자료를 제공하며, 무엇을 의심하고, 어디에서 결론을 멈추는지에 따라 작업이 달라진다.</p>
+      <p>축적된 전문성은 이러한 판단에 사용될 수 있다. 다만 전문성이라는 이름만으로 옳음을 보장해서도 안 된다. 그 판단 역시 설명되고 검토될 수 있어야 한다.</p>
+      <p>나는 AI보다 빨리 분석하는 사람이 되려는 것이 아니다. AI의 능력을 이용해 이전보다 넓게 살펴보면서도, 결과가 무엇에 근거하고 어디까지 사용될 수 있는지 분명히 하는 사람이 되고 싶다.</p>
+      <p><strong>AI와 협력하는 통계학자의 역할은 결과를 만드는 데서 끝나지 않는다. 그 결과가 믿을 만한 근거로 사용될 수 있도록 검토와 책임의 구조를 만드는 데까지 이어진다.</strong></p>
+    </div>
+  </div>
+
+  <div class="mf-closing">
+    <p class="mf-closing-quote">"AI와 협력하는 통계학자의 역할은 결과를 만드는 데서 끝나지 않는다."</p>
+    <p class="mf-closing-note">그 결과가 믿을 만한 근거로 사용될 수 있도록 검토와 책임의 구조를 만드는 데까지 이어진다.</p>
+    <img src="../../images/logo.png" alt="KWONSE SDV: Statistical Data Valorization, DATA | INSIGHT | STRATEGIC VALUE">
+  </div>
+
+</div>
+```
