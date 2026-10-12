@@ -22,7 +22,7 @@ const MAX_ITEMS_PER_STOCK = 15;
 const KOSPI_TARGET = 200;
 const KOSDAQ_TARGET = 100;
 const REQUEST_DELAY_MS = 120;
-const MAX_RANKING_PAGES = 12; // safety cap: 12 * 50 = 600 raw rows per market
+const MAX_RANKING_PAGES = 6; // safety cap: 6 * 100 = 600 raw rows per market
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36";
@@ -71,26 +71,30 @@ function isCommonStock(code) {
   return /0$/.test(code);
 }
 
-async function fetchMarketCapPage(sosok, page) {
-  const url = `https://finance.naver.com/sise/sise_market_sum.naver?sosok=${sosok}&page=${page}`;
-  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+// finance.naver.com/sise/* and /item/* now 302-redirect to stock.naver.com,
+// a client-rendered app with no data in its HTML, so both the ranking and the
+// per-stock news are read from the JSON API behind it instead.
+const NAVER_API = "https://m.stock.naver.com/api";
+const RANKING_PAGE_SIZE = 100;
+
+async function fetchJson(url) {
+  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT, Referer: "https://stock.naver.com/" } });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const buf = await res.arrayBuffer();
-  const html = new TextDecoder("euc-kr").decode(buf);
-  const rowRe = /<a href="\/item\/main\.naver\?code=(\d{6})" class="tltle">([^<]*)<\/a>/g;
-  const rows = [];
-  let m;
-  while ((m = rowRe.exec(html)) !== null) {
-    rows.push({ code: m[1], name: cleanText(m[2]) });
-  }
-  return rows;
+  return res.json();
 }
 
-async function fetchTopByMarketCap(sosok, market, target) {
+async function fetchMarketCapPage(market, page) {
+  const json = await fetchJson(`${NAVER_API}/stocks/marketValue/${market}?page=${page}&pageSize=${RANKING_PAGE_SIZE}`);
+  return (json.stocks || [])
+    .filter((d) => d.stockEndType === "stock")
+    .map((d) => ({ code: d.itemCode, name: cleanText(d.stockName || "") }));
+}
+
+async function fetchTopByMarketCap(market, target) {
   const collected = [];
   const seen = new Set();
   for (let page = 1; page <= MAX_RANKING_PAGES && collected.length < target; page++) {
-    const rows = await fetchMarketCapPage(sosok, page);
+    const rows = await fetchMarketCapPage(market, page);
     if (!rows.length) break; // ran past the last page
     for (const row of rows) {
       if (!isCommonStock(row.code) || seen.has(row.code)) continue;
@@ -103,31 +107,23 @@ async function fetchTopByMarketCap(sosok, market, target) {
   return collected;
 }
 
-// Naver Finance's per-stock page (item/main.naver) is UTF-8, unlike the
-// EUC-KR sise_market_sum.naver ranking pages above.
-async function fetchStockNews(code, name, year) {
-  const sourceUrl = `https://finance.naver.com/item/main.naver?code=${code}`;
-  const res = await fetch(sourceUrl, { headers: { "User-Agent": USER_AGENT } });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const html = await res.text();
-
-  const sectionMatch = html.match(/<span>뉴스공시<\/span><\/h4>([\s\S]*?)<hr>/);
-  if (!sectionMatch) throw new Error("news section not found");
-  const sectionHtml = sectionMatch[1];
-
-  const itemRe =
-    /<a href="(\/item\/news_read\.naver\?[^"]+)"[^>]*>([\s\S]*?)<\/a>\s*(?:<a[^>]*class="link_relation"[^>]*>[\s\S]*?<\/a>\s*)?<\/span>\s*<em>\s*([\d/]+)\s*<\/em>/g;
+// The news API groups related articles into clusters; the first item of each
+// cluster is the lead article, which is what the old "뉴스공시" list showed.
+async function fetchStockNews(code) {
+  const clusters = await fetchJson(`${NAVER_API}/news/stock/${code}?pageSize=${MAX_ITEMS_PER_STOCK}&page=1`);
+  if (!Array.isArray(clusters)) throw new Error("unexpected response");
 
   const items = [];
   const seen = new Set();
-  let m;
-  while ((m = itemRe.exec(sectionHtml)) !== null) {
-    const [, href, titleHtml, mmdd] = m;
-    const url = `https://finance.naver.com${href}`;
-    const title = cleanText(titleHtml);
+  for (const cluster of clusters) {
+    const d = cluster.items?.[0];
+    if (!d) continue;
+    const url = d.mobileNewsUrl || `https://n.news.naver.com/mnews/article/${d.officeId}/${d.articleId}`;
+    const title = cleanText(d.titleFull || d.title || "");
     if (!title || seen.has(url)) continue;
     seen.add(url);
-    items.push({ title, url, time: `${year}-${mmdd.replace("/", "-")}` });
+    const time = (d.datetime || "").replace(/^(\d{4})(\d{2})(\d{2}).*$/, "$1-$2-$3");
+    items.push({ title, url, press: cleanText(d.officeName || ""), time });
   }
   return { items: items.slice(0, MAX_ITEMS_PER_STOCK).map((it, i) => ({ rank: i + 1, ...it })) };
 }
@@ -152,21 +148,23 @@ async function main() {
   await mkdir(SRC_DATA_DIR, { recursive: true });
 
   const date = todayKST();
-  const year = date.slice(0, 4);
 
   console.log("Ranking KOSPI/KOSDAQ by market cap…");
   const [kospi, kosdaq] = await Promise.all([
-    fetchTopByMarketCap(0, "KOSPI", KOSPI_TARGET),
-    fetchTopByMarketCap(1, "KOSDAQ", KOSDAQ_TARGET),
+    fetchTopByMarketCap("KOSPI", KOSPI_TARGET),
+    fetchTopByMarketCap("KOSDAQ", KOSDAQ_TARGET),
   ]);
   const universe = [...kospi, ...kosdaq];
+  // An empty universe means the ranking source broke; fail the run loudly
+  // rather than publishing an empty snapshot over yesterday's data.
+  if (!universe.length) throw new Error("market-cap ranking returned no stocks");
   console.log(`Universe: ${kospi.length} KOSPI + ${kosdaq.length} KOSDAQ = ${universe.length} stocks`);
 
   const stocks = [];
   let okCount = 0;
   for (const { code, name, market } of universe) {
     try {
-      const { items } = await fetchStockNews(code, name, year);
+      const { items } = await fetchStockNews(code);
       stocks.push({ code, name, market, status: "ok", items });
       okCount++;
     } catch (err) {

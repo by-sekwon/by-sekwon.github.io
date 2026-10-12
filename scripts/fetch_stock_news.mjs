@@ -1,4 +1,4 @@
-// Collects a daily snapshot of Korean stock-market news (from two sources)
+// Collects a daily snapshot of Korean stock-market news (Naver 증권 + 매일경제)
 // plus a KOSPI/KOSDAQ index summary. Writes to playground/data/stock_news/
 // (versioned source, a declared Quarto resource) and mirrors into
 // docs/playground/data/stock_news/ (published copy) so
@@ -48,47 +48,76 @@ function cleanText(str) {
   return decodeEntities(str.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
 }
 
-// --- Source 1: Naver Finance > 뉴스 > 증권 -------------------------------
-// Served as EUC-KR; Node's built-in TextDecoder (full-ICU by default) can
-// decode it directly, no extra dependency needed.
-async function fetchNaverStockNews() {
-  const sourceUrl = "https://finance.naver.com/news/news_list.naver?mode=LSS2D&section_id=101&section_id2=258";
-  const res = await fetch(sourceUrl, { headers: { "User-Agent": USER_AGENT } });
+// --- Source 1: Naver 증권 뉴스 (JSON API) ---------------------------------
+// finance.naver.com/news/* now 302-redirects to stock.naver.com, a
+// client-rendered app with no article markup in the HTML, so the old
+// HTML scrape silently returned 0 items. Read the JSON API behind it instead.
+const NAVER_NEWS_API = "https://m.stock.naver.com/front-api/news/category";
+const NAVER_PAGE_SIZE = 60;
+// Headlines that are about the market as a whole (index level, open/close).
+// "코스닥 상장/이전/입성" is IPO news about a single company, not the market.
+const MARKET_KEYWORDS = /코스피|증시|지수|코스닥(?!\s*(?:상장|이전|입성))/;
+const MARKET_SCAN_PAGES = 5;
+
+async function fetchNaverCategory(category, page = 1) {
+  const url = `${NAVER_NEWS_API}?category=${category}&pageSize=${NAVER_PAGE_SIZE}&page=${page}`;
+  const res = await fetch(url, {
+    headers: { "User-Agent": USER_AGENT, Referer: "https://stock.naver.com/news" },
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const buf = await res.arrayBuffer();
-  const html = new TextDecoder("euc-kr").decode(buf);
+  const json = await res.json();
+  if (!json.isSuccess || !Array.isArray(json.result)) throw new Error(json.message || "unexpected response");
+  return json.result.map((d) => ({
+    title: cleanText(d.titleFull || d.title || ""),
+    url: `https://n.news.naver.com/mnews/article/${d.officeId}/${d.articleId}`,
+    press: cleanText(d.officeName || ""),
+    time: (d.datetime || "").replace(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2}).*$/, "$1-$2-$3 $4:$5"),
+    summary: cleanText(d.body || ""),
+  }));
+}
 
-  // Title comes from the anchor's inner text, not its title="" attribute:
-  // Naver's markup leaves literal quote characters unescaped inside title=""
-  // for headlines that themselves contain quotes, which truncates a
-  // quote-delimited attribute capture. The inner text is properly entity-encoded.
-  const itemRe =
-    /<d[td] class="articleSubject">\s*<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>\s*<\/d[td]>\s*<dd class="articleSummary">([\s\S]*?)<span class="press">([^<]*)<\/span>[\s\S]*?<span class="wdate">([^<]*)<\/span>/g;
-
-  const items = [];
+function rankItems(items) {
   const seen = new Set();
-  let m;
-  while ((m = itemRe.exec(html)) !== null) {
-    const [, href, titleHtml, summaryHtml, press, wdate] = m;
-    const url = href.startsWith("http") ? href : `https://finance.naver.com${href}`;
-    const title = cleanText(titleHtml);
-    if (!title || seen.has(url)) continue;
-    seen.add(url);
-    items.push({ title, url, press: cleanText(press), time: cleanText(wdate), summary: cleanText(summaryHtml) });
-  }
+  const unique = items.filter((it) => it.title && !seen.has(it.url) && seen.add(it.url));
+  return unique.slice(0, MAX_ITEMS_PER_SOURCE).map((it, i) => ({ rank: i + 1, ...it }));
+}
+
+async function fetchNaverStockNews() {
+  const items = await fetchNaverCategory("mainnews");
+  if (!items.length) throw new Error("no items parsed");
   return {
     id: "naver",
-    label: "네이버 증권 · 증권 뉴스",
-    sourceUrl,
+    label: "네이버 증권 · 주요 뉴스",
+    sourceUrl: "https://stock.naver.com/news/mainnews",
     status: "ok",
-    items: items.slice(0, MAX_ITEMS_PER_SOURCE).map((it, i) => ({ rank: i + 1, ...it })),
+    items: rankItems(items),
   };
 }
 
-// --- Source 2: 매일경제(mk.co.kr) 증권 > 최신기사 ---------------------------
+// 코스피·코스닥 시황: the 실시간 속보 feed, narrowed to market-wide headlines.
+async function fetchNaverMarketNews() {
+  const items = [];
+  for (let page = 1; page <= MARKET_SCAN_PAGES; page++) {
+    const batch = await fetchNaverCategory("flashnews", page);
+    items.push(...batch.filter((it) => MARKET_KEYWORDS.test(it.title)));
+    if (batch.length < NAVER_PAGE_SIZE || rankItems(items).length >= MAX_ITEMS_PER_SOURCE) break;
+  }
+  if (!items.length) throw new Error("no market headlines found");
+  return {
+    id: "naver_market",
+    label: "코스피·코스닥 시황 뉴스",
+    sourceUrl: "https://stock.naver.com/news/flashnews",
+    status: "ok",
+    items: rankItems(items),
+  };
+}
+
+// --- Source 2: 매일경제(mk.co.kr) 증권 > 국내증시 ---------------------------
+// The top-level 증권 list is dominated by auto-generated overseas small-cap
+// filings; the 국내증시 sub-section is the one about KOSPI/KOSDAQ.
 // Server-rendered UTF-8 HTML, no decoding needed.
 async function fetchMkStockNews() {
-  const sourceUrl = "https://www.mk.co.kr/news/stock/";
+  const sourceUrl = "https://www.mk.co.kr/news/stock/domestic-stocks";
   const res = await fetch(sourceUrl, { headers: { "User-Agent": USER_AGENT } });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const html = await res.text();
@@ -110,9 +139,10 @@ async function fetchMkStockNews() {
     const time = dateMatch ? `${dateMatch[2]}-${dateMatch[1].replace(".", "-")}` : "";
     items.push({ title, url, press: "매일경제", time, summary: summary ? cleanText(summary) : "" });
   }
+  if (!items.length) throw new Error("no items parsed");
   return {
     id: "mk",
-    label: "매일경제 · 증권 뉴스",
+    label: "매일경제 · 국내증시",
     sourceUrl,
     status: "ok",
     items: items.slice(0, MAX_ITEMS_PER_SOURCE).map((it, i) => ({ rank: i + 1, ...it })),
@@ -172,13 +202,14 @@ async function main() {
 
   const date = todayKST();
 
-  const [naver, mk, market] = await Promise.all([
-    safe("naver", fetchNaverStockNews, { id: "naver", label: "네이버 증권 · 증권 뉴스", items: [] }),
-    safe("mk", fetchMkStockNews, { id: "mk", label: "매일경제 · 증권 뉴스", items: [] }),
+  const [marketNews, naver, mk, market] = await Promise.all([
+    safe("naver_market", fetchNaverMarketNews, { id: "naver_market", label: "코스피·코스닥 시황 뉴스", sourceUrl: "https://stock.naver.com/news/flashnews", items: [] }),
+    safe("naver", fetchNaverStockNews, { id: "naver", label: "네이버 증권 · 주요 뉴스", sourceUrl: "https://stock.naver.com/news/mainnews", items: [] }),
+    safe("mk", fetchMkStockNews, { id: "mk", label: "매일경제 · 국내증시", sourceUrl: "https://www.mk.co.kr/news/stock/domestic-stocks", items: [] }),
     safe("market", fetchMarketIndices, { indices: [] }),
   ]);
 
-  for (const src of [naver, mk]) {
+  for (const src of [marketNews, naver, mk]) {
     console.log(`[stock_news:${src.id}] ${src.status === "ok" ? `collected ${src.items.length} items` : `error: ${src.error}`}`);
   }
   console.log(`[stock_news:market] ${market.status === "ok" ? `collected ${market.indices.length} indices` : `error: ${market.error}`}`);
@@ -187,7 +218,7 @@ async function main() {
     date,
     generatedAt: nowKSTIso(),
     market,
-    sources: [naver, mk],
+    sources: [marketNews, naver, mk],
   };
 
   await writeFile(path.join(SRC_DATA_DIR, `${date}.json`), JSON.stringify(snapshot, null, 2));
