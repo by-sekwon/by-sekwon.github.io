@@ -228,8 +228,8 @@ format:
 </div>
 
 <div class="fp-download" id="fp-download" hidden>
-  <button type="button" id="fp-dl-view">📥 지금 화면 엑셀 저장</button>
-  <button type="button" id="fp-dl-all">📥 전체 품목 일별 엑셀 저장</button>
+  <button type="button" id="fp-dl-view">📥 저장</button>
+  <span class="fp-download-note">품목과 품종, 집계(일별·주별·월별), 기간을 선택한 후 "저장"을 누르면 엑셀 파일로 저장됩니다.</span>
   <span class="fp-download-note" id="fp-dl-note"></span>
 </div>
 
@@ -666,41 +666,23 @@ format:
     return body.length;
   }
 
-  // 모든 품목 × 모든 품종의 일별 원자료
-  function exportAll() {
-    const body = [];
-    for (const item of data.items) {
-      for (const v of item.varieties) {
-        for (const [date, amount, volume] of v.rows) {
-          body.push([item.name, v.name, date, Math.round(amount / volume), volume, amount]);
-        }
-      }
-    }
-    saveWorkbook([
-      { name: "일별_품종별", rows: [["품목", "품종", "경락일", "평균가(원/kg)", "거래물량(kg)", "거래금액(원)"], ...body], widths: [12, 18, 12, 14, 14, 16] },
-      { name: "설명", rows: INFO_ROWS(), widths: [12, 60] },
-    ], `임업품목가격_전체_일별_${data.to}.xlsx`);
-    return body.length;
-  }
-
   function bindDownload(id, run) {
     const btn = document.getElementById(id);
     btn.addEventListener("click", async () => {
       btn.disabled = true;
-      dlNote.textContent = "엑셀 파일을 만드는 중입니다…";
+      dlNote.textContent = "(엑셀 파일을 만드는 중입니다…)";
       try {
         await loadXlsx();
         const n = run();
-        dlNote.textContent = `${n.toLocaleString("ko-KR")}행을 저장했습니다.`;
+        dlNote.textContent = `(${n.toLocaleString("ko-KR")}행 저장 완료)`;
       } catch (err) {
-        dlNote.textContent = `저장 실패: ${err.message}`;
+        dlNote.textContent = `(저장 실패: ${err.message})`;
       } finally {
         btn.disabled = false;
       }
     });
   }
   bindDownload("fp-dl-view", exportView);
-  bindDownload("fp-dl-all", exportAll);
 
   grainButtons.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", () => {
