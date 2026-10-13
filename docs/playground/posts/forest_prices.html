@@ -367,6 +367,26 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
   color: #fff;
 }
 
+.fp-download {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+}
+.fp-download button {
+  font-size: 0.82rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #2d4a8c;
+  background: #fff;
+  color: #2d4a8c;
+  cursor: pointer;
+}
+.fp-download button:hover { background: #eef2fb; }
+.fp-download button:disabled { opacity: 0.6; cursor: wait; }
+.fp-download-note { font-size: 0.78rem; color: #888; }
+
 .fp-tiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -479,6 +499,12 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       <button type="button" data-days="0" class="fp-active">3년</button>
     </span>
   </div>
+</div>
+
+<div class="fp-download" id="fp-download" hidden="">
+  <button type="button" id="fp-dl-view">📥 지금 화면 엑셀 저장</button>
+  <button type="button" id="fp-dl-all">📥 전체 품목 일별 엑셀 저장</button>
+  <span class="fp-download-note" id="fp-dl-note"></span>
 </div>
 
 <div id="fp-body" hidden="">
@@ -881,6 +907,96 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
     });
   });
 
+  // ── 엑셀 저장 ── SheetJS는 용량이 커서 버튼을 누를 때 처음 한 번만 불러온다.
+  const XLSX_URL = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+  const dlNote = document.getElementById("fp-dl-note");
+  let xlsxLoading = null;
+
+  function loadXlsx() {
+    if (window.XLSX) return Promise.resolve();
+    if (!xlsxLoading) {
+      xlsxLoading = new Promise((resolve, reject) => {
+        const el = document.createElement("script");
+        el.src = XLSX_URL;
+        el.onload = resolve;
+        el.onerror = () => { xlsxLoading = null; reject(new Error("엑셀 모듈을 불러오지 못했습니다")); };
+        document.head.appendChild(el);
+      });
+    }
+    return xlsxLoading;
+  }
+
+  const INFO_ROWS = () => [
+    ["자료", "농넷(한국농수산식품유통공사) 전국도매시장 경락정보"],
+    ["수집 기간", `${data.from} ~ ${data.to}`],
+    ["생성 시각", data.generatedAt],
+    ["평균가", "거래금액 합계 ÷ 거래물량 합계 (원/kg, 물량 가중평균)"],
+  ];
+
+  function saveWorkbook(sheets, filename) {
+    const wb = XLSX.utils.book_new();
+    for (const { name, rows, widths } of sheets) {
+      const ws = XLSX.utils.aoa_to_sheet(rows);
+      if (widths) ws["!cols"] = widths.map((wch) => ({ wch }));
+      XLSX.utils.book_append_sheet(wb, ws, name);
+    }
+    XLSX.writeFile(wb, filename, { compression: true });
+  }
+
+  // 지금 화면에 보이는 품목·품종·집계·기간 그대로
+  function exportView() {
+    const item = data.items[itemIndex];
+    const rows = aggregate(seriesFor(item, variety));
+    const head = grain === "day" ? "경락일" : grain === "week" ? "주(월요일 시작)" : "월";
+    const body = rows.map((r) => [
+      grain === "month" ? r[0].slice(0, 7) : r[0], Math.round(r[1] / r[2]), r[2], r[1],
+    ]);
+    const info = [
+      ["품목", item.name], ["품종", varietyLabel(item)], ["집계", GRAIN_LABEL[grain]], ...INFO_ROWS(),
+    ];
+    saveWorkbook([
+      { name: "가격", rows: [[head, "평균가(원/kg)", "거래물량(kg)", "거래금액(원)"], ...body], widths: [16, 14, 14, 16] },
+      { name: "설명", rows: info, widths: [12, 60] },
+    ], `임업품목가격_${item.name}_${varietyLabel(item)}_${GRAIN_LABEL[grain]}_${data.to}.xlsx`);
+    return body.length;
+  }
+
+  // 7개 품목 × 모든 품종의 일별 원자료
+  function exportAll() {
+    const body = [];
+    for (const item of data.items) {
+      for (const v of item.varieties) {
+        for (const [date, amount, volume] of v.rows) {
+          body.push([item.name, v.name, date, Math.round(amount / volume), volume, amount]);
+        }
+      }
+    }
+    saveWorkbook([
+      { name: "일별_품종별", rows: [["품목", "품종", "경락일", "평균가(원/kg)", "거래물량(kg)", "거래금액(원)"], ...body], widths: [12, 18, 12, 14, 14, 16] },
+      { name: "설명", rows: INFO_ROWS(), widths: [12, 60] },
+    ], `임업품목가격_전체_일별_${data.to}.xlsx`);
+    return body.length;
+  }
+
+  function bindDownload(id, run) {
+    const btn = document.getElementById(id);
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      dlNote.textContent = "엑셀 파일을 만드는 중입니다…";
+      try {
+        await loadXlsx();
+        const n = run();
+        dlNote.textContent = `${n.toLocaleString("ko-KR")}행을 저장했습니다.`;
+      } catch (err) {
+        dlNote.textContent = `저장 실패: ${err.message}`;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+  bindDownload("fp-dl-view", exportView);
+  bindDownload("fp-dl-all", exportAll);
+
   grainButtons.querySelectorAll("button").forEach((btn) => {
     btn.addEventListener("click", () => {
       grain = btn.dataset.grain;
@@ -896,6 +1012,7 @@ gtag('config', 'G-6JP0RHCH1Y', { 'anonymize_ip': true});
       data = await res.json();
       meta.textContent = `수집 기간: ${data.from} ~ ${data.to} · 생성 시각: ${data.generatedAt}`;
       controls.hidden = false;
+      document.getElementById("fp-download").hidden = false;
       body.hidden = false;
       variety = defaultVariety(data.items[itemIndex]);
       renderChips();
