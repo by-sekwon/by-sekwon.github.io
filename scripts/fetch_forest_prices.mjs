@@ -35,9 +35,6 @@ const ITEMS = [
   { label: "표고버섯", field: "표고버섯" },
   { label: "고사리", field: "고사리" },
   { label: "복분자딸기", field: "복분자" },
-  { label: "오미자", field: "오미자" },
-  { label: "구기자", field: "구기자" },
-  { label: "산수유", field: "산수유" },
   { label: "두릅", field: "두릅" },
   { label: "곰취", field: "취나물", only: ["곰취나물"] },
   { label: "더덕", field: "더덕" },
@@ -170,7 +167,7 @@ async function main() {
 
   const items = buildItems(rows, startDate);
   const empty = items.filter((it) => !it.varieties.length).map((it) => it.name);
-  // 산수유처럼 도매시장 거래가 거의 없는 품목은 빌 수 있다. 여러 품목이 한꺼번에 비면
+  // 복분자처럼 도매시장 거래가 드문 품목은 빌 수 있다. 여러 품목이 한꺼번에 비면
   // 농넷 쪽 품목명·필드가 바뀐 것 — 기존 파일을 덮어쓰지 않고 실패시킨다.
   if (empty.length) console.warn(`no data for: ${empty.join(", ")}`);
   if (empty.length > ITEMS.length / 3) throw new Error(`too many empty items: ${empty.join(", ")}`);
