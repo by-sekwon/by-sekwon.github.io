@@ -201,7 +201,8 @@ format:
     <span class="fp-range" id="fp-range">
       <button type="button" data-days="31">1개월</button>
       <button type="button" data-days="92">3개월</button>
-      <button type="button" data-days="0" class="fp-active">전체</button>
+      <button type="button" data-days="366">1년</button>
+      <button type="button" data-days="0" class="fp-active">3년</button>
     </span>
   </div>
 </div>
@@ -239,7 +240,7 @@ format:
 
 <p class="fp-footnote">
   자료: <a href="https://www.nongnet.or.kr" target="_blank" rel="noopener">농넷(한국농수산식품유통공사) 전국도매시장 경락정보</a>.
-  전국 공영도매시장에서 kg 단위로 거래된 경락 내역을 2026년 1월 1일부터 모아, 매일 오전 자동으로 다시 수집합니다.
+  전국 공영도매시장에서 kg 단위로 거래된 경락 내역을 최근 3년치 모아, 매일 오전 자동으로 다시 수집합니다.
   평균가는 그날의 거래금액 합계를 거래물량 합계로 나눈 물량 가중평균(원/kg)이며, 등급·포장·시장 구분 없이 합친 값이라 농넷 화면의 수치와 다를 수 있습니다.
   같은 품목 안에서도 건조품·생물·수입산은 가격대가 크게 다르므로, "전체 품종" 평균은 품종 구성이 바뀌는 것만으로도 움직입니다. 그래서 처음에는 거래물량이 가장 많은 국산 품종 하나를 보여드리며, 품종 메뉴에서 "전체 품종"이나 다른 품종으로 바꿀 수 있습니다.
   복분자딸기는 농넷의 "복분자" 품목이며 도매시장 거래가 여름 한철에 소량만 있습니다.
@@ -377,7 +378,7 @@ format:
     tiles.innerHTML =
       tile(`최근 경락일 평균가 (${s.last.date.slice(5)})`, `${fmt(s.last.price)}<small> 원/kg</small>`, change) +
       tile("기간 평균가", `${fmt(s.avg)}<small> 원/kg</small>`, `거래일 ${s.days}일 · 물량 가중평균`) +
-      tile(`${GRAIN_LABEL[grain]} 최고 / 최저`, `${fmt(s.high.price)}<small> / ${fmt(s.low.price)} 원</small>`, `최고 ${periodLabel(s.high.date).slice(5)} · 최저 ${periodLabel(s.low.date).slice(5)}`) +
+      tile(`${GRAIN_LABEL[grain]} 최고 / 최저`, `${fmt(s.high.price)}<small> / ${fmt(s.low.price)} 원</small>`, `최고 ${periodLabel(s.high.date)} · 최저 ${periodLabel(s.low.date)}`) +
       tile("기간 거래물량", `${fmt(s.volume / 1000)}<small> 톤</small>`, `거래금액 ${fmt(s.amount / 1e6)}백만원`);
   }
 
@@ -429,6 +430,8 @@ format:
             maxRotation: 0,
             callback: (value) => {
               const d = new Date(value);
+              // 1년 넘게 보는 화면에서는 연도가 보여야 한다
+              if (xMax - xMin > 400 * DAY_MS) return `${d.getUTCFullYear()}.${d.getUTCMonth() + 1}`;
               return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
             },
           },
@@ -525,7 +528,7 @@ format:
 
     renderVarietyTable(item);
     if (!s) {
-      tiles.innerHTML = '<p class="fp-empty">이 기간에는 거래가 없습니다. 기간을 "전체"로 바꿔 보세요.</p>';
+      tiles.innerHTML = '<p class="fp-empty">이 기간에는 거래가 없습니다. 기간을 "3년"으로 바꿔 보세요.</p>';
       if (priceChart) { priceChart.destroy(); priceChart = null; }
       if (volumeChart) { volumeChart.destroy(); volumeChart = null; }
       document.getElementById("fp-daily-rows").innerHTML = "";

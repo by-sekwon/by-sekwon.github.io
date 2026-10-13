@@ -5,7 +5,7 @@
 // (there is no official REST API for it). If 농넷 changes the app id or field
 // names, this is the place to fix.
 //
-// Every run re-downloads the whole window (START_YEAR-01-01 ~ today) as one
+// Every run re-downloads the whole window (the last WINDOW_YEARS years) as one
 // item x variety x date table, since past days can still be revised, and
 // overwrites a single prices.json.
 //
@@ -23,7 +23,7 @@ const OUT_DATA_DIR = path.resolve("docs/playground/data/forest_prices");
 
 const APP_ID = "551d7860-2a5d-49e5-915e-56517f3da2a3";
 const WS_URL = `wss://www.nongnet.or.kr/qlik/sso/app/${APP_ID}`;
-const START_YEAR = 2026;
+const WINDOW_YEARS = 3; // 최근 3년 (오늘 기준으로 매일 한 칸씩 이동)
 // label = 사이트에 보여줄 임업 품목명, field = 농넷 `품목명_선택` 값
 const ITEMS = [
   { label: "밤", field: "밤" },
@@ -39,6 +39,11 @@ const RPC_TIMEOUT_MS = 60_000;
 
 function nowKSTIso() {
   return new Date().toLocaleString("sv-SE", { timeZone: "Asia/Seoul" }).replace(" ", "T") + "+09:00";
+}
+
+function windowStartKST() {
+  const [y, m, d] = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Seoul" }).split("-");
+  return `${Number(y) - WINDOW_YEARS}-${m}-${d}`;
 }
 
 function connect() {
@@ -72,12 +77,12 @@ function connect() {
   });
 }
 
-async function fetchRows(call) {
+async function fetchRows(call, startDate) {
   const doc = await call(-1, "OpenDoc", [APP_ID]);
   const docHandle = doc.qReturn.qHandle;
 
   const itemSet = ITEMS.map((it) => `'${it.field}'`).join(",");
-  const set = `{<품목명_선택={${itemSet}},경락년도={">=${START_YEAR}"},단위명={'kg'}>}`;
+  const set = `{<품목명_선택={${itemSet}},경락년도={">=${startDate.slice(0, 4)}"},단위명={'kg'}>}`;
   const cube = await call(docHandle, "CreateSessionObject", [{
     qInfo: { qType: "forest-prices" },
     qHyperCubeDef: {
@@ -110,12 +115,12 @@ async function fetchRows(call) {
   return rows;
 }
 
-function buildItems(rows) {
+function buildItems(rows, startDate) {
   const byItem = new Map(ITEMS.map((it) => [it.field, new Map()]));
   for (const [item, variety, date, amount, volume] of rows) {
     const varieties = byItem.get(item.qText);
     if (!varieties) continue;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date.qText)) continue;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date.qText) || date.qText < startDate) continue;
     if (!(amount.qNum > 0) || !(volume.qNum > 0)) continue;
     const name = variety.qText && variety.qText !== "-" ? variety.qText : "미분류";
     if (!varieties.has(name)) varieties.set(name, []);
@@ -139,15 +144,16 @@ function buildItems(rows) {
 }
 
 async function main() {
+  const startDate = windowStartKST();
   const { call, close } = await connect();
   let rows;
   try {
-    rows = await fetchRows(call);
+    rows = await fetchRows(call, startDate);
   } finally {
     close();
   }
 
-  const items = buildItems(rows);
+  const items = buildItems(rows, startDate);
   const empty = items.filter((it) => !it.varieties.length).map((it) => it.name);
   // 한 품목이라도 통째로 비면 농넷 쪽 품목명이 바뀐 것 — 기존 파일을 덮어쓰지 않고 실패시킨다.
   if (empty.length) throw new Error(`no data for: ${empty.join(", ")}`);
