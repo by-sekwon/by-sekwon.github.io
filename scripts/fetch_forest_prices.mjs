@@ -24,7 +24,9 @@ const OUT_DATA_DIR = path.resolve("docs/playground/data/forest_prices");
 const APP_ID = "551d7860-2a5d-49e5-915e-56517f3da2a3";
 const WS_URL = `wss://www.nongnet.or.kr/qlik/sso/app/${APP_ID}`;
 const WINDOW_YEARS = 3; // 최근 3년 (오늘 기준으로 매일 한 칸씩 이동)
-// label = 사이트에 보여줄 임업 품목명, field = 농넷 `품목명_선택` 값
+// label = 사이트에 보여줄 임업 품목명, field = 농넷 `품목명_선택` 값.
+// 농넷에 독립 품목이 없고 다른 품목의 품종으로만 있는 경우(곰취)는 only 로 그 품종만
+// 떼어 오고, 원래 품목(취나물)에서는 except 로 빼서 두 번 세지 않는다.
 const ITEMS = [
   { label: "밤", field: "밤" },
   { label: "대추", field: "대추" },
@@ -33,6 +35,14 @@ const ITEMS = [
   { label: "표고버섯", field: "표고버섯" },
   { label: "고사리", field: "고사리" },
   { label: "복분자딸기", field: "복분자" },
+  { label: "오미자", field: "오미자" },
+  { label: "구기자", field: "구기자" },
+  { label: "산수유", field: "산수유" },
+  { label: "두릅", field: "두릅" },
+  { label: "곰취", field: "취나물", only: ["곰취나물"] },
+  { label: "더덕", field: "더덕" },
+  { label: "도라지", field: "도라지" },
+  { label: "취나물", field: "취나물", except: ["곰취나물"] },
 ];
 const PAGE_ROWS = 2000; // Qlik caps one fetch at 10,000 cells (5 columns here)
 const RPC_TIMEOUT_MS = 60_000;
@@ -81,7 +91,7 @@ async function fetchRows(call, startDate) {
   const doc = await call(-1, "OpenDoc", [APP_ID]);
   const docHandle = doc.qReturn.qHandle;
 
-  const itemSet = ITEMS.map((it) => `'${it.field}'`).join(",");
+  const itemSet = [...new Set(ITEMS.map((it) => it.field))].map((f) => `'${f}'`).join(",");
   const set = `{<품목명_선택={${itemSet}},경락년도={">=${startDate.slice(0, 4)}"},단위명={'kg'}>}`;
   const cube = await call(docHandle, "CreateSessionObject", [{
     qInfo: { qType: "forest-prices" },
@@ -116,10 +126,15 @@ async function fetchRows(call, startDate) {
 }
 
 function buildItems(rows, startDate) {
-  const byItem = new Map(ITEMS.map((it) => [it.field, new Map()]));
+  const byItem = new Map(ITEMS.map((it) => [it.label, new Map()]));
+  const ownerOf = (field, variety) => ITEMS.find((it) =>
+    it.field === field &&
+    (!it.only || it.only.includes(variety)) &&
+    (!it.except || !it.except.includes(variety)));
   for (const [item, variety, date, amount, volume] of rows) {
-    const varieties = byItem.get(item.qText);
-    if (!varieties) continue;
+    const owner = ownerOf(item.qText, variety.qText);
+    if (!owner) continue;
+    const varieties = byItem.get(owner.label);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date.qText) || date.qText < startDate) continue;
     if (!(amount.qNum > 0) || !(volume.qNum > 0)) continue;
     const name = variety.qText && variety.qText !== "-" ? variety.qText : "미분류";
@@ -129,7 +144,7 @@ function buildItems(rows, startDate) {
   }
 
   return ITEMS.map((it) => {
-    const varieties = [...byItem.get(it.field)].map(([name, rows]) => {
+    const varieties = [...byItem.get(it.label)].map(([name, rows]) => {
       rows.sort((a, b) => (a[0] < b[0] ? -1 : 1));
       return { name, volume: rows.reduce((s, r) => s + r[2], 0), rows };
     });
@@ -155,8 +170,10 @@ async function main() {
 
   const items = buildItems(rows, startDate);
   const empty = items.filter((it) => !it.varieties.length).map((it) => it.name);
-  // 한 품목이라도 통째로 비면 농넷 쪽 품목명이 바뀐 것 — 기존 파일을 덮어쓰지 않고 실패시킨다.
-  if (empty.length) throw new Error(`no data for: ${empty.join(", ")}`);
+  // 산수유처럼 도매시장 거래가 거의 없는 품목은 빌 수 있다. 여러 품목이 한꺼번에 비면
+  // 농넷 쪽 품목명·필드가 바뀐 것 — 기존 파일을 덮어쓰지 않고 실패시킨다.
+  if (empty.length) console.warn(`no data for: ${empty.join(", ")}`);
+  if (empty.length > ITEMS.length / 3) throw new Error(`too many empty items: ${empty.join(", ")}`);
 
   const dates = items.flatMap((it) => it.varieties.flatMap((v) => v.rows.map((r) => r[0]))).sort();
   const snapshot = {
