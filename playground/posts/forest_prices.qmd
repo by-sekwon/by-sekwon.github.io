@@ -1,0 +1,613 @@
+---
+title: "임업품목 가격정보"
+author: "권세혁"
+date: "2026-10-13"
+date-modified: "2026-10-13"
+description: "밤·대추·호두·떫은감·표고버섯·고사리·복분자딸기 7개 임업 품목의 전국 도매시장 경락가격을 매일 자동으로 수집해 보여드립니다."
+categories: [임업, 가격]
+format:
+  html:
+    sidebar: playground
+    toc: false
+---
+
+```{=html}
+<style>
+.fp-header {
+  background: linear-gradient(135deg, #1a2a4a 0%, #2d4a8c 60%, #3a5aad 100%);
+  color: #f5f0e8;
+  padding: 1.4rem 2rem;
+  border-radius: 10px;
+  margin-bottom: 1.2rem;
+}
+.fp-header .fp-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+}
+.fp-header .fp-title span { color: #a2b8f0; }
+.fp-header .fp-sub {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+}
+.fp-meta {
+  font-size: 0.8rem;
+  color: #888;
+  margin: -0.6rem 0 1rem;
+}
+
+.fp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+.fp-chip {
+  font-size: 0.9rem;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #d7ddf0;
+  background: #eef2fb;
+  color: #2d4a8c;
+  cursor: pointer;
+}
+.fp-chip:hover { background: #dfe6f7; }
+.fp-chip.fp-active {
+  background: #2d4a8c;
+  color: #fff;
+  border-color: #2d4a8c;
+}
+
+.fp-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  margin-bottom: 1.1rem;
+}
+.fp-controls label { color: #666; margin-right: 0.35rem; }
+.fp-controls select {
+  font-size: 0.85rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  max-width: 100%;
+}
+.fp-range { display: inline-flex; }
+.fp-range button {
+  font-size: 0.82rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #444;
+  cursor: pointer;
+  margin-left: -1px;
+}
+.fp-range button:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+.fp-range button:last-child { border-radius: 0 6px 6px 0; }
+.fp-range button.fp-active {
+  background: #2d4a8c;
+  border-color: #2d4a8c;
+  color: #fff;
+}
+
+.fp-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+}
+.fp-tile {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  background: var(--bs-body-bg, #fff);
+}
+.fp-tile-label { font-size: 0.76rem; color: #888; }
+.fp-tile-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1f2a44;
+  line-height: 1.3;
+}
+.fp-tile-value small { font-size: 0.8rem; font-weight: 500; color: #666; }
+.fp-tile-note { font-size: 0.76rem; color: #666; }
+
+.fp-chart-card {
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 0.9rem 1rem 0.6rem;
+  margin-bottom: 0.9rem;
+  background: var(--bs-body-bg, #fff);
+}
+.fp-chart-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1f2a44;
+  margin: 0 0 0.5rem;
+}
+.fp-chart-title small { font-weight: 400; color: #888; }
+.fp-chart-box { position: relative; height: 300px; }
+.fp-chart-box.fp-short { height: 170px; }
+
+.fp-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1.4rem 0 0.5rem;
+  color: #1f2a44;
+}
+.fp-table-wrap { overflow-x: auto; }
+.fp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.fp-table th, .fp-table td {
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid #eee;
+  text-align: right;
+  white-space: nowrap;
+}
+.fp-table th { font-weight: 600; }
+.fp-table th:first-child, .fp-table td:first-child { text-align: left; }
+.fp-table tbody tr.fp-clickable { cursor: pointer; }
+.fp-table tbody tr.fp-clickable:hover td { background: #f1f4fb; }
+.fp-table tbody tr.fp-row-active td { background: #e3e9f8; font-weight: 600; }
+.fp-details summary {
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 1.4rem 0 0.5rem;
+  color: #1f2a44;
+}
+.fp-error { color: #a33; font-size: 0.85rem; padding: 0.9rem 0; }
+.fp-empty { color: #999; font-size: 0.88rem; }
+.fp-footnote {
+  margin-top: 1.4rem;
+  font-size: 0.78rem;
+  color: #999;
+  line-height: 1.6;
+}
+</style>
+
+<div class="fp-header">
+  <div class="fp-title">🌰 <span>임업품목 가격정보</span></div>
+  <p class="fp-sub">전국 도매시장 경락가격 · 7개 임업 품목 · 매일 자동 수집</p>
+</div>
+
+<p class="fp-meta" id="fp-meta"></p>
+
+<div class="fp-chips" id="fp-chips">
+  <p class="fp-empty">가격 데이터를 불러오는 중입니다…</p>
+</div>
+
+<div class="fp-controls" id="fp-controls" hidden>
+  <div>
+    <label for="fp-variety">품종</label>
+    <select id="fp-variety"></select>
+  </div>
+  <div>
+    <label>집계</label>
+    <span class="fp-range" id="fp-grain">
+      <button type="button" data-grain="day">일별</button>
+      <button type="button" data-grain="week" class="fp-active">주별</button>
+      <button type="button" data-grain="month">월별</button>
+    </span>
+  </div>
+  <div>
+    <label>기간</label>
+    <span class="fp-range" id="fp-range">
+      <button type="button" data-days="31">1개월</button>
+      <button type="button" data-days="92">3개월</button>
+      <button type="button" data-days="0" class="fp-active">전체</button>
+    </span>
+  </div>
+</div>
+
+<div id="fp-body" hidden>
+  <div class="fp-tiles" id="fp-tiles"></div>
+
+  <div class="fp-chart-card">
+    <p class="fp-chart-title" id="fp-price-title"></p>
+    <div class="fp-chart-box"><canvas id="fp-price-chart"></canvas></div>
+  </div>
+  <div class="fp-chart-card">
+    <p class="fp-chart-title" id="fp-volume-title"></p>
+    <div class="fp-chart-box fp-short"><canvas id="fp-volume-chart"></canvas></div>
+  </div>
+
+  <div class="fp-section-title">품종별 요약 <small style="font-weight:400;color:#888;">(거래물량 순 · 행을 누르면 해당 품종만 봅니다)</small></div>
+  <div class="fp-table-wrap">
+    <table class="fp-table">
+      <thead><tr><th>품종</th><th>거래일수</th><th>거래물량(kg)</th><th>평균가(원/kg)</th><th>최근 경락일</th><th>최근가(원/kg)</th></tr></thead>
+      <tbody id="fp-variety-rows"></tbody>
+    </table>
+  </div>
+
+  <details class="fp-details">
+    <summary>기간별 표 보기</summary>
+    <div class="fp-table-wrap">
+      <table class="fp-table">
+        <thead><tr><th id="fp-daily-head">경락일</th><th>평균가(원/kg)</th><th>거래물량(kg)</th><th>거래금액(원)</th></tr></thead>
+        <tbody id="fp-daily-rows"></tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<p class="fp-footnote">
+  자료: <a href="https://www.nongnet.or.kr" target="_blank" rel="noopener">농넷(한국농수산식품유통공사) 전국도매시장 경락정보</a>.
+  전국 공영도매시장에서 kg 단위로 거래된 경락 내역을 2026년 1월 1일부터 모아, 매일 오전 자동으로 다시 수집합니다.
+  평균가는 그날의 거래금액 합계를 거래물량 합계로 나눈 물량 가중평균(원/kg)이며, 등급·포장·시장 구분 없이 합친 값이라 농넷 화면의 수치와 다를 수 있습니다.
+  같은 품목 안에서도 건조품·생물·수입산은 가격대가 크게 다르므로, "전체 품종" 평균은 품종 구성이 바뀌는 것만으로도 움직입니다. 그래서 처음에는 거래물량이 가장 많은 국산 품종 하나를 보여드리며, 품종 메뉴에서 "전체 품종"이나 다른 품종으로 바꿀 수 있습니다.
+  복분자딸기는 농넷의 "복분자" 품목이며 도매시장 거래가 여름 한철에 소량만 있습니다.
+  거래가 뜸한 철에는 소량 거래 한두 건만으로 그날 평균가가 크게 튀기 때문에 그래프는 주별 평균을 기본으로 하며, "집계"에서 일별·월별로 바꿀 수 있습니다.
+  거래가 없는 날은 표시되지 않습니다. 본 정보는 참고용입니다.
+</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function () {
+  const chips = document.getElementById("fp-chips");
+  const controls = document.getElementById("fp-controls");
+  const body = document.getElementById("fp-body");
+  const meta = document.getElementById("fp-meta");
+  const varietySelect = document.getElementById("fp-variety");
+  const rangeButtons = document.getElementById("fp-range");
+  const grainButtons = document.getElementById("fp-grain");
+  const tiles = document.getElementById("fp-tiles");
+
+  const ALL = "__all__";
+  const DOMESTIC = "__domestic__";
+  const DAY_MS = 86400000;
+  const LINE_COLOR = "#2d4a8c";
+  const BAR_COLOR = "#9fb3e0";
+  const GRID_COLOR = "#eef0f4";
+  const INK_MUTED = "#888";
+
+  let data = null;
+  let itemIndex = 0;
+  let variety = ALL;
+  let rangeDays = 0;
+  let grain = "week";
+  let priceChart = null;
+  let volumeChart = null;
+
+  const fmt = (n) => Math.round(n).toLocaleString("ko-KR");
+  const toTime = (d) => Date.parse(d + "T00:00:00Z");
+  const isImported = (name) => name.includes("수입") || name.includes("북한산");
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[c]));
+  }
+
+  function rangeStart() {
+    if (!rangeDays) return "";
+    return new Date(toTime(data.to) - rangeDays * DAY_MS).toISOString().slice(0, 10);
+  }
+
+  // 선택한 품종(들)의 일자별 [date, amount, volume] — 여러 품종이면 날짜별로 합산
+  function seriesFor(item, which) {
+    const start = rangeStart();
+    const picked = item.varieties.filter((v) =>
+      which === ALL ? true : which === DOMESTIC ? !isImported(v.name) : v.name === which);
+    const byDate = new Map();
+    for (const v of picked) {
+      for (const [date, amount, volume] of v.rows) {
+        if (date < start) continue;
+        const cur = byDate.get(date) || [date, 0, 0];
+        cur[1] += amount;
+        cur[2] += volume;
+        byDate.set(date, cur);
+      }
+    }
+    return [...byDate.values()].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+  }
+
+  const GRAIN_LABEL = { day: "일별", week: "주별", month: "월별" };
+
+  // 일별 행을 주(월요일 시작)·월 단위로 합산. 거래가 뜸한 날 소량 거래 한두 건이
+  // 평균가를 튀게 하므로, 기본 화면은 주별 물량 가중평균을 쓴다.
+  function bucketKey(date) {
+    if (grain === "month") return date.slice(0, 7) + "-01";
+    if (grain === "week") {
+      const t = toTime(date);
+      const mondayOffset = (new Date(t).getUTCDay() + 6) % 7;
+      return new Date(t - mondayOffset * DAY_MS).toISOString().slice(0, 10);
+    }
+    return date;
+  }
+
+  function aggregate(rows) {
+    if (grain === "day") return rows;
+    const byKey = new Map();
+    for (const [date, amount, volume] of rows) {
+      const key = bucketKey(date);
+      const cur = byKey.get(key) || [key, 0, 0];
+      cur[1] += amount;
+      cur[2] += volume;
+      byKey.set(key, cur);
+    }
+    return [...byKey.values()];
+  }
+
+  function periodLabel(key) {
+    if (grain === "month") return key.slice(0, 7);
+    if (grain === "week") return `${key} 주`;
+    return key;
+  }
+
+  function summarize(rows) {
+    if (!rows.length) return null;
+    const amount = rows.reduce((s, r) => s + r[1], 0);
+    const volume = rows.reduce((s, r) => s + r[2], 0);
+    const prices = rows.map((r) => ({ date: r[0], price: r[1] / r[2] }));
+    const last = prices[prices.length - 1];
+    const prev = prices.length > 1 ? prices[prices.length - 2] : null;
+    const buckets = aggregate(rows).map((r) => ({ date: r[0], price: r[1] / r[2] }));
+    const high = buckets.reduce((a, b) => (b.price > a.price ? b : a));
+    const low = buckets.reduce((a, b) => (b.price < a.price ? b : a));
+    return { amount, volume, avg: amount / volume, days: rows.length, last, prev, high, low };
+  }
+
+  function varietyLabel(item) {
+    if (variety === ALL) return "전체 품종";
+    if (variety === DOMESTIC) return "수입산 제외";
+    return variety;
+  }
+
+  function renderTiles(s) {
+    let change = "전 거래일 없음";
+    if (s.prev) {
+      const diff = s.last.price - s.prev.price;
+      const pct = (diff / s.prev.price) * 100;
+      const arrow = diff > 0 ? "▲" : diff < 0 ? "▼" : "–";
+      change = `전 거래일 대비 ${arrow} ${fmt(Math.abs(diff))}원 (${pct >= 0 ? "+" : "−"}${Math.abs(pct).toFixed(1)}%)`;
+    }
+    const tile = (label, value, note) => `
+      <div class="fp-tile">
+        <div class="fp-tile-label">${label}</div>
+        <div class="fp-tile-value">${value}</div>
+        <div class="fp-tile-note">${note}</div>
+      </div>`;
+    tiles.innerHTML =
+      tile(`최근 경락일 평균가 (${s.last.date.slice(5)})`, `${fmt(s.last.price)}<small> 원/kg</small>`, change) +
+      tile("기간 평균가", `${fmt(s.avg)}<small> 원/kg</small>`, `거래일 ${s.days}일 · 물량 가중평균`) +
+      tile(`${GRAIN_LABEL[grain]} 최고 / 최저`, `${fmt(s.high.price)}<small> / ${fmt(s.low.price)} 원</small>`, `최고 ${periodLabel(s.high.date).slice(5)} · 최저 ${periodLabel(s.low.date).slice(5)}`) +
+      tile("기간 거래물량", `${fmt(s.volume / 1000)}<small> 톤</small>`, `거래금액 ${fmt(s.amount / 1e6)}백만원`);
+  }
+
+  const crosshair = {
+    id: "fpCrosshair",
+    afterDraw(chart) {
+      const active = chart.tooltip && chart.tooltip.getActiveElements();
+      if (!active || !active.length) return;
+      const { ctx, chartArea } = chart;
+      const x = active[0].element.x;
+      ctx.save();
+      ctx.strokeStyle = "#b8bfcc";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.restore();
+    },
+  };
+
+  function baseOptions(xMin, xMax, unit) {
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: "nearest", axis: "x", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          displayColors: false,
+          callbacks: {
+            title: (items) => periodLabel(new Date(items[0].parsed.x).toISOString().slice(0, 10)),
+            label: (item) => `${fmt(item.parsed.y)} ${unit}`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: "linear",
+          offset: false,
+          min: xMin - DAY_MS,
+          max: xMax + DAY_MS,
+          grid: { display: false },
+          border: { color: "#d5d9e2" },
+          ticks: {
+            color: INK_MUTED,
+            maxTicksLimit: 8,
+            maxRotation: 0,
+            callback: (value) => {
+              const d = new Date(value);
+              return `${d.getUTCMonth() + 1}/${d.getUTCDate()}`;
+            },
+          },
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: GRID_COLOR },
+          border: { display: false },
+          ticks: { color: INK_MUTED, maxTicksLimit: 6, callback: (value) => fmt(value) },
+        },
+      },
+    };
+  }
+
+  function renderCharts(rows) {
+    if (priceChart) priceChart.destroy();
+    if (volumeChart) volumeChart.destroy();
+    const xMin = toTime(rows[0][0]);
+    const xMax = toTime(rows[rows.length - 1][0]);
+    const sparse = rows.length <= 70;
+    const barWidth = grain === "month" ? 28 : grain === "week" ? 12 : 6;
+
+    priceChart = new Chart(document.getElementById("fp-price-chart"), {
+      type: "line",
+      data: {
+        datasets: [{
+          data: rows.map((r) => ({ x: toTime(r[0]), y: r[1] / r[2] })),
+          borderColor: LINE_COLOR,
+          backgroundColor: LINE_COLOR,
+          borderWidth: 2,
+          pointRadius: sparse ? 3 : 0,
+          pointHoverRadius: 5,
+          tension: 0,
+        }],
+      },
+      options: baseOptions(xMin, xMax, "원/kg"),
+      plugins: [crosshair],
+    });
+
+    volumeChart = new Chart(document.getElementById("fp-volume-chart"), {
+      type: "bar",
+      data: {
+        datasets: [{
+          data: rows.map((r) => ({ x: toTime(r[0]), y: r[2] })),
+          backgroundColor: BAR_COLOR,
+          hoverBackgroundColor: LINE_COLOR,
+          borderRadius: 2,
+          barThickness: "flex",
+          maxBarThickness: barWidth,
+        }],
+      },
+      options: baseOptions(xMin, xMax, "kg"),
+    });
+  }
+
+  function renderVarietyTable(item) {
+    const tbody = document.getElementById("fp-variety-rows");
+    const lines = item.varieties.map((v) => {
+      const s = summarize(seriesFor(item, v.name));
+      if (!s) return "";
+      return `
+        <tr class="fp-clickable${v.name === variety ? " fp-row-active" : ""}" data-variety="${escapeHtml(v.name)}">
+          <td>${escapeHtml(v.name)}</td>
+          <td>${s.days}</td>
+          <td>${fmt(s.volume)}</td>
+          <td>${fmt(s.avg)}</td>
+          <td>${s.last.date}</td>
+          <td>${fmt(s.last.price)}</td>
+        </tr>`;
+    }).join("");
+    tbody.innerHTML = lines || '<tr><td colspan="6" class="fp-empty">이 기간에는 거래가 없습니다.</td></tr>';
+    tbody.querySelectorAll("tr[data-variety]").forEach((tr) => {
+      tr.addEventListener("click", () => {
+        variety = tr.dataset.variety;
+        varietySelect.value = variety;
+        render();
+      });
+    });
+  }
+
+  function renderDailyTable(rows) {
+    document.getElementById("fp-daily-rows").innerHTML = rows.slice().reverse().map((r) => `
+      <tr><td>${periodLabel(r[0])}</td><td>${fmt(r[1] / r[2])}</td><td>${fmt(r[2])}</td><td>${fmt(r[1])}</td></tr>`).join("");
+  }
+
+  function render() {
+    const item = data.items[itemIndex];
+    const rows = seriesFor(item, variety);
+    const s = summarize(rows);
+    const label = `${escapeHtml(item.name)} · ${escapeHtml(varietyLabel(item))}`;
+    document.getElementById("fp-price-title").innerHTML = `${label} ${GRAIN_LABEL[grain]} 평균 경락가 <small>(원/kg)</small>`;
+    document.getElementById("fp-volume-title").innerHTML = `${label} ${GRAIN_LABEL[grain]} 거래물량 <small>(kg)</small>`;
+    document.getElementById("fp-daily-head").textContent = grain === "day" ? "경락일" : grain === "week" ? "주(월요일 시작)" : "월";
+
+    renderVarietyTable(item);
+    if (!s) {
+      tiles.innerHTML = '<p class="fp-empty">이 기간에는 거래가 없습니다. 기간을 "전체"로 바꿔 보세요.</p>';
+      if (priceChart) { priceChart.destroy(); priceChart = null; }
+      if (volumeChart) { volumeChart.destroy(); volumeChart = null; }
+      document.getElementById("fp-daily-rows").innerHTML = "";
+      return;
+    }
+    const buckets = aggregate(rows);
+    renderTiles(s);
+    renderCharts(buckets);
+    renderDailyTable(buckets);
+  }
+
+  function renderVarietyOptions() {
+    const item = data.items[itemIndex];
+    const hasImported = item.varieties.some((v) => isImported(v.name));
+    const hasDomestic = item.varieties.some((v) => !isImported(v.name));
+    let html = `<option value="${ALL}">전체 품종</option>`;
+    if (hasImported && hasDomestic) html += `<option value="${DOMESTIC}">수입산 제외</option>`;
+    html += item.varieties.map((v) => `<option value="${escapeHtml(v.name)}">${escapeHtml(v.name)}</option>`).join("");
+    varietySelect.innerHTML = html;
+    varietySelect.value = variety;
+  }
+
+  // 건조품·생물·수입산이 섞인 "전체" 평균은 품종 구성만 바뀌어도 출렁이므로,
+  // 기본값은 거래물량이 가장 많은 국산 품종 하나로 둔다.
+  function defaultVariety(item) {
+    const main = item.varieties.find((v) => !isImported(v.name)) || item.varieties[0];
+    return main ? main.name : ALL;
+  }
+
+  function renderChips() {
+    chips.innerHTML = data.items.map((it, i) => `
+      <button type="button" class="fp-chip${i === itemIndex ? " fp-active" : ""}" data-index="${i}">${escapeHtml(it.name)}</button>`).join("");
+    chips.querySelectorAll(".fp-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        itemIndex = Number(btn.dataset.index);
+        variety = defaultVariety(data.items[itemIndex]);
+        renderChips();
+        renderVarietyOptions();
+        render();
+      });
+    });
+  }
+
+  varietySelect.addEventListener("change", () => {
+    variety = varietySelect.value;
+    render();
+  });
+
+  rangeButtons.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      rangeDays = Number(btn.dataset.days);
+      rangeButtons.querySelectorAll("button").forEach((b) => b.classList.toggle("fp-active", b === btn));
+      render();
+    });
+  });
+
+  grainButtons.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      grain = btn.dataset.grain;
+      grainButtons.querySelectorAll("button").forEach((b) => b.classList.toggle("fp-active", b === btn));
+      render();
+    });
+  });
+
+  async function init() {
+    try {
+      const res = await fetch("../data/forest_prices/prices.json");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      data = await res.json();
+      meta.textContent = `수집 기간: ${data.from} ~ ${data.to} · 생성 시각: ${data.generatedAt}`;
+      controls.hidden = false;
+      body.hidden = false;
+      variety = defaultVariety(data.items[itemIndex]);
+      renderChips();
+      renderVarietyOptions();
+      render();
+    } catch (err) {
+      chips.innerHTML = `<p class="fp-error">데이터를 불러오지 못했습니다: ${escapeHtml(err.message)}</p>`;
+    }
+  }
+
+  init();
+})();
+</script>
+```
