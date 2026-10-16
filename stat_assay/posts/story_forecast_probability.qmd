@@ -1,0 +1,78 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험과 불확실성을 이해하는 법) 비 올 확률 60%는 무슨 뜻인가? — 확률적 예보 읽는 법"
+author: "권세혁"
+date: "2026-10-19"
+categories: [통계기초, 확률]
+description: "강수확률 60%는 '오늘 하루 중 60%의 시간에 비가 온다'는 뜻이 아니다. 기상청과 일본 기상청이 공통으로 설명하는 정의는 '비슷한 기상 조건이었던 과거 100번 중 약 60번 비가 왔다'는 상대빈도다. 예보를 쪼개어 보면, 틀렸다고 느껴지는 날도 사실은 예보가 맞아떨어진 날일 수 있다."
+---
+
+## 60%인데 비가 안 왔다, 예보가 틀린 걸까
+
+강수확률 60%라는 예보를 보고 우산을 챙겼는데 비가 오지 않으면 "예보가 틀렸다"고 생각하기 쉽다. 그런데 60%라는 숫자 자체에 "40%의 확률로 비가 오지 않는다"는 말이 이미 들어 있다. 예보가 맞았는지 틀렸는지는 하루만 보고 판단할 수 없다. 기상청과 일본 기상청이 공통으로 설명하는 정의는 이렇다. "이번과 비슷한 기상 조건이었던 과거 사례 100번을 모으면, 그중 약 60번은 비(0.1mm 이상의 강수)가 왔다." 60%는 오늘 하루의 성질이 아니라, **비슷한 조건을 모은 집단의 상대빈도**다.
+
+## 강수량도, 비 오는 시간의 비율도 아니다
+
+강수확률을 둘러싼 흔한 오해 두 가지가 있다. 첫째, 60%가 "하루 24시간 중 60%의 시간 동안 비가 온다"는 뜻이라는 오해다. 둘째, 60%면 "많은 비가 온다"는 뜻이라는 오해다. 두 가지 모두 틀렸다. 강수확률은 **발생 여부**(0.1mm 이상 비가 오는가, 안 오는가)에 대한 확률일 뿐, 비가 오는 시간의 길이나 강수량의 많고 적음과는 별개의 숫자다. 많은 비가 약하게 예상될 때도, 적은 비가 강하게 예상될 때도 강수확률은 똑같이 높게 나올 수 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A simulated set of 1,000 days, each forecast with a probability of rain from 10% to 90%. For each forecast level, the bar shows how often rain actually occurred among the days given that forecast. A well-calibrated forecast lands close to the diagonal reference line: a '60% forecast' really does rain about 60% of the time."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(3)
+levels = np.arange(10, 91, 10)
+n_per_level = 150
+observed = []
+for p in levels:
+    rained = rng.random(n_per_level) < (p / 100)
+    observed.append(rained.mean() * 100)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.bar(levels, observed, width=6, color="#3a6b8c", label="actual share of rainy days")
+ax.plot(levels, levels, color="#7a1f2b", linestyle="--", linewidth=1.8, label="perfect calibration")
+ax.set_xlabel("Forecast probability of rain (%)")
+ax.set_ylabel("Actual share of days it rained (%)")
+ax.set_xticks(levels)
+ax.legend(frameon=False)
+ax.set_title("A '60% forecast' should rain about 60% of the time, not every time", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 예보의 정확성은 하루가 아니라 쌓인 기록으로 판단한다
+
+기상청의 강수확률 예보가 잘 맞는지 평가하려면, 60% 예보가 나온 모든 날을 모아 실제로 몇 % 비가 왔는지 확인해야 한다. 이것을 **보정(calibration)**이라 부른다. 위 그림처럼 막대가 대각선에 가까우면 예보가 잘 보정된 것이다. 하루치 결과만 보고 "맞았다", "틀렸다"를 말하는 것은, 동전을 한 번 던져서 "확률 50%가 틀렸다"고 말하는 것과 같은 실수다.
+
+::: {.callout-tip}
+## 확률 예보를 읽는 법
+
+1. **하루의 결과로 확률을 평가하지 마라.** 확률은 여러 번 반복했을 때의 패턴을 말하는 것이다.
+2. **"비가 온다/안 온다"와 "얼마나 온다"를 구분하라.** 강수확률은 전자만 말해준다.
+3. **낮은 확률도 0이 아니다.** 20%는 다섯 번에 한 번은 비가 온다는 뜻이다.
+4. **예보를 평가하려면 쌓인 기록의 보정 그래프를 보라.** 대각선에 가까울수록 신뢰할 수 있는 예보다.
+:::
+
+## 더 깊이: 확률의 상대빈도적 정의
+
+강의노트 [〈수리통계학 1. 확률론 — 상대 빈도(Relative Frequency)〉](../../notes/math_stat/probability.qmd#상대-빈도-relative-frequency)는 확률을 "같은 조건에서 실험을 무한히 반복했을 때 사건이 일어나는 비율의 극한"으로 정의한다. 강수확률 60%가 바로 이 정의의 실생활 적용이다. 비슷한 기상 조건을 반복된 실험으로 보고, 그 조건에서 비가 온 비율을 확률로 보고하는 것이다.
+
+## SDV 관점: 확률 예보는 한 번이 아니라 쌓인 기록으로 검증해야 가치를 가진다
+
+확률의 상대빈도적 해석은 **요약과 추론(1~2단계)**의 토대다. **SDV(통계적 데이터 가치화)** 관점에서 이는 모든 확률 기반 예측 모델에 적용된다. 수요 예측, 이탈 확률, 부도 확률 모델이 "정확하다"고 주장할 때, 그 주장은 한 번의 예측이 아니라 쌓인 예측과 실제 결과의 보정 그래프로 검증되어야 한다. 모델의 가치는 개별 예측의 적중 여부가 아니라, 장기적으로 "70%라고 말한 사건이 실제로 70% 일어났는가"를 추적하는 체계에서 나온다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 확률은 오늘 하루의 답이 아니라 패턴의 요약이다
+
+나는 학생들에게 강수확률을 "오늘의 정답"이 아니라 "비슷한 날들의 요약"으로 읽으라고 말한다. 60%의 예보가 비가 안 온 날로 끝났다고 예보가 틀린 것은 아니다. 확률적 사고는 한 번의 결과에 일희일비하지 않고, 쌓인 패턴으로 판단하는 습관에서 시작한다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 강수확률의 정의와 해석(상대빈도, "100번 중 60번")은 다음 자료들을 참고했다: [날씨예보 믿어야 할까.. — 다음 연합뉴스](https://v.daum.net/v/uWqs1dS4WD), [강수확률80%예보는 비올 확률을 의미 — 어린이강원일보](http://www.kidkangwon.co.kr/news/articleView.html?idxno=10971)
+- 일본 기상청도 같은 상대빈도 정의를 사용한다: [降水確率予報 — 일본 기상청](https://www.jma.go.jp/jma/kishou/know/kisetsu_riyou/explain/prob_precip.html)
+- 보정 그래프의 수치는 설명을 위한 시뮬레이션 자료다.
+:::

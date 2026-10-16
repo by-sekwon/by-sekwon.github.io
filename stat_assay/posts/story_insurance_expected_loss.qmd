@@ -1,0 +1,78 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험과 불확실성을 이해하는 법) 보험회사는 어떻게 사고를 예측하는가? — 기대손실"
+author: "권세혁"
+date: "2026-10-21"
+categories: [통계기초, 확률]
+description: "보험회사는 '내 사고'를 예측하지 않는다. 수많은 계약자의 사고 빈도와 건당 손해액(심도)을 곱해 기대손실을 계산할 뿐이다. 자동차보험의 손익분기 손해율은 80% 안팎이고, 최근에는 사고 건수보다 건당 손해액의 변화가 손해율을 더 크게 흔든다."
+---
+
+## 보험료는 어떻게 정해질까
+
+자동차보험에 가입하면서 "내가 사고를 낼 확률이 이렇게 높다는 건가"라고 억울해하는 사람이 있다. 그러나 보험회사가 계산하는 것은 개인의 운명이 아니라 **집단 전체의 평균적인 손실**이다. 이 평균을 **기대손실(expected loss)**이라 부르고, 두 요소의 곱으로 나눈다.
+
+$$E[\text{손실}]=\underbrace{\text{사고 빈도}}_{\text{frequency}}\times\underbrace{\text{건당 손해액}}_{\text{severity, 심도}}$$
+
+사고 빈도는 "얼마나 자주 사고가 나는가", 심도는 "사고 한 건당 평균적으로 얼마의 손해가 나는가"다. 이 둘을 곱한 기대손실이 보험료(순보험료)의 뼈대가 된다.
+
+## 손해율: 보험회사가 보는 성적표
+
+보험회사는 실제로 받은 보험료 대비 지급한 손해액의 비율, 곧 **손해율**(발생손해액 ÷ 경과보험료)을 핵심 지표로 본다. 업계는 손익분기점을 대략 80% 선으로 본다. 손해율이 80%를 넘으면 사업비를 포함해 사실상 적자로 평가된다. 최근 국내 손해보험업계 보고서에 따르면, 대인배상 사고의 평균 보험금(심도)은 2022년 21.8만 원에서 2024년 16.2만 원으로 줄어든 것으로 나타났다. 심도가 줄면 같은 사고 건수에서도 기대손실이 줄어든다.
+
+```{python}
+#| echo: false
+#| fig-cap: "How expected loss is built from two factors: accident frequency (number of claims) and severity (average payout per claim). The chart illustrates two scenarios with the same frequency but different severity, showing how a change in average claim size alone moves the expected loss."
+import matplotlib.pyplot as plt
+
+scenarios = ["2022 (severity 21.8)", "2024 (severity 16.2)"]
+frequency = [30, 30]
+severity = [21.8, 16.2]
+expected_loss = [f * s for f, s in zip(frequency, severity)]
+
+fig, ax = plt.subplots(figsize=(7, 4.4))
+bars = ax.bar(scenarios, expected_loss, color=["#7a1f2b", "#1e3a2f"], width=0.5)
+for b, v in zip(bars, expected_loss):
+    ax.annotate(f"{v:,.0f}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.set_ylabel("Expected loss per 1,000 vehicles\n(illustrative frequency 30, won in 10k)")
+ax.set_title("Lower severity alone can cut expected loss, even with the same frequency", fontsize=9.8, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 그림의 사고 빈도(1,000대당 30건)는 설명을 위한 가상의 숫자이고, 심도 두 값만 실제 통계를 반영했다. 빈도가 고정되어 있어도 심도가 줄면 기대손실이 비례해서 줄어든다는 구조를 보여준다. 실제로 최근 보고서는 사고 빈도보다 심도의 변화가 손해율에 더 크게 영향을 미쳤다고 분석한다.
+
+## 개인에게는 확률, 회사에는 평균
+
+한 개인에게 사고는 일어나거나 일어나지 않는 둘 중 하나다. 그러나 수만, 수십만 명의 계약자를 모으면 사고 건수는 평균 주변에서 꽤 안정적으로 움직인다. 이것이 앞서 다룬 "하루 전화 수" 포아송분포와 같은 원리다. 보험회사는 개인의 사고를 맞히려는 것이 아니라, 집단 전체의 기대손실을 정확히 추정해서 보험료를 그 평균에 맞게 매기는 사업이다.
+
+::: {.callout-tip}
+## 기대손실을 읽는 법
+
+1. **빈도와 심도를 나눠서 보라.** 손해율이 올랐다면 사고가 늘어난 것인지, 건당 손해액이 커진 것인지 구분해야 한다.
+2. **개인의 확률과 집단의 평균을 혼동하지 마라.** 보험료는 "내가 사고 낼 확률"이 아니라 비슷한 조건의 집단 평균을 반영한다.
+3. **손익분기 손해율을 기준으로 삼아라.** 80% 안팎이라는 기준 없이는 손해율 숫자만으로 좋고 나쁨을 판단하기 어렵다.
+4. **심도의 변화를 놓치지 마라.** 사고 건수가 줄어도 건당 손해액이 커지면 기대손실은 오히려 늘 수 있다.
+:::
+
+## 더 깊이: 기대값의 정의
+
+강의노트 [〈수리통계학 2. 확률변수 — 기대값 정의〉](../../notes/math_stat/random_variable.qmd#기대값-정의)는 확률변수의 기대값을 각 결과에 확률(또는 확률밀도)을 가중해 더한 값으로 정의한다. 손실을 "사고 발생 여부 × 사고 시 손해액"의 곱으로 보면, 기대손실은 바로 이 정의를 사고라는 확률변수에 적용한 것이다.
+
+## SDV 관점: 평균 손실만이 아니라 구조(빈도×심도)를 보여주는 보고가 가치를 만든다
+
+기대손실을 빈도와 심도로 분해하는 일은 **요약과 추론(1~2단계)**을 넘어 **SDV(통계적 데이터 가치화)**의 실전 사례다. "손실이 늘었다"는 보고 한 줄은 원인을 알려주지 않는다. 빈도가 늘었다면 예방(안전 교육, 점검)에, 심도가 늘었다면 보상 체계나 고액 사고 관리에 투자해야 한다. 데이터를 가치 있는 결정으로 바꾸는 일은, 하나의 평균 숫자를 그 숫자를 구성하는 요소들로 쪼개 보여주는 데서 시작한다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 평균 손실은 두 가지 질문의 곱이다
+
+나는 학생들에게 위험을 다루는 숫자를 보면 "얼마나 자주"와 "한 번에 얼마나"로 나눠 보라고 말한다. 보험회사가 가입자 개인의 운을 맞히는 것이 아니듯, 위험을 관리하는 모든 조직은 빈도와 심도라는 두 질문에 각각 답할 때 비로소 숫자의 의미를 제대로 쓸 수 있다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 손해율 정의와 손익분기 수준(약 80%), 대인배상 평균 보험금(심도) 2022년 21.8만 원 → 2024년 16.2만 원 추이는 보험연구원(KIRI) 리포트를 참고했다: [KIRI 리포트 포커스 — kiri.or.kr](https://www.kiri.or.kr/report/downloadFile.do?docId=638539)
+- 사고 빈도(1,000대당 30건)는 설명을 위한 가상의 숫자다.
+:::

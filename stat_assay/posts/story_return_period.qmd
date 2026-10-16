@@ -1,0 +1,100 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험과 불확실성을 이해하는 법) 100년 빈도 홍수는 100년에 한 번만 오는가? — 재현빈도의 오해"
+author: "권세혁"
+date: "2026-10-20"
+categories: [통계기초, 확률]
+description: "'100년 만의 폭우'가 몇 년 만에 또 온다. 재현기간 100년은 100년을 기다려야 한다는 뜻이 아니라, 해마다 발생 확률이 1%라는 뜻이다. 매년 같은 확률로 주사위를 던지면, 100년 안에 한 번이라도 올 확률은 63%나 된다."
+---
+
+## "100년 만의 폭우"가 왜 이렇게 자주 올까
+
+뉴스에서 "100년 빈도 폭우"라는 말을 몇 년 간격으로 반복해서 듣는다면, 통계가 틀렸다고 느낄 수 있다. 그러나 **재현기간(recurrence interval) 100년**이라는 말은 "100년에 정확히 한 번 온다"는 뜻이 아니다. 올바른 뜻은 **해마다 그 정도 규모의 사건이 발생할 확률이 1%**라는 것이다. 매년 똑같이 1%의 확률을 가진 주사위를 던지는 셈이므로, 작년에 왔다고 올해 확률이 낮아지지 않는다. 동전에 "기억"이 없는 것과 같은 이치다.
+
+## 100년을 기다리면 반드시 한 번은 올까
+
+그렇다면 100년을 기다리면 이 사건이 반드시 한 번은 일어날까? 매년 독립적으로 1%의 확률을 가진다고 하면, 100년 안에 한 번도 일어나지 않을 확률은 $(1-0.01)^{100}\approx36.6\%$다. 따라서 **적어도 한 번 일어날 확률은 약 63.4%**이고, 100년을 기다려도 세 번 중 한 번 넘게는 한 번도 겪지 않을 수 있다. 반대로 10년만 지나도 이미 9.6%의 확률로 그 사건을 겪는다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Probability that a '100-year' event (1% chance each year, independent across years) occurs at least once within a given span of years. Even over 100 years, there is only a 63.4% chance of seeing it at least once - and a 9.6% chance already within just 10 years."
+import numpy as np
+import matplotlib.pyplot as plt
+
+years = np.arange(0, 201)
+p = 1 - (1 - 0.01) ** years
+
+fig, ax = plt.subplots(figsize=(7.5, 4.5))
+ax.plot(years, p * 100, color="#1e3a2f", linewidth=2.2)
+for y in (10, 30, 50, 100):
+    v = (1 - 0.99 ** y) * 100
+    ax.scatter([y], [v], color="#a8790a", zorder=5, s=45)
+    ax.annotate(f"{y}y: {v:.1f}%", xy=(y, v), xytext=(y + 6, v - 6), fontsize=9, color="#a8790a")
+ax.set_xlabel("Number of years")
+ax.set_ylabel("P(the event happens at least once), %")
+ax.set_title("A '100-year event' is not a 100-year guarantee", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 평균 100년, 그런데 절반은 69년 안에 온다
+
+재현기간 100년은 "평균적으로 100년에 한 번"이라는 뜻이다. 그런데 이 평균은 분포의 꼬리에 끌려 올라간 값이다. 매년 독립적으로 1%의 확률을 갖는 사건의 대기 시간은 **기하분포**를 따르고, 그 **평균은 정확히 100년**이지만 **중앙값은 약 69년**이다. 절반의 경우, 100년을 다 기다리기 전에 이미 사건이 일어난다는 뜻이다. 평균과 중앙값이 벌어지는 것은 이번 달에 본 소득 분포의 치우침과 같은 이유다 — 드물게 아주 오래 기다리는 경우가 평균을 끌어올린다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Simulated waiting times until a '100-year event' first occurs (geometric distribution, 1% chance per year). The mean waiting time is 100 years, but the median - the typical experience - is only about 69 years, because a long right tail of rare, very long waits pulls the mean upward."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(9)
+waits = rng.geometric(0.01, 200000)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.5))
+ax.hist(waits[waits < 500], bins=80, color="#3a6b8c", density=True)
+ax.axvline(waits.mean(), color="#a8790a", linewidth=1.8, label=f"mean = {waits.mean():.0f} years")
+ax.axvline(np.median(waits), color="#7a1f2b", linestyle="--", linewidth=1.6, label=f"median = {np.median(waits):.0f} years")
+ax.set_xlabel("Years until the first occurrence")
+ax.set_ylabel("Density")
+ax.set_yticks([])
+ax.legend(frameon=False)
+ax.set_title("Mean waiting time (100y) is longer than the typical wait (69y)", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 설계 기준으로서의 재현빈도
+
+국가하천의 제방은 보통 100~200년 빈도, 지방하천과 소하천은 50~200년 빈도로 설계된다. 이는 "그 규모의 홍수를 막을 수 있도록" 만들었다는 뜻이지, 그 홍수가 100년에 한 번만 온다고 보장한다는 뜻이 아니다. 최근에는 기후변화로 과거 기준의 "극단적인" 사건이 더 자주 관측된다는 연구도 나온다. 해수면 상승 연구 중에는 과거 100년에 한 번꼴이던 극단적 현상이 최근에는 평균 8년에 한 번꼴로 나타난다고 보고한 사례도 있다. 이런 변화가 사실이라면, 과거 자료로 추정한 "100년 빈도"라는 숫자 자체를 주기적으로 다시 계산해야 한다는 뜻이 된다.
+
+::: {.callout-tip}
+## 재현빈도를 읽을 때 확인할 것
+
+1. **"100년에 한 번"을 "매년 1%"로 바꿔 읽어라.** 그래야 독립성과 무기억성이 분명해진다.
+2. **평균 대기시간과 중앙값 대기시간을 구분하라.** 평균이 중앙값보다 길다는 것은 분포가 치우쳐 있다는 뜻이다.
+3. **설계 기준과 발생 보장을 혼동하지 마라.** 설계빈도는 목표치이지 약속이 아니다.
+4. **과거 통계가 현재에도 유효한지 의심하라.** 기후나 환경이 바뀌면 "100년 빈도"의 실제 확률도 바뀐다.
+:::
+
+## 더 깊이: 기하분포와 대기 시간
+
+강의노트 [〈수리통계학 5. 유명분포 — 기하분포〉](../../notes/math_stat/famous_distribution.qmd#기하분포-x-sim-geop)는 매 시행마다 확률 $p$로 성공하는 독립적인 시행에서, 첫 성공까지 걸리는 시행 횟수를 기하분포로 정의한다. 평균은 $1/p$, 즉 $p=0.01$이면 100이다. 오늘 살펴본 "100년 빈도" 홍수의 평균 대기시간이 바로 이 공식의 결과이며, 지난주 "적어도 하나"의 확률 계산과 같은 뿌리에서 나온 질문이다.
+
+## SDV 관점: 평균 재현기간 대신 전체 확률 곡선을 제시하라
+
+재현기간을 정확히 해석하는 일은 **요약과 추론(1~2단계)**이며, **SDV(통계적 데이터 가치화)** 관점에서는 재난 대비와 설비 투자의 우선순위를 정하는 문제다. "100년에 한 번"이라는 말만 전달하면 의사결정자는 당장의 위험을 과소평가하기 쉽다. 데이터에 가치를 더하는 보고는 평균 재현기간 한 숫자 대신, 앞으로 10년·30년·50년 안에 발생할 누적 확률 곡선을 함께 제시한다. 그래야 투자 결정이 "먼 미래의 일"이 아니라 "내 임기 안에 벌어질 수 있는 일"로 제대로 평가된다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: "100년 빈도"는 약속이 아니라 확률이다
+
+나는 학생들에게 "100년 만의 사건"이라는 말을 들으면 "그래서 올해 확률은 몇 %인가"로 바꿔 생각하라고 말한다. 매년 1%의 확률로 반복되는 제비뽑기라면, 100년 안에 세 번 중 두 번 가까이는 그 사건을 만난다. 재현빈도는 안심시키는 숫자가 아니라, 매년 다시 던져지는 확률이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 재현기간의 정의와 100년 누적 확률(약 63%)은 다음을 참고했다: [What is a 100-year Flood? — American Rivers](https://www.americanrivers.org/2025/12/what-is-a-100-year-flood/), [홍수 — 위키백과](https://ko.wikipedia.org/wiki/%ED%99%8D%EC%88%98)
+- 국내 하천 설계빈도(국가하천 100~200년 등)와 기후변화로 인한 극단현상 빈도 증가 사례는 다음을 참고했다: [일상화된 '100년 빈도' 강우…홍수방어 목표는 현실과 괴리 — 뉴스핌](https://www.newspim.com/news/view/20230724000431)
+:::
