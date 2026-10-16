@@ -9,13 +9,13 @@ categories: [통계기초, 확률]
 description: "평균 손실이 작다고 안심할 수 없는 위험이 있다. 확률은 낮지만 한 번 일어나면 피해가 막대한 사건은, 평균만 보면 숨어 있다가 분산과 꼬리의 두께를 보면 드러난다. 보험과 재난 관리에서는 평균 대신 '최악의 시나리오'를 따로 계산하는 이유가 여기에 있다."
 ---
 
-## 평균은 안전한데, 왜 불안할까
+## 평소엔 괜찮다가, 한 번에 2조 원이 무너진 날
 
-어떤 공장의 연간 기대손실이 1억 원이라고 하자. 같은 1억 원이라도 전혀 다른 두 가지 상황이 있을 수 있다. 하나는 매년 1억 원 안팎의 손실이 꾸준히 나는 경우다. 다른 하나는 거의 모든 해에 손실이 거의 없다가, 1,000년에 한 번 1,000억 원의 재해가 발생해 평균을 1억 원으로 만드는 경우다. 두 상황의 평균은 같지만, 위험의 실체는 전혀 다르다. 후자처럼 **확률은 낮지만 피해가 막대한 사건**을 저확률·고피해 리스크, 또는 **꼬리 위험(tail risk)**이라 부른다.
+2022년 9월, 태풍 힌남노가 포항을 덮쳤다. 포항제철소는 공장이 침수되며 생산·판매 손실만 2조 400억 원에 이르는 것으로 산업통상자원부 민관 조사단이 추산했다. 복구비용과 재고 손실까지 더하면 피해 규모는 1조 원을 훌쩍 넘었다. 그런데 포스코가 평소 겪는 자연재해 손실은 이 정도 규모와는 비교가 안 될 만큼 작다. 대부분의 해는 태풍으로 인한 손실이 미미하거나 없지만, 수십 년에 한 번 있을까 말까 한 이런 사건이 터지면 피해가 단번에 조 단위로 뛴다. 이것이 **확률은 낮지만 피해가 막대한 사건**, 곧 저확률·고피해 리스크 또는 **꼬리 위험(tail risk)**이다.
 
 ## 평균만으로는 보이지 않는 위험
 
-아래 그림은 같은 평균 손실(1억 원)을 가진 두 가지 손실 분포를 비교한다. 왼쪽은 손실이 평균 주변에 고르게 퍼져 있는 경우이고, 오른쪽은 대부분 손실이 거의 없다가 아주 드물게 막대한 손실이 발생하는 경우다.
+포스코의 사례를 일반화한 가상의 모델로 살펴보자. 아래 그림은 같은 평균 손실(100, 설명을 위한 상대값)을 가진 두 가지 손실 분포를 비교한다. 왼쪽은 손실이 평균 주변에 고르게 퍼져 있는 경우이고, 오른쪽은 포스코의 힌남노 경험처럼 대부분 손실이 거의 없다가 아주 드물게 막대한 손실이 발생하는 경우다.
 
 ```{python}
 #| echo: false
@@ -48,42 +48,36 @@ plt.show()
 
 오른쪽 그림은 손실이 400을 넘는 드문 해(최대 15만)를 잘라서 보여준다. 거의 모든 해는 손실이 20 이하로 거의 없지만, 0.1%의 확률로 5만에서 15만에 이르는 재해가 발생한다. 두 분포 모두 평균은 100으로 같다. 평균만 보고 위험을 판단하면, 오른쪽 같은 구조의 위험은 "평소에는 괜찮다가 갑자기 조직을 무너뜨리는" 위험으로 남는다.
 
-## 평균 대신 분포의 꼬리를 본다
+## 평균 대신 "최악의 해"를 따로 계산한다
 
-이런 위험을 다루는 사람들은 평균 손실 외에 **최악의 시나리오**를 따로 계산한다. 예를 들어 "100번 중 가장 나쁜 1번"에 해당하는 손실 규모(백분위수)를 함께 본다. 평균은 비슷해도 꼬리의 두께, 곧 **첨도(kurtosis)**가 다른 두 분포는 전혀 다른 대비가 필요하다.
+이런 위험을 다루는 사람들은 평균 손실 외에 **최악의 시나리오**를 따로 계산한다. 포스코의 경우를 보자. 2022년 8월 수도권 집중호우로 손해보험업계 전체가 처리한 차량 침수 피해는 384억 원이었다. 이것이 "평범한 해"의 자연재해 손실 규모에 가깝다. 그런데 바로 다음 달, 힌남노 한 번으로 포스코 한 회사의 생산 손실만 2조 400억 원에 달했다. 평범한 해와 최악의 해의 차이가 50배를 훌쩍 넘는다.
 
 ```{python}
 #| echo: false
-#| fig-cap: "The same two scenarios compared by a different question: what is the loss level exceeded only 1 time in 2,000 (the 99.95th percentile)? The evenly spread scenario's worst case stays close to its mean, but the tail-risk scenario's worst case is orders of magnitude larger, even though both have the same average loss."
-import numpy as np
+#| fig-cap: "A real comparison on a log scale: the industry-wide vehicle flood damage from an ordinary heavy-rain event (August 2022, 38.4 billion won) versus POSCO's production loss from a single catastrophic typhoon the following month (Hinnamnor, September 2022, about 2.04 trillion won). The rare event dwarfs the ordinary one by more than 50 times."
 import matplotlib.pyplot as plt
 
-p_even = np.percentile(even, 99.95)
-p_rare = np.percentile(rare, 99.95)
+labels = ["Ordinary heavy rain\n(Aug 2022, industry-wide)", "Typhoon Hinnamnor\n(Sep 2022, POSCO alone)"]
+vals = [384, 20400]
 
-labels = ["Evenly spread\n(mean 100)", "Rare catastrophic\n(mean 100)"]
-means = [even.mean(), rare.mean()]
-worst = [p_even, p_rare]
-
-x = np.arange(2)
-w = 0.36
-fig, ax = plt.subplots(figsize=(7, 4.5))
-ax.bar(x - w / 2, means, w, color="#8a9a90", label="mean loss")
-ax.bar(x + w / 2, worst, w, color="#7a1f2b", label="worst 1-in-2,000 case")
+fig, ax = plt.subplots(figsize=(7, 4.6))
+bars = ax.bar(labels, vals, color=["#3a6b8c", "#7a1f2b"], width=0.5)
 ax.set_yscale("log")
-ax.set_xticks(x)
-ax.set_xticklabels(labels)
-ax.set_ylabel("Loss (log scale, illustrative units)")
-ax.legend(frameon=False)
-ax.set_title("Same average, very different worst case", fontsize=10.5, color="#1e3a2f")
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v:,} (100M won)", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=9.5)
+ax.set_ylabel("Loss (100 million won, log scale)")
+ax.set_title("An ordinary year versus the worst year", fontsize=10.5, color="#1e3a2f")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.show()
 ```
 
+평균은 비슷해도 꼬리의 두께, 곧 **첨도(kurtosis)**가 다른 두 분포는 전혀 다른 대비가 필요하다.
+
 ## 보험과 재난 관리가 평균에만 기대지 않는 이유
 
-원전 사고나 대규모 금융 위기처럼, 확률은 극히 낮지만 한 번 일어나면 돌이킬 수 없는 피해를 남기는 사건들이 있다. 이런 위험은 평균 기대손실만으로 대비 수준을 정하면 항상 과소평가된다. 그래서 보험회사는 재보험으로 극단적 손실을 분산시키고, 재난 관리 기관은 평균 피해가 아니라 "일어날 수 있는 최악의 시나리오"를 기준으로 대응 계획을 세운다.
+원전 사고나 대규모 금융 위기처럼, 확률은 극히 낮지만 한 번 일어나면 돌이킬 수 없는 피해를 남기는 사건들이 있다. 포스코도 힌남노 이후 보험금으로 2022년 2,340억 원에 이어 2023년 말 1,599억 원을 추가로 받아 총 3,939억 원을 보상받았지만, 2조 원대 손실에는 턱없이 못 미쳤다. 이런 위험은 평균 기대손실만으로 대비 수준을 정하면 항상 과소평가된다. 그래서 기업은 재보험으로 극단적 손실을 분산시키고, 재난 관리 기관은 평균 피해가 아니라 "일어날 수 있는 최악의 시나리오"를 기준으로 대응 계획을 세운다.
 
 ::: {.callout-tip}
 ## 저확률·고피해 위험을 다룰 때
@@ -104,10 +98,12 @@ plt.show()
 
 ## 결론: 평균 뒤에 숨은 꼬리를 보라
 
-나는 학생들에게 위험을 평가할 때 평균 하나만 보고 판단하지 말라고 말한다. 같은 평균 손실이라도 고르게 퍼진 위험과 드물게 몰아치는 위험은 전혀 다른 대비가 필요하다. 저확률·고피해 사건을 다루는 지혜는, 평균이 보여주지 않는 꼬리를 따로 계산해 보는 습관에서 나온다.
+나는 학생들에게 위험을 평가할 때 평균 하나만 보고 판단하지 말라고 말한다. 같은 평균 손실이라도 고르게 퍼진 위험과 드물게 몰아치는 위험은 전혀 다른 대비가 필요하다. 포항의 한 제철소가 태풍 한 번에 2조 원을 잃었듯, 저확률·고피해 사건을 다루는 지혜는 평균이 보여주지 않는 꼬리를 따로 계산해 보는 습관에서 나온다.
 
 ::: {.callout-note collapse="true"}
 ## 참고 자료
 
-- 두 손실 분포의 수치는 설명을 위한 가상의 시뮬레이션 자료다.
+- 포스코 힌남노 피해 추산(생산·판매 손실 2조 400억 원, 복구비용 3,800억 원 등)과 보험금 수령액(2022년 2,340억 원 + 2023년 말 1,599억 원 = 3,939억 원)은 다음 기사를 참고했다: [포스코 포항제철소 '힌남노 침수 피해 보험금' 4천억원 수령 — 영남경제](https://www.ynenews.kr/news/articleView.html?idxno=62228), [포스코 '힌남노' 피해 규모 2조여원 — 경향신문](https://www.khan.co.kr/article/202211141134001)
+- 2022년 8월 집중호우 차량 침수 피해(384억 원)는 손해보험협회 집계를 인용한 [폭우로 쑥대밭 된 강남 — 헤럴드경제](https://biz.heraldcorp.com/article/2931110) 기사를 참고했다.
+- 분포 그림(왼쪽·오른쪽 히스토그램)의 구체적인 수치는 포스코 사례를 일반화하기 위한 가상의 시뮬레이션 자료다.
 :::

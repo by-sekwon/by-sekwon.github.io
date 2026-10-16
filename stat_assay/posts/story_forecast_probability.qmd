@@ -44,6 +44,32 @@ plt.tight_layout()
 plt.show()
 ```
 
+## "정확도 90%"와 "적중률 37%"가 동시에 발표되는 이유
+
+한국 기상청을 둘러싼 논란 중 하나가 바로 이 지점이다. 기상청이 발표하는 **강수유무 정확도(ACC)**는 매년 90% 안팎으로 높게 나온다. 그런데 같은 해의 **임계성공지수(CSI, 적중률)**는 30~40%대에 머문다. 두 숫자가 이렇게 벌어지는 이유는 정확도(ACC)가 "비가 안 온 날 맞힌 것"까지 모두 포함하기 때문이다. 비가 드문 지역에서 매일 "내일은 비 안 옴"이라고 예보해도 정확도는 70% 가까이 나온다. 반면 CSI는 "비가 온다고 예보했는데 실제로 왔는가"만 깐깐하게 따지는 지표라서 훨씬 낮게 나온다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Three different accuracy metrics for Korea's national weather service rain forecasts (based on recent official figures): overall accuracy (ACC, 90.5%) counts every correct 'no rain' day too, while the hit rate for days it forecast rain (66%) and the critical success index (CSI, 43%) - which only credits a forecast when rain was both predicted and observed - are much lower. Reporting only ACC makes forecasts look far more reliable than CSI suggests."
+import matplotlib.pyplot as plt
+
+metrics = ["Overall accuracy\n(ACC)", "Hit rate when\nrain forecast", "Critical success\nindex (CSI)"]
+vals = [90.5, 66, 43]
+fig, ax = plt.subplots(figsize=(7, 4.4))
+bars = ax.bar(metrics, vals, color=["#8a9a90", "#3a6b8c", "#7a1f2b"], width=0.5)
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.set_ylabel("Reported value (%)")
+ax.set_ylim(0, 105)
+ax.set_title("Same forecast system, three very different 'accuracy' numbers", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 세 숫자는 거짓말을 하는 것이 아니다. 저마다 다른 질문에 답할 뿐이다. "오늘 예보가 전반적으로 믿을 만한가"를 묻는다면 ACC가, "비 온다는 예보를 믿고 우산을 챙겨야 하나"를 묻는다면 CSI나 맞힘률이 더 적절한 답을 준다. 어떤 지표를 고르느냐에 따라 "기상청은 꽤 정확하다"와 "기상청은 자주 틀린다"는 상반된 인상이 동시에 성립할 수 있다.
+
 ## 예보의 정확성은 하루가 아니라 쌓인 기록으로 판단한다
 
 기상청의 강수확률 예보가 잘 맞는지 평가하려면, 60% 예보가 나온 모든 날을 모아 실제로 몇 % 비가 왔는지 확인해야 한다. 이것을 **보정(calibration)**이라 부른다. 위 그림처럼 막대가 대각선에 가까우면 예보가 잘 보정된 것이다. 하루치 결과만 보고 "맞았다", "틀렸다"를 말하는 것은, 동전을 한 번 던져서 "확률 50%가 틀렸다"고 말하는 것과 같은 실수다.
@@ -74,5 +100,6 @@ plt.show()
 
 - 강수확률의 정의와 해석(상대빈도, "100번 중 60번")은 다음 자료들을 참고했다: [날씨예보 믿어야 할까.. — 다음 연합뉴스](https://v.daum.net/v/uWqs1dS4WD), [강수확률80%예보는 비올 확률을 의미 — 어린이강원일보](http://www.kidkangwon.co.kr/news/articleView.html?idxno=10971)
 - 일본 기상청도 같은 상대빈도 정의를 사용한다: [降水確率予報 — 일본 기상청](https://www.jma.go.jp/jma/kishou/know/kisetsu_riyou/explain/prob_precip.html)
+- 강수유무 정확도(ACC) 90.5%, 강수 맞힘률 66%, 임계성공지수(CSI) 지난해 기준 43%(올해 1분기는 37%로 더 낮음)는 다음 보도를 참고했다: ['기상청 아닌 중계청'...강수 정확도 90%라는데 — 머니투데이](https://www.mt.co.kr/society/2026/07/15/2026071509034725137), [비 예보 10번 중 3번꼴 적중 — 남도일보](https://www.namdonews.com/news/articleView.html?idxno=925608), ['정확도 92% vs 적중률 46%' — SBS](https://news.sbs.co.kr/news/endPage.do?news_id=N1004359476). 지표마다 집계 기간(연간/분기/계절)이 달라 기사별로 수치가 다르게 보도되므로, 이 글에서는 "지난해" 기준 수치로 통일해 인용했다.
 - 보정 그래프의 수치는 설명을 위한 시뮬레이션 자료다.
 :::
