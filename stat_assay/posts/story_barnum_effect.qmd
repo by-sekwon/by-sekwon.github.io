@@ -1,0 +1,89 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률의 뒷이야기) 그럴듯하게 느껴지는 이유 — 혈액형 성격론과 바넘 효과"
+author: "권세혁"
+date: "2026-10-29"
+categories: [통계기초, 확률]
+description: "한국갤럽 조사에서 한국인의 57%가 혈액형 성격설을 믿는다고 답했다. 그런데 1948년 심리학자 버트럼 포러는 모든 학생에게 똑같은 '성격 묘사'를 나눠주고도 평균 4.26점(5점 만점)의 '정확하다'는 평가를 받아냈다. 누구에게나 맞는 것처럼 느껴지는 설명을 '바넘 효과'라 부른다."
+---
+
+## 한국인 10명 중 6명이 믿는다는 성격설
+
+2023년 한국갤럽이 전국 성인 1,501명을 조사한 결과, "혈액형 성격설을 믿는다"고 답한 사람이 **57%**였다. 2002년과 2012년에는 이 비율이 67%까지 올라갔다가 2017년 58%로 떨어진 뒤 비슷한 수준을 유지하고 있다. 믿는 사람의 상당수는 연애나 결혼 상대를 고를 때 혈액형을 고려하는 것이 좋다고까지 답했다(전체 응답자 기준 20%). 그런데 혈액형과 성격 사이에 과학적으로 입증된 연관성은 없다는 것이 학계의 정설이다. 그렇다면 왜 이렇게 많은 사람이 "맞는 것 같다"고 느낄까?
+
+```{python}
+#| echo: false
+#| fig-cap: "Share of Koreans who say they believe blood-type personality theory, across four Gallup Korea surveys (2002, 2012, 2017, 2023). Belief has declined somewhat since the early 2000s but still sits above 50%."
+import matplotlib.pyplot as plt
+
+years = ["2002", "2012", "2017", "2023"]
+belief = [67, 67, 58, 57]
+
+fig, ax = plt.subplots(figsize=(7, 4.4))
+ax.plot(years, belief, marker="o", color="#7a1f2b", linewidth=2.2, markersize=7)
+for x, y in zip(years, belief):
+    ax.annotate(f"{y}%", xy=(x, y), xytext=(0, 8), textcoords="offset points", ha="center", fontsize=10)
+ax.set_ylabel("Belief in blood-type personality theory (%)")
+ax.set_ylim(0, 85)
+ax.set_title("Majority belief has persisted in Korea for two decades", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 모두에게 같은 문장을 나눠줬는데, "정확하다"고 답했다
+
+1948년 미국 심리학자 버트럼 포러는 학생들에게 성격 검사를 받게 한 뒤, "각자에게 맞춤 분석한 결과"라며 성격 묘사를 나눠줬다. 그러고는 이 묘사가 자신에게 얼마나 정확한지 0점에서 5점으로 평가해 달라고 했다. 평균 점수는 **4.26점**, 거의 "매우 정확하다"에 가까웠다. 그런데 사실 모든 학생이 받은 묘사는 완전히 똑같은 문장이었다 — 별자리 운세에서 흔히 쓰이는 모호하고 보편적인 표현들을 짜깁기한 것이었다. "당신은 때로는 외향적이지만 때로는 내향적이다", "당신에게는 아직 발휘하지 못한 잠재력이 있다" 같은 문장은 누구에게 줘도 "맞는 것 같다"고 느껴진다. 이 현상을 포러의 이름을 따 **포러 효과**, 또는 서커스 흥행사 피니어스 바넘의 "모두를 위한 무언가가 있다"는 문구를 따 **바넘 효과(Barnum effect)**라 부른다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Forer's 1948 classroom demonstration: every student received the identical, vague personality description, yet the average self-rated accuracy was 4.26 out of 5 - nearly as high as a genuinely personalized result would score."
+import matplotlib.pyplot as plt
+
+labels = ["If everyone got\nthe SAME vague text"]
+vals = [4.26]
+fig, ax = plt.subplots(figsize=(5.5, 4.4))
+bar = ax.bar(labels, vals, color="#a8790a", width=0.4)
+ax.annotate("4.26 / 5", xy=(0, 4.26), xytext=(0, 5), textcoords="offset points", ha="center", fontsize=12)
+ax.axhline(5, color="#8a9a90", linestyle="--", linewidth=1, alpha=0.6)
+ax.set_ylim(0, 5.5)
+ax.set_ylabel("Average self-rated accuracy (out of 5)")
+ax.set_title("Forer's 1948 experiment", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 모두에게 "양성"이 나오는 검사는 검사가 아니다
+
+이 현상을 통계학의 언어로 바꿔 보면 더 분명해진다. 어떤 성격 묘사가 누구에게 줘도 "맞다"는 평가를 받는다면, 그 묘사는 **민감도는 100%이지만 특이도는 0%인 검사**와 같다. 참인 사람에게도 "맞다"고 하고, 거짓인 사람에게도 "맞다"고 하면, 그 검사는 아무것도 구별해내지 못한다. 혈액형 성격론이 계속 "맞는 것 같다"고 느껴지는 이유도 비슷하다. "A형은 꼼꼼하다"는 말을 들으면, 사람들은 자신이 꼼꼼했던 순간은 기억하고 덤벙댔던 순간은 지나친다. 이렇게 맞아떨어지는 사례만 골라 기억하는 **확증편향**이 바넘 효과와 겹쳐지면, 근거 없는 이론도 "통계적으로 검증된 것처럼" 느껴지게 된다.
+
+::: {.callout-tip}
+## 바넘 효과를 알아채는 법
+
+1. **그 설명이 나에게만 특별히 맞는지, 누구에게 줘도 맞을지 생각해 보라.** 반대 성향을 가진 사람에게 보여줘도 "맞다"고 할 것 같다면 바넘 문장이다.
+2. **"때로는 ~하지만 때로는 ~하다"는 식의 양쪽 다 가능한 표현을 의심하라.** 반증이 불가능한 설명은 애초에 검증된 적이 없는 설명이다.
+3. **맞아떨어진 사례만 기억하고 있지는 않은지 점검하라.** 틀렸던 순간을 일부러 세어보면 균형이 잡힌다.
+4. **"많은 사람이 믿는다"는 사실과 "과학적으로 입증됐다"는 사실을 구분하라.** 57%가 믿는다는 것은 유행이지 증거가 아니다.
+:::
+
+## 더 깊이: 아무것도 구별 못 하는 검사의 통계적 의미
+
+강의노트 [〈수리통계학 1. 확률론 — 특이도와 민감도〉](../../notes/math_stat/probability.qmd#특이도와-민감도)는 검사의 민감도(참을 참이라 판정하는 비율)와 특이도(거짓을 거짓이라 판정하는 비율)를 정의한다. 민감도가 100%라도 특이도가 0%인 검사는, 모든 대상에게 똑같이 "양성"을 내놓을 뿐 아무 정보도 주지 않는다. 바넘 문장이 바로 이런 "검사"다 — 누구에게나 똑같이 "맞다"고 답하도록 설계되어 있어, 실제로는 아무것도 구별해내지 못한다.
+
+## SDV 관점: "모두에게 맞는 설명"은 가치가 없는 설명이다
+
+바넘 효과를 알아보는 일은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 데이터 기반 설명의 진짜 가치를 가려내는 기준이 된다. 고객 세분화 보고서나 성과 분석이 "이 그룹은 다양한 특성을 보이며, 때로는 적극적이고 때로는 신중하다"처럼 누구에게나 들어맞는 문장으로 채워져 있다면, 그 분석은 그럴듯하게 느껴질 뿐 실제 의사결정에는 아무 도움이 되지 않는다. 데이터를 가치 있는 결정으로 바꾸려면, 그 설명이 특정 조건에서는 틀릴 수 있다는 것, 곧 반증 가능한 구체적 주장을 담고 있는지부터 확인해야 한다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 맞는 것처럼 느껴지는 것과 맞는 것은 다르다
+
+나는 학생들에게 "이거 완전 내 얘기인데?"라는 느낌이 들 때일수록 더 의심하라고 말한다. 포러의 실험이 보여주듯, 그 느낌은 그 설명이 정확해서가 아니라 애초에 누구에게나 맞도록 설계됐기 때문일 수 있다. 통계적으로 검증되지 않은 믿음이 오래 살아남는 이유는, 그 믿음이 맞아서가 아니라 반박하기 어렵게 만들어졌기 때문이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 한국인의 혈액형 성격설 신뢰 비율(2002/2012년 67%, 2017년 58%, 2023년 57%)과 연애·결혼 고려 비율은 한국갤럽 조사를 참고했다: ['혈액형 성격설' 믿는 한국인 57%…최애 혈액형은 'O형' — 데이터솜](https://www.datasom.co.kr/news/articleView.html?idxno=128185)
+- 버트럼 포러의 1948년 실험(평균 정확도 평가 4.26/5)은 심리학 교재와 문헌에 널리 인용되는 고전적 수치다.
+:::

@@ -1,0 +1,123 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률의 뒷이야기) 우연과 확증편향 사이 — 징크스는 통계적으로 존재할까"
+author: "권세혁"
+date: "2026-10-30"
+categories: [통계기초, 확률]
+description: "수능 전날 미역국을 먹으면 미끄러진다는 말은 한국에서 가장 널리 퍼진 징크스 중 하나다. 그런데 작은 표본에서는 아무 관계가 없는 두 사건도 우연히 '맞아떨어지는' 경우가 흔하다. 징크스가 끈질기게 살아남는 이유를 이항분포로 들여다본다."
+---
+
+## 수능 전날 미역국을 먹으면 정말 미끄러질까
+
+"수능 전날에는 미역국을 먹지 않는다." 미역이 미끈거려서 시험에 "미끄러진다"는 이 징크스는 한국에서 모르는 사람이 거의 없을 정도로 널리 퍼져 있다. 물론 미역국의 성분이 뇌 기능이나 시험 결과에 영향을 줄 과학적 근거는 없다. 그런데도 이런 징크스는 몇 세대를 거쳐 사라지지 않고 이어진다. 왜 근거 없는 믿음이 이렇게 끈질기게 살아남을까? 답의 절반은 심리학(확증편향)에, 나머지 절반은 통계학(작은 표본에서의 우연)에 있다.
+
+## 아무 관계가 없어도, 작은 표본에서는 "맞아떨어진다"
+
+미역국을 먹었는지와 시험 결과 사이에 실제로는 아무 관계가 없다고 가정해 보자. 무작위로 20명을 뽑아, 각자 "미역국을 먹었는가"와 "시험을 못 봤는가"를 동전 던지듯 독립적으로 결정한다고 하자. 이 완전히 무관한 두 사건 사이에서도, 우연히 "미역국 먹은 사람 중에 시험 못 본 비율이 더 높게" 나오는 경우가 얼마나 자주 생길까?
+
+```{python}
+#| echo: false
+#| fig-cap: "10,000 simulated groups of 20 people, where eating seaweed soup and failing the exam are generated completely independently (50% each, no real connection). The horizontal axis shows the gap in 'failure rate' between soup-eaters and non-eaters that shows up purely by chance. A gap of 20 percentage points or more - enough to feel like 'proof' of the jinx - appears in a large share of small-sample groups."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(2026)
+trials = 10000
+n = 20
+gaps = np.empty(trials)
+for i in range(trials):
+    ate_soup = rng.integers(0, 2, n).astype(bool)
+    failed = rng.integers(0, 2, n).astype(bool)
+    rate_soup = failed[ate_soup].mean() if ate_soup.sum() > 0 else 0.5
+    rate_no_soup = failed[~ate_soup].mean() if (~ate_soup).sum() > 0 else 0.5
+    gaps[i] = (rate_soup - rate_no_soup) * 100
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.hist(gaps, bins=50, color="#3a6b8c", density=True)
+ax.axvline(20, color="#7a1f2b", linestyle="--", linewidth=1.6)
+share = (gaps >= 20).mean() * 100
+ax.annotate(f"gap >= 20pt: {share:.1f}% of groups", xy=(20, ax.get_ylim()[1] * 0.7), xytext=(25, ax.get_ylim()[1] * 0.75),
+            fontsize=9.5, color="#7a1f2b")
+ax.set_xlabel("Apparent 'failure rate gap' from pure chance (percentage points)")
+ax.set_ylabel("Density")
+ax.set_yticks([])
+ax.set_title("Pure coincidence often looks like a pattern in small groups", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right", "left"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+시뮬레이션 결과, 두 사건이 완전히 무관해도 20명짜리 집단에서는 꽤 자주 20%포인트 넘는 "차이"가 우연히 나타난다. 누군가 이 우연한 집단 하나를 보고 "거봐, 미역국 먹은 애들이 더 많이 떨어졌잖아"라고 말하면, 듣는 사람은 그럴듯하다고 느낀다.
+
+## 표본이 커지면 우연한 "패턴"은 사라진다
+
+이 우연한 차이는 표본이 커질수록 빠르게 사라진다. 앞서 큰 수의 법칙에서 본 것과 같은 원리다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The same simulation repeated at different group sizes. As the sample grows from 20 to 2,000, the share of groups showing a 'suspicious' 20-point gap purely by chance collapses toward zero - exactly as the law of large numbers predicts."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng2 = np.random.default_rng(7)
+sizes = [20, 50, 100, 500, 2000]
+shares = []
+for n in sizes:
+    trials = 3000
+    gaps = np.empty(trials)
+    for i in range(trials):
+        ate_soup = rng2.integers(0, 2, n).astype(bool)
+        failed = rng2.integers(0, 2, n).astype(bool)
+        rate_soup = failed[ate_soup].mean() if ate_soup.sum() > 0 else 0.5
+        rate_no_soup = failed[~ate_soup].mean() if (~ate_soup).sum() > 0 else 0.5
+        gaps[i] = (rate_soup - rate_no_soup) * 100
+    shares.append((gaps >= 20).mean() * 100)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+bars = ax.bar([str(s) for s in sizes], shares, color="#1e3a2f", width=0.55)
+for b, v in zip(bars, shares):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 3), textcoords="offset points",
+                ha="center", fontsize=9.5)
+ax.set_xlabel("Group size")
+ax.set_ylabel("Share showing a 20pt+ gap by pure chance (%)")
+ax.set_title("Bigger samples make coincidental 'jinxes' disappear", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+징크스는 보통 "내 친구가 미역국 먹고 떨어졌어" 같은 한두 건의 작은 표본(심지어 표본 크기 1)에서 시작된다. 만약 전국의 모든 수험생을 조사한다면, 미역국과 시험 결과 사이의 우연한 "차이"는 거의 사라질 것이다. 하지만 아무도 그렇게 큰 규모로 검증하지 않기 때문에, 작은 표본에서 우연히 생긴 "패턴"이 계속 입에서 입으로 전해진다.
+
+## 기억은 맞아떨어진 사례만 남긴다
+
+여기에 심리학적 요인이 더해진다. 미역국을 먹고도 시험을 잘 본 사람은 "징크스가 틀렸다"고 굳이 말하고 다니지 않는다. 반면 미역국을 먹고 시험을 망친 사람의 이야기는 "그러게 왜 먹었어"라며 더 잘 회자된다. 이렇게 징크스에 들어맞는 사례만 선택적으로 더 잘 기억되고 더 자주 공유되는 현상이 **확증편향**이다. 작은 표본의 우연(통계)과 맞아떨어지는 사례만 기억하는 경향(심리)이 합쳐지면, 근거 없는 믿음도 세대를 거쳐 살아남는다.
+
+::: {.callout-tip}
+## 징크스를 마주할 때 확인할 것
+
+1. **그 "증거"가 몇 명/몇 번의 사례에 근거하는지 물어라.** 표본이 작을수록 우연한 "맞아떨어짐"이 흔하다.
+2. **반대 사례는 없는지 찾아보라.** 미역국을 먹고도 잘 본 사람은 기억에서 쉽게 빠진다.
+3. **표본을 키우면 그 패턴이 사라지는지 생각해보라.** 전국 단위로 보면 대부분의 징크스는 통계적으로 유의하지 않다.
+4. **징크스를 지키는 행동 자체가 해롭지 않다면, 굳이 반박할 필요는 없다.** 다만 "통계적으로 증명됐다"고 믿지는 말아야 한다.
+:::
+
+## 더 깊이: 이항분포로 보는 "우연한 차이"
+
+강의노트 [〈수리통계학 5. 유명분포 — 이항분포〉](../../notes/math_stat/famous_distribution.qmd#이항분포-x-sim-bnp)는 성공 확률이 $p$로 고정된 독립시행을 $n$번 반복했을 때 성공 횟수의 분포를 이항분포로 정의한다. 오늘 시뮬레이션에서 "미역국을 먹은 사람 중 몇 명이 떨어졌는가"는 정확히 이항분포를 따르는 확률변수이고, 표본이 작을수록 이 확률변수의 흔들림(표준편차)이 비율 자체보다 커지기 쉬워 우연한 "차이"가 쉽게 발생한다.
+
+## SDV 관점: "효과가 있어 보인다"는 보고는 표본 크기부터 확인하라
+
+징크스의 통계적 정체를 파악하는 일은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 모든 "효과가 있었다"는 보고를 검증하는 절차와 직결된다. 신제품 캠페인 후 매출이 늘었다거나, 특정 조치 후 이탈률이 줄었다는 보고도, 표본(기간·대상)이 작으면 미역국 징크스와 똑같은 우연일 수 있다. 데이터에 가치를 더하려면, "효과가 있어 보인다"는 결론을 내리기 전에 그 효과가 우연히 나타날 확률이 얼마인지부터 계산해야 한다. 표본을 늘리거나 반복 검증을 거치지 않은 "효과"는, 좋은 징크스 이야기와 다르지 않다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 이번 주를 닫으며 — 뒷이야기는 결국 표본과 확률의 문제다
+
+나는 학생들에게 징크스를 비웃지 말고, 그것이 왜 끈질긴지를 통계로 설명해 보라고 말한다. 이번 주 다룬 몬티홀 문제, 큰 수의 법칙, 로또와 벼락, 바넘 효과, 그리고 오늘의 징크스는 모두 하나의 메시지로 모인다. 직관과 기억은 작은 표본과 선택적 기억에 쉽게 속지만, 충분히 큰 표본과 정직한 계산은 결국 우연과 진짜 패턴을 갈라낸다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 수능 전날 미역국을 먹지 않는 풍습은 한국에서 널리 알려진 문화적 속설이며, 과학적 인과관계가 입증된 바는 없다.
+- 시뮬레이션 수치는 설명을 위한 가상의 자료다.
+:::

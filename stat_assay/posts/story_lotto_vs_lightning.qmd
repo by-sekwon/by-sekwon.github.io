@@ -1,0 +1,92 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(확률의 뒷이야기) 벼락 맞을 확률과 나란히 놓아보면 — 로또 1등의 확률"
+author: "권세혁"
+date: "2026-10-28"
+categories: [통계기초, 확률]
+description: "로또 1등 확률(1/8,145,060)과 한국에서 1년 안에 벼락 사고를 당할 확률을 나란히 놓으면, 두 숫자는 거의 같다. 그런데 평생을 기준으로 삼느냐 1년을 기준으로 삼느냐에 따라 이 비교는 완전히 다른 이야기가 된다."
+---
+
+## 이미 한 번 비교했었다, 그런데 결과가 달랐다
+
+이 시리즈의 8월 글 "가용성 편향"에서 로또 1등 확률(1/8,145,060)과 벼락 맞을 확률을 이미 비교한 적이 있다. 그때 인용한 숫자는 미국 국립기상청(NWS)이 발표한 **평생** 벼락 피격 확률 1/15,300이었고, 그 결과 벼락이 로또보다 500배 넘게 "맞기 쉬운" 사건으로 나타났다. 그런데 기준을 "평생"에서 "올해 1년"으로, 출처를 미국에서 한국으로 바꾸면 이야기가 완전히 달라진다. 소방청 통계(2019~2023년 5년간 낙뢰 사고 출동 31건, 연평균 약 6.2건)를 인구 약 5,172만 명으로 나누면, 한국에서 한 사람이 1년 안에 낙뢰 사고를 당할 확률은 약 **1/834만**이다. 로또 1등을 한 게임 사는 확률(1/814만)과 **거의 같다.**
+
+```{python}
+#| echo: false
+#| fig-cap: "Annual, Korea-specific probabilities placed side by side: the chance of winning the lotto jackpot with a single ticket (1 in 8.15 million) versus the estimated chance of a lightning-strike accident in Korea this year (about 1 in 8.34 million, based on 2019-2023 fire-agency dispatch data). On a yearly, Korean basis, the two numbers are almost identical - unlike the lifetime, US-based comparison used in this series' August post."
+import matplotlib.pyplot as plt
+
+labels = ["Lotto jackpot\n(one ticket)", "Lightning-strike accident\n(Korea, this year)", "Traffic accident death\n(Korea, this year)"]
+probs = [1 / 8_145_060, 6.2 / 51_720_000, 2549 / 51_720_000]
+
+fig, ax = plt.subplots(figsize=(8, 4.8))
+bars = ax.bar(labels, probs, color=["#a8790a", "#3a6b8c", "#7a1f2b"], width=0.5)
+ax.set_yscale("log")
+for b, p in zip(bars, probs):
+    ax.annotate(f"1 in {1/p:,.0f}", xy=(b.get_x() + b.get_width() / 2, p), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=9.5)
+ax.set_ylabel("Annual probability per person (log scale)")
+ax.set_title("A ladder of real, Korea-based annual probabilities", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 같은 숫자라도, 실제로 일어나는 사람 수는 다르다
+
+확률이 비슷해도 실제로 그 사건을 겪는 사람 수는 또 다른 이야기다. 로또는 매주 추첨하기 때문에 2024년 한 해에만 1등 당첨자가 812명 나왔다(지난 "로또 명당" 글 참고). 반면 낙뢰 사고는 연평균 약 6명, 교통사고 사망자는 2,549명이다. 세 사건 모두 "개인에게는 극히 드문 일"이지만, 사회 전체에서 실제로 벌어지는 횟수는 자릿수가 완전히 다르다.
+
+```{python}
+#| echo: false
+#| fig-cap: "How many people in Korea actually experience each event in a typical year. Even though lightning and lotto have almost the same per-person annual probability, the lotto draws far more participants, so it produces over 100 times more 'winners' per year than lightning produces victims."
+import matplotlib.pyplot as plt
+
+labels2 = ["Lightning-strike\naccidents (annual)", "Lotto jackpot\nwinners (2024)", "Traffic accident\ndeaths (annual)"]
+counts = [6.2, 812, 2549]
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+bars = ax.bar(labels2, counts, color=["#3a6b8c", "#a8790a", "#7a1f2b"], width=0.5)
+ax.set_yscale("log")
+for b, v in zip(bars, counts):
+    ax.annotate(f"{v:,.0f}" if v >= 10 else f"{v:.1f}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 5),
+                textcoords="offset points", ha="center", fontsize=10)
+ax.set_ylabel("People per year in Korea (log scale)")
+ax.set_title("Same low probability, very different real-world headcounts", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+로또 1등 당첨자가 낙뢰 사고보다 130배 넘게 많이 나오는 이유는 확률이 달라서가 아니라, **매주 복권을 사는 사람의 수**(연간 수억 건)가 **벼락이 칠 수 있는 야외 활동 인구**보다 비교할 수 없을 만큼 많기 때문이다. 확률이 같아도 "그 확률을 시도하는 횟수"가 다르면 실제 결과는 전혀 다른 크기가 된다.
+
+::: {.callout-tip}
+## 확률을 비교할 때 꼭 확인할 것
+
+1. **기준 기간을 맞춰라.** "평생"과 "올해"는 완전히 다른 숫자를 만든다. 지난 비교(가용성 편향, 2026-08-21)는 평생 기준, 이번은 1년 기준이다.
+2. **출처가 어느 나라 자료인지 확인하라.** 벼락 피해율은 지형과 기후에 따라 나라마다 크게 다르다.
+3. **확률과 "실제로 일어나는 사람 수"를 구분하라.** 같은 확률이라도 시도 횟수가 다르면 결과 규모가 달라진다.
+4. **숫자가 비슷해 보여도 자료 출처와 기간을 바꾸면 결론이 뒤집힐 수 있다는 걸 기억하라.**
+:::
+
+## 더 깊이: 하나하나의 사건을 베르누이 시행으로 보기
+
+강의노트 [〈수리통계학 5. 유명분포 — 베르누이분포〉](../../notes/math_stat/famous_distribution.qmd#베르누이분포-x-sim-b1p)는 "성공" 또는 "실패"라는 두 결과만 갖는 단일 시행을 베르누이분포로 정의한다. 로또 한 게임을 사는 것, 한 사람이 1년을 보내는 것, 이 모두를 "당첨/비당첨", "사고/무사고"라는 베르누이 시행으로 보면, 서로 다른 세 사건의 확률을 같은 틀 위에서 나란히 비교할 수 있다.
+
+## SDV 관점: "몇 분의 1"이라는 숫자는 항상 기준(기간·모집단)과 함께 와야 한다
+
+서로 다른 사건의 확률을 같은 틀로 비교하는 일은 **요약과 추론(1~2단계)**이며, **SDV(통계적 데이터 가치화)** 관점에서는 위험 커뮤니케이션의 정확성을 결정한다. "이 정도 확률이면 안전하다"거나 "이 정도면 걱정할 수준이다"라는 판단은, 그 확률이 어떤 기간과 어떤 모집단을 기준으로 계산됐는지에 따라 완전히 달라진다. 같은 "1/800만"이라는 숫자도 기준을 바꾸면 전혀 다른 의미가 되므로, 데이터를 가치 있는 판단으로 연결하려면 확률 숫자 옆에 반드시 "무엇을, 얼마의 기간 동안, 어느 모집단에서" 측정했는지를 명시해야 한다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 숫자는 같아도 뒷이야기는 다르다
+
+나는 학생들에게 확률을 비교할 때 숫자만 보지 말고 그 뒤에 숨은 "기준"을 먼저 확인하라고 말한다. 로또와 벼락은 평생 기준으로는 500배 차이가 나지만, 1년 기준 한국 자료로는 거의 같다. 같은 두 사건도 어떤 잣대로 재느냐에 따라 전혀 다른 이야기가 된다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 낙뢰 사고 소방청 출동 건수(2019~2023년 31건, 연평균 약 6.2건)는 다음 기사를 참고했다: ["천둥·번개 조심하세요"…10년간 낙뢰사고 사상자 44명 발생 — 이데일리](https://www.edaily.co.kr/news/read?newsId=02765046622583056&mediaCodeNo=257)
+- 2025년 교통사고 사망자 수(2,549명)는 도로교통공단 TAAS 통계를 참고했다.
+- 2024년 로또 1등 당첨자 수(812명)는 이 시리즈의 "로또 명당" 글(2026-09-24)에서 이미 인용한 수치를 다시 사용했다.
+- 인구 수치(약 5,172만 명)는 설명을 위한 근사값이다.
+:::
