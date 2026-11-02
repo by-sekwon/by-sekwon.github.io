@@ -123,6 +123,14 @@ format:
   color: #a33;
   font-size: 0.88rem;
 }
+.tr-notice {
+  color: #8a6d3b;
+  background: #fcf8e3;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
 .tr-empty {
   color: #999;
   font-size: 0.88rem;
@@ -138,7 +146,7 @@ format:
 <div class="tr-header">
   <div>
     <div class="tr-title">🔥 <span>오늘의 검색 트렌드</span></div>
-    <p class="tr-sub">Daum · ZUM · Google Trends 주요 검색어를 매일 오전 8시경 자동 수집</p>
+    <p class="tr-sub">Google Trends · Daum · ZUM 주요 검색어를 매일 오전 8시경 자동 수집</p>
   </div>
   <div class="tr-controls">
     <label for="tr-date-select">날짜</label>
@@ -154,9 +162,9 @@ format:
 
 <p class="tr-footnote">
   각 포털이 공개적으로 노출하는 실시간/이슈 검색어를 매일 자동으로 그대로 수집·정리한 것으로, 본 사이트가 별도로 순위를 산정하지 않습니다.
-  원본은 <a href="https://www.daum.net/" target="_blank" rel="noopener">Daum</a>,
-  <a href="https://www.zum.com/" target="_blank" rel="noopener">ZUM</a>,
-  <a href="https://trends.google.com/trending?geo=KR" target="_blank" rel="noopener">Google Trends</a>에서 확인할 수 있습니다.
+  원본은 <a href="https://trends.google.com/trending?geo=KR" target="_blank" rel="noopener">Google Trends</a>,
+  <a href="https://www.daum.net/" target="_blank" rel="noopener">Daum</a>,
+  <a href="https://www.zum.com/" target="_blank" rel="noopener">ZUM</a>에서 확인할 수 있습니다.
   일부 날짜는 포털 페이지 구조 변경 등으로 수집이 누락될 수 있습니다.
 </p>
 
@@ -166,6 +174,7 @@ format:
   const select = document.getElementById("tr-date-select");
   const meta = document.getElementById("tr-generated-at");
   const cache = new Map();
+  const SOURCE_ORDER = ["google", "daum", "zum"];
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -176,7 +185,10 @@ format:
   function renderSnapshot(snapshot) {
     meta.textContent = "생성 시각: " + (snapshot.generatedAt || snapshot.date);
     grid.innerHTML = "";
-    for (const source of snapshot.sources) {
+    const sources = [...snapshot.sources].sort(
+      (a, b) => SOURCE_ORDER.indexOf(a.id) - SOURCE_ORDER.indexOf(b.id)
+    );
+    for (const source of sources) {
       const card = document.createElement("div");
       card.className = "tr-card";
       const items = source.items && source.items.length
@@ -189,9 +201,11 @@ format:
               </div>
               ${it.news ? `<span class="tr-news">📰 <a href="${escapeHtml(it.news.url)}" target="_blank" rel="noopener">${escapeHtml(it.news.title)}</a>${it.news.source ? ` <span class="tr-news-source">· ${escapeHtml(it.news.source)}</span>` : ""}</span>` : ""}
             </li>`).join("")}</ol>`
-        : source.status === "error"
-          ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
-          : `<p class="tr-empty">데이터 없음</p>`;
+        : source.id === "zum"
+          ? `<p class="tr-notice">ℹ️ 이 날짜에는 ZUM 이슈 트렌드 검색어가 수집되지 않았습니다. ZUM 페이지 구조 변경 등으로 검색어 내용이 없을 수 있으니 <a href="${source.sourceUrl}" target="_blank" rel="noopener">ZUM 원본</a>에서 확인해 주세요.</p>`
+          : source.status === "error"
+            ? `<p class="tr-error">수집 실패${source.error ? ": " + escapeHtml(source.error) : ""}</p>`
+            : `<p class="tr-empty">데이터 없음</p>`;
       card.innerHTML = `
         <h3>${escapeHtml(source.label)} <a class="tr-source-link" href="${source.sourceUrl}" target="_blank" rel="noopener">원본 ↗</a></h3>
         ${items}
