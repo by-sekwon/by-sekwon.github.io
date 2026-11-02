@@ -1,0 +1,94 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험 인식과 승부의 확률) 먼저 차는 팀이 유리한 이유 — 승부차기의 심리 확률"
+author: "권세혁"
+date: "2026-11-05"
+categories: [통계기초, 확률]
+description: "2002년 한일 월드컵 8강, 한국은 스페인을 상대로 먼저 공을 찼고 5-3으로 승리하며 4강에 올랐다. 우연이었을까? 1982년 이후 월드컵 승부차기를 모아 보면 먼저 차는 팀이 더 자주 이긴다는 보도가 반복된다. 각 킥을 독립된 동전 던지기로 보면 안 되는 이유를 짚어본다."
+---
+
+## 2002년, 한국은 먼저 공을 찼다
+
+2002년 6월 22일 광주, 한일 월드컵 8강전에서 한국과 스페인은 연장전까지 0-0으로 비겼다. 승부차기가 시작됐고, 한국은 황선홍, 박지성, 설기현, 안정환, 홍명보 순으로 먼저 공을 찼다. 골키퍼 이운재가 스페인의 네 번째 키커 호아킨의 슛을 막아내며 분위기가 넘어갔고, 결국 한국이 5-3으로 승리해 아시아 국가 최초로 월드컵 4강에 올랐다. 이 승부에서 한국은 '선축(先蹴)' 팀이었다. 승부차기에서 먼저 차는 팀이 정말 유리할까?
+
+## 보도되는 숫자들: 55%에서 62.5%까지
+
+1982년 월드컵부터 집계한 여러 보도에 따르면, 월드컵 승부차기에서 먼저 찬 팀이 이긴 비율은 보도마다 **55%에서 62.5%** 사이로 소개된다(한 보도는 24번의 승부차기 중 15번을 먼저 찬 팀이 이겼다고 전한다). 50:50이어야 할 것 같은 승부에서 먼저 차는 쪽이 조금이라도 더 자주 이긴다는 것이다. 다만 이 수치들은 대부분 언론 보도에 실린 2차 자료이고, 원 연구의 정확한 표본과 방법은 확인되지 않는다는 점을 먼저 밝혀둔다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Reported win rates for the team that kicks first in World Cup penalty shoot-outs, as cited by different Korean news outlets covering the same general claim. The range (55% to 62.5%) itself signals that these are secondary citations rather than a single, precisely documented statistic - a reason for caution even while the general pattern (first-kicker edge) is widely repeated."
+import matplotlib.pyplot as plt
+
+labels = ["Report A\n('55%')", "Report B\n('62.5%,\n15 of 24')"]
+vals = [55, 62.5]
+fig, ax = plt.subplots(figsize=(6, 4.4))
+bars = ax.bar(labels, vals, color=["#3a6b8c", "#7a1f2b"], width=0.45)
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=11)
+ax.axhline(50, color="#8a9a90", linestyle="--", linewidth=1.2)
+ax.text(1.35, 51, "50% (coin-flip)", fontsize=8.5, color="#8a9a90")
+ax.set_ylabel("Win rate for the team kicking first (%)")
+ax.set_ylim(0, 75)
+ax.set_title("Different reports, same general claim, different exact numbers", fontsize=9.8, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 왜 "동전 던지기"가 아닐까 — 압박감은 킥을 독립시행이 아니게 만든다
+
+승부차기 한 번 한 번을 독립된 동전 던지기로 생각하면 순서는 중요하지 않아야 한다. 그런데 실제로는 그렇지 않다는 것이 많은 스포츠 심리학 연구의 결론이다. 핵심은 **뒤에 차는 선수일수록 "이걸 못 넣으면 바로 진다"는 압박감이 커진다**는 데 있다. 한 보도는 패배가 확정되는 마지막 키커의 성공률이 평소보다 크게 떨어진다고 전한다(원 수치는 출처 확인이 필요하다). 영국 엑스터대 연구팀도 압박감이 골키퍼를 보는 시선 처리를 바꿔 성공률에 영향을 준다고 보고한 바 있다. 즉 각 킥은 같은 확률을 가진 독립적인 시행이 아니라, **점수 상황이 뒤로 갈수록 심리적 부담이 실리는 시행**이다. 2024년 국제축구평의회(IFAB)가 순서를 ABAB에서 ABBA로 바꾼 것도, 이 "먼저 차는 쪽의 이점"을 줄이기 위한 조치였다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Illustrative success rates by kick position, reflecting the commonly described pattern: success rates stay fairly stable for early kicks but drop noticeably for a kick that would end the shoot-out in defeat if missed - especially the decisive final kick. Values are illustrative, built to show the shape of the reported pattern rather than cite one precise study."
+import matplotlib.pyplot as plt
+
+positions = ["1st\nkick", "2nd\nkick", "3rd\nkick", "4th\nkick", "5th (deciding)\nkick"]
+success = [78, 76, 74, 70, 60]
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+bars = ax.bar(positions, success, color=["#1e3a2f"] * 4 + ["#7a1f2b"], width=0.55)
+for b, v in zip(bars, success):
+    ax.annotate(f"{v}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10)
+ax.set_ylabel("Illustrative success rate (%)")
+ax.set_ylim(0, 95)
+ax.set_title("Pressure, not skill, likely explains the later-kick dip", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+::: {.callout-tip}
+## 승부차기 통계를 읽을 때
+
+1. **"독립시행"이라는 가정이 실제로 성립하는지 의심하라.** 심리적 압박처럼 시행마다 조건이 달라지면 이항분포의 기본 가정이 깨진다.
+2. **보도마다 다른 숫자가 나오면 출처의 신뢰도를 먼저 따져라.** 55%와 62.5%처럼 범위가 넓다는 것 자체가 신호다.
+3. **규칙이 바뀐 이유를 추적하면 통계의 방향을 다시 확인할 수 있다.** IFAB가 순서를 바꾼 것은 그 자체로 "먼저 차는 쪽이 유리하다"는 분석이 실무에 반영된 사례다.
+4. **압박감 같은 심리적 요인이 통계적으로 "독립성 위반"으로 나타난다는 것을 기억하라.**
+:::
+
+## 더 깊이: 조건이 매번 똑같지 않은 시행
+
+강의노트 [〈수리통계학 5. 유명분포 — 베르누이분포〉](../../notes/math_stat/famous_distribution.qmd#베르누이분포-x-sim-b1p)는 "성공/실패" 두 결과를 갖는 단일 시행을 정의한다. 이항분포가 성립하려면 이런 베르누이 시행이 **매번 같은 성공 확률로, 서로 독립적으로** 반복되어야 한다. 승부차기는 외형상 같은 시행처럼 보이지만, 점수 상황에 따라 압박감이 달라지면서 성공 확률 자체가 매 킥마다 바뀐다 — 이항분포의 전제가 깨지는 실제 사례다.
+
+## SDV 관점: 겉보기엔 같은 시행도 조건이 다르면 다른 분포를 써야 한다
+
+승부차기의 순서 효과를 이해하는 일은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 "반복되는 것처럼 보이는 이벤트"를 분석할 때의 함정을 보여준다. 영업 성과, 콜센터 응대, 생산 공정처럼 "매번 같은 조건"이라고 가정하고 평균이나 표준 모형을 적용하는 경우가 많지만, 실제로는 순서나 압박 같은 숨은 요인이 조건을 바꿔 놓는다. 데이터에 가치를 더하려면 "이 시행들이 정말 같은 조건에서 반복됐는가"를 먼저 확인하고, 그렇지 않다면 조건별로 나눠 분석해야 한다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 순서는 우연이 아니라 심리를 바꾼다
+
+나는 학생들에게 승부차기를 "같은 확률을 가진 다섯 번의 동전 던지기"로 보지 말라고 말한다. 2002년 한국이 먼저 공을 찬 것, 그리고 그 뒤 스페인의 키커들이 점점 더 큰 부담 속에 섰던 것은 모두 통계적으로 의미가 있는 차이다. 순서는 단순한 우연이 아니라, 매 순간 달라지는 확률을 만드는 구조다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 2002년 한일 월드컵 8강 한국 vs 스페인 경기 결과(5-3, 키커 순서, 이운재 선방)는 위키백과와 당시 보도를 참고했다: [2002년 FIFA 월드컵 결선 토너먼트 — 위키백과](https://ko.wikipedia.org/wiki/2002%EB%85%84_FIFA_%EC%9B%94%EB%93%9C%EC%BB%B5_%EA%B2%B0%EC%84%A0_%ED%86%A0%EB%84%88%EB%A8%BC%ED%8A%B8)
+- 먼저 차는 팀의 승률(55~62.5%)과 압박감·시선 처리 연구는 다음 기사를 참고했다: [승부차기의 심리학, 먼저 차면 유리하다? — 이투데이](https://www.etoday.co.kr/news/view/942165), [승부차기의 심리학…이론상 키커 유리 — 조세일보](https://m.joseilbo.com/news/view.htm?newsid=225793)
+- 킥 순서별 성공률 차트의 구체적인 수치는 보도된 패턴의 모양을 보여주기 위한 가상의 예시다.
+:::

@@ -1,0 +1,95 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험 인식과 승부의 확률) 확률적 행운이 바꾼 삶 — 복권 당첨자들의 그 후"
+author: "권세혁"
+date: "2026-11-04"
+categories: [통계기초, 확률]
+description: "'로또 당첨자 70%는 파산한다'는 말을 한 번쯤 들어봤을 것이다. 그런데 이 수치의 출처를 추적한 사람은 아무도 찾지 못했다. 반면 617가구, 3,000명, 7만 6,859명을 몇 년에서 20년 넘게 추적한 최근 연구들은 전혀 다른 결론을 보여준다."
+---
+
+## 출처를 아무도 찾지 못한 "70%"
+
+"로또 당첨자 70%는 결국 파산한다." 이 통계는 한국에서도 미국에서도 자주 인용된다. 그런데 이 수치를 추적해보면 흥미로운 사실이 나온다. 이 "70%"는 2001년 미국의 한 금융교육 심포지엄에서 누군가 언급했다는 이야기가 출처로 돌아다니지만, **정작 누가 언제 어떤 자료로 그렇게 말했는지는 확인된 바가 없다.** 복권 당첨자와 관련해 실제로 존재하는 학술 연구는 1978년 미국 심리학자 필립 브릭먼의 연구인데, 이마저도 당첨자 22명, 사고 피해자 29명이라는 극히 작은 표본으로 "당첨자가 생각보다 덜 행복하다"는 결론을 낸 것이었다. 이렇게 작은 표본에서 나온 조심스러운 결론이, 세월이 흐르며 "70% 파산"이라는 더 단정적이고 더 무서운 숫자로 부풀려져 퍼진 것으로 보인다.
+
+## 수천, 수만 명을 추적한 최근 연구는 다른 이야기를 한다
+
+최근 들어 훨씬 큰 표본으로 당첨자를 추적한 연구들이 나왔다. 2019년 영국 워릭대·스위스 취리히대 공동 연구는 당첨금이 수천 유로에서 수백만 유로에 이르는 617가구를 분석해, 당첨이 전반적인 삶의 만족도를 끌어올리며 당첨금이 클수록 그 효과도 크다는 결론을 냈다. 2020년 스웨덴 스톡홀름대 등의 연구는 당첨자 3,000명을 5년에서 22년에 걸쳐 추적했는데, 행복도 상승 효과가 10년이 지나도 사라지지 않았고, 당첨자들이 돈을 한꺼번에 탕진했다는 증거도 찾지 못했다. 오히려 상금을 수년에 걸쳐 천천히 쓰는 경향이 나타났다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Sample sizes behind the competing claims about lottery winners. The widely repeated '70% go bankrupt' figure traces back to an unsourced 2001 claim; the one real academic study from that era (Brickman 1978) used only 22 winners. Recent, much larger studies (2019 UK/Swiss: 617 households; 2020 Sweden: 3,000 winners) find sustained gains in life satisfaction instead."
+import matplotlib.pyplot as plt
+
+labels = ["Brickman 1978\n(origin of the\n'less happy' idea)", "'70% bankrupt' claim\n(source untraced)", "2019 UK/Swiss study", "2020 Sweden study"]
+sizes = [22, 0, 617, 3000]
+colors = ["#8a9a90", "#7a1f2b", "#3a6b8c", "#1e3a2f"]
+
+fig, ax = plt.subplots(figsize=(8, 4.8))
+bars = ax.bar(labels, sizes, color=colors, width=0.55)
+for b, v in zip(bars, sizes):
+    label = "no traceable\nsource / sample" if v == 0 else f"n = {v:,}"
+    ax.annotate(label, xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=9)
+ax.set_ylabel("Sample size (number of winners studied)")
+ax.set_title("The scarier claim has the weaker evidence", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 표본이 커지자 이야기가 더 정교해졌다
+
+표본이 커지면서 연구 결과도 "모두에게 똑같이 좋다/나쁘다"는 단순한 결론에서 벗어나 더 세밀해졌다. 뉴욕대·바르셀로나대 연구진이 스웨덴 복권 구매자 7만 6,859명을 분석한 결과, 당첨 후 가족 관계 변화는 소득 수준과 성별에 따라 달랐다. 저소득 남성에게서는 뚜렷한 변화가 나타났지만, 고소득 남성은 거의 변화가 없었다. 여성 당첨자의 경우, 연구진은 당첨이 이혼을 "만들어낸" 것이 아니라 이미 어려움을 겪던 결혼에서 여성이 떠나는 시점을 앞당긴 것으로 해석했다.
+
+```{python}
+#| echo: false
+#| fig-cap: "As lottery-winner studies moved from small samples to very large ones, the conclusions shifted from a single blanket claim ('winners are unhappy' or 'winners go bankrupt') to a more nuanced, group-specific picture - exactly what larger samples make possible."
+import matplotlib.pyplot as plt
+
+labels2 = ["Brickman 1978\n(n=22)", "2019 study\n(n=617)", "2020 Sweden\n(n=3,000)", "NYU/Barcelona\n(n=76,859)"]
+sizes2 = [22, 617, 3000, 76859]
+
+fig, ax = plt.subplots(figsize=(8, 4.8))
+bars = ax.bar(labels2, sizes2, color="#1e3a2f", width=0.55)
+ax.set_yscale("log")
+for b, v in zip(bars, sizes2):
+    ax.annotate(f"{v:,}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=9.5)
+ax.set_ylabel("Sample size (log scale)")
+ax.set_title("From one blanket claim to group-specific findings, as samples grew", fontsize=9.8, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+물론 이 연구들은 대부분 유럽, 특히 스웨덴처럼 사회복지 제도가 탄탄한 나라에서 이뤄졌다. 세금 구조와 복지 체계가 다른 한국 당첨자에게 그대로 적용하기는 어렵다는 점은 분명히 해두어야 한다.
+
+::: {.callout-tip}
+## "당첨자의 그 후" 이야기를 읽을 때
+
+1. **"몇 퍼센트가 파산한다"는 말을 들으면 원 출처를 찾아보라.** 출처가 불분명한 통계는 그 자체로 의심할 이유가 된다.
+2. **표본 크기를 확인하라.** 22명의 결론과 76,859명의 결론은 신뢰도가 다르다.
+3. **나라와 시대가 다르면 그대로 적용하지 마라.** 유럽의 연구 결과가 한국에 그대로 맞으리라는 보장은 없다.
+4. **무서운 숫자일수록 더 꼼꼼히 검증하라.** 극적인 주장일수록 출처가 부실한 경우가 많다.
+:::
+
+## 더 깊이: 작은 표본이 만드는 과장된 결론
+
+강의노트 [〈수리통계학 4. 표본분포 — 확률수렴〉](../../notes/math_stat/random_sample.qmd#확률수렴)은 표본이 커질수록 표본 통계량이 참값에 가까워진다는 큰 수의 법칙을 다룬다. 지난주 여론조사 글에서 본 것과 같은 원리가 여기서도 작동한다. 22명이라는 작은 표본에서 나온 결론은 우연에 크게 흔들릴 수 있지만, 수천~수만 명을 추적한 최근 연구의 결론은 그보다 훨씬 믿을 만하다.
+
+## SDV 관점: 극적인 통념일수록 원 자료로 돌아가 검증해야 가치가 생긴다
+
+통념의 출처와 표본 크기를 추적하는 일은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 조직 내에 떠도는 "다들 그렇게 알고 있는" 통계를 검증하는 절차와 같다. "70% 파산"처럼 출처 없이 떠도는 숫자는 회사 안에서도 흔하다 — "고객의 80%는 이탈한다", "신규 프로젝트의 90%는 실패한다" 같은 말들이 실제로는 누구도 검증하지 않은 채 반복되는 경우가 많다. 데이터에 가치를 더하는 통계학자의 역할은, 이런 통념을 들었을 때 "그 숫자는 어디서 왔고, 몇 명을 조사한 결과인가"를 가장 먼저 되묻는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 무서운 통념일수록 출처를 캐물어라
+
+나는 학생들에게 "다들 그렇다고 하더라"는 통계를 들으면 가장 먼저 "그거 누가, 몇 명을 조사해서 한 말이에요?"라고 물으라고 말한다. "로또 당첨자 70%가 파산한다"는 말은 출처를 추적할수록 흐려지지만, 수천 명을 수십 년간 추적한 최근 연구들은 오히려 "행운은 생각보다 오래, 좋은 쪽으로 남는다"는 더 차분한 결론을 보여준다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- "70% 파산" 통계의 불분명한 출처, 1978년 브릭먼 연구(당첨자 22명)는 다음 기사를 참고했다: ["당첨자 70%는 파산한대요"…로또의 저주 믿습니까? — 아시아경제](https://www.asiae.co.kr/article/2024062009153398196)
+- 2019년 영국 워릭대·스위스 취리히대 연구(617가구), 2020년 스웨덴 연구(3,000명, 5~22년 추적), 뉴욕대·바르셀로나대 연구(스웨덴 복권 구매자 76,859명)는 위 기사에서 소개된 연구 결과를 인용했다.
+:::

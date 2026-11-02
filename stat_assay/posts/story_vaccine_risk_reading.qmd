@@ -1,0 +1,92 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험 인식과 승부의 확률) 절대적 숫자와 상대적 숫자 — 백신 부작용 확률 읽는 법"
+author: "권세혁"
+date: "2026-11-03"
+categories: [통계기초, 확률]
+description: "'이 백신은 저 백신보다 이상반응이 4배 많다'는 말은 사실이면서도 오해를 부른다. 질병관리청 집계로 보면 얀센 0.59%, 노바백스 0.15% — 배수로는 4배지만, 둘 다 1%가 채 안 되는 작은 숫자다. 상대위험과 절대위험을 함께 읽어야 하는 이유를 백신 신고율로 다시 살펴본다."
+---
+
+## "4배 위험하다"는 말, 틀린 말은 아니다
+
+이 시리즈 8월 글 "위험이 두 배 증가했다는 뉴스는 얼마나 위험한가"에서 가공육과 대장암을 예로 상대위험과 절대위험의 차이를 다룬 적이 있다. 이번에는 더 민감한 주제인 백신으로 같은 원리를 다시 짚어본다. 질병관리청이 2022년 6월까지 집계한 코로나19 백신 이상반응 신고율은 전체 접종(1억 2,530만 9,520건) 중 **0.38%**였다. 백신 종류별로는 얀센 0.59%, 아스트라제네카 0.54%, 모더나 0.45%, 화이자 0.31%, 노바백스 0.15%로 나타났다. 얀센의 신고율은 노바백스의 **4배에 가깝다** — 이 문장 자체는 사실이다. 문제는 "4배"라는 말만 들었을 때 머릿속에 떠오르는 위험의 크기와, 실제 숫자(0.59% vs 0.15%)가 보여주는 위험의 크기가 전혀 다르다는 데 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "KDCA-reported adverse-event report rates by vaccine type (cumulative through June 2022). Janssen's reported rate is nearly 4x Novavax's - a dramatic-sounding ratio - but both numbers sit well under 1% in absolute terms."
+import matplotlib.pyplot as plt
+
+vaccines = ["Novavax", "Pfizer", "Moderna", "AstraZeneca", "Janssen"]
+rates = [0.15, 0.31, 0.45, 0.54, 0.59]
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+bars = ax.bar(vaccines, rates, color=["#8a9a90", "#3a6b8c", "#1e3a2f", "#a8790a", "#7a1f2b"], width=0.55)
+for b, v in zip(bars, rates):
+    ax.annotate(f"{v}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10)
+ax.set_ylabel("Reported adverse-event rate (%)")
+ax.set_ylim(0, 0.75)
+ax.set_title("Janssen's rate looks '4x higher' - but 4x of what?", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 작은 숫자의 세계에서는 배수가 쉽게 부풀려진다
+
+두 비율이 모두 작을 때는, 약간의 차이만으로도 "몇 배"라는 표현이 쉽게 커진다. 0.15%가 0.2%p 늘어 0.35%가 되면 "2배 이상 증가"라고 쓸 수 있지만, 실제로는 1만 명 중 2명이 1만 명 중 3.5명이 된 것뿐이다. 이 글이 강조하려는 것은 백신이 안전한지 위험한지를 판단하라는 게 아니라, **"몇 배"라는 말이 작은 절대값 위에서는 특히 과장되게 들린다**는 점이다. 아래 그림은 같은 0.2%포인트의 차이가 기준값이 작을수록 얼마나 큰 "배수"로 보이는지 보여준다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The same 0.2-percentage-point increase, expressed as a ratio, depending on the baseline rate it is added to. Against a small baseline (0.1%), a 0.2pp increase sounds like a 3x jump; against a larger baseline (1%), the identical 0.2pp increase is only a 1.2x change."
+import matplotlib.pyplot as plt
+
+baselines = [0.1, 0.3, 0.5, 1.0]
+ratios = [(b + 0.2) / b for b in baselines]
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+bars = ax.bar([f"baseline {b}%" for b in baselines], ratios, color="#1e3a2f", width=0.5)
+for b, r in zip(bars, ratios):
+    ax.annotate(f"{r:.1f}x", xy=(b.get_x() + b.get_width() / 2, r), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.axhline(1, color="#8a9a90", linestyle="--", linewidth=1)
+ax.set_ylabel("Ratio after adding the same +0.2 percentage points")
+ax.set_title("The same absolute change looks like a bigger 'multiple' on a smaller base", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 신고 건수와 인과성 확정은 다르다
+
+또 하나 짚어야 할 것은, 질병관리청이 밝힌 이상반응 "신고" 건수는 **백신 때문이라고 확정된 사례가 아니라는 점**이다. 보도자료도 "인과성이 확정된 것을 의미하지 않는다"고 명시한다. 2022년 6월 기준 피해보상 신청 7만 8,462건 중 실제로 보상이 결정된 것은 1만 8,458건(약 23.5%)이었다. 즉 신고율 0.38%라는 숫자조차도, 그 전부가 "백신 때문에 생긴 부작용"이라고 확정된 것은 아니다. 절대위험·상대위험을 구분하는 것만큼이나, "신고된 것"과 "확인된 것"을 구분하는 일도 중요하다.
+
+::: {.callout-tip}
+## 부작용 확률 보도를 읽는 법
+
+1. **"몇 배"라는 말을 보면 바로 절대값을 찾아보라.** 0.15%와 0.59%처럼, 둘 다 작은 숫자일 수 있다.
+2. **기준값(분모)이 작을수록 배수는 쉽게 커진다는 걸 기억하라.** 같은 차이라도 기준이 작으면 더 극적으로 보인다.
+3. **"신고"와 "인과성 확정"을 구분하라.** 신고율은 상한에 가까운 숫자이지, 실제 부작용 발생률의 확정치가 아니다.
+4. **상대위험과 절대위험을 항상 같이 제시하라.** 하나만 말하면 그림의 절반을 가린 것이다.
+:::
+
+## 더 깊이: 이상반응 신고율은 조건부확률이다
+
+강의노트 [〈수리통계학 1. 확률론 — 조건부 확률〉](../../notes/math_stat/probability.qmd#조건부-확률)의 정의로 쓰면, 신고율은 $P(\text{이상반응 신고}\mid\text{해당 백신 접종})$이라는 조건부확률이다. "얀센이 노바백스보다 위험하다"는 비교는 사실 두 조건부확률의 비율, 곧 $P(\cdot\mid\text{얀센})/P(\cdot\mid\text{노바백스})$을 말하는 것이다. 비율만 보면 차이가 커 보이지만, 두 조건부확률 자체가 모두 1%에 못 미친다는 사실은 비율만으로는 드러나지 않는다.
+
+## SDV 관점: 비율과 절대값을 동시에 공개하는 것이 신뢰를 만든다
+
+상대위험과 절대위험을 함께 읽는 습관은 **요약과 추론(1~2단계)**의 기본이며, **SDV(통계적 데이터 가치화)** 관점에서는 공중보건처럼 신뢰가 핵심인 영역에서 특히 중요하다. "이상반응이 4배 많다"는 숫자만 공개하면 불안을 키우고, "0.38%만 신고됐다"는 숫자만 공개하면 과소평가로 보일 수 있다. 데이터를 가치 있는 의사결정으로 연결하려면 절대값과 상대값, 신고와 인과성 확정을 모두 투명하게 나란히 제시해야 한다. 그래야 정책 결정자도, 일반 시민도 같은 숫자를 보고 같은 수준의 이해에 도달할 수 있다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 배수 뒤에 숨은 절대값을 항상 확인하라
+
+나는 학생들에게 "몇 배 위험하다"는 보도를 보면 반사적으로 "그래서 원래 숫자는 몇이었는데?"를 물으라고 말한다. 0.59%와 0.15%는 분명 4배 차이가 나지만, 둘 다 100명 중 1명이 채 안 되는 작은 숫자다. 상대위험과 절대위험을 함께 읽을 때에만 숫자가 제대로 된 크기로 보인다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 코로나19 백신 이상반응 신고 통계(누적 47만 1,775건, 전체 접종의 0.38%, 백신별 신고율, 피해보상 신청·결정 건수)는 다음 자료를 참고했다: [MEDI:GATE NEWS — 국가예방접종 이상반응 신고율](https://m.medigatenews.com/news/3449118090), [코로나 백신 이상반응 1만8548건 보상 — 파이낸셜뉴스](https://www.fnnews.com/news/202206231133135794)
+- 신고 사례가 백신과의 인과성이 확정된 것은 아니라는 점은 질병관리청 보도자료 설명을 따랐다.
+:::

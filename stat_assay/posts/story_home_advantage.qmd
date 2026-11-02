@@ -1,0 +1,96 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(위험 인식과 승부의 확률) 숫자로 검증한 홈어드밴티지 — 홈그라운드의 이점"
+author: "권세혁"
+date: "2026-11-06"
+categories: [통계기초, 확률]
+description: "KBO 2026시즌 KT는 홈에서 승률 0.652, 원정을 포함한 전체 승률은 0.642였다. 겨우 1%포인트 차이로 보이지만, 팀마다 그 격차는 다르다. 홈어드밴티지가 '느낌'이 아니라 숫자로도 존재하는지, 그리고 그 크기는 팀마다 왜 다른지 살펴본다."
+---
+
+## "집에서 하면 왠지 더 잘한다"는 느낌, 사실일까
+
+프로야구를 보다 보면 "역시 홈에서는 뭔가 다르다"는 말을 자주 듣는다. 익숙한 구장, 응원하는 관중, 이동 피로가 없는 몸 상태 — 홈에서 경기하는 팀이 유리할 것 같다는 느낌은 직관적이다. 그런데 이 느낌은 숫자로도 확인될까? 2026시즌 KBO 공식 기록을 보면, KT는 전체 142경기에서 88승 49패 5무(승률 0.642)를 기록했는데, 그중 홈경기 성적만 떼어보면 45승 2무 24패로 승률이 약 **0.652**였다. 원정 승률보다 약간 높다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Two KBO teams' 2026-season win rates, split by home and away games. Both teams won more often at home than their overall season average, though the size of the home edge differs between them."
+import matplotlib.pyplot as plt
+
+home = [0.652, 0.575]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.6))
+bars = ax.bar(["KT\n(home: 45W 2D 24L)", "LG\n(home: 42W 0D 31L)"], home, color=["#1e3a2f", "#a8790a"], width=0.5)
+for b, v in zip(bars, home):
+    ax.annotate(f"{v:.3f}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.axhline(0.642, color="#1e3a2f", linestyle="--", linewidth=1, alpha=0.6)
+ax.axhline(0.5, color="#8a9a90", linestyle="--", linewidth=1, alpha=0.6)
+ax.text(1.4, 0.505, "0.500 (even)", fontsize=8.5, color="#8a9a90")
+ax.set_ylabel("Home win rate")
+ax.set_ylim(0, 0.75)
+ax.set_title("Home win rates for two KBO teams, 2026 season", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 팀마다 홈어드밴티지의 크기가 다르다
+
+흥미로운 점은 홈어드밴티지의 크기가 팀마다, 시기마다 다르다는 것이다. 스포츠경향 보도에 따르면 LG는 2026시즌 전반기에만 홈경기 승률을 0.698(30승 13패)까지 끌어올렸다. 통산(역대 누적) 기준으로 보면 삼성의 홈 승률은 0.568, LG는 0.531이라는 집계도 있다(공식 기록이 아닌 커뮤니티 집계이므로 참고치로만 다룬다). 시즌 전체로 보면 LG의 홈 승률은 약 0.575 수준이었다. 같은 "홈어드밴티지"라는 말이 팀과 시기에 따라 전혀 다른 크기로 나타난다는 뜻이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The same team's home win rate measured over different windows: LG's all-time historical home win rate (community-compiled, 0.531), its full 2026-season home win rate (official, 0.575), and its first-half-2026-only home win rate (0.698). The 'home advantage' for one team varies substantially depending on which stretch of games you measure."
+import matplotlib.pyplot as plt
+
+windows = ["All-time\n(community data)", "2026 full season\n(official)", "2026 first half\n(official)"]
+rates = [0.531, 0.575, 0.698]
+
+fig, ax = plt.subplots(figsize=(7, 4.6))
+bars = ax.bar(windows, rates, color=["#8a9a90", "#3a6b8c", "#7a1f2b"], width=0.5)
+for b, v in zip(bars, rates):
+    ax.annotate(f"{v:.3f}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.axhline(0.5, color="#8a9a90", linestyle="--", linewidth=1)
+ax.set_ylabel("LG home win rate")
+ax.set_ylim(0, 0.8)
+ax.set_title("Same team, same 'home advantage' label, very different numbers", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 반 시즌 성적만 보면 과장되기 쉽다
+
+LG의 전반기 홈 승률(0.698)과 전체 시즌 홈 승률(0.575)이 크게 차이 나는 이유는, **반 시즌은 표본이 작아서** 우연한 연승이 비율에 큰 영향을 주기 때문이다. 앞서 큰 수의 법칙 글에서 본 것과 같은 원리다. 30경기 안팎의 전반기 성적은 표본이 작아 흔들림이 크고, 142경기 전체 시즌이나 수십 년 누적 통산 기록으로 갈수록 그 흔들림은 가라앉는다. "우리 팀 홈에서 진짜 잘한다"는 말을 검증하려면, 반드시 **얼마나 많은 경기를 봤는지**를 함께 확인해야 한다.
+
+::: {.callout-tip}
+## 홈어드밴티지 통계를 읽을 때
+
+1. **측정 구간을 확인하라.** 반 시즌, 한 시즌, 통산 기록은 서로 다른 숫자를 준다.
+2. **표본이 작을수록 극단적인 승률이 나오기 쉽다는 걸 기억하라.** 전반기만의 0.698은 우연이 섞였을 가능성이 크다.
+3. **공식 기록과 커뮤니티 집계를 구분하라.** 출처가 다르면 집계 기준도 다를 수 있다.
+4. **"홈에서 유리하다"는 말을 들으면 원정 성적과 나란히 비교하라.** 비교 없이는 그 차이가 큰지 작은지 판단할 수 없다.
+:::
+
+## 더 깊이: 승률 차이가 통계적으로 유의한가
+
+강의노트 [〈수리통계학 7. 가설검정 — 유의확률〉](../../notes/math_stat/hypothesis_testing.qmd#유의확률)은 관찰된 차이가 우연만으로 설명되는지를 판단하는 유의확률(p-value) 개념을 다룬다. "홈 승률이 원정보다 1%포인트 높다"는 관찰이 실제 홈어드밴티지를 반영하는지, 아니면 142경기라는 표본에서 우연히 생긴 차이인지는 이 틀로 검증해야 한다. 전반기 30경기만으로 "0.698"이라는 숫자를 내세우는 것은, 유의성 검증 없이 작은 표본의 결과를 과도하게 해석하는 전형적인 예다.
+
+## SDV 관점: "느낌"을 "검증된 패턴"으로 바꾸는 것이 가치화다
+
+홈어드밴티지를 숫자로 검증하는 일은 **요약과 추론(1~2단계)**이지만, 제가 제안하는 **SDV(통계적 데이터 가치화)** 관점에서는 "다들 그렇게 느낀다"는 직관을 데이터로 확인하거나 반박하는 과정 자체가 가치를 만든다. 구단이 선수 기용이나 마케팅 전략을 "홈에서는 다르다"는 막연한 느낌에 기대어 정하기보다, 충분한 표본과 유의성 검증을 거친 숫자에 기대어 결정할 때 그 데이터는 비로소 결정의 근거가 된다. 통계학자의 역할은 느낌을 부정하는 것이 아니라, 그 느낌이 데이터로도 유지되는지를 가려내는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 이번 주를 닫으며 — 위험과 승부도 결국 표본의 문제다
+
+나는 학생들에게 홈어드밴티지가 존재하느냐고 물으면, "그래서 몇 경기를 보고 하는 말인가요?"로 되묻게 한다. 이번 주 다룬 비행기와 자동차, 백신 부작용, 복권 당첨자, 승부차기, 그리고 오늘의 홈어드밴티지는 모두 같은 질문으로 수렴한다. 무엇을 기준으로, 얼마나 많은 사례로 비교했는가. 위험 인식도 승부의 확률도, 결국 그 질문에 얼마나 정직하게 답하느냐에 달려 있다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 2026시즌 KBO 팀별 경기 기록(KT, LG의 홈/전체 성적)은 KBO 공식 기록 페이지를 참고했다: [KBO 팀 순위 — koreabaseball.com](https://www.koreabaseball.com/record/teamrank/teamrank.aspx)
+- LG의 2026시즌 전반기 홈 승률(0.698)은 다음 기사를 참고했다: [홈어드밴티지 실체 있다? 없다?···LG, 홈승률은 만드는 것이다 — 스포츠경향](https://sports.khan.co.kr/article/202607131029003/)
+- 삼성·LG의 통산 홈 승률(0.568, 0.531)은 커뮤니티 집계 자료를 참고했으며 공식 통계와는 집계 기준이 다를 수 있다.
+:::
