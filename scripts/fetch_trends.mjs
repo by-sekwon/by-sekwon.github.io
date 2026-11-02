@@ -62,30 +62,6 @@ async function fetchDaumNewsFor(keyword) {
   }
 }
 
-// ZUM's search results are rendered client-side, so this needs a real page.
-async function fetchZumNewsFor(browser, keyword) {
-  const page = await browser.newPage({ userAgent: USER_AGENT });
-  try {
-    const url = `https://search.zum.com/search.zum?method=uni&option=accu&query=${encodeURIComponent(keyword)}`;
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 20_000 });
-    const link = await page.waitForSelector('li[class*="NewsList-module"][class*="list_item"] a[href]', {
-      timeout: 10_000,
-    }).catch(() => null);
-    if (!link) return null;
-    const href = await link.getAttribute("href");
-    const titleEl = await link.$('[class*="item_title"]');
-    const siteEl = await link.$('[class*="item_site"]');
-    const title = (await titleEl?.textContent())?.trim();
-    const source = (await siteEl?.textContent())?.trim();
-    if (!title || !href) return null;
-    return { title, url: href, source };
-  } catch {
-    return null;
-  } finally {
-    await page.close().catch(() => {});
-  }
-}
-
 async function attachNews(items, lookup) {
   for (const item of items) {
     item.news = await lookup(item.keyword);
@@ -117,24 +93,51 @@ async function fetchDaum(browser) {
   }
 }
 
-async function fetchZum(browser) {
-  const page = await browser.newPage({
-    userAgent: USER_AGENT,
-  });
+// Pulls the JSON array that follows `"<key>":` out of a string, matching
+// brackets while skipping over string contents.
+function extractJsonArray(text, key) {
+  const start = text.indexOf(`"${key}":[`);
+  if (start === -1) return null;
+  const from = start + key.length + 3;
+  let depth = 0;
+  let inStr = false;
+  for (let i = from; i < text.length; i++) {
+    const c = text[i];
+    if (inStr) {
+      if (c === "\\") i++;
+      else if (c === '"') inStr = false;
+    } else if (c === '"') inStr = true;
+    else if (c === "[" || c === "{") depth++;
+    else if ((c === "]" || c === "}") && --depth === 0) return JSON.parse(text.slice(from, i + 1));
+  }
+  return null;
+}
+
+// ZUM's issue trend widget is now a one-card-at-a-time carousel, so the DOM
+// only ever holds the current card. The full ranking (with related news)
+// ships in the Next.js flight payload, which a plain fetch can read.
+async function fetchZum() {
   try {
-    await page.goto("https://www.zum.com/", { waitUntil: "domcontentloaded", timeout: 45_000 });
-    await page.waitForSelector(".issue-word-list__keyword-item", { timeout: 15_000 });
-    const items = await page.$$eval(".issue-word-list__keyword-item", (lis) =>
-      lis.map((li, i) => {
-        const keyword = li.querySelector(".issue-word-list__keyword")?.textContent?.trim() || "";
-        return { rank: i + 1, keyword };
-      }).filter((it) => it.keyword)
-    );
+    const res = await fetch("https://www.zum.com/", { headers: { "User-Agent": USER_AGENT } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+    const flight = [...html.matchAll(/self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)/g)]
+      .map((m) => JSON.parse(m[1]))
+      .join("");
+    const words = extractJsonArray(flight, "issueWords");
+    if (!words?.length) throw new Error("issueWords payload not found");
+    const items = words
+      .slice(0, 10)
+      .map((w, i) => {
+        const n = w.news?.[0];
+        const url = n?.webLink || n?.originalUrl;
+        const news = n?.title && url ? { title: n.title.trim(), url, source: new URL(url).hostname.replace(/^www\./, "") } : null;
+        return { rank: i + 1, keyword: (w.keyword || "").trim(), news };
+      })
+      .filter((it) => it.keyword);
     return { items, status: "ok" };
   } catch (err) {
     return { items: [], status: "error", error: err.message };
-  } finally {
-    await page.close().catch(() => {});
   }
 }
 
@@ -190,10 +193,9 @@ async function main() {
   const date = todayKST();
   const browser = await chromium.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
 
-  const [daum, zum, google] = await Promise.all([fetchDaum(browser), fetchZum(browser), fetchGoogleTrends()]);
+  const [daum, zum, google] = await Promise.all([fetchDaum(browser), fetchZum(), fetchGoogleTrends()]);
 
   if (daum.status === "ok") await attachNews(daum.items, fetchDaumNewsFor);
-  if (zum.status === "ok") await attachNews(zum.items, (keyword) => fetchZumNewsFor(browser, keyword));
 
   await browser.close();
 
