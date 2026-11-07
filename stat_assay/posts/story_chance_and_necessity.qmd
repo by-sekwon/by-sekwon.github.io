@@ -1,0 +1,120 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(우연을 다루는 더 깊은 생각) 우연과 필연 사이 — 확률적 사고를 마무리하며"
+author: "권세혁"
+date: "2026-11-13"
+categories: [통계기초, 확률]
+description: "1970년 생물학자 자크 모노는 《우연과 필연》에서 생명의 진화를 우연과 필연의 긴장으로 설명했다. 지난 8주, 40편의 글로 다룬 확률의 세계도 결국 같은 긴장이었다. 생일 문제부터 몬테카를로 시뮬레이션까지, 우연을 계산 가능한 언어로 바꾸는 여정을 돌아본다."
+---
+
+## 우연과 필연, 그 사이 어딘가
+
+1970년 프랑스의 분자생물학자 자크 모노는 《우연과 필연(Le Hasard et la Nécessité)》이라는 책에서, 생명의 진화가 순수한 우연(무작위 돌연변이)과 필연(자연선택이라는 법칙) 사이의 긴장 속에서 일어난다고 설명했다. 지난 8주, 40편에 걸친 이 "확률과 우연의 세계" 챕터도 결국 같은 질문을 다른 얼굴로 반복해 왔다. **겉보기에 순전히 운처럼 보이는 일도, 계산해보면 필연에 가까운 구조를 갖고 있다**는 것이다.
+
+## 8주 동안 배운 것들을 한 장으로
+
+생일이 겹칠 확률이 50%를 넘는 것도(23명), 로또 1등과 번개가 연간 기준으로는 거의 같은 확률을 갖는 것도(1/814만 vs 1/834만), 몬티홀 문제에서 문을 바꾸면 승률이 두 배가 되는 것도(66.7%), 여론조사가 1,000명으로 ±3.1%포인트의 오차를 갖는 것도 — 모두 "느낌"이 아니라 계산으로 답이 정해지는 문제였다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A recap of eight headline numbers from this chapter's weeks, each one a moment where careful calculation overturned or sharpened a first intuition. From a 50.7% chance of a shared birthday among 23 people to a 66.7% win rate from switching doors in the Monty Hall problem."
+import matplotlib.pyplot as plt
+
+items = [
+    ("Birthday match\n(23 people)", 50.7, "#1e3a2f"),
+    ("Positive test result that's\nreally a true positive\n(0.1% prevalence, 99% test)", 9.0, "#a8790a"),
+    ("Monty Hall:\nswitch-door win rate", 66.7, "#3a6b8c"),
+    ("Belief in blood-type\npersonality theory (Korea)", 57.0, "#8a9a90"),
+    ("100-year flood occurring\nat least once in 100 years", 63.4, "#7a1f2b"),
+    ("KBO home win rate,\none team (2026 season)", 65.2, "#1e3a2f"),
+]
+labels = [i[0] for i in items]
+vals = [i[1] for i in items]
+cols = [i[2] for i in items]
+
+fig, ax = plt.subplots(figsize=(9, 4.8))
+bars = ax.barh(labels, vals, color=cols)
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v:.1f}", xy=(v, b.get_y() + b.get_height() / 2), xytext=(5, 0), textcoords="offset points",
+                va="center", fontsize=9.5)
+ax.set_xlabel("Value (%, illustrative common scale)")
+ax.set_xlim(0, 115)
+ax.set_title("Eight weeks, eight moments where the numbers surprised us", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+이 숫자들의 공통점은, 처음 직관으로 짐작한 값과 실제로 계산한 값이 달랐다는 것이다. 23명이 모이면 "설마 생일이 겹칠까"라고 생각하지만 실제로는 절반 넘게 겹친다. 몬티홀 문제에서는 "반반이겠지"라고 생각하지만 바꾸는 쪽이 두 배 유리하다. 확률적 사고를 배운다는 것은, 이 간극을 메우는 계산법을 익히는 일이었다.
+
+## 8주의 여정을 돌아보며
+
+```{python}
+#| echo: false
+#| fig-cap: "The eight-week arc of this chapter, from the basic tools of probability to the deeper machinery of chance. Each week built on the last: counting and independence gave way to distributions, then to risk, then to the psychology of chance, and finally to the computational tools (Markov chains, Monte Carlo) used to tame it all."
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+weeks = [
+    "W1: Chance is more\ncommon than it feels",
+    "W2: Tools of\nprobability",
+    "W3: Conditional\nprobability & Bayes",
+    "W4: What\ndistributions tell us",
+    "W5: Risk and\nuncertainty",
+    "W6: Behind-the-scenes\nof probability",
+    "W7: Risk perception &\nodds of competition",
+    "W8: Deeper tools\nfor taming chance",
+]
+
+fig, ax = plt.subplots(figsize=(9.5, 3.4))
+for i, w in enumerate(weeks):
+    col = "#1e3a2f" if i < 7 else "#7a1f2b"
+    ax.add_patch(patches.FancyBboxPatch((i * 1.15, 0), 1.0, 1.0, boxstyle="round,pad=0.02", facecolor=col, edgecolor="white"))
+    ax.text(i * 1.15 + 0.5, 0.5, w, ha="center", va="center", color="white", fontsize=7.8)
+    if i < len(weeks) - 1:
+        ax.annotate("", xy=(i * 1.15 + 1.08, 0.5), xytext=(i * 1.15 + 1.0, 0.5),
+                     arrowprops=dict(arrowstyle="->", color="#8a9a90", lw=1.2))
+
+ax.set_xlim(-0.2, 1.15 * len(weeks) + 0.2)
+ax.set_ylim(-0.3, 1.3)
+ax.axis("off")
+ax.set_title("Chapter II: eight weeks from counting to computation", fontsize=10.3, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+1주차는 생일 문제와 로또 명당처럼 "우연이 생각보다 흔하다"는 사실로 시작했다. 2주차에서는 표본공간, 여사건, 독립, 기댓값이라는 기본 도구를 갖췄다. 3주차는 기저율과 베이즈 규칙으로 "조건이 바뀌면 확률도 바뀐다"는 것을 배웠다. 4주차는 정규분포·포아송분포 같은 분포의 모양을 살폈고, 5주차는 그 분포를 위험과 불확실성에 적용했다. 6주차는 몬티홀 문제와 바넘 효과처럼 확률이 직관을 배신하는 순간들을, 7주차는 위험 인식과 승부의 확률을 다뤘다. 그리고 이번 8주차에서는 마르코프 체인과 몬테카를로 시뮬레이션이라는, 더 깊은 계산 도구로 마무리했다.
+
+## 우연은 계산으로 길들일 수 있다, 완전히는 아니지만
+
+이 챕터 전체를 관통하는 메시지가 있다면 이것이다. **우연처럼 보이는 것의 상당수는 사실 계산 가능한 구조를 갖고 있다.** 생일이 겹치는 것, 승부차기에서 먼저 차는 쪽이 유리한 것, 여론조사 오차가 표본 크기의 제곱근에 반비례하는 것 — 이들은 신비로운 운이 아니라 셀 수 있고 예측할 수 있는 패턴이었다. 그러나 동시에, 무한 원숭이 정리가 보여주듯 "확률이 0이 아니다"와 "현실적으로 일어난다"는 전혀 다른 이야기라는 것도 배웠다. 확률적 사고란 우연을 완전히 없애는 것이 아니라, 우연과 필연 사이 어디쯤에 우리가 서 있는지를 정확히 아는 일이다.
+
+::: {.callout-tip}
+## 8주를 통과하며 남은 질문들
+
+1. **"이게 우연인가, 구조인가"를 항상 먼저 물어라.** 계산해보면 생각보다 많은 "우연"이 구조로 설명된다.
+2. **직관과 계산이 다를 때는 계산을 믿어라.** 몬티홀 문제가 보여준 것처럼, 숙련된 사람도 직관만으로는 틀릴 수 있다.
+3. **"확률이 0이 아니다"와 "현실적으로 가능하다"를 구분하라.** 무한 원숭이 정리가 남긴 경고다.
+4. **다음 장으로 넘어갈 준비: 확률에서 추정으로.** 지금까지는 "참값을 안다고 가정하고" 확률을 계산했다면, 다음 장부터는 "참값을 모를 때 데이터로 어떻게 추정할 것인가"를 다룬다.
+:::
+
+## 더 깊이: 이 챕터가 기댄 하나의 틀, 조건부확률
+
+강의노트 [〈수리통계학 1. 확률론 — 조건부 확률〉](../../notes/math_stat/probability.qmd#조건부-확률)은 이 챕터 전체에서 가장 자주 돌아온 개념이다. 베이즈 규칙도, 마르코프 성질도, 확률나무도 모두 $P(A\mid B)$라는 하나의 정의에서 뻗어 나온 가지였다. 8주의 여정을 하나의 수식으로 요약한다면, 바로 이 조건부확률의 정의다.
+
+## SDV 관점: 확률적 사고는 데이터 가치화의 첫 번째 언어다
+
+8주간 다룬 확률적 사고는 제가 제안하는 **SDV(통계적 데이터 가치화)**의 가장 밑바탕에 있는 언어다. 요약(1단계)과 추론(2단계)은 확률이라는 공통 언어 없이는 성립하지 않고, 그 위에 쌓이는 학습(3단계)·융합(4단계)·가치화(5단계) 역시 결국 "불확실성을 숫자로 다루는 능력"에서 출발한다. AI가 아무리 계산을 빠르게 대신해 주더라도, 그 계산이 무엇을 묻고 있는지, 그 답이 어떤 조건 위에 서 있는지를 판단하는 것은 여전히 사람의 몫이다. 이 챕터에서 다진 확률적 사고는, 앞으로 이어질 추정과 검정, 그리고 데이터 가치화의 모든 단계를 받치는 토대다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 우연과 필연 사이에서, 다음 장으로
+
+나는 학생들에게 이 챕터를 마치며 이렇게 말한다. 세상에 완전한 우연도, 완전한 필연도 드물다. 대부분의 일은 그 둘 사이 어딘가에 있고, 확률은 바로 그 "사이"를 측정하는 도구다. 8주 동안 우리는 그 도구를 여러 각도에서 써 봤다. 다음 장에서는 이 도구를 들고, "참값을 모를 때 데이터로 무엇을 말할 수 있는가"라는 새로운 질문으로 넘어간다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 자크 모노(Jacques Monod), 《우연과 필연(Le Hasard et la Nécessité)》(1970) — 생명의 진화를 우연과 필연의 긴장으로 설명한 고전.
+- 이번 글의 "8주 요약" 차트에 쓰인 숫자들은 모두 이 챕터의 앞선 글들에서 이미 계산되고 출처를 밝힌 값을 다시 인용한 것이다.
+:::

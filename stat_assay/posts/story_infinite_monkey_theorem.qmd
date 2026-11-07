@@ -1,0 +1,101 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(우연을 다루는 더 깊은 생각) 확률이 낮아도 불가능은 아니다 — 무한 원숭이 정리"
+author: "권세혁"
+date: "2026-11-12"
+categories: [통계기초, 확률]
+description: "타자기 앞에 원숭이를 무한히 앉혀 두면, 언젠가는 셰익스피어 희곡을 한 글자도 틀리지 않고 쳐낸다는 '무한 원숭이 정리'. 수학적으로는 참이지만, 11글자짜리 단어 하나를 맞히는 데만 평균 3,670조 번의 시도가 필요하다. '확률 0이 아니다'와 '현실적으로 가능하다'는 전혀 다른 말이다."
+---
+
+## 원숭이가 셰익스피어를 쓸 확률
+
+타자기 앞에 원숭이를 앉혀 두고 자판을 무작위로 누르게 한다고 하자. 시간이 무한히 주어진다면, 이 원숭이는 언젠가 셰익스피어의 희곡을 단 한 글자도 틀리지 않고 쳐낼 수 있을까? 수학적으로 답은 "그렇다"다. 한 글자씩 완전히 무작위로 치는 한, 아무리 긴 문장이라도 그 문장과 정확히 일치할 확률은 0보다 크고, 무한히 많은 시도를 허용하면 그 사건은 확률 1로 언젠가 일어난다. 이것이 **무한 원숭이 정리(infinite monkey theorem)**다. 그런데 이 "언젠가"가 과연 얼마나 먼 미래인지 계산해보면, 이 정리의 진짜 의미가 드러난다.
+
+## "banana" 한 단어에도 3억 번이 필요하다
+
+영어 알파벳 26자(공백 제외) 중 하나를 무작위로 치는 원숭이가 특정 단어를 맞힐 확률을 계산해보자. 4글자 단어는 $26^{-4}$, 즉 평균 약 45만 7천 번을 시도해야 한 번 맞힌다. "banana"처럼 6글자면 평균 약 3억 번이 필요하다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Average number of random keystrokes-worth of attempts needed before a monkey randomly types a specific target string, as the string length grows (log scale). Four letters already needs almost half a million tries; eleven letters needs over a quadrillion."
+import matplotlib.pyplot as plt
+
+lengths = [4, 6, 11, 18]
+labels = ["4 letters\n(e.g. 'word')", "6 letters\n('banana')", "11 letters\n('shakespeare')", "18 letters\n(a short phrase)"]
+attempts = [float(26) ** n for n in lengths]
+
+fig, ax = plt.subplots(figsize=(8, 4.8))
+bars = ax.bar(labels, attempts, color=["#8a9a90", "#3a6b8c", "#a8790a", "#7a1f2b"], width=0.55)
+ax.set_yscale("log")
+for b, v in zip(bars, attempts):
+    ax.annotate(f"{v:,.0f}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 5), textcoords="offset points",
+                ha="center", fontsize=8.5, rotation=0)
+ax.set_ylabel("Average attempts needed (log scale)")
+ax.set_title("Each extra letter multiplies the difficulty by 26", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+글자가 하나 늘어날 때마다 필요한 시도 횟수는 26배로 뛴다. 그래서 11글자짜리 단어 하나("shakespeare")를 맞히는 데만 평균 약 **3,670조 번**의 시도가 필요하다. 이것은 아직 한 "단어"일 뿐, 희곡 한 편이 아니다.
+
+## 우주의 나이보다 긴 시간이 필요하다
+
+18글자짜리 짧은 문장 하나를 맞히려면 평균 약 $2.9\times10^{25}$번의 시도가 필요하다. 이 숫자가 얼마나 큰지 가늠하기 위해, 우주의 나이(약 138억 년)를 초 단위로 환산한 값과 비교해보자.
+
+```{python}
+#| echo: false
+#| fig-cap: "The number of attempts needed for an 18-letter random phrase to match a target, compared with the number of seconds since the Big Bang (the age of the universe). The required attempts outnumber the seconds in the universe's entire history by a factor of about 68 million - and this is still just one short phrase, not a full play."
+import matplotlib.pyplot as plt
+
+labels = ["Seconds since\nthe Big Bang", "Attempts needed for an\n18-letter random match"]
+vals = [13.8e9 * 365 * 24 * 3600, float(26) ** 18]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.8))
+bars = ax.bar(labels, vals, color=["#3a6b8c", "#7a1f2b"], width=0.5)
+ax.set_yscale("log")
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v:.2e}", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 5), textcoords="offset points",
+                ha="center", fontsize=9.5)
+ax.set_ylabel("Count (log scale)")
+ax.set_title("A short phrase already needs more tries than the universe has had seconds", fontsize=9.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+우주가 탄생한 순간부터 지금까지 흐른 모든 초를 다 합쳐도, 18글자짜리 문장 하나를 무작위로 맞히는 데 필요한 평균 시도 횟수에는 턱없이 못 미친다. 셰익스피어의 희곡 《햄릿》 전체(수만 자)를 맞히는 데 필요한 시도 횟수는 이보다도 비교할 수 없이 더 크다.
+
+## "확률 0이 아니다"와 "현실적으로 가능하다"는 다르다
+
+무한 원숭이 정리가 주는 교훈은 역설적이다. 수학적으로는 이 사건이 "불가능하지 않다"(확률이 정확히 0은 아니다)는 것이 참이지만, 실제로 일어나기를 기대할 수 있는 시간 규모는 우주의 나이를 가볍게 뛰어넘는다. 이 시리즈 9월의 "희귀한 사건이 매일 뉴스에 나오는 이유"에서 다룬 **다중 기회**의 논리와 정반대의 교훈이다. 그 글에서는 기회(모집단)가 충분히 많으면 극히 드문 사건도 현실에서 자주 일어난다는 것을 보였다. 오늘은 그 "충분히 많은 기회"가 얼마나 비현실적으로 커야 하는지를 숫자로 보여준다. 확률이 0이 아니라는 수학적 사실과, 그 일이 실제로 일어날 가능성이 있다는 현실적 판단 사이에는 이렇게 큰 간극이 있을 수 있다.
+
+::: {.callout-tip}
+## "확률상 가능하다"는 말을 들으면
+
+1. **"가능하다"가 "0이 아니다"라는 뜻인지, "현실적으로 기대할 만하다"는 뜻인지 구분하라.** 둘은 전혀 다른 주장이다.
+2. **그 사건에 필요한 시도 횟수를 실제로 계산해보라.** 자릿수만 세어봐도 현실성을 가늠할 수 있다.
+3. **비교 대상을 구체적인 물리량(시간, 인구, 우주의 나이)으로 바꿔보라.** 추상적인 "아주 작은 확률"보다 훨씬 와닿는다.
+4. **무한 원숭이 정리는 경고이지 희망이 아니다.** "언젠가는 된다"는 수학적 참이 "기다릴 가치가 있다"는 뜻은 아니다.
+:::
+
+## 더 깊이: 베르누이 시행의 반복과 독립성
+
+이 계산은 매 글자가 26가지 중 하나로, 이전 글자와 **독립적으로** 결정된다는 가정 위에 서 있다. 강의노트 [〈수리통계학 1. 확률론 — 독립〉](../../notes/math_stat/probability.qmd#독립)이 정의하는 독립사건의 곱셈 규칙 $P(A\cap B)=P(A)P(B)$을 글자 수만큼 반복해서 곱한 것이 바로 $26^{-n}$이라는 식이다. 독립사건이 하나씩 더해질 때마다 확률이 얼마나 빠르게 작아지는지, 이보다 극적으로 보여주는 예는 드물다.
+
+## SDV 관점: "가능성 0이 아니다"는 설계의 출발점이지 결론이 아니다
+
+무한 원숭이 정리의 역설을 이해하는 일은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 리스크를 설계할 때의 균형 감각을 길러준다. "이론적으로 발생 가능하다"는 이유만으로 모든 극단적 시나리오에 무한한 자원을 투입할 수는 없다. 10월에 다룬 저확률·고피해 위험처럼, 현실적으로 의미 있는 시간·자원 범위 안에서 "일어날 법한" 위험과 "수학적으로만 가능한" 위험을 구분하는 것이 데이터를 가치 있는 결정으로 바꾸는 균형점이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 가능하다는 것과 기다릴 만하다는 것은 다르다
+
+나는 학생들에게 "확률이 0은 아니니까 가능하다"는 말을 들으면 반드시 "그래서 몇 번을 시도해야 하는가"를 되묻게 한다. 원숭이가 셰익스피어를 쓸 확률은 0이 아니지만, 그 "언젠가"는 우리가 상상할 수 있는 어떤 시간 범위에도 들어오지 않는다. 수학의 참과 현실의 가능성은 이렇게 멀리 떨어져 있을 수 있다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 무한 원숭이 정리는 에밀 보렐(1913)이 처음 논의한 것으로 널리 알려진 확률론의 고전적 사고실험이다.
+- 우주의 나이(약 138억 년)는 천문학계에서 일반적으로 인용되는 근사값이다.
+:::

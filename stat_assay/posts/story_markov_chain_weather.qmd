@@ -1,0 +1,121 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(우연을 다루는 더 깊은 생각) 오늘 날씨가 내일 날씨에 미치는 영향 — 마르코프 체인 쉽게 이해하기"
+author: "권세혁"
+date: "2026-11-09"
+categories: [통계기초, 확률]
+description: "내일 날씨를 맞히는 데 지난주 날씨까지 알 필요는 없다. 오늘이 맑았는지 흐렸는지만 알면 충분하다는 것이 '마르코프 성질'이다. 이 단순한 가정 하나로, 장기적으로 맑은 날과 비 오는 날의 비율이 어디로 수렴하는지까지 계산할 수 있다."
+---
+
+## 내일 날씨를 맞히는 데 지난주 날씨는 필요 없다
+
+내일 비가 올지 예측하고 싶을 때, 지난주 날씨까지 알아야 할까? 직관적으로도 "오늘 날씨"가 가장 중요한 단서이고, 그제나 지지난 주의 날씨는 내일을 맞히는 데 거의 도움이 되지 않는다. 이렇게 **"바로 다음 상태는 현재 상태에만 의존하고, 그 이전의 과거에는 의존하지 않는다"**는 성질을 **마르코프 성질(Markov property)**이라 하고, 이 성질을 만족하는 확률 과정을 **마르코프 체인(Markov chain)**이라 부른다. 복잡해 보이지만, 조건부확률의 언어로 쓰면 한 줄이다.
+
+$$P(\text{내일}\mid\text{오늘, 어제, 그제}, \ldots) = P(\text{내일}\mid\text{오늘})$$
+
+## 두 가지 날씨, 두 개의 화살표
+
+가장 간단한 예로 날씨를 "맑음"과 "비" 두 가지 상태로만 나누고, 오늘 상태에 따라 내일 상태가 어떤 확률로 바뀌는지 가정해보자. 맑은 날 다음 날에도 맑을 확률이 70%(비로 바뀔 확률 30%), 비 온 날 다음 날에도 비가 올 확률이 60%(맑음으로 바뀔 확률 40%)라고 하자. 이 네 개의 숫자가 전부다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A simple two-state weather Markov chain: from a sunny day, tomorrow is sunny with probability 0.7 and rainy with 0.3; from a rainy day, tomorrow is rainy with probability 0.6 and sunny with 0.4. Only today's state matters for tomorrow - nothing further back."
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+sun = (2, 2.5)
+rain = (6, 2.5)
+ax.add_patch(patches.Circle(sun, 0.8, facecolor="#a8790a", edgecolor="white"))
+ax.add_patch(patches.Circle(rain, 0.8, facecolor="#3a6b8c", edgecolor="white"))
+ax.text(*sun, "Sunny", ha="center", va="center", color="white", fontsize=11, fontweight="bold")
+ax.text(*rain, "Rainy", ha="center", va="center", color="white", fontsize=11, fontweight="bold")
+
+ax.annotate("", xy=(5.2, 2.5), xytext=(2.8, 2.5), arrowprops=dict(arrowstyle="->", color="#1e3a2f", lw=1.8))
+ax.text(4, 2.8, "0.3", ha="center", fontsize=10, color="#1e3a2f")
+ax.annotate("", xy=(2.8, 2.1), xytext=(5.2, 2.1), arrowprops=dict(arrowstyle="->", color="#1e3a2f", lw=1.8))
+ax.text(4, 1.8, "0.4", ha="center", fontsize=10, color="#1e3a2f")
+ax.annotate("", xy=(1.6, 3.2), xytext=(2.4, 3.2),
+            arrowprops=dict(arrowstyle="->", color="#7a1f2b", lw=1.5, connectionstyle="arc3,rad=2.2"))
+ax.text(1.0, 1.6, "0.7", ha="center", fontsize=10, color="#7a1f2b")
+ax.annotate("", xy=(6.4, 3.2), xytext=(5.6, 3.2),
+            arrowprops=dict(arrowstyle="->", color="#7a1f2b", lw=1.5, connectionstyle="arc3,rad=-2.2"))
+ax.text(7.0, 1.6, "0.6", ha="center", fontsize=10, color="#7a1f2b")
+
+ax.set_xlim(-1, 9)
+ax.set_ylim(0.5, 4.5)
+ax.axis("off")
+ax.set_title("A two-state Markov chain for weather", fontsize=10.5, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+## 100일, 1,000일을 시뮬레이션하면 비율이 한 곳으로 모인다
+
+이 규칙만으로 날씨를 계속 생성해보자. 첫날이 맑든 비가 오든 상관없이, 충분히 많은 날이 지나면 맑은 날과 비 오는 날의 비율이 특정한 값으로 수렴한다. 이 값을 **정상분포(stationary distribution)**라 부르며, 전이확률로부터 직접 계산할 수 있다. 이 모델에서는 맑음이 약 **57.1%**, 비가 약 **42.9%**로 수렴한다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A simulated 2,000-day run of the weather chain. The running share of sunny days (solid line) fluctuates early on but settles near the analytically computed stationary probability of 57.1% (dashed line), regardless of whether the chain started sunny or rainy."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(16)
+days = 2000
+state = 0  # 0 = sunny, 1 = rainy
+history = []
+for _ in range(days):
+    history.append(state)
+    if state == 0:
+        state = 0 if rng.random() < 0.7 else 1
+    else:
+        state = 0 if rng.random() < 0.4 else 1
+
+history = np.array(history)
+running_sunny_share = np.cumsum(history == 0) / np.arange(1, days + 1) * 100
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.plot(running_sunny_share, color="#1e3a2f", linewidth=1.8)
+ax.axhline(57.14, color="#7a1f2b", linestyle="--", linewidth=1.6, label="stationary probability: 57.1%")
+ax.set_xlabel("Day")
+ax.set_ylabel("Running share of sunny days (%)")
+ax.set_ylim(30, 80)
+ax.legend(frameon=False)
+ax.set_title("Long-run weather settles near the stationary distribution", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 마르코프 체인이 쓰이는 곳
+
+이 단순한 아이디어는 날씨 예보 모델뿐 아니라, 구글이 웹페이지의 중요도를 매기는 페이지랭크(PageRank) 알고리즘, 문장을 한 글자씩 예측하는 언어 모델의 초기 버전, 질병의 상태 전이(건강→경증→중증→회복)를 추적하는 역학 모델에도 그대로 쓰인다. 공통점은 모두 "다음 상태는 현재 상태에만 의존한다"는 단순화를 받아들인다는 것이다. 현실은 더 복잡하지만, 이 단순화만으로도 놀라울 만큼 많은 것을 설명할 수 있다.
+
+::: {.callout-tip}
+## 마르코프 체인을 알아보는 법
+
+1. **"다음에 무슨 일이 일어날지 알기 위해 과거가 얼마나 필요한가"를 물어라.** 현재 상태만으로 충분하다면 마르코프 체인으로 모형화할 수 있다.
+2. **상태와 전이확률을 먼저 정의하라.** 몇 가지 상태가 있고, 상태 사이를 오가는 확률이 얼마인지부터 적어야 한다.
+3. **장기 비율(정상분포)과 당장의 다음 상태를 구분하라.** 오늘 날씨를 안다고 내일이 확정되지는 않지만, 장기 비율은 안정적으로 예측된다.
+4. **단순화가 어디서 깨지는지 의심하라.** 실제로는 "장마철"처럼 계절이 전이확률 자체를 바꾸기도 한다.
+:::
+
+## 더 깊이: 조건부확률의 반복으로 보는 마르코프 성질
+
+강의노트 [〈수리통계학 1. 확률론 — 조건부 확률〉](../../notes/math_stat/probability.qmd#조건부-확률)이 정의하는 $P(A\mid B)$의 틀을 그대로 가져오면, 마르코프 성질은 "내일의 조건부확률이 오늘이라는 조건 하나로 완전히 결정되고, 그 이전 조건들은 더 이상 정보를 주지 않는다"는 특수한 경우다. 조건부확률이라는 기본 도구 하나가, 시간에 따라 변하는 복잡한 현상을 다루는 틀로 확장되는 셈이다.
+
+## SDV 관점: "다음 상태"를 예측하는 모델이 데이터에 가치를 더한다
+
+마르코프 체인으로 다음 상태를 예측하는 일은 **통계적 학습(3단계)**에 가까운 작업이며, **SDV(통계적 데이터 가치화)** 관점에서는 고객 행동, 설비 고장, 재고 흐름처럼 "상태가 바뀌어 가는" 데이터에 폭넓게 적용된다. 고객이 '활성→휴면→이탈' 상태를 오가는 비율을 마르코프 체인으로 추정하면, 단순히 "이번 달 이탈률"을 보고하는 데 그치지 않고 "앞으로 안정적으로 수렴할 장기 고객 구성비"까지 예측할 수 있다. 현재 상태를 아는 것만으로 미래를 유용하게 예측할 수 있는 지점을 찾아내는 것이, 데이터를 가치 있는 결정으로 연결하는 기술이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 복잡한 과거 대신 오늘 하나만 보라
+
+나는 학생들에게 마르코프 체인을 "기억력이 하루짜리인 확률 모델"이라고 설명한다. 어제와 그제의 날씨를 모두 기억하는 모델보다, 오늘 하루만 기억하는 단순한 모델이 오히려 다루기 쉽고 예측 가능한 장기 패턴을 보여준다는 것이 이 체인의 매력이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 전이확률(맑음→맑음 70%, 비→비 60%)은 마르코프 체인의 작동 방식을 보여주기 위한 가상의 설명용 수치다. 실제 기상 현상의 전이확률은 계절과 지역에 따라 다르다.
+:::

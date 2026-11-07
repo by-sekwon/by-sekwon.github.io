@@ -1,0 +1,109 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(우연을 다루는 더 깊은 생각) 복잡한 사건을 가지 치듯 풀어내기 — 확률나무 그려보기"
+author: "권세혁"
+date: "2026-11-10"
+categories: [통계기초, 확률]
+description: "두 공장에서 부품을 들여오는 회사가 있다. 공장마다 불량률이 다르고 납품 비중도 다르다면, 전체 불량률과 '이 불량품이 어느 공장 것인가'를 동시에 계산해야 한다. 공식을 외우는 대신, 가지를 치며 그려보면 답이 눈에 보인다."
+---
+
+## 두 공장, 두 가지 불량률
+
+어느 회사가 부품의 60%를 A공장에서, 40%를 B공장에서 납품받는다고 하자. A공장의 불량률은 2%, B공장의 불량률은 5%다. 이 회사가 받는 부품 전체의 불량률은 얼마일까? 그리고 불량품 하나가 발견됐을 때, 그것이 A공장 것일 확률은 얼마일까? 이런 문제는 식으로 바로 풀려고 하면 헷갈리기 쉽다. 이럴 때 가장 확실한 방법은 **확률나무(probability tree)**를 그려보는 것이다.
+
+## 가지를 치며 모든 경우를 펼치기
+
+확률나무는 한 사건이 일어나는 과정을 단계별로 가지처럼 펼쳐 그린 그림이다. 첫 번째 가지는 "어느 공장에서 왔는가"(A 60% / B 40%), 두 번째 가지는 그 공장에서 "불량인가 정상인가"(A는 불량 2% / 정상 98%, B는 불량 5% / 정상 95%)다. 각 끝가지의 확률은 그 경로를 따라오는 동안의 확률을 모두 곱한 값이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A probability tree for parts from two factories. The first branch splits by factory (A: 60%, B: 40%); each factory branch then splits into defective/good. Multiplying along each path gives the probability of reaching that end point - for example, A and defective: 0.6 x 0.02 = 0.012 (1.2%)."
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(9, 5.2))
+
+ax.text(0.3, 2.5, "Start", ha="center", va="center", fontsize=10, color="#1e3a2f", fontweight="bold")
+
+ax.annotate("", xy=(2.5, 4), xytext=(0.6, 2.6), arrowprops=dict(arrowstyle="->", color="#1e3a2f", lw=1.5))
+ax.text(1.5, 3.6, "Factory A\n60%", ha="center", fontsize=9.5, color="#1e3a2f")
+ax.annotate("", xy=(2.5, 1), xytext=(0.6, 2.4), arrowprops=dict(arrowstyle="->", color="#1e3a2f", lw=1.5))
+ax.text(1.5, 1.3, "Factory B\n40%", ha="center", fontsize=9.5, color="#1e3a2f")
+
+ax.text(2.7, 4, "A", ha="center", va="center", fontsize=10, fontweight="bold", color="#3a6b8c")
+ax.text(2.7, 1, "B", ha="center", va="center", fontsize=10, fontweight="bold", color="#a8790a")
+
+for ybase, pcol, name, pdef, pgood in [(4, "#3a6b8c", "A", 0.02, 0.98), (1, "#a8790a", "B", 0.05, 0.95)]:
+    ax.annotate("", xy=(5.5, ybase + 0.6), xytext=(2.9, ybase + 0.1), arrowprops=dict(arrowstyle="->", color=pcol, lw=1.3))
+    ax.text(4.1, ybase + 0.65, f"Defective\n{pdef*100:.0f}%", ha="center", fontsize=8.8, color=pcol)
+    ax.annotate("", xy=(5.5, ybase - 0.6), xytext=(2.9, ybase - 0.1), arrowprops=dict(arrowstyle="->", color=pcol, lw=1.3))
+    ax.text(4.1, ybase - 0.65, f"Good\n{pgood*100:.0f}%", ha="center", fontsize=8.8, color=pcol)
+    joint_def = (0.6 if name == "A" else 0.4) * pdef
+    joint_good = (0.6 if name == "A" else 0.4) * pgood
+    ax.text(5.8, ybase + 0.6, f"{joint_def*100:.1f}%", ha="left", va="center", fontsize=9.5, color=pcol, fontweight="bold")
+    ax.text(5.8, ybase - 0.6, f"{joint_good*100:.1f}%", ha="left", va="center", fontsize=9.5, color=pcol, fontweight="bold")
+
+ax.set_xlim(-0.2, 7.5)
+ax.set_ylim(-0.5, 5.3)
+ax.axis("off")
+ax.set_title("Probability tree: factory x quality outcome", fontsize=10.5, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+끝가지 네 개의 확률을 모두 더하면 1(100%)이 되고, "불량"으로 끝나는 두 가지(A·불량 1.2%, B·불량 2.0%)만 더하면 전체 불량률 **3.2%**가 나온다. 전확률 법칙을 공식으로 외우지 않아도, 나무를 보면 "가지를 따라 곱하고, 같은 결과로 끝나는 가지를 더한다"는 규칙이 저절로 보인다.
+
+## 나무를 거꾸로 읽으면 베이즈 규칙이 된다
+
+이제 반대로 물어보자. 불량품 하나가 발견됐다면, 그것이 A공장 것일 확률은 얼마일까? 나무에서 "불량"으로 끝나는 두 가지(A·불량 1.2%, B·불량 2.0%)만 남기고, 그 안에서 A가 차지하는 비중을 구하면 된다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Reading the same tree backward: among all the ways to end up with a defective part (1.2% via Factory A, 2.0% via Factory B), what share came from each factory? Even though Factory B supplies fewer parts overall (40% vs 60%), it produces the majority of defects (62.5%) because its defect rate is so much higher."
+import matplotlib.pyplot as plt
+
+labels = ["Prior: share of\nall parts from A", "Posterior: share of\nDEFECTIVE parts from A"]
+vals = [60, 0.012 / 0.032 * 100]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.5))
+bars = ax.bar(labels, vals, color=["#8a9a90", "#7a1f2b"], width=0.5)
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=11)
+ax.set_ylabel("Share (%)")
+ax.set_ylim(0, 75)
+ax.set_title("Factory A makes most parts, but Factory B makes most defects", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+A공장이 전체 부품의 60%를 차지하는데도, 불량품만 놓고 보면 A공장 것은 37.5%에 불과하고 오히려 B공장 것이 62.5%로 더 많다. 납품 비중은 낮아도 불량률이 훨씬 높은 B공장이, 불량품이라는 "조건" 안에서는 더 큰 비중을 차지하게 된 것이다. 품질 관리 담당자가 불량품을 발견했을 때 어느 공장부터 점검해야 할지, 나무 하나로 바로 답이 나온다.
+
+::: {.callout-tip}
+## 확률나무를 그리는 법
+
+1. **첫 단계부터 끝까지 가지를 빠짐없이 나눠라.** 한 단계에서 나올 수 있는 모든 경우를 나열해야 한다.
+2. **각 가지를 따라가며 확률을 곱하라.** 경로 하나의 확률은 그 경로 위 모든 가지의 곱이다.
+3. **같은 결과로 끝나는 가지는 더하라.** "전체 불량률"처럼 여러 경로가 같은 결과에 이르면 그 확률들을 합친다.
+4. **나무를 거꾸로 읽으면 베이즈 갱신이 된다.** 특정 결과로 끝나는 가지들 안에서 비중을 다시 계산하면 사후확률이 나온다.
+:::
+
+## 더 깊이: 강의노트의 구슬 뽑기 확률나무
+
+강의노트 [〈수리통계학 1. 확률론 — 베이즈 규칙〉](../../notes/math_stat/probability.qmd#베이즈-규칙)에는 노랑·초록 두 주머니에서 구슬을 뽑는 예제가 확률나무 그림과 함께 실려 있다. 주사위 결과에 따라 어느 주머니에서 뽑을지가 정해지고, 그 주머니 안에서 빨강·파랑 구슬이 나올 확률이 다시 갈라지는 구조는 오늘 다룬 공장·불량품 예제와 정확히 같은 모양이다. 전확률 법칙과 베이즈 규칙은 결국 이 나무를 "앞으로 읽는가, 거꾸로 읽는가"의 차이일 뿐이다.
+
+## SDV 관점: 나무로 그려보면 숨어 있던 우선순위가 드러난다
+
+확률나무로 복잡한 사건을 분해하는 일은 **요약과 추론(1~2단계)**의 실전 도구이며, **SDV(통계적 데이터 가치화)** 관점에서는 자원을 어디에 먼저 투입할지 결정하는 데 직접 쓰인다. "불량품의 몇 %가 B공장 것인가"라는 질문에 나무로 답하면, 전체 매입량은 적어도 품질 점검 인력을 B공장에 더 투입해야 한다는 결론이 자연스럽게 나온다. 복잡한 사건을 말로 설명하기보다 나무로 그려 보여주면, 데이터 안에 숨어 있던 우선순위가 누구에게나 명확하게 전달된다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 복잡한 확률 문제는 일단 그려라
+
+나는 학생들에게 확률 문제가 두 단계 이상 얽히면 공식부터 찾지 말고 나무부터 그리라고 말한다. 전확률 법칙도, 베이즈 규칙도 결국 같은 나무를 앞으로 읽느냐 거꾸로 읽느냐의 차이다. 가지를 치고, 곱하고, 더하는 세 동작만 기억하면 아무리 복잡한 사건도 눈으로 풀린다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 공장 A·B의 납품 비중과 불량률(각각 60%/2%, 40%/5%)은 확률나무의 사용법을 보여주기 위한 가상의 설명용 수치다.
+:::

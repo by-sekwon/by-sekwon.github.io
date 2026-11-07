@@ -1,0 +1,108 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(우연을 다루는 더 깊은 생각) 컴퓨터로 확률을 추정하는 법 — 몬테카를로 시뮬레이션이란"
+author: "권세혁"
+date: "2026-11-11"
+categories: [통계기초, 확률]
+description: "원의 넓이를 공식 없이도 구할 수 있다. 정사각형 안에 점을 무작위로 수만 개 찍고, 그중 원 안에 떨어진 비율만 세면 된다. 이 시리즈의 거의 모든 글에서 써 온 '시뮬레이션'이라는 방법에 정식으로 이름을 붙이고, 그 원리를 공식 하나로 확인해본다."
+---
+
+## 이 시리즈가 계속 써 온 방법에 이름을 붙이면
+
+지난 넉 달 동안 이 시리즈는 로또 당첨 확률, 몬티홀 문제, 여론조사 표본오차 같은 질문에 답할 때마다 똑같은 방법을 썼다. 컴퓨터로 무작위 숫자를 수만~수십만 번 생성해서, 원하는 사건이 몇 번 일어나는지 세어보는 방법이다. 이 방법에는 정식 이름이 있다. 제2차 세계대전 중 핵무기 개발에 참여했던 수학자 스타니스와프 울람과 존 폰 노이만이 중성자의 움직임을 계산하기 위해 고안했고, 도박으로 유명한 모나코의 **몬테카를로** 카지노 이름을 따서 **몬테카를로 시뮬레이션**이라 불렀다.
+
+## 원의 넓이를 점 찍어서 구하기
+
+몬테카를로 방법의 원리를 가장 잘 보여주는 고전적인 예가 원주율 $\pi$ 추정이다. 한 변의 길이가 2인 정사각형 안에 반지름 1인 원을 꼭 맞게 그려 넣는다. 이 정사각형 안에 점을 완전히 무작위로 찍으면, 점이 원 안에 떨어질 확률은 "원의 넓이 ÷ 정사각형의 넓이" $= \pi/4$다. 따라서 점을 아주 많이 찍고 원 안에 떨어진 비율을 4배 하면 $\pi$의 근사값을 얻는다 — 미적분을 전혀 쓰지 않고, 순전히 세는 것만으로.
+
+```{python}
+#| echo: false
+#| fig-cap: "10,000 random points thrown into a 2x2 square containing a unit circle. Points landing inside the circle (blue) versus outside (grey). The share inside, multiplied by 4, estimates pi - here giving 3.1420, close to the true value 3.14159."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(314)
+n = 10000
+x = rng.uniform(-1, 1, n)
+y = rng.uniform(-1, 1, n)
+inside = x ** 2 + y ** 2 <= 1
+pi_est = inside.mean() * 4
+
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.scatter(x[inside], y[inside], s=3, color="#3a6b8c", label=f"inside circle ({inside.sum()})")
+ax.scatter(x[~inside], y[~inside], s=3, color="#c7cdc9", label=f"outside circle ({(~inside).sum()})")
+circle = plt.Circle((0, 0), 1, fill=False, color="#1e3a2f", linewidth=1.8)
+ax.add_patch(circle)
+ax.set_aspect("equal")
+ax.set_xlim(-1.05, 1.05)
+ax.set_ylim(-1.05, 1.05)
+ax.legend(frameon=False, loc="upper right", fontsize=8.5)
+ax.set_title(f"pi estimate from 10,000 points: {pi_est:.4f}", fontsize=10.5, color="#1e3a2f")
+ax.axis("off")
+plt.tight_layout()
+plt.show()
+```
+
+## 점의 개수가 늘어날수록 답은 정확해진다
+
+점을 10개만 찍으면 추정값이 2.8이 나올 수도, 3.6이 나올 수도 있다. 그런데 점을 100개, 1,000개, 100만 개로 늘려가면 추정값은 점점 참값 3.14159…에 가까워진다. 이것이 바로 지난주에 다룬 **큰 수의 법칙**이 작동하는 모습이다 — 몬테카를로 시뮬레이션은 결국 "무작위로 많이 시도해서, 큰 수의 법칙이 참값으로 수렴시켜 주기를 기다리는" 방법이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Pi estimates from a single run of random points, as the number of points grows from 10 to 1,000,000 (log scale). Early estimates swing wildly; by a million points, the estimate has settled within a hair of the true value (dashed line) - the law of large numbers in action."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng2 = np.random.default_rng(7)
+max_n = 1_000_000
+xs = rng2.uniform(-1, 1, max_n)
+ys = rng2.uniform(-1, 1, max_n)
+inside_cum = np.cumsum(xs ** 2 + ys ** 2 <= 1)
+ns = np.unique(np.logspace(1, 6, 60).astype(int))
+estimates = inside_cum[ns - 1] / ns * 4
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.plot(ns, estimates, color="#1e3a2f", linewidth=1.8, marker="o", markersize=3)
+ax.axhline(np.pi, color="#7a1f2b", linestyle="--", linewidth=1.6, label=f"true value: {np.pi:.5f}")
+ax.set_xscale("log")
+ax.set_xlabel("Number of random points (log scale)")
+ax.set_ylabel("Estimated value of pi")
+ax.legend(frameon=False)
+ax.set_title("More random points, less error - the Monte Carlo guarantee", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 공식이 없거나 너무 복잡할 때 특히 유용하다
+
+원주율은 이미 정확한 공식이 있으니 몬테카를로로 구할 이유가 없다. 이 방법의 진짜 힘은 **정확한 공식을 세우기 어려운 문제**에서 드러난다. 이 시리즈에서 로또 연속 추첨 중복 확률, 플레이리스트 셔플의 뭉침 정도, 몬티홀 문제의 승률을 모두 식을 유도하는 대신 시뮬레이션으로 구했던 이유가 여기 있다. 보험사의 파산 확률, 신약의 임상시험 성공 확률, 복잡한 금융 상품의 가격처럼 변수가 많고 얽혀 있는 문제일수록, 정확한 공식 대신 "컴퓨터로 수만 번 돌려 세어보는" 몬테카를로 방법이 현실적인 답을 준다.
+
+::: {.callout-tip}
+## 몬테카를로 시뮬레이션을 쓰는 법
+
+1. **문제를 "확률적으로 재현 가능한 실험"으로 바꿔라.** 무작위 요소를 어떻게 생성할지부터 정해야 한다.
+2. **충분히 많이 반복하라.** 시도 횟수가 적으면 큰 수의 법칙이 아직 작동하지 않은 것이다.
+3. **반복 횟수를 늘려가며 추정값이 안정되는지 확인하라.** 안정되지 않았다면 더 반복해야 한다.
+4. **정확한 공식이 있다면 그것으로 검산하라.** 오늘처럼 참값을 아는 문제로 방법 자체를 먼저 검증하는 것이 안전하다.
+:::
+
+## 더 깊이: 확률표본 생성과 시뮬레이션
+
+강의노트 [〈수리통계학 4. 표본분포 — 확률표본 생성: 시뮬레이션〉](../../notes/math_stat/random_sample.qmd#확률표본-생성-시뮬레이션)은 난수를 이용해 불확실성을 모델링하고, 복잡한 문제의 근사해를 찾는 몬테카를로 시뮬레이션의 쓰임을 정리한다. 날씨 예보 모델링, 복잡한 알고리즘 검증, 금융 모델의 변동성 반영이 모두 같은 원리 — 난수를 생성하고 그 결과를 세는 것 — 위에 서 있다.
+
+## SDV 관점: 공식이 없는 질문에도 답을 주는 것이 시뮬레이션의 가치다
+
+몬테카를로 시뮬레이션은 **통계적 학습(3단계)**의 대표적인 도구이며, **SDV(통계적 데이터 가치화)** 관점에서는 "정확한 공식이 없어서 포기했던 질문"에 답을 주는 실용적인 다리다. 복잡한 공급망의 지연 확률, 여러 리스크가 얽힌 신사업의 손익 분포처럼 해석적으로 풀기 어려운 문제도, 가정을 명확히 세우고 충분히 반복해 시뮬레이션하면 쓸 만한 근사치를 얻을 수 있다. 데이터에 가치를 더하는 일은 완벽한 공식을 기다리는 것이 아니라, 지금 가진 가정으로 수만 번 실험해 현실적인 답을 만들어내는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 모르면, 많이 해보고 세어보라
+
+나는 학생들에게 확률 문제가 손으로 풀리지 않을 때 좌절하지 말라고 말한다. 공식이 안 보이면, 컴퓨터에게 그 상황을 수만 번 반복시키고 결과를 세어보라고 시키면 된다. 몬테카를로 시뮬레이션은 이 시리즈 전체를 관통해 온 방법에, 비로소 붙인 이름이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 몬테카를로 시뮬레이션의 기원(스타니스와프 울람, 존 폰 노이만, 맨해튼 프로젝트와의 연관, 모나코 몬테카를로 카지노에서 유래한 이름)은 이 방법에 관한 통계학·전산수학 문헌에 널리 소개된 역사적 설명이다.
+:::
