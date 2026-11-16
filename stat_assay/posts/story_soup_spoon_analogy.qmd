@@ -1,0 +1,130 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(표본은 어떻게 전체를 말하는가) 국 한 숟가락으로 냄비 전체의 맛을 알 수 있을까? — 표본조사의 비유"
+author: "권세혁"
+date: "2026-11-16"
+categories: [통계기초, 표본조사]
+description: "된장찌개를 끓이면서 냄비 전체를 다 먹어보고 간을 맞추는 사람은 없다. 잘 저은 뒤 한 숟가락만 떠서 맛보면 충분하다. 그런데 바닥에 가라앉은 건더기만 떠먹으면, 같은 한 숟가락도 전혀 다른 맛을 알려준다. 표본조사의 핵심 원리가 이 국 한 숟가락 안에 다 들어 있다."
+---
+
+## 냄비를 다 먹어봐야 간을 알 수 있는 건 아니다
+
+된장찌개를 끓이던 사람이 간을 보려고 냄비를 통째로 다 먹어보는 일은 없다. 잘 휘저은 뒤 숟가락으로 한 번 떠서 맛보면, 그 한 숟가락의 맛이 냄비 전체의 맛을 대표한다고 믿는다. 왜 이 믿음이 합리적일까? 국물을 충분히 저었다면, 숟가락이 국물의 **어느 지점**에서 떠지든 소금과 된장의 농도가 거의 같기 때문이다. 이것이 바로 통계학에서 말하는 **표본조사**의 핵심 원리다 — 전체(모집단)를 대표하도록 잘 섞인 뒤, 일부(표본)만 들여다보면 전체를 짐작할 수 있다는 것.
+
+## 젓지 않은 국은 어디서 뜨느냐에 따라 맛이 다르다
+
+그런데 이 비유가 성립하려면 조건이 하나 있다. **국물이 고르게 섞여 있어야 한다.** 만약 국을 젓지 않은 채 바닥에 건더기가 가라앉아 있다면, 윗부분에서 뜬 숟가락과 바닥에서 뜬 숟가락은 완전히 다른 맛을 보여준다. 숟가락(표본) 자체는 똑같이 한 숟가락인데, **어디서 떴는가**에 따라 "짜다"와 "싱겁다"는 정반대의 결론이 나올 수 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A pot of soup simulated as 1,000 particles of broth and seasoning. Left: well-stirred, so a random spoonful (red circle) matches the pot's true seasoning level regardless of where it's taken. Right: unstirred, with seasoning settled near the bottom - a spoonful taken near the surface badly underestimates the true level."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(11)
+n = 1000
+
+fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.6))
+
+# well-stirred: seasoning particles spread uniformly
+x1 = rng.uniform(0, 10, n)
+y1 = rng.uniform(0, 10, n)
+is_season1 = rng.random(n) < 0.15
+axes[0].scatter(x1[~is_season1], y1[~is_season1], s=6, color="#e8dcc0", label="broth")
+axes[0].scatter(x1[is_season1], y1[is_season1], s=10, color="#7a1f2b", label="seasoning")
+axes[0].add_patch(plt.Circle((5, 5), 1.3, fill=False, color="#1e3a2f", linewidth=2))
+axes[0].set_title("Well-stirred: any spoonful works", fontsize=9.8, color="#1e3a2f")
+
+# unstirred: seasoning settled near bottom
+x2 = rng.uniform(0, 10, n)
+y2 = np.concatenate([rng.uniform(0, 3, int(n * 0.6)), rng.uniform(3, 10, n - int(n * 0.6))])
+is_season2 = y2 < 3
+axes[1].scatter(x2[~is_season2], y2[~is_season2], s=6, color="#e8dcc0")
+axes[1].scatter(x2[is_season2], y2[is_season2], s=10, color="#7a1f2b")
+axes[1].add_patch(plt.Circle((5, 8), 1.3, fill=False, color="#1e3a2f", linewidth=2))
+axes[1].set_title("Unstirred: where you scoop matters", fontsize=9.8, color="#1e3a2f")
+
+for ax in axes:
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 10)
+    ax.set_aspect("equal")
+    ax.axis("off")
+axes[0].legend(frameon=False, loc="upper right", fontsize=8)
+plt.tight_layout()
+plt.show()
+```
+
+왼쪽처럼 잘 저은 국은 숟가락을 어디서 뜨든 양념 입자(빨간 점)의 비율이 거의 같다. 오른쪽처럼 젓지 않은 국은 표면 근처에서 뜬 숟가락이 바닥에 가라앉은 양념을 전혀 담지 못한다. 숟가락의 **크기**는 똑같은데, 표본을 뜨는 **방법**이 결과를 완전히 바꿔놓는다.
+
+## 100번 떠보면 알 수 있다
+
+이 차이를 숫자로 확인해보자. 잘 저은 국과 젓지 않은 국에서 각각 100번씩 숟가락을 떠서 양념 비율을 재는 것을 시뮬레이션하면, 결과가 얼마나 다르게 흔들리는지 알 수 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "100 simulated spoonfuls from each pot, measuring the share of seasoning particles each time. From the well-stirred pot, every spoonful's reading clusters tightly around the true 15% level. From the unstirred pot, readings swing wildly depending on whether the spoon happened to dip low - sometimes reading near 0%, sometimes near 50%."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng2 = np.random.default_rng(3)
+trials = 100
+
+stirred_readings = rng2.binomial(30, 0.15, trials) / 30 * 100
+
+unstirred_readings = []
+for _ in range(trials):
+    scoop_y = rng2.uniform(0, 10)
+    if scoop_y < 3:
+        p = 0.45
+    else:
+        p = 0.02
+    unstirred_readings.append(rng2.binomial(30, p) / 30 * 100)
+unstirred_readings = np.array(unstirred_readings)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.hist(stirred_readings, bins=20, alpha=0.75, color="#1e3a2f", label=f"well-stirred (std dev {stirred_readings.std():.1f})")
+ax.hist(unstirred_readings, bins=20, alpha=0.75, color="#a8790a", label=f"unstirred (std dev {unstirred_readings.std():.1f})")
+ax.axvline(15, color="#7a1f2b", linestyle="--", linewidth=1.6, label="true seasoning level: 15%")
+ax.set_xlabel("Seasoning reading from one spoonful (%)")
+ax.set_ylabel("Number of spoonfuls (out of 100)")
+ax.legend(frameon=False, fontsize=8.5)
+ax.set_title("Stirring, not spoon size, determines how trustworthy a taste is", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+잘 저은 국에서 뜬 숟가락은 매번 15% 안팎으로 안정적인 값을 준다. 젓지 않은 국에서 뜬 숟가락은 0%에 가까울 때도, 45%에 가까울 때도 있다 — 같은 냄비, 같은 크기의 숟가락인데도 말이다.
+
+## 이 비유가 통계학에서 뜻하는 것
+
+여기서 "잘 젓는다"는 것이 바로 **무작위 추출(random sampling)**에 해당한다. 모집단의 모든 구성원이 표본에 뽑힐 기회를 비슷하게 가질 때, 비로소 작은 표본으로도 전체를 대표할 수 있다. 반대로 "젓지 않은 국"은 **편향된 표본(biased sample)**을 비유한다 — 특정 집단(바닥에 가라앉은 건더기)이 표본에 뽑힐 기회가 다른 집단과 다를 때 생기는 문제다. 이번 주 나머지 글들은 이 비유를 실제 숫자와 현실의 사례로 풀어나간다.
+
+::: {.callout-tip}
+## 표본조사를 이해하는 첫걸음
+
+1. **"잘 저었는가"부터 물어라.** 표본이 모집단에서 고르게 뽑혔는지가 크기보다 먼저다.
+2. **숟가락의 크기(표본 크기)와 뜨는 방법(추출 방법)을 구분하라.** 둘은 서로 다른 문제다.
+3. **여러 번 떠서 비교해보라.** 한 번의 결과가 아니라 여러 번의 결과가 얼마나 흔들리는지 보면 신뢰도를 가늠할 수 있다.
+4. **"어디서 떴는가"를 항상 의심하라.** 조사 대상이 어떻게 뽑혔는지 모르면 숫자를 믿기 어렵다.
+:::
+
+## 더 깊이: 확률표본의 정의
+
+강의노트 [〈수리통계학 4. 표본분포 — 확률표본 정의〉](../../notes/math_stat/random_sample.qmd#확률표본-정의)는 확률표본을 모집단에서 각 구성원이 알려진 확률로 추출되는 표본으로 정의한다. "국을 잘 젓는다"는 비유는 바로 이 정의, 곧 모집단의 모든 원소가 표본에 뽑힐 기회를 동등하게(또는 알려진 방식으로) 갖도록 만드는 과정을 눈으로 보여주는 것이다.
+
+## SDV 관점: 표본을 뜨는 방법을 명시하지 않은 데이터는 가치가 없다
+
+표본조사의 기본 비유를 이해하는 일은 **요약과 추론(1~2단계)**의 출발점이며, **SDV(통계적 데이터 가치화)** 관점에서는 모든 데이터 수집의 전제조건이다. 고객 설문, 품질 검사, 여론조사 어디에서든 "몇 명을 조사했는가"보다 먼저 "어떻게 뽑았는가"를 밝혀야 한다. 표본을 어떻게 저었는지 모르는 숫자는, 아무리 커도 신뢰할 수 없는 국 한 숟가락과 같다. 데이터에 가치를 더하는 첫걸음은 추출 방법을 투명하게 밝히는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 숟가락보다 중요한 것은 젓는 방법이다
+
+나는 학생들에게 표본조사를 설명할 때 이 국 한 숟가락 이야기로 시작한다. 전 국민을 다 조사하지 않아도 되는 이유는, 세상이 대체로 "잘 저어져 있기" 때문이거나, 우리가 "잘 젓는 방법"을 알고 있기 때문이다. 이번 주 나머지 글들에서, 그 "젓는 방법"이 구체적으로 무엇을 뜻하는지 하나씩 풀어본다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 국 한 숟가락 비유와 시뮬레이션 수치는 표본조사의 원리를 설명하기 위한 가상의 예시다.
+:::

@@ -1,0 +1,121 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(표본은 어떻게 전체를 말하는가) 표본의 크기보다 뽑는 방법이 중요하다 — 표본추출 방법의 중요성"
+author: "권세혁"
+date: "2026-11-20"
+categories: [통계기초, 표본조사]
+description: "2024년 22대 총선 출구조사는 전국 1,980개 투표소에서 약 36만 명, 전체 유권자의 0.8%만 조사하고도 몇 시간 뒤 실제 개표 결과와 큰 틀에서 맞아떨어졌다. 비결은 표본 크기가 아니라, 투표소를 어떻게 뽑고 유권자를 어떻게 골랐는가에 있다."
+---
+
+## 0.8%의 유권자로 당락을 가늠하다
+
+2024년 22대 총선에서 지상파 방송사들이 실시한 출구조사는 전국 1,980개 투표소에서 약 36만 명을 대상으로 했다. 당시 전체 유권자가 약 4,400만 명이었다는 점을 생각하면, 조사 대상은 전체의 약 **0.8%**에 불과했다. 그런데도 출구조사 결과는 몇 시간 뒤 발표된 실제 개표 결과와 큰 틀에서 맞아떨어졌다. 이번 주 계속 강조해 온 것처럼, 이 정확도의 비결은 "얼마나 많이 조사했는가"가 아니라 "어떻게 뽑았는가"에 있다.
+
+## 두 단계로 뽑는다 — 투표소, 그리고 유권자
+
+출구조사의 표본추출은 한 번에 끝나지 않는다. 먼저 전국의 투표소 중 일부를 **층화**해서 뽑는다. 지역적 특성이나 과거 선거의 득표 성향에 따라 투표소들을 비슷한 집단으로 나눈 뒤, 각 집단 안에서 체계적으로 투표소를 골라낸다. 그다음 선정된 투표소에서는 투표를 마치고 나오는 유권자 중 **매 다섯 번째 사람마다** 설문을 요청하는 **계통추출**을 쓴다. 이렇게 하면 조사원이 "이 사람은 설문에 응해줄 것 같다"는 식으로 대상을 고르는 주관이 개입할 틈이 없다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The 2024 Korean general election exit poll's two-stage sampling design: first, polling stations are stratified and selected across the country; then, within each selected station, every 5th voter leaving the booth is surveyed via systematic sampling. Both stages remove human judgment from who gets chosen."
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+fig, ax = plt.subplots(figsize=(9, 4.8))
+
+ax.add_patch(patches.FancyBboxPatch((0.2, 2.8), 2.2, 1.2, boxstyle="round,pad=0.05", facecolor="#1e3a2f", edgecolor="white"))
+ax.text(1.3, 3.4, "Stage 1:\nStratify & select\n1,980 polling stations\n(nationwide)", ha="center", va="center", color="white", fontsize=8.5)
+
+ax.add_patch(patches.FancyBboxPatch((3.5, 2.8), 2.2, 1.2, boxstyle="round,pad=0.05", facecolor="#3a6b8c", edgecolor="white"))
+ax.text(4.6, 3.4, "Stage 2:\nSystematic sampling\nevery 5th voter\nat each station", ha="center", va="center", color="white", fontsize=8.5)
+
+ax.add_patch(patches.FancyBboxPatch((6.8, 2.8), 2.2, 1.2, boxstyle="round,pad=0.05", facecolor="#a8790a", edgecolor="white"))
+ax.text(7.9, 3.4, "Result:\n~360,000 voters\n(0.8% of ~44M)", ha="center", va="center", color="white", fontsize=8.5)
+
+for x0, x1 in [(2.4, 3.5), (5.7, 6.8)]:
+    ax.annotate("", xy=(x1, 3.4), xytext=(x0, 3.4), arrowprops=dict(arrowstyle="->", color="#7a1f2b", lw=2))
+
+ax.set_xlim(0, 9.3)
+ax.set_ylim(2, 4.5)
+ax.axis("off")
+ax.set_title("A two-stage sampling design: stratify, then sample systematically", fontsize=10.3, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+## 같은 0.8%라도, 뽑는 방법에 따라 결과가 갈린다
+
+이 두 단계 설계가 왜 중요한지 확인하려면, 같은 크기(0.8%)의 표본을 서로 다른 방법으로 뽑았을 때 결과가 어떻게 달라지는지 비교해보면 된다. 지역별로 지지 성향이 크게 다른 가상의 선거를 상정하고, (1) 수도권 투표소에서만 표본을 뽑는 "편한 방법", (2) 전국을 층화한 뒤 체계적으로 뽑는 "설계된 방법"을 비교해보자.
+
+```{python}
+#| echo: false
+#| fig-cap: "Simulated election results across three regions with very different true support levels (a 50-50 national race overall). A convenience sample drawn only from the region most accessible to pollsters badly misreads the national result, while a stratified sample proportional to each region's actual voter share - the same total sample size - correctly recovers the 50-50 split."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(2024)
+regions = ["Region A\n(45% of voters)", "Region B\n(35% of voters)", "Region C\n(20% of voters)"]
+true_support = [0.40, 0.55, 0.65]
+region_weight = [0.45, 0.35, 0.20]
+true_national = sum(s * w for s, w in zip(true_support, region_weight))
+
+n_total = 3600
+convenience_sample = rng.binomial(n_total, true_support[0]) / n_total * 100
+
+stratified_votes = 0
+for s, w in zip(true_support, region_weight):
+    n_region = int(n_total * w)
+    stratified_votes += rng.binomial(n_region, s)
+stratified_sample = stratified_votes / n_total * 100
+
+fig, ax = plt.subplots(figsize=(6.8, 4.6))
+bars = ax.bar(["Convenience sample\n(Region A only)", "Stratified sample\n(proportional to all 3 regions)"],
+              [convenience_sample, stratified_sample], color=["#7a1f2b", "#1e3a2f"], width=0.5)
+for b, v in zip(bars, [convenience_sample, stratified_sample]):
+    ax.annotate(f"{v:.1f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.axhline(true_national * 100, color="#8a9a90", linestyle="--", linewidth=1.5, label=f"true national support: {true_national*100:.1f}%")
+ax.set_ylabel("Estimated national support (%)")
+ax.legend(frameon=False, fontsize=8.5)
+ax.set_title("Same sample size, very different accuracy", fontsize=10.5, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+두 표본의 **크기는 똑같이 3,600명**이다. 그러나 특정 지역에서만 편하게 뽑은 표본은 전국 지지율을 크게 잘못 짚는 반면, 각 지역의 비중에 맞춰 층화한 표본은 참값(50%)에 훨씬 가깝다. 표본 크기를 고정한 채 추출 방법만 바꿨는데, 정확도가 완전히 달라진 것이다.
+
+## 복원추출인가, 비복원추출인가도 방법의 일부다
+
+추출 방법에는 층화나 계통추출 같은 큰 틀 외에도, 한 번 뽑은 대상을 다시 뽑을 수 있게 할지(복원추출) 아닌지(비복원추출) 같은 세부 규칙도 포함된다. 사람을 대상으로 한 조사에서는 같은 사람을 두 번 세지 않도록 보통 비복원추출을 쓴다. 이런 세부 규칙 하나하나가 "표본이 모집단을 얼마나 정직하게 대표하는가"를 결정한다.
+
+::: {.callout-tip}
+## 표본추출 방법을 확인하는 법
+
+1. **"무작위로 뽑았다"는 말을 들으면 구체적인 방법을 물어라.** 단순임의추출인지, 층화추출인지, 계통추출인지에 따라 정확도가 달라진다.
+2. **모집단의 하위 집단 비중이 표본에 반영됐는지 확인하라.** 층화추출의 핵심은 이 비중을 맞추는 것이다.
+3. **"접근하기 쉬운 대상"만 뽑히지 않았는지 의심하라.** 편의표본(convenience sample)은 이번 주 내내 다룬 편향의 전형이다.
+4. **표본 크기가 같다고 방법까지 같다고 생각하지 마라.** 같은 크기라도 뽑는 방법에 따라 정확도가 몇 배씩 달라질 수 있다.
+:::
+
+## 더 깊이: 복원추출과 비복원추출
+
+강의노트 [〈수리통계학 4. 표본분포 — 복원추출과 비복원추출〉](../../notes/math_stat/random_sample.qmd#복원추출과-비복원추출)은 표본을 뽑을 때 이미 뽑힌 대상을 다시 뽑을 수 있게 할지에 따라 통계적 성질이 어떻게 달라지는지를 다룬다. 이는 표본추출 방법을 구성하는 여러 세부 규칙 중 하나일 뿐이다. 층화·계통·집락추출 같은 큰 틀의 설계와, 복원 여부 같은 세부 규칙이 모두 합쳐져 "이 표본이 모집단을 얼마나 믿을 만하게 대표하는가"를 결정한다.
+
+## SDV 관점: 추출 설계를 공개하는 것이 데이터의 신뢰를 만든다
+
+표본추출 방법을 꼼꼼히 설계하는 일은 **요약과 추론(1~2단계)**의 완성이며, 제가 제안하는 **SDV(통계적 데이터 가치화)** 관점에서는 이번 주 다룬 모든 교훈(잘 저어야 한다, 크기보다 방법이 중요하다, 양이 많다고 대표성이 생기지 않는다)이 실무로 응축되는 지점이다. 조직이 고객 조사나 품질 검사를 설계할 때, "몇 명에게 물어볼까"를 정하기 전에 "어떤 방법으로 뽑을까"를 먼저 설계해야 한다. 추출 설계를 투명하게 공개하는 조직일수록, 그 데이터로 내린 결정도 더 넓은 신뢰를 얻는다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 이번 주를 닫으며 — 표본은 설계로 전체를 말한다
+
+나는 학생들에게 이번 주를 마무리하며 이렇게 말한다. 국 한 숟가락이 냄비 전체의 맛을 알려주는 것도, 3만 6천 가구가 5천만 명의 고용 상태를 알려주는 것도, 36만 명의 출구조사가 몇 시간 뒤 개표 결과를 예고하는 것도 모두 같은 원리 위에 서 있다. 표본은 크기가 아니라 **설계**로 전체를 대표한다. 그 설계를 믿을 수 있을 때, 비로소 일부를 보고 전체를 말할 자격이 생긴다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 2024년 22대 국회의원 선거 출구조사의 설계(전국 1,980개 투표소, 약 36만 명, 매 5번째 투표자 계통추출)는 다음을 참고했다: [대한민국 제22대 국회의원 선거 출구조사 — 위키백과](https://ko.wikipedia.org/wiki/%EB%8C%80%ED%95%9C%EB%AF%BC%EA%B5%AD_%EC%A0%9C22%EB%8C%80_%EA%B5%AD%ED%9A%8C%EC%9D%98%EC%9B%90_%EC%84%A0%EA%B1%B0_%EC%B6%9C%EA%B5%AC%EC%A1%B0%EC%82%AC)
+- 과거 지방선거 출구조사의 층화·계통추출 설계 방식은 다음 연구를 참고했다: [출구조사의 체계적인 예측 편향에 대한 분석 — 조사연구 12권 3호(2011)](https://koreascience.kr/article/JAKO201114348972809.pdf)
+- 두 번째 그림(지역별 지지율 시뮬레이션)의 구체적인 수치는 설명을 위한 가상의 예시다.
+:::
