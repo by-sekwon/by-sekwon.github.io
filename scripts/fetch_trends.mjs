@@ -52,11 +52,21 @@ async function fetchDaumNewsFor(keyword) {
     const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
     if (!res.ok) return null;
     const html = await res.text();
-    const m = html.match(/<div class="item-title">\s*<strong[^>]*>\s*<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
-    if (!m) return null;
-    const title = decodeEntities(m[2].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim());
+    // Current markup: <a class="tit_main ..." href="...">title</a>.
+    // The older <div class="item-title"> layout is kept as a fallback.
+    let href, rawTitle;
+    const cur = html.match(/<a\b([^>]*class="tit_main[^"]*"[^>]*)>([\s\S]*?)<\/a>/);
+    if (cur) {
+      href = cur[1].match(/href="([^"]+)"/)?.[1];
+      rawTitle = cur[2];
+    } else {
+      const old = html.match(/<div class="item-title">\s*<strong[^>]*>\s*<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+      if (old) [, href, rawTitle] = old;
+    }
+    if (!href || !rawTitle) return null;
+    const title = decodeEntities(rawTitle.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim());
     if (!title) return null;
-    return { title, url: m[1] };
+    return { title, url: href };
   } catch {
     return null;
   }
