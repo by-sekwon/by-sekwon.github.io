@@ -1,0 +1,101 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(표본을 뽑는 여러 방법) 전국조사의 현실적 방법 — 군집추출은 언제 쓰이는가"
+author: "권세혁"
+date: "2026-11-24"
+categories: [통계기초, 표본조사]
+description: "전국 모든 중3·고2 학생 중 개인을 하나하나 무작위로 뽑아 시험을 치르게 하는 건 현실적으로 불가능하다. 국가수준 학업성취도평가는 대신 학교와 학급을 먼저 뽑는다. 그런데 한 연구는 이 방법이 오히려 오차를 키울 수 있다는 걸 보여준다."
+---
+
+## 전국의 학생 한 명 한 명을 무작위로 뽑을 수 있을까
+
+국가수준 학업성취도평가는 중학교 3학년과 고등학교 2학년 학생들의 학업 성취 수준을 파악하는 조사다. 전국의 모든 중3·고2 학생 명단에서 개인을 하나하나 무작위로 뽑아 시험장에 따로 모이게 하는 것은 현실적으로 거의 불가능하다. 그래서 이 평가는 전체 학생의 약 3%를 **층화 군집 표집**으로 뽑는다. 먼저 시도교육청(외층), 지역규모·학교설립유형·학교성별유형(내층)으로 학교들을 층화한 뒤, 각 층에서 **학교를 표집 단위로** 뽑고, 뽑힌 학교 안에서 학급을 무작위로 선정해 그 학급 학생 전체를 평가한다.
+
+## 학교라는 "덩어리"를 통째로 뽑는다
+
+이것이 **군집추출(cluster sampling)**이다. 개인을 하나씩 뽑는 대신, 이미 자연스럽게 존재하는 집단(학교, 학급)을 하나의 "덩어리"로 보고 그 덩어리 전체 혹은 일부를 조사한다. 전국에 흩어진 개인을 일일이 찾아가는 것보다, 학교 단위로 조사원을 보내는 것이 비용과 시간 면에서 훨씬 효율적이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Cluster sampling for the National Assessment of Educational Achievement: instead of drawing individual students nationwide, a subset of schools is selected first (the clusters), and then a class is randomly chosen within each selected school - only students in selected schools and classes are ever tested."
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+fig, ax = plt.subplots(figsize=(9, 4.8))
+
+schools = [(1, "School A", True), (3, "School B", False), (5, "School C", True), (7, "School D", False), (9, "School E", True)]
+for x, name, selected in schools:
+    col = "#1e3a2f" if selected else "#c7cdc9"
+    ax.add_patch(patches.FancyBboxPatch((x - 0.7, 2.6), 1.4, 1.0, boxstyle="round,pad=0.05", facecolor=col, edgecolor="white"))
+    ax.text(x, 3.1, name, ha="center", va="center", color="white" if selected else "#555", fontsize=8.5)
+    if selected:
+        ax.add_patch(patches.FancyBboxPatch((x - 0.5, 0.8), 1.0, 0.9, boxstyle="round,pad=0.04", facecolor="#a8790a", edgecolor="white"))
+        ax.text(x, 1.25, "1 class\nselected", ha="center", va="center", color="white", fontsize=7.5)
+        ax.annotate("", xy=(x, 1.7), xytext=(x, 2.6), arrowprops=dict(arrowstyle="->", color="#7a1f2b", lw=1.3))
+
+ax.text(5, 4.3, "Step 1: select ~3% of schools (clusters)", ha="center", fontsize=9.5, color="#1e3a2f")
+ax.text(5, 0.1, "Step 2: within each selected school, randomly pick one class", ha="center", fontsize=9, color="#1e3a2f")
+ax.set_xlim(0, 10)
+ax.set_ylim(-0.3, 4.6)
+ax.axis("off")
+plt.tight_layout()
+plt.show()
+```
+
+## 그런데 군집추출이 오히려 오차를 키울 수도 있다
+
+한 가지 반직관적인 사실이 있다. 학업성취도평가의 표집설계를 연구한 논문(박인용 외, 2019)은 (1) 학교당 학급 1개만 표집, (2) 학교당 여러 학급 표집, (3) 학교 단위를 통째로 표집하는 세 가지 방식을 비교했는데, **학교 단위로 통째로 표집하는 방식이 오히려 국가수준 성취비율 추정 오차가 가장 크게** 나타났다. 왜일까? 같은 학교, 같은 학급 학생들은 지역·사회경제적 배경이 비슷해서 **성적이 서로 닮는 경향**이 있다. 군집 하나를 통째로 뽑으면, 사실상 "비슷한 사람들"을 한꺼번에 뽑는 셈이 되어, 같은 수의 학생을 뽑더라도 전국의 다양성을 덜 반영하게 된다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A simplified illustration of the research finding: estimation error for the national achievement rate under three sampling designs, holding total student count roughly similar. Sampling one class per school (the current method) gives the smallest error; sampling whole schools as clusters gives the largest, because students within the same school tend to resemble each other."
+import matplotlib.pyplot as plt
+
+labels = ["1 class per school\n(current method)", "Multiple classes\nper school", "Whole school\nas a cluster"]
+errors = [1.0, 1.4, 2.1]
+
+fig, ax = plt.subplots(figsize=(7, 4.6))
+bars = ax.bar(labels, errors, color=["#1e3a2f", "#3a6b8c", "#7a1f2b"], width=0.5)
+for b, v in zip(bars, errors):
+    ax.annotate(f"{v:.1f}x", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.set_ylabel("Relative estimation error (illustrative, current method = 1.0x)")
+ax.set_title("Clustering by whole school increases error the most", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 그런데도 군집추출을 쓰는 이유
+
+그렇다면 왜 여전히 군집추출(학교·학급 단위 표집)을 쓸까? 답은 **비용과 현실성**에 있다. 전국에 흩어진 개인을 하나하나 무작위로 뽑아 조사하려면 비용과 시간이 비교가 안 될 만큼 많이 든다. 군집추출은 통계적 정확도를 약간 희생하는 대신, 현실적으로 실행 가능한 비용으로 전국 조사를 가능하게 만든다. 학업성취도평가가 "학교당 학급 1개"라는 절충안을 택한 것도, 군집추출의 효율성과 오차 축소 사이의 균형점을 찾은 결과다.
+
+::: {.callout-tip}
+## 군집추출을 평가하는 법
+
+1. **왜 군집 단위로 뽑았는지 물어라.** 대개는 비용과 현실성 때문이지, 정확도가 더 좋아서가 아니다.
+2. **군집 안의 구성원들이 서로 얼마나 비슷한지 생각하라.** 비슷할수록(동질적일수록) 오차가 커진다.
+3. **군집 크기와 군집 수의 균형을 확인하라.** 큰 군집 몇 개보다 작은 군집 여러 개를 뽑는 편이 보통 더 정확하다.
+4. **비용 효율과 정확도는 트레이드오프라는 것을 받아들여라.** 모든 조사가 가장 정확한 방법만 쓸 수는 없다.
+:::
+
+## 더 깊이: 확률표본 설계의 다양한 형태
+
+강의노트 [〈수리통계학 4. 표본분포 — 확률표본 정의 및 활용〉](../../notes/math_stat/random_sample.qmd#확률표본-정의-및-활용)은 확률표본이 모집단에 대한 타당한 추론의 근거가 되는 조건을 다룬다. 군집추출도 이 조건을 만족하도록 설계되지만, 층화추출과는 다른 방식으로 접근한다. 층화추출은 "다른 집단을 각각 보장해서 뽑는" 전략이고, 군집추출은 "이미 있는 집단 단위를 통째로 활용해서 비용을 줄이는" 전략이다. 같은 확률표본이라는 틀 안에서도 전략에 따라 정확도와 효율성의 균형이 달라진다.
+
+## SDV 관점: 비용과 정확도의 균형을 설계하는 것이 가치화다
+
+군집추출이 주는 교훈은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 "완벽한 정확도"와 "실행 가능한 비용" 사이의 균형을 설계하는 문제다. 전국 매장의 품질을 점검할 때 모든 매장에서 몇 개씩 뽑기보다 일부 매장을 통째로 점검하는 것이 효율적일 수 있지만, 그 매장들이 서로 비슷한 특성(같은 지역, 같은 운영 방식)을 공유한다면 오차가 커진다는 점을 감안해야 한다. 데이터에 가치를 더하는 일은 비용 제약 안에서 가장 덜 손해 보는 설계를 고르는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 효율과 정확도 사이에서 고른 절충안
+
+나는 학생들에게 군집추출을 "어쩔 수 없이 쓰는 현실적 타협"으로 설명한다. 학교 전체를 통째로 뽑으면 비용은 가장 낮지만 오차는 가장 크고, 개인을 하나하나 뽑으면 정확하지만 현실적으로 불가능하다. 학업성취도평가가 택한 "학교당 학급 1개"는 그 사이 어딘가에서 찾은 균형점이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 국가수준 학업성취도평가의 2단계 층화 군집 표집 설계(전체 학생의 약 3%, 시도교육청 외층, 지역규모·학교설립유형·학교성별유형 내층)는 한국교육과정평가원 자료를 참고했다.
+- 세 가지 표집 방식(학교당 1학급, 학교당 N학급, 학교 단위 군집)의 오차 비교 연구 결과는 박인용 외(2019) 교육과정평가연구에 소개된 내용을 참고했으며, 두 번째 그림의 구체적인 배수(1.0x/1.4x/2.1x)는 그 연구가 보고한 경향을 보여주기 위한 설명용 근사치다.
+:::

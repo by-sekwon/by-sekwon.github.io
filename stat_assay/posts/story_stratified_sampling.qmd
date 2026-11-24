@@ -1,0 +1,110 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(표본을 뽑는 여러 방법) 집단을 나눠서 뽑는 이유 — 층화추출이란"
+author: "권세혁"
+date: "2026-11-23"
+categories: [통계기초, 표본조사]
+description: "통계청 가계동향조사는 전국을 무작위로 뒤섞어 표본을 뽑지 않는다. 먼저 지역·주택유형·가구원수 같은 기준으로 비슷한 집단(층)으로 나눈 뒤, 각 층 안에서 따로 표본을 뽑는다. 이 '먼저 나누고 뽑는' 방법이 왜 더 정확한 추정을 주는지 살펴본다."
+---
+
+## 전국을 뒤섞지 않고, 먼저 나눈다
+
+통계청(국가데이터처)의 가계동향조사는 가구의 소득과 지출을 매달 추적하는 핵심 통계다. 이 조사는 전국 가구를 완전히 무작위로 뒤섞어 표본을 뽑지 않는다. 대신 지역층, 주택유형, 가구원수, 가구주 연령대 같은 기준으로 먼저 비슷한 집단(**층, stratum**)으로 나누고, 그 결과를 사후적으로 보정하는 **반복비례가중법**을 쓴다. 이렇게 "먼저 나누고, 각 층 안에서 뽑는" 방법을 **층화추출(stratified sampling)**이라 부른다.
+
+## 왜 나누면 더 정확해질까
+
+층화추출의 핵심 효과는 **추정의 흔들림(분산)을 줄이는 것**이다. 직관적으로 설명하면 이렇다. 소득 수준이 지역마다 크게 다른 나라에서, 완전히 무작위로 300명을 뽑으면 운이 나쁠 경우 부유한 지역 사람이 우연히 많이 뽑히거나 적게 뽑힐 수 있다. 그런데 "수도권에서 몇 명, 광역시에서 몇 명, 도지역에서 몇 명"처럼 지역 비중에 맞춰 나눠 뽑으면, 이런 우연한 쏠림 자체가 애초에 일어날 수 없다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A population split into three regions with different average incomes (illustrative, 10k-won units) and different population shares. 2,000 repeated surveys of the same total sample size (n=300): simple random sampling (SRS) produces estimates that swing more widely around the true mean, while proportional stratified sampling produces much tighter, more reliable estimates."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(23)
+strata_means = [550, 400, 300]
+strata_sizes = [0.5, 0.3, 0.2]
+n_total = 300
+trials = 2000
+
+srs_estimates = []
+strat_estimates = []
+for _ in range(trials):
+    labels = rng.choice([0, 1, 2], size=n_total, p=strata_sizes)
+    vals = np.array([rng.normal(strata_means[l], 60) for l in labels])
+    srs_estimates.append(vals.mean())
+    est = 0
+    for i in range(3):
+        ni = int(n_total * strata_sizes[i])
+        vi = rng.normal(strata_means[i], 60, ni)
+        est += vi.mean() * strata_sizes[i]
+    strat_estimates.append(est)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.hist(srs_estimates, bins=40, alpha=0.75, color="#7a1f2b", label=f"simple random sample (std dev {np.std(srs_estimates):.1f})")
+ax.hist(strat_estimates, bins=40, alpha=0.75, color="#1e3a2f", label=f"stratified sample (std dev {np.std(strat_estimates):.1f})")
+ax.axvline(455, color="#8a9a90", linestyle="--", linewidth=1.6, label="true population mean: 455")
+ax.set_xlabel("Estimated population mean income (10k won)")
+ax.set_ylabel("Number of repeated surveys (out of 2,000)")
+ax.legend(frameon=False, fontsize=8.5)
+ax.set_title("Same sample size, stratified estimates swing much less", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+두 방법 모두 평균적으로는 참값(455)을 맞히지만(둘 다 편향되지 않았지만), 층화추출의 추정값들은 훨씬 좁은 범위에 모여 있다. 표본 크기는 똑같이 300명인데, 나누는 방법 하나만으로 표준편차가 거의 절반으로 줄었다.
+
+## 가계동향조사는 무엇을 기준으로 나누는가
+
+실제 가계동향조사는 지역층, 주택유형, 가구원수, 가구주 연령대라는 네 가지 기준으로 사후 보정을 한다. 이 변수들을 고른 이유는 간단하다 — 이 변수들에 따라 소득과 지출 패턴이 실제로 크게 달라지기 때문이다. 층화의 효과는 **"층을 나누는 기준이, 우리가 알고 싶은 값(소득)과 얼마나 관련이 있는가"**에 달려 있다. 층을 나눠도 그 기준이 소득과 아무 관련이 없다면 분산을 줄이는 효과는 거의 없다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The four post-stratification variables used in Korea's Household Trend Survey (Gyeonggye-donghyang Josa): region type, housing type, household size, and household head's age group. Each is chosen because it correlates with the income and spending patterns the survey is trying to measure."
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+fig, ax = plt.subplots(figsize=(8.5, 3.2))
+labels = ["Region\ntype", "Housing\ntype", "Household\nsize", "Household head's\nage group"]
+cols = ["#1e3a2f", "#3a6b8c", "#a8790a", "#7a1f2b"]
+for i, (lab, col) in enumerate(zip(labels, cols)):
+    ax.add_patch(patches.FancyBboxPatch((i * 2.1, 0), 1.8, 1.4, boxstyle="round,pad=0.05", facecolor=col, edgecolor="white"))
+    ax.text(i * 2.1 + 0.9, 0.7, lab, ha="center", va="center", color="white", fontsize=9.5)
+ax.set_xlim(-0.3, 4 * 2.1)
+ax.set_ylim(-0.3, 1.8)
+ax.axis("off")
+ax.set_title("Post-stratification variables in Korea's Household Trend Survey", fontsize=10, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+::: {.callout-tip}
+## 층화추출을 이해하는 법
+
+1. **"무엇을 기준으로 나눴는가"를 확인하라.** 좋은 층화는 관심 변수와 관련 있는 기준으로 나눈다.
+2. **층화는 편향을 없애는 게 아니라 흔들림을 줄이는 것임을 기억하라.** 무작위 추출도 평균적으로는 맞지만, 층화는 그 결과를 더 안정적으로 만든다.
+3. **각 층의 비중이 모집단과 맞는지 확인하라.** 층을 나눠도 비례 배분이 안 되면 효과가 왜곡될 수 있다.
+4. **층을 너무 잘게 나누면 각 층의 표본이 너무 작아질 수 있다는 것도 염두에 두라.**
+:::
+
+## 더 깊이: 모집단을 나누어 보는 관점
+
+강의노트 [〈수리통계학 4. 표본분포 — 모집단과 확률변수〉](../../notes/math_stat/random_sample.qmd#모집단과-확률변수)는 모집단을 확률변수의 관점에서 정의한다. 층화추출은 이 모집단을 "서로 다른 분포(평균)를 갖는 부분집단(층)들의 혼합"으로 다시 보는 것이다. 각 층 안에서 독립적으로 확률표본을 뽑고 그 결과를 층의 비중대로 합치면, 전체 모집단에 대한 더 안정적인 추정이 가능해진다.
+
+## SDV 관점: 무엇으로 나눌지 아는 것이 데이터의 정밀도를 결정한다
+
+층화추출을 설계하는 일은 **요약과 추론(1~2단계)**의 정교화이며, **SDV(통계적 데이터 가치화)** 관점에서는 같은 조사 비용으로 더 정밀한 결과를 얻는 핵심 기술이다. 고객 만족도 조사를 전체 고객에서 무작위로만 뽑기보다, 매출 규모나 가입 기간 같은 관련 변수로 먼저 층을 나눠 뽑으면 같은 응답자 수로도 훨씬 신뢰할 수 있는 결과를 얻는다. 데이터에 가치를 더하는 일은 무작정 표본을 늘리는 것이 아니라, 무엇을 기준으로 나눌지를 영리하게 설계하는 데 있다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 나누는 기준이 정확도를 만든다
+
+나는 학생들에게 표본을 뽑을 때 "그냥 무작위로"라는 말에 안주하지 말라고 가르친다. 관심 있는 결과와 관련된 기준으로 먼저 나누고, 그 안에서 뽑으면 같은 비용으로 더 믿을 만한 숫자를 얻을 수 있다. 가계동향조사가 지역과 주택유형, 가구 구성으로 층을 나누는 이유가 바로 여기에 있다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 가계동향조사의 층화 2단 집락추출 설계와 사후 보정 기준(지역층, 주택유형, 가구원수, 가구주 연령대)은 국가통계포털(KOSIS) 메타정보를 참고했다.
+- 첫 번째 그림(3개 지역층 소득 시뮬레이션)의 구체적인 수치는 층화추출의 원리를 보여주기 위한 가상의 예시다.
+:::

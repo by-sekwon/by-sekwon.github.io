@@ -1,0 +1,108 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(표본을 뽑는 여러 방법) 숫자가 낮으면 무엇이 문제인가 — 응답률이라는 지표"
+author: "권세혁"
+date: "2026-11-27"
+categories: [통계기초, 표본조사]
+description: "전화로 100명에게 걸어 10명만 받으면 응답률은 10%다. 자동응답(ARS) 조사는 이보다 더 낮아 1.7~7% 수준이다. 2022년 지방선거에서는 전체 여론조사의 77.7%가 ARS 방식이었다. 응답률이 낮다는 것은 정확히 무엇이 위험하다는 신호일까?"
+---
+
+## 100명에게 걸어 10명만 받는다
+
+전화 여론조사에서 **응답률**은 전화를 건 전체 대상자 중 실제로 설문에 응한 사람의 비율이다. 최근 국내 조사 사례를 보면, 사람이 직접 통화하는 전화면접조사의 응답률은 약 **10%** 수준이고, 기계 음성으로 진행되는 자동응답(ARS) 조사는 이보다 훨씬 낮은 **1.7~7%** 수준에 머문다. 그런데도 2022년 지방선거 당시 공표된 여론조사 가운데 ARS 방식의 비중은 전체의 **77.7%**에 달했다. 비용이 싸고 빠르다는 이유로, 응답률이 가장 낮은 방식이 가장 널리 쓰인 것이다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Response rates for Korean phone surveys by method: live-interviewer phone surveys get roughly 10% response, while automated (ARS) phone surveys get only 1.7-7%. Yet in the 2022 local elections, ARS accounted for 77.7% of all published polls - the cheaper, faster method with the lowest response rate was also the most common."
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 2, figsize=(9, 4.4))
+
+methods = ["Live-interviewer\nphone survey", "ARS (automated)\nphone survey"]
+rates = [10.0, 4.0]
+rate_range = [[0, 0], [2.3, 3.0]]
+bars = axes[0].bar(methods, rates, color=["#1e3a2f", "#7a1f2b"], width=0.5, yerr=rate_range, capsize=6)
+for b, v in zip(bars, rates):
+    axes[0].annotate(f"~{v:.0f}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 14), textcoords="offset points",
+                      ha="center", fontsize=10)
+axes[0].set_ylabel("Response rate (%)")
+axes[0].set_ylim(0, 16)
+axes[0].set_title("Response rate by method", fontsize=9.8, color="#1e3a2f")
+
+shares = [77.7, 22.3]
+axes[1].bar(["ARS", "Live-interviewer\n/ other"], shares, color=["#7a1f2b", "#1e3a2f"], width=0.5)
+for i, v in enumerate(shares):
+    axes[1].annotate(f"{v:.1f}%", xy=(i, v), xytext=(0, 4), textcoords="offset points", ha="center", fontsize=10)
+axes[1].set_ylabel("Share of published 2022 election polls (%)")
+axes[1].set_ylim(0, 95)
+axes[1].set_title("Method mix, 2022 local elections", fontsize=9.8, color="#1e3a2f")
+
+for ax in axes:
+    ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 응답률이 낮으면 정확히 무엇이 문제일까
+
+응답률 자체가 낮다고 해서 결과가 반드시 틀리는 것은 아니다. 진짜 문제는 **"누가 응답하지 않았는가"**다. 전화를 받지 않거나 중간에 끊는 사람들이 특정 성향(예: 바쁜 사람, 정치에 무관심한 사람, 특정 연령대)에 쏠려 있다면, 응답한 소수는 전체 유권자를 제대로 대표하지 못한다. 11월 18일 글에서 다룬 1936년 리터러리 다이제스트 조사도 응답률이 24%에 그쳐 비슷한 문제를 겪었다. 오늘 다루는 응답률 1.7~10%는 그보다 훨씬 낮은 수준이라는 점에서, 이 문제가 현재 한국의 전화 여론조사에서 얼마나 심각할 수 있는지 짐작하게 한다.
+
+```{python}
+#| echo: false
+#| fig-cap: "How estimation bias grows as response rate falls, when non-respondents lean differently from respondents (illustrative model: a small but real 10-percentage-point gap between the two groups' true opinions). At a 50% response rate the bias is small; at a 2% response rate - closer to real ARS survey conditions - the same underlying tendency produces a much larger distortion if non-respondents are excluded entirely from the estimate."
+import numpy as np
+import matplotlib.pyplot as plt
+
+response_rates = np.array([50, 30, 10, 5, 2])
+true_support = 50
+nonresponder_gap = 10
+
+respondent_support = true_support + nonresponder_gap * (1 - response_rates / 100)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.plot(response_rates, respondent_support, marker="o", color="#7a1f2b", linewidth=2.2)
+ax.axhline(true_support, color="#8a9a90", linestyle="--", linewidth=1.5, label="true population support: 50%")
+ax.set_xlabel("Response rate (%)")
+ax.set_ylabel("Estimated support from respondents only (%)")
+ax.invert_xaxis()
+ax.legend(frameon=False)
+ax.set_title("Lower response rates give non-response bias more room to grow", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 업계는 최소 기준을 두려 하지만, 강제력은 약하다
+
+한국조사협회는 "응답률 7% 미만인 정치·선거 전화 여론조사는 공표하지 않는다"는 자율 기준을 발표한 바 있다. 그러나 이 기준은 협회 소속 회원사에만 적용되고, ARS 전문 업체 상당수는 협회에 가입하지 않아 이 기준을 따를 의무가 없다는 한계가 지적된다. 전문가들은 선거법 개정을 통해 응답률 기준을 법적으로 강화해야 한다고 주장하지만, 아직 현실의 조사 시장에서는 응답률이 낮아도 공표 자체를 막는 강제 규정은 충분하지 않다.
+
+::: {.callout-tip}
+## 응답률을 확인하는 법
+
+1. **조사 결과에 응답률이 명시되어 있는지부터 확인하라.** 명시하지 않는 조사는 그 자체로 의심할 이유가 된다.
+2. **조사 방식(전화면접 vs ARS)을 확인하라.** 방식에 따라 응답률과 응답자의 성향이 크게 달라진다.
+3. **"7% 미만"처럼 업계가 제시하는 최소 기준과 비교해보라.** 기준에 못 미치면 더 신중하게 읽어야 한다.
+4. **응답률이 낮을수록 가중치가 더 큰 역할을 하게 된다는 것을 기억하라.** 어제 다룬 가중치 문제와 응답률 문제는 서로 얽혀 있다.
+:::
+
+## 더 깊이: 데이터와 모집단 사이의 간극
+
+강의노트 [〈수리통계학 4. 표본분포 — 데이터와 모집단〉](../../notes/math_stat/random_sample.qmd#데이터와-모집단)은 우리가 손에 쥔 데이터(응답자)와 알고 싶은 모집단(전체 유권자) 사이의 관계를 정의한다. 응답률이 낮다는 것은, 애초에 의도했던 표본(전화를 건 전체 대상자)과 실제로 얻은 데이터(응답한 사람) 사이의 간극이 크다는 뜻이다. 이 간극이 클수록, 데이터로부터 모집단을 추론하는 작업의 신뢰도는 떨어진다.
+
+## SDV 관점: 응답률을 숨기지 않는 것이 데이터의 가치를 지킨다
+
+응답률을 확인하고 공개하는 일은 **요약과 추론(1~2단계)**의 투명성 문제이며, **SDV(통계적 데이터 가치화)** 관점에서는 모든 설문 기반 데이터의 신뢰도를 가늠하는 핵심 지표다. 고객 만족도 조사의 응답률이 낮다면, 응답한 소수의 의견이 전체 고객을 대표한다고 섣불리 결론 내려서는 안 된다. 데이터에 가치를 더하는 조직은 "몇 %가 만족했다"는 숫자만 보고하지 않고, 그 숫자가 몇 %의 응답률 위에 서 있는지를 함께 공개한다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 이번 주를 닫으며 — 뽑는 방법, 나누는 방법, 그리고 숫자로 남는 흔적들
+
+나는 학생들에게 이번 주를 마무리하며 이렇게 말한다. 층화추출은 "나눠서 뽑고", 군집추출은 "묶어서 뽑고", 다단계추출은 "단계를 밟아 좁히고", 가중치는 "뽑힌 뒤에 바로잡고", 응답률은 "그 바로잡음이 얼마나 위태로운지"를 알려주는 지표다. 좋은 표본조사는 이 다섯 가지를 모두 투명하게 공개할 때 비로소 신뢰를 얻는다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 전화면접조사(약 10%)와 ARS 조사(1.7~7%)의 응답률, 2022년 지방선거 ARS 비중(77.7%)은 다음을 참고했다: [조사 방식에 따라 10%p 넘게 널뛰기…헷갈리는 여론조사 — 네이트 뉴스](https://m.news.nate.com/view/20260528n00563)
+- 한국조사협회의 "응답률 7% 미만 비공표" 자율 기준은 관련 보도를 참고했다.
+- 두 번째 그림(응답률별 편향 크기)의 구체적인 수치는 무응답 편향의 작동 방식을 보여주기 위한 가상의 모델이다.
+:::

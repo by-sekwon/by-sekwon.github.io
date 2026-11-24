@@ -1,0 +1,107 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(표본을 뽑는 여러 방법) 응답자 수를 보정하는 법 — 표본가중치란 무엇인가"
+author: "권세혁"
+date: "2026-11-26"
+categories: [통계기초, 표본조사]
+description: "여론조사에서 20대 여성 응답자가 단 2명뿐인데, 그 2명의 의견이 표에서는 14명 몫으로 반영되는 경우가 있다. 마법이 아니라 '가중치' 때문이다. 중앙선거여론조사심의위원회는 이 가중치가 0.7~1.5 범위를 벗어나면 결과를 아예 공표하지 못하게 한다."
+---
+
+## 응답자 2명이 14명 몫을 한다고?
+
+선거 여론조사 기사에서 이런 지적을 본 적이 있을 것이다. "20대 여성 응답자가 2명인데, 가중값이 더해져 14명 몫으로 반영됐다." 이상하게 들리지만, 이것은 조작이 아니라 **표본가중치(sampling weight)**라는 정상적인 통계 보정 절차다. 전화나 온라인으로 사람을 모으다 보면, 특정 성별·연령대·지역의 사람들이 다른 집단보다 응답을 더 많이(또는 더 적게) 하는 경우가 생긴다. 이 불균형을 그대로 두면 표본이 실제 유권자 구성을 왜곡해서 보여준다. 가중치는 이 왜곡을 숫자로 바로잡는 장치다.
+
+## 가중치는 어떻게 계산되나
+
+가중치의 기본 원리는 단순하다. 모집단(전체 유권자)에서 20대 여성이 15%를 차지하는데 표본에서는 5%만 응답했다면, 그 5% 응답자들에게 "3배"에 해당하는 가중치를 곱해준다. 그러면 표(집계) 상으로는 이 응답자들의 의견이 전체 인구 구성에 맞게 다시 환산되어 반영된다. 한국의 선거여론조사에서는 성별, 연령대별, 지역별 가중치를 가장 널리 쓰며, 전체 응답자 비율을 한꺼번에 맞추는 **림가중(rim weighting)**과, 세부 교차집단별로 따로 가중치를 매기는 **셀가중(cell weighting)** 두 방식이 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "A simplified weighting example: a survey's raw sample underrepresents people in their 20s (10% of respondents) relative to their true 20% share of the population, and overrepresents people 60+. Weighting multiplies each group's responses to match the population shares before the headline result is calculated."
+import matplotlib.pyplot as plt
+import numpy as np
+
+groups = ["20s", "30s", "40s", "50s", "60+"]
+population_share = [20, 18, 20, 21, 21]
+raw_sample_share = [10, 15, 20, 25, 30]
+weight = [p / r for p, r in zip(population_share, raw_sample_share)]
+
+x = np.arange(len(groups))
+w = 0.36
+fig, ax = plt.subplots(figsize=(8, 4.6))
+ax.bar(x - w / 2, population_share, w, color="#8a9a90", label="true population share (%)")
+ax.bar(x + w / 2, raw_sample_share, w, color="#7a1f2b", label="raw (unweighted) sample share (%)")
+for xi, wt in zip(x, weight):
+    ax.annotate(f"x{wt:.2f}", xy=(xi, max(population_share[xi], raw_sample_share[xi]) + 1.5), ha="center", fontsize=8.5, color="#1e3a2f")
+ax.set_xticks(x)
+ax.set_xticklabels(groups)
+ax.set_ylabel("Share (%)")
+ax.set_ylim(0, 38)
+ax.legend(frameon=False, fontsize=8.5)
+ax.set_title("Weight needed to match each age group to its true population share", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+20대는 표본에서 10%만 응답했지만 실제 인구 비중은 20%이므로, 이 집단의 응답에는 2배 가중치가 매겨진다. 반대로 60대 이상은 응답이 넘치게 들어와 실제 비중보다 과다 대표됐으므로, 0.7배로 깎인다.
+
+## 하지만 가중치가 너무 커지면 위험해진다
+
+문제는 응답자가 너무 적은 집단에 지나치게 큰 가중치를 줄 때 생긴다. 실제로 2025년 2월 선거관리위원회에 신고된 한 여론조사에서는, 특정 집단의 응답자 9명에게 **2.78배**의 가중치가 적용된 사례가 지적됐다. 이 9명의 의견이 표에서는 약 25명 몫으로 환산되는 셈이다. 소수의 의견이 과도하게 증폭되는 것을 막기 위해, 중앙선거여론조사심의위원회는 성별·연령대별·지역별 가중값 배율이 각각 **0.7~1.5 범위**를 벗어나는 조사는 결과를 공표·보도할 수 없도록 규정하고 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Korea's Central Election Public Opinion Poll Deliberation Commission requires each weighting multiplier (by sex, age group, and region) to fall between 0.7 and 1.5 for a poll to be legally publishable. A real cited case from a 2025 filing applied a 2.78x weight to a 9-person subgroup - far outside the allowed range, illustrating why the rule exists."
+import matplotlib.pyplot as plt
+
+fig, ax = plt.subplots(figsize=(7.5, 3.6))
+ax.axhspan(0.7, 1.5, color="#8a9a90", alpha=0.35, label="legally publishable range (0.7-1.5)")
+ax.scatter([1], [2.78], color="#7a1f2b", s=90, zorder=5, label="cited 2025 filing: 2.78x on a 9-person subgroup")
+ax.annotate("2.78x", xy=(1, 2.78), xytext=(1.15, 2.78), fontsize=10, color="#7a1f2b", va="center")
+ax.axhline(0.7, color="#1e3a2f", linewidth=1, linestyle=":")
+ax.axhline(1.5, color="#1e3a2f", linewidth=1, linestyle=":")
+ax.set_ylim(0, 3.2)
+ax.set_xlim(0.5, 1.5)
+ax.set_xticks([])
+ax.set_ylabel("Weight multiplier applied")
+ax.legend(frameon=False, loc="upper left", fontsize=8)
+ax.set_title("When a single weight multiplier breaks the legal range", fontsize=10.3, color="#1e3a2f")
+plt.tight_layout()
+plt.show()
+```
+
+## 가중치는 만능 해결책이 아니다
+
+가중치는 표본의 구성 불균형을 사후에 바로잡는 도구일 뿐, 응답하지 않은 사람들의 "진짜 의견"을 알아내는 마법은 아니다. 가중치를 아무리 정교하게 적용해도, 애초에 특정 집단에서 응답한 소수의 사람이 그 집단 전체를 대표하지 못한다면 왜곡은 남는다. 또한 현재 기준은 성별·연령·지역 세 가지만 따로 고려할 뿐, 이 셋을 교차한 세부 집단(예: 20대 여성)의 균형까지는 법적으로 강제하지 않는다는 한계도 지적된다.
+
+::: {.callout-tip}
+## 가중치가 적용된 조사를 읽는 법
+
+1. **가중치 산출 기준과 배율을 공개했는지 확인하라.** 한국에서는 선거 여론조사의 경우 법적으로 공개가 의무다.
+2. **배율이 너무 크지 않은지 보라.** 2~3배를 넘는 가중치는 소수의 응답이 과도하게 증폭됐다는 신호다.
+3. **원래 응답자 수(가중치 적용 전)를 함께 확인하라.** 세부 집단의 응답자가 너무 적으면 가중치를 걸어도 신뢰하기 어렵다.
+4. **가중치는 응답 편향을 "줄이는" 도구이지 "없애는" 도구가 아님을 기억하라.**
+:::
+
+## 더 깊이: 확률표본을 활용해 모집단을 추론하는 법
+
+강의노트 [〈수리통계학 4. 표본분포 — 확률표본 활용〉](../../notes/math_stat/random_sample.qmd#확률표본-활용)은 표본으로부터 모집단에 대한 타당한 추론을 끌어내는 원리를 다룬다. 가중치는 이 원리를 실전에 적용하는 구체적인 도구다 — 각 응답자가 모집단에서 "실제로 대표하는 사람 수"를 반영해, 표본의 집계 결과가 모집단의 실제 구성과 일치하도록 만드는 것이다.
+
+## SDV 관점: 가중치 설계를 투명하게 공개하는 것이 신뢰를 만든다
+
+가중치를 이해하고 검증하는 일은 **요약과 추론(1~2단계)**을 넘어, **SDV(통계적 데이터 가치화)** 관점에서 데이터 기반 의사결정의 투명성을 좌우한다. 고객 만족도나 직원 설문 결과를 집계할 때도, 특정 부서나 연령대의 응답이 적었다면 가중치 보정이 필요할 수 있다. 다만 그 가중치가 얼마나 크게 적용됐는지를 공개하지 않으면, 소수의 의견이 왜곡되어 증폭된 결과를 "모두의 의견"처럼 포장할 위험이 있다. 데이터에 가치를 더하는 일은 가중치를 쓰는 것 자체가 아니라, 그 가중치를 투명하게 드러내는 데 있다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 숫자 뒤에 곱해진 숫자를 보라
+
+나는 학생들에게 여론조사 결과표를 볼 때 "응답자 수"뿐 아니라 "가중치가 얼마나 걸렸는가"도 함께 보라고 말한다. 2명의 의견이 14명 몫으로 반영된다는 사실은 조작이 아니라 통계적 보정이지만, 그 배율이 합리적인 범위 안에 있는지는 반드시 확인해야 할 질문이다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 중앙선거여론조사심의위원회의 가중값 배율 기준(성별·연령대별·지역별 각각 0.7~1.5)과 셀가중·림가중 방식 설명은 다음을 참고했다: [메소드서베이: 선거 여론조사 가중치 분석 — method-survey.blogspot.com](http://method-survey.blogspot.com/2025/06/vs_7.html)
+- 20대 여성 응답자 2명이 14명 몫으로 반영된 사례와 소수 응답자에 대한 과도한 가중치(9명·2.78배) 지적은 다음 기사를 참고했다: [20대 여성 2명인데 가중값 더해 14명? — 오마이뉴스](https://www.ohmynews.com/NWS_Web/View/at_pg.aspx?CNTN_CD=A0003246119)
+- 첫 번째 그림(연령대별 응답 불균형)의 구체적인 수치는 가중치 계산 원리를 보여주기 위한 가상의 예시다.
+:::
