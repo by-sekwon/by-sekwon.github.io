@@ -1,0 +1,93 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(여론조사 숫자 읽기) 여론조사는 예언이 아니라 현재의 측정이다 — 여론조사의 본질"
+author: "권세혁"
+date: "2026-12-04"
+categories: [통계기초, 표본조사]
+description: "2016년 미국 대선에서 전국 여론조사 평균은 클린턴 우세 폭을 단 1%포인트 차이로 거의 정확히 맞혔다. 그런데도 '여론조사가 틀렸다'는 말이 널리 퍼졌다. 여론조사가 맞히려 한 것과, 사람들이 맞히기를 기대한 것이 애초에 달랐기 때문이다."
+---
+
+## "여론조사가 틀렸다"는 말, 정말 그럴까
+
+2016년 미국 대선 이후 "여론조사가 완전히 틀렸다"는 말이 널리 퍼졌다. 그런데 실제 숫자를 보면 이야기가 다르다. 선거 전 전국 여론조사 평균은 클린턴 후보가 약 3.1~3.3%포인트 앞선다고 봤고, 실제 전국 득표율 차이는 클린턴 **2.1%포인트** 우세였다. 오차는 **1%포인트 안팎**에 불과했다 — 이번 주 다룬 표본오차 범위 안에 충분히 들어오는 수준이다. 그런데도 트럼프 후보가 선거인단에서 승리하면서, 여론조사 전체가 "완전히 틀렸다"는 인식이 퍼졌다.
+
+```{python}
+#| echo: false
+#| fig-cap: "2016 US election: the final national poll average (Clinton +3.1 to +3.3 points) versus the actual national popular vote result (Clinton +2.1 points). The poll was off by only about 1 point on the popular vote - a fairly accurate measurement - even though many declared 'the polls were wrong' because the Electoral College outcome differed from the popular vote leader."
+import matplotlib.pyplot as plt
+
+labels = ["Final poll average\n(popular vote margin)", "Actual result\n(popular vote margin)"]
+vals = [3.2, 2.1]
+
+fig, ax = plt.subplots(figsize=(6, 4.6))
+bars = ax.bar(labels, vals, color=["#3a6b8c", "#1e3a2f"], width=0.5)
+for b, v in zip(bars, vals):
+    ax.annotate(f"+{v:.1f}pt", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=11)
+ax.set_ylabel("Clinton's margin over Trump (percentage points)")
+ax.set_ylim(0, 4.2)
+ax.set_title("2016 US election: polls were close on the number, not on the narrative", fontsize=9.8, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+여론조사가 측정하려던 것은 "전국 득표율"이었고, 그 측정은 꽤 정확했다. 그런데 미국 대선은 전국 득표율이 아니라 주별 선거인단으로 승자가 갈린다. 사람들이 여론조사에 기대한 것("누가 이길까")과 여론조사가 실제로 측정한 것("지금 시점의 지지율")이 서로 달랐던 것이다.
+
+## 2016년 브렉시트: 측정 자체가 빗나간 경우
+
+반대로, 측정 자체가 빗나간 경우도 있다. 2016년 영국의 EU 탈퇴(브렉시트) 국민투표를 앞두고, 마지막 여론조사 평균은 잔류(Remain) 51%, 탈퇴(Leave) 49%로 **잔류 우세**를 점쳤다. 그러나 실제 결과는 탈퇴 51.9%, 잔류 48.1%로 **탈퇴가 승리**했다. 영국여론조사협회(BPC)가 최종 집계한 평균 오차는 약 4.3%포인트에 달했다. 이 경우는 미국 사례와 달리, 여론조사가 측정하려던 것(국민투표 결과 자체)에서 실제로 방향을 잘못 짚은 사례였다.
+
+```{python}
+#| echo: false
+#| fig-cap: "Two real cases compared: the 2016 US election, where polls accurately measured the popular vote margin but the narrative mismatch came from a different question (Electoral College vs popular vote); and the 2016 Brexit referendum, where the poll average itself called the wrong side, missing the final margin by roughly 4 points."
+import matplotlib.pyplot as plt
+
+cases = ["2016 US election\n(popular vote)", "2016 Brexit\nreferendum"]
+poll_error = [1.1, 4.3]
+
+fig, ax = plt.subplots(figsize=(6, 4.6))
+bars = ax.bar(cases, poll_error, color=["#1e3a2f", "#7a1f2b"], width=0.5)
+for b, v in zip(bars, poll_error):
+    ax.annotate(f"{v:.1f}pt error", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10)
+ax.set_ylabel("Final poll error vs. actual result (percentage points)")
+ax.set_title("Not all 'polls were wrong' stories are the same story", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## 여론조사는 "지금"을 재는 자다
+
+이 두 사례가 함께 가르쳐주는 것은, 여론조사가 본질적으로 **투표일의 결과를 예언하는 수정구슬이 아니라, 조사한 바로 그 시점의 여론을 재는 측정 도구**라는 사실이다. 측정이 정확했는데도(2016년 미국) 다른 질문(선거인단 승자)에 대한 기대와 어긋나 "틀렸다"는 오해를 사기도 하고, 때로는 측정 자체가 표본의 쏠림이나 숨은 응답 편향 때문에 실제로 빗나가기도 한다(2016년 브렉시트). 게다가 여론은 조사 시점과 투표일 사이에 실제로 바뀔 수 있다 — 여론조사가 "미래의 결과"가 아니라 "조사 당시의 단면"을 보여준다는 것을 받아들이면, 이 변화 가능성도 자연스럽게 이해된다.
+
+::: {.callout-tip}
+## 여론조사를 읽는 마지막 원칙
+
+1. **"여론조사가 맞다/틀리다"를 말하기 전에, 무엇을 측정했는지 확인하라.** 득표율 측정과 승자 예측은 다른 질문이다.
+2. **조사 시점과 투표일 사이의 간격을 염두에 두라.** 그 사이에 여론은 실제로 바뀔 수 있다.
+3. **한 번의 조사가 아니라 여러 조사의 흐름을 보라.** 이번 주 내내 강조했듯, 하나의 숫자보다 반복된 패턴이 더 믿을 만하다.
+4. **여론조사를 예언이 아니라 측정으로 대하라.** 측정은 재는 순간의 진실을 말해줄 뿐, 그 이후를 보장하지 않는다.
+:::
+
+## 더 깊이: 점추정이라는 출발점
+
+강의노트 [〈수리통계학 6. 추정 — 점 추정〉](../../notes/math_stat/estimation.qmd#점-추정)은 모수(우리가 알고 싶은 참값)를 표본으로부터 하나의 수치로 어림하는 점추정의 논리를 다룬다. 여론조사의 "지지율 40%"는 바로 이 점추정값이다. 점추정은 "지금 이 순간, 이 표본을 바탕으로 한 가장 그럴듯한 어림값"일 뿐이며, 모수 자체가 시간에 따라 변할 수 있다는 사실까지 보장해주지는 않는다. 여론조사가 예언이 아니라 측정인 이유가 바로 이 점추정의 본질에 있다.
+
+## SDV 관점: 측정의 한계를 아는 것이 데이터 가치화의 성숙함이다
+
+여론조사를 측정으로 이해하는 일은 **요약과 추론(1~2단계)**을 완성하는 태도이며, **SDV(통계적 데이터 가치화)** 관점에서는 데이터가 답할 수 있는 질문과 답할 수 없는 질문을 구분하는 성숙함이다. 지금의 고객 만족도 데이터가 내년의 매출을 보장하지 않듯, 지금의 지지율 조사가 투표일의 결과를 보장하지 않는다. 데이터에 가치를 더하는 사람은 측정의 정확성과 예측의 불확실성을 혼동하지 않고, 그 경계를 명확히 전달한다. 이것이 이번 주, 나아가 이 시리즈 전체가 전하려 한 메시지다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 여론조사는 거울이지, 수정구슬이 아니다
+
+나는 학생들에게 여론조사 결과를 볼 때 "이게 맞을까, 틀릴까"보다 "이게 지금 무엇을 재고 있는가"를 먼저 물으라고 말한다. 여론조사는 투표일의 운명을 미리 알려주는 수정구슬이 아니라, 조사한 바로 그 순간의 민심을 비추는 거울이다. 거울이 보여주는 모습과, 그 이후 벌어질 일 사이에는 언제나 시간과 변화의 여지가 남아 있다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 2016년 미국 대선 전국 여론조사 평균(클린턴 +3.1~3.3%포인트)과 실제 결과(클린턴 +2.1%포인트)는 다음을 참고했다: [National Polling Accurately Nails Popular Vote — Gallup](https://news.gallup.com/opinion/polling-matters/198155/national-polling-accurately-nails-popular-vote.aspx)
+- 2016년 브렉시트 국민투표 최종 여론조사 평균(잔류 51%·탈퇴 49%)과 실제 결과(탈퇴 51.9%·잔류 48.1%), 영국여론조사협회의 평균 오차(4.3%포인트)는 다음을 참고했다: [Performance of the polls in the EU referendum — British Polling Council](https://www.britishpollingcouncil.org/performance-of-the-polls-in-the-eu-referendum/)
+:::

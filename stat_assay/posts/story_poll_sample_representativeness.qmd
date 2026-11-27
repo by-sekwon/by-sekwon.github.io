@@ -1,0 +1,96 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(여론조사 숫자 읽기) 1,000명으로 5천만 명의 생각을 알 수 있을까? — 표본 크기와 대표성"
+author: "권세혁"
+date: "2026-11-30"
+categories: [통계기초, 표본조사]
+description: "매주 발표되는 정기 여론조사는 보통 1,000명 안팎을 조사한다. 전체 유권자의 0.002%, 5만 명 중 1명꼴이다. 이 비율이 이상할 만큼 작은데도 결과를 믿을 수 있는 이유는 '몇 명인가'가 아니라 '그 1,000명이 전체 유권자의 축소판인가'에 있다."
+---
+
+## 5만 명 중 1명꼴, 그런데 믿을 수 있다
+
+한국의 정기 여론조사는 대부분 전국 성인 **1,000명 안팎**을 조사한다. 유권자가 약 4,400만 명이라는 점을 생각하면, 조사 대상은 전체의 약 **0.002%**, 5만 명 중 1명꼴에 불과하다. 지난주 다룬 경제활동인구조사(3만 6천 가구, 0.18%)보다도 100배 가까이 작은 비율이다. 그런데도 이 1,000명짜리 조사가 전국 민심을 꽤 정확히 짚어낸다. 비결은 "몇 명을 조사했는가"가 아니라, **그 1,000명이 4,400만 명의 축소판처럼 구성되어 있는가**에 있다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The sample fraction for a typical Korean political tracking poll (about 1,000 respondents out of roughly 44 million eligible voters) compared with last week's household survey example. A political poll samples an even smaller share of its population - yet can still be trustworthy if that tiny sample is built to mirror the whole."
+import matplotlib.pyplot as plt
+
+labels = ["Economically Active\nPopulation Survey\n(0.18% of households)", "Typical political\ntracking poll\n(0.002% of voters)"]
+vals = [0.18, 0.002]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.6))
+bars = ax.bar(labels, vals, color=["#1e3a2f", "#7a1f2b"], width=0.5)
+ax.set_yscale("log")
+for b, v in zip(bars, vals):
+    ax.annotate(f"{v}%", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 5), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.set_ylabel("Sample as a share of population (%, log scale)")
+ax.set_title("A political poll samples an even smaller slice than a monthly economic survey", fontsize=9.8, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+## "축소판"이 되려면 무엇을 맞춰야 할까
+
+여론조사 기관이 1,000명을 "아무나" 모으지 않는다. 행정안전부가 매달 발표하는 주민등록인구통계를 기준으로, 표본의 **지역별, 성별, 연령대별 구성비**를 전체 유권자의 구성비와 최대한 비슷하게 맞춘다. 전화면접조사는 무작위로 전화를 걸되(무작위추출번호생성, RDD), 특정 집단의 응답이 몰리거나 빠지면 지난주 다룬 가중치로 사후 보정한다. 이 과정을 거치면, 1,000명이라는 작은 숫자도 4,400만 명의 성별·연령·지역 분포를 꽤 정확히 복제한 "축소판"이 된다.
+
+```{python}
+#| echo: false
+#| fig-cap: "An illustrative comparison: a properly designed poll sample (matched to census demographics by region, sex, and age) closely mirrors the true population structure, while a convenience sample (e.g., only people who happen to answer unknown-number calls during the day) skews toward certain groups - even at the same sample size of 1,000."
+import numpy as np
+import matplotlib.pyplot as plt
+
+groups = ["Capital\narea", "Other\nmetro", "Rural/\nother"]
+population_share = [50, 25, 25]
+matched_sample = [49, 26, 25]
+convenience_sample = [65, 20, 15]
+
+x = np.arange(len(groups))
+w = 0.26
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.bar(x - w, population_share, w, color="#8a9a90", label="true population share")
+ax.bar(x, matched_sample, w, color="#1e3a2f", label="demographically matched sample (n=1,000)")
+ax.bar(x + w, convenience_sample, w, color="#7a1f2b", label="unmatched convenience sample (n=1,000)")
+ax.set_xticks(x)
+ax.set_xticklabels(groups)
+ax.set_ylabel("Share (%)")
+ax.legend(frameon=False, fontsize=8)
+ax.set_title("Same sample size, but only one mirrors the whole country", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+같은 1,000명이라도, 인구 구성을 맞춘 표본은 전국 분포와 거의 일치하는 반면, 특정 시간대에 전화를 받는 사람들만 모은 편의표본은 수도권 거주자 쪽으로 크게 치우친다. 표본 크기는 똑같은데, 하나는 축소판이고 하나는 왜곡된 거울이다.
+
+::: {.callout-tip}
+## 여론조사의 표본을 평가하는 법
+
+1. **"몇 명을 조사했는가"보다 "어떻게 모았는가"를 먼저 확인하라.** 1,000명이라는 숫자 자체는 좋고 나쁨을 말해주지 않는다.
+2. **인구 구성(지역·성별·연령)과 표본 구성을 비교해보라.** 공표 자료에 이 비교가 실려 있는지 확인하라.
+3. **표본 비율이 작다고 불안해하지 마라.** 0.002%도 설계가 좋으면 충분하다 — 지난주 "전 국민을 조사하지 않아도 되는 이유"에서 다룬 원리 그대로다.
+4. **무작위추출(RDD)인지, 패널인지, 편의표본인지 확인하라.** 방법이 대표성을 결정한다.
+:::
+
+## 더 깊이: 표본의 분포로 모집단을 짐작하기
+
+강의노트 [〈수리통계학 4. 표본분포 — 샘플링 분포〉](../../notes/math_stat/random_sample.qmd#샘플링-분포)는 표본에서 계산한 통계량(표본평균, 표본비율)이 반복된 표본추출에서 어떤 분포를 갖는지를 다룬다. 여론조사의 지지율은 결국 "표본비율"이라는 하나의 통계량이고, 그 통계량이 참값 주변에서 얼마나 믿을 만하게 움직이는지는 표본이 모집단을 얼마나 충실히 대표하느냐에 달려 있다. 이번 주 나머지 글들은 이 샘플링 분포를 이용해 오차범위를 계산하고 해석하는 방법을 다룬다.
+
+## SDV 관점: 대표성을 먼저 입증하는 것이 숫자의 설득력을 만든다
+
+여론조사의 대표성을 확인하는 일은 **요약과 추론(1~2단계)**의 출발점이며, **SDV(통계적 데이터 가치화)** 관점에서는 모든 여론·시장조사 결과가 의사결정에 쓰이기 전에 거쳐야 할 검증이다. "1,000명을 조사했다"는 말만으로는 아무것도 보장되지 않는다. 그 1,000명이 전체를 얼마나 닮았는지 공개하고 검증할 때, 비로소 그 숫자는 결정의 근거가 될 자격을 얻는다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 작은 숫자가 큰 그림을 그릴 수 있는 이유
+
+나는 학생들에게 "1,000명으로 5천만 명을 어떻게 아나요?"라는 질문을 받으면, 숫자가 작아서가 아니라 설계가 좋아서 가능한 일이라고 답한다. 이번 주는 이 설계가 구체적으로 어떤 계산과 해석으로 이어지는지, 오차범위부터 하나씩 풀어본다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 한국 정치 여론조사의 통상적인 표본 규모(약 1,000명)와 지역·성·연령별 가중치 보정 관행은 이 시리즈 11월 26일 글("표본가중치란 무엇인가")에서 다룬 내용과 같은 맥락이다.
+- 두 번째 그림(지역별 표본 구성 비교)의 구체적인 수치는 설명을 위한 가상의 예시다.
+:::

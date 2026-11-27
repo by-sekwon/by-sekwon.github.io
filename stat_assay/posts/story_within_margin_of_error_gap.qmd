@@ -1,0 +1,110 @@
+---
+format:
+  html:
+    sidebar: stat_assay
+title: "(여론조사 숫자 읽기) 오차범위 안의 지지율 차이는 정말 의미가 없는가? — 오차범위 안 차이의 해석"
+author: "권세혁"
+date: "2026-12-02"
+categories: [통계기초, 표본조사]
+description: "두 후보의 지지율이 3%포인트 차이로 나오고, 오차범위가 ±3.1%포인트라면 언론은 흔히 '오차범위 내 접전'이라 쓴다. 그런데 이 표현은 두 가지를 동시에 틀리게 만든다. 그 차이가 '무의미하다'는 것도, '완전한 동률'이라는 것도 사실이 아니다."
+---
+
+## "오차범위 내 접전"이라는 익숙한 표현
+
+여론조사에서 두 후보의 지지율 차이가 조사의 오차범위보다 작으면, 언론은 거의 예외 없이 "오차범위 내 접전"이라고 쓴다. A후보 38%, B후보 35%, 오차범위 ±3.1%포인트라면 "3%포인트 차이는 오차범위 안에 있으니 사실상 동률"이라는 식이다. 그런데 이 해석에는 두 가지 숨은 함정이 있다.
+
+## 함정 1: 오차범위는 "차이"가 아니라 "하나의 수치"에 대한 것이다
+
+12월 1일 글에서 계산한 ±3.1%포인트는 **후보 한 명의 지지율**이 참값에서 얼마나 벗어날 수 있는지를 말해주는 숫자다. 그런데 "두 후보 사이의 차이"가 의미 있는지를 판단하려면, 두 지지율의 **차이**가 가질 수 있는 흔들림을 따로 계산해야 한다. 두 지지율이 서로 독립적으로 흔들린다고 가정하면(실제로는 다소 다르지만 근사적으로), 차이의 오차범위는 한 지지율의 오차범위보다 **약 $\sqrt{2}\approx1.41$배** 더 크다. $n=1{,}000$ 기준으로 계산하면, 한 지지율의 오차범위 ±3.1%포인트가 두 지지율 차이의 오차범위로는 약 **±4.4%포인트**가 된다.
+
+```{python}
+#| echo: false
+#| fig-cap: "The margin of error for a single candidate's support rate (±3.1 percentage points, n=1,000, worst-case 50%) versus the margin of error for the GAP between two candidates (roughly ±4.4 percentage points). A 3-point gap sits inside the single-rate margin but is actually smaller than the gap's own margin of error."
+import matplotlib.pyplot as plt
+
+labels = ["Single candidate's\nmargin of error", "Margin of error for the\nGAP between two candidates"]
+vals = [3.1, 4.38]
+
+fig, ax = plt.subplots(figsize=(6.5, 4.6))
+bars = ax.bar(labels, vals, color=["#1e3a2f", "#7a1f2b"], width=0.5)
+for b, v in zip(bars, vals):
+    ax.annotate(f"±{v:.1f}pt", xy=(b.get_x() + b.get_width() / 2, v), xytext=(0, 4), textcoords="offset points",
+                ha="center", fontsize=10.5)
+ax.set_ylabel("Margin of error (percentage points)")
+ax.set_title("The gap's margin of error is about 1.4x larger", fontsize=10.3, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+즉 "3%포인트 차이가 오차범위(±3.1%포인트) 안에 있다"는 말은 애초에 비교 대상을 잘못 짚은 것이다. 진짜 질문은 "3%포인트 차이가 **차이의** 오차범위(±4.4%포인트) 안에 있는가"이고, 이 기준으로 보면 3%포인트는 더더욱 "범위 안"에 들어간다.
+
+## 함정 2: "오차범위 안에 있다"가 "동률이다"는 뜻은 아니다
+
+그렇다고 3%포인트 차이가 "아무 의미 없다"는 뜻도 아니다. 실제로 A후보가 38%, B후보가 35%로 **참값이 정말 그렇다면**, 1,000명짜리 조사를 반복했을 때 A후보가 더 높게 나올 확률은 얼마일까? 시뮬레이션으로 확인해보자.
+
+```{python}
+#| echo: false
+#| fig-cap: "Simulated polls (n=1,000) repeated thousands of times for different true gaps between two candidates. Even at a true gap of just 1 point, the poll shows the correct leader about 65% of the time - far better than a coin flip. By a true gap of 3 points, the poll correctly identifies the leader 87% of the time. A gap being 'within the margin of error' does not mean the race is a true tie."
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(1202)
+n = 1000
+trials = 4000
+gaps = [0, 1, 2, 3, 4, 5, 6, 8, 10]
+correct_shares = []
+for gap in gaps:
+    trueA = 0.35 + gap / 100
+    trueB = 0.35
+    correct = 0
+    for _ in range(trials):
+        draws = rng.choice(["A", "B", "O"], size=n, p=[trueA, trueB, 1 - trueA - trueB])
+        if np.mean(draws == "A") > np.mean(draws == "B"):
+            correct += 1
+    correct_shares.append(correct / trials * 100)
+
+fig, ax = plt.subplots(figsize=(7.5, 4.6))
+ax.plot(gaps, correct_shares, marker="o", color="#1e3a2f", linewidth=2.2)
+ax.axhline(50, color="#8a9a90", linestyle="--", linewidth=1.3, label="coin-flip baseline: 50%")
+for g, p in zip(gaps, correct_shares):
+    if g in (1, 3, 5):
+        ax.annotate(f"{p:.0f}%", xy=(g, p), xytext=(0, 8), textcoords="offset points", ha="center", fontsize=9)
+ax.set_xlabel("True gap between the two candidates (percentage points)")
+ax.set_ylabel("Share of simulated polls correctly showing A ahead (%)")
+ax.legend(frameon=False)
+ax.set_title("A gap 'within the margin of error' is still informative", fontsize=10, color="#1e3a2f")
+ax.spines[["top", "right"]].set_visible(False)
+plt.tight_layout()
+plt.show()
+```
+
+참값 차이가 1%포인트만 있어도, 조사는 그 우세를 약 65%의 확률로 올바르게 보여준다. 동전 던지기(50%)보다 훨씬 낫다. 3%포인트 차이라면 87%의 확률로 맞게 보여준다. "오차범위 안"이라는 말이 "이 결과가 동전 던지기와 다를 바 없다"는 뜻은 결코 아니다.
+
+::: {.callout-tip}
+## "오차범위 내 접전" 기사를 읽을 때
+
+1. **"단일 지지율의 오차범위"와 "두 지지율 차이의 오차범위"를 구분하라.** 후자가 더 크다.
+2. **"범위 안에 있다"를 "확률이 같다"로 바꿔 읽지 마라.** 작은 차이도 우연이 아닐 가능성이 더 높다.
+3. **여러 번의 조사 흐름(추세)을 함께 보라.** 한 번의 조사보다, 같은 방향으로 반복되는 추세가 더 믿을 만하다.
+4. **"접전"과 "결과를 알 수 없다"를 혼동하지 마라.** 접전이라도 어느 쪽이 약간 더 앞서 있을 가능성은 분명히 존재한다.
+:::
+
+## 더 깊이: 가설검정과 신뢰수준의 관계
+
+강의노트 [〈수리통계학 7. 가설검정과 신뢰구간 — 가설검정과 신뢰수준〉](../../notes/math_stat/hypothesis_testing.qmd#가설검정과-신뢰수준)은 신뢰구간과 가설검정이 사실상 같은 질문에 대한 두 가지 표현임을 보인다. "두 지지율의 차이가 0일 수 있는가"를 묻는 것은, "차이가 0을 포함하는 신뢰구간 안에 있는가"를 묻는 가설검정과 같다. 오늘 살펴본 "오차범위 안 차이"의 해석은 바로 이 가설검정의 논리를 여론조사에 적용한 것이다.
+
+## SDV 관점: 통계적 접전과 실질적 불확실성을 구분해 보고해야 가치가 산다
+
+오차범위 안 차이를 정확히 해석하는 일은 **요약과 추론(1~2단계)**의 정교한 적용이며, **SDV(통계적 데이터 가치화)** 관점에서는 "통계적으로 유의하지 않다"는 말과 "의미가 없다"는 말을 혼동하지 않는 훈련이다. 두 마케팅 전략의 전환율이 오차범위 안에 있다고 해서 "둘은 완전히 같다"고 결론 내리면, 실제로는 더 나은 쪽을 놓치는 결정을 반복하게 된다. 데이터에 가치를 더하는 일은 불확실성을 인정하면서도, 그 불확실성 안에 담긴 확률적 정보를 버리지 않는 것이다. ([SDV(데이터 가치화)](../../sdv/index.qmd))
+
+## 결론: 오차범위 안의 차이는 "모른다"가 아니라 "확률이 기울어 있다"는 뜻이다
+
+나는 학생들에게 "오차범위 내 접전"이라는 기사 제목을 보면, 그것이 "아무것도 알 수 없다"는 뜻이 아니라 "완전히 확신할 수는 없지만, 한쪽으로 확률이 기울어 있다"는 뜻으로 읽으라고 말한다. 통계는 확실함과 무지 사이에, 이렇게 미묘하게 기울어진 확률의 영역을 다루는 도구다.
+
+::: {.callout-note collapse="true"}
+## 참고 자료
+
+- 두 비율 차이의 오차범위가 단일 비율 오차범위의 약 $\sqrt{2}$배라는 근사는 두 표본비율이 서로 독립이라고 가정했을 때의 표준적인 통계 결과다.
+- 시뮬레이션(참 지지율 차이별 정확한 우세 판별 확률)의 구체적인 수치는 원리를 보여주기 위한 가상의 계산이다.
+:::
